@@ -38,7 +38,8 @@ Ces règles sont écrites dans `app/js/regles.js` et vérifiées par les tests a
 Chaque réplique a un nom, qui est aussi le nom de son fichier audio (ex. `commentateur_craquage_02.mp3`).
 La liste complète est dans [`docs/script-des-annonces.md`](docs/script-des-annonces.md).
 Pour ajouter un enregistrement : dépose le fichier MP3 dans `app/audio/` (sur GitHub : « Add file » → « Upload files »).
-Tant qu'un fichier manque, c'est la voix de synthèse du téléphone qui lit la réplique.
+Tant qu'un fichier manque, la réplique est seulement affichée par écrit. La voix de synthèse du téléphone,
+jugée trop robotique, est coupée par défaut ; on peut la réactiver dans l'onglet Options.
 
 ## Organisation du code
 

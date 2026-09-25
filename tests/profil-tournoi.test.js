@@ -92,3 +92,9 @@ test("match simulé entre bots : un vainqueur et un score valide", () => {
   assert.ok(["rocky", "professeur"].includes(r.v));
   assert.match(r.score, /^(3–[012]|[012]–3)$/);
 });
+
+test("symbole de l'avatar : Pierre par défaut, ajouté aux anciennes fiches", () => {
+  assert.equal(profilParDefaut().av.symbole, "pierre");
+  assert.equal(normaliserProfil({ av: { gant: "vert" } }).av.symbole, "pierre");
+  assert.equal(normaliserProfil({ av: { symbole: "ciseaux" } }).av.symbole, "ciseaux");
+});

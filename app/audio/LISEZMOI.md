@@ -10,5 +10,5 @@ La liste complète des répliques et de leurs noms est dans
 `docs/script-des-annonces.md`.
 
 Rien d'autre à faire : à chaque mise en ligne, la liste des fichiers présents
-est recalculée automatiquement. Une réplique sans fichier est lue par la voix
-de synthèse du téléphone.
+est recalculée automatiquement. Une réplique sans fichier est seulement affichée
+par écrit.

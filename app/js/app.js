@@ -6,7 +6,7 @@ import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet } from "./annonces.js
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { TOURS, TOUR_SINGULIER, SETS_PAR_TOUR, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
-import { avatarSVG, FONDS, GANTS, POIGNETS, MOTIFS, PAYS } from "./avatar.js";
+import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, PAYS } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE } from "./voix/script.js";
 import { Ambiance, MURMURE } from "./ambiance.js";
@@ -37,6 +37,10 @@ const voix = new LecteurVoix();
 const ambiance = new Ambiance();
 let sonActif = lire("son", true) !== false;
 voix.actif = ambiance.actif = sonActif;
+// La voix de synthèse sonne robotique : elle reste coupée tant qu'on ne l'active pas dans les Options.
+voix.synthese = lire("voixSynthese", false) === true;
+$("synthese").checked = voix.synthese;
+$("synthese").addEventListener("change", e => { voix.synthese = e.target.checked; ecrire("voixSynthese", voix.synthese); if (!voix.synthese) voix.arreter(); renderVoixInfo(); });
 $("snd").checked = sonActif;
 voix.charger().then(renderVoixInfo);
 
@@ -47,12 +51,16 @@ $("snd").addEventListener("change", e => {
 });
 const note = t => { $("sndNote").textContent = t; $("sndNote").hidden = !t; };
 $("testSnd").addEventListener("click", () => {
-  ambiance.initialiser(); ambiance.toc(); ambiance.public("clameur", 0.35);
-  if (!voix.syntheseDisponible && !voix.fichiers.size) { note("La voix de synthèse n'est pas disponible ici. Les annonces restent affichées par écrit. Essaie d'ouvrir la page dans le navigateur de ton téléphone (Safari ou Chrome)."); return; }
-  if (!sonActif) { sonActif = true; $("snd").checked = true; ecrire("son", true); voix.actif = true; ambiance.activer(true); }
+  if (!sonActif) { sonActif = true; $("snd").checked = true; ecrire("son", true); voix.actif = true; }
+  ambiance.activer(true); ambiance.toc(); ambiance.public("clameur", 0.35);
+  const test = CATALOGUE.get("arbitre_balle_de_match_jaune_01");
+  if (!voix.peutDire(test)) {
+    note("Tu dois entendre le toc du coup et une clameur du public. Si ce n'est pas le cas, vérifie le volume et le mode silencieux. Les voix de l'arbitre et du commentateur sont coupées en attendant les vrais enregistrements : leurs annonces s'affichent par écrit.");
+    setTimeout(() => note(""), 8000); return;
+  }
   let demarre = false;
   note("Test en cours…");
-  voix.dire([CATALOGUE.get("arbitre_balle_de_match_jaune_01")], () => {
+  voix.dire([test], () => {
     demarre = true; note("Le son fonctionne. Si tu n'entends rien, vérifie le volume, le mode silencieux et tes écouteurs Bluetooth.");
     setTimeout(() => note(""), 6000);
   });
@@ -61,7 +69,7 @@ $("testSnd").addEventListener("click", () => {
 
 function renderVoixInfo() {
   const total = CATALOGUE.size, faits = [...voix.fichiers.keys()].filter(id => CATALOGUE.has(id)).length;
-  $("voixInfo").innerHTML = `<b>${faits} réplique${faits > 1 ? "s" : ""} enregistrée${faits > 1 ? "s" : ""} sur ${total}.</b> Les autres sont lues par la voix de synthèse du téléphone, en attendant les vrais enregistrements. Tout ce qui est dit s'affiche aussi par écrit, et la case « Son » coupe tout.`;
+  $("voixInfo").innerHTML = `<b>${faits} réplique${faits > 1 ? "s" : ""} enregistrée${faits > 1 ? "s" : ""} sur ${total}.</b> ${voix.synthese ? "Les autres sont lues par la voix de synthèse du téléphone." : "Les autres ne sont pas lues à voix haute, en attendant les vrais enregistrements."} Tout ce qui est dit s'affiche aussi par écrit, et la case « Son » coupe tout.`;
 }
 
 // ---------------------------------------------------------------- annonces
@@ -383,7 +391,7 @@ function renderEditeur() {
       $("lockNote").textContent = ""; P.av[type] = k; sauverP(); renderFiche(); rafraichirAvatars();
     }));
   };
-  mk($("swBg"), "fond", FONDS); mk($("swGlove"), "gant", GANTS); mk($("swWrist"), "poignet", POIGNETS); mk($("swMotif"), "motif", MOTIFS, true);
+  mk($("swSymbole"), "symbole", SYMBOLES, true); mk($("swBg"), "fond", FONDS); mk($("swGlove"), "gant", GANTS); mk($("swWrist"), "poignet", POIGNETS); mk($("swMotif"), "motif", MOTIFS, true);
 }
 $("inFlag").innerHTML = PAYS.map(([f, n]) => `<option value="${f}">${f} ${n}</option>`).join("");
 $("inFlag").value = P.drapeau;
