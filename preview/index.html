@@ -15,6 +15,19 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preload" href="fonts/barlow-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/style.css">
+<script>
+  // Si quelque chose casse, on l'affiche à l'écran pour pouvoir le signaler (capture d'écran).
+  (function () {
+    function montrer(msg) {
+      var d = document.getElementById("erreur");
+      if (!d) { d = document.createElement("div"); d.id = "erreur"; d.setAttribute("role", "alert"); (document.body || document.documentElement).appendChild(d); }
+      d.textContent = "Oups, un problème : " + msg + " — fais une capture d'écran et envoie-la. (touche pour fermer)";
+      d.onclick = function () { d.remove(); };
+    }
+    window.addEventListener("error", function (e) { montrer((e.message || "erreur de chargement") + (e.filename ? " [" + e.filename.split("/").pop() + ":" + e.lineno + "]" : "")); }, true);
+    window.addEventListener("unhandledrejection", function (e) { montrer(String(e.reason && e.reason.message || e.reason)); });
+  })();
+</script>
 </head>
 <body>
 <div class="wrap">

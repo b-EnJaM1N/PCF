@@ -33,9 +33,14 @@ export class Ambiance {
     this.echo = ctx.createConvolver(); this.echo.buffer = this.tampon(echoStade(fs));
     const retour = ctx.createGain(); retour.gain.value = 0.35; this.echo.connect(retour); retour.connect(this.master);
 
-    this.raquettes = HAUTEUR.map(h => this.tampon([coupDeRaquette(fs, h)]));
-    for (const type of ["point", "clameur", "set"]) this.buf[type] = this.tampon(applaudissements(fs, FOULES[type]));
-    this.chargerFichiers();
+    // La fabrication des sons prend un moment : on la fait juste après, sans bloquer l'écran.
+    const etapes = [
+      () => { this.raquettes = HAUTEUR.map(h => this.tampon([coupDeRaquette(fs, h)])); },
+      ...["set", "clameur", "point"].map(type => () => { this.buf[type] = this.tampon(applaudissements(fs, FOULES[type])); }),
+      () => this.chargerFichiers(),
+    ];
+    const suite = () => { const e = etapes.shift(); if (!e) return; try { e(); } catch { /* son indisponible */ } setTimeout(suite, 0); };
+    setTimeout(suite, 0);
   }
 
   tampon(canaux) {
@@ -64,14 +69,17 @@ export class Ambiance {
 
   jouer(buffer, vol, echo, { delai = 0, vitesse = 1 } = {}) {
     const ctx = this.ctx; if (!ctx || !buffer) return;
-    const src = ctx.createBufferSource(); src.buffer = buffer; src.playbackRate.value = vitesse;
-    const g = ctx.createGain(); g.gain.value = vol;
-    src.connect(g); g.connect(this.master); if (echo) g.connect(this.echo);
-    src.start(ctx.currentTime + delai);
+    try {
+      const src = ctx.createBufferSource(); src.buffer = buffer; src.playbackRate.value = vitesse;
+      const g = ctx.createGain(); g.gain.value = vol;
+      src.connect(g); g.connect(this.master); if (echo) g.connect(this.echo);
+      src.start(ctx.currentTime + delai);
+    } catch { /* un son raté ne doit jamais bloquer le match */ }
   }
 
   // Le coup de raquette, quand on choisit son signe.
   raquette(signe = 2) { this.jouer(this.raquettes[signe], 0.7, true); }
+  // (si un son n'est pas encore prêt, il est simplement ignoré)
 
   // "point", "clameur", "set" ou "ovation"
   public(type, vol = 0.5) {

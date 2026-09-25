@@ -287,7 +287,7 @@ document.querySelectorAll("#segWin button").forEach(b => b.addEventListener("cli
 let minuteriesIntro = [];
 function ouvrirFaceAFace() {
   $("startCard").hidden = true; $("tourCard").hidden = true;
-  ambiance.initialiser();                  // on profite du geste de l'utilisateur pour préparer le son
+  try { ambiance.initialiser(); } catch { /* le match se joue aussi sans son */ } // geste de l'utilisateur : le son peut démarrer
   const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: fmt.len, setsGagnants: WIN });
   $("foStage").textContent = pr.bandeau; $("foFmt").textContent = pr.format;
   $("foAvMe").innerHTML = avatarSVG(P.av); $("foAvBot").innerHTML = avatarSVG(OPP.av);
@@ -311,6 +311,8 @@ function ouvrirFaceAFace() {
   });
   if (!vite) minuteriesIntro.push(setTimeout(() => $("foGo").focus(), fin * 1000));
   else $("foGo").focus();
+  // Filet de sécurité : quoi qu'il arrive à l'animation, tout est affiché peu après.
+  minuteriesIntro.push(setTimeout(() => ov.classList.add("vite"), (fin + 0.8) * 1000));
 }
 // Les nombres défilent jusqu'à leur valeur, comme au tableau d'affichage.
 function compter(el) {
@@ -333,8 +335,8 @@ $("faceoff").addEventListener("click", e => {
 $("foGo").addEventListener("click", () => {
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false;
   S.enJeu = true;
-  annoncer([annonceDebutSet(S.match)]);
   boutons(true); $("status").textContent = "Set 1, coup 1"; lancerMinuteur();
+  annoncer([annonceDebutSet(S.match)]);
 });
 $("foBack").addEventListener("click", () => {
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false; minuteriesIntro.forEach(clearTimeout);
