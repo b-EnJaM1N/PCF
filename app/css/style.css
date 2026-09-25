@@ -148,6 +148,9 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .linkbtn { font: inherit; font-size: .85rem; color: var(--muted); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 0; }
 .steps { margin: 6px 0 0; padding-left: 1.2em; font-size: .9rem; line-height: 1.5; }
 
+/* Bandeau d'erreur (diagnostic) */
+#erreur { position: fixed; left: 0; right: 0; top: 0; z-index: 100; background: #B3261E; color: #fff; font-size: .9rem; line-height: 1.35; padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 10px; }
+
 /* Présentation d'avant-match, façon boxe (hors échange : les effets sont permis) */
 .inter.intro { background: radial-gradient(ellipse at 50% 35%, #173F73, #050E1E 75%); align-items: flex-start; padding-top: calc(env(safe-area-inset-top, 0px) + 12px); }
 .fo { width: 100%; max-width: 440px; margin: auto; padding: 4px 0 8px; }
@@ -175,6 +178,7 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .fo-row .adv::after { content: ""; position: absolute; left: 22%; right: 22%; bottom: -3px; height: 3px; border-radius: 2px; background: currentColor; }
 .fo-key { font-size: .9rem; color: var(--line); text-align: center; line-height: 1.4; margin: 10px 0 12px; }
 .fo-key b { color: var(--me); }
+.fo-end { position: sticky; bottom: 0; padding: 10px 0 calc(env(safe-area-inset-bottom, 0px) + 6px); background: linear-gradient(rgba(5, 14, 30, 0), #050E1E 30%); }
 
 /* La chorégraphie : bandeau, entrée des deux joueurs, VS, puis les stats une à une. */
 .intro.show .fo-banner { animation: tomber .45s cubic-bezier(.2, .9, .3, 1) both; }
@@ -188,7 +192,8 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .intro.show .fo-row span:last-child { animation: entreeD .4s calc(1.6s + var(--i) * .28s) cubic-bezier(.2, 1.1, .3, 1) both; }
 .intro.show .fo-row .adv::after { animation: trait .35s calc(1.95s + var(--i) * .28s) ease-out both; }
 .intro.show :is(.fo-key, .fo-end) { animation: fade .45s var(--fin, 3.2s) both; }
-.intro.vite * , .intro.vite *::after { animation-delay: 0s !important; animation-duration: .01s !important; }
+.intro.vite *, .intro.vite *::after { animation: none !important; }
+.intro.vite .fo-vs::after { display: none; }
 @keyframes tomber { from { transform: translateY(-30px); opacity: 0 } to { transform: none; opacity: 1 } }
 @keyframes entreeG { from { transform: translateX(-70px); opacity: 0 } to { transform: none; opacity: 1 } }
 @keyframes entreeD { from { transform: translateX(70px); opacity: 0 } to { transform: none; opacity: 1 } }
