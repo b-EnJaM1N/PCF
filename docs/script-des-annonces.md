@@ -133,3 +133,14 @@ restent lus par la voix de synthèse.
 | `commentateur_defaite_01.mp3` | La machine l'emporte. Il faudra revoir ses habitudes. |
 | `commentateur_defaite_02.mp3` | La machine a été la plus lucide aujourd'hui. Place à l'analyse. |
 
+## Sons du court (5 sons)
+
+Fabriqués par le code en attendant. Un vrai enregistrement portant ce nom les remplace.
+
+| Fichier | Son |
+|---|---|
+| `raquette_01.mp3` | Coup de raquette, à chaque signe joué |
+| `public_point_01.mp3` | Applaudissements courts, après chaque point |
+| `public_clameur_01.mp3` | Clameur et applaudissements nourris (balle sauvée, remontée…) |
+| `public_set_01.mp3` | Applaudissements de fin de set |
+| `public_ovation_01.mp3` | Ovation de fin de match |

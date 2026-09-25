@@ -48,7 +48,7 @@ export function annoncerCoup(match, evt, etat, { recents = [] } = {}, rng = Math
       lignes.push(replique(`arbitre_jeu_set_et_match_${cote}_01`));
       lignes.push(replique(`arbitre_sets_${slug(["zéro", "un", "deux", "trois"][a])}_a_${slug(["zéro", "un", "deux", "trois"][b])}_01`));
       com = g === 0 ? (match.sets[1] > 0 ? "victoire_combat" : "victoire_nette") : "defaite";
-      pub = g === 0 ? "ovation" : "applause";
+      pub = g === 0 ? "ovation" : "set";
     } else if (evt.finSet) {
       const [pa, pb] = evt.scoreSet, haut = Math.max(pa, pb), bas = Math.min(pa, pb);
       const ordinal = slug(ORDINAUX[match.scoresSets.length - 1]);
@@ -57,7 +57,7 @@ export function annoncerCoup(match, evt, etat, { recents = [] } = {}, rng = Math
       if (etat.ballesSubies[g]) com = `set_renverse_${cote}`;
       else if (haut - bas >= 6) com = `set_ecrasant_${cote}`;
       else if (bas >= len - 1) com = "set_arrache";
-      pub = "applause";
+      pub = "set";
     } else {
       const [a, b] = match.points, h = evt.balleApres;
       if (h) lignes.push(replique(`arbitre_balle_de_${h.type}_${COTE[h.joueur]}_01`));

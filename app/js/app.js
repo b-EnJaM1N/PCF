@@ -9,7 +9,7 @@ import { TOURS, TOUR_SINGULIER, SETS_PAR_TOUR, nouveauTournoi, monMatch, enregis
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, PAYS } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE } from "./voix/script.js";
-import { Ambiance, MURMURE } from "./ambiance.js";
+import { Ambiance } from "./ambiance.js";
 import { lire, ecrire } from "./stockage.js";
 import { VERSION } from "./version.js";
 
@@ -42,7 +42,7 @@ voix.synthese = lire("voixSynthese", false) === true;
 $("synthese").checked = voix.synthese;
 $("synthese").addEventListener("change", e => { voix.synthese = e.target.checked; ecrire("voixSynthese", voix.synthese); if (!voix.synthese) voix.arreter(); renderVoixInfo(); });
 $("snd").checked = sonActif;
-voix.charger().then(renderVoixInfo);
+voix.charger().then(() => { ambiance.utiliserFichiers([...voix.fichiers.keys()]); renderVoixInfo(); });
 
 $("snd").addEventListener("change", e => {
   sonActif = e.target.checked; ecrire("son", sonActif);
@@ -52,10 +52,10 @@ $("snd").addEventListener("change", e => {
 const note = t => { $("sndNote").textContent = t; $("sndNote").hidden = !t; };
 $("testSnd").addEventListener("click", () => {
   if (!sonActif) { sonActif = true; $("snd").checked = true; ecrire("son", true); voix.actif = true; }
-  ambiance.activer(true); ambiance.toc(); ambiance.public("clameur", 0.35);
+  ambiance.activer(true); ambiance.raquette(); setTimeout(() => ambiance.public("point", 0.5), 400);
   const test = CATALOGUE.get("arbitre_balle_de_match_jaune_01");
   if (!voix.peutDire(test)) {
-    note("Tu dois entendre le toc du coup et une clameur du public. Si ce n'est pas le cas, vérifie le volume et le mode silencieux. Les voix de l'arbitre et du commentateur sont coupées en attendant les vrais enregistrements : leurs annonces s'affichent par écrit.");
+    note("Tu dois entendre un coup de raquette puis des applaudissements. Si ce n'est pas le cas, vérifie le volume et le mode silencieux. Les voix de l'arbitre et du commentateur sont coupées en attendant les vrais enregistrements : leurs annonces s'affichent par écrit.");
     setTimeout(() => note(""), 8000); return;
   }
   let demarre = false;
@@ -136,11 +136,10 @@ function jouer(signe, auto = false) {
   $("verdict").textContent = (auto ? "Temps écoulé, coup joué au hasard. " : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeBot]}` : `${NOM[signeBot]} bat ${NOM[signe]}`);
 
-  ambiance.toc();
-  if (a.public) setTimeout(() => ambiance.public(a.public, a.public === "clameur" ? 0.4 : 0.55), 150);
-  if (a.ambiance === "fin") ambiance.niveau(0, 3);
-  else if (a.ambiance === "silence") ambiance.niveau(0, 0.6); // silence total avant une balle de match
-  else ambiance.niveau(MURMURE, 1.5);
+  ambiance.raquette(signe);
+  // Comme au tennis : le public applaudit chaque point, et se tait avant une balle de match.
+  const pub = a.public || (!evt.egalite && a.ambiance !== "silence" ? "point" : null);
+  if (pub) setTimeout(() => ambiance.public(pub, { point: 0.3, clameur: 0.45, set: 0.55, ovation: 0.6 }[pub]), 250);
   annoncer(a.lignes);
   render(); renderHistorique(); renderLecture();
 
@@ -306,7 +305,7 @@ function ouvrirFaceAFace() {
 }
 $("foGo").addEventListener("click", () => {
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false;
-  ambiance.initialiser(); ambiance.niveau(MURMURE, 2); ambiance.public("applause", 0.35);
+  ambiance.initialiser(); setTimeout(() => ambiance.public("set", 0.35), 50);
   S.enJeu = true;
   annoncer([annonceDebutSet(S.match)]);
   boutons(true); $("status").textContent = "Set 1, coup 1"; lancerMinuteur();
