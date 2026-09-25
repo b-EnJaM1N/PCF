@@ -4,13 +4,13 @@ import { contre, signeAuHasard, PIERRE, FEUILLE, CISEAUX } from "./regles.js";
 import { Lecteur } from "./analyse.js";
 
 export const BOTS = [
-  { id: "rocky", nom: "Rocky", style: "L'agressif", desc: "adore la Pierre. Beaucoup trop.", elo: 1050, av: { symbole: "pierre", fond: "terre", gant: "rouge", poignet: "noir", motif: "uni" } },
-  { id: "miroir", nom: "Miroir", style: "Le copieur", desc: "rejoue souvent ton dernier coup.", elo: 1100, av: { symbole: "feuille", fond: "court", gant: "blanc", poignet: "bleu", motif: "rayures" } },
-  { id: "cyclo", nom: "Cyclo", style: "Le mécanique", desc: "tourne en boucle : Pierre, Feuille, Ciseaux.", elo: 1150, av: { symbole: "ciseaux", fond: "gazon", gant: "jaune", poignet: "blanc", motif: "rayures" } },
-  { id: "boomerang", nom: "Boomerang", style: "Le réactif", desc: "garde son signe quand il gagne, en change quand il perd.", elo: 1200, av: { symbole: "pierre", fond: "violet", gant: "jaune", poignet: "rouge", motif: "etoile" } },
-  { id: "chaos", nom: "Chaos", style: "L'imprévisible", desc: "joue au hasard total. Impossible à lire, impossible à piéger.", elo: 1250, av: { symbole: "ciseaux", fond: "court", gant: "vert", poignet: "jaune", motif: "eclair" } },
-  { id: "stratege", nom: "Stratège", style: "Le lecteur", desc: "analyse tes habitudes et les contre.", elo: 1300, av: { symbole: "feuille", fond: "ardoise", gant: "rouge", poignet: "noir", motif: "eclair" } },
-  { id: "professeur", nom: "Professeur", style: "Le maître", desc: "lit tes réflexes plus vite que son ombre.", elo: 1400, av: { symbole: "feuille", fond: "or", gant: "blanc", poignet: "noir", motif: "etoile" } },
+  { id: "rocky", nom: "Rocky", style: "L'agressif", desc: "adore la Pierre. Beaucoup trop.", elo: 1050, specialite: "La Pierre", imprevisibilite: 30, av: { symbole: "pierre", fond: "terre", gant: "rouge", poignet: "noir", motif: "uni" } },
+  { id: "miroir", nom: "Miroir", style: "Le copieur", desc: "rejoue souvent ton dernier coup.", elo: 1100, specialite: "La copie", imprevisibilite: 45, av: { symbole: "feuille", fond: "court", gant: "blanc", poignet: "bleu", motif: "rayures" } },
+  { id: "cyclo", nom: "Cyclo", style: "Le mécanique", desc: "tourne en boucle : Pierre, Feuille, Ciseaux.", elo: 1150, specialite: "La boucle", imprevisibilite: 40, av: { symbole: "ciseaux", fond: "gazon", gant: "jaune", poignet: "blanc", motif: "rayures" } },
+  { id: "boomerang", nom: "Boomerang", style: "Le réactif", desc: "garde son signe quand il gagne, en change quand il perd.", elo: 1200, specialite: "La réaction", imprevisibilite: 50, av: { symbole: "pierre", fond: "violet", gant: "jaune", poignet: "rouge", motif: "etoile" } },
+  { id: "chaos", nom: "Chaos", style: "L'imprévisible", desc: "joue au hasard total. Impossible à lire, impossible à piéger.", elo: 1250, specialite: "Le hasard", imprevisibilite: 100, av: { symbole: "ciseaux", fond: "court", gant: "vert", poignet: "jaune", motif: "eclair" } },
+  { id: "stratege", nom: "Stratège", style: "Le lecteur", desc: "analyse tes habitudes et les contre.", elo: 1300, specialite: "La lecture", imprevisibilite: 80, av: { symbole: "feuille", fond: "ardoise", gant: "rouge", poignet: "noir", motif: "eclair" } },
+  { id: "professeur", nom: "Professeur", style: "Le maître", desc: "lit tes réflexes plus vite que son ombre.", elo: 1400, specialite: "La lecture éclair", imprevisibilite: 90, av: { symbole: "feuille", fond: "or", gant: "blanc", poignet: "noir", motif: "etoile" } },
 ];
 
 export const botParId = id => BOTS.find(b => b.id === id) || null;

@@ -85,3 +85,12 @@ test("le commentateur ne se répète pas et reste rare", () => {
   }
   assert.ok(coms < m.coups.length / 3, `${coms} commentaires pour ${m.coups.length} coups`);
 });
+
+test("le public applaudit 4 points d'affilée, la fin d'un set et du match, pas chaque point", () => {
+  const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = () => 0.99;
+  const pubs = [];
+  const suite = "aaabaaaabbbbaaaaaaa";  // a = point pour moi, b = pour l'adversaire
+  for (const c of suite) pubs.push(annoncerCoup(m, c === "a" ? jouerCoup(m, PIERRE, CISEAUX) : jouerCoup(m, CISEAUX, PIERRE), etat, {}, rng).public);
+  // 3 points puis 1 perdu : rien ; 4 d'affilée ; 4 pour l'adversaire ; la série suivante finit le set 11–5 ; puis 3 points : rien
+  assert.deepEqual(pubs.map((p, i) => p && `${i}:${p}`).filter(Boolean), ["7:serie", "11:serie", "15:set"]);
+});

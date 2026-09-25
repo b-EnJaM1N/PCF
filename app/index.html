@@ -153,18 +153,20 @@
   </div>
 </div>
 
-<div class="inter" id="faceoff" role="dialog" aria-modal="true" aria-label="Présentation du match">
+<div class="inter intro" id="faceoff" role="dialog" aria-modal="true" aria-label="Présentation du match">
   <div class="fo">
+    <div class="fo-banner"><div class="fo-stage" id="foStage"></div><div class="fo-fmt" id="foFmt"></div></div>
     <div class="fo-top">
-      <div class="fo-p left"><div class="fo-av" id="foAvMe"></div><div class="fo-name" id="foNameMe"></div><div class="fo-sub" id="foSubMe"></div></div>
-      <div class="fo-vs">VS</div>
-      <div class="fo-p right"><div class="fo-av" id="foAvBot"></div><div class="fo-name" id="foNameBot"></div><div class="fo-sub" id="foSubBot"></div></div>
+      <div class="fo-p left"><div class="fo-av" id="foAvMe"></div><div class="fo-name" id="foNameMe"></div><div class="fo-sub" id="foSubMe"></div><div class="fo-rec" id="foRecMe"></div></div>
+      <div class="fo-vs" aria-hidden="true">VS</div>
+      <div class="fo-p right"><div class="fo-av" id="foAvBot"></div><div class="fo-name" id="foNameBot"></div><div class="fo-sub" id="foSubBot"></div><div class="fo-rec" id="foRecBot"></div></div>
     </div>
     <div class="fo-rows" id="foRows"></div>
     <p class="fo-key" id="foKey"></p>
-    <div class="fo-fmt" id="foFmt"></div>
-    <button class="btn" id="foGo">Commencer</button>
-    <button class="btn alt" id="foBack">Retour</button>
+    <div class="fo-end">
+      <button class="btn" id="foGo">Commencer</button>
+      <button class="btn alt" id="foBack">Retour</button>
+    </div>
   </div>
 </div>
 

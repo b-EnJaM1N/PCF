@@ -19,6 +19,7 @@ const FICHIERS = [
   "js/tournoi.js",
   "js/avatar.js",
   "js/ambiance.js",
+  "js/presentation.js",
   "js/sons.js",
   "js/stockage.js",
   "js/version.js",

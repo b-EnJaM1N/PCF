@@ -66,15 +66,16 @@ export function annoncerCoup(match, evt, etat, { recents = [] } = {}, rng = Math
       etat.ecartMin = Math.min(etat.ecartMin, a - b);
       if (evt.balleAvant && evt.balleAvant.joueur !== g && peutCommenter(2)) {
         com = evt.balleAvant.joueur === 0 ? "craquage" : "balle_sauvee";
-        pub = "clameur";
       } else if (a === b && a >= 4 && etat.ecartMin <= -4 && peutCommenter(4)) {
-        com = "remontee"; etat.ecartMin = 0; pub = "clameur";
+        com = "remontee"; etat.ecartMin = 0;
       } else if (etat.serie.n === 4 && peutCommenter(4) && rng() < 0.7) {
-        com = `serie_${cote}`; if (g === 0) pub = "clameur";
+        com = `serie_${cote}`;
       } else if (g === 1 && recents.length >= 8 && recents.filter(Boolean).length >= 6 && peutCommenter(6) && rng() < 0.5) {
         com = "lisible";
       }
     }
+    // Le public applaudit une série de 4 points d'affilée (puis 8, 12…), mais se tait avant une balle de match.
+    if (!evt.finSet && etat.serie.n % 4 === 0 && !(evt.balleApres && evt.balleApres.type === "match")) pub = "serie";
     if (evt.finSet) { etat.ecartMin = 0; etat.ballesSubies = [false, false]; }
   }
 
