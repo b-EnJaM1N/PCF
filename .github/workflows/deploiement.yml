@@ -1,0 +1,70 @@
+# À chaque envoi de code : on lance les tests, puis, s'ils passent, on met en ligne.
+#   branche main           → https://<compte>.github.io/PCF/          (version validée)
+#   autres branches        → https://<compte>.github.io/PCF/preview/  (version à tester)
+name: Tests et mise en ligne
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mise-en-ligne
+  cancel-in-progress: false
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+
+  mise-en-ligne:
+    needs: tests
+    if: github.event_name != 'pull_request' && github.ref != 'refs/heads/gh-pages'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Préparer le site
+        run: |
+          node outils/liste-audio.js
+          VERSION="$(git rev-parse --short HEAD) du $(date -u +%d/%m/%Y)"
+          if [ "$GITHUB_REF_NAME" != "main" ]; then VERSION="$VERSION (test)"; fi
+          sed -i "s|export const VERSION = \"dev\";|export const VERSION = \"$VERSION\";|" app/js/version.js
+          if [ "$GITHUB_REF_NAME" != "main" ]; then
+            sed -i 's|"name": "PCF — Pierre-Ciseaux-Feuille"|"name": "PCF (test)"|; s|"short_name": "PCF"|"short_name": "PCF test"|' app/manifest.webmanifest
+          fi
+
+      - name: Publier sur la branche gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git fetch origin gh-pages; then
+            git worktree add site origin/gh-pages
+          else
+            git worktree add --detach site
+            (cd site && git checkout --orphan gh-pages-new && git rm -rfq .)
+          fi
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            find site -mindepth 1 -maxdepth 1 ! -name preview ! -name .git -exec rm -rf {} +
+            cp -r app/. site/
+          else
+            rm -rf site/preview && mkdir -p site/preview
+            cp -r app/. site/preview/
+          fi
+          touch site/.nojekyll
+          cd site
+          git add -A
+          if git diff --cached --quiet; then echo "Rien de nouveau à publier"; exit 0; fi
+          git commit -qm "Mise en ligne de $GITHUB_REF_NAME ($(git -C .. rev-parse --short HEAD))"
+          git push origin HEAD:gh-pages
