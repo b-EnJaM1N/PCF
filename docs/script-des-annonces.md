@@ -5,8 +5,8 @@ Ce fichier est généré automatiquement à partir de `app/js/voix/script.js`
 
 **Pour enregistrer une réplique** : crée un fichier MP3 portant exactement le
 nom indiqué, et dépose-le dans `app/audio/`. Exemple :
-`commentateur_craquage_02.mp3`. Tant qu'un fichier manque, la réplique est lue
-par la voix de synthèse du téléphone.
+`commentateur_craquage_02.mp3`. Tant qu'un fichier manque, la réplique est
+seulement affichée par écrit (voix de synthèse activable dans les Options).
 
 Nom d'un fichier = qui parle _ situation _ numéro de version.
 L'arbitre ne prononce jamais de pseudo : il nomme les joueurs par leur côté
