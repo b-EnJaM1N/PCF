@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PCF — Match contre les bots</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --court:#173F73; --court-deep:#0F2C52; --line:#F5F7FA; --me:#F4C542; --bot:#E8574A;
+  --muted:#9DB4D3; --panel:rgba(255,255,255,.06);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --court:#12345F; --court-deep:#0A2140; } }
+:root[data-theme="dark"]{ --court:#12345F; --court-deep:#0A2140; }
+html{ scroll-padding-top:env(safe-area-inset-top,0px); height:100%; }
+*,*::before,*::after{ box-sizing:inherit; }
+body{ margin:0; min-height:100%; background:var(--court); color:var(--line);
+  font-family:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif; -webkit-tap-highlight-color:transparent; }
+.wrap{ max-width:460px; margin:0 auto; padding:16px 16px 28px; display:flex; flex-direction:column; gap:16px; }
+header{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+h1{ font-family:"Barlow Condensed",sans-serif; font-weight:800; font-size:1.6rem; margin:0; }
+.rule{ color:var(--muted); font-size:.85rem; }
+.sound{ display:flex; align-items:center; gap:8px; font-size:.9rem; cursor:pointer; user-select:none; }
+.test{ font:inherit; font-size:.85rem; color:var(--muted); background:none; border:1px solid rgba(255,255,255,.25); border-radius:8px; padding:6px 10px; cursor:pointer; }
+.test:focus-visible{ outline:3px solid var(--me); outline-offset:2px; }
+.sndnote{ margin:0; font-size:.88rem; line-height:1.4; color:var(--line); background:var(--panel); border-radius:8px; padding:10px 12px; }
+.sound input{ width:20px; height:20px; accent-color:var(--me); margin:0; cursor:pointer; }
+
+.board{ display:grid; grid-template-columns:1fr 1fr; border:2px solid var(--line); border-radius:6px; padding:10px 8px 12px; position:relative; background:var(--court-deep); }
+.board::after{ content:""; position:absolute; top:0; bottom:0; left:50%; border-left:2px solid var(--line); opacity:.25; }
+.side{ text-align:center; position:relative; z-index:1; }
+.name{ font-size:.9rem; color:var(--muted); }
+.score{ font-family:"Barlow Condensed",sans-serif; font-weight:800; font-size:clamp(4.2rem,22vw,6.5rem); line-height:.95; }
+.side.me .score{ color:var(--me); } .side.bot .score{ color:var(--bot); }
+.sets{ display:flex; justify-content:center; gap:5px; margin-top:4px; }
+.sets i{ width:12px; height:12px; border-radius:50%; border:2px solid currentColor; opacity:.5; }
+.sets i.on{ background:currentColor; opacity:1; }
+.side.me .sets{ color:var(--me); } .side.bot .sets{ color:var(--bot); }
+.status{ grid-column:1 / -1; text-align:center; font-size:.9rem; color:var(--muted); min-height:1.3em; margin-top:6px; position:relative; z-index:1; }
+.status.hot{ color:var(--line); font-weight:600; }
+.done-sets{ grid-column:1 / -1; text-align:center; font-size:.85rem; color:var(--muted); position:relative; z-index:1; min-height:1.2em; }
+.score.bump{ animation:bump .35s ease-out; }
+@keyframes bump{ 0%{transform:scale(1.25)} 100%{transform:scale(1)} }
+
+/* Announcement band: referee + commentator */
+.band{ min-height:3.6em; padding:10px 14px; border-left:4px solid var(--line); background:var(--panel); border-radius:0 8px 8px 0; transition:opacity .6s; }
+.band.stale{ opacity:.45; }
+.band .ref{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:1.35rem; line-height:1.2; }
+.band .com{ font-style:italic; color:var(--muted); line-height:1.35; margin-top:2px; }
+.band .com::before{ content:"🎙️ "; font-style:normal; }
+.band .idle{ color:var(--muted); font-size:.9rem; }
+
+.arena{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; min-height:96px; }
+.hand{ font-size:3.4rem; text-align:center; transition:transform .2s; }
+.hand.win{ transform:scale(1.18); } .hand.lose{ opacity:.4; }
+.vs{ font-family:"Barlow Condensed",sans-serif; font-weight:700; color:var(--muted); }
+.verdict{ text-align:center; font-weight:600; min-height:1.4em; }
+
+.timer{ height:6px; background:var(--panel); border-radius:3px; overflow:hidden; }
+.timer > div{ height:100%; width:100%; background:var(--line); transform-origin:left; }
+.moves{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.moves button{ font:inherit; color:var(--line); background:var(--panel); border:2px solid rgba(255,255,255,.18);
+  border-radius:14px; padding:14px 4px 10px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.moves button .e{ font-size:2.4rem; line-height:1; }
+.moves button .l{ font-size:.85rem; color:var(--muted); }
+.moves button:hover:not(:disabled){ border-color:var(--me); }
+.moves button:disabled{ opacity:.45; cursor:default; }
+.moves button:focus-visible, .btn:focus-visible, .sound input:focus-visible{ outline:3px solid var(--me); outline-offset:2px; }
+
+h2{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:1.15rem; margin:0 0 8px; }
+.tape{ overflow-x:auto; padding-bottom:6px; }
+.tape table{ border-collapse:collapse; }
+.tape th{ text-align:left; font-weight:500; font-size:.8rem; color:var(--muted); padding-right:8px; white-space:nowrap; }
+.tape td{ width:34px; min-width:34px; height:34px; text-align:center; font-size:1.2rem; border-left:1px solid rgba(255,255,255,.08); }
+.tape td.newset{ border-left:3px solid var(--line); }
+.tape td.w-me{ background:rgba(244,197,66,.18); } .tape td.w-bot{ background:rgba(232,87,74,.18); }
+.tape td.auto{ outline:1px dashed var(--muted); outline-offset:-4px; }
+.empty{ color:var(--muted); font-size:.9rem; margin:0; }
+.readout{ font-size:.92rem; color:var(--muted); line-height:1.45; margin:0; }
+.readout b{ color:var(--line); font-weight:600; }
+
+.end{ border:2px solid var(--line); border-radius:6px; padding:16px; background:var(--court-deep); display:none; }
+.end.show{ display:block; }
+.end p{ margin:6px 0; line-height:1.45; }
+.bars{ display:grid; gap:6px; margin:10px 0 14px; }
+.bar{ display:grid; grid-template-columns:5.5rem 1fr 2.6rem; align-items:center; gap:8px; font-size:.9rem; }
+.bar .t{ height:10px; background:var(--panel); border-radius:5px; overflow:hidden; }
+.bar .t div{ height:100%; background:var(--me); }
+.btn{ font:inherit; font-weight:600; background:var(--line); color:var(--court-deep); border:0; border-radius:10px; padding:12px 18px; cursor:pointer; width:100%; font-size:1rem; }
+.record{ text-align:center; color:var(--muted); font-size:.85rem; margin:0; }
+.tabs{ display:flex; gap:8px; }
+.tabs button{ flex:1; font:inherit; font-weight:600; color:var(--muted); background:transparent; border:2px solid rgba(255,255,255,.18); border-radius:10px; padding:9px; cursor:pointer; }
+.tabs button[aria-pressed=true]{ color:var(--court-deep); background:var(--line); border-color:var(--line); }
+.tabs button:focus-visible{ outline:3px solid var(--me); outline-offset:2px; }
+.view{ display:flex; flex-direction:column; gap:16px; }
+.view[hidden]{ display:none; }
+.name{ display:flex; align-items:center; justify-content:center; gap:6px; }
+.mini{ width:22px; height:22px; display:inline-flex; }
+.mini svg{ width:100%; height:100%; }
+.news{ color:var(--me); font-weight:600; }
+.news:empty{ display:none; }
+
+/* Profile */
+.card{ border:2px solid var(--line); border-radius:6px; padding:16px; background:var(--court-deep); }
+.id{ display:grid; grid-template-columns:96px 1fr; gap:14px; align-items:center; }
+.id .av svg{ width:96px; height:96px; display:block; }
+.id .pseudo{ font-family:"Barlow Condensed",sans-serif; font-weight:800; font-size:1.9rem; line-height:1; word-break:break-word; }
+.id .title{ color:var(--me); font-weight:600; margin-top:4px; }
+.id .elo{ color:var(--muted); font-size:.92rem; margin-top:4px; }
+.kpis{ display:grid; grid-template-columns:repeat(3,1fr); margin-top:16px; border-top:1px solid rgba(255,255,255,.15); padding-top:12px; text-align:center; }
+.kpis b{ display:block; font-family:"Barlow Condensed",sans-serif; font-weight:800; font-size:2rem; line-height:1; }
+.kpis span{ font-size:.82rem; color:var(--muted); }
+.card h2{ margin-bottom:10px; }
+.lines{ display:grid; gap:8px; }
+.ln{ display:flex; justify-content:space-between; gap:12px; font-size:.95rem; border-bottom:1px solid rgba(255,255,255,.08); padding-bottom:7px; }
+.ln:last-child{ border-bottom:0; padding-bottom:0; }
+.ln span:first-child{ color:var(--muted); }
+.ln span:last-child{ font-weight:600; text-align:right; }
+.gauge{ height:12px; background:var(--panel); border-radius:6px; overflow:hidden; margin:8px 0 6px; }
+.gauge div{ height:100%; background:linear-gradient(90deg,var(--bot),var(--me)); }
+.big{ font-family:"Barlow Condensed",sans-serif; font-weight:800; font-size:2.2rem; line-height:1; }
+.hint{ font-size:.85rem; color:var(--muted); line-height:1.4; margin:4px 0 0; }
+.badges{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.badge{ padding:10px; border-radius:10px; background:var(--panel); border:1px solid rgba(255,255,255,.1); }
+.badge .bn{ font-weight:600; }
+.badge .bd{ font-size:.8rem; color:var(--muted); line-height:1.3; margin-top:2px; }
+.badge.off{ opacity:.45; }
+.badge.on{ border-color:var(--me); }
+.badge .bu{ font-size:.75rem; color:var(--me); margin-top:4px; }
+.spark svg{ width:100%; height:90px; display:block; }
+.hist-list .ln span:first-child{ color:var(--line); font-weight:400; }
+.edit label.lbl{ display:block; font-size:.88rem; color:var(--muted); margin:12px 0 6px; }
+.edit input[type=text], .edit select{ width:100%; font:inherit; font-size:1rem; padding:10px 12px; border-radius:10px; border:2px solid rgba(255,255,255,.2); background:var(--panel); color:var(--line); }
+.edit select option{ color:#000; }
+.sw{ display:flex; flex-wrap:wrap; gap:10px; }
+.sw button{ width:38px; height:38px; border-radius:50%; border:3px solid transparent; cursor:pointer; position:relative; padding:0; font-size:.8rem; }
+.sw button[aria-pressed=true]{ border-color:var(--line); box-shadow:0 0 0 2px var(--court-deep) inset; }
+.sw button.locked{ opacity:.4; }
+.sw button.locked::after{ content:"🔒"; position:absolute; right:-6px; bottom:-6px; font-size:.75rem; }
+.sw button.txt{ width:auto; border-radius:10px; padding:0 12px; background:var(--panel); color:var(--line); border-color:rgba(255,255,255,.2); }
+.sw button.txt[aria-pressed=true]{ border-color:var(--me); }
+.sw button:focus-visible{ outline:3px solid var(--me); outline-offset:2px; }
+.locknote{ font-size:.85rem; color:var(--me); min-height:1.2em; margin:8px 0 0; }
+.linkbtn{ font:inherit; font-size:.85rem; color:var(--muted); background:none; border:0; text-decoration:underline; cursor:pointer; padding:0; }
+/* gesture animation */
+.hand.shake{ animation:shake .52s ease-in-out; }
+.hand.shake.r{ animation-name:shakeR; }
+@keyframes shake{ 0%,50%,100%{ transform:translateY(0) rotate(0) } 25%,75%{ transform:translateY(-20px) rotate(-12deg) } }
+@keyframes shakeR{ 0%,50%,100%{ transform:translateY(0) scaleX(-1) rotate(0) } 25%,75%{ transform:translateY(-20px) scaleX(-1) rotate(-12deg) } }
+.hand.fist-r{ transform:scaleX(-1); }
+.hand.reveal{ animation:slam .3s cubic-bezier(.2,1.7,.45,1); }
+@keyframes slam{ 0%{ transform:scale(.35); opacity:0 } 100%{ transform:scale(1); opacity:1 } }
+
+/* face-off screen */
+.fo{ width:100%; max-width:420px; border:2px solid var(--line); border-radius:6px; background:var(--court-deep); padding:20px 16px 18px; overflow:hidden; }
+.fo-top{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:6px; }
+.fo-p{ text-align:center; }
+.fo-av svg{ width:min(96px,24vw); height:min(96px,24vw); display:block; margin:0 auto 8px; }
+.fo-name{ font-family:"Barlow Condensed",sans-serif; font-weight:800; font-size:1.55rem; line-height:1.05; word-break:break-word; }
+.fo-p.left .fo-name{ color:var(--me); } .fo-p.right .fo-name{ color:var(--bot); }
+.fo-sub{ font-size:.82rem; color:var(--muted); margin-top:3px; }
+.fo-vs{ font-family:"Barlow Condensed",sans-serif; font-weight:800; font-size:2.2rem; color:var(--line); }
+.fo-rows{ margin-top:16px; border-top:1px solid rgba(255,255,255,.15); }
+.fo-row{ display:grid; grid-template-columns:1fr 1.3fr 1fr; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,.08); }
+.fo-row span{ text-align:center; }
+.fo-row span:first-child{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:1.3rem; color:var(--me); }
+.fo-row span:last-child{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:1.3rem; color:var(--bot); }
+.fo-row span:nth-child(2){ font-size:.82rem; color:var(--muted); }
+.fo-key{ font-size:.88rem; color:var(--line); text-align:center; line-height:1.4; margin:14px 0 4px; }
+.fo-fmt{ font-size:.82rem; color:var(--muted); text-align:center; margin-bottom:14px; }
+.inter.show .fo-p.left{ animation:inL .55s cubic-bezier(.2,.9,.3,1) both; }
+.inter.show .fo-p.right{ animation:inR .55s cubic-bezier(.2,.9,.3,1) both; }
+.inter.show .fo-vs{ animation:vs .4s .45s cubic-bezier(.2,1.7,.45,1) both; }
+.inter.show .fo-rows, .inter.show .fo-key, .inter.show .fo-fmt, .inter.show #foGo{ animation:fade .45s .75s both; }
+@keyframes inL{ from{ transform:translateX(-60px); opacity:0 } to{ transform:none; opacity:1 } }
+@keyframes inR{ from{ transform:translateX(60px); opacity:0 } to{ transform:none; opacity:1 } }
+@keyframes vs{ from{ transform:scale(2.4); opacity:0 } to{ transform:scale(1); opacity:1 } }
+@keyframes fade{ from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:none } }
+@media (prefers-reduced-motion: reduce){ .hand.shake, .hand.reveal, .inter.show .fo-p, .inter.show .fo-vs, .inter.show .fo-rows, .inter.show .fo-key, .inter.show .fo-fmt, .inter.show #foGo{ animation:none; } }
+.fmt-lbl{ display:block; font-size:.88rem; color:var(--muted); margin:0 0 6px; }
+.seg{ display:flex; gap:8px; margin-bottom:14px; }
+.seg button{ flex:1; font:inherit; font-weight:600; padding:11px 6px; border-radius:10px; border:2px solid rgba(255,255,255,.2); background:var(--panel); color:var(--line); cursor:pointer; }
+.seg button[aria-pressed=true]{ border-color:var(--me); color:var(--me); background:rgba(244,197,66,.12); }
+.seg button:focus-visible{ outline:3px solid var(--me); outline-offset:2px; }
+.opps{ display:grid; grid-template-columns:repeat(auto-fill,minmax(92px,1fr)); gap:8px; margin-bottom:8px; }
+.opp{ font:inherit; color:var(--line); background:var(--panel); border:2px solid rgba(255,255,255,.15); border-radius:12px; padding:8px 4px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:2px; }
+.opp[aria-pressed=true]{ border-color:var(--me); background:rgba(244,197,66,.1); }
+.opp:focus-visible{ outline:3px solid var(--me); outline-offset:2px; }
+.opp .oa svg{ width:40px; height:40px; display:block; }
+.opp .on{ font-weight:600; font-size:.88rem; }
+.opp .ol{ font-size:.75rem; color:var(--muted); }
+.rnd{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:1rem; color:var(--muted); margin:14px 0 6px; text-transform:uppercase; letter-spacing:.04em; }
+.rnd:first-child{ margin-top:0; }
+.bm{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:6px; padding:7px 8px; border-radius:10px; background:var(--panel); margin-bottom:6px; }
+.bm.mine{ outline:2px solid var(--me); }
+.bp{ display:flex; align-items:center; gap:6px; min-width:0; font-size:.9rem; }
+.bp.r{ justify-content:flex-end; }
+.bp .bn{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bp.win .bn{ font-weight:700; }
+.bp.lose{ opacity:.45; }
+.bp .mini{ width:24px; height:24px; flex:none; }
+.bs{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:1.05rem; color:var(--muted); min-width:2.6rem; text-align:center; }
+.tmsg{ font-weight:600; margin:14px 0 12px; line-height:1.4; }
+.inter{ position:fixed; top:0; right:0; bottom:0; left:0; display:none; align-items:center; justify-content:center; z-index:10;
+  background:rgba(8,24,46,.84); padding:calc(env(safe-area-inset-top,0px) + 20px) 20px calc(env(safe-area-inset-bottom,0px) + 20px); }
+.inter.show{ display:flex; }
+.panel{ width:100%; max-width:380px; border:2px solid var(--line); border-radius:6px; background:var(--court-deep); padding:26px 20px 20px; text-align:center; animation:pop .35s ease-out; }
+@keyframes pop{ 0%{ transform:scale(.92); opacity:0 } 100%{ transform:scale(1); opacity:1 } }
+.panel .kick{ color:var(--muted); font-size:.95rem; }
+.panel .big{ font-family:"Barlow Condensed",sans-serif; font-weight:800; font-size:clamp(2.6rem,13vw,3.4rem); line-height:1; margin:6px 0 4px; }
+.panel .big.me{ color:var(--me); } .panel .big.bot{ color:var(--bot); }
+.panel .sc{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:1.8rem; }
+.panel .tally{ color:var(--muted); font-size:.95rem; margin-top:4px; }
+.panel .com{ font-style:italic; color:var(--muted); margin:12px 0 0; line-height:1.4; }
+.panel .com:empty{ display:none; }
+.panel .next{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:1.4rem; margin:20px 0 14px; padding-top:16px; border-top:1px solid rgba(255,255,255,.18); }
+.panel .next:empty{ display:none; }
+@media (prefers-reduced-motion: reduce){ .score.bump, .panel{ animation:none; } .hand, .band{ transition:none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>PCF</h1><div class="rule" id="ruleTxt">Sets de 11, 2 sets gagnants</div></div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="test" id="testSnd">Tester le son</button>
+      <label class="sound"><input type="checkbox" id="snd" checked> Son</label>
+    </div>
+  </header>
+  <p class="sndnote" id="sndNote" hidden></p>
+  <nav class="tabs"><button data-v="match" aria-pressed="true">Match</button><button data-v="profile" aria-pressed="false">Ma fiche</button><button data-v="options" aria-pressed="false">Options</button></nav>
+
+  <div class="view" id="viewMatch">
+
+  <section class="card startcard" id="startCard">
+    <h2>Prêt pour un match ?</h2>
+    <div class="seg" id="segMode"><button data-v="amical" aria-pressed="true">Match amical</button><button data-v="tournoi" aria-pressed="false">Tournoi</button></div>
+    <div id="amicalBox">
+      <span class="fmt-lbl">Adversaire</span>
+      <div class="opps" id="opps"></div>
+      <p class="hint" id="oppDesc" style="margin:0 0 14px"></p>
+      <span class="fmt-lbl">Format du match</span>
+      <div class="seg" id="segWin"><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
+      <p class="hint" style="margin-bottom:14px" id="fmtHint"></p>
+      <button class="btn" id="startBtn">Commencer un match</button>
+    </div>
+    <div id="tourBox" hidden>
+      <p class="hint" style="margin-bottom:14px">Le PCF Open : toi et les 7 bots, en élimination directe. Quarts et demi-finales en 2 sets gagnants, finale en 3 sets gagnants, comme un Grand Chelem. Les têtes de série sont placées selon leur niveau.</p>
+      <button class="btn" id="tourBtn">Lancer le tournoi</button>
+    </div>
+  </section>
+
+  <section class="card" id="tourCard" hidden>
+    <h2>🏆 PCF Open</h2>
+    <div id="bracket"></div>
+    <p class="tmsg" id="tMsg"></p>
+    <button class="btn" id="tPlay"></button>
+    <p style="text-align:center;margin:12px 0 0"><button class="linkbtn" id="tQuit">Abandonner le tournoi</button></p>
+  </section>
+
+  <section class="board">
+    <div class="side me"><div class="name"><span class="mini" id="miniAv"></span><span id="pseudoMe">Toi</span></div><div class="score" id="sMe">0</div><div class="sets" id="setsMe"></div></div>
+    <div class="side bot"><div class="name"><span class="mini" id="miniBot"></span><span id="botName">Le bot</span></div><div class="score" id="sBot">0</div><div class="sets" id="setsBot"></div></div>
+    <div class="status" id="status">Choisis ton premier coup</div>
+    <div class="done-sets" id="doneSets"></div>
+  </section>
+
+  <div class="band" id="band" aria-live="polite"><div class="idle">Les annonces de l'arbitre et du commentateur s'afficheront ici.</div></div>
+
+  <div>
+    <div class="arena"><div class="hand" id="hMe">❔</div><div class="vs">contre</div><div class="hand" id="hBot">❔</div></div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+  <div class="timer" aria-hidden="true"><div id="bar"></div></div>
+  <div class="moves" id="moves">
+    <button data-m="0"><span class="e">🪨</span><span class="l">Pierre</span></button>
+    <button data-m="2"><span class="e">📄</span><span class="l">Feuille</span></button>
+    <button data-m="1"><span class="e">✂️</span><span class="l">Ciseaux</span></button>
+  </div>
+
+  <section class="end" id="end">
+    <h2 id="endTitle"></h2>
+    <p id="endLine"></p>
+    <div class="bars" id="bars"></div>
+    <p class="readout" id="endRead"></p>
+    <p class="news" id="news"></p>
+    <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button></p>
+  </section>
+
+  <section>
+    <h2>Historique</h2>
+    <div class="tape" id="tape"><p class="empty">Les coups apparaîtront ici. Observe-les : ton adversaire le fait.</p></div>
+  </section>
+  <p class="readout" id="read">L'analyse de ton jeu démarre au premier coup.</p>
+  <p class="record" id="record"></p>
+  </div>
+
+  <div class="view" id="viewOptions" hidden>
+    <section class="card">
+      <h2>Points par set</h2>
+      <div class="seg" id="segLen"><button data-v="11">11 points (officiel)</button><button data-v="7">7 points</button></div>
+      <p class="hint">Le format officiel du PCF est le set de 11 points, avec 2 points d'écart. Le set de 7 points donne des matchs plus courts, mais laisse moins de place aux remontées.</p>
+    </section>
+  </div>
+
+  <div class="view" id="viewProfile" hidden>
+    <section class="card">
+      <div class="id"><div class="av" id="pAv"></div>
+        <div><div class="pseudo" id="pName"></div><div class="title" id="pTitle"></div><div class="elo" id="pElo"></div></div>
+      </div>
+      <div class="kpis">
+        <div><b id="kM">0</b><span>matchs</span></div>
+        <div><b id="kW">–</b><span>victoires</span></div>
+        <div><b id="kS">0</b><span>série en cours</span></div>
+      </div>
+      <p class="hint" id="pEmpty"></p>
+    </section>
+
+    <section class="card edit">
+      <h2>Mon avatar</h2>
+      <label class="lbl" for="inPseudo">Pseudo</label>
+      <input type="text" id="inPseudo" maxlength="16" placeholder="Ex. Benji-Pierre" autocomplete="nickname">
+      <label class="lbl" for="inFlag">Pays</label>
+      <select id="inFlag"></select>
+      <label class="lbl">Fond</label><div class="sw" id="swBg"></div>
+      <label class="lbl">Gant</label><div class="sw" id="swGlove"></div>
+      <label class="lbl">Poignet</label><div class="sw" id="swWrist"></div>
+      <label class="lbl">Motif</label><div class="sw" id="swMotif"></div>
+      <p class="locknote" id="lockNote"></p>
+    </section>
+
+    <section class="card" id="cGame"><h2>Mon jeu</h2><div id="gameBody"></div></section>
+    <section class="card" id="cMental"><h2>Mon mental</h2><div class="lines" id="mentalBody"></div></section>
+    <section class="card" id="cRecords"><h2>Mes records</h2><div class="lines" id="recBody"></div></section>
+    <section class="card" id="cElo"><h2>Évolution du niveau</h2><div class="spark" id="spark"></div><p class="hint">Niveau PCF calculé comme un ELO, sur tes matchs contre les bots.</p></section>
+    <section class="card"><h2>Palmarès</h2><div class="badges" id="badges"></div></section>
+    <section class="card" id="cLast"><h2>Derniers matchs</h2><div class="lines hist-list" id="lastBody"></div></section>
+    <p style="text-align:center;margin:0"><button class="linkbtn" id="resetProfile">Remettre ma fiche à zéro</button></p>
+  </div>
+</div>
+
+<div class="inter" id="faceoff" role="dialog" aria-modal="true" aria-label="Présentation du match">
+  <div class="fo">
+    <div class="fo-top">
+      <div class="fo-p left"><div class="fo-av" id="foAvMe"></div><div class="fo-name" id="foNameMe"></div><div class="fo-sub" id="foSubMe"></div></div>
+      <div class="fo-vs">VS</div>
+      <div class="fo-p right"><div class="fo-av" id="foAvBot"></div><div class="fo-name" id="foNameBot"></div><div class="fo-sub" id="foSubBot"></div></div>
+    </div>
+    <div class="fo-rows" id="foRows"></div>
+    <p class="fo-key" id="foKey"></p>
+    <div class="fo-fmt" id="foFmt"></div>
+    <button class="btn" id="foGo">Commencer</button>
+  </div>
+</div>
+
+<div class="inter" id="inter" role="dialog" aria-modal="true" aria-labelledby="iBig">
+  <div class="panel">
+    <div class="kick" id="iKick"></div>
+    <div class="big" id="iBig"></div>
+    <div class="sc" id="iSc"></div>
+    <div class="tally" id="iTally"></div>
+    <p class="com" id="iCom"></p>
+    <div class="next" id="iNext"></div>
+    <button class="btn" id="iGo"></button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const EMO=["🪨","✂️","📄"], NAME=["Pierre","Ciseaux","Feuille"];
+  const beats=(a,b)=>(a+1)%3===b, counter=m=>(m+2)%3;
+  let LEN=11, WIN=2, userWIN=2; const TURN_MS=5000;
+  try{ const f=JSON.parse(localStorage.getItem("pcf-format2")); if(f){ if([7,11].includes(f.len)) LEN=f.len; if([2,3].includes(f.win)) WIN=userWIN=f.win; } }catch(e){}
+  const fmtText=()=>`Sets de ${LEN} points, ${WIN} sets gagnants`;
+  const NUM=["zéro","un","deux","trois","quatre","cinq","six","sept","huit","neuf","dix","onze","douze","treize","quatorze","quinze","seize","dix-sept","dix-huit","dix-neuf","vingt"];
+  const num=n=>NUM[n]||String(n);
+  const WHO={me:"toi", get bot(){ return OPP.name; }};
+  const ORD=["Premier","Deuxième","Troisième","Quatrième","Cinquième"];
+  let interGo=null;
+  function showInter({kick="",big="",bigCls="",sc="",tally="",com="",next="",go,onGo,speakOnGo}){
+    $("iKick").textContent=kick; $("iBig").textContent=big; $("iBig").className="big "+bigCls;
+    $("iSc").textContent=sc; $("iTally").textContent=tally; $("iCom").textContent=com; $("iNext").textContent=next;
+    $("iGo").textContent=go;
+    interGo=()=>{ $("inter").classList.remove("show"); interGo=null; if(speakOnGo) say([{kind:"ref",text:speakOnGo}]); onGo&&onGo(); };
+    $("inter").classList.add("show"); $("iGo").focus();
+  }
+  const $=id=>document.getElementById(id);
+  let S;
+
+  // ---------------- sound
+  const synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
+  let voice=null, soundOn=true;
+  try{ const v=localStorage.getItem("pcf-sound"); if(v==="0") soundOn=false; }catch(e){}
+  $("snd").checked=soundOn;
+  function pickVoice(){
+    if(!synth) return;
+    const vs=synth.getVoices().filter(v=>/^fr/i.test(v.lang));
+    voice = vs.find(v=>/fr-FR/i.test(v.lang) && /(Thomas|Google|Daniel|Amélie|Audrey|Premium|Enhanced)/i.test(v.name)) || vs.find(v=>/fr-FR/i.test(v.lang)) || vs[0] || null;
+  }
+  if(synth){ pickVoice(); synth.onvoiceschanged=pickVoice; }
+  $("snd").addEventListener("change",e=>{
+    soundOn=e.target.checked;
+    try{ localStorage.setItem("pcf-sound", soundOn?"1":"0"); }catch(err){}
+    if(!soundOn && synth) synth.cancel();
+    if(soundOn) initAudio();
+    if(master) master.gain.setTargetAtTime(soundOn?1:0, ctx.currentTime, .05);
+  });
+  function say(lines,onStart){
+    if(!soundOn || !synth || !lines.length) return;
+    try{ if(synth.speaking || synth.pending) synth.cancel(); synth.resume(); }catch(e){}
+    if(!voice) pickVoice();
+    lines.forEach((l,i)=>{
+      const u=new SpeechSynthesisUtterance(l.text.replace(/[–-]/g," à "));
+      u.lang="fr-FR"; if(voice) u.voice=voice;
+      if(l.kind==="ref"){ u.rate=.88; u.pitch=.8; } else { u.rate=1.08; u.pitch=1.05; }
+      if(i===0 && onStart) u.onstart=onStart;
+      synth.speak(u);
+    });
+  }
+  function note(t){ const n=$("sndNote"); n.textContent=t; n.hidden=!t; }
+  $("testSnd").addEventListener("click",()=>{
+    initAudio(); if(ctx){ tock(); crowd("clameur",.35); }
+    if(!synth){ note("La voix de synthèse n'est pas disponible dans cette vue. Les annonces restent affichées par écrit. Essaie d'ouvrir la page dans le navigateur de ton téléphone (Safari ou Chrome)."); return; }
+    if(!soundOn){ soundOn=true; $("snd").checked=true; try{ localStorage.setItem("pcf-sound","1"); }catch(e){} }
+    let started=false;
+    note("Test en cours…");
+    say([{kind:"ref", text:"Balle de match."}], ()=>{ started=true; note("Le son fonctionne. Si tu n'entends rien, vérifie le volume, le mode silencieux et tes écouteurs Bluetooth."); setTimeout(()=>note(""),6000); });
+    setTimeout(()=>{ if(!started) note(`Aucune voix n'a démarré (${synth.getVoices().length} voix trouvées sur l'appareil). L'application Claude bloque peut-être la voix : ouvre la page dans le navigateur de ton téléphone (Safari ou Chrome), vérifie que le mode silencieux est désactivé, puis réessaie.`); },2500);
+  });
+
+  // ---------------- court ambiance (synthesised with Web Audio, no files)
+  const AC = window.AudioContext || window.webkitAudioContext;
+  let ctx=null, master=null, murmurGain=null, buf={};
+  const MURMUR=0.05;
+  function initAudio(){
+    if(ctx || !AC) { if(ctx && ctx.state==="suspended") ctx.resume(); return; }
+    try{ ctx=new AC(); }catch(e){ ctx=null; return; }
+    master=ctx.createGain(); master.gain.value=soundOn?1:0; master.connect(ctx.destination);
+    const sr=ctx.sampleRate;
+    // pink noise loop for the crowd murmur
+    const len=sr*6, nb=ctx.createBuffer(1,len,sr), d=nb.getChannelData(0);
+    let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+    for(let i=0;i<len;i++){ const w=Math.random()*2-1;
+      b0=.99886*b0+w*.0555179; b1=.99332*b1+w*.0750759; b2=.969*b2+w*.153852; b3=.8665*b3+w*.3104856; b4=.55*b4+w*.5329522; b5=-.7616*b5-w*.016898;
+      d[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*.11; b6=w*.115926; }
+    for(let i=0;i<2000;i++){ const k=i/2000; d[i]=d[i]*k+d[len-2000+i]*(1-k); } // smooth loop seam
+    murmurGain=ctx.createGain(); murmurGain.gain.value=0; murmurGain.connect(master);
+    [[350,1.2],[700,1.5],[1400,2]].forEach(([f,q],i)=>{
+      const src=ctx.createBufferSource(); src.buffer=nb; src.loop=true; src.loopStart=0; src.loopEnd=6;
+      const bp=ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=f; bp.Q.value=q;
+      const g=ctx.createGain(); g.gain.value=[1,.7,.35][i];
+      const lfo=ctx.createOscillator(), lg=ctx.createGain(); lfo.frequency.value=.13+i*.07; lg.gain.value=.35*[1,.7,.35][i];
+      lfo.connect(lg); lg.connect(g.gain); lfo.start();
+      src.connect(bp); bp.connect(g); g.connect(murmurGain); src.start(0, i*1.7);
+    });
+    buf.applause=makeClaps(3.2,140,.25,.45);
+    buf.ovation=makeClaps(5,260,.35,.4);
+    buf.clameur=makeClaps(1.6,90,.1,.5);
+  }
+  function makeClaps(dur,rate,att,rel){
+    const sr=ctx.sampleRate, len=Math.floor(dur*sr), b=ctx.createBuffer(2,len,sr);
+    for(let ch=0;ch<2;ch++){
+      const d=b.getChannelData(ch), n=Math.floor(dur*rate);
+      for(let c=0;c<n;c++){
+        const t=Math.random()*dur;
+        const env = t<att ? t/att : t>dur*(1-rel) ? Math.max(0,(dur-t)/(dur*rel)) : 1;
+        const amp=(.25+Math.random()*.75)*env, start=Math.floor(t*sr), L=Math.floor(sr*(.008+Math.random()*.01)), tau=sr*(.0025+Math.random()*.002);
+        let lp=0; const k=.35+Math.random()*.4;
+        for(let i=0;i<L && start+i<len;i++){ const w=Math.random()*2-1; lp=lp+k*(w-lp); d[start+i]+=lp*amp*Math.exp(-i/tau); }
+      }
+      let m=0; for(let i=0;i<len;i++) m=Math.max(m,Math.abs(d[i])); if(m>0) for(let i=0;i<len;i++) d[i]=d[i]/m*.9;
+    }
+    return b;
+  }
+  function crowd(kind, vol=.5){
+    if(!ctx || !buf[kind]) return;
+    const src=ctx.createBufferSource(); src.buffer=buf[kind];
+    const hp=ctx.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=500;
+    const pk=ctx.createBiquadFilter(); pk.type="peaking"; pk.frequency.value=2200; pk.gain.value=4;
+    const g=ctx.createGain(); g.gain.value=vol;
+    src.connect(hp); hp.connect(pk); pk.connect(g); g.connect(master); src.start();
+    if(kind==="clameur"){ // a short "ooh" swell under the claps
+      const o=ctx.createBufferSource(); o.buffer=buf.clameur; const bp=ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=450; bp.Q.value=.8;
+      const og=ctx.createGain(); const t=ctx.currentTime; og.gain.setValueAtTime(0,t); og.gain.linearRampToValueAtTime(vol*1.4,t+.35); og.gain.linearRampToValueAtTime(0,t+1.5);
+      o.connect(bp); bp.connect(og); og.connect(master); o.start();
+    }
+  }
+  function tock(){
+    if(!ctx) return; const t=ctx.currentTime;
+    const o=ctx.createOscillator(), g=ctx.createGain(); o.type="sine"; o.frequency.setValueAtTime(1100,t); o.frequency.exponentialRampToValueAtTime(600,t+.06);
+    g.gain.setValueAtTime(.35,t); g.gain.exponentialRampToValueAtTime(.001,t+.09); o.connect(g); g.connect(master); o.start(t); o.stop(t+.1);
+  }
+  function murmur(level, secs=1){
+    if(!ctx || !murmurGain) return; const t=ctx.currentTime;
+    murmurGain.gain.cancelScheduledValues(t); murmurGain.gain.setValueAtTime(murmurGain.gain.value,t); murmurGain.gain.linearRampToValueAtTime(level,t+secs);
+  }
+
+  // ---------------- announcements (written + spoken)
+  let staleT=0;
+  function announce(lines,silent){
+    if(!lines.length) return;
+    const band=$("band"); band.textContent=""; band.classList.remove("stale");
+    lines.forEach(l=>{ const d=document.createElement("div"); d.className=l.kind; d.textContent=l.text; band.append(d); });
+    clearTimeout(staleT); staleT=setTimeout(()=>band.classList.add("stale"),4000);
+    if(!silent) say(lines);
+  }
+
+  // ---------------- bot brain
+  function newState(){
+    return { pts:[0,0], sets:[0,0], done:[], starts:new Set([0]), rounds:[], over:false, busy:false,
+      streak:{who:null,n:0}, tieRun:0, minDiff:0, lastCom:-99, lastHolder:null,
+      freq:[0,0,0], m1:Array.from({length:3},()=>[0,0,0]), m2:{}, oc:{},
+      pscore:[0,0,0,0], preds:[null,null,null,null], reads:0, readable:0, recentReads:[],
+      M:{had:0,conv:0,faced:0,saved:0,matchSaved:0,bestStreak:0,setMin:0,bestComeback:0,lostFirst:false} };
+  }
+  const argmax=a=>{ let b=-1,i=-1; a.forEach((v,k)=>{ if(v>b){b=v;i=k;} }); return b>0?i:null; };
+  function predictors(){
+    const r=S.rounds,n=r.length,p=[null,null,null,null];
+    p[0]=argmax(S.freq);
+    if(n>=1) p[1]=argmax(S.m1[r[n-1].me]);
+    if(n>=2){ const k=r[n-2].me+""+r[n-1].me; if(S.m2[k]) p[2]=argmax(S.m2[k]); }
+    if(n>=1){ const o=r[n-1].res; if(S.oc[o]){ const s=argmax(S.oc[o]); if(s!==null) p[3]=(r[n-1].me+s)%3; } }
+    return p;
+  }
+  // ================= BOTS =================
+  const BOTS=[
+    {id:"rocky", name:"Rocky", style:"L'agressif", desc:"adore la Pierre. Beaucoup trop.", elo:1050, av:{bg:"terre",glove:"rouge",wrist:"noir",motif:"uni"}},
+    {id:"miroir", name:"Miroir", style:"Le copieur", desc:"rejoue souvent ton dernier coup.", elo:1100, av:{bg:"court",glove:"blanc",wrist:"bleu",motif:"rayures"}},
+    {id:"cyclo", name:"Cyclo", style:"Le mécanique", desc:"tourne en boucle : Pierre, Feuille, Ciseaux.", elo:1150, av:{bg:"gazon",glove:"jaune",wrist:"blanc",motif:"rayures"}},
+    {id:"boomerang", name:"Boomerang", style:"Le réactif", desc:"garde son signe quand il gagne, en change quand il perd.", elo:1200, av:{bg:"violet",glove:"jaune",wrist:"rouge",motif:"etoile"}},
+    {id:"chaos", name:"Chaos", style:"L'imprévisible", desc:"joue au hasard total. Impossible à lire, impossible à piéger.", elo:1250, av:{bg:"court",glove:"vert",wrist:"jaune",motif:"eclair"}},
+    {id:"stratege", name:"Stratège", style:"Le lecteur", desc:"analyse tes habitudes et les contre.", elo:1300, av:{bg:"ardoise",glove:"rouge",wrist:"noir",motif:"eclair"}},
+    {id:"professeur", name:"Professeur", style:"Le maître", desc:"lit tes réflexes plus vite que son ombre.", elo:1400, av:{bg:"or",glove:"blanc",wrist:"noir",motif:"etoile"}}
+  ];
+  const botById=id=>BOTS.find(b=>b.id===id)||BOTS[5];
+  let amicalId="stratege"; try{ const v=localStorage.getItem("pcf-opp"); if(v && BOTS.some(b=>b.id===v)) amicalId=v; }catch(e){}
+  let OPP=botById(amicalId);
+  const rnd=()=>Math.floor(Math.random()*3);
+  function adaptive(hist,noise){
+    const n=hist.length; if(n<3) return rnd();
+    const opp=hist.map(h=>h.opp), res=hist.map(h=>h.res);
+    const freq=[0,0,0], m1=[[0,0,0],[0,0,0],[0,0,0]], m2={}, oc={}, sc=[0,0,0,0];
+    const pred=t=>{ const p=[argmax(freq),null,null,null];
+      if(t>=1) p[1]=argmax(m1[opp[t-1]]);
+      if(t>=2){ const k=opp[t-2]+""+opp[t-1]; if(m2[k]) p[2]=argmax(m2[k]); }
+      if(t>=1){ const o=res[t-1]; if(oc[o]){ const s2=argmax(oc[o]); if(s2!==null) p[3]=(opp[t-1]+s2)%3; } }
+      return p; };
+    for(let t=0;t<n;t++){
+      pred(t).forEach((x,i)=>{ sc[i]=sc[i]*.8+(x===opp[t]?1:0); });
+      freq[opp[t]]++;
+      if(t>=1) m1[opp[t-1]][opp[t]]++;
+      if(t>=2){ const k=opp[t-2]+""+opp[t-1]; (m2[k] ||= [0,0,0])[opp[t]]++; }
+      if(t>=1) (oc[res[t-1]] ||= [0,0,0])[(opp[t]-opp[t-1]+3)%3]++;
+    }
+    const p=pred(n); let best=null,bs=-1; p.forEach((x,i)=>{ if(x!==null && sc[i]>bs){ bs=sc[i]; best=x; } });
+    if(best===null || Math.random()<noise) return rnd();
+    return counter(best);
+  }
+  // hist entries from the bot's point of view: {self, opp, res:"w"|"l"|"t"}
+  function botChoose(bot,hist){
+    const n=hist.length, last=hist[n-1], R=Math.random();
+    switch(bot.id){
+      case "rocky": return R<.5 ? 0 : rnd();
+      case "miroir": return (n && R<.75) ? last.opp : rnd();
+      case "cyclo": { if(!n || R<.15) return rnd(); const o=[0,2,1]; return o[(o.indexOf(last.self)+1)%3]; }
+      case "boomerang": { if(!n || R<.15 || last.res==="t") return rnd(); return last.res==="w" ? last.self : counter(last.opp); }
+      case "chaos": return rnd();
+      case "stratege": return adaptive(hist,.12);
+      case "professeur": return adaptive(hist,.04);
+    }
+    return rnd();
+  }
+  const flip=r=>r==="w"?"l":r==="l"?"w":"t";
+  function botMove(){
+    // the analysis of the player's predictability runs for every opponent
+    S.preds=predictors(); let best=null,bs=-1;
+    S.preds.forEach((pr,i)=>{ if(pr!==null && S.pscore[i]>bs){ bs=S.pscore[i]; best=pr; } });
+    S.bestPred=best;
+    return botChoose(OPP, S.rounds.map(x=>({self:x.bot, opp:x.me, res:flip(x.res)})));
+  }
+  function learn(me){
+    const r=S.rounds,n=r.length;
+    S.preds.forEach((pr,i)=>{ S.pscore[i]=S.pscore[i]*0.8+(pr===me?1:0); });
+    if(S.bestPred!==null && S.bestPred!==undefined){ S.readable++; const hit=S.bestPred===me; if(hit) S.reads++; S.recentReads.push(hit); if(S.recentReads.length>10) S.recentReads.shift(); }
+    S.freq[me]++;
+    if(n>=1) S.m1[r[n-1].me][me]++;
+    if(n>=2){ const k=r[n-2].me+""+r[n-1].me; (S.m2[k] ||= [0,0,0])[me]++; }
+    if(n>=1){ const o=r[n-1].res; (S.oc[o] ||= [0,0,0])[(me-r[n-1].me+3)%3]++; }
+  }
+
+  // ---------------- scoring helpers
+  const idx=w=>w==="me"?0:1, other=w=>w==="me"?"bot":"me";
+  function holder(){ // who has a set/match point right now
+    for(const w of ["me","bot"]){
+      const a=S.pts[idx(w)], b=S.pts[idx(other(w))];
+      if(a>=LEN-1 && a-b>=1) return {who:w, kind: S.sets[idx(w)]===WIN-1 ? "match" : "set"};
+    }
+    return null;
+  }
+
+  // ---------------- timer
+  let raf=0,tStart=0;
+  function startTimer(){
+    cancelAnimationFrame(raf); tStart=performance.now();
+    const tick=t=>{ const left=Math.max(0,1-(t-tStart)/TURN_MS); $("bar").style.transform=`scaleX(${left})`;
+      if(left<=0){ if(!S.busy && !S.over) play(Math.floor(Math.random()*3),true); return; } raf=requestAnimationFrame(tick); };
+    raf=requestAnimationFrame(tick);
+  }
+
+  // ---------------- a point
+  const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function play(me,auto=false){
+    if(S.busy||S.over||interGo||foOpen) return;
+    S.busy=true; cancelAnimationFrame(raf); setButtons(false);
+    resolvePoint(me,auto);
+  }
+  function resolvePoint(me,auto){
+    const lines=[];
+
+    const prevHolder=holder();
+    const bot=botMove(); learn(me);
+    const res= me===bot ? "t" : beats(me,bot) ? "w" : "l";
+    S.rounds.push({me,bot,res,auto});
+    const n=S.rounds.length;
+
+    const hMe=$("hMe"),hBot=$("hBot"); hMe.className="hand"; hBot.className="hand";
+    hMe.textContent=EMO[me]; hBot.textContent=EMO[bot];
+    $("verdict").textContent=(auto?"Temps écoulé, coup joué au hasard. ":"")+(res==="t"?"Égalité, on rejoue":res==="w"?`${NAME[me]} bat ${NAME[bot]}`:`${NAME[bot]} bat ${NAME[me]}`);
+
+    let com=null, cheer=null; const canCom=gap=>n-S.lastCom>=gap;
+    tock();
+
+    if(res==="t"){
+      S.tieRun++;
+      if(S.tieRun===3 && canCom(3)) com="Trois égalités de suite. Ils se lisent dans les pensées.";
+    } else {
+      S.tieRun=0;
+      const w= res==="w" ? "me" : "bot";
+      S.pts[idx(w)]++;
+      hMe.classList.add(w==="me"?"win":"lose"); hBot.classList.add(w==="bot"?"win":"lose");
+      bump(w==="me"?"sMe":"sBot");
+      S.streak = S.streak.who===w ? {who:w,n:S.streak.n+1} : {who:w,n:1};
+      { const M=S.M;
+        if(prevHolder){ if(prevHolder.who==="me"){ M.had++; if(w==="me") M.conv++; } else { M.faced++; if(w==="me"){ M.saved++; if(prevHolder.kind==="match") M.matchSaved++; } } }
+        if(w==="me") M.bestStreak=Math.max(M.bestStreak,S.streak.n);
+        M.setMin=Math.min(M.setMin,S.pts[0]-S.pts[1]); }
+      const diff=S.pts[0]-S.pts[1]; S.minDiff=Math.min(S.minDiff,diff);
+
+      const a=S.pts[0], b=S.pts[1];
+      if((a>=LEN||b>=LEN) && Math.abs(a-b)>=2){
+        // set won
+        S.sets[idx(w)]++; S.done.push([a,b]); S.pts=[0,0]; S.starts.add(n); S.minDiff=0;
+        if(w==="me") S.M.bestComeback=Math.max(S.M.bestComeback,-S.M.setMin); S.M.setMin=0;
+        if(S.done.length===1 && w==="bot") S.M.lostFirst=true;
+        const hi=Math.max(a,b), lo=Math.min(a,b);
+        cheer = S.sets[idx(w)]===WIN && w==="me" ? "ovation" : "applause";
+        if(S.sets[idx(w)]===WIN){
+          S.over=true;
+          lines.push({kind:"ref", text:`Jeu, set et match. ${w==="me"?"Victoire pour toi":`Victoire de ${OPP.name}`}, ${S.sets[idx(w)]} sets à ${S.sets[idx(other(w))]}.`});
+          if(w==="me") com = S.sets[1]>0 ? "Un combat de tous les instants. Le public est debout." : "Démonstration. La machine n'a rien vu venir.";
+          else com = "La machine l'emporte. Il faudra revoir ses habitudes.";
+        } else {
+          const ord=ORD[S.done.length-1];
+          lines.push({kind:"ref", text:`${ord} set remporté par ${WHO[w]}, ${num(hi)} à ${num(lo)}.`});
+          if(prevHolder && prevHolder.who!==w && canCom(2)) com = w==="me" ? "Il a renversé la situation au meilleur moment !" : "La balle de set lui a filé entre les doigts.";
+          else if(hi-lo>=6) com = w==="me" ? "Une leçon. La machine va devoir se remettre en question." : "Sèche correction. Il va falloir changer de plan.";
+          else if(lo>=LEN-1) com = "Un set arraché au bout du suspense.";
+          S.setBreak={w, a, b, com};
+        }
+      } else {
+        const h=holder();
+        if(h){
+          lines.push({kind:"ref", text:`Balle de ${h.kind} pour ${WHO[h.who]}.`});
+        } else if(a===b && a>=LEN-1){
+          lines.push({kind:"ref", text:`${num(a).replace(/^./,c=>c.toUpperCase())} partout. Deux points d'écart.`});
+        }
+        // commentator: pick at most one, keep it rare
+        if(prevHolder && prevHolder.who!==w && canCom(2)){
+          com = prevHolder.who==="me" ? "La main a tremblé. Balle envolée, la pression fait son œuvre." : "Balle sauvée ! Quel sang-froid.";
+          cheer="clameur";
+        } else if(a===b && a>=4 && S.minDiff<=-4 && canCom(4)){
+          com="Mené de quatre points, et le voilà revenu. Tout est à refaire !"; S.minDiff=0; cheer="clameur";
+        } else if(S.streak.n===4 && canCom(4) && Math.random()<0.7){
+          com = w==="me" ? "Quatre points d'affilée. La machine vacille." : "La machine déroule. Quatre points de suite.";
+          if(w==="me") cheer="clameur";
+        } else if(w==="bot" && S.recentReads.length>=8 && S.recentReads.filter(Boolean).length>=6 && canCom(6) && Math.random()<0.5){
+          com="La machine a flairé le coup. Encore. Il devient lisible.";
+        }
+      }
+    }
+    // three identical signs in a row
+    if(!com && n>=3 && S.rounds[n-1].me===S.rounds[n-2].me && S.rounds[n-2].me===S.rounds[n-3].me && (n<4 || S.rounds[n-4].me!==me) && canCom(4) && Math.random()<0.6){
+      com=`${["Troisième Pierre","Troisièmes Ciseaux","Troisième Feuille"][me]} de suite… c'est audacieux.`;
+    }
+    if(com){ lines.push({kind:"com", text:com}); S.lastCom=n; }
+
+    if(cheer) setTimeout(()=>crowd(cheer, cheer==="clameur"?.4:.55), 150);
+    const hNow=holder();
+    if(S.over) murmur(0,3);
+    else if(hNow && hNow.kind==="match") murmur(0,.6);   // silence before match point
+    else murmur(MURMUR,1.5);
+    announce(lines);
+    render(); renderTape(); renderRead();
+
+    if(S.over){ setTimeout(finish,1100); return; }
+    if(S.setBreak){
+      const sb=S.setBreak; S.setBreak=null;
+      const decisive = S.sets[0]===WIN-1 && S.sets[1]===WIN-1;
+      const nextName = decisive ? "Set décisif" : `${ORD[S.done.length]} set`;
+      setTimeout(()=>{
+        showInter({
+          kick:`Fin du ${ORD[S.done.length-1].toLowerCase()} set`,
+          big: sb.w==="me" ? "Set pour toi" : `Set pour ${OPP.name}`, bigCls: sb.w,
+          sc:`${sb.a}–${sb.b}`,
+          tally:`Sets : toi ${S.sets[0]}, ${OPP.name} ${S.sets[1]}`,
+          com: sb.com || "",
+          next: nextName, go:`Lancer le ${decisive?"set décisif":ORD[S.done.length].toLowerCase()+" set"}`,
+          speakOnGo: nextName+".",
+          onGo:()=>{ $("hMe").textContent="❔"; $("hBot").textContent="❔"; $("hMe").className="hand"; $("hBot").className="hand"; $("verdict").textContent="";
+                     announce([{kind:"ref", text:nextName+"."}], true); S.busy=false; setButtons(true); startTimer(); }
+        });
+      },1200);
+      return;
+    }
+    setTimeout(()=>{ S.busy=false; setButtons(true); startTimer(); },900);
+  }
+
+  // ---------------- render
+  function bump(id){ const el=$(id); el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
+  function setButtons(on){ document.querySelectorAll("#moves button").forEach(b=>b.disabled=!on); }
+  function render(){
+    $("sMe").textContent= S.over ? S.sets[0] : S.pts[0];
+    $("sBot").textContent= S.over ? S.sets[1] : S.pts[1];
+    const dots=k=>Array.from({length:WIN},(_,i)=>`<i class="${S.sets[k]>i?"on":""}"></i>`).join("");
+    $("setsMe").innerHTML=dots(0); $("setsBot").innerHTML=dots(1);
+    $("doneSets").textContent= S.done.length ? "Sets : "+S.done.map(([a,b])=>`${a}–${b}`).join("  ") : "";
+    const st=$("status"); st.classList.remove("hot");
+    const h=holder();
+    if(S.over) st.textContent = S.sets[0]>S.sets[1] ? "Match gagné" : "Match perdu";
+    else if(h){ st.textContent=`Balle de ${h.kind} pour ${WHO[h.who]}`; st.classList.add("hot"); }
+    else if(S.pts[0]===S.pts[1] && S.pts[0]>=LEN-1) st.textContent="Égalité, il faut 2 points d'écart";
+    else st.textContent=`Set ${S.done.length+1}, coup ${S.rounds.length+1}`;
+  }
+  function renderTape(){
+    const r=S.rounds;
+    const row=(key,label)=>`<tr><th>${label}</th>`+r.map((x,i)=>{
+      const cls=[x.res==="w"?"w-me":x.res==="l"?"w-bot":"", i>0&&S.starts.has(i)?"newset":"", key==="me"&&x.auto?"auto":""].join(" ");
+      return `<td class="${cls}">${EMO[x[key]]}</td>`; }).join("")+`</tr>`;
+    $("tape").innerHTML=`<table>${row("me","Toi")}${row("bot","Bot")}</table>`;
+    const t=$("tape"); t.scrollLeft=t.scrollWidth;
+  }
+  function renderRead(){
+    if(S.readable<3){ $("read").textContent="L'analyse observe tes premiers coups."; return; }
+    const pct=Math.round(100*S.reads/S.readable);
+    const tone= pct>=45 ? "Tu es lisible en ce moment." : pct<=28 ? "Il ne te cerne pas : tu es imprévisible." : "Il te lit un peu mieux que le hasard.";
+    $("read").innerHTML=`Ton coup était prévisible <b>${S.reads} fois sur ${S.readable}</b> (${pct} %, le hasard donnerait 33 %). ${tone}`;
+  }
+  function finish(){
+    const won=S.sets[0]>S.sets[1];
+    $("endTitle").textContent= won ? `Victoire ${S.sets[0]} sets à ${S.sets[1]}` : `Défaite ${S.sets[0]} sets à ${S.sets[1]}`;
+    const r=S.rounds,n=r.length,ties=r.filter(x=>x.res==="t").length;
+    $("endLine").textContent=`Sets : ${S.done.map(([a,b])=>`${a}–${b}`).join(", ")}. ${n} coups joués, dont ${ties} égalités. Ta répartition :`;
+    const c=[0,0,0]; r.forEach(x=>c[x.me]++);
+    $("bars").innerHTML=[0,2,1].map(m=>{ const p=Math.round(100*c[m]/n);
+      return `<div class="bar"><span>${EMO[m]} ${NAME[m]}</span><div class="t"><div style="width:${p}%"></div></div><span>${p} %</span></div>`; }).join("");
+    let stay=0,afterW=0; for(let i=1;i<n;i++){ if(r[i-1].res==="w"){ afterW++; if(r[i].me===r[i-1].me) stay++; } }
+    let habit="";
+    if(afterW>=3){ const sp=Math.round(100*stay/afterW);
+      habit= sp>=50 ? ` Après une victoire, tu rejoues le même signe ${sp} % du temps : c'est exploitable.` : sp<=15 ? ` Après une victoire, tu changes presque toujours de signe (${100-sp} %) : c'est aussi un schéma.` : ""; }
+    const pct=S.readable?Math.round(100*S.reads/S.readable):0;
+    $("endRead").textContent=`Ton coup était prévisible ${pct} % du temps.${habit}`;
+    $("end").classList.add("show");
+    $("bar").style.transform="scaleX(0)";
+    saveRecord(won);
+    const inTour=!!(S.tour && T);
+    if(inTour){
+      const m=myMatch();
+      if(m){ m.w = won ? "me" : OPP.id;
+        m.score = m.a==="me" ? `${S.sets[0]}–${S.sets[1]}` : `${S.sets[1]}–${S.sets[0]}`;
+        if(!won){ T.out=true; T.outRound=T.round; } saveT(); }
+    }
+    $("again").hidden=inTour; $("tNext").hidden=!inTour;
+    if(inTour) $("tNext").textContent = won ? (S.tour.round===2 ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
+    const news=updateProfile(won);
+    $("news").textContent = news.length ? "Nouveau titre : "+news.map(b=>b.name+(b.unlock?` (débloque ${b.unlock})`:"")).join(", ")+" !" : "";
+    $("end").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth", block:"start"});
+  }
+  function loadRecord(){ try{ return JSON.parse(localStorage.getItem("pcf-record2"))||{w:0,l:0}; }catch(e){ return {w:0,l:0}; } }
+  function saveRecord(won){ const rec=loadRecord(); won?rec.w++:rec.l++; try{ localStorage.setItem("pcf-record2",JSON.stringify(rec)); }catch(e){} showRecord(rec); }
+  function showRecord(rec=loadRecord()){ $("record").textContent=(rec.w+rec.l)?`Ton bilan contre les bots : ${rec.w} victoire${rec.w>1?"s":""}, ${rec.l} défaite${rec.l>1?"s":""}`:""; }
+
+  function reset(){
+    S=newState();
+    $("hMe").textContent="❔"; $("hBot").textContent="❔"; $("hMe").className="hand"; $("hBot").className="hand";
+    $("verdict").textContent="";
+    $("band").innerHTML=`<div class="idle">Les annonces de l'arbitre et du commentateur s'afficheront ici.</div>`; $("band").classList.remove("stale");
+    $("tape").innerHTML=`<p class="empty">Les coups apparaîtront ici. Observe-les : ton adversaire le fait.</p>`;
+    $("read").textContent="L'analyse de ton jeu démarre au premier coup.";
+    $("end").classList.remove("show"); $("bar").style.transform="scaleX(1)";
+    render(); $("status").textContent="Choisis ton premier coup";
+    setButtons(false); showRecord(); window.scrollTo(0,0);
+    if(!T){ WIN=userWIN; OPP=botById(amicalId); }
+    $("startCard").hidden=!!T; $("again").hidden=false; $("tNext").hidden=true;
+    renderFormat(); renderBracket(); refreshBoardAvatar();
+  }
+  function renderFormat(){
+    document.querySelectorAll("#segLen button").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.v===LEN)));
+    document.querySelectorAll("#segWin button").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.v===WIN)));
+    const est={7:{2:"30 à 45",3:"45 à 70"},11:{2:"50 à 75",3:"75 à 110"}}[LEN][WIN];
+    $("fmtHint").textContent=`Sets de ${LEN} points${LEN===11?" (format officiel)":""}, environ ${est} coups. ${LEN===11?"":"Tu peux revenir au format officiel dans les Options."}`;
+    $("ruleTxt").textContent=`Sets de ${LEN}, ${WIN} sets gagnants`;
+    $("foFmt").textContent=fmtText();
+  }
+  const saveFmt=()=>{ try{ localStorage.setItem("pcf-format2",JSON.stringify({len:LEN,win:WIN})); }catch(e){} };
+  document.querySelectorAll("#segLen button").forEach(b=>b.addEventListener("click",()=>{ if(S.rounds.length&&!S.over) return; LEN=+b.dataset.v; saveFmt(); renderFormat(); render(); }));
+  document.querySelectorAll("#segWin button").forEach(b=>b.addEventListener("click",()=>{ if(S.rounds.length&&!S.over) return; WIN=+b.dataset.v; userWIN=WIN; saveFmt(); renderFormat(); render(); }));
+  let foOpen=false;
+  const BOT_AV={bg:"ardoise",glove:"rouge",wrist:"noir",motif:"eclair"};
+  function openIntro(){
+    $("startCard").hidden=true;
+    const fav=c=>{ const t=c.reduce((a,b)=>a+b,0); if(!t) return "–"; const i=c.indexOf(Math.max(...c)); return EMO[i]; };
+    const rate=P.readable?P.reads/P.readable:null;
+    const ind= rate===null ? "–" : Math.round(Math.max(0,Math.min(100,100-(rate-1/3)*300)));
+    const titles=BADGES.filter(b=>P.badges[b.id]).length;
+    $("tourCard").hidden=true;
+    const hh=P.h2h[OPP.id]||{w:0,l:0,bc:[0,0,0]};
+    const rows=[
+      [P.elo,"Niveau PCF",OPP.elo],
+      [hh.w,"Face-à-face",hh.l],
+      [fav(P.counts),"Signe favori",fav(hh.bc)],
+      [titles,"Titres",OPP.id==="professeur"?"Légende":"–"]
+    ];
+    $("foAvMe").innerHTML=avatarSVG(P.av); $("foAvBot").innerHTML=avatarSVG(OPP.av);
+    $("foNameBot").textContent=OPP.name; $("foSubBot").textContent=OPP.style;
+    $("foNameMe").textContent=displayName();
+    const earned=BADGES.filter(b=>P.badges[b.id]).sort((a,b)=>P.badges[b.id]-P.badges[a.id]);
+    $("foSubMe").textContent=`${P.flag} ${earned.length?earned[0].name:"Espoir du circuit"}`;
+    $("foRows").innerHTML=rows.map(([a,l,b])=>`<div class="fo-row"><span>${a}</span><span>${l}</span><span>${b}</span></div>`).join("");
+    const stage = S.tour ? `${RSING[S.tour.round]} du PCF Open. ` : "";
+    $("foKey").textContent = `${stage}${OPP.name}, ${OPP.style.toLowerCase()} : ${OPP.desc}` + (hh.w+hh.l ? "" : " Premier face-à-face.");
+    foOpen=true; $("faceoff").classList.add("show"); $("foGo").focus();
+  }
+  $("foGo").addEventListener("click",()=>{
+    $("faceoff").classList.remove("show"); foOpen=false;
+    initAudio(); murmur(MURMUR,2); crowd("applause",.35);
+    say([{kind:"ref",text:"Premier set."}]);
+    announce([{kind:"ref",text:"Premier set."}], true); setButtons(true); $("status").textContent="Set 1, coup 1"; startTimer();
+  });
+
+  // ================= PROFILE =================
+  const BG={court:["Court","#1F5FA8"],gazon:["Gazon","#2E8B57"],terre:["Terre battue","#C8643B"],violet:["Violet","#6A4C93"],ardoise:["Ardoise","#3B4556"],or:["Or","#C9971C"]};
+  const GLOVE={blanc:["Blanc","#F5F7FA"],jaune:["Jaune","#F4C542"],rouge:["Rouge","#E8574A"],bleu:["Bleu","#4DA3FF"],vert:["Vert","#6BD49A"],or:["Or","#FFD34D"]};
+  const WRIST={rouge:["Rouge","#D63A2F"],blanc:["Blanc","#F5F7FA"],bleu:["Bleu","#2C6FD1"],jaune:["Jaune","#F4C542"],noir:["Noir","#23262B"],or:["Or","#E0B12A"]};
+  const MOTIF={uni:"Uni",rayures:"Rayures",etoile:"Étoile",eclair:"Éclair"};
+  const FLAGS=[["🇫🇷","France"],["🇧🇪","Belgique"],["🇨🇭","Suisse"],["🇨🇦","Canada"],["🇱🇺","Luxembourg"],["🇲🇦","Maroc"],["🇩🇿","Algérie"],["🇹🇳","Tunisie"],["🇸🇳","Sénégal"],["🇨🇮","Côte d'Ivoire"],["🇪🇸","Espagne"],["🇮🇹","Italie"],["🇩🇪","Allemagne"],["🇬🇧","Royaume-Uni"],["🇺🇸","États-Unis"],["🇧🇷","Brésil"],["🇯🇵","Japon"],["🌍","Autre"]];
+  const BADGES=[
+    {id:"premier", name:"Première victoire", desc:"Gagner un match."},
+    {id:"habitue", name:"Habitué", desc:"Jouer 10 matchs."},
+    {id:"sangfroid", name:"Sang-froid", desc:"Sauver une balle de match.", unlock:"le poignet or", item:["wrist","or"]},
+    {id:"remontada", name:"Remontada", desc:"Gagner après avoir perdu le premier set.", unlock:"le motif étoile", item:["motif","etoile"]},
+    {id:"rouleau", name:"Rouleau compresseur", desc:"Gagner 6 points d'affilée.", unlock:"le motif éclair", item:["motif","eclair"]},
+    {id:"imprevisible", name:"Imprévisible", desc:"Gagner un match en étant prévisible moins de 30 % du temps.", unlock:"le gant or", item:["glove","or"]},
+    {id:"invincible", name:"Invincible", desc:"Gagner 3 matchs d'affilée.", unlock:"le fond or", item:["bg","or"]},
+    {id:"marathon", name:"Marathonien", desc:"Jouer un match de 60 coups ou plus."},
+    {id:"vainqueur", name:"Vainqueur du PCF Open", desc:"Remporter un tournoi."}
+  ];
+  const lockOf=(kind,key)=>BADGES.find(b=>b.item && b.item[0]===kind && b.item[1]===key);
+  function defProfile(){ return {v:1,pseudo:"",flag:"🇫🇷",av:{bg:"court",glove:"blanc",wrist:"rouge",motif:"uni"},elo:1200,eloHist:[1200],
+    matches:0,wins:0,streakNow:0,bestWinStreak:0,sets:[0,0],coups:0,counts:[0,0,0],botCounts:[0,0,0],h2h:{},tourWins:0,stayW:0,afterW:0,stayL:0,afterL:0,reads:0,readable:0,
+    had:0,conv:0,faced:0,saved:0,decPlayed:0,decWon:0,comebacks:0,bestStreak:0,bestComeback:0,longest:0,last:[],badges:{}}; }
+  let P;
+  try{ P=Object.assign(defProfile(), JSON.parse(localStorage.getItem("pcf-profile"))||{}); }catch(e){ P=defProfile(); }
+  const saveP=()=>{ try{ localStorage.setItem("pcf-profile",JSON.stringify(P)); }catch(e){} };
+  const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  function avatarSVG(a){
+    const bg=(BG[a.bg]||BG.court)[1], gl=(GLOVE[a.glove]||GLOVE.blanc)[1], wr=(WRIST[a.wrist]||WRIST.rouge)[1];
+    const id="c"+Math.random().toString(36).slice(2,8), ink="rgba(0,0,0,.22)";
+    let motif="";
+    if(a.motif==="rayures") motif=`<g clip-path="url(#${id})" opacity=".16">${[...Array(9)].map((_,i)=>`<rect x="${i*16-40}" y="-10" width="7" height="140" fill="#fff" transform="rotate(30 50 50)"/>`).join("")}</g>`;
+    if(a.motif==="etoile") motif=`<path d="M50 6 L61 38 L95 38 L67 58 L78 92 L50 71 L22 92 L33 58 L5 38 L39 38 Z" fill="#fff" opacity=".14"/>`;
+    if(a.motif==="eclair") motif=`<path d="M60 2 L28 54 L48 54 L36 98 L76 40 L54 40 L68 2 Z" fill="#fff" opacity=".16"/>`;
+    return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath></defs>
+      <circle cx="50" cy="50" r="48" fill="${bg}"/>${motif}
+      <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>
+      <rect x="37" y="72" width="26" height="16" rx="3" fill="${wr}" stroke="${ink}" stroke-width="1.5"/>
+      <rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>
+      <rect x="29" y="40" width="42" height="36" rx="11" fill="${gl}" stroke="${ink}" stroke-width="1.5"/>
+      ${[0,1,2,3].map(i=>`<rect x="${29+i*10.5}" y="${28+(i===0||i===3?3:0)}" width="10.5" height="18" rx="5.2" fill="${gl}" stroke="${ink}" stroke-width="1.5"/>`).join("")}
+      <rect x="25" y="50" width="28" height="12" rx="6" fill="${gl}" stroke="${ink}" stroke-width="1.5"/>
+      <path d="M56 58 q6 3 12 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`;
+  }
+  const displayName=()=>P.pseudo||"Toi";
+  function refreshBoardAvatar(){ $("miniBot").innerHTML=avatarSVG(OPP.av); $("botName").textContent=OPP.name; $("miniAv").innerHTML=avatarSVG(P.av); $("pseudoMe").textContent=displayName(); }
+
+  function updateProfile(won){
+    const r=S.rounds,n=r.length, M=S.M, earned=[];
+    P.matches++; if(won) P.wins++;
+    P.streakNow = won ? P.streakNow+1 : 0; P.bestWinStreak=Math.max(P.bestWinStreak,P.streakNow);
+    P.sets[0]+=S.sets[0]; P.sets[1]+=S.sets[1]; P.coups+=n;
+    r.forEach(x=>{ P.counts[x.me]++; P.botCounts[x.bot]++; });
+    { const h=(P.h2h[OPP.id] ||= {w:0,l:0,bc:[0,0,0]}); won?h.w++:h.l++; r.forEach(x=>h.bc[x.bot]++); }
+    const tourWin = !!(S.tour && S.tour.round===2 && won); if(tourWin) P.tourWins++;
+    for(let i=1;i<n;i++){ const p=r[i-1]; if(p.res==="w"){ P.afterW++; if(r[i].me===p.me) P.stayW++; } else if(p.res==="l"){ P.afterL++; if(r[i].me===p.me) P.stayL++; } }
+    P.reads+=S.reads; P.readable+=S.readable;
+    P.had+=M.had; P.conv+=M.conv; P.faced+=M.faced; P.saved+=M.saved;
+    if(S.done.length===2*WIN-1){ P.decPlayed++; if(won) P.decWon++; }
+    if(M.lostFirst && won) P.comebacks++;
+    P.bestStreak=Math.max(P.bestStreak,M.bestStreak); P.bestComeback=Math.max(P.bestComeback,M.bestComeback); P.longest=Math.max(P.longest,n);
+    const E=1/(1+Math.pow(10,(OPP.elo-P.elo)/400)); P.elo=Math.round(P.elo+32*((won?1:0)-E)); P.eloHist.push(P.elo); if(P.eloHist.length>60) P.eloHist.shift();
+    P.last.unshift({d:Date.now(),won,sets:`${S.sets[0]}–${S.sets[1]}`,det:S.done.map(([a,b])=>`${a}–${b}`).join(", ")}); P.last=P.last.slice(0,8);
+    const rate=S.readable?S.reads/S.readable:1;
+    const cond={premier:won, habitue:P.matches>=10, sangfroid:M.matchSaved>0, remontada:M.lostFirst&&won,
+      rouleau:M.bestStreak>=6, imprevisible:won&&S.readable>=10&&rate<.3, invincible:P.streakNow>=3, marathon:n>=60, vainqueur:tourWin};
+    BADGES.forEach(b=>{ if(cond[b.id] && !P.badges[b.id]){ P.badges[b.id]=Date.now(); earned.push(b); } });
+    saveP(); refreshBoardAvatar();
+    return earned;
+  }
+
+  function renderProfile(){
+    $("pAv").innerHTML=avatarSVG(P.av);
+    $("pName").textContent=`${displayName()} ${P.flag}`;
+    const earnedList=BADGES.filter(b=>P.badges[b.id]).sort((a,b)=>P.badges[b.id]-P.badges[a.id]);
+    $("pTitle").textContent= earnedList.length ? earnedList[0].name : "Espoir du circuit";
+    $("pElo").textContent=`Niveau PCF : ${P.elo}`;
+    $("kM").textContent=P.matches;
+    $("kW").textContent=P.matches?Math.round(100*P.wins/P.matches)+" %":"–";
+    $("kS").textContent=P.streakNow;
+    $("pEmpty").textContent=P.matches?"":"Joue ton premier match pour remplir ta fiche.";
+    ["cGame","cMental","cRecords","cElo","cLast"].forEach(id=>$(id).hidden=!P.matches);
+
+    if(P.matches){
+      const tot=P.counts.reduce((a,b)=>a+b,0)||1, fav=P.counts.indexOf(Math.max(...P.counts));
+      const rate=P.readable?P.reads/P.readable:1/3, ind=Math.round(Math.max(0,Math.min(100,100-(rate-1/3)*300)));
+      const sw=P.afterW?Math.round(100*P.stayW/P.afterW):null, sl=P.afterL?Math.round(100*P.stayL/P.afterL):null;
+      $("gameBody").innerHTML=
+        `<div class="bars">${[0,2,1].map(m=>{const p=Math.round(100*P.counts[m]/tot);return `<div class="bar"><span>${EMO[m]} ${NAME[m]}</span><div class="t"><div style="width:${p}%"></div></div><span>${p} %</span></div>`;}).join("")}</div>
+        <div class="lines">
+          <div class="ln"><span>Signe favori</span><span>${EMO[fav]} ${NAME[fav]}</span></div>
+          <div class="ln"><span>Même signe après une victoire</span><span>${sw===null?"–":sw+" %"}</span></div>
+          <div class="ln"><span>Même signe après une défaite</span><span>${sl===null?"–":sl+" %"}</span></div>
+        </div>
+        <p class="hint">Un joueur parfaitement imprévisible rejoue le même signe environ 33 % du temps.</p>
+        <h2 style="margin-top:16px">Indice d'imprévisibilité</h2>
+        <div class="big">${ind}<span style="font-size:1rem;color:var(--muted)"> / 100</span></div>
+        <div class="gauge"><div style="width:${ind}%"></div></div>
+        <p class="hint">L'analyse a deviné <b style="color:var(--line)">${P.reads} coups sur ${P.readable}</b>, soit ${(rate*100).toFixed(1).replace(".",",")} %. Le hasard pur donnerait 33 % : 100 sur 100, 40 % : 80, 50 % : 50, 60 % : 20.</p>`;
+      const pc=(a,b)=>b?`${a} sur ${b} (${Math.round(100*a/b)} %)`:"Aucune pour l'instant";
+      $("mentalBody").innerHTML=
+        `<div class="ln"><span>Balles de set et de match converties</span><span>${pc(P.conv,P.had)}</span></div>
+         <div class="ln"><span>Balles adverses sauvées</span><span>${pc(P.saved,P.faced)}</span></div>
+         <div class="ln"><span>Sets décisifs gagnés</span><span>${P.decPlayed?`${P.decWon} sur ${P.decPlayed}`:"Aucun joué"}</span></div>
+         <div class="ln"><span>Matchs gagnés après avoir perdu le 1er set</span><span>${P.comebacks}</span></div>`;
+      $("recBody").innerHTML=
+        `<div class="ln"><span>Plus longue série de points</span><span>${P.bestStreak}</span></div>
+         <div class="ln"><span>Plus belle remontée dans un set</span><span>${P.bestComeback?P.bestComeback+" points de retard":"–"}</span></div>
+         <div class="ln"><span>Meilleure série de victoires</span><span>${P.bestWinStreak}</span></div>
+         <div class="ln"><span>Plus long match</span><span>${P.longest} coups</span></div>
+         <div class="ln"><span>Sets gagnés / perdus</span><span>${P.sets[0]} / ${P.sets[1]}</span></div>`;
+      const h=P.eloHist, lo=Math.min(...h)-20, hi=Math.max(...h)+20, W=300, H=80;
+      const pts=h.map((v,i)=>`${h.length===1?W/2:(i*(W-10)/(h.length-1)+5)},${H-5-((v-lo)/(hi-lo))*(H-10)}`).join(" ");
+      $("spark").innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Évolution du niveau, de ${h[0]} à ${h[h.length-1]}">
+        <line x1="0" x2="${W}" y1="${H-5-((1200-lo)/(hi-lo))*(H-10)}" y2="${H-5-((1200-lo)/(hi-lo))*(H-10)}" stroke="rgba(255,255,255,.2)" stroke-dasharray="4 4"/>
+        <polyline points="${pts}" fill="none" stroke="var(--me)" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>`;
+      $("lastBody").innerHTML=P.last.map(m=>`<div class="ln"><span>${m.won?"✅ Victoire":"❌ Défaite"} ${m.sets}</span><span style="font-weight:400;color:var(--muted)">${esc(m.det)}</span></div>`).join("");
+    }
+    $("badges").innerHTML=BADGES.map(b=>{const on=!!P.badges[b.id];
+      return `<div class="badge ${on?"on":"off"}"><div class="bn">${on?"🏅":"🔒"} ${b.name}</div><div class="bd">${b.desc}</div>${b.unlock?`<div class="bu">Débloque ${b.unlock}</div>`:""}</div>`;}).join("");
+    renderEditor();
+  }
+
+  function renderEditor(){
+    const mk=(el,kind,map,isTxt)=>{
+      el.innerHTML=Object.keys(map).map(k=>{
+        const lk=lockOf(kind,k), locked=lk && !P.badges[lk.id], label=isTxt?map[k]:map[k][0];
+        return `<button data-k="${k}" class="${isTxt?"txt ":""}${locked?"locked":""}" aria-pressed="${P.av[kind]===k}" aria-label="${label}${locked?", verrouillé":""}" title="${label}" ${isTxt?"":`style="background:${map[k][1]}"`}>${isTxt?label:""}</button>`;
+      }).join("");
+      el.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+        const k=b.dataset.k, lk=lockOf(kind,k);
+        if(lk && !P.badges[lk.id]){ $("lockNote").textContent=`Verrouillé. Obtiens le titre « ${lk.name} » : ${lk.desc.charAt(0).toLowerCase()+lk.desc.slice(1)}`; return; }
+        $("lockNote").textContent=""; P.av[kind]=k; saveP(); renderProfile(); refreshBoardAvatar();
+      });
+    };
+    mk($("swBg"),"bg",BG); mk($("swGlove"),"glove",GLOVE); mk($("swWrist"),"wrist",WRIST); mk($("swMotif"),"motif",MOTIF,true);
+  }
+  $("inFlag").innerHTML=FLAGS.map(([f,n])=>`<option value="${f}">${f} ${n}</option>`).join("");
+  $("inFlag").value=P.flag;
+  $("inFlag").addEventListener("change",e=>{ P.flag=e.target.value; saveP(); renderProfile(); });
+  $("inPseudo").value=P.pseudo;
+  $("inPseudo").addEventListener("input",e=>{ P.pseudo=e.target.value.replace(/[\u0000-\u001f]/g,"").slice(0,16).trim(); saveP(); $("pName").textContent=`${displayName()} ${P.flag}`; refreshBoardAvatar(); });
+  $("resetProfile").addEventListener("click",()=>{ if(confirm("Remettre ta fiche à zéro ? Tes statistiques et titres seront effacés.")){ const keep={pseudo:P.pseudo,flag:P.flag,av:{...P.av}}; P=Object.assign(defProfile(),keep);
+    Object.keys(P.av).forEach(k=>{ const lk=lockOf(k,P.av[k]); if(lk) P.av[k]=defProfile().av[k]; }); saveP(); renderProfile(); refreshBoardAvatar(); } });
+  document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{
+    const v=b.dataset.v; document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+    $("viewMatch").hidden=v!=="match"; $("viewProfile").hidden=v!=="profile"; $("viewOptions").hidden=v!=="options";
+    if(v==="profile") renderProfile(); window.scrollTo(0,0);
+  }));
+  refreshBoardAvatar();
+
+  document.querySelectorAll("#moves button").forEach(b=>b.addEventListener("click",()=>play(+b.dataset.m)));
+  document.addEventListener("keydown",e=>{ if(e.target && /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return; const k={p:0,c:1,f:2}[e.key.toLowerCase()]; if(k!==undefined) play(k); });
+  $("again").addEventListener("click",()=>{ reset(); });
+  $("startBtn").addEventListener("click",()=>{ S.tour=null; OPP=botById(amicalId); WIN=userWIN; renderFormat(); openIntro(); });
+
+  // ================= OPPONENT PICKER =================
+  function renderOpps(){
+    $("opps").innerHTML=BOTS.map(b=>`<button class="opp" data-id="${b.id}" aria-pressed="${b.id===amicalId}"><span class="oa">${avatarSVG(b.av)}</span><span class="on">${b.name}</span><span class="ol">Niveau ${b.elo}</span></button>`).join("");
+    $("opps").querySelectorAll("button").forEach(x=>x.onclick=()=>{
+      amicalId=x.dataset.id; try{ localStorage.setItem("pcf-opp",amicalId); }catch(e){}
+      OPP=botById(amicalId); renderOpps(); refreshBoardAvatar(); });
+    const b=botById(amicalId); $("oppDesc").textContent=`${b.name}, ${b.style.toLowerCase()} : ${b.desc}`;
+  }
+  document.querySelectorAll("#segMode button").forEach(b=>b.addEventListener("click",()=>{
+    const v=b.dataset.v; document.querySelectorAll("#segMode button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+    $("amicalBox").hidden=v!=="amical"; $("tourBox").hidden=v!=="tournoi";
+  }));
+
+  // ================= TOURNAMENT =================
+  const RNAMES=["Quarts de finale","Demi-finales","Finale"], RSING=["Quart de finale","Demi-finale","Finale"], RWIN=[2,2,3];
+  let T=null; try{ T=JSON.parse(localStorage.getItem("pcf-tour")); }catch(e){ T=null; }
+  function saveT(){ try{ T ? localStorage.setItem("pcf-tour",JSON.stringify(T)) : localStorage.removeItem("pcf-tour"); }catch(e){} }
+  function pInfo(id){ return id==="me" ? {name:displayName(), av:P.av, elo:P.elo} : botById(id); }
+  function newTournament(){
+    const field=["me",...BOTS.map(b=>b.id)].sort((a,b)=>pInfo(b).elo-pInfo(a).elo);
+    const order=[0,7,3,4,2,5,1,6];
+    const r0=[]; for(let i=0;i<8;i+=2) r0.push({a:field[order[i]], b:field[order[i+1]], w:null, score:""});
+    T={round:0, rounds:[r0,[],[]], out:false, outRound:null, done:false, champion:null}; saveT();
+  }
+  function myMatch(){ if(!T) return null; return (T.rounds[T.round]||[]).find(m=>(m.a==="me"||m.b==="me") && !m.w) || null; }
+  function simMatch(a,b,win){
+    const A=botById(a), B=botById(b), ha=[], hb=[]; let pa=0,pb=0,sa=0,sb=0,guard=0;
+    while(sa<win && sb<win && guard++<4000){
+      const ma=botChoose(A,ha), mb=botChoose(B,hb), r= ma===mb ? "t" : beats(ma,mb) ? "w" : "l";
+      ha.push({self:ma,opp:mb,res:r}); hb.push({self:mb,opp:ma,res:flip(r)});
+      if(r==="w") pa++; else if(r==="l") pb++;
+      if((pa>=LEN||pb>=LEN) && Math.abs(pa-pb)>=2){ if(pa>pb) sa++; else sb++; pa=pb=0; }
+    }
+    return {w: sa>sb ? a : b, score:`${sa}–${sb}`};
+  }
+  function completeRound(){
+    const R=T.rounds[T.round];
+    R.forEach(m=>{ if(!m.w){ if(m.a==="me"||m.b==="me") return; Object.assign(m, simMatch(m.a,m.b,RWIN[T.round])); } });
+    if(T.round===2){ T.champion=R[0].w; T.done=true; saveT(); return; }
+    const next=[]; for(let i=0;i<R.length;i+=2) next.push({a:R[i].w, b:R[i+1].w, w:null, score:""});
+    T.round++; T.rounds[T.round]=next; saveT();
+  }
+  function renderBracket(){
+    $("tourCard").hidden=!T; if(!T) return;
+    let h="";
+    T.rounds.forEach((R,ri)=>{
+      if(!R.length) return;
+      h+=`<div class="rnd">${RNAMES[ri]}</div>`;
+      R.forEach(m=>{
+        const A=pInfo(m.a), B=pInfo(m.b), cls=x=> m.w===x ? "win" : m.w ? "lose" : "", mine=(m.a==="me"||m.b==="me") ? " mine" : "";
+        h+=`<div class="bm${mine}"><div class="bp ${cls(m.a)}"><span class="mini">${avatarSVG(A.av)}</span><span class="bn">${esc(A.name)}</span></div><div class="bs">${m.score||"vs"}</div><div class="bp r ${cls(m.b)}"><span class="bn">${esc(B.name)}</span><span class="mini">${avatarSVG(B.av)}</span></div></div>`;
+      });
+    });
+    $("bracket").innerHTML=h;
+    const my=myMatch();
+    if(T.done){
+      $("tMsg").textContent = T.champion==="me" ? "🏆 Tu remportes le PCF Open ! Le titre est à toi."
+        : `🏆 ${pInfo(T.champion).name} remporte le PCF Open.` + (T.out ? ` Ton parcours s'arrête en ${RNAMES[T.outRound].toLowerCase()}.` : "");
+      $("tPlay").textContent="Nouveau tournoi"; $("tQuit").textContent="Retour à l'accueil";
+    } else if(my){
+      const opp=pInfo(my.a==="me"?my.b:my.a);
+      $("tMsg").textContent=`${RSING[T.round]} contre ${opp.name}, ${opp.style.toLowerCase()}. ${RWIN[T.round]} sets gagnants.`;
+      $("tPlay").textContent=`Jouer ${T.round===2?"la finale":T.round===1?"ma demi-finale":"mon quart de finale"}`; $("tQuit").textContent="Abandonner le tournoi";
+    }
+  }
+  $("tourBtn").addEventListener("click",()=>{ newTournament(); reset(); });
+  $("tPlay").addEventListener("click",()=>{
+    if(T.done){ newTournament(); reset(); return; }
+    const my=myMatch(); if(!my) return;
+    OPP=botById(my.a==="me"?my.b:my.a); WIN=RWIN[T.round]; renderFormat(); refreshBoardAvatar();
+    S.tour={round:T.round}; openIntro();
+  });
+  $("tQuit").addEventListener("click",()=>{
+    if(!T.done && !confirm("Abandonner le tournoi en cours ?")) return;
+    T=null; saveT(); S.tour=null; reset();
+  });
+  $("tNext").addEventListener("click",()=>{
+    completeRound(); if(T.out) while(!T.done) completeRound();
+    S.tour=null; reset();
+  });
+  renderOpps();
+  $("iGo").addEventListener("click",()=>interGo&&interGo());
+  renderFormat();
+  reset();
+})();
+</script>
+</body>
+</html>
