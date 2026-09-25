@@ -23,7 +23,7 @@ export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); 
 export function profilParDefaut() {
   return {
     v: 1, pseudo: "", drapeau: "🇫🇷",
-    av: { fond: "court", gant: "blanc", poignet: "rouge", motif: "uni" },
+    av: { symbole: "pierre", fond: "court", gant: "blanc", poignet: "rouge", motif: "uni" },
     elo: ELO_DEPART, historiqueElo: [ELO_DEPART],
     matchs: 0, victoires: 0, serieEnCours: 0, meilleureSerieVictoires: 0,
     sets: [0, 0], coups: 0, signes: [0, 0, 0], signesAdv: [0, 0, 0],

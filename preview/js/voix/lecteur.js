@@ -1,6 +1,7 @@
 // Lit les répliques de l'arbitre et du commentateur.
 // Pour chaque réplique : si le fichier audio/<id>.mp3 existe, on le joue ;
-// sinon on utilise la voix de synthèse du téléphone.
+// sinon, si l'option est activée, on utilise la voix de synthèse du téléphone.
+// Sans fichier ni synthèse, la réplique reste seulement affichée par écrit.
 // La liste des fichiers présents (audio/index.json) est créée automatiquement
 // à chaque mise en ligne, il suffit donc de déposer les fichiers dans app/audio/.
 
@@ -11,6 +12,7 @@ export class LecteurVoix {
     this.dossier = dossier;
     this.fichiers = new Map();   // id → élément <audio> préchargé
     this.actif = true;
+    this.synthese = false;       // voix de synthèse (robotique), désactivée par défaut
     this.voix = null;
     this.jeton = 0;              // pour interrompre une séquence en cours
     this.enCours = null;
@@ -18,6 +20,8 @@ export class LecteurVoix {
   }
 
   get syntheseDisponible() { return !!synth; }
+  // Cette réplique sera-t-elle entendue ?
+  peutDire(r) { return this.actif && (this.fichiers.has(r.id) || (this.synthese && !!synth)); }
   get nbVoix() { return synth ? synth.getVoices().length : 0; }
 
   // Charge la liste des répliques enregistrées. Sans elle, tout passe par la synthèse.
@@ -60,6 +64,7 @@ export class LecteurVoix {
       const fin = () => suivante(i + 1);
       const audio = this.fichiers.get(r.id);
       if (audio) this.jouerFichier(audio, debut, fin, () => this.parler(r, debut, fin));
+      else if (!this.synthese) fin();
       else this.parler(r, debut, fin);
     };
     suivante(0);
@@ -73,7 +78,7 @@ export class LecteurVoix {
   }
 
   parler(r, debut, fin) {
-    if (!synth) { fin(); return; }
+    if (!synth || !this.synthese) { fin(); return; }
     try { synth.resume(); } catch { /* rien */ }
     if (!this.voix) this.choisirVoix();
     const u = new SpeechSynthesisUtterance(r.texte.replace(/[–-]/g, " "));
