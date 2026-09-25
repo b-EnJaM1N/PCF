@@ -6,6 +6,7 @@ import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet } from "./annonces.js
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { TOURS, TOUR_SINGULIER, SETS_PAR_TOUR, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
+import { presentation } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, PAYS } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE } from "./voix/script.js";
@@ -137,9 +138,8 @@ function jouer(signe, auto = false) {
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeBot]}` : `${NOM[signeBot]} bat ${NOM[signe]}`);
 
   ambiance.raquette(signe);
-  // Comme au tennis : le public applaudit chaque point, et se tait avant une balle de match.
-  const pub = a.public || (!evt.egalite && a.ambiance !== "silence" ? "point" : null);
-  if (pub) setTimeout(() => ambiance.public(pub, { point: 0.3, clameur: 0.45, set: 0.55, ovation: 0.6 }[pub]), 250);
+  // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
+  if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
   annoncer(a.lignes);
   render(); renderHistorique(); renderLecture();
 
@@ -271,7 +271,6 @@ function renderFormat() {
   const est = { 7: { 2: "30 à 45", 3: "45 à 70" }, 11: { 2: "50 à 75", 3: "75 à 110" } }[fmt.len][fmt.win];
   $("fmtHint").textContent = `Sets de ${fmt.len} points${fmt.len === 11 ? " (format officiel)" : ""}, environ ${est} coups.${fmt.len === 11 ? "" : " Tu peux revenir au format officiel dans les Options."}`;
   $("ruleTxt").textContent = `Sets de ${fmt.len}, ${WIN} sets gagnants`;
-  $("foFmt").textContent = `Sets de ${fmt.len} points, ${WIN} sets gagnants. Tu joues côté jaune.`;
 }
 const matchEnCours = () => S && S.enJeu && S.match.coups.length > 0 && !S.match.termine;
 const sauverFormat = () => ecrire("format", { len: fmt.len, win: fmt.win });
@@ -285,33 +284,60 @@ document.querySelectorAll("#segWin button").forEach(b => b.addEventListener("cli
 }));
 
 // ---------------------------------------------------------------- face-à-face
+let minuteriesIntro = [];
 function ouvrirFaceAFace() {
   $("startCard").hidden = true; $("tourCard").hidden = true;
-  const fav = cpt => { const s = signeFavori(cpt); return s === null ? "–" : EMOJI[s]; };
-  const f = P.faceAFace[OPP.id] || { v: 0, d: 0, signes: [0, 0, 0] };
-  const lignes = [
-    [P.elo, "Niveau PCF", OPP.elo],
-    [f.v, "Face-à-face", f.d],
-    [fav(P.signes), "Signe favori", fav(f.signes)],
-    [titresObtenus(P).length, "Titres", OPP.id === "professeur" ? "Légende" : "–"],
-  ];
+  ambiance.initialiser();                  // on profite du geste de l'utilisateur pour préparer le son
+  const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: fmt.len, setsGagnants: WIN });
+  $("foStage").textContent = pr.bandeau; $("foFmt").textContent = pr.format;
   $("foAvMe").innerHTML = avatarSVG(P.av); $("foAvBot").innerHTML = avatarSVG(OPP.av);
-  $("foNameMe").textContent = nomAffiche(P); $("foSubMe").textContent = `${P.drapeau} ${dernierTitre(P)}`;
-  $("foNameBot").textContent = OPP.nom; $("foSubBot").textContent = OPP.style;
-  $("foRows").innerHTML = lignes.map(([a, l, b]) => `<div class="fo-row"><span>${esc(a)}</span><span>${l}</span><span>${esc(b)}</span></div>`).join("");
-  const etape = S.tour !== null ? `${TOUR_SINGULIER[S.tour]} du PCF Open. ` : "";
-  $("foKey").textContent = `${etape}${OPP.nom}, ${OPP.style.toLowerCase()} : ${OPP.desc}` + (f.v + f.d ? "" : " Premier face-à-face.");
-  faceAFaceOuvert = true; $("faceoff").classList.add("show"); $("foGo").focus();
+  $("foNameMe").textContent = pr.joueur.nom; $("foSubMe").textContent = pr.joueur.sous; $("foRecMe").textContent = pr.joueur.bilan;
+  $("foNameBot").textContent = pr.adversaire.nom; $("foSubBot").textContent = pr.adversaire.sous; $("foRecBot").textContent = pr.adversaire.bilan;
+  const cellule = (texte, n, adv) => `<span class="${adv ? "adv" : ""}${n === undefined && texte.length > 3 ? " txt" : ""}"${n !== null && n !== undefined ? ` data-n="${n}"` : ""}>${esc(texte)}</span>`;
+  $("foRows").innerHTML = pr.lignes.map((l, i) => `<div class="fo-row" style="--i:${i}">${cellule(l.g, l.gn, l.avantage === "g")}<span>${l.label}</span>${cellule(l.d, l.dn, l.avantage === "d")}</div>`).join("");
+  $("foKey").innerHTML = `${esc(pr.cle)} Tu joues <b>côté jaune</b>.`;
+
+  // Chorégraphie : bandeau, entrée des joueurs, VS (et le public applaudit), puis les stats une à une.
+  const ov = $("faceoff"), debutStats = 1.6, pas = 0.28, fin = debutStats + pr.lignes.length * pas + 0.3;
+  ov.style.setProperty("--fin", `${fin}s`);
+  ov.classList.remove("show", "vite"); void ov.offsetWidth;
+  faceAFaceOuvert = true; ov.classList.add("show");
+  minuteriesIntro.forEach(clearTimeout);
+  const vite = reduitMouvement();
+  minuteriesIntro = [setTimeout(() => ambiance.public("set", 0.4), vite ? 0 : 1150)];
+  ov.querySelectorAll("[data-n]").forEach(el => {
+    const i = +el.parentElement.style.getPropertyValue("--i");
+    if (!vite) minuteriesIntro.push(setTimeout(() => compter(el), (debutStats + i * pas) * 1000));
+  });
+  if (!vite) minuteriesIntro.push(setTimeout(() => $("foGo").focus(), fin * 1000));
+  else $("foGo").focus();
 }
+// Les nombres défilent jusqu'à leur valeur, comme au tableau d'affichage.
+function compter(el) {
+  const cible = +el.dataset.n, texte = el.textContent, suffixe = texte.slice(String(cible).length), t0 = performance.now();
+  const pas = t => {
+    const k = Math.min(1, (t - t0) / 700), v = Math.round(cible * (1 - Math.pow(1 - k, 3)));
+    el.textContent = `${v}${suffixe}`;
+    if (k < 1 && !$("faceoff").classList.contains("vite")) requestAnimationFrame(pas); else el.textContent = texte;
+  };
+  requestAnimationFrame(pas);
+}
+// Toucher l'écran pendant l'animation : on passe directement à la fin.
+$("faceoff").addEventListener("click", e => {
+  if (e.target.closest("button")) return;
+  const ov = $("faceoff"); if (ov.classList.contains("vite")) return;
+  ov.classList.add("vite");
+  minuteriesIntro.splice(1).forEach(clearTimeout);   // on garde les applaudissements
+  $("foGo").focus();
+});
 $("foGo").addEventListener("click", () => {
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false;
-  ambiance.initialiser(); setTimeout(() => ambiance.public("set", 0.35), 50);
   S.enJeu = true;
   annoncer([annonceDebutSet(S.match)]);
   boutons(true); $("status").textContent = "Set 1, coup 1"; lancerMinuteur();
 });
 $("foBack").addEventListener("click", () => {
-  $("faceoff").classList.remove("show"); faceAFaceOuvert = false;
+  $("faceoff").classList.remove("show"); faceAFaceOuvert = false; minuteriesIntro.forEach(clearTimeout);
   S.tour = null; nouvelleSeance();
 });
 
