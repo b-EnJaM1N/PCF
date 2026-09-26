@@ -22,9 +22,15 @@ test("docs/script-des-annonces.md est à jour (sinon : npm run script-voix)", ()
 });
 
 test("aucune clé secrète dans le code", () => {
-  const motifs = [/service_role/i, /sk_live_/, /-----BEGIN [A-Z ]*PRIVATE KEY-----/, /eyJhbGciOi[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\./];
+  const motifs = [/service_role/i, /sb_secret_[A-Za-z0-9]{8,}/, /sk_live_/, /-----BEGIN [A-Z ]*PRIVATE KEY-----/, /eyJhbGciOi[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\./];
   for (const p of tous(APP).filter(f => /\.(js|html|json|webmanifest)$/.test(f))) {
     const s = readFileSync(p, "utf8");
     for (const m of motifs) assert.ok(!m.test(s), `${relative(APP, p)} contient peut-être un secret (${m})`);
   }
+});
+
+test("la clé Supabase du code est bien la clé publique", async () => {
+  const { SUPABASE_URL, SUPABASE_CLE_PUBLIQUE } = await import("../app/js/config.js");
+  assert.match(SUPABASE_URL, /^https:\/\/[a-z0-9]+\.supabase\.co$/);
+  assert.match(SUPABASE_CLE_PUBLIQUE, /^sb_publishable_/);
 });

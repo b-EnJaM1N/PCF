@@ -41,6 +41,13 @@ Pour ajouter un enregistrement : dépose le fichier MP3 dans `app/audio/` (sur G
 Tant qu'un fichier manque, la réplique est seulement affichée par écrit. La voix de synthèse du téléphone,
 jugée trop robotique, est coupée par défaut ; on peut la réactiver dans l'onglet Options.
 
+## Compte joueur (étape 2)
+
+Le compte est facultatif : on peut toujours jouer en solo sans compte. Avec un compte (e-mail + code reçu par e-mail,
+sans mot de passe), la fiche est sauvegardée en ligne et retrouvée sur n'importe quel téléphone.
+Chaque joueur a un pseudo suivi d'un numéro attribué par le serveur (ex. `Benji#4821`).
+Réglages du projet Supabase : [`supabase/LISEZMOI.md`](supabase/LISEZMOI.md).
+
 ## Organisation du code
 
 ```
@@ -54,8 +61,14 @@ app/                  l'application publiée (HTML, CSS, JavaScript, sans étape
   js/profil.js        fiche joueur, titres, niveau ELO
   js/tournoi.js       le PCF Open
   js/app.js           l'écran
+  js/compte.js        connexion et fiche en ligne (Supabase)
+  js/synchro.js       règles de synchronisation (quelle fiche garder)
+  js/ecran-compte.js  la carte « Mon compte »
+  js/config.js        adresse et clé PUBLIQUE du projet Supabase
+  vendor/             bibliothèque Supabase (copie locale)
   sw.js               fonctionnement hors ligne
-tests/                tests automatiques (npm test)
+supabase/             script de la base de données et réglages du projet
+tests/                tests automatiques (npm test ; base de données : tests/base-de-donnees/)
 outils/               petits scripts (génération du script des annonces, liste des fichiers audio)
 .github/workflows/    tests et mise en ligne automatiques à chaque envoi
 ```

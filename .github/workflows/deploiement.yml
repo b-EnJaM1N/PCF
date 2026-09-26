@@ -25,8 +25,25 @@ jobs:
           node-version: 22
       - run: npm test
 
+  base-de-donnees:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: test
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: test
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash tests/base-de-donnees/lancer.sh
+
   mise-en-ligne:
-    needs: tests
+    needs: [tests, base-de-donnees]
     if: github.event_name != 'pull_request' && github.ref != 'refs/heads/gh-pages'
     runs-on: ubuntu-latest
     steps:

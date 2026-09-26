@@ -125,6 +125,11 @@
       <ol class="steps"><li>touche le menu ⋮ en haut à droite ;</li><li>choisis « Installer l'application » ou « Ajouter à l'écran d'accueil ».</li></ol>
       <button class="btn" id="installBtn" style="margin-top:12px" hidden>Installer maintenant</button>
     </section>
+    <section class="card">
+      <h2>Confidentialité</h2>
+      <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, PCF enregistre ton adresse e-mail (jamais visible par les autres joueurs), ton pseudo, ton pays, ton avatar et tes statistiques, chez l'hébergeur Supabase, en Europe (Paris). Les autres joueurs connectés peuvent voir ton pseudo, ton avatar et tes statistiques. Tu peux supprimer ton compte et toutes ses données à tout moment.</p>
+      <button class="btn alt danger" id="supprimerCompte" style="margin-top:12px" hidden>Supprimer mon compte</button>
+    </section>
     <p class="record" id="version"></p>
   </div>
 
@@ -139,6 +144,36 @@
         <div><b id="kS">0</b><span>série en cours</span></div>
       </div>
       <p class="hint" id="pEmpty"></p>
+    </section>
+
+    <section class="card edit" id="cCompte">
+      <h2>Mon compte</h2>
+      <div id="compteHors">
+        <p class="hint">Crée ton compte gratuit pour <b>sauvegarder ta fiche en ligne</b> et la retrouver sur n'importe quel téléphone. Pas de mot de passe : tu reçois un code par e-mail.</p>
+        <label class="lbl" for="inEmail">Ton adresse e-mail</label>
+        <input type="email" id="inEmail" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="toi@exemple.fr">
+        <button class="btn" id="btnCode" style="margin-top:12px">Recevoir mon code</button>
+      </div>
+      <div id="compteCode" hidden>
+        <p class="hint" id="codeInfo"></p>
+        <label class="lbl" for="inCode">Code reçu par e-mail</label>
+        <input type="text" id="inCode" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="123456" class="code">
+        <button class="btn" id="btnValider" style="margin-top:12px">Valider</button>
+        <p class="hint" style="margin-top:10px"><button class="linkbtn" id="btnRenvoyer">Renvoyer le code</button> · <button class="linkbtn" id="btnAutreEmail">Changer d'adresse</button></p>
+      </div>
+      <div id="comptePseudo" hidden>
+        <p class="hint">Dernière étape : choisis ton pseudo. Un numéro est ajouté automatiquement (ex. <b>Benji#4821</b>), pour que plusieurs joueurs puissent porter le même pseudo.</p>
+        <label class="lbl" for="inPseudoCompte">Pseudo</label>
+        <input type="text" id="inPseudoCompte" maxlength="16" autocomplete="nickname" placeholder="Ex. Benji">
+        <button class="btn" id="btnCreer" style="margin-top:12px">Créer mon compte</button>
+      </div>
+      <div id="compteOn" hidden>
+        <p style="margin:0 0 4px;font-weight:600" id="compteNom"></p>
+        <p class="hint" id="compteEmailAff" style="margin:0 0 8px"></p>
+        <p class="hint" id="compteEtat"></p>
+        <button class="btn alt" id="btnDeco" style="margin-top:12px">Se déconnecter</button>
+      </div>
+      <p class="locknote" id="compteMsg" role="status"></p>
     </section>
 
     <section class="card edit">
@@ -161,7 +196,7 @@
     <section class="card" id="cElo"><h2>Évolution du niveau</h2><div class="spark" id="spark"></div><p class="hint">Niveau PCF calculé comme un ELO, sur tes matchs contre les bots.</p></section>
     <section class="card"><h2>Palmarès</h2><div class="badges" id="badges"></div></section>
     <section class="card" id="cLast"><h2>Derniers matchs</h2><div class="lines hist-list" id="lastBody"></div></section>
-    <p class="hint" style="text-align:center">Ta fiche est gardée sur ce téléphone.</p>
+    <p class="hint" style="text-align:center" id="infoConnexion">Sans compte, ta fiche est gardée seulement sur ce téléphone.</p>
     <p style="text-align:center;margin:0"><button class="linkbtn" id="resetProfile">Remettre ma fiche à zéro</button></p>
   </div>
 </div>
@@ -195,6 +230,7 @@
   </div>
 </div>
 
+<script src="vendor/supabase.js" defer></script>
 <script type="module" src="js/app.js"></script>
 </body>
 </html>
