@@ -1,4 +1,4 @@
-// Carte « Mon compte » de la fiche joueur : connexion par code reçu par e-mail,
+// Carte « Mon compte » de la fiche joueur : connexion par lien (ou code) reçu par e-mail,
 // choix du pseudo, sauvegarde automatique de la fiche en ligne, déconnexion, suppression.
 import * as compte from "./compte.js";
 import { choisirFiche, pseudoValide, pseudoComplet } from "./synchro.js";
@@ -8,7 +8,7 @@ const $ = id => document.getElementById(id);
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const heure = d => d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 
-// ctx : { lireP(), remplacerP(fiche), sauverLocal(), rafraichir() }
+// ctx : { lireP(), remplacerP(fiche), sauverLocal(), rafraichir(), ouvrirFiche() }
 export function installerCompte(ctx) {
   let session = null, email = lire("compteEmail", ""), minuterie = 0, occupe = false;
 
@@ -65,7 +65,7 @@ export function installerCompte(ctx) {
     if (!EMAIL.test(e)) throw new Error("Cette adresse e-mail ne semble pas valide.");
     await compte.envoyerCode(e);
     email = e; ecrire("compteEmail", e);
-    $("codeInfo").textContent = `Code envoyé à ${e}. Regarde tes e-mails (et les indésirables) : il peut mettre une minute à arriver.`;
+    $("codeInfo").innerHTML = `E-mail envoyé à <b>${e.replace(/[<>&"]/g, "")}</b>. Ouvre-le (regarde aussi les indésirables) et touche le lien <b>« Sign in »</b> : tu reviendras ici, connecté. Il peut mettre une minute à arriver.`;
     $("inCode").value = ""; montrer("code"); $("inCode").focus();
   }));
   $("btnValider").addEventListener("click", () => attendre($("btnValider"), async () => {
@@ -75,7 +75,7 @@ export function installerCompte(ctx) {
   }));
   $("inCode").addEventListener("input", e => { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 8); });
   $("btnRenvoyer").addEventListener("click", () => attendre($("btnRenvoyer"), async () => {
-    await compte.envoyerCode(email); dire("Nouveau code envoyé.");
+    await compte.envoyerCode(email); dire("Nouvel e-mail envoyé.");
   }));
   $("btnAutreEmail").addEventListener("click", () => { dire(""); montrer("hors"); $("inEmail").focus(); });
   $("btnCreer").addEventListener("click", () => attendre($("btnCreer"), async () => {
@@ -101,8 +101,13 @@ export function installerCompte(ctx) {
   // Au démarrage : reprendre la session si le joueur était connecté.
   $("inEmail").value = email;
   montrer("hors");
+  const retour = compte.retourDeLien();
+  if (retour) ctx.ouvrirFiche();
+  if (retour && !retour.ok) dire(retour.message, true);
   compte.sessionActuelle().then(async s => {
-    if (!s) return;
+    if (typeof history !== "undefined" && location.hash) history.replaceState(null, "", location.pathname + location.search);
+    if (!s) { if (retour?.ok) dire("La connexion n'a pas abouti. Redemande un e-mail de connexion.", true); return; }
+    if (retour?.ok) dire("Connexion réussie !");
     try { await apresConnexion(s); } catch (e) { session = s; afficherConnecte(); $("compteEtat").textContent = `⏳ ${e.message}`; }
   });
   compte.surChangement(s => { if (!s && session) { session = null; montrer("hors"); } });

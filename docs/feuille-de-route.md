@@ -3,7 +3,7 @@
 ## Étapes
 
 1. **Mode solo** : bots, fiche joueur, tournoi, statistiques gardées sur le téléphone. *Fait et validé.*
-2. **Comptes joueurs** : inscription, pseudo, avatar, fiche joueur sauvegardée en ligne. Service : Supabase (projet en Europe, Paris). Connexion par code reçu par e-mail, compte facultatif. *En cours.*
+2. **Comptes joueurs** : inscription, pseudo, avatar, fiche joueur sauvegardée en ligne. Service : Supabase (projet en Europe, Paris). Connexion par lien reçu par e-mail (code à 6 chiffres quand un service d'envoi sera branché), compte facultatif. *En cours.*
 3. **Duel en ligne** : un serveur vérifie les coups (anti-triche), gestion des déconnexions.
    - **Défier un ami avec une barre de recherche** : on tape un pseudo, les joueurs correspondants s'affichent (avatar, niveau), bouton « Défier » ; l'ami reçoit l'invitation dans l'application.
    - **Défi par lien**, pour inviter quelqu'un qui n'a pas encore l'application.
@@ -15,7 +15,7 @@
 ## Décisions à prendre
 
 - **Service en ligne** : ✅ décidé — Supabase (gratuit au démarrage).
-- **Connexion** : ✅ code à 6 chiffres reçu par e-mail, sans mot de passe. Compte facultatif ; la fiche du téléphone est transférée à la création du compte.
+- **Connexion** : ✅ par e-mail, sans mot de passe : lien « Sign in » pour l'instant (Supabase gratuit ne permet pas de modifier l'e-mail), code à 6 chiffres ensuite. Compte facultatif ; la fiche du téléphone est transférée à la création du compte.
 - **Envoi d'e-mails** : à brancher avant l'ouverture au public (limite du service inclus).
 - **Pseudos** : ✅ décidé — **pseudo avec numéro** (ex. « Benji#4821 »). Plusieurs joueurs peuvent choisir le même pseudo ; le numéro les distingue.
 - **Nom du groupe privé** : **Cercle** (préféré) ou **Club**.

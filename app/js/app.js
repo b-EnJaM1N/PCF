@@ -535,6 +535,7 @@ compteUI = installerCompte({
   lireP: () => P,
   sauverLocal,
   rafraichir: () => { afficherNomFiche(); rafraichirAvatars(); },
+  ouvrirFiche: () => document.querySelector('.tabs button[data-v="profile"]').click(),
   remplacerP: fiche => {
     P = normaliserProfil(fiche); sauverLocal();
     $("inPseudo").value = P.pseudo; $("inFlag").value = P.drapeau;

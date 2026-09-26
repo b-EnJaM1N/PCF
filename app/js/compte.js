@@ -1,4 +1,4 @@
-// Compte joueur en ligne (Supabase) : connexion par code reçu par e-mail,
+// Compte joueur en ligne (Supabase) : connexion par e-mail (lien « Sign in » ou code),
 // lecture et sauvegarde de la fiche, déconnexion, suppression du compte.
 // La bibliothèque Supabase est chargée par index.html (vendor/supabase.js).
 import { SUPABASE_URL, SUPABASE_CLE_PUBLIQUE } from "./config.js";
@@ -10,7 +10,9 @@ function sb() {
   const lib = typeof window !== "undefined" ? window.supabase : null;
   if (!lib) throw new Error("Connexion au serveur indisponible (hors ligne ?)");
   client = lib.createClient(SUPABASE_URL, SUPABASE_CLE_PUBLIQUE, {
-    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: "pcf:session" },
+    // Le lien reçu par e-mail ramène sur l'application avec la session dans l'adresse (#access_token=…) :
+    // flowType « implicit » fonctionne même si le lien s'ouvre dans un autre navigateur que la demande.
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: "implicit", storageKey: "pcf:session" },
   });
   return client;
 }
@@ -28,6 +30,20 @@ function message(e) {
 const verifier = ({ data, error }) => { if (error) throw new Error(message(error)); return data; };
 async function essayer(f) { try { return await f(); } catch (e) { throw new Error(message(e)); } }
 
+// Au retour du lien de l'e-mail : l'adresse contient la session, ou une erreur (lien expiré…).
+export function retourDeLien() {
+  if (typeof location === "undefined") return null;
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (h.get("access_token")) return { ok: true };
+  if (h.get("error") || h.get("error_code")) {
+    const expire = /expired|invalid/i.test(`${h.get("error_code")} ${h.get("error_description")}`);
+    return { ok: false, message: expire ? "Ce lien a expiré ou a déjà servi. Redemande un e-mail de connexion." : `Connexion impossible : ${h.get("error_description") || h.get("error")}` };
+  }
+  return null;
+}
+// Adresse où le lien de l'e-mail doit ramener (la version de test ou la version officielle).
+export const adresseRetour = () => (typeof location === "undefined" ? undefined : location.origin + location.pathname);
+
 export async function sessionActuelle() {
   try { const { data } = await sb().auth.getSession(); return data.session; } catch { return null; }
 }
@@ -36,7 +52,7 @@ export function surChangement(rappel) {
 }
 
 export const envoyerCode = email => essayer(async () =>
-  verifier(await sb().auth.signInWithOtp({ email, options: { shouldCreateUser: true } })));
+  verifier(await sb().auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: adresseRetour() } })));
 
 export const validerCode = (email, code) => essayer(async () =>
   verifier(await sb().auth.verifyOtp({ email, token: code, type: "email" })).session);

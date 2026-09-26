@@ -43,7 +43,7 @@ jugée trop robotique, est coupée par défaut ; on peut la réactiver dans l'on
 
 ## Compte joueur (étape 2)
 
-Le compte est facultatif : on peut toujours jouer en solo sans compte. Avec un compte (e-mail + code reçu par e-mail,
+Le compte est facultatif : on peut toujours jouer en solo sans compte. Avec un compte (e-mail + lien ou code reçu par e-mail,
 sans mot de passe), la fiche est sauvegardée en ligne et retrouvée sur n'importe quel téléphone.
 Chaque joueur a un pseudo suivi d'un numéro attribué par le serveur (ex. `Benji#4821`).
 Réglages du projet Supabase : [`supabase/LISEZMOI.md`](supabase/LISEZMOI.md).
