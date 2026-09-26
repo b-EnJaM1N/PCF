@@ -13,6 +13,7 @@ import { CATALOGUE } from "./voix/script.js";
 import { Ambiance } from "./ambiance.js";
 import { lire, ecrire } from "./stockage.js";
 import { VERSION } from "./version.js";
+import { installerCompte } from "./ecran-compte.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -28,7 +29,10 @@ let amicalId = botParId(lire("adversaire")) ? lire("adversaire") : "stratege";
 let OPP = botParId(amicalId);
 let P = normaliserProfil(lire("profil"));
 let T = lire("tournoi");
-const sauverP = () => ecrire("profil", P);
+const sauverLocal = () => ecrire("profil", P);
+let compteUI = null;
+// Chaque changement de la fiche est gardé sur le téléphone, puis envoyé en ligne si on est connecté.
+const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier(); };
 const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let panneauOuvert = null, faceAFaceOuvert = false;
@@ -351,7 +355,7 @@ function rafraichirAvatars() {
 
 function renderFiche() {
   $("pAv").innerHTML = avatarSVG(P.av);
-  $("pName").textContent = `${nomAffiche(P)} ${P.drapeau}`;
+  afficherNomFiche();
   $("pTitle").textContent = dernierTitre(P);
   $("pElo").textContent = `Niveau PCF : ${P.elo}`;
   $("kM").textContent = P.matchs;
@@ -425,8 +429,10 @@ $("inFlag").value = P.drapeau;
 $("inFlag").addEventListener("change", e => { P.drapeau = e.target.value; sauverP(); renderFiche(); });
 $("inPseudo").value = P.pseudo;
 $("inPseudo").addEventListener("input", e => {
-  P.pseudo = e.target.value.replace(/[\u0000-\u001f]/g, "").slice(0, 16).trim(); sauverP();
-  $("pName").textContent = `${nomAffiche(P)} ${P.drapeau}`; rafraichirAvatars();
+  const propre = e.target.value.replace(/[#\u0000-\u001f]/g, "");
+  if (propre !== e.target.value) e.target.value = propre;
+  P.pseudo = propre.slice(0, 16).trim(); sauverP();
+  afficherNomFiche(); rafraichirAvatars();
 });
 $("resetProfile").addEventListener("click", () => {
   if (!confirm("Remettre ta fiche à zéro ? Tes statistiques et titres seront effacés.")) return;
@@ -520,6 +526,22 @@ window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); invita
 $("installBtn").addEventListener("click", async () => { if (!invitation) return; invitation.prompt(); await invitation.userChoice; invitation = null; $("installBtn").hidden = true; });
 if (matchMedia("(display-mode: standalone)").matches || navigator.standalone) $("installCard").hidden = true;
 if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(() => {});
+
+// ---------------------------------------------------------------- compte en ligne
+function afficherNomFiche() {
+  $("pName").innerHTML = `${esc(nomAffiche(P))}${P.numero ? `<span class="num">#${P.numero}</span>` : ""} ${P.drapeau}`;
+}
+compteUI = installerCompte({
+  lireP: () => P,
+  sauverLocal,
+  rafraichir: () => { afficherNomFiche(); rafraichirAvatars(); },
+  ouvrirFiche: () => document.querySelector('.tabs button[data-v="profile"]').click(),
+  remplacerP: fiche => {
+    P = normaliserProfil(fiche); sauverLocal();
+    $("inPseudo").value = P.pseudo; $("inFlag").value = P.drapeau;
+    renderFiche(); rafraichirAvatars(); afficherBilan();
+  },
+});
 
 // ---------------------------------------------------------------- démarrage
 renderAdversaires();
