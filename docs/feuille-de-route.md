@@ -9,14 +9,14 @@
    - **Défi par lien**, pour inviter quelqu'un qui n'a pas encore l'application.
    - Option « Ne pas apparaître dans la recherche ».
 4. **Niveau ELO entre joueurs humains, amis et groupes privés.**
-   - **Groupe privé**, nom envisagé : **Club** (autres idées : Cercle, Ligue, Écurie). Un nom, un blason, des invitations par lien ou par la recherche, la liste des membres et le **classement du club**. Un joueur peut être dans plusieurs clubs (famille, travail, amis). Le club remplace le « classement entre amis ».
-5. **Tournois en ligne**, dont les **tournois de club**.
+   - **Groupe privé**, nom retenu : **Cercle** ou **Club** (choix final à faire). Un nom, un blason, des invitations par lien ou par la recherche, la liste des membres et le **classement du cercle**. Un joueur peut être dans plusieurs cercles (famille, travail, amis). Il remplace le « classement entre amis ».
+5. **Tournois en ligne**, dont les **tournois de cercle**.
 
 ## Décisions à prendre
 
 - **Service en ligne** pour les comptes, la base de données et le temps réel : Supabase proposé (gratuit au démarrage).
-- **Pseudos** (à décider à l'étape 2) : pseudo unique (premier arrivé) ou pseudo avec numéro (ex. « Benji#4821 ») ?
-- **Nom du groupe privé** : Club, Cercle, Ligue ou Écurie ?
+- **Pseudos** : ✅ décidé — **pseudo avec numéro** (ex. « Benji#4821 »). Plusieurs joueurs peuvent choisir le même pseudo ; le numéro les distingue.
+- **Nom du groupe privé** : **Cercle** (préféré) ou **Club**.
 
 ## Idées notées en chemin
 
