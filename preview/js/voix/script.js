@@ -64,7 +64,8 @@ function scoresCourants() {
 
 // ---------------------------------------------------------------- commentateur
 // Plusieurs versions par situation, pour éviter les répétitions.
-// « jaune » = le joueur, « rouge » = la machine (mode solo).
+// « jaune » = le joueur, « rouge » = l'adversaire (la machine en solo ;
+// les situations en « _h » servent quand l'adversaire est humain).
 const COMMENTATEUR = {
   egalites: [
     "Trois égalités de suite. Ils se lisent dans les pensées.",
@@ -144,6 +145,38 @@ const COMMENTATEUR = {
   defaite: [
     "La machine l'emporte. Il faudra revoir ses habitudes.",
     "La machine a été la plus lucide aujourd'hui. Place à l'analyse.",
+  ],
+  // Duels entre humains : les situations où l'adversaire n'est plus « la machine ».
+  serie_jaune_h: [
+    "Quatre points d'affilée. L'adversaire vacille.",
+    "Quatre de suite ! Il a trouvé la faille.",
+    "Il enchaîne. En face, on ne sait plus où donner de la tête.",
+  ],
+  serie_rouge_h: [
+    "L'adversaire déroule. Quatre points de suite.",
+    "Quatre points d'affilée en face. Il faut réagir, et vite.",
+    "L'adversaire s'envole. Il est temps de changer quelque chose.",
+  ],
+  lisible_h: [
+    "L'adversaire a flairé le coup. Encore. Il devient lisible.",
+    "Il l'a vu venir de loin. Ses habitudes le trahissent.",
+    "Trop prévisible en ce moment. En face, on lit dans son jeu.",
+  ],
+  set_renverse_rouge_h: [
+    "La balle de set lui a filé entre les doigts.",
+    "Il tenait ce set… et l'adversaire le lui arrache.",
+  ],
+  set_ecrasant_jaune_h: [
+    "Une leçon. L'adversaire va devoir se remettre en question.",
+    "Set à sens unique. Démonstration de force.",
+  ],
+  victoire_nette_h: [
+    "Démonstration. L'adversaire n'a rien vu venir.",
+    "Victoire sans trembler. Du grand art.",
+  ],
+  defaite_h: [
+    "L'adversaire l'emporte. Il faudra revoir ses habitudes.",
+    "L'adversaire a été le plus lucide aujourd'hui. Place à l'analyse.",
   ],
 };
 const num2 = i => String(i + 1).padStart(2, "0");

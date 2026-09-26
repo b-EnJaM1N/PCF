@@ -27,8 +27,9 @@ function message(e) {
   if (/fetch|network|hors ligne|Failed to/i.test(t)) return "Pas de connexion au serveur. Vérifie ton réseau et réessaie.";
   return t || "Une erreur inattendue est survenue.";
 }
-const verifier = ({ data, error }) => { if (error) throw new Error(message(error)); return data; };
-async function essayer(f) { try { return await f(); } catch (e) { throw new Error(message(e)); } }
+export const verifier = ({ data, error }) => { if (error) throw new Error(message(error)); return data; };
+export async function essayer(f) { try { return await f(); } catch (e) { throw new Error(message(e)); } }
+export const clientSupabase = () => sb();
 
 // Au retour du lien de l'e-mail : l'adresse contient la session, ou une erreur (lien expiré…).
 export function retourDeLien() {
@@ -42,7 +43,8 @@ export function retourDeLien() {
   return null;
 }
 // Adresse où le lien de l'e-mail doit ramener (la version de test ou la version officielle).
-export const adresseRetour = () => (typeof location === "undefined" ? undefined : location.origin + location.pathname);
+// On garde « ?duel=… » : un joueur invité par lien retrouve son défi après la connexion.
+export const adresseRetour = () => (typeof location === "undefined" ? undefined : location.origin + location.pathname + location.search);
 
 export async function sessionActuelle() {
   try { const { data } = await sb().auth.getSession(); return data.session; } catch { return null; }

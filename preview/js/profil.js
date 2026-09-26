@@ -57,7 +57,8 @@ export const dernierTitre = P => (titresObtenus(P)[0] || { nom: "Espoir du circu
 export const signeFavori = c => (c.reduce((a, b) => a + b, 0) ? c.indexOf(Math.max(...c)) : null);
 
 // Met la fiche à jour à la fin d'un match. Renvoie les titres obtenus pendant ce match.
-// r = { match, stats, devines, lisibles, adversaire: { id, elo }, finaleTournoi, date }
+// r = { match, stats, devines, lisibles, adversaire: { id, elo, nom }, finaleTournoi, date, compteNiveau }
+// compteNiveau = false : duel entre humains, sans effet sur le niveau (étape 4).
 export function enregistrerMatch(P, r) {
   const { match, stats } = r, c = match.coups, n = c.length, gagne = match.vainqueur === 0;
   P.matchs++; if (gagne) P.victoires++;
@@ -81,9 +82,11 @@ export function enregistrerMatch(P, r) {
   P.meilleureSeriePoints = Math.max(P.meilleureSeriePoints, stats.meilleureSerie);
   P.meilleureRemontee = Math.max(P.meilleureRemontee, stats.meilleureRemontee);
   P.plusLongMatch = Math.max(P.plusLongMatch, n);
-  P.elo = nouvelElo(P.elo, r.adversaire.elo, gagne);
-  P.historiqueElo.push(P.elo); if (P.historiqueElo.length > 60) P.historiqueElo.shift();
-  P.derniers.unshift({ date: r.date ?? Date.now(), adv: r.adversaire.id, gagne, sets: `${match.sets[0]}–${match.sets[1]}`, detail: match.scoresSets.map(([a, b]) => `${a}–${b}`).join(", ") });
+  if (r.compteNiveau !== false) {
+    P.elo = nouvelElo(P.elo, r.adversaire.elo, gagne);
+    P.historiqueElo.push(P.elo); if (P.historiqueElo.length > 60) P.historiqueElo.shift();
+  }
+  P.derniers.unshift({ date: r.date ?? Date.now(), adv: r.adversaire.id, nomAdv: r.adversaire.nom, gagne, sets: `${match.sets[0]}–${match.sets[1]}`, detail: match.scoresSets.map(([a, b]) => `${a}–${b}`).join(", ") });
   P.derniers = P.derniers.slice(0, 8);
 
   const taux = r.lisibles ? r.devines / r.lisibles : 1;
