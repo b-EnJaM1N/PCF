@@ -4,8 +4,9 @@
 import { COTE } from "./regles.js";
 import { replique, repliqueScore, repliquePartout, versions, ORDINAUX, slug } from "./voix/script.js";
 
-export function nouvelEtatAnnonces() {
+export function nouvelEtatAnnonces({ humain = false } = {}) {
   return {
+    humain,                       // adversaire humain (duel en ligne)
     serie: { joueur: null, n: 0 },
     egalitesDeSuite: 0,
     ecartMin: 0,                  // plus gros retard du joueur dans le set (négatif)
@@ -16,7 +17,9 @@ export function nouvelEtatAnnonces() {
 }
 
 // Choisit une version d'une situation, sans répéter la précédente.
+// Contre un humain, on prend la variante « _h » quand elle existe.
 function versionDe(etat, situation, rng) {
+  if (etat.humain && versions(`${situation}_h`).length) situation = `${situation}_h`;
   const ids = versions(situation);
   const dispo = ids.length > 1 ? ids.filter(id => id !== etat.derniereVersion[situation]) : ids;
   const id = dispo[Math.floor(rng() * dispo.length)];

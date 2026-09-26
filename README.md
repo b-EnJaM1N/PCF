@@ -48,6 +48,14 @@ sans mot de passe), la fiche est sauvegardée en ligne et retrouvée sur n'impor
 Chaque joueur a un pseudo suivi d'un numéro attribué par le serveur (ex. `Benji#4821`).
 Réglages du projet Supabase : [`supabase/LISEZMOI.md`](supabase/LISEZMOI.md).
 
+## Duel en ligne (étape 3)
+
+Onglet **Duel** (compte nécessaire) : chercher un joueur par pseudo (`Benji` ou `Benji#4821`) et le défier,
+ou envoyer un lien d'invitation (WhatsApp, SMS…). Le serveur arbitre : chaque signe reste secret jusqu'à ce
+que les deux aient joué, le score est calculé par la base de données (mêmes règles que l'application, vérifié
+par un test qui compare 40 matchs), 5 secondes par coup. Si un joueur perd la connexion : pause, puis forfait
+après 60 secondes. Les duels comptent dans la fiche (statistiques, historique, titres) mais pas dans le niveau.
+
 ## Organisation du code
 
 ```
@@ -64,6 +72,9 @@ app/                  l'application publiée (HTML, CSS, JavaScript, sans étape
   js/compte.js        connexion et fiche en ligne (Supabase)
   js/synchro.js       règles de synchronisation (quelle fiche garder)
   js/ecran-compte.js  la carte « Mon compte »
+  js/duel-logique.js  duel : ce que le téléphone déduit de l'état du serveur
+  js/duel-serveur.js  duel : échanges avec le serveur et mises à jour en direct
+  js/ecran-duel.js    l'onglet « Duel » (recherche, défis, liens)
   js/config.js        adresse et clé PUBLIQUE du projet Supabase
   vendor/             bibliothèque Supabase (copie locale)
   sw.js               fonctionnement hors ligne

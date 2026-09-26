@@ -11,6 +11,12 @@ Tous ces réglages se font une seule fois, depuis le site supabase.com (le navig
 
 Le script peut être relancé sans risque. Il est testé automatiquement (`tests/base-de-donnees/`).
 
+## 1 bis. Duels en ligne (étape 3)
+
+Même manipulation avec le fichier [`etape-3-duels.sql`](etape-3-duels.sql), **après** celui de l'étape 2 :
+SQL Editor → New query → coller tout le fichier → **Run** (confirmer si Supabase affiche
+« Potential issue detected »). Le script active aussi les mises à jour en direct (Realtime) des duels.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

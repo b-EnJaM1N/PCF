@@ -24,17 +24,17 @@ export function presentation(P, bot, { tour = null, pointsParSet = 11, setsGagna
     nombre("Face-à-face", f.v, f.d),
     { label: "Arme favorite", g: fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`, d: bot.specialite, avantage: null },
     nombre("Imprévisibilité", imp, bot.imprevisibilite, "/100"),
-    { label: "Titres", g: String(titres), d: bot.id === "professeur" ? "Légende" : "–", avantage: null },
+    bot.humain ? nombre("Titres", titres, bot.titres) : { label: "Titres", g: String(titres), d: bot.id === "professeur" ? "Légende" : "–", avantage: null },
   ];
   const pct = pourcent(P.victoires, P.matchs);
   return {
-    bandeau: tour === null ? "Match amical" : `PCF Open · ${TOUR_SINGULIER[tour]}`,
+    bandeau: bot.humain ? "Duel en ligne" : tour === null ? "Match amical" : `PCF Open · ${TOUR_SINGULIER[tour]}`,
     format: `Sets de ${pointsParSet} points · ${setsGagnants} sets gagnants`,
     joueur: {
       nom: nomAffiche(P), sous: `${P.drapeau} ${dernierTitre(P)}`,
       bilan: P.matchs ? `${P.victoires} V – ${P.matchs - P.victoires} D · ${pct} % de victoires` : "Premier match officiel",
     },
-    adversaire: { nom: bot.nom, sous: bot.style, bilan: `« ${bot.desc.charAt(0).toUpperCase() + bot.desc.slice(1)} »` },
+    adversaire: { nom: bot.nom, sous: bot.style, bilan: bot.humain ? bot.desc : `« ${bot.desc.charAt(0).toUpperCase() + bot.desc.slice(1)} »` },
     lignes,
     cle: f.v + f.d ? `${f.v + f.d}ᵉ face-à-face.` : "Premier face-à-face.",
   };

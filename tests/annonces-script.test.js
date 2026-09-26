@@ -94,3 +94,14 @@ test("le public applaudit 4 points d'affilée, la fin d'un set et du match, pas 
   // 3 points puis 1 perdu : rien ; 4 d'affilée ; 4 pour l'adversaire ; la série suivante finit le set 11–5 ; puis 3 points : rien
   assert.deepEqual(pubs.map((p, i) => p && `${i}:${p}`).filter(Boolean), ["7:serie", "11:serie", "15:set"]);
 });
+
+test("contre un humain, le commentateur ne parle jamais de « la machine »", () => {
+  const rng = rngFixe(21);
+  for (let k = 0; k < 30; k++) {
+    const m = nouveauMatch({ pointsParSet: 7, setsGagnants: 2 }), etat = nouvelEtatAnnonces({ humain: true });
+    while (!m.termine) {
+      const a = annoncerCoup(m, jouerCoup(m, Math.floor(rng() * 3), Math.floor(rng() * 3)), etat, { recents: Array(10).fill(true) }, rng);
+      for (const l of a.lignes) assert.ok(!/machine/i.test(l.texte), l.texte);
+    }
+  }
+});

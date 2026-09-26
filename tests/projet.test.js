@@ -34,3 +34,17 @@ test("la clé Supabase du code est bien la clé publique", async () => {
   assert.match(SUPABASE_URL, /^https:\/\/[a-z0-9]+\.supabase\.co$/);
   assert.match(SUPABASE_CLE_PUBLIQUE, /^sb_publishable_/);
 });
+
+test("chaque fichier JavaScript de l'application est syntaxiquement correct", async () => {
+  const { spawnSync } = await import("node:child_process");
+  const { writeFileSync, mkdtempSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const dossier = mkdtempSync(join(tmpdir(), "pcf-syntaxe-"));
+  for (const f of tous(APP).filter(p => /\/js\/.*\.js$/.test(p))) {
+    // copie en .mjs pour que Node vérifie la syntaxe d'un module (imports compris)
+    const copie = join(dossier, relative(APP, f).replace(/[\/]/g, "_") + ".mjs");
+    writeFileSync(copie, readFileSync(f, "utf8"));
+    const r = spawnSync(process.execPath, ["--check", copie], { encoding: "utf8" });
+    assert.equal(r.status, 0, `${relative(APP, f)} : ${r.stderr.split("\n").find(l => /Error/.test(l))}`);
+  }
+});
