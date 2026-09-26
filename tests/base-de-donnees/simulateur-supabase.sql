@@ -1,3 +1,4 @@
+set client_min_messages = error;
 -- Imite ce que Supabase fournit déjà (rôles, table des utilisateurs, auth.uid()),
 -- pour tester nos scripts sur un PostgreSQL ordinaire.
 do $$ begin
@@ -14,3 +15,7 @@ grant usage on schema public to anon, authenticated;
 -- Comme sur Supabase : par défaut, les nouvelles tables sont ouvertes à anon et authenticated.
 alter default privileges in schema public grant all on tables to anon, authenticated;
 alter default privileges in schema public grant all on functions to anon, authenticated;
+-- Supabase diffuse les changements en direct via cette publication.
+do $$ begin
+  if not exists (select 1 from pg_publication where pubname = 'supabase_realtime') then create publication supabase_realtime; end if;
+end $$;
