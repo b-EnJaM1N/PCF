@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PCF</title>
+<meta name="description" content="PCF — Pierre-Ciseaux-Feuille, le sport numérique. Sets de 11 points, arbitre, commentateur et tournois.">
+<meta name="theme-color" content="#0F2C52">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PCF">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preload" href="fonts/barlow-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+<script>
+  // Si quelque chose casse, on l'affiche à l'écran pour pouvoir le signaler (capture d'écran).
+  (function () {
+    function montrer(msg) {
+      var d = document.getElementById("erreur");
+      if (!d) { d = document.createElement("div"); d.id = "erreur"; d.setAttribute("role", "alert"); (document.body || document.documentElement).appendChild(d); }
+      d.textContent = "Oups, un problème : " + msg + " — fais une capture d'écran et envoie-la. (touche pour fermer)";
+      d.onclick = function () { d.remove(); };
+    }
+    window.addEventListener("error", function (e) { montrer((e.message || "erreur de chargement") + (e.filename ? " [" + e.filename.split("/").pop() + ":" + e.lineno + "]" : "")); }, true);
+    window.addEventListener("unhandledrejection", function (e) { montrer(String(e.reason && e.reason.message || e.reason)); });
+  })();
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>PCF</h1><div class="rule" id="ruleTxt">Sets de 11, 2 sets gagnants</div></div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="test" id="testSnd">Tester le son</button>
+      <label class="sound"><input type="checkbox" id="snd" checked> Son</label>
+    </div>
+  </header>
+  <p class="sndnote" id="sndNote" hidden></p>
+  <nav class="tabs"><button data-v="match" aria-pressed="true">Match</button><button data-v="profile" aria-pressed="false">Ma fiche</button><button data-v="options" aria-pressed="false">Options</button></nav>
+
+  <div class="view" id="viewMatch">
+    <section class="card" id="startCard">
+      <h2>Prêt pour un match ?</h2>
+      <div class="seg" id="segMode"><button data-v="amical" aria-pressed="true">Match amical</button><button data-v="tournoi" aria-pressed="false">Tournoi</button></div>
+      <div id="amicalBox">
+        <span class="fmt-lbl">Adversaire</span>
+        <div class="opps" id="opps"></div>
+        <p class="hint" id="oppDesc" style="margin:0 0 14px"></p>
+        <span class="fmt-lbl">Format du match</span>
+        <div class="seg" id="segWin"><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
+        <p class="hint" style="margin-bottom:14px" id="fmtHint"></p>
+        <button class="btn" id="startBtn">Commencer un match</button>
+      </div>
+      <div id="tourBox" hidden>
+        <p class="hint" style="margin-bottom:14px">Le PCF Open : toi et les 7 bots, en élimination directe. Quarts et demi-finales en 2 sets gagnants, finale en 3 sets gagnants, comme un Grand Chelem. Les têtes de série sont placées selon leur niveau.</p>
+        <button class="btn" id="tourBtn">Lancer le tournoi</button>
+      </div>
+    </section>
+
+    <section class="card" id="tourCard" hidden>
+      <h2>🏆 PCF Open</h2>
+      <div id="bracket"></div>
+      <p class="tmsg" id="tMsg"></p>
+      <button class="btn" id="tPlay"></button>
+      <p style="text-align:center;margin:12px 0 0"><button class="linkbtn" id="tQuit">Abandonner le tournoi</button></p>
+    </section>
+
+    <section class="board">
+      <div class="side me"><div class="name"><span class="mini" id="miniAv"></span><span id="pseudoMe">Toi</span></div><div class="score" id="sMe">0</div><div class="sets" id="setsMe"></div></div>
+      <div class="side bot"><div class="name"><span class="mini" id="miniBot"></span><span id="botName">Le bot</span></div><div class="score" id="sBot">0</div><div class="sets" id="setsBot"></div></div>
+      <div class="status" id="status">Choisis ton premier coup</div>
+      <div class="done-sets" id="doneSets"></div>
+    </section>
+
+    <div class="band" id="band" aria-live="polite"><div class="idle">Les annonces de l'arbitre et du commentateur s'afficheront ici.</div></div>
+
+    <div>
+      <div class="arena"><div class="hand" id="hMe">❔</div><div class="vs">contre</div><div class="hand" id="hBot">❔</div></div>
+      <div class="verdict" id="verdict"></div>
+    </div>
+    <div class="timer" id="timer" aria-hidden="true"><div id="bar"></div></div>
+    <div class="moves" id="moves">
+      <button data-m="0" disabled><span class="e">🪨</span><span class="l">Pierre</span></button>
+      <button data-m="2" disabled><span class="e">📄</span><span class="l">Feuille</span></button>
+      <button data-m="1" disabled><span class="e">✂️</span><span class="l">Ciseaux</span></button>
+    </div>
+
+    <section class="end" id="end" hidden>
+      <h2 id="endTitle"></h2>
+      <p id="endLine"></p>
+      <div class="bars" id="bars"></div>
+      <p class="readout" id="endRead"></p>
+      <p class="news" id="news"></p>
+      <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button></p>
+    </section>
+
+    <section>
+      <h2>Historique</h2>
+      <div class="tape" id="tape"><p class="empty">Les coups apparaîtront ici. Observe-les : ton adversaire le fait.</p></div>
+    </section>
+    <p class="readout" id="read">L'analyse de ton jeu démarre au premier coup.</p>
+    <p class="record" id="record"></p>
+  </div>
+
+  <div class="view" id="viewOptions" hidden>
+    <section class="card">
+      <h2>Points par set</h2>
+      <div class="seg" id="segLen"><button data-v="11">11 points (officiel)</button><button data-v="7">7 points</button></div>
+      <p class="hint">Le format officiel du PCF est le set de 11 points, avec 2 points d'écart. Le set de 7 points donne des matchs plus courts, mais laisse moins de place aux remontées.</p>
+      <p class="hint" id="lenLock" hidden>Le format ne peut pas changer pendant un match ou un tournoi.</p>
+    </section>
+    <section class="card">
+      <h2>Voix de l'arbitre et du commentateur</h2>
+      <p class="hint" id="voixInfo"></p>
+      <label class="sound" style="margin-top:12px;align-items:flex-start"><input type="checkbox" id="synthese"> <span>Lire aussi les répliques avec la voix de synthèse du téléphone (voix robotique)</span></label>
+    </section>
+    <section class="card" id="installCard">
+      <h2>Installer PCF sur l'écran d'accueil</h2>
+      <p class="hint"><b>iPhone (Safari)</b> :</p>
+      <ol class="steps"><li>touche le bouton Partager (le carré avec une flèche) ;</li><li>choisis « Sur l'écran d'accueil » ;</li><li>touche « Ajouter ».</li></ol>
+      <p class="hint" style="margin-top:10px"><b>Android (Chrome)</b> :</p>
+      <ol class="steps"><li>touche le menu ⋮ en haut à droite ;</li><li>choisis « Installer l'application » ou « Ajouter à l'écran d'accueil ».</li></ol>
+      <button class="btn" id="installBtn" style="margin-top:12px" hidden>Installer maintenant</button>
+    </section>
+    <p class="record" id="version"></p>
+  </div>
+
+  <div class="view" id="viewProfile" hidden>
+    <section class="card">
+      <div class="id"><div class="av" id="pAv"></div>
+        <div><div class="pseudo" id="pName"></div><div class="title" id="pTitle"></div><div class="elo" id="pElo"></div></div>
+      </div>
+      <div class="kpis">
+        <div><b id="kM">0</b><span>matchs</span></div>
+        <div><b id="kW">–</b><span>victoires</span></div>
+        <div><b id="kS">0</b><span>série en cours</span></div>
+      </div>
+      <p class="hint" id="pEmpty"></p>
+    </section>
+
+    <section class="card edit">
+      <h2>Mon avatar</h2>
+      <label class="lbl" for="inPseudo">Pseudo</label>
+      <input type="text" id="inPseudo" maxlength="16" placeholder="Ex. Benji-Pierre" autocomplete="nickname">
+      <label class="lbl" for="inFlag">Pays</label>
+      <select id="inFlag"></select>
+      <span class="lbl">Symbole</span><div class="sw" id="swSymbole"></div>
+      <span class="lbl">Fond</span><div class="sw" id="swBg"></div>
+      <span class="lbl">Gant</span><div class="sw" id="swGlove"></div>
+      <span class="lbl">Poignet</span><div class="sw" id="swWrist"></div>
+      <span class="lbl">Motif</span><div class="sw" id="swMotif"></div>
+      <p class="locknote" id="lockNote"></p>
+    </section>
+
+    <section class="card" id="cGame"><h2>Mon jeu</h2><div id="gameBody"></div></section>
+    <section class="card" id="cMental"><h2>Mon mental</h2><div class="lines" id="mentalBody"></div></section>
+    <section class="card" id="cRecords"><h2>Mes records</h2><div class="lines" id="recBody"></div></section>
+    <section class="card" id="cElo"><h2>Évolution du niveau</h2><div class="spark" id="spark"></div><p class="hint">Niveau PCF calculé comme un ELO, sur tes matchs contre les bots.</p></section>
+    <section class="card"><h2>Palmarès</h2><div class="badges" id="badges"></div></section>
+    <section class="card" id="cLast"><h2>Derniers matchs</h2><div class="lines hist-list" id="lastBody"></div></section>
+    <p class="hint" style="text-align:center">Ta fiche est gardée sur ce téléphone.</p>
+    <p style="text-align:center;margin:0"><button class="linkbtn" id="resetProfile">Remettre ma fiche à zéro</button></p>
+  </div>
+</div>
+
+<div class="inter intro" id="faceoff" role="dialog" aria-modal="true" aria-label="Présentation du match">
+  <div class="fo">
+    <div class="fo-banner"><div class="fo-stage" id="foStage"></div><div class="fo-fmt" id="foFmt"></div></div>
+    <div class="fo-top">
+      <div class="fo-p left"><div class="fo-av" id="foAvMe"></div><div class="fo-name" id="foNameMe"></div><div class="fo-sub" id="foSubMe"></div><div class="fo-rec" id="foRecMe"></div></div>
+      <div class="fo-vs" aria-hidden="true">VS</div>
+      <div class="fo-p right"><div class="fo-av" id="foAvBot"></div><div class="fo-name" id="foNameBot"></div><div class="fo-sub" id="foSubBot"></div><div class="fo-rec" id="foRecBot"></div></div>
+    </div>
+    <div class="fo-rows" id="foRows"></div>
+    <p class="fo-key" id="foKey"></p>
+    <div class="fo-end">
+      <button class="btn" id="foGo">Commencer</button>
+      <button class="btn alt" id="foBack">Retour</button>
+    </div>
+  </div>
+</div>
+
+<div class="inter" id="inter" role="dialog" aria-modal="true" aria-labelledby="iBig">
+  <div class="panel">
+    <div class="kick" id="iKick"></div>
+    <div class="big" id="iBig"></div>
+    <div class="sc" id="iSc"></div>
+    <div class="tally" id="iTally"></div>
+    <p class="com" id="iCom"></p>
+    <div class="next" id="iNext"></div>
+    <button class="btn" id="iGo"></button>
+  </div>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

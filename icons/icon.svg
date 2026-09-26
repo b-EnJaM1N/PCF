@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#0F2C52"/>
+  <rect x="36" y="36" width="440" height="440" rx="18" fill="none" stroke="#F5F7FA" stroke-width="14"/>
+  <line x1="256" y1="36" x2="256" y2="476" stroke="#F5F7FA" stroke-width="10" opacity=".25"/>
+  <g transform="translate(106 96) scale(3)">
+    <rect x="37" y="72" width="26" height="16" rx="3" fill="#E8574A" stroke="rgba(0,0,0,.22)" stroke-width="1.5"/>
+    <rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>
+    <rect x="29" y="40" width="42" height="36" rx="11" fill="#F4C542" stroke="rgba(0,0,0,.22)" stroke-width="1.5"/>
+    <rect x="29" y="31" width="10.5" height="18" rx="5.2" fill="#F4C542" stroke="rgba(0,0,0,.22)" stroke-width="1.5"/>
+    <rect x="39.5" y="28" width="10.5" height="18" rx="5.2" fill="#F4C542" stroke="rgba(0,0,0,.22)" stroke-width="1.5"/>
+    <rect x="50" y="28" width="10.5" height="18" rx="5.2" fill="#F4C542" stroke="rgba(0,0,0,.22)" stroke-width="1.5"/>
+    <rect x="60.5" y="31" width="10.5" height="18" rx="5.2" fill="#F4C542" stroke="rgba(0,0,0,.22)" stroke-width="1.5"/>
+    <rect x="25" y="50" width="28" height="12" rx="6" fill="#F4C542" stroke="rgba(0,0,0,.22)" stroke-width="1.5"/>
+    <path d="M56 58 q6 3 12 0" fill="none" stroke="rgba(0,0,0,.22)" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+</svg>
