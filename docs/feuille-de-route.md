@@ -23,9 +23,13 @@
    - **Nouveaux formats** (demandés pendant l'étape 4), en solo et en duel : match en **1 set**, et sets de **3** ou **1 point** en plus de 7 et 11. Sans écart de 2 points pour 3 et 1 (3–2 gagne ; à 1 point, le premier point gagne le set). En duel, ces formats courts sont toujours amicaux. Le tournoi se joue en sets de 11 ou 7.
 
 6. **Tournois en direct, façon poker.** Tout le monde est présent, les matchs s'enchaînent automatiquement, on reste connecté tant qu'on est en lice.
-   - **Sit & Go** : *fait, testé, en attente de validation.* Salles **publiques** de 8, 16, 32 ou 64 joueurs, départ dès que la salle est pleine. Il faut rester dans l'appli (inscrit absent plus de 45 s : retiré de la salle). Chaque match démarre dès que les deux joueurs sont libres ; **60 secondes pour arriver**, sinon forfait (si aucun des deux ne vient : la meilleure tête de série passe). Format officiel, compte pour le niveau officiel. Un seul Sit & Go à la fois par joueur.
+   - **Sit & Go** : *fait et validé.* Salles **publiques** de 8, 16, 32 ou 64 joueurs, départ dès que la salle est pleine. Il faut rester dans l'appli (inscrit absent plus de 45 s : retiré de la salle). Chaque match démarre dès que les deux joueurs sont libres ; **60 secondes pour arriver**, sinon forfait (si aucun des deux ne vient : la meilleure tête de série passe). Format officiel, compte pour le niveau officiel. Un seul Sit & Go à la fois par joueur.
    - **Tournois programmés (MTT)** : *à faire plus tard.* Départ à heure fixe (ex. 20 h) avec les inscrits présents, exempts s'il manque des joueurs. Durée estimée : 30 à 40 min pour 64 joueurs (1 h 30 même pour 1 000). Il faudra probablement les **notifications** (« ton match commence ») et un minuteur côté serveur pour le départ à l'heure.
    - À surveiller : au-delà de quelques centaines de joueurs connectés en même temps, l'offre gratuite de Supabase ne suffira plus (environ 25 $/mois). Façon poker, mais **jamais d'argent en jeu** (réglementation des jeux d'argent).
+
+7. **Navigation simplifiée** : *fait, testé, en attente de validation.* Trois onglets (🎮 Jouer, 👥 Cercles, 🧑 Ma fiche) et la roue ⚙️ des Options. « Jouer » est un menu de grandes cartes : défis reçus et matchs à jouer en haut, puis Défier un ami, Sit & Go, Tournois, Entraînement. Le match se joue en plein écran.
+8. **Partie rapide** : *à faire.* Un adversaire en ligne au hasard, de son niveau, en quelques secondes (il suffit de 2 joueurs, là où un Sit & Go en demande 8).
+9. **Jetons fictifs et boutique** : *plus tard, quand il y aura des joueurs réguliers.* Jetons gagnés (départ + bonus quotidien), droits d'entrée des Sit & Go en jetons et cagnotte partagée, tables selon le niveau officiel, boutique. Trois règles d'or : jamais d'achat de jetons avec de l'argent réel ni de revente (sinon : jeu d'argent) ; la boutique ne vend que de l'apparence (gants, blasons, voix d'arbitre, animations…), jamais d'avantage en jeu ; tout est géré par le serveur.
 
 ## Décisions à prendre
 
@@ -36,7 +40,7 @@
 - **Nom du groupe privé** : ✅ décidé — **Cercle**.
 - **Niveau entre humains** : ✅ décidé — **niveau officiel** séparé du niveau d'entraînement contre les bots.
 - **Vocabulaire** : ✅ un **niveau** est un chiffre (ex. 1200) ; un **classement** est une place (1er, 2e…). Un duel qui compte est un duel **officiel**, sinon **amical**.
-- **Nom de l'application** : probablement **Handslam** (à confirmer). On garde PCF en attendant, puis on renommera tout d'un coup.
+- **Nom de l'application** : à choisir. Idées : **Handslam**, **Hand Up**, **Hand to Hand**, **Mano**. On garde PCF en attendant, puis on renommera tout d'un coup. Avant de choisir : vérifier que le nom est libre (marques à l'INPI, stores, nom de domaine).
 
 ## Idées notées en chemin
 
