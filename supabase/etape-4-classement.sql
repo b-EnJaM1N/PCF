@@ -1,19 +1,19 @@
--- PCF — Étape 4 : Classement PCF entre joueurs humains, amis et cercles.
+-- PCF — Étape 4 : Niveau officiel entre joueurs humains, amis et cercles.
 --
 -- À coller dans Supabase : « SQL Editor » → « New query » → coller → « Run »
 -- (Supabase peut afficher « Potential issue detected » : c'est normal, confirmer).
 -- Nécessite d'avoir lancé etape-2-comptes.sql et etape-3-duels.sql avant. Peut être relancé sans risque.
 --
 -- Principes :
---  * le Classement PCF est calculé UNIQUEMENT par le serveur, à la fin d'un duel classé
+--  * le niveau officiel est calculé UNIQUEMENT par le serveur, à la fin d'un duel officiel
 --    (formule ELO, départ à 1200, les points gagnés par l'un sont perdus par l'autre) ;
 --    il est séparé du niveau d'entraînement contre les bots, qui reste sur le téléphone ;
 --  * personne ne peut modifier un classement, une amitié ou un cercle directement :
 --    tout passe par les fonctions ci-dessous, qui vérifient qui appelle ;
---  * anti-arrangement : au plus 5 duels classés par jour entre les deux mêmes joueurs,
+--  * anti-arrangement : au plus 5 duels officiels par jour entre les deux mêmes joueurs,
 --    et un duel sans aucun coup joué ne compte pas.
 
--- ---------------------------------------------------------------- le Classement PCF
+-- ---------------------------------------------------------------- le niveau officiel
 create table if not exists public.classements (
   joueur uuid primary key references public.profils (id) on delete cascade,
   points int not null default 1200,
@@ -23,7 +23,7 @@ create table if not exists public.classements (
   maj_le timestamptz not null default now()
 );
 
-alter table public.duels add column if not exists classe boolean not null default true;   -- match classé ou amical
+alter table public.duels add column if not exists classe boolean not null default true;   -- match officiel ou amical
 alter table public.duels add column if not exists classement_avant int[];                -- [joueur 0, joueur 1]
 alter table public.duels add column if not exists classement_apres int[];
 alter table public.duels add column if not exists classement_motif text;                 -- pourquoi il n'a pas compté
@@ -78,7 +78,7 @@ begin
   return d;
 end $$;
 
--- La recherche affiche désormais le Classement PCF.
+-- La recherche affiche désormais le niveau officiel.
 create or replace function public.chercher_joueurs(p_texte text)
 returns table (id uuid, pseudo text, numero smallint, drapeau text, avatar jsonb, niveau int)
 language plpgsql stable security definer set search_path = public as $$
@@ -371,7 +371,7 @@ begin
       from invitations_cercle i join cercles c on c.id = i.cercle_id where i.invite = moi), '[]'::jsonb));
 end $$;
 
--- Un cercle : ses membres rangés par Classement PCF, et les duels joués entre membres.
+-- Un cercle : ses membres rangés par niveau officiel, et les duels joués entre membres.
 create or replace function public.voir_cercle(p_id uuid) returns jsonb
 language plpgsql stable security definer set search_path = public as $$
 declare c public.cercles; r text := _role(p_id);

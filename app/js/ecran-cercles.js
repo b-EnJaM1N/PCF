@@ -1,4 +1,4 @@
-// Onglet « Cercles » : mon Classement PCF, mes amis, et mes cercles
+// Onglet « Cercles » : mon niveau officiel, mes amis, et mes cercles
 // (groupes privés avec leur propre classement).
 import * as social from "./social-serveur.js";
 import { chercher } from "./duel-serveur.js";
@@ -60,8 +60,8 @@ export function installerCercles(ctx) {
       const c = cl.get(uid);
       $("clPoints").textContent = c ? c.points : CLASSEMENT_DEPART;
       $("clDetail").textContent = c && c.joues
-        ? `${pluriel(c.joues, "duel classé")} · ${c.gagnes} V – ${c.joues - c.gagnes} D · meilleur : ${c.meilleur}`
-        : `Aucun duel classé pour l'instant : tout le monde démarre à ${CLASSEMENT_DEPART}.`;
+        ? `${pluriel(c.joues, "duel officiel")} · ${c.gagnes} V – ${c.joues - c.gagnes} D · meilleur : ${c.meilleur}`
+        : `Aucun duel officiel pour l'instant : tout le monde démarre à ${CLASSEMENT_DEPART}.`;
       ctx.surClassement(c ? c.points : CLASSEMENT_DEPART);
     }
     if (listeAmis) { amis = listeAmis; renderAmis(); }
@@ -88,7 +88,7 @@ export function installerCercles(ctx) {
     const liste = amis.filter(a => !a.recue);
     $("socAmisVide").hidden = liste.length > 0;
     $("socAmis").innerHTML = liste.map(a => a.statut === "amis"
-      ? ligneJoueur(a, `Classement ${a.classement}${a.joues ? ` · ${pluriel(a.joues, "duel classé")}` : ""}`,
+      ? ligneJoueur(a, `Niveau ${a.classement}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`,
         `<button class="petit" data-a="defier">Défier</button><button class="petit alt" data-a="retirer" aria-label="Retirer de mes amis">✕</button>`)
       : ligneJoueur(a, "Demande envoyée", `<button class="petit alt" data-a="annuler">Annuler</button>`)).join("");
   }
@@ -137,7 +137,7 @@ export function installerCercles(ctx) {
           const deja = amis.find(a => a.id === p.id);
           const etat = !deja ? `<button class="petit" data-a="demander">Ajouter</button>`
             : `<span class="jd">${deja.statut === "amis" ? "Déjà ami ✓" : deja.recue ? "T'a demandé" : "Demandé ✓"}</span>`;
-          return ligneJoueur(p, `Classement ${p.niveau}`, etat);
+          return ligneJoueur(p, `Niveau ${p.niveau}`, etat);
         }).join("") : `<p class="hint">Aucun joueur trouvé.</p>`;
       } catch (err) { dire("socMsg", err.message, true); }
     }, 350);
@@ -209,7 +209,7 @@ export function installerCercles(ctx) {
     const dedans = new Set(membres.map(m => m.id));
     const aInviter = amis.filter(a => a.statut === "amis" && !dedans.has(a.id));
     $("cAmis").innerHTML = aInviter.length
-      ? `<p class="hint" style="margin:0">Ou invite directement un ami :</p>` + aInviter.map(a => ligneJoueur(a, `Classement ${a.classement}`, `<button class="petit alt" data-a="inviter">Inviter</button>`)).join("")
+      ? `<p class="hint" style="margin:0">Ou invite directement un ami :</p>` + aInviter.map(a => ligneJoueur(a, `Niveau ${a.classement}`, `<button class="petit alt" data-a="inviter">Inviter</button>`)).join("")
       : "";
     const admin = c.role === "admin";
     $("cGestion").hidden = !admin;
@@ -274,7 +274,7 @@ export function installerCercles(ctx) {
     catch (err) { dire("cMsg", err.message, true); }
   });
   $("cSupprimer").addEventListener("click", async () => {
-    if (!detail || !confirm(`Supprimer définitivement le cercle « ${detail.nom} » ? Les membres ne garderont que leur Classement PCF.`)) return;
+    if (!detail || !confirm(`Supprimer définitivement le cercle « ${detail.nom} » ? Les membres ne garderont que leur niveau officiel.`)) return;
     try { await social.supprimerCercle(cercleOuvert); fermerCercle(); dire("socMsg", "Cercle supprimé."); rafraichir(); }
     catch (err) { dire("cMsg", err.message, true); }
   });

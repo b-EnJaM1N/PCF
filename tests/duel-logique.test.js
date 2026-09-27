@@ -40,9 +40,9 @@ test("un adversaire humain décrit pour la présentation", () => {
   assert.equal(h.specialite, "📄 Feuille"); assert.equal(h.imprevisibilite, 80); assert.equal(h.titres, 2); assert.equal(h.av.symbole, "ciseaux");
   assert.equal(h.desc, "6 V – 4 D · 60 % de victoires");
   const pr = presentation(profilParDefaut(), h, { classementMoi: 1250 });
-  assert.equal(pr.bandeau, "Duel classé");
+  assert.equal(pr.bandeau, "Duel officiel");
   assert.equal(presentation(profilParDefaut(), h, { classe: false }).bandeau, "Duel amical");
-  assert.equal(pr.lignes[0].label, "Classement PCF");
+  assert.equal(pr.lignes[0].label, "Niveau officiel");
   assert.equal(pr.adversaire.bilan, "6 V – 4 D · 60 % de victoires");
   assert.deepEqual([pr.lignes[0].g, pr.lignes[0].d, pr.lignes[0].avantage], ["1250", "1310", "d"]);
   assert.equal(presentation(profilParDefaut(), h).lignes[0].g, "–", "classement inconnu : un tiret");

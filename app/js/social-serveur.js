@@ -4,7 +4,7 @@ import { clientSupabase as client, verifier, essayer } from "./compte.js";
 
 const rpc = (nom, args = {}) => essayer(async () => verifier(await client().rpc(nom, args)));
 
-// Classement PCF d'un ou plusieurs joueurs : Map id → { points, joues, gagnes, meilleur }.
+// Niveau officiel d'un ou plusieurs joueurs : Map id → { points, joues, gagnes, meilleur }.
 export const classements = ids => essayer(async () => new Map(ids.length
   ? verifier(await client().from("classements").select("joueur,points,joues,gagnes,meilleur").in("joueur", ids)).map(c => [c.joueur, c])
   : []));

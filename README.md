@@ -56,11 +56,11 @@ que les deux aient joué, le score est calculé par la base de données (mêmes 
 par un test qui compare 40 matchs), 5 secondes par coup. Si un joueur perd la connexion : pause, puis forfait
 après 60 secondes. Les duels comptent dans la fiche (statistiques, historique, titres) mais pas dans le niveau.
 
-## Classement PCF, amis et cercles (étape 4)
+## Niveau officiel, amis et cercles (étape 4)
 
-Le **Classement PCF** se calcule uniquement sur les duels classés entre joueurs (formule ELO, départ à 1200,
+Le **niveau officiel** se calcule uniquement sur les duels officiels entre joueurs (formule ELO, départ à 1200,
 32 points en jeu), par le serveur : personne ne peut modifier le sien. Le niveau contre les bots reste un
-niveau d'entraînement, à part. Au moment du défi, on peut décocher « Match classé » pour un match amical.
+niveau d'entraînement, à part. Au moment du défi, on peut décocher « Match officiel » pour un match amical.
 Onglet **Cercles** : son classement, ses amis (demande puis acceptation) et ses **cercles**, des groupes privés
 (famille, travail…) avec un blason, un lien d'invitation et leur propre classement.
 

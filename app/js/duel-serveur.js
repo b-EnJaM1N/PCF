@@ -7,7 +7,7 @@ import { CLASSEMENT_DEPART } from "./social-logique.js";
 const rpc = (nom, args) => essayer(async () => verifier(await client().rpc(nom, args)));
 
 export const chercher = texte => rpc("chercher_joueurs", { p_texte: texte });
-// classe = false : duel amical, sans effet sur le Classement PCF.
+// classe = false : duel amical, sans effet sur le niveau officiel.
 export const creer = (adversaire, points, sets, classe = true) =>
   rpc("lancer_defi", { p_adversaire: adversaire, p_points: points, p_sets: sets, p_classe: classe });
 export const rejoindre = code => rpc("rejoindre_duel", { p_code: code });
@@ -24,7 +24,7 @@ export const mesDuels = () => essayer(async () => verifier(await client().from("
 
 export const lireDuel = id => essayer(async () => verifier(await client().from("duels").select("*").eq("id", id).single()));
 
-// Fiches des joueurs, avec leur Classement PCF (champ « classement »).
+// Fiches des joueurs, avec leur niveau officiel (champ « classement »).
 export const profils = ids => essayer(async () => {
   if (!ids.length) return [];
   const lignes = verifier(await client().from("profils").select("id,pseudo,numero,drapeau,avatar,fiche,visible_recherche").in("id", ids));

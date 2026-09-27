@@ -4,7 +4,7 @@ import { variationClassement, texteClassementFin, normaliserBlason, blasonSVG, e
 import { nouvelElo } from "../app/js/profil.js";
 import { FORMAT } from "../app/js/duel-logique.js";
 
-test("variation du Classement PCF : mêmes valeurs que le serveur (tests/base-de-donnees/etape-4.sql)", () => {
+test("variation du niveau officiel : mêmes valeurs que le serveur (tests/base-de-donnees/etape-4.sql)", () => {
   assert.equal(variationClassement(1200, 1200), 16);
   assert.equal(variationClassement(1400, 1200), 8);
   assert.equal(variationClassement(1200, 1400), 24);
@@ -14,10 +14,10 @@ test("variation du Classement PCF : mêmes valeurs que le serveur (tests/base-de
 
 test("texte du classement en fin de duel", () => {
   const d = { classement_avant: [1200, 1230], classement_apres: [1183, 1247] };
-  assert.equal(texteClassementFin(d, 0), "Classement PCF : 1200 → 1183 (−17)");
-  assert.equal(texteClassementFin(d, 1), "Classement PCF : 1230 → 1247 (+17)");
+  assert.equal(texteClassementFin(d, 0), "Niveau officiel : 1200 → 1183 (−17)");
+  assert.equal(texteClassementFin(d, 1), "Niveau officiel : 1230 → 1247 (+17)");
   assert.match(texteClassementFin({ classement_motif: "amical" }, 0), /amical/);
-  assert.match(texteClassementFin({ classement_motif: "limite" }, 1), /5 duels classés/);
+  assert.match(texteClassementFin({ classement_motif: "limite" }, 1), /5 duels officiels/);
   assert.match(texteClassementFin({ classement_motif: "non_dispute" }, 1), /Aucun coup/);
   assert.equal(texteClassementFin({}, 0), "");
   assert.equal(texteClassementFin(null, 0), "");
@@ -47,7 +47,7 @@ test("liens d'invitation dans un cercle", () => {
 });
 
 test("format d'un duel : classé ou amical", () => {
-  assert.equal(FORMAT({ points_par_set: 11, sets_gagnants: 2, classe: true }), "Sets de 11 points · 2 sets gagnants · classé");
+  assert.equal(FORMAT({ points_par_set: 11, sets_gagnants: 2, classe: true }), "Sets de 11 points · 2 sets gagnants · officiel");
   assert.equal(FORMAT({ points_par_set: 7, sets_gagnants: 3, classe: false }), "Sets de 7 points · 3 sets gagnants · amical");
 });
 

@@ -1,4 +1,4 @@
--- Tests de supabase/etape-4-classement.sql : Classement PCF, amis et cercles.
+-- Tests de supabase/etape-4-classement.sql : niveau officiel, amis et cercles.
 \set QUIET on
 \echo Tests de la base de données (étape 4 : classement, amis, cercles)
 
@@ -116,7 +116,7 @@ select pg_temp.en_tant_que(:'A');
 select modifier_cercle(pg_temp.v('cercle')::uuid, 'La Famille', '{"embleme":"loup","fond":"court"}');
 select pg_temp.verifier((select voir_cercle(pg_temp.v('cercle')::uuid)->>'nom' = 'La Famille'), 'le responsable renomme le cercle');
 
--- 4. Classement PCF : un duel classé
+-- 4. Niveau officiel : un duel officiel
 insert into t select 'd1', pg_temp.duel_complet(:'A', :'B', true);
 select pg_temp.en_tant_que(:'B');
 select pg_temp.verifier((select classement_avant = '{1200,1200}' and classement_apres = '{1216,1184}' and classement_motif is null
@@ -126,8 +126,8 @@ select pg_temp.verifier((select points = 1184 and joues = 1 and gagnes = 0 from 
 select pg_temp.interdit(format('update classements set points = 3000 where joueur = %L', :'B'), 'un joueur ne peut pas changer son classement');
 select pg_temp.interdit(format('insert into classements (joueur, points) values (%L, 3000)', :'D'), 'un joueur ne peut pas s''inventer un classement');
 select pg_temp.interdit(format('select _variation(1200, 1200)'), 'fonction interne interdite aux joueurs');
-select pg_temp.verifier((select niveau = 1216 from chercher_joueurs('alice')), 'la recherche affiche le Classement PCF');
-select pg_temp.verifier((select (mes_amis()->0->>'classement')::int = 1216), 'la liste d''amis affiche le Classement PCF');
+select pg_temp.verifier((select niveau = 1216 from chercher_joueurs('alice')), 'la recherche affiche le niveau officiel');
+select pg_temp.verifier((select (mes_amis()->0->>'classement')::int = 1216), 'la liste d''amis affiche le niveau officiel');
 
 -- 5. Duel amical : ne compte pas
 insert into t select 'd2', pg_temp.duel_complet(:'B', :'A', false);
@@ -144,16 +144,16 @@ select pg_temp.en_tant_que(:'C'); select pret(pg_temp.v('d4')::uuid); select jou
 select pg_temp.en_tant_que(:'D'); select jouer(pg_temp.v('d4')::uuid, 1, 2); select abandonner(pg_temp.v('d4')::uuid);
 select pg_temp.verifier((select classement_apres = '{1216,1184}' from duels where id = pg_temp.v('d4')::uuid), 'abandon en cours de match : défaite classée');
 
--- 7. Anti-arrangement : au plus 5 duels classés par jour entre les deux mêmes joueurs
+-- 7. Anti-arrangement : au plus 5 duels officiels par jour entre les deux mêmes joueurs
 do $$ begin for i in 1..4 loop perform pg_temp.duel_complet('bbbbbbbb-0000-0000-0000-000000000002', 'aaaaaaaa-0000-0000-0000-000000000001', true); end loop; end $$;
 insert into t select 'd6', pg_temp.duel_complet(:'B', :'A', true);
-select pg_temp.verifier((select classement_apres is null and classement_motif = 'limite' from duels where id = pg_temp.v('d6')::uuid), '6e duel classé du jour entre Alice et Bob : ne compte pas');
-select pg_temp.verifier((select joues = 5 from classements where joueur = :'A'), 'Alice a bien 5 duels classés');
+select pg_temp.verifier((select classement_apres is null and classement_motif = 'limite' from duels where id = pg_temp.v('d6')::uuid), '6e duel officiel du jour entre Alice et Bob : ne compte pas');
+select pg_temp.verifier((select joues = 5 from classements where joueur = :'A'), 'Alice a bien 5 duels officiels');
 select pg_temp.verifier((select sum(points) = 4 * 1200 from classements), 'les points gagnés par l''un sont perdus par l''autre');
 
 -- 8. Le classement du cercle
 select pg_temp.en_tant_que(:'C');
-select pg_temp.verifier((select voir_cercle(pg_temp.v('cercle')::uuid)->'membres'->0->>'pseudo' = 'Bob'), 'le cercle est rangé par Classement PCF');
+select pg_temp.verifier((select voir_cercle(pg_temp.v('cercle')::uuid)->'membres'->0->>'pseudo' = 'Bob'), 'le cercle est rangé par niveau officiel');
 select pg_temp.verifier((select (voir_cercle(pg_temp.v('cercle')::uuid)->>'matchs')::int = 7), 'duels joués entre membres depuis la création du cercle');
 select pg_temp.verifier((select (x->>'v')::int = 6 and (x->>'d')::int = 1 from jsonb_array_elements(voir_cercle(pg_temp.v('cercle')::uuid)->'membres') x where x->>'pseudo' = 'Bob'), 'victoires et défaites de Bob dans le cercle');
 select pg_temp.en_tant_que(:'A');
