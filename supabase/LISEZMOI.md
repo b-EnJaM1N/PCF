@@ -23,7 +23,7 @@ Même manipulation avec le fichier [`etape-4-classement.sql`](etape-4-classement
 Il ajoute le niveau officiel (calculé par le serveur à la fin de chaque duel officiel), les amis et les cercles.
 À relancer après l'étape 3 si celle-ci est relancée un jour (la recherche afficherait sinon l'ancien niveau).
 
-## 1 quater. Nouveaux formats (match en 1 set, sets en 3 jeux)
+## 1 quater. Formats courts (match en 1 set, sets de 3 et 1 point)
 
 Même manipulation avec le fichier [`etape-4b-formats.sql`](etape-4b-formats.sql), **après** celui de l'étape 4.
 Si un jour on relance les étapes 3 ou 4, il faut relancer ensuite celui-ci.

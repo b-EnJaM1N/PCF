@@ -1,5 +1,5 @@
 // Écran principal : relie les règles, les bots, les annonces, le son et la fiche joueur.
-import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, setDecisif, signeAuHasard, texteFormat } from "./regles.js";
+import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet } from "./annonces.js";
@@ -26,11 +26,10 @@ const ORD = ["Premier", "Deuxième", "Troisième", "Quatrième", "Cinquième"];
 const reduitMouvement = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // ---------------------------------------------------------------- état
-const fmt = { len: 11, win: 2, jeux: 1, ...(lire("format") || {}) };
-if (![7, 11].includes(fmt.len)) fmt.len = 11;
+const fmt = { len: 11, win: 2, ...(lire("format") || {}) };
+if (!POINTS_PAR_SET.includes(fmt.len)) fmt.len = 11;
 if (![1, 2, 3].includes(fmt.win)) fmt.win = 2;
-if (![1, 3].includes(fmt.jeux)) fmt.jeux = 1;
-const jeuxSolo = () => (T ? 1 : fmt.jeux);      // le tournoi se joue toujours au format classique
+const lenTournoi = () => (fmt.len >= 7 ? fmt.len : 11);   // le tournoi se joue en sets de 11 ou de 7 points
 let WIN = fmt.win;                               // sets gagnants du match en cours (le tournoi l'impose)
 let amicalId = botParId(lire("adversaire")) ? lire("adversaire") : "stratege";
 let OPP = botParId(amicalId);
@@ -186,15 +185,6 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   render(); renderHistorique(); renderLecture();
 
   if (m.termine) { setTimeout(finir, 1100); return evt; }
-  if (evt.finJeu && !evt.finSet) {
-    // Jeu gagné, le set continue : court décompte, puis le jeu suivant (en duel, le serveur donne le signal).
-    setTimeout(() => {
-      $("hMe").textContent = "❔"; $("hBot").textContent = "❔"; $("hMe").className = "hand"; $("hBot").className = "hand";
-      if (S.duel) { duelReprendre(); return; }
-      decompteSolo();
-    }, 1200);
-    return evt;
-  }
   if (evt.finSet) {
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
     const suivant = annonceDebutSet(m), decisif = setDecisif(m);
@@ -209,7 +199,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
       ouvrirPanneau({
       kick: `Fin du ${ORD[n - 1].toLowerCase()} set`,
       big: g === 0 ? "Set pour toi" : `Set pour ${OPP.nom}`, bigCls: g === 0 ? "me" : "bot",
-      sc: m.format.jeuxParSet > 1 ? `${pa} jeux à ${pb}` : `${pa}–${pb}`,
+      sc: `${pa}–${pb}`,
       tally: `Sets : toi ${m.sets[0]}, ${OPP.nom} ${m.sets[1]}`,
       com: a.commentaire ? a.commentaire.texte : "",
       next: suivant.texte.replace(/\.$/, ""),
@@ -235,23 +225,20 @@ function render() {
   $("sBot").textContent = m.termine ? m.sets[1] : m.points[1];
   const points = k => Array.from({ length: WIN }, (_, i) => `<i class="${m.sets[k] > i ? "on" : ""}"></i>`).join("");
   $("setsMe").innerHTML = points(0); $("setsBot").innerHTML = points(1);
-  const enJeux = m.format.jeuxParSet > 1;
-  $("doneSets").textContent = [
-    m.scoresSets.length ? "Sets : " + m.scoresSets.map(([a, b]) => `${a}–${b}`).join("  ") : "",
-    enJeux && !m.termine ? `Jeux : ${m.jeux[0]}–${m.jeux[1]}` : "",
-  ].filter(Boolean).join("   ·   ");
+  $("doneSets").textContent = m.scoresSets.length ? "Sets : " + m.scoresSets.map(([a, b]) => `${a}–${b}`).join("  ") : "";
   const st = $("status"); st.classList.remove("hot");
   const h = balle(m);
   if (m.termine) st.textContent = m.vainqueur === 0 ? "Match gagné" : "Match perdu";
   else if (h) { st.textContent = `Balle de ${h.type} pour ${h.joueur === 0 ? "toi" : OPP.nom}`; st.classList.add("hot"); }
   else if (egaliteFinDeSet(m)) st.textContent = "Égalité, il faut 2 points d'écart";
-  else st.textContent = `Set ${m.scoresSets.length + 1}${enJeux ? `, jeu ${m.jeux[0] + m.jeux[1] + 1}` : ""}, coup ${m.coups.length + 1}`;
+  else if (pointDecisif(m)) { st.textContent = `Point décisif : le prochain point gagne le ${m.sets[0] === m.format.setsGagnants - 1 && m.sets[1] === m.format.setsGagnants - 1 ? "match" : "set"}`; st.classList.add("hot"); }
+  else st.textContent = `Set ${m.scoresSets.length + 1}, coup ${m.coups.length + 1}`;
 }
 
 function renderHistorique() {
-  const c = S.match.coups, debuts = new Set(S.match.debutsSet), debutsJeu = new Set(S.match.debutsJeu || []);
+  const c = S.match.coups, debuts = new Set(S.match.debutsSet);
   const ligne = (cle, label) => `<tr><th>${esc(label)}</th>` + c.map((x, i) => {
-    const cls = [x.gagnant === 0 ? "w-me" : x.gagnant === 1 ? "w-bot" : "", i > 0 && debuts.has(i) ? "newset" : i > 0 && debutsJeu.has(i) ? "newjeu" : "", cle === "a" && x.auto[0] ? "auto" : ""].join(" ").trim();
+    const cls = [x.gagnant === 0 ? "w-me" : x.gagnant === 1 ? "w-bot" : "", i > 0 && debuts.has(i) ? "newset" : "", cle === "a" && x.auto[0] ? "auto" : ""].join(" ").trim();
     return `<td class="${cls}">${EMOJI[x[cle]]}</td>`;
   }).join("") + "</tr>";
   $("tape").innerHTML = `<table>${ligne("a", "Toi")}${ligne("b", OPP.nom)}</table>`;
@@ -271,10 +258,10 @@ function finir() {
   const special = S.duel && D ? D.finSpeciale : null;   // duel gagné ou perdu par forfait ou abandon
   $("endTitle").textContent = special === "forfait" ? (gagne ? `Victoire par forfait : ${OPP.nom} a quitté le duel` : "Défaite par forfait")
     : special === "abandon" ? (gagne ? `Victoire : ${OPP.nom} a abandonné` : "Tu as abandonné")
-    : m.format.setsGagnants === 1 ? `${gagne ? "Victoire" : "Défaite"} ${m.scoresSets[0]?.join("–") ?? ""}${m.format.jeuxParSet > 1 ? " (jeux)" : ""}`
+    : m.format.setsGagnants === 1 ? `${gagne ? "Victoire" : "Défaite"} ${m.scoresSets[0]?.join("–") ?? ""}`
     : `${gagne ? "Victoire" : "Défaite"} ${m.sets[0]} sets à ${m.sets[1]}`;
   const egalites = c.filter(x => x.gagnant === null).length;
-  $("endLine").textContent = n ? `Sets : ${m.scoresSets.map(([a, b]) => `${a}–${b}`).join(", ") || "aucun terminé"}. ${n} coups joués, dont ${egalites} égalités. Ta répartition :` : "Aucun coup joué.";
+  $("endLine").textContent = n ? `Sets : ${m.scoresSets.map(([a, b]) => `${a}–${b}`).join(", ") || "aucun terminé"}. ${n} coups joués, dont ${egalites} égalité${egalites > 1 ? "s" : ""}. Ta répartition :` : "Aucun coup joué.";
   const cpt = [0, 0, 0]; c.forEach(x => cpt[x.a]++);
   $("bars").innerHTML = barres(cpt, n);
   let meme = 0, apresV = 0;
@@ -325,7 +312,7 @@ function nouvelleSeance() {
   if (mm) { WIN = SETS_PAR_TOUR[T.tour]; OPP = botParId(mm.a === "moi" ? mm.b : mm.a); }
   else if (!T) { WIN = fmt.win; OPP = botParId(amicalId); }
   S = {
-    match: nouveauMatch({ pointsParSet: fmt.len, setsGagnants: WIN, jeuxParSet: jeuxSolo() }),
+    match: nouveauMatch({ pointsParSet: T ? lenTournoi() : fmt.len, setsGagnants: WIN }),
     stats: nouvellesStats(), annonces: nouvelEtatAnnonces(), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false,
   };
@@ -350,23 +337,19 @@ function preparerEcranMatch() {
 function renderFormat() {
   document.querySelectorAll("#segLen button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === fmt.len)));
   document.querySelectorAll("#segWin button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === fmt.win)));
-  document.querySelectorAll("#segJeux button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === fmt.jeux)));
-  // Durée : environ 20 coups par jeu de 11 points, 12 par jeu de 7 ; du plus court au plus long match possible.
-  const parJeu = fmt.len === 11 ? 20 : 12, j = fmt.jeux, w = fmt.win;
-  const court = Math.round(w * j * parJeu / 5) * 5, long = Math.round((2 * w - 1) * (2 * j - 1) * parJeu * 1.25 / 5) * 5;
-  const officiel = fmt.len === 11 && j === 1;
-  $("fmtHint").textContent = `${texteFormat({ pointsParSet: fmt.len, setsGagnants: w, jeuxParSet: j })}${officiel ? " (format officiel)" : ""}, environ ${court} à ${long} coups.${officiel ? "" : " Points et jeux se règlent dans les Options."}`;
-  $("ruleTxt").textContent = texteFormat({ pointsParSet: fmt.len, setsGagnants: WIN, jeuxParSet: jeuxSolo() });
+  // Durée : coups par set (égalités comprises), du plus court au plus long match possible.
+  const parSet = { 11: 20, 7: 12, 3: 5, 1: 1.5 }[fmt.len], w = fmt.win;
+  const arrondi = x => (x >= 20 ? Math.round(x / 5) * 5 : Math.max(1, Math.round(x)));
+  const court = arrondi(w * parSet), long = arrondi((2 * w - 1) * parSet * 1.25);
+  const officiel = fmt.len === 11;
+  $("fmtHint").textContent = `${texteFormat({ pointsParSet: fmt.len, setsGagnants: w })}${officiel ? " (format officiel)" : ""}, environ ${court} à ${long} coups.${officiel ? "" : " Tu peux revenir au format officiel dans les Options."}`;
+  $("ruleTxt").textContent = texteFormat({ pointsParSet: T ? lenTournoi() : fmt.len, setsGagnants: WIN });
 }
 const matchEnCours = () => S && S.enJeu && S.match.coups.length > 0 && !S.match.termine;
-const sauverFormat = () => ecrire("format", { len: fmt.len, win: fmt.win, jeux: fmt.jeux });
+const sauverFormat = () => ecrire("format", { len: fmt.len, win: fmt.win });
 document.querySelectorAll("#segLen button").forEach(b => b.addEventListener("click", () => {
   if (matchEnCours() || T || D) { $("lenLock").hidden = false; return; }
   fmt.len = +b.dataset.v; sauverFormat(); nouvelleSeance();
-}));
-document.querySelectorAll("#segJeux button").forEach(b => b.addEventListener("click", () => {
-  if (matchEnCours() || T || D) { $("lenLock").hidden = false; return; }
-  fmt.jeux = +b.dataset.v; sauverFormat(); nouvelleSeance();
 }));
 document.querySelectorAll("#segWin button").forEach(b => b.addEventListener("click", () => {
   if (matchEnCours() || D) return;
@@ -378,7 +361,7 @@ let minuteriesIntro = [];
 function ouvrirFaceAFace() {
   $("startCard").hidden = true; $("tourCard").hidden = true;
   try { ambiance.initialiser(); } catch { /* le match se joue aussi sans son */ } // geste de l'utilisateur : le son peut démarrer
-  const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN, jeuxParSet: S.match.format.jeuxParSet, classementMoi: monClassement, classe: D?.duel?.classe !== false });
+  const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN, classementMoi: monClassement, classe: D?.duel?.classe !== false });
   $("foGo").disabled = false; $("foGo").textContent = "Commencer";
   $("foBack").textContent = S.duel ? "Abandonner le duel" : "Retour";
   $("foStage").textContent = pr.bandeau; $("foFmt").textContent = pr.format;
@@ -596,7 +579,7 @@ $("tPlay").addEventListener("click", () => {
   if (T.fini) { T = nouveauTournoi(P.elo); sauverT(); nouvelleSeance(); return; }
   const mm = monMatch(T); if (!mm) return;
   OPP = botParId(mm.a === "moi" ? mm.b : mm.a); WIN = SETS_PAR_TOUR[T.tour];
-  S.match = nouveauMatch({ pointsParSet: fmt.len, setsGagnants: WIN, jeuxParSet: 1 });
+  S.match = nouveauMatch({ pointsParSet: lenTournoi(), setsGagnants: WIN });
   S.tour = T.tour; renderFormat(); render(); rafraichirAvatars(); ouvrirFaceAFace();
 });
 $("tQuit").addEventListener("click", () => {
@@ -604,7 +587,7 @@ $("tQuit").addEventListener("click", () => {
   T = null; sauverT(); nouvelleSeance();
 });
 $("tNext").addEventListener("click", () => {
-  terminerTour(T, fmt.len); if (T.elimine) while (!T.fini) terminerTour(T, fmt.len);
+  terminerTour(T, lenTournoi()); if (T.elimine) while (!T.fini) terminerTour(T, lenTournoi());
   sauverT(); nouvelleSeance();
 });
 
@@ -704,9 +687,12 @@ function majDuel(duel) {
     if (!D.presente) { D.presente = true; ouvrirFaceAFace(); }
   } else if (duel.phase === "jeu") {
     if (faceAFaceOuvert) { fermerFaceAFace(); annoncer([annonceDebutSet(S.match)]); }
+    // Set suivant lancé par le serveur : on ferme le panneau et on reprend la main tout de suite
+    // (sinon le premier coup du set pouvait partir au hasard).
+    const reprise = !!panneauOuvert;
     if (panneauOuvert) { fermerPanneau(); D.apresPanneau?.(); D.apresPanneau = null; }
     S.enJeu = true;
-    if (!S.occupe) duelReprendre();
+    if (!S.occupe || reprise) duelReprendre();
   } else if (duel.phase === "termine") {
     terminerDuel(duel);
   } else if (duel.phase === "annule" || duel.phase === "refuse") {
@@ -838,7 +824,7 @@ $("revanche").addEventListener("click", async () => {
   const f = S.match.format, adv = OPP.uid;
   $("revanche").disabled = true;
   try {
-    await serveur.creer(adv, f.pointsParSet, f.setsGagnants, D?.duel?.classe !== false, f.jeuxParSet);
+    await serveur.creer(adv, f.pointsParSet, f.setsGagnants, D?.duel?.classe !== false);
     quitterDuel(); ouvrirOnglet("duel");
     $("duelMsg").textContent = `Revanche proposée à ${OPP.nom} ! La partie démarre dès que ${OPP.nom} accepte.`;
   } catch (e) { $("revanche").disabled = false; $("verdict").textContent = e.message; }

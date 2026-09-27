@@ -20,14 +20,14 @@ begin execute 'reset role'; perform set_config('request.jwt.claim.sub', uid, fal
 `;
 const attendus = [];
 for (let k = 0; k < 40; k++) {
-  // Tous les formats : jeux de 7 ou 11 points, sets en 1 ou 3 jeux, 1, 2 ou 3 sets gagnants.
-  const format = { pointsParSet: [7, 11][k % 2], setsGagnants: [1, 2, 3][Math.floor(k / 2) % 3], jeuxParSet: [1, 3][Math.floor(k / 6) % 2] };
+  // Tous les formats : sets de 11, 7, 3 ou 1 point ; 1, 2 ou 3 sets gagnants.
+  const format = { pointsParSet: [11, 7, 3, 1][k % 4], setsGagnants: [1, 2, 3][Math.floor(k / 4) % 3] };
   const m = nouveauMatch(format), seq = [];
   while (!m.termine) { const a = Math.floor(hasard() * 3), b = Math.floor(hasard() * 3); seq.push([a, b]); jouerCoup(m, a, b); }
-  attendus.push({ points: m.points, sets: m.sets, scores_sets: m.scoresSets, scores_jeux: m.scoresJeux, vainqueur: m.vainqueur, coups: m.coups.length });
+  attendus.push({ points: m.points, sets: m.sets, scores_sets: m.scoresSets, vainqueur: m.vainqueur, coups: m.coups.length });
   sql += `select pg_temp.qui('${A}');
 do $$ declare d uuid; m int; s int[] := '{${seq.map(x => x.join(",")).map(x => `{${x}}`).join(",")}}'; i int; begin
-  select id into d from lancer_defi('${B}', ${format.pointsParSet}, ${format.setsGagnants}, true, ${format.jeuxParSet});
+  select id into d from lancer_defi('${B}', ${format.pointsParSet}, ${format.setsGagnants}, true);
   perform pg_temp.qui('${B}'); perform repondre_duel(d, true); perform pret(d);
   perform pg_temp.qui('${A}'); perform pret(d);
   for i in 1..array_length(s, 1) loop
@@ -37,7 +37,7 @@ do $$ declare d uuid; m int; s int[] := '{${seq.map(x => x.join(",")).map(x => `
     perform pg_temp.qui('${B}'); perform jouer(d, m, s[i][2]);
   end loop;
   perform pg_temp.qui('${A}');
-  raise warning 'RESULTAT %', (select json_build_object('points', points, 'sets', sets, 'scores_sets', scores_sets, 'scores_jeux', scores_jeux, 'vainqueur', vainqueur, 'coups', jsonb_array_length(coups), 'phase', phase) from duels where id = d);
+  raise warning 'RESULTAT %', (select json_build_object('points', points, 'sets', sets, 'scores_sets', scores_sets, 'vainqueur', vainqueur, 'coups', jsonb_array_length(coups), 'phase', phase) from duels where id = d);
 end $$;
 `;
 }
@@ -50,7 +50,7 @@ if (obtenus.length !== attendus.length) { console.error(`ÉCHEC : ${obtenus.leng
 attendus.forEach((e, i) => {
   const o = obtenus[i];
   const pareil = o.phase === "termine" && JSON.stringify(o.points) === JSON.stringify(e.points) && JSON.stringify(o.sets) === JSON.stringify(e.sets) &&
-    JSON.stringify(o.scores_sets) === JSON.stringify(e.scores_sets) && JSON.stringify(o.scores_jeux) === JSON.stringify(e.scores_jeux) && o.vainqueur === e.vainqueur && o.coups === e.coups;
+    JSON.stringify(o.scores_sets) === JSON.stringify(e.scores_sets) && o.vainqueur === e.vainqueur && o.coups === e.coups;
   if (!pareil) { console.error(`ÉCHEC : match ${i + 1} différent\n  application : ${JSON.stringify(e)}\n  serveur     : ${JSON.stringify(o)}`); process.exit(1); }
 });
 const coups = attendus.reduce((n, e) => n + e.coups, 0);

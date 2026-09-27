@@ -15,7 +15,7 @@
    - **Cercle** (nom retenu) : un nom, un blason (emblème + couleur), des invitations par lien ou parmi ses amis, un responsable (👑) qui peut renommer, retirer un membre, changer le lien ou supprimer le cercle. Le **classement du cercle** range les membres par niveau officiel, avec leurs victoires et défaites entre membres. Un joueur peut être dans 20 cercles, un cercle compte jusqu'à 100 membres.
 5. **Tournois en ligne**, dont les **tournois de cercle**.
 
-   - **Nouveaux formats** (demandés pendant l'étape 4) : match en **1 set** (toujours amical en duel) et sets en **3 jeux** (un jeu = 11 points avec 2 points d'écart ; le set va au premier à 3 jeux). En solo et en duel ; le tournoi reste au format officiel.
+   - **Nouveaux formats** (demandés pendant l'étape 4), en solo et en duel : match en **1 set**, et sets de **3** ou **1 point** en plus de 7 et 11. Sans écart de 2 points pour 3 et 1 (3–2 gagne ; à 1 point, le premier point gagne le set). En duel, ces formats courts sont toujours amicaux. Le tournoi se joue en sets de 11 ou 7.
 
 ## Décisions à prendre
 

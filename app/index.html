@@ -128,8 +128,8 @@
         <input type="search" id="inRecherche" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ex. Benji ou Benji#4821">
         <div id="duelResultats" class="resultats"></div>
         <span class="lbl">Format</span>
-        <div class="seg" id="duelLen"><button data-v="11">Jeux de 11</button><button data-v="7">Jeux de 7</button></div>
-        <div class="seg" id="duelJeux"><button data-v="1">Sets en 1 jeu</button><button data-v="3">Sets en 3 jeux</button></div>
+        <span class="fmt-lbl">Points par set</span>
+        <div class="seg" id="duelLen"><button data-v="11">11</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
         <div class="seg" id="duelWin"><button data-v="1">1 set</button><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
         <label class="sound" style="align-items:flex-start;margin-bottom:10px"><input type="checkbox" id="duelClasse" checked> <span id="duelClasseTexte">Match officiel : compte pour ton niveau officiel (décoche pour un match amical)</span></label>
         <p class="hint">Ton ami n'a pas encore PCF, ou il n'apparaît pas ? Envoie-lui un lien :</p>
@@ -224,13 +224,10 @@
 
   <div class="view" id="viewOptions" hidden>
     <section class="card">
-      <h2>Format des sets</h2>
-      <span class="fmt-lbl">Points pour gagner un jeu</span>
-      <div class="seg" id="segLen"><button data-v="11">11 points (officiel)</button><button data-v="7">7 points</button></div>
-      <span class="fmt-lbl">Jeux pour gagner un set</span>
-      <div class="seg" id="segJeux"><button data-v="1">1 jeu (officiel)</button><button data-v="3">3 jeux</button></div>
-      <p class="hint">Un jeu se gagne en 11 points, avec 2 points d'écart. Au format officiel, le set se joue en un seul jeu. Avec « 3 jeux », il faut gagner 3 jeux pour prendre le set (3–0, 3–1 ou 3–2), comme au tennis. Le jeu de 7 points donne des matchs plus courts, mais laisse moins de place aux remontées.</p>
-      <p class="hint">Le tournoi se joue toujours en sets d'un seul jeu.</p>
+      <h2>Points par set</h2>
+      <div class="seg" id="segLen"><button data-v="11">11 (officiel)</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
+      <p class="hint">Le format officiel du PCF est le set de 11 points, avec 2 points d'écart. Le set de 7 points (2 points d'écart aussi) donne des matchs plus courts. Les sets de 3 et de 1 point se jouent sans écart : le premier à 3 gagne (même 3–2), et à 1 point, le premier point gagne le set.</p>
+      <p class="hint">Le tournoi se joue en sets de 11 ou de 7 points. En duel, les sets de 3 et 1 point sont toujours des matchs amicaux.</p>
       <p class="hint" id="lenLock" hidden>Le format ne peut pas changer pendant un match ou un tournoi.</p>
     </section>
     <section class="card">

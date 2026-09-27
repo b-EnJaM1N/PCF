@@ -3,14 +3,15 @@
 import { clientSupabase as client, verifier, essayer } from "./compte.js";
 import { classements } from "./social-serveur.js";
 import { CLASSEMENT_DEPART } from "./social-logique.js";
+import { formatCourt } from "./duel-logique.js";
 
 const rpc = (nom, args) => essayer(async () => verifier(await client().rpc(nom, args)));
 
 export const chercher = texte => rpc("chercher_joueurs", { p_texte: texte });
 // classe = false : duel amical, sans effet sur le niveau officiel.
-// jeux = 1 (format classique) ou 3 (sets en 3 jeux). Un match en 1 set est toujours amical.
-export const creer = (adversaire, points, sets, classe = true, jeux = 1) =>
-  rpc("lancer_defi", { p_adversaire: adversaire, p_points: points, p_sets: sets, p_classe: classe && sets > 1, p_jeux: jeux });
+// Les formats courts (match en 1 set, sets de 3 ou 1 point) sont toujours amicaux.
+export const creer = (adversaire, points, sets, classe = true) =>
+  rpc("lancer_defi", { p_adversaire: adversaire, p_points: points, p_sets: sets, p_classe: classe && !formatCourt(points, sets) });
 export const rejoindre = code => rpc("rejoindre_duel", { p_code: code });
 export const repondre = (id, accepte) => rpc("repondre_duel", { p_id: id, p_accepte: accepte });
 export const annuler = id => rpc("annuler_duel", { p_id: id });
