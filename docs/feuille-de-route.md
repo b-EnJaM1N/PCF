@@ -13,7 +13,7 @@
    - duel **officiel par défaut**, avec une case pour un match amical ; anti-arrangement : au plus 5 duels officiels par jour entre les deux mêmes joueurs, et un duel sans aucun coup joué ne compte pas ;
    - **amis** : demande puis acceptation ;
    - **Cercle** (nom retenu) : un nom, un blason (emblème + couleur), des invitations par lien ou parmi ses amis, un responsable (👑) qui peut renommer, retirer un membre, changer le lien ou supprimer le cercle. Le **classement du cercle** range les membres par niveau officiel, avec leurs victoires et défaites entre membres. Un joueur peut être dans 20 cercles, un cercle compte jusqu'à 100 membres.
-5. **Tournois en ligne**, dont les **tournois de cercle**. *Fait, testé, en attente de validation.* Choix validés :
+5. **Tournois en ligne**, dont les **tournois de cercle**. *Fait et validé.* Choix validés :
    - **élimination directe**, de 3 à 32 joueurs, têtes de série selon le niveau officiel (les meilleures sont exemptées du premier tour s'il manque des joueurs) ;
    - **tournois de cercle** (tout membre peut en organiser un, réservé aux membres) et **tournois privés** par lien ;
    - **chaque tour a une date limite** choisie par l'organisateur (15 min, 1 h, 24 h ou 3 jours), les joueurs jouent leur match quand ils veulent ; le tour suivant commence dès que tous les matchs sont joués ;
