@@ -28,8 +28,7 @@ export function rejouer(duel, moi) {
 // Le score calculé par le téléphone est-il bien celui du serveur ?
 export function coherent(match, duel, moi) {
   const memes = (x, y) => x[0] === y[0] && x[1] === y[1];
-  return memes(match.points, vuDe(duel.points, moi)) && memes(match.sets, vuDe(duel.sets, moi))
-    && memes(match.jeux, vuDe(duel.jeux || [0, 0], moi));
+  return memes(match.points, vuDe(duel.points, moi)) && memes(match.sets, vuDe(duel.sets, moi));
 }
 
 // Un adversaire humain, décrit comme un bot pour réutiliser l'écran de présentation.
@@ -63,6 +62,9 @@ export const codeDepuisAdresse = recherche => {
   return c && /^[a-z0-9]{6,20}$/i.test(c) ? c : null;
 };
 
+// Formats courts (match en 1 set, sets de 3 ou 1 point) : toujours amicaux en duel.
+export const formatCourt = (points, sets) => sets === 1 || points < 7;
+
 // Le format d'un duel (colonnes du serveur) pour les règles de l'application.
-export const formatDuel = d => ({ pointsParSet: d.points_par_set, setsGagnants: d.sets_gagnants, jeuxParSet: d.jeux_par_set || 1 });
+export const formatDuel = d => ({ pointsParSet: d.points_par_set, setsGagnants: d.sets_gagnants });
 export const FORMAT = d => `${texteFormat(formatDuel(d))}${d.classe === false ? " · amical" : " · officiel"}`;
