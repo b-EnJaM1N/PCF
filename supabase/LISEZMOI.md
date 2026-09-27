@@ -32,6 +32,11 @@ Si un jour on relance les étapes 3 ou 4, il faut relancer ensuite celui-ci.
 
 Même manipulation avec le fichier [`etape-5-tournois.sql`](etape-5-tournois.sql), **après** ceux des étapes 4 et 4b.
 
+## 1 sexies. Sit & Go publics (étape 6)
+
+Même manipulation avec le fichier [`etape-6-sit-and-go.sql`](etape-6-sit-and-go.sql), **après** celui de l'étape 5.
+Si un jour on relance les étapes 3 ou 5, il faut relancer celui-ci ensuite.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

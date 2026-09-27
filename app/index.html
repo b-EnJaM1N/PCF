@@ -122,6 +122,13 @@
         <h2>Défis reçus</h2>
         <div id="duelRecus"></div>
       </section>
+      <section class="card" id="sngCard" hidden>
+        <h2>Tournois express (Sit &amp; Go)</h2>
+        <p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours.</p>
+        <p class="sndnote" id="sngMien" hidden style="margin-top:10px"></p>
+        <div id="sngSalles" class="resultats"></div>
+        <p class="locknote" id="sngMsg" role="status"></p>
+      </section>
       <section class="card edit">
         <h2>Défier un joueur</h2>
         <label class="lbl" for="inRecherche">Pseudo de ton adversaire</label>
@@ -269,7 +276,7 @@
         <section class="card" id="tTableauCarte" hidden>
           <h2>Tableau</h2>
           <div id="tTableau"></div>
-          <p class="hint">Un match non joué à la date limite revient à la personne qui a essayé de le jouer ; si personne ne s'est manifesté, à la meilleure tête de série.</p>
+          <p class="hint" id="tRegleAbsence"></p>
         </section>
         <p class="locknote" id="tMsg" role="status"></p>
       </div>
