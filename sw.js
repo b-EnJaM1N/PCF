@@ -35,6 +35,8 @@ const FICHIERS = [
   "js/social-logique.js",
   "js/social-serveur.js",
   "js/ecran-cercles.js",
+  "js/ecran-tournois.js",
+  "js/tournoi-logique.js",
   "vendor/supabase.js",
   "fonts/barlow-latin-400-normal.woff2",
   "fonts/barlow-latin-400-italic.woff2",

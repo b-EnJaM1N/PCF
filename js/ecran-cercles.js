@@ -5,13 +5,15 @@ import { chercher } from "./duel-serveur.js";
 import { avatarSVG, FONDS } from "./avatar.js";
 import { EMBLEMES, blasonSVG, normaliserBlason, blasonParDefaut, erreurNomCercle, lienCercle, codeCercleDepuisAdresse, rang, CLASSEMENT_DEPART } from "./social-logique.js";
 import { lire, ecrire } from "./stockage.js";
+import { installerTournois } from "./ecran-tournois.js";
+import { profils } from "./duel-serveur.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const nomComplet = p => `${esc(p.pseudo)}<small>#${p.numero}</small>`;
 const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 
-// ctx : { compte, ouvrirOnglet(nom), defier(profil) → texte, surClassement(points ou null) }
+// ctx : { compte, ouvrirOnglet(nom), defier(profil) → texte, surClassement(points ou null), lancerDuel(duel, profil) }
 export function installerCercles(ctx) {
   let uid = null, minuterie = 0, recherche = 0, amis = [], cercleOuvert = null, detail = null;
   const base = () => location.origin + location.pathname;
@@ -34,6 +36,15 @@ export function installerCercles(ctx) {
     rendre();
     return { lire: () => ({ ...etat }), ecrire: b => { Object.assign(etat, normaliserBlason(b)); rendre(); } };
   }
+  // Les pages de l'onglet : liste, un cercle, un tournoi, création d'un tournoi.
+  const VUES = ["socListe", "socCercle", "socTournoi", "socTournoiNouveau"];
+  const montrer = vue => { VUES.forEach(v => { $(v).hidden = v !== vue; }); window.scrollTo(0, 0); };
+  const retour = () => { if (cercleOuvert) { montrer("socCercle"); chargerCercle(); } else { montrer("socListe"); rafraichir(); } };
+  const tournois = installerTournois({
+    uid: () => uid, montrer, retour, lancerDuel: (d, p) => ctx.lancerDuel(d, p), profils,
+    apresChangement: () => { rafraichir(); if (cercleOuvert) chargerCercle(); },
+  });
+
   const blasonNouveau = choixBlason("cercleEmblemes", "cercleFonds", "cercleApercu");
   const blasonGestion = choixBlason("cEmblemes", "cFonds", "cApercu");
 
@@ -43,9 +54,10 @@ export function installerCercles(ctx) {
     $("socHors").hidden = !!uid; $("socOn").hidden = !uid;
     clearInterval(minuterie);
     if (!uid) { $("pastilleCercles").hidden = true; ctx.surClassement(null); fermerCercle(); return; }
-    minuterie = setInterval(() => { rafraichir(); if (cercleOuvert && visible()) chargerCercle(); }, 20000);
+    minuterie = setInterval(() => { rafraichir(); if (cercleOuvert && visible() && !$("socCercle").hidden) chargerCercle(); }, 20000);
     rafraichir();
     rejoindreLienEnAttente();
+    tournois.rejoindreLienEnAttente();
   }
   ctx.compte.surConnexion(surSession);
   $("socVersCompte").addEventListener("click", () => ctx.ouvrirOnglet("profile"));
@@ -53,9 +65,14 @@ export function installerCercles(ctx) {
   // ------------------------------------------------ la page principale
   async function rafraichir() {
     if (!uid) return;
-    const [cl, listeAmis, cercles] = await Promise.all([
+    const [cl, listeAmis, cercles, mesTournois] = await Promise.all([
       social.classements([uid]).catch(() => null), social.mesAmis().catch(() => null), social.mesCercles().catch(() => null),
+      social.mesTournois().catch(() => null),
     ]);
+    if (mesTournois) {
+      $("socTournoisVide").hidden = mesTournois.length > 0;
+      tournois.liste($("socTournois"), mesTournois);
+    }
     if (cl) {
       const c = cl.get(uid);
       $("clPoints").textContent = c ? c.points : CLASSEMENT_DEPART;
@@ -67,7 +84,7 @@ export function installerCercles(ctx) {
     if (listeAmis) { amis = listeAmis; renderAmis(); }
     if (cercles) renderCercles(cercles);
     if (listeAmis && cercles) {
-      const n = amis.filter(a => a.recue).length + cercles.invitations.length;
+      const n = amis.filter(a => a.recue).length + cercles.invitations.length + (mesTournois || []).filter(t => t.a_jouer).length;
       $("pastilleCercles").hidden = !n; $("pastilleCercles").textContent = n;
       $("socInvitCard").hidden = !n;
       $("socInvit").innerHTML = amis.filter(a => a.recue).map(a => ligneJoueur(a, "Demande d'ami",
@@ -172,7 +189,7 @@ export function installerCercles(ctx) {
   // ------------------------------------------------ la page d'un cercle
   function ouvrirCercle(id, message = "") {
     cercleOuvert = id; detail = null;
-    $("socListe").hidden = true; $("socCercle").hidden = false;
+    montrer("socCercle");
     $("cNom").textContent = "…"; $("cInfo").textContent = ""; $("cClassement").innerHTML = ""; $("cAmis").innerHTML = ""; $("cGestion").hidden = true;
     dire("cMsg", message);
     window.scrollTo(0, 0);
@@ -180,7 +197,8 @@ export function installerCercles(ctx) {
   }
   function fermerCercle() {
     cercleOuvert = null; detail = null;
-    $("socListe").hidden = false; $("socCercle").hidden = true;
+    tournois.fermer();
+    montrer("socListe");
   }
   $("cercleRetour").addEventListener("click", () => { fermerCercle(); rafraichir(); });
 
@@ -194,6 +212,11 @@ export function installerCercles(ctx) {
     if (cercleOuvert !== id) return;
     const premiere = !detail;
     detail = c;
+    social.tournoisCercle(id).then(ts => {
+      if (cercleOuvert !== id) return;
+      $("cTournoisVide").hidden = ts.length > 0;
+      tournois.liste($("cTournois"), ts);
+    }).catch(() => {});
     const membres = c.membres || [];
     $("cBlason").innerHTML = blasonSVG(c.blason);
     $("cNom").textContent = c.nom;
@@ -232,7 +255,7 @@ export function installerCercles(ctx) {
     const b = e.target.closest("button[data-a=inviter]"); if (!b) return;
     const a = amis.find(x => x.id === b.closest(".joueur").dataset.id);
     b.disabled = true;
-    try { await social.inviterCercle(cercleOuvert, a.id); b.textContent = "Invité ✓"; dire("cMsg", `${a.pseudo} est invité : l'invitation apparaîtra dans son onglet Cercles.`); }
+    try { await social.inviterCercle(cercleOuvert, a.id); b.textContent = "Invité ✓"; dire("cMsg", `Invitation envoyée à ${a.pseudo} : elle apparaîtra dans son onglet Cercles.`); }
     catch (err) { dire("cMsg", err.message, true); b.disabled = false; }
   });
   $("cMembresGestion").addEventListener("click", async e => {
@@ -268,6 +291,8 @@ export function installerCercles(ctx) {
     $("cMsg").insertAdjacentHTML("beforeend", `<span class="lien-partage">${esc(url)}</span>`);
   }
   $("cPartager").addEventListener("click", () => { if (detail) partagerCercle(detail.code); });
+  $("cNouveauTournoi").addEventListener("click", () => { if (detail) tournois.nouveau({ id: detail.id, nom: detail.nom }); });
+  $("tournoiPrive").addEventListener("click", () => tournois.nouveau(null));
   $("cNouveauLien").addEventListener("click", async () => {
     if (!confirm("Créer un nouveau lien d'invitation ? L'ancien ne fonctionnera plus.")) return;
     try { detail.code = await social.nouveauLienCercle(cercleOuvert); dire("cMsg", "Nouveau lien créé. Touche « Envoyer le lien d'invitation » pour le partager."); }
@@ -290,10 +315,14 @@ export function installerCercles(ctx) {
 
   // ------------------------------------------------ arrivée par un lien « ?cercle=CODE »
   const codeLien = codeCercleDepuisAdresse(location.search);
+  if (tournois.lienEnAttente()) {
+    ctx.ouvrirOnglet("cercles");
+    $("socHorsTexte").innerHTML = "<b>Invitation à un tournoi !</b> Pour t'inscrire, crée ton compte gratuit ou connecte-toi (sans mot de passe). Tu reviendras ici ensuite.";
+  }
   if (codeLien) {
     ecrire("cercleLien", codeLien);
     ctx.ouvrirOnglet("cercles");
-    $("socHorsTexte").innerHTML = "<b>Tu es invité dans un cercle !</b> Pour le rejoindre, crée ton compte gratuit ou connecte-toi (sans mot de passe). Tu reviendras ici ensuite.";
+    $("socHorsTexte").innerHTML = "<b>Invitation dans un cercle !</b> Pour le rejoindre, crée ton compte gratuit ou connecte-toi (sans mot de passe). Tu reviendras ici ensuite.";
   }
   async function rejoindreLienEnAttente() {
     const code = lire("cercleLien", null);
@@ -309,5 +338,8 @@ export function installerCercles(ctx) {
   }
 
   surSession(ctx.compte.session());
-  return { rafraichir: () => { rafraichir(); if (cercleOuvert) chargerCercle(); } };
+  return {
+    rafraichir: () => { rafraichir(); if (!$("socTournoi").hidden) tournois.rafraichir(); else if (cercleOuvert) chargerCercle(); },
+    ouvrirTournoi: id => { ctx.ouvrirOnglet("cercles"); tournois.ouvrir(id); },
+  };
 }

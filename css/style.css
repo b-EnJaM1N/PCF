@@ -299,3 +299,9 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
   .tabs { gap: 4px; }
   .tabs button { padding: 9px 2px; font-size: .86rem; }
 }
+/* Tournois en ligne */
+.trophee { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; font-size: 1.6rem; }
+.trophee.grand { width: 72px; height: 72px; font-size: 3rem; }
+.joueur.a-jouer { border-color: var(--me); background: rgba(244, 197, 66, .08); }
+.actions-col { display: grid; gap: 10px; margin-top: 12px; }
+.actions-col .linkbtn { justify-self: center; }
