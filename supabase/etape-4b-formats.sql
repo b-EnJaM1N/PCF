@@ -60,6 +60,7 @@ begin
 end $$;
 
 -- Lancer un défi (remplace la version de l'étape 4) : les formats courts sont toujours amicaux.
+drop function if exists public.lancer_defi(uuid, int, int, boolean, int);   -- version d'essai « jeux », abandonnée
 create or replace function public.lancer_defi(p_adversaire uuid, p_points int, p_sets int, p_classe boolean default true)
 returns public.duels language plpgsql security definer set search_path = public as $$
 declare d public.duels;
