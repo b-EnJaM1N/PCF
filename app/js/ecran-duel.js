@@ -65,15 +65,15 @@ export function installerDuels(ctx) {
 
     const ligne = (d, p, boutons) => `<div class="joueur" data-id="${d.id}">
       <span class="mini">${p ? avatarSVG(p.avatar || {}) : "🔗"}</span>
-      <div style="min-width:0"><div class="jn">${p ? nomComplet(p) : "Défi par lien"}</div><div class="jd">${FORMAT(d)}</div></div>
+      <div style="min-width:0"><div class="jn">${p ? nomComplet(p) : "Défi par lien"}</div><div class="jd">${d.tournoi_match ? "🏆 Match de tournoi · " : ""}${FORMAT(d)}</div></div>
       <div class="actions">${boutons}</div></div>`;
     $("duelEnCoursCard").hidden = !enCours.length;
     $("duelEnCours").innerHTML = enCours.map(d => ligne(d, joueurs.get(adversaireDe(d, uid)), `<button class="petit" data-a="reprendre">Reprendre</button>`)).join("");
     $("duelRecusCard").hidden = !recus.length;
-    $("duelRecus").innerHTML = recus.map(d => ligne(d, joueurs.get(d.j0), `<button class="petit" data-a="accepter">Accepter</button><button class="petit alt" data-a="refuser">Refuser</button>`)).join("");
+    $("duelRecus").innerHTML = recus.map(d => ligne(d, joueurs.get(d.j0), `<button class="petit" data-a="accepter">Accepter</button>${d.tournoi_match ? "" : `<button class="petit alt" data-a="refuser">Refuser</button>`}`)).join("");
     $("duelEnvoyesCard").hidden = !envoyes.length;
     $("duelEnvoyes").innerHTML = envoyes.map(d => ligne(d, d.j1 ? joueurs.get(d.j1) : null,
-      `${d.par_lien ? `<button class="petit alt" data-a="partager" data-code="${d.code}">Lien</button>` : ""}<button class="petit alt" data-a="annuler">Annuler</button>`)).join("");
+      `${d.par_lien ? `<button class="petit alt" data-a="partager" data-code="${d.code}">Lien</button>` : ""}${d.tournoi_match ? "" : `<button class="petit alt" data-a="annuler">Annuler</button>`}`)).join("");
     $("pastilleDuel").hidden = !recus.length; $("pastilleDuel").textContent = recus.length;
 
     const actions = { accepter: id => serveur.repondre(id, true), refuser: id => serveur.repondre(id, false), annuler: id => serveur.annuler(id) };

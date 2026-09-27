@@ -95,7 +95,7 @@
       <p class="readout" id="endRead"></p>
       <p class="news" id="endClassement" hidden></p>
       <p class="news" id="news"></p>
-      <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button><button class="btn" id="revanche" hidden>Proposer une revanche</button><button class="btn alt" id="retourDuels" hidden>Retour aux duels</button></p>
+      <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button><button class="btn" id="revanche" hidden>Proposer une revanche</button><button class="btn alt" id="retourDuels" hidden>Retour aux duels</button><button class="btn" id="voirTournoi" hidden>Voir le tableau du tournoi</button></p>
     </section>
 
     <section>
@@ -177,6 +177,12 @@
             <button class="btn" id="cercleCreer" style="margin-top:14px">Créer le cercle</button>
           </div>
         </section>
+        <section class="card">
+          <h2>Mes tournois</h2>
+          <div id="socTournois" class="resultats"></div>
+          <p class="hint" id="socTournoisVide">Organise un tournoi à élimination directe : dans un de tes cercles (page du cercle), ou entre amis avec un lien d'invitation.</p>
+          <button class="btn alt" id="tournoiPrive" style="margin-top:10px">Créer un tournoi privé (par lien)</button>
+        </section>
         <section class="card edit">
           <h2>Mes amis</h2>
           <div id="socAmis" class="resultats"></div>
@@ -200,6 +206,12 @@
           <p class="hint">Rangé par niveau officiel. Victoires et défaites : duels joués entre membres depuis la création du cercle.</p>
         </section>
         <section class="card">
+          <h2>Tournois du cercle</h2>
+          <div id="cTournois" class="resultats"></div>
+          <p class="hint" id="cTournoisVide">Aucun tournoi pour l'instant. Organise le premier !</p>
+          <button class="btn alt" id="cNouveauTournoi" style="margin-top:10px">Organiser un tournoi du cercle</button>
+        </section>
+        <section class="card">
           <h2>Inviter dans le cercle</h2>
           <button class="btn" id="cPartager">Envoyer le lien d'invitation (WhatsApp, SMS…)</button>
           <div id="cAmis" class="resultats" style="margin-top:12px"></div>
@@ -218,6 +230,48 @@
         </section>
         <p class="locknote" id="cMsg" role="status"></p>
         <p style="text-align:center;margin:6px 0 0"><button class="linkbtn" id="cQuitter">Quitter le cercle</button></p>
+      </div>
+
+      <div id="socTournoiNouveau" hidden>
+        <p style="margin:0 0 10px"><button class="linkbtn" id="tnRetour">← Retour</button></p>
+        <section class="card edit">
+          <h2 id="tnTitre">Nouveau tournoi</h2>
+          <p class="hint" id="tnPrecision"></p>
+          <label class="lbl" for="inTNom">Nom du tournoi</label>
+          <input type="text" id="inTNom" maxlength="40" autocomplete="off" placeholder="Ex. L'Open de la Famille">
+          <span class="lbl">Points par set</span>
+          <div class="seg" id="tnLen"></div>
+          <span class="lbl">Format des matchs</span>
+          <div class="seg" id="tnWin"></div>
+          <span class="lbl">Durée de chaque tour</span>
+          <div class="seg" id="tnDuree"></div>
+          <p class="hint" id="tnHint"></p>
+          <button class="btn" id="tnCreer" style="margin-top:12px">Créer le tournoi</button>
+          <p class="locknote" id="tnMsg" role="status"></p>
+        </section>
+      </div>
+
+      <div id="socTournoi" hidden>
+        <p style="margin:0 0 10px"><button class="linkbtn" id="tRetour">← Retour</button></p>
+        <section class="card cercle-tete">
+          <span class="blason-grand" id="tIcone"></span>
+          <div><h2 id="tNom"></h2><p class="hint" id="tInfo"></p><p class="hint" id="tEtat" style="color:var(--line);margin-top:4px"></p></div>
+        </section>
+        <section class="card" id="tMonMatch" hidden>
+          <h2 id="tMonMatchTitre"></h2>
+          <div id="tMonMatchCorps"></div>
+        </section>
+        <section class="card" id="tInscriptions" hidden>
+          <h2>Inscrits</h2>
+          <div id="tInscrits" class="resultats"></div>
+          <div id="tActions" class="actions-col"></div>
+        </section>
+        <section class="card" id="tTableauCarte" hidden>
+          <h2>Tableau</h2>
+          <div id="tTableau"></div>
+          <p class="hint">Un match non joué à la date limite revient à la personne qui a essayé de le jouer ; si personne ne s'est manifesté, à la meilleure tête de série.</p>
+        </section>
+        <p class="locknote" id="tMsg" role="status"></p>
       </div>
     </div>
   </div>

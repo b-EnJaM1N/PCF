@@ -26,3 +26,16 @@ export const exclureCercle = (id, joueur) => rpc("exclure_cercle", { p_id: id, p
 export const nommerResponsable = (id, joueur) => rpc("nommer_responsable", { p_id: id, p_joueur: joueur });
 export const nouveauLienCercle = id => rpc("nouveau_lien_cercle", { p_id: id });
 export const supprimerCercle = id => rpc("supprimer_cercle", { p_id: id });
+
+// Tournois (supabase/etape-5-tournois.sql).
+export const mesTournois = () => rpc("mes_tournois");
+export const tournoisCercle = id => rpc("tournois_cercle", { p_cercle: id });
+export const voirTournoi = id => rpc("voir_tournoi", { p_id: id });
+export const creerTournoi = (nom, cercle, points, sets, duree) =>
+  rpc("creer_tournoi", { p_nom: nom, p_cercle: cercle, p_points: points, p_sets: sets, p_duree: duree });   // → { id, code }
+export const inscrireTournoi = id => rpc("inscrire_tournoi", { p_id: id });
+export const rejoindreTournoi = code => rpc("rejoindre_tournoi", { p_code: code });                         // → { id, nom }
+export const desinscrireTournoi = id => rpc("desinscrire_tournoi", { p_id: id });
+export const lancerTournoi = id => rpc("lancer_tournoi", { p_id: id });
+export const annulerTournoi = id => rpc("annuler_tournoi", { p_id: id });
+export const jouerMatchTournoi = id => rpc("jouer_match_tournoi", { p_match: id });                        // → le duel

@@ -28,6 +28,10 @@ Il ajoute le niveau officiel (calculé par le serveur à la fin de chaque duel o
 Même manipulation avec le fichier [`etape-4b-formats.sql`](etape-4b-formats.sql), **après** celui de l'étape 4.
 Si un jour on relance les étapes 3 ou 4, il faut relancer ensuite celui-ci.
 
+## 1 quinquies. Tournois en ligne (étape 5)
+
+Même manipulation avec le fichier [`etape-5-tournois.sql`](etape-5-tournois.sql), **après** ceux des étapes 4 et 4b.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
