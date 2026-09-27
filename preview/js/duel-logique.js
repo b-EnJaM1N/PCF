@@ -41,6 +41,7 @@ export function adversaireHumain(ligne) {
     style: `${ligne.drapeau || "🌍"} ${dernierTitre(P)}`,
     desc: P.matchs ? `${P.victoires} V – ${P.matchs - P.victoires} D · ${Math.round(100 * P.victoires / P.matchs)} % de victoires` : "Premier match officiel",
     elo: P.elo,
+    classement: ligne.classement ?? null,          // Classement PCF (duels entre humains)
     specialite: fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`,
     imprevisibilite: P.lisibles >= 10 ? indiceImprevisibilite(P.devines / P.lisibles) : null,
     titres: titresObtenus(P).length,
@@ -61,4 +62,4 @@ export const codeDepuisAdresse = recherche => {
   return c && /^[a-z0-9]{6,20}$/i.test(c) ? c : null;
 };
 
-export const FORMAT = d => `Sets de ${d.points_par_set} points · ${d.sets_gagnants} sets gagnants`;
+export const FORMAT = d => `Sets de ${d.points_par_set} points · ${d.sets_gagnants} sets gagnants${d.classe === false ? " · amical" : " · classé"}`;
