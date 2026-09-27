@@ -39,7 +39,7 @@
     </div>
   </header>
   <p class="sndnote" id="sndNote" hidden></p>
-  <nav class="tabs"><button data-v="match" aria-pressed="true">Match</button><button data-v="profile" aria-pressed="false">Ma fiche</button><button data-v="options" aria-pressed="false">Options</button></nav>
+  <nav class="tabs"><button data-v="match" aria-pressed="true">Match</button><button data-v="duel" aria-pressed="false">Duel<span class="pastille" id="pastilleDuel" hidden></span></button><button data-v="profile" aria-pressed="false">Ma fiche</button><button data-v="options" aria-pressed="false">Options</button></nav>
 
   <div class="view" id="viewMatch">
     <section class="card" id="startCard">
@@ -94,7 +94,7 @@
       <div class="bars" id="bars"></div>
       <p class="readout" id="endRead"></p>
       <p class="news" id="news"></p>
-      <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button></p>
+      <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button><button class="btn" id="revanche" hidden>Proposer une revanche</button><button class="btn alt" id="retourDuels" hidden>Retour aux duels</button></p>
     </section>
 
     <section>
@@ -103,6 +103,45 @@
     </section>
     <p class="readout" id="read">L'analyse de ton jeu démarre au premier coup.</p>
     <p class="record" id="record"></p>
+    <p style="text-align:center;margin:0" id="abandonDuelZone" hidden><button class="linkbtn" id="abandonDuel">Abandonner le duel</button></p>
+  </div>
+
+  <div class="view" id="viewDuel" hidden>
+    <section class="card" id="duelHors">
+      <h2>Duel en ligne</h2>
+      <p class="hint" id="duelHorsTexte">Défie tes amis en direct ! Pour jouer en ligne, il faut un compte (gratuit, sans mot de passe).</p>
+      <button class="btn" id="duelVersCompte" style="margin-top:12px">Créer mon compte ou me connecter</button>
+    </section>
+    <div id="duelOn" hidden>
+      <section class="card" id="duelEnCoursCard" hidden>
+        <h2>Duel en cours</h2>
+        <div id="duelEnCours"></div>
+      </section>
+      <section class="card" id="duelRecusCard" hidden>
+        <h2>Défis reçus</h2>
+        <div id="duelRecus"></div>
+      </section>
+      <section class="card edit">
+        <h2>Défier un joueur</h2>
+        <label class="lbl" for="inRecherche">Pseudo de ton adversaire</label>
+        <input type="search" id="inRecherche" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ex. Benji ou Benji#4821">
+        <div id="duelResultats" class="resultats"></div>
+        <span class="lbl">Format</span>
+        <div class="seg" id="duelLen"><button data-v="11">Sets de 11</button><button data-v="7">Sets de 7</button></div>
+        <div class="seg" id="duelWin"><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
+        <p class="hint">Ton ami n'a pas encore PCF, ou il n'apparaît pas ? Envoie-lui un lien :</p>
+        <button class="btn alt" id="duelLien" style="margin-top:8px">Inviter par un lien (WhatsApp, SMS…)</button>
+        <p class="locknote" id="duelMsg" role="status"></p>
+      </section>
+      <section class="card" id="duelEnvoyesCard" hidden>
+        <h2>Mes défis en attente</h2>
+        <div id="duelEnvoyes"></div>
+      </section>
+      <section class="card">
+        <label class="sound" style="align-items:flex-start"><input type="checkbox" id="duelVisible" checked> <span>Apparaître dans la recherche des autres joueurs</span></label>
+        <p class="hint">Même caché, tu peux toujours être invité par un lien.</p>
+      </section>
+    </div>
   </div>
 
   <div class="view" id="viewOptions" hidden>

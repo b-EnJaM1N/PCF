@@ -3,8 +3,8 @@
 ## Étapes
 
 1. **Mode solo** : bots, fiche joueur, tournoi, statistiques gardées sur le téléphone. *Fait et validé.*
-2. **Comptes joueurs** : inscription, pseudo, avatar, fiche joueur sauvegardée en ligne. Service : Supabase (projet en Europe, Paris). Connexion par lien reçu par e-mail (code à 6 chiffres quand un service d'envoi sera branché), compte facultatif. *Fait, testé avec le vrai Supabase, en attente de validation.*
-3. **Duel en ligne** : un serveur vérifie les coups (anti-triche), gestion des déconnexions.
+2. **Comptes joueurs** : inscription, pseudo, avatar, fiche joueur sauvegardée en ligne. Service : Supabase (projet en Europe, Paris). Connexion par lien reçu par e-mail (code à 6 chiffres quand un service d'envoi sera branché), compte facultatif. *Fait et validé.*
+3. **Duel en ligne** : un serveur vérifie les coups (anti-triche), gestion des déconnexions. *Fait, testé avec le vrai Supabase, en attente de validation.* Choix validés : pause de 60 s puis forfait ; invitation dans l'appli + lien (notifications plus tard) ; les duels comptent dans la fiche mais pas dans le niveau ; arbitre et commentateur avec répliques adaptées.
    - **Défier un ami avec une barre de recherche** : on tape un pseudo, les joueurs correspondants s'affichent (avatar, niveau), bouton « Défier » ; l'ami reçoit l'invitation dans l'application.
    - **Défi par lien**, pour inviter quelqu'un qui n'a pas encore l'application.
    - Option « Ne pas apparaître dans la recherche ».
@@ -24,3 +24,4 @@
 
 - Remplacer les sons fabriqués et la voix par de vrais enregistrements (noms des fichiers dans `script-des-annonces.md`).
 - Applaudissements à l'entrée des joueurs : à garder ou à retirer.
+- Notifications sur le téléphone quand on reçoit un défi (appli fermée).

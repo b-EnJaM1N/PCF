@@ -14,6 +14,9 @@ import { Ambiance } from "./ambiance.js";
 import { lire, ecrire } from "./stockage.js";
 import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
+import { installerDuels } from "./ecran-duel.js";
+import * as serveur from "./duel-serveur.js";
+import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant } from "./duel-logique.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -35,6 +38,8 @@ let compteUI = null;
 const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier(); };
 const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
+let D = null;       // le duel en ligne en cours (null en solo)
+let duelsUI = null;
 let panneauOuvert = null, faceAFaceOuvert = false;
 
 // ---------------------------------------------------------------- son
@@ -89,14 +94,16 @@ function annoncer(lignes, silencieux = false) {
 
 // ---------------------------------------------------------------- panneaux
 let panneauGo = null;
-function ouvrirPanneau({ kick = "", big = "", bigCls = "", sc = "", tally = "", com = "", next = "", go, onGo }) {
+function ouvrirPanneau({ kick = "", big = "", bigCls = "", sc = "", tally = "", com = "", next = "", go, onGo, resteOuvert = false }) {
   $("iKick").textContent = kick; $("iBig").textContent = big; $("iBig").className = "big " + bigCls;
   $("iSc").textContent = sc; $("iTally").textContent = tally; $("iCom").textContent = com; $("iNext").textContent = next;
   $("iGo").textContent = go;
-  panneauGo = () => { $("inter").classList.remove("show"); panneauOuvert = null; panneauGo = null; onGo && onGo(); };
+  $("iGo").disabled = false;
+  panneauGo = () => { if (!resteOuvert) fermerPanneau(); onGo && onGo(); };
   panneauOuvert = true; $("inter").classList.add("show"); $("iGo").focus();
 }
 $("iGo").addEventListener("click", () => panneauGo && panneauGo());
+function fermerPanneau() { $("inter").classList.remove("show"); panneauOuvert = null; panneauGo = null; }
 
 // ---------------------------------------------------------------- minuteur (5 s par coup)
 let raf = 0, tDebut = 0;
@@ -114,44 +121,63 @@ function lancerMinuteur() {
 function arreterMinuteur() { cancelAnimationFrame(raf); }
 // En solo, si on quitte l'application en plein match, le minuteur repart de zéro au retour.
 document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible" && S && S.enJeu && !S.occupe && !S.match.termine && !panneauOuvert) lancerMinuteur();
+  if (document.visibilityState !== "visible") return;
+  if (D) { battement(); return; }   // duel : le serveur fait foi, on se resynchronise
+  if (S && S.enJeu && !S.occupe && !S.match.termine && !panneauOuvert) lancerMinuteur();
 });
 
 // ---------------------------------------------------------------- un coup
 const boutons = on => document.querySelectorAll("#moves button").forEach(b => { b.disabled = !on; });
 
 function jouer(signe, auto = false) {
+  if (S && S.duel) return jouerDuel(signe);
   if (!S || !S.enJeu || S.occupe || S.match.termine || panneauOuvert || faceAFaceOuvert) return;
   S.occupe = true; arreterMinuteur(); boutons(false);
   const m = S.match;
   // Le bot choisit sans connaître le coup du joueur.
   const histBot = m.coups.map(c => ({ moi: c.b, adv: c.a, res: c.gagnant === null ? "e" : c.gagnant === 1 ? "g" : "p" }));
   const signeBot = choisirCoup(OPP, histBot);
+  ambiance.raquette(signe);
+  afficherCoup(signe, signeBot, [auto, false]);
+}
+
+// Révèle un coup (solo ou duel) et enchaîne : annonces, score, fin de set ou de match.
+// silencieux : on met seulement l'état à jour (rattrapage de plusieurs coups en duel).
+function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
+  const m = S.match;
   S.suivi.figer();
-  const evt = jouerCoup(m, signe, signeBot, [auto, false]);
+  const evt = jouerCoup(m, signe, signeAdv, auto);
   S.suivi.enregistrer(signe, evt.gagnant === null ? "e" : evt.gagnant === 0 ? "g" : "p");
   suivreCoup(S.stats, m, evt);
   const a = annoncerCoup(m, evt, S.annonces, { recents: S.suivi.recents });
+  if (silencieux) return evt;
 
   // Révélation immédiate des deux signes : aucun effet pendant l'échange.
   const hMe = $("hMe"), hBot = $("hBot");
-  hMe.textContent = EMOJI[signe]; hBot.textContent = EMOJI[signeBot];
+  hMe.textContent = EMOJI[signe]; hBot.textContent = EMOJI[signeAdv];
   hMe.className = "hand" + (evt.gagnant === 0 ? " win" : evt.gagnant === 1 ? " lose" : "");
   hBot.className = "hand" + (evt.gagnant === 1 ? " win" : evt.gagnant === 0 ? " lose" : "");
-  $("verdict").textContent = (auto ? "Temps écoulé, coup joué au hasard. " : "") +
-    (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeBot]}` : `${NOM[signeBot]} bat ${NOM[signe]}`);
+  $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
+    (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
 
-  ambiance.raquette(signe);
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
   if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
   annoncer(a.lignes);
   render(); renderHistorique(); renderLecture();
 
-  if (m.termine) { setTimeout(finir, 1100); return; }
+  if (m.termine) { setTimeout(finir, 1100); return evt; }
   if (evt.finSet) {
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
     const suivant = annonceDebutSet(m), decisif = setDecisif(m);
-    setTimeout(() => ouvrirPanneau({
+    const nouveauSet = () => {
+      $("hMe").textContent = "❔"; $("hBot").textContent = "❔"; $("hMe").className = "hand"; $("hBot").className = "hand"; $("verdict").textContent = "";
+      annoncer([suivant]);
+    };
+    // En duel, le set suivant démarre quand les deux joueurs sont prêts (le serveur décide).
+    if (S.duel) D.apresPanneau = nouveauSet;
+    setTimeout(() => {
+      if (S.duel && (!D || D.duel.phase !== "entre_sets")) { if (D) { D.apresPanneau = null; nouveauSet(); duelReprendre(); } return; }
+      ouvrirPanneau({
       kick: `Fin du ${ORD[n - 1].toLowerCase()} set`,
       big: g === 0 ? "Set pour toi" : `Set pour ${OPP.nom}`, bigCls: g === 0 ? "me" : "bot",
       sc: `${pa}–${pb}`,
@@ -159,15 +185,18 @@ function jouer(signe, auto = false) {
       com: a.commentaire ? a.commentaire.texte : "",
       next: suivant.texte.replace(/\.$/, ""),
       go: `Lancer le ${decisif ? "set décisif" : ORD[n].toLowerCase() + " set"}`,
-      onGo: () => {
-        $("hMe").textContent = "❔"; $("hBot").textContent = "❔"; $("hMe").className = "hand"; $("hBot").className = "hand"; $("verdict").textContent = "";
-        annoncer([suivant]);
-        S.occupe = false; boutons(true); lancerMinuteur();
-      },
-    }), 1200);
-    return;
+      resteOuvert: !!S.duel,
+      onGo: S.duel ? duelPret : () => { nouveauSet(); S.occupe = false; boutons(true); lancerMinuteur(); },
+    });
+      if (S.duel) majBoutonsPret();
+    }, 1200);
+    return evt;
   }
-  setTimeout(() => { S.occupe = false; boutons(true); lancerMinuteur(); }, 900);
+  setTimeout(() => {
+    if (S.duel) { duelReprendre(); return; }
+    S.occupe = false; boutons(true); lancerMinuteur();
+  }, 900);
+  return evt;
 }
 
 // ---------------------------------------------------------------- affichage du match
@@ -206,9 +235,12 @@ function renderLecture() {
 
 function finir() {
   const m = S.match, gagne = m.vainqueur === 0, c = m.coups, n = c.length;
-  $("endTitle").textContent = `${gagne ? "Victoire" : "Défaite"} ${m.sets[0]} sets à ${m.sets[1]}`;
+  const special = S.duel && D ? D.finSpeciale : null;   // duel gagné ou perdu par forfait ou abandon
+  $("endTitle").textContent = special === "forfait" ? (gagne ? `Victoire par forfait : ${OPP.nom} a quitté le duel` : "Défaite par forfait")
+    : special === "abandon" ? (gagne ? `Victoire : ${OPP.nom} a abandonné` : "Tu as abandonné")
+    : `${gagne ? "Victoire" : "Défaite"} ${m.sets[0]} sets à ${m.sets[1]}`;
   const egalites = c.filter(x => x.gagnant === null).length;
-  $("endLine").textContent = `Sets : ${m.scoresSets.map(([a, b]) => `${a}–${b}`).join(", ")}. ${n} coups joués, dont ${egalites} égalités. Ta répartition :`;
+  $("endLine").textContent = n ? `Sets : ${m.scoresSets.map(([a, b]) => `${a}–${b}`).join(", ") || "aucun terminé"}. ${n} coups joués, dont ${egalites} égalités. Ta répartition :` : "Aucun coup joué.";
   const cpt = [0, 0, 0]; c.forEach(x => cpt[x.a]++);
   $("bars").innerHTML = barres(cpt, n);
   let meme = 0, apresV = 0;
@@ -223,14 +255,18 @@ function finir() {
   $("end").hidden = false;
   $("bar").style.transform = "scaleX(0)";
 
-  const enTournoi = !!(S.tour !== null && T);
+  const enTournoi = !!(S.tour !== null && T && !S.duel);
   if (enTournoi) { enregistrerMonMatch(T, gagne, m.sets); sauverT(); }
-  const nouveaux = enregistrerMatch(P, {
+  // Un duel compte dans la fiche (statistiques, historique, titres) mais pas dans le niveau.
+  const nouveaux = n ? enregistrerMatch(P, {
     match: m, stats: S.stats, devines: S.suivi.devines, lisibles: S.suivi.lisibles,
-    adversaire: { id: OPP.id, elo: OPP.elo }, finaleTournoi: enTournoi && S.tour === 2,
-  });
+    adversaire: { id: OPP.id, elo: OPP.elo, nom: S.duel ? `${OPP.nom}#${OPP.numero}` : OPP.nom },
+    finaleTournoi: enTournoi && S.tour === 2, compteNiveau: !S.duel,
+  }) : [];
   sauverP(); rafraichirAvatars(); afficherBilan();
-  $("again").hidden = enTournoi; $("tNext").hidden = !enTournoi;
+  $("again").hidden = enTournoi || !!S.duel; $("tNext").hidden = !enTournoi;
+  $("revanche").hidden = !S.duel; $("retourDuels").hidden = !S.duel; $("revanche").disabled = false;
+  $("abandonDuelZone").hidden = true;
   if (enTournoi) $("tNext").textContent = gagne ? (S.tour === 2 ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
   $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (t.debloque ? ` (débloque ${t.debloque})` : "")).join(", ") + " !" : "";
   $("end").scrollIntoView({ behavior: reduitMouvement() ? "auto" : "smooth", block: "start" });
@@ -242,7 +278,8 @@ const barres = (cpt, total) => [0, 2, 1].map(s => {
 }).join("");
 
 function afficherBilan() {
-  const f = Object.values(P.faceAFace), v = f.reduce((a, x) => a + x.v, 0), d = f.reduce((a, x) => a + x.d, 0);
+  const f = Object.entries(P.faceAFace).filter(([id]) => !id.startsWith("h:")).map(([, x]) => x);
+  const v = f.reduce((a, x) => a + x.v, 0), d = f.reduce((a, x) => a + x.d, 0);
   $("record").textContent = v + d ? `Ton bilan contre les bots : ${v} victoire${v > 1 ? "s" : ""}, ${d} défaite${d > 1 ? "s" : ""}` : "";
 }
 
@@ -257,6 +294,13 @@ function nouvelleSeance() {
     stats: nouvellesStats(), annonces: nouvelEtatAnnonces(), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false,
   };
+  preparerEcranMatch();
+  $("startCard").hidden = !!T; $("again").hidden = false; $("tNext").hidden = true;
+  renderFormat(); renderTableau(); rafraichirAvatars();
+}
+
+// Remet l'écran de match à zéro (solo ou duel).
+function preparerEcranMatch() {
   $("hMe").textContent = "❔"; $("hBot").textContent = "❔"; $("hMe").className = "hand"; $("hBot").className = "hand";
   $("verdict").textContent = "";
   $("band").innerHTML = `<div class="idle">Les annonces de l'arbitre et du commentateur s'afficheront ici.</div>`; $("band").classList.remove("stale");
@@ -265,8 +309,7 @@ function nouvelleSeance() {
   $("end").hidden = true; $("bar").style.transform = "scaleX(1)"; $("timer").classList.remove("urgent");
   render(); $("status").textContent = "Choisis ton premier coup";
   boutons(false); afficherBilan(); window.scrollTo(0, 0);
-  $("startCard").hidden = !!T; $("again").hidden = false; $("tNext").hidden = true;
-  renderFormat(); renderTableau(); rafraichirAvatars();
+  $("revanche").hidden = true; $("retourDuels").hidden = true; $("abandonDuelZone").hidden = true;
 }
 
 function renderFormat() {
@@ -279,11 +322,11 @@ function renderFormat() {
 const matchEnCours = () => S && S.enJeu && S.match.coups.length > 0 && !S.match.termine;
 const sauverFormat = () => ecrire("format", { len: fmt.len, win: fmt.win });
 document.querySelectorAll("#segLen button").forEach(b => b.addEventListener("click", () => {
-  if (matchEnCours() || T) { $("lenLock").hidden = false; return; }
+  if (matchEnCours() || T || D) { $("lenLock").hidden = false; return; }
   fmt.len = +b.dataset.v; sauverFormat(); nouvelleSeance();
 }));
 document.querySelectorAll("#segWin button").forEach(b => b.addEventListener("click", () => {
-  if (matchEnCours()) return;
+  if (matchEnCours() || D) return;
   fmt.win = WIN = +b.dataset.v; sauverFormat(); nouvelleSeance();
 }));
 
@@ -292,7 +335,9 @@ let minuteriesIntro = [];
 function ouvrirFaceAFace() {
   $("startCard").hidden = true; $("tourCard").hidden = true;
   try { ambiance.initialiser(); } catch { /* le match se joue aussi sans son */ } // geste de l'utilisateur : le son peut démarrer
-  const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: fmt.len, setsGagnants: WIN });
+  const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN });
+  $("foGo").disabled = false; $("foGo").textContent = "Commencer";
+  $("foBack").textContent = S.duel ? "Abandonner le duel" : "Retour";
   $("foStage").textContent = pr.bandeau; $("foFmt").textContent = pr.format;
   $("foAvMe").innerHTML = avatarSVG(P.av); $("foAvBot").innerHTML = avatarSVG(OPP.av);
   $("foNameMe").textContent = pr.joueur.nom; $("foSubMe").textContent = pr.joueur.sous; $("foRecMe").textContent = pr.joueur.bilan;
@@ -336,13 +381,16 @@ $("faceoff").addEventListener("click", e => {
   minuteriesIntro.splice(1).forEach(clearTimeout);   // on garde les applaudissements
   $("foGo").focus();
 });
+function fermerFaceAFace() { $("faceoff").classList.remove("show"); faceAFaceOuvert = false; minuteriesIntro.forEach(clearTimeout); }
 $("foGo").addEventListener("click", () => {
+  if (S.duel) { try { ambiance.initialiser(); } catch { /* sans son */ } duelPret(); return; }   // on attend que l'adversaire soit prêt
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false;
   S.enJeu = true;
   boutons(true); $("status").textContent = "Set 1, coup 1"; lancerMinuteur();
   annoncer([annonceDebutSet(S.match)]);
 });
 $("foBack").addEventListener("click", () => {
+  if (S.duel) { abandonnerDuel(); return; }
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false; minuteriesIntro.forEach(clearTimeout);
   S.tour = null; nouvelleSeance();
 });
@@ -400,7 +448,8 @@ function renderFiche() {
       <polyline points="${pts}" fill="none" stroke="var(--me)" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>`;
     $("lastBody").innerHTML = P.derniers.map(d => {
       const adv = botParId(d.adv);
-      return `<div class="ln"><span>${d.gagne ? "✅ Victoire" : "❌ Défaite"} ${d.sets}${adv ? ` contre ${esc(adv.nom)}` : ""}</span><span style="font-weight:400;color:var(--muted)">${esc(d.detail)}</span></div>`;
+      const nom = adv ? adv.nom : d.nomAdv;
+      return `<div class="ln"><span>${d.gagne ? "✅ Victoire" : "❌ Défaite"} ${d.sets}${nom ? ` contre ${esc(nom)}` : ""}</span><span style="font-weight:400;color:var(--muted)">${esc(d.detail)}</span></div>`;
     }).join("");
   }
   $("badges").innerHTML = TITRES.map(t => {
@@ -443,9 +492,10 @@ $("resetProfile").addEventListener("click", () => {
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
   const v = b.dataset.v;
   document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-  $("viewMatch").hidden = v !== "match"; $("viewProfile").hidden = v !== "profile"; $("viewOptions").hidden = v !== "options";
+  $("viewMatch").hidden = v !== "match"; $("viewProfile").hidden = v !== "profile"; $("viewOptions").hidden = v !== "options"; $("viewDuel").hidden = v !== "duel";
   $("lenLock").hidden = true;
   if (v === "profile") renderFiche();
+  if (v === "duel") duelsUI?.rafraichir();
   window.scrollTo(0, 0);
 }));
 
@@ -541,6 +591,214 @@ compteUI = installerCompte({
     $("inPseudo").value = P.pseudo; $("inFlag").value = P.drapeau;
     renderFiche(); rafraichirAvatars(); afficherBilan();
   },
+});
+
+// ---------------------------------------------------------------- duel en ligne
+// Le serveur arbitre : on lui envoie son signe, il révèle les deux quand les deux ont joué.
+// Le téléphone rejoue les coups révélés avec les mêmes règles pour l'affichage et les annonces.
+const TOLERANCE_MS = 1600;
+const ouvrirOnglet = v => document.querySelector(`.tabs button[data-v="${v}"]`).click();
+
+function lancerDuel(duel, ligneAdv) {
+  if (!duel || !ligneAdv) return;
+  if (D && D.id === duel.id) { ouvrirOnglet("match"); majDuel(duel); return; }
+  const uid = compteUI.session()?.user?.id, moi = maPlace(duel, uid);
+  if (moi === null) return;
+  quitterDuel({ solo: false });
+  OPP = adversaireHumain(ligneAdv); WIN = duel.sets_gagnants;
+  S = {
+    match: nouveauMatch({ pointsParSet: duel.points_par_set, setsGagnants: duel.sets_gagnants }),
+    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ humain: true }), suivi: new Suivi(),
+    tour: null, occupe: false, enJeu: false, duel: true,
+  };
+  D = { id: duel.id, moi, duel, decalage: 0, mancheEnvoyee: null, presente: false, fini: false, apresPanneau: null, finSpeciale: null };
+  preparerEcranMatch();
+  $("startCard").hidden = true; $("tourCard").hidden = true; $("abandonDuelZone").hidden = false;
+  $("ruleTxt").textContent = `Duel · sets de ${duel.points_par_set}, ${duel.sets_gagnants} sets gagnants`;
+  rafraichirAvatars(); render();
+  ouvrirOnglet("match");
+  D.arret = serveur.ecouter("duel", `id=eq.${duel.id}`, majDuel);
+  D.boucle = setInterval(battement, 1000);
+  majDuel(duel); battement();
+}
+
+// Signe de vie + application des délais par le serveur ; donne aussi l'heure du serveur.
+async function battement() {
+  if (!D || D.fini) return;
+  const id = D.id, t0 = Date.now();
+  try {
+    const r = await serveur.reclamer(id);
+    if (!D || D.id !== id) return;
+    D.decalage = Date.parse(r.maintenant) - (t0 + Date.now()) / 2;
+    D.horsLigne = false;
+    majDuel(r.duel);
+  } catch { if (D && D.id === id) { D.horsLigne = true; afficherEtatDuel(); } }
+}
+
+function majDuel(duel) {
+  if (!D || !duel || duel.id !== D.id || D.fini) return;
+  if (D.duel && Date.parse(duel.maj_le) < Date.parse(D.duel.maj_le)) return;   // information périmée
+  D.duel = duel;
+  const m = S.match, n = (duel.coups || []).length;
+
+  // 1. Les coups révélés depuis la dernière fois (rattrapage si plusieurs).
+  if (m.coups.length < n && !m.termine) {
+    while (m.coups.length < n - 1) { const c = coupVuDe(duel.coups[m.coups.length], D.moi); afficherCoup(c.a, c.b, c.auto, { silencieux: true }); }
+    const c = coupVuDe(duel.coups[n - 1], D.moi);
+    S.occupe = true; arreterMinuteur(); boutons(false);
+    afficherCoup(c.a, c.b, c.auto);
+    if (!coherent(m, duel, D.moi)) {   // ne devrait jamais arriver : on se recale sur le serveur
+      const r = rejouer(duel, D.moi); S.match = r.match; render(); renderHistorique();
+    }
+  }
+
+  // 2. La phase du duel.
+  if (duel.phase === "presentation") {
+    if (!D.presente) { D.presente = true; ouvrirFaceAFace(); }
+  } else if (duel.phase === "jeu") {
+    if (faceAFaceOuvert) { fermerFaceAFace(); annoncer([annonceDebutSet(S.match)]); }
+    if (panneauOuvert) { fermerPanneau(); D.apresPanneau?.(); D.apresPanneau = null; }
+    S.enJeu = true;
+    if (!S.occupe) duelReprendre();
+  } else if (duel.phase === "termine") {
+    terminerDuel(duel);
+  } else if (duel.phase === "annule" || duel.phase === "refuse") {
+    quitterDuel(); ouvrirOnglet("duel");
+  }
+  majBoutonsPret();
+  afficherEtatDuel();
+}
+
+// Après un coup (ou une pause) : à moi de jouer, si le serveur l'attend.
+function duelReprendre() {
+  if (!D || D.fini) return;
+  S.occupe = false;
+  const d = D.duel;
+  if (d.phase !== "jeu" || d.pause_depuis || D.mancheEnvoyee === d.manche || panneauOuvert || faceAFaceOuvert) { if (D.mancheEnvoyee !== d.manche) boutons(false); return; }
+  // Début de set : décompte « 3, 2, 1 » donné par le serveur, identique sur les deux téléphones.
+  const avantDepart = tempsRestant(d.echeance, D.decalage) - DUREE_COUP_MS;
+  clearTimeout(D.decompte);
+  if (avantDepart > 250) {
+    boutons(false); arreterMinuteur(); $("bar").style.transform = "scaleX(1)";
+    $("verdict").textContent = `Premier coup dans ${Math.ceil(avantDepart / 1000)}…`;
+    D.decompte = setTimeout(duelReprendre, Math.min(avantDepart, (avantDepart % 1000) || 1000));
+    return;
+  }
+  if ($("verdict").textContent.startsWith("Premier coup dans")) $("verdict").textContent = "À toi de jouer !";
+  boutons(true); lancerMinuteurDuel();
+}
+
+function lancerMinuteurDuel() {
+  cancelAnimationFrame(raf); $("timer").classList.remove("urgent");
+  const manche = D.duel.manche;
+  const tick = () => {
+    if (!D || D.fini || D.duel.manche !== manche || D.duel.pause_depuis) return;
+    const reste = tempsRestant(D.duel.echeance, D.decalage);
+    const k = Math.max(0, Math.min(1, reste / DUREE_COUP_MS));
+    $("bar").style.transform = `scaleX(${k})`;
+    if (k < 0.3) $("timer").classList.add("urgent");
+    if (reste <= 0) {
+      // Temps écoulé : le serveur jouera au hasard pour celui qui n'a pas joué.
+      if (D.mancheEnvoyee !== manche) { boutons(false); $("verdict").textContent = "Temps écoulé…"; }
+      setTimeout(battement, TOLERANCE_MS);
+      return;
+    }
+    raf = requestAnimationFrame(tick);
+  };
+  raf = requestAnimationFrame(tick);
+}
+
+function jouerDuel(signe) {
+  if (!D || D.fini || S.occupe || panneauOuvert || faceAFaceOuvert) return;
+  const d = D.duel;
+  if (d.phase !== "jeu" || d.pause_depuis || D.mancheEnvoyee === d.manche) return;
+  D.mancheEnvoyee = d.manche; boutons(false);
+  ambiance.raquette(signe);
+  $("hMe").textContent = EMOJI[signe]; $("hMe").className = "hand"; $("hBot").textContent = "⏳"; $("hBot").className = "hand";
+  $("verdict").textContent = `En attente de ${OPP.nom}…`;
+  serveur.jouer(D.id, d.manche, signe).then(majDuel).catch(e => {
+    if (!D) return;
+    if (/déjà terminé|déjà joué|Temps écoulé/.test(e.message)) { battement(); return; }
+    D.mancheEnvoyee = null; $("verdict").textContent = e.message; duelReprendre();
+  });
+}
+
+function duelPret() {
+  if (!D) return;
+  serveur.pret(D.id).then(majDuel).catch(e => { $("verdict").textContent = e.message; });
+  const d = D.duel, prets = [...d.prets]; prets[D.moi] = true;
+  majBoutonsPret({ ...d, prets });
+}
+// « Commencer » / « Lancer le set suivant » : on attend que l'adversaire soit prêt aussi.
+function majBoutonsPret(d = D?.duel) {
+  if (!D || !d) return;
+  const pret = d.prets && d.prets[D.moi];
+  const attente = `En attente de ${OPP.nom}…`;
+  if (faceAFaceOuvert && d.phase === "presentation") { $("foGo").disabled = !!pret; if (pret) $("foGo").textContent = attente; }
+  if (panneauOuvert && d.phase === "entre_sets") { $("iGo").disabled = !!pret; if (pret) $("iGo").textContent = attente; }
+}
+
+function afficherEtatDuel() {
+  if (!D || D.fini) return;
+  const d = D.duel, st = $("status");
+  if (D.horsLigne) { st.textContent = "⚠️ Connexion au serveur perdue… nouvelle tentative"; st.classList.add("hot"); return; }
+  if (d.phase === "jeu" && d.pause_depuis) {
+    const ecoule = (Date.now() + D.decalage - Date.parse(d.pause_depuis)) / 1000;
+    const reste = Math.max(0, Math.ceil(60 - ecoule));
+    st.textContent = `⏸ ${OPP.nom} a perdu la connexion. Sans retour dans ${reste} s, victoire par forfait.`;
+    st.classList.add("hot"); boutons(false); arreterMinuteur();
+    D.enPause = true;
+    return;
+  }
+  if (D.enPause) { D.enPause = false; render(); duelReprendre(); }
+  else if (st.textContent.startsWith("⚠️")) render();
+}
+
+function terminerDuel(duel) {
+  if (D.fini) return;
+  D.fini = true;
+  D.arret?.(); clearInterval(D.boucle); clearTimeout(D.decompte); arreterMinuteur(); boutons(false);
+  if (faceAFaceOuvert) fermerFaceAFace();
+  if (panneauOuvert) fermerPanneau();
+  if (duel.fin !== "score" || !S.match.termine) {
+    // Forfait ou abandon : le match s'arrête là.
+    D.finSpeciale = duel.fin;
+    S.match.termine = true; S.match.vainqueur = duel.vainqueur === D.moi ? 0 : 1;
+    render(); finir();
+  }
+}
+
+function quitterDuel({ solo = true } = {}) {
+  if (!D) return;
+  D.arret?.(); clearInterval(D.boucle); clearTimeout(D.decompte); arreterMinuteur();
+  if (faceAFaceOuvert) fermerFaceAFace();
+  if (panneauOuvert) fermerPanneau();
+  D = null;
+  if (solo) nouvelleSeance();
+}
+
+function abandonnerDuel() {
+  if (!D || D.fini) return;
+  if (!confirm(`Abandonner le duel contre ${OPP.nom} ? Ce sera une défaite.`)) return;
+  serveur.abandonner(D.id).then(majDuel).catch(e => { $("verdict").textContent = e.message; });
+}
+$("abandonDuel").addEventListener("click", abandonnerDuel);
+$("retourDuels").addEventListener("click", () => { quitterDuel(); ouvrirOnglet("duel"); });
+$("revanche").addEventListener("click", async () => {
+  const f = S.match.format, adv = OPP.uid;
+  $("revanche").disabled = true;
+  try {
+    await serveur.creer(adv, f.pointsParSet, f.setsGagnants);
+    quitterDuel(); ouvrirOnglet("duel");
+    $("duelMsg").textContent = `Revanche proposée à ${OPP.nom} ! La partie démarre dès que ${OPP.nom} accepte.`;
+  } catch (e) { $("revanche").disabled = false; $("verdict").textContent = e.message; }
+});
+
+duelsUI = installerDuels({
+  compte: compteUI,
+  lancerDuel,
+  duelEnCours: () => !!D && !D.fini,
+  ouvrirOnglet,
 });
 
 // ---------------------------------------------------------------- démarrage

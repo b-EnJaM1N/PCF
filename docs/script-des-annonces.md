@@ -85,7 +85,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif et décalé (43 répliques)
+## Commentateur — vif et décalé (60 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -132,6 +132,23 @@ restent lus par la voix de synthèse.
 | `commentateur_victoire_nette_02.mp3` | Victoire sans trembler. Du grand art. |
 | `commentateur_defaite_01.mp3` | La machine l'emporte. Il faudra revoir ses habitudes. |
 | `commentateur_defaite_02.mp3` | La machine a été la plus lucide aujourd'hui. Place à l'analyse. |
+| `commentateur_serie_jaune_h_01.mp3` | Quatre points d'affilée. L'adversaire vacille. |
+| `commentateur_serie_jaune_h_02.mp3` | Quatre de suite ! Il a trouvé la faille. |
+| `commentateur_serie_jaune_h_03.mp3` | Il enchaîne. En face, on ne sait plus où donner de la tête. |
+| `commentateur_serie_rouge_h_01.mp3` | L'adversaire déroule. Quatre points de suite. |
+| `commentateur_serie_rouge_h_02.mp3` | Quatre points d'affilée en face. Il faut réagir, et vite. |
+| `commentateur_serie_rouge_h_03.mp3` | L'adversaire s'envole. Il est temps de changer quelque chose. |
+| `commentateur_lisible_h_01.mp3` | L'adversaire a flairé le coup. Encore. Il devient lisible. |
+| `commentateur_lisible_h_02.mp3` | Il l'a vu venir de loin. Ses habitudes le trahissent. |
+| `commentateur_lisible_h_03.mp3` | Trop prévisible en ce moment. En face, on lit dans son jeu. |
+| `commentateur_set_renverse_rouge_h_01.mp3` | La balle de set lui a filé entre les doigts. |
+| `commentateur_set_renverse_rouge_h_02.mp3` | Il tenait ce set… et l'adversaire le lui arrache. |
+| `commentateur_set_ecrasant_jaune_h_01.mp3` | Une leçon. L'adversaire va devoir se remettre en question. |
+| `commentateur_set_ecrasant_jaune_h_02.mp3` | Set à sens unique. Démonstration de force. |
+| `commentateur_victoire_nette_h_01.mp3` | Démonstration. L'adversaire n'a rien vu venir. |
+| `commentateur_victoire_nette_h_02.mp3` | Victoire sans trembler. Du grand art. |
+| `commentateur_defaite_h_01.mp3` | L'adversaire l'emporte. Il faudra revoir ses habitudes. |
+| `commentateur_defaite_h_02.mp3` | L'adversaire a été le plus lucide aujourd'hui. Place à l'analyse. |
 
 ## Sons du court (5 sons)
 
