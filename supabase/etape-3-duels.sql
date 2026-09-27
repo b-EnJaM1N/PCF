@@ -88,6 +88,7 @@ create or replace function public._duree_coup() returns interval language sql im
 create or replace function public._tolerance() returns interval language sql immutable as $$ select interval '1.5 seconds' $$;   -- délai du réseau
 create or replace function public._absence() returns interval language sql immutable as $$ select interval '10 seconds' $$;    -- sans signe de vie : pause
 create or replace function public._forfait() returns interval language sql immutable as $$ select interval '60 seconds' $$;    -- pause trop longue : forfait
+create or replace function public._decompte() returns interval language sql immutable as $$ select interval '3 seconds' $$;    -- « 3, 2, 1 » avant chaque set
 
 -- ---------------------------------------------------------------- outils internes
 -- Place du joueur connecté dans ce duel (0 ou 1), sinon erreur.
@@ -106,11 +107,12 @@ language sql as $$
   on conflict (duel_id, joueur) do update set vu = now();
 $$;
 
--- Lance le coup suivant (début de match ou de set).
+-- Lance un set (début de match ou set suivant) : décompte de 3 secondes, puis 5 secondes pour jouer.
+-- Le décompte laisse aux deux téléphones le temps d'apprendre que le set commence.
 create or replace function public._demarrer(p_id uuid) returns void
 language sql as $$
   update public.duels set phase = 'jeu', prets = '{false,false}', pause_depuis = null,
-    echeance = now() + public._duree_coup(), maj_le = now()
+    echeance = now() + public._decompte() + public._duree_coup(), maj_le = now()
   where id = p_id;
 $$;
 

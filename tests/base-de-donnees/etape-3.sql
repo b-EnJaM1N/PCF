@@ -59,7 +59,7 @@ select pret((select val from t where cle = 'duel'));
 select pg_temp.verifier((select phase = 'presentation' from duels where id = (select val from t where cle = 'duel')), 'un seul prêt : on attend l''autre');
 select pg_temp.en_tant_que(:'A');
 select pret((select val from t where cle = 'duel'));
-select pg_temp.verifier((select phase = 'jeu' and echeance > now() from duels where id = (select val from t where cle = 'duel')), 'les deux sont prêts : le jeu commence');
+select pg_temp.verifier((select phase = 'jeu' and echeance > now() + interval '7 seconds' from duels where id = (select val from t where cle = 'duel')), 'les deux sont prêts : décompte de 3 s, puis 5 s pour le premier coup');
 
 -- 4. Un coup : Alice joue Pierre, Bob ne peut pas le voir, puis Bob joue Ciseaux
 select jouer((select val from t where cle = 'duel'), 1, 0);
