@@ -1,4 +1,4 @@
-// Tournois « Sit & Go » (onglet Duel) : salles publiques de 8 à 64 joueurs,
+// Tournois « Sit & Go » (menu Jouer › Sit & Go) : salles publiques de 8 à 64 joueurs,
 // départ dès que c'est plein, matchs lancés automatiquement.
 import * as social from "./social-serveur.js";
 import { TAILLES_SNG, dureeSng, resume } from "./tournoi-logique.js";
@@ -6,7 +6,7 @@ import { TAILLES_SNG, dureeSng, resume } from "./tournoi-logique.js";
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-// ctx : { compte, ouvrirTournoi(id), chercherMatch() (lance le duel s'il y en a un qui m'attend) }
+// ctx : { compte, ouvrirTournoi(id), chercherMatch() (lance le duel s'il y en a un qui m'attend), signaler(cle, valeur) }
 export function installerSng(ctx) {
   let uid = null, minuterie = 0, etat = null, dernierePhase = null;
   const dire = (t, erreur = false) => { $("sngMsg").textContent = t; $("sngMsg").classList.toggle("erreur", erreur); };
@@ -14,11 +14,11 @@ export function installerSng(ctx) {
   function surSession(session) {
     uid = session?.user?.id || null;
     clearInterval(minuterie); etat = null;
-    $("sngCard").hidden = !uid;
-    if (!uid) return;
+    $("sngCard").hidden = !uid; $("sngHors").hidden = !!uid;
+    if (!uid) { ctx.signaler("sng", null); return; }
     rafraichir();
-    // En salle ou en course : toutes les 4 s (signe de vie, départ, match suivant) ; sinon, seulement onglet Duel affiché.
-    minuterie = setInterval(() => { if (etat?.mien || !$("viewDuel").hidden) rafraichir(); }, 4000);
+    // En salle ou en course : toutes les 4 s (signe de vie, départ, match suivant) ; sinon, seulement quand le menu Jouer ou la page Sit & Go est affiché.
+    minuterie = setInterval(() => { if (etat?.mien || !$("viewSng").hidden || !$("viewJouer").hidden) rafraichir(); }, 4000);
   }
   ctx.compte.surConnexion(surSession);
 
@@ -32,6 +32,7 @@ export function installerSng(ctx) {
     // Le tournoi vient de démarrer : on montre le tableau, et le premier match arrive.
     if (mien?.phase === "en_cours" && dernierePhase === "inscriptions") { ctx.ouvrirTournoi(mien.id); }
     dernierePhase = mien?.phase ?? null;
+    ctx.signaler("sng", mien || null);
     if (mien?.phase === "en_cours") ctx.chercherMatch();
     render();
   }

@@ -10,7 +10,7 @@ const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const nomComplet = p => `${esc(p.pseudo)}<small>#${p.numero}</small>`;
 
-// ctx : { compte (installerCompte), lancerDuel(duel, profilAdversaire), duelEnCours(), ouvrirOnglet(nom) }
+// ctx : { compte (installerCompte), lancerDuel(duel, profilAdversaire), duelEnCours(), ouvrirOnglet(nom), signaler(cle, valeur) }
 export function installerDuels(ctx) {
   let uid = null, arrets = [], minuterie = 0, recherche = 0;
   const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), classe: lire("duelClasse", true) };
@@ -37,7 +37,7 @@ export function installerDuels(ctx) {
     uid = session?.user?.id || null;
     $("duelHors").hidden = !!uid; $("duelOn").hidden = !uid;
     arrets.forEach(f => f()); arrets = []; clearInterval(minuterie);
-    if (!uid) { $("pastilleDuel").hidden = true; return; }
+    if (!uid) { ctx.signaler("duels", { recus: 0, enCours: 0 }); return; }
     // Défis reçus et envoyés : en direct, avec une vérification régulière en secours.
     arrets.push(serveur.ecouter("recus", `j1=eq.${uid}`, rafraichir), serveur.ecouter("envoyes", `j0=eq.${uid}`, rafraichir));
     minuterie = setInterval(rafraichir, 8000);
@@ -74,7 +74,7 @@ export function installerDuels(ctx) {
     $("duelEnvoyesCard").hidden = !envoyes.length;
     $("duelEnvoyes").innerHTML = envoyes.map(d => ligne(d, d.j1 ? joueurs.get(d.j1) : null,
       `${d.par_lien ? `<button class="petit alt" data-a="partager" data-code="${d.code}">Lien</button>` : ""}${d.tournoi_match ? "" : `<button class="petit alt" data-a="annuler">Annuler</button>`}`)).join("");
-    $("pastilleDuel").hidden = !recus.length; $("pastilleDuel").textContent = recus.length;
+    ctx.signaler("duels", { recus: recus.length, enCours: enCours.length });
 
     const actions = { accepter: id => serveur.repondre(id, true), refuser: id => serveur.repondre(id, false), annuler: id => serveur.annuler(id) };
     document.querySelectorAll("#viewDuel .joueur button").forEach(b => b.addEventListener("click", async () => {
@@ -118,10 +118,10 @@ export function installerDuels(ctx) {
     }, 350);
   });
 
-  // Défier un joueur (depuis la recherche, la liste d'amis ou un cercle), au format choisi dans l'onglet Duel.
+  // Défier un joueur (depuis la recherche, la liste d'amis ou un cercle), au format choisi dans « Défier un ami ».
   async function defier(p) {
     await serveur.creer(p.id, format.len, format.win, format.classe);
-    const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra dans son onglet Duel, et la partie démarrera dès son acceptation.`;
+    const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra en haut de son menu « Jouer », et la partie démarrera dès son acceptation.`;
     dire(texte); rafraichir();
     return texte;
   }

@@ -43,7 +43,7 @@ const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier
 const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
-let duelsUI = null, cerclesUI = null;
+let duelsUI = null, cerclesUI = null, sngUI = null;
 let monClassement = null;   // niveau officiel (duels entre humains), connu une fois connecté
 let panneauOuvert = null, faceAFaceOuvert = false;
 
@@ -222,6 +222,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
 // ---------------------------------------------------------------- affichage du match
 function render() {
   const m = S.match;
+  majModeMatch();
   $("sMe").textContent = m.termine ? m.sets[0] : m.points[0];
   $("sBot").textContent = m.termine ? m.sets[1] : m.points[1];
   const points = k => Array.from({ length: WIN }, (_, i) => `<i class="${m.sets[k] > i ? "on" : ""}"></i>`).join("");
@@ -345,7 +346,7 @@ function renderFormat() {
   const arrondi = x => (x >= 20 ? Math.round(x / 5) * 5 : Math.max(1, Math.round(x)));
   const court = arrondi(w * parSet), long = arrondi((2 * w - 1) * parSet * 1.25);
   const officiel = fmt.len === 11;
-  $("fmtHint").textContent = `${texteFormat({ pointsParSet: fmt.len, setsGagnants: w })}${officiel ? " (format officiel)" : ""}, environ ${court} à ${long} coups.${officiel ? "" : " Tu peux revenir au format officiel dans les Options."}`;
+  $("fmtHint").textContent = `${texteFormat({ pointsParSet: fmt.len, setsGagnants: w })}${officiel ? " (format officiel)" : ""}, environ ${court} à ${long} coups.${officiel ? "" : " Tu peux revenir au format officiel dans les Options (⚙️)."}`;
   $("ruleTxt").textContent = texteFormat({ pointsParSet: T ? lenTournoi() : fmt.len, setsGagnants: WIN });
 }
 const matchEnCours = () => S && S.enJeu && S.match.coups.length > 0 && !S.match.termine;
@@ -414,7 +415,7 @@ function fermerFaceAFace() { $("faceoff").classList.remove("show"); faceAFaceOuv
 $("foGo").addEventListener("click", () => {
   if (S.duel) { try { ambiance.initialiser(); } catch { /* sans son */ } duelPret(); return; }   // on attend que l'adversaire soit prêt
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false;
-  S.enJeu = true;
+  S.enJeu = true; majModeMatch();
   $("status").textContent = "Set 1, coup 1";
   annoncer([annonceDebutSet(S.match)]);
   decompteSolo();
@@ -519,18 +520,57 @@ $("resetProfile").addEventListener("click", () => {
   P = remettreAZero(P); sauverP(); renderFiche(); rafraichirAvatars(); afficherBilan();
 });
 
-// ---------------------------------------------------------------- onglets
-document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
-  const v = b.dataset.v;
-  document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-  $("viewMatch").hidden = v !== "match"; $("viewProfile").hidden = v !== "profile"; $("viewOptions").hidden = v !== "options"; $("viewDuel").hidden = v !== "duel";
-  $("viewCercles").hidden = v !== "cercles";
+// ---------------------------------------------------------------- navigation
+// Trois onglets (Jouer, Cercles, Ma fiche) et la roue des Options. L'onglet « Jouer » est un menu
+// qui mène aux pages Défier un ami, Sit & Go, Tournois et Entraînement (l'écran de match).
+const VUES = ["viewJouer", "viewMatch", "viewDuel", "viewSng", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
+const ONGLET_DE = { viewJouer: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
+let vueCourante = "viewJouer", avantOptions = "viewJouer";
+function aller(vue) {
+  if (!VUES.includes(vue)) return;
+  if (vue === "viewOptions" && vueCourante !== "viewOptions") avantOptions = vueCourante;
+  VUES.forEach(v => { $(v).hidden = v !== vue; });
+  vueCourante = vue;
+  const onglet = ONGLET_DE[vue];
+  if (onglet || vue === "viewOptions") document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === onglet)));
   $("lenLock").hidden = true;
-  if (v === "profile") renderFiche();
-  if (v === "duel") duelsUI?.rafraichir();
-  if (v === "cercles") cerclesUI?.rafraichir();
+  if (vue === "viewProfile") renderFiche();
+  if (vue === "viewDuel") duelsUI?.rafraichir();
+  if (vue === "viewCercles" || vue === "viewTournois") cerclesUI?.rafraichir();
+  if (vue === "viewSng") sngUI?.rafraichir();
   window.scrollTo(0, 0);
-}));
+}
+document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => aller({ jouer: "viewJouer", cercles: "viewCercles", profile: "viewProfile" }[b.dataset.v])));
+document.addEventListener("click", e => { const b = e.target.closest("[data-aller]"); if (b) aller(b.dataset.aller); });
+$("btnOptions").addEventListener("click", () => aller(vueCourante === "viewOptions" ? avantOptions : "viewOptions"));
+$("optionsRetour").addEventListener("click", () => aller(avantOptions));
+
+// Les alertes en haut du menu « Jouer » (et la pastille de l'onglet).
+const alertes = { duels: { recus: 0, enCours: 0 }, tournois: [], sng: null };
+function signaler(cle, valeur) { alertes[cle] = valeur; renderAlertes(); }
+function renderAlertes() {
+  const a = alertes, carte = (attr, icone, titre, texte) => `<button class="hub alerte" ${attr}><span class="hub-i">${icone}</span><span><b>${titre}</b><small>${texte}</small></span></button>`;
+  $("hubAlertes").innerHTML = [
+    a.duels.enCours ? carte('data-aller="viewDuel"', "▶️", "Duel en cours", "Touche pour le reprendre") : "",
+    a.duels.recus ? carte('data-aller="viewDuel"', "📨", `${a.duels.recus} défi${a.duels.recus > 1 ? "s" : ""} reçu${a.duels.recus > 1 ? "s" : ""}`, "Accepte ou refuse") : "",
+    ...a.tournois.map(t => carte(`data-tournoi="${t.id}"`, "🏆", "Ton match de tournoi t'attend", esc(t.nom))),
+    a.sng ? carte('data-aller="viewSng"', "⚡", a.sng.phase === "inscriptions" ? "Tu es en salle de Sit & Go" : "Ton Sit & Go est en cours", "Garde l'appli ouverte") : "",
+  ].join("");
+  const n = a.duels.recus + a.tournois.length;
+  $("pastilleJouer").hidden = !n; $("pastilleJouer").textContent = n;
+}
+$("hubAlertes").addEventListener("click", e => { const b = e.target.closest("[data-tournoi]"); if (b) cerclesUI.ouvrirTournoi(b.dataset.tournoi); });
+
+// Pendant un match, l'écran de jeu prend toute la place (pas d'onglets).
+function majModeMatch() {
+  const enMatch = !!(S && S.enJeu && !S.match.termine);
+  document.body.classList.toggle("en-match", enMatch);
+  $("quitterSoloZone").hidden = !enMatch || !!S.duel;
+}
+$("quitterSolo").addEventListener("click", () => {
+  if (!confirm("Quitter le match ? Il ne sera pas compté.")) return;
+  nouvelleSeance();
+});
 
 // ---------------------------------------------------------------- choix de l'adversaire
 function renderAdversaires() {
@@ -618,7 +658,7 @@ compteUI = installerCompte({
   lireP: () => P,
   sauverLocal,
   rafraichir: () => { afficherNomFiche(); rafraichirAvatars(); },
-  ouvrirFiche: () => document.querySelector('.tabs button[data-v="profile"]').click(),
+  ouvrirFiche: () => aller("viewProfile"),
   remplacerP: fiche => {
     P = normaliserProfil(fiche); sauverLocal();
     $("inPseudo").value = P.pseudo; $("inFlag").value = P.drapeau;
@@ -630,7 +670,8 @@ compteUI = installerCompte({
 // Le serveur arbitre : on lui envoie son signe, il révèle les deux quand les deux ont joué.
 // Le téléphone rejoue les coups révélés avec les mêmes règles pour l'affichage et les annonces.
 const TOLERANCE_MS = 1600;
-const ouvrirOnglet = v => document.querySelector(`.tabs button[data-v="${v}"]`).click();
+// Ancien nom des pages (utilisé par les modules) : match, duel, cercles, profile…
+const ouvrirOnglet = v => aller({ match: "viewMatch", duel: "viewDuel", cercles: "viewCercles", profile: "viewProfile", options: "viewOptions", jouer: "viewJouer", sng: "viewSng", tournois: "viewTournois" }[v] || v);
 
 function lancerDuel(duel, ligneAdv) {
   if (!duel || !ligneAdv) return;
@@ -694,7 +735,7 @@ function majDuel(duel) {
     // (sinon le premier coup du set pouvait partir au hasard).
     const reprise = !!panneauOuvert;
     if (panneauOuvert) { fermerPanneau(); D.apresPanneau?.(); D.apresPanneau = null; }
-    S.enJeu = true;
+    S.enJeu = true; majModeMatch();
     if (!S.occupe || reprise) duelReprendre();
   } else if (duel.phase === "termine") {
     terminerDuel(duel);
@@ -836,6 +877,7 @@ $("revanche").addEventListener("click", async () => {
 
 duelsUI = installerDuels({
   compte: compteUI,
+  signaler,
   lancerDuel,
   duelEnCours: () => !!D && !D.fini,
   ouvrirOnglet,
@@ -844,6 +886,7 @@ duelsUI = installerDuels({
 // ---------------------------------------------------------------- amis et cercles
 cerclesUI = installerCercles({
   compte: compteUI,
+  signaler, aller, vueCourante: () => vueCourante,
   ouvrirOnglet,
   defier: p => duelsUI.defier(p),
   lancerDuel,
@@ -854,7 +897,8 @@ cerclesUI = installerCercles({
 });
 
 // ---------------------------------------------------------------- Sit & Go
-installerSng({
+sngUI = installerSng({
+  signaler,
   compte: compteUI,
   ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
   chercherMatch: () => { if (!D || D.fini) duelsUI.rafraichir(); },   // mon match suivant est-il lancé ?
@@ -864,3 +908,5 @@ installerSng({
 renderAdversaires();
 renderVoixInfo();
 nouvelleSeance();
+compteUI.surConnexion(session => { $("hubHors").hidden = !!session?.user; });
+$("hubHors").hidden = !!compteUI.session()?.user;
