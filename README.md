@@ -16,8 +16,9 @@ puis « Sur l'écran d'accueil » / « Installer l'application ». Le détail es
 | Règle | Valeur |
 |---|---|
 | Points par set | 11, avec 2 points d'écart (7 possible dans les Options) |
+| Jeux par set (option) | 1 (officiel : le set se joue en un jeu de 11 points) ou 3 : le set va au premier qui gagne 3 jeux |
 | Égalités (même signe) | Ne comptent pas, le point est rejoué |
-| Nombre de sets | 2 ou 3 sets gagnants, choisi avant le match |
+| Nombre de sets | 2 ou 3 sets gagnants, choisi avant le match (ou un match en 1 set, toujours amical en duel) |
 | Temps par coup | 5 secondes, sinon un signe est joué au hasard |
 | Historique | Visible pendant tout le match |
 | Pendant l'échange | Aucune animation : révélation immédiate des signes |

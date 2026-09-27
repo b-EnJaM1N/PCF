@@ -13,7 +13,7 @@ L'arbitre ne prononce jamais de pseudo : il nomme les joueurs par leur côté
 (jaune = le joueur, rouge = l'adversaire). Les scores rares au-delà de 20–18
 restent lus par la voix de synthèse.
 
-## Arbitre — grave et sobre (67 répliques)
+## Arbitre — grave et sobre (84 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -41,6 +41,23 @@ restent lus par la voix de synthèse.
 | `arbitre_sets_trois_a_zero_01.mp3` | Trois sets à zéro. |
 | `arbitre_sets_trois_a_un_01.mp3` | Trois sets à un. |
 | `arbitre_sets_trois_a_deux_01.mp3` | Trois sets à deux. |
+| `arbitre_set_unique_01.mp3` | Set unique. |
+| `arbitre_jeu_jaune_01.mp3` | Jeu, côté jaune. |
+| `arbitre_jeu_rouge_01.mp3` | Jeu, côté rouge. |
+| `arbitre_balle_de_jeu_jaune_01.mp3` | Balle de jeu, côté jaune. |
+| `arbitre_balle_de_jeu_rouge_01.mp3` | Balle de jeu, côté rouge. |
+| `arbitre_jeu_decisif_01.mp3` | Jeu décisif. |
+| `arbitre_jeux_un_partout_01.mp3` | Un jeu partout. |
+| `arbitre_jeux_deux_partout_01.mp3` | Deux jeux partout. |
+| `arbitre_jeux_un_a_zero_jaune_01.mp3` | Un jeu à zéro, côté jaune. |
+| `arbitre_jeux_un_a_zero_rouge_01.mp3` | Un jeu à zéro, côté rouge. |
+| `arbitre_jeux_deux_a_zero_jaune_01.mp3` | Deux jeux à zéro, côté jaune. |
+| `arbitre_jeux_deux_a_zero_rouge_01.mp3` | Deux jeux à zéro, côté rouge. |
+| `arbitre_jeux_deux_a_un_jaune_01.mp3` | Deux jeux à un, côté jaune. |
+| `arbitre_jeux_deux_a_un_rouge_01.mp3` | Deux jeux à un, côté rouge. |
+| `arbitre_score_trois_a_zero_01.mp3` | Trois à zéro. |
+| `arbitre_score_trois_a_un_01.mp3` | Trois à un. |
+| `arbitre_score_trois_a_deux_01.mp3` | Trois à deux. |
 | `arbitre_score_sept_a_zero_01.mp3` | Sept à zéro. |
 | `arbitre_score_sept_a_un_01.mp3` | Sept à un. |
 | `arbitre_score_sept_a_deux_01.mp3` | Sept à deux. |

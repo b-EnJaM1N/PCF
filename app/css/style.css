@@ -299,3 +299,4 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
   .tabs { gap: 4px; }
   .tabs button { padding: 9px 2px; font-size: .86rem; }
 }
+.tape td.newjeu { border-left: 2px dashed rgba(255, 255, 255, .45); }

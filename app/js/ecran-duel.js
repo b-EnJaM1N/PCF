@@ -13,7 +13,7 @@ const nomComplet = p => `${esc(p.pseudo)}<small>#${p.numero}</small>`;
 // ctx : { compte (installerCompte), lancerDuel(duel, profilAdversaire), duelEnCours(), ouvrirOnglet(nom) }
 export function installerDuels(ctx) {
   let uid = null, arrets = [], minuterie = 0, recherche = 0;
-  const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), classe: lire("duelClasse", true) };
+  const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), jeux: lire("duelJeux", 1), classe: lire("duelClasse", true) };
   const dire = (t, erreur = false) => { $("duelMsg").textContent = t; $("duelMsg").classList.toggle("erreur", erreur); };
   const base = () => location.origin + location.pathname;
 
@@ -21,11 +21,17 @@ export function installerDuels(ctx) {
   const renderFormat = () => {
     document.querySelectorAll("#duelLen button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === format.len)));
     document.querySelectorAll("#duelWin button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === format.win)));
+    document.querySelectorAll("#duelJeux button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === format.jeux)));
+    // Un match en 1 set est toujours amical.
+    const court = format.win === 1;
+    $("duelClasse").disabled = court; $("duelClasse").checked = format.classe && !court;
+    $("duelClasseTexte").textContent = court ? "Match en 1 set : toujours amical, ton niveau officiel ne bouge pas."
+      : "Match officiel : compte pour ton niveau officiel (décoche pour un match amical)";
   };
   document.querySelectorAll("#duelLen button").forEach(b => b.addEventListener("click", () => { format.len = +b.dataset.v; ecrire("duelLen", format.len); renderFormat(); }));
   document.querySelectorAll("#duelWin button").forEach(b => b.addEventListener("click", () => { format.win = +b.dataset.v; ecrire("duelWin", format.win); renderFormat(); }));
+  document.querySelectorAll("#duelJeux button").forEach(b => b.addEventListener("click", () => { format.jeux = +b.dataset.v; ecrire("duelJeux", format.jeux); renderFormat(); }));
   renderFormat();
-  $("duelClasse").checked = format.classe;
   $("duelClasse").addEventListener("change", e => { format.classe = e.target.checked; ecrire("duelClasse", format.classe); });
 
   // ------------------------------------------------ connecté ou pas
@@ -116,8 +122,8 @@ export function installerDuels(ctx) {
 
   // Défier un joueur (depuis la recherche, la liste d'amis ou un cercle), au format choisi dans l'onglet Duel.
   async function defier(p) {
-    await serveur.creer(p.id, format.len, format.win, format.classe);
-    const texte = `Défi ${format.classe ? "officiel" : "amical"} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra dans son onglet Duel, et la partie démarrera dès son acceptation.`;
+    await serveur.creer(p.id, format.len, format.win, format.classe, format.jeux);
+    const texte = `Défi ${format.classe && format.win > 1 ? "officiel" : "amical"} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra dans son onglet Duel, et la partie démarrera dès son acceptation.`;
     dire(texte); rafraichir();
     return texte;
   }
@@ -135,7 +141,7 @@ export function installerDuels(ctx) {
   }
   $("duelLien").addEventListener("click", async () => {
     $("duelLien").disabled = true;
-    try { const d = await serveur.creer(null, format.len, format.win, format.classe); await partager(d.code); rafraichir(); }
+    try { const d = await serveur.creer(null, format.len, format.win, format.classe, format.jeux); await partager(d.code); rafraichir(); }
     catch (e) { dire(e.message, true); }
     $("duelLien").disabled = false;
   });

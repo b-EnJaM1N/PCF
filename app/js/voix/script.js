@@ -46,17 +46,40 @@ const ARBITRE = {
   arbitre_sets_trois_a_zero_01: "Trois sets à zéro.",
   arbitre_sets_trois_a_un_01: "Trois sets à un.",
   arbitre_sets_trois_a_deux_01: "Trois sets à deux.",
+  // Match en un seul set, et sets en plusieurs jeux.
+  arbitre_set_unique_01: "Set unique.",
+  arbitre_jeu_jaune_01: "Jeu, côté jaune.",
+  arbitre_jeu_rouge_01: "Jeu, côté rouge.",
+  arbitre_balle_de_jeu_jaune_01: "Balle de jeu, côté jaune.",
+  arbitre_balle_de_jeu_rouge_01: "Balle de jeu, côté rouge.",
+  arbitre_jeu_decisif_01: "Jeu décisif.",
+  arbitre_jeux_un_partout_01: "Un jeu partout.",
+  arbitre_jeux_deux_partout_01: "Deux jeux partout.",
+  arbitre_jeux_un_a_zero_jaune_01: "Un jeu à zéro, côté jaune.",
+  arbitre_jeux_un_a_zero_rouge_01: "Un jeu à zéro, côté rouge.",
+  arbitre_jeux_deux_a_zero_jaune_01: "Deux jeux à zéro, côté jaune.",
+  arbitre_jeux_deux_a_zero_rouge_01: "Deux jeux à zéro, côté rouge.",
+  arbitre_jeux_deux_a_un_jaune_01: "Deux jeux à un, côté jaune.",
+  arbitre_jeux_deux_a_un_rouge_01: "Deux jeux à un, côté rouge.",
 };
+
+// Score des jeux dans le set en cours, annoncé après chaque jeu : « Deux jeux à un, côté jaune. »
+export function repliqueJeux(j0, j1) {
+  if (j0 === j1) return replique(`arbitre_jeux_${slug(enLettres(j0))}_partout_01`);
+  const [h, b, cote] = j0 > j1 ? [j0, j1, "jaune"] : [j1, j0, "rouge"];
+  return replique(`arbitre_jeux_${slug(enLettres(h))}_a_${slug(enLettres(b))}_${cote}_01`);
+}
 
 // Répliques de l'arbitre construites à partir d'un score.
 export const scoreSet = (g, p) => ({ id: `arbitre_score_${slug(enLettres(g))}_a_${slug(enLettres(p))}_01`, texte: `${maj(enLettres(g))} à ${enLettres(p)}.` });
 export const partout = n => ({ id: `arbitre_partout_${slug(enLettres(n))}_01`, texte: `${maj(enLettres(n))} partout. Deux points d'écart.` });
 
-// Les scores de fin de set possibles jusqu'à 20–18, pour les sets de 7 et de 11.
+// Les scores de fin de set possibles jusqu'à 20–18, pour les sets de 7 et de 11, et en jeux (3–0, 3–1, 3–2).
 function scoresCourants() {
   const s = [];
   for (const len of [7, 11]) for (let p = 0; p <= len - 2; p++) s.push([len, p]);
   for (let p = 6; p <= 18; p++) s.push([p + 2, p]);
+  for (let p = 0; p <= 2; p++) s.push([3, p]);   // sets en 3 jeux : « Trois à un. »
   const vus = new Set();
   return s.filter(([g, p]) => { const k = `${g}-${p}`; if (vus.has(k)) return false; vus.add(k); return true; })
     .sort((x, y) => x[0] - y[0] || x[1] - y[1]);

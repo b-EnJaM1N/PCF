@@ -15,6 +15,8 @@
    - **Cercle** (nom retenu) : un nom, un blason (emblème + couleur), des invitations par lien ou parmi ses amis, un responsable (👑) qui peut renommer, retirer un membre, changer le lien ou supprimer le cercle. Le **classement du cercle** range les membres par niveau officiel, avec leurs victoires et défaites entre membres. Un joueur peut être dans 20 cercles, un cercle compte jusqu'à 100 membres.
 5. **Tournois en ligne**, dont les **tournois de cercle**.
 
+   - **Nouveaux formats** (demandés pendant l'étape 4) : match en **1 set** (toujours amical en duel) et sets en **3 jeux** (un jeu = 11 points avec 2 points d'écart ; le set va au premier à 3 jeux). En solo et en duel ; le tournoi reste au format officiel.
+
 ## Décisions à prendre
 
 - **Service en ligne** : ✅ décidé — Supabase (gratuit au démarrage).
