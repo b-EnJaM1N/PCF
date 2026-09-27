@@ -1,5 +1,5 @@
 // Vérifie que le serveur (SQL) et l'application (app/js/regles.js) appliquent
-// exactement les mêmes règles : 40 matchs au hasard, joués des deux côtés.
+// exactement les mêmes règles : 40 matchs au hasard, dans tous les formats, joués des deux côtés.
 import { spawnSync } from "node:child_process";
 import { writeFileSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -20,13 +20,14 @@ begin execute 'reset role'; perform set_config('request.jwt.claim.sub', uid, fal
 `;
 const attendus = [];
 for (let k = 0; k < 40; k++) {
-  const format = { pointsParSet: [7, 11][k % 2], setsGagnants: [2, 3][Math.floor(k / 2) % 2] };
+  // Tous les formats : sets de 11, 7, 3 ou 1 point ; 1, 2 ou 3 sets gagnants.
+  const format = { pointsParSet: [11, 7, 3, 1][k % 4], setsGagnants: [1, 2, 3][Math.floor(k / 4) % 3] };
   const m = nouveauMatch(format), seq = [];
   while (!m.termine) { const a = Math.floor(hasard() * 3), b = Math.floor(hasard() * 3); seq.push([a, b]); jouerCoup(m, a, b); }
   attendus.push({ points: m.points, sets: m.sets, scores_sets: m.scoresSets, vainqueur: m.vainqueur, coups: m.coups.length });
   sql += `select pg_temp.qui('${A}');
 do $$ declare d uuid; m int; s int[] := '{${seq.map(x => x.join(",")).map(x => `{${x}}`).join(",")}}'; i int; begin
-  select id into d from creer_duel('${B}', ${format.pointsParSet}, ${format.setsGagnants});
+  select id into d from lancer_defi('${B}', ${format.pointsParSet}, ${format.setsGagnants}, true);
   perform pg_temp.qui('${B}'); perform repondre_duel(d, true); perform pret(d);
   perform pg_temp.qui('${A}'); perform pret(d);
   for i in 1..array_length(s, 1) loop

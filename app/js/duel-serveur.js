@@ -1,11 +1,17 @@
 // Échanges avec le serveur pour les duels (fonctions de supabase/etape-3-duels.sql)
 // et mises à jour en direct (Realtime).
 import { clientSupabase as client, verifier, essayer } from "./compte.js";
+import { classements } from "./social-serveur.js";
+import { CLASSEMENT_DEPART } from "./social-logique.js";
+import { formatCourt } from "./duel-logique.js";
 
 const rpc = (nom, args) => essayer(async () => verifier(await client().rpc(nom, args)));
 
 export const chercher = texte => rpc("chercher_joueurs", { p_texte: texte });
-export const creer = (adversaire, points, sets) => rpc("creer_duel", { p_adversaire: adversaire, p_points: points, p_sets: sets });
+// classe = false : duel amical, sans effet sur le niveau officiel.
+// Les formats courts (match en 1 set, sets de 3 ou 1 point) sont toujours amicaux.
+export const creer = (adversaire, points, sets, classe = true) =>
+  rpc("lancer_defi", { p_adversaire: adversaire, p_points: points, p_sets: sets, p_classe: classe && !formatCourt(points, sets) });
 export const rejoindre = code => rpc("rejoindre_duel", { p_code: code });
 export const repondre = (id, accepte) => rpc("repondre_duel", { p_id: id, p_accepte: accepte });
 export const annuler = id => rpc("annuler_duel", { p_id: id });
@@ -20,9 +26,13 @@ export const mesDuels = () => essayer(async () => verifier(await client().from("
 
 export const lireDuel = id => essayer(async () => verifier(await client().from("duels").select("*").eq("id", id).single()));
 
-export const profils = ids => essayer(async () => ids.length
-  ? verifier(await client().from("profils").select("id,pseudo,numero,drapeau,avatar,fiche,visible_recherche").in("id", ids))
-  : []);
+// Fiches des joueurs, avec leur niveau officiel (champ « classement »).
+export const profils = ids => essayer(async () => {
+  if (!ids.length) return [];
+  const lignes = verifier(await client().from("profils").select("id,pseudo,numero,drapeau,avatar,fiche,visible_recherche").in("id", ids));
+  const cl = await classements(ids).catch(() => new Map());
+  return lignes.map(p => ({ ...p, classement: cl.get(p.id)?.points ?? CLASSEMENT_DEPART }));
+});
 
 export const changerVisibilite = (uid, visible) => essayer(async () =>
   verifier(await client().from("profils").update({ visible_recherche: visible }).eq("id", uid).select("visible_recherche").single()));

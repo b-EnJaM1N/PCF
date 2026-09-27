@@ -1,6 +1,6 @@
 // Présentation d'avant-match, façon boxe : les deux fiches face à face
 // et quelques statistiques marquantes, ligne par ligne.
-import { EMOJI, NOM } from "./regles.js";
+import { EMOJI, NOM, texteFormat } from "./regles.js";
 import { indiceImprevisibilite } from "./analyse.js";
 import { nomAffiche, dernierTitre, titresObtenus, signeFavori } from "./profil.js";
 import { TOUR_SINGULIER } from "./tournoi.js";
@@ -10,7 +10,8 @@ const pourcent = (a, b) => (b ? Math.round(100 * a / b) : null);
 // Renvoie { bandeau, format, joueur, adversaire, lignes, cle }.
 // Chaque ligne : { label, g, d } (texte à gauche et à droite) ; pour les nombres,
 // gn / dn donnent la valeur (animée à l'écran) et `avantage` le côté mis en valeur.
-export function presentation(P, bot, { tour = null, pointsParSet = 11, setsGagnants = 2 } = {}) {
+// Duel : classementMoi = mon niveau officiel (s'il est connu), classe = false pour un duel amical.
+export function presentation(P, bot, { tour = null, pointsParSet = 11, setsGagnants = 2, classementMoi = null, classe = true } = {}) {
   const f = P.faceAFace[bot.id] || { v: 0, d: 0, signes: [0, 0, 0] };
   const fav = signeFavori(P.signes);
   const imp = P.lisibles >= 10 ? indiceImprevisibilite(P.devines / P.lisibles) : null;
@@ -20,7 +21,7 @@ export function presentation(P, bot, { tour = null, pointsParSet = 11, setsGagna
     avantage: gn === null || dn === null || gn === dn ? null : gn > dn ? "g" : "d",
   });
   const lignes = [
-    nombre("Niveau PCF", P.elo, bot.elo),
+    bot.humain ? nombre("Niveau officiel", classementMoi ?? null, bot.classement ?? null) : nombre("Niveau", P.elo, bot.elo),
     nombre("Face-à-face", f.v, f.d),
     { label: "Arme favorite", g: fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`, d: bot.specialite, avantage: null },
     nombre("Imprévisibilité", imp, bot.imprevisibilite, "/100"),
@@ -28,8 +29,8 @@ export function presentation(P, bot, { tour = null, pointsParSet = 11, setsGagna
   ];
   const pct = pourcent(P.victoires, P.matchs);
   return {
-    bandeau: bot.humain ? "Duel en ligne" : tour === null ? "Match amical" : `PCF Open · ${TOUR_SINGULIER[tour]}`,
-    format: `Sets de ${pointsParSet} points · ${setsGagnants} sets gagnants`,
+    bandeau: bot.humain ? (classe ? "Duel officiel" : "Duel amical") : tour === null ? "Match amical" : `PCF Open · ${TOUR_SINGULIER[tour]}`,
+    format: texteFormat({ pointsParSet, setsGagnants }),
     joueur: {
       nom: nomAffiche(P), sous: `${P.drapeau} ${dernierTitre(P)}`,
       bilan: P.matchs ? `${P.victoires} V – ${P.matchs - P.victoires} D · ${pct} % de victoires` : "Premier match officiel",

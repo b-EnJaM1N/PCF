@@ -15,9 +15,9 @@ puis « Sur l'écran d'accueil » / « Installer l'application ». Le détail es
 
 | Règle | Valeur |
 |---|---|
-| Points par set | 11, avec 2 points d'écart (7 possible dans les Options) |
+| Points par set | 11, avec 2 points d'écart (options : 7 avec 2 points d'écart ; 3 ou 1 sans écart, le premier au total gagne le set) |
 | Égalités (même signe) | Ne comptent pas, le point est rejoué |
-| Nombre de sets | 2 ou 3 sets gagnants, choisi avant le match |
+| Nombre de sets | 2 ou 3 sets gagnants, choisi avant le match (ou un match en 1 set). En duel, les formats courts (1 set, sets de 3 ou 1 point) sont toujours amicaux |
 | Temps par coup | 5 secondes, sinon un signe est joué au hasard |
 | Historique | Visible pendant tout le match |
 | Pendant l'échange | Aucune animation : révélation immédiate des signes |
@@ -56,6 +56,14 @@ que les deux aient joué, le score est calculé par la base de données (mêmes 
 par un test qui compare 40 matchs), 5 secondes par coup. Si un joueur perd la connexion : pause, puis forfait
 après 60 secondes. Les duels comptent dans la fiche (statistiques, historique, titres) mais pas dans le niveau.
 
+## Niveau officiel, amis et cercles (étape 4)
+
+Le **niveau officiel** se calcule uniquement sur les duels officiels entre joueurs (formule ELO, départ à 1200,
+32 points en jeu), par le serveur : personne ne peut modifier le sien. Le niveau contre les bots reste un
+niveau d'entraînement, à part. Au moment du défi, on peut décocher « Match officiel » pour un match amical.
+Onglet **Cercles** : son classement, ses amis (demande puis acceptation) et ses **cercles**, des groupes privés
+(famille, travail…) avec un blason, un lien d'invitation et leur propre classement.
+
 ## Organisation du code
 
 ```
@@ -75,6 +83,9 @@ app/                  l'application publiée (HTML, CSS, JavaScript, sans étape
   js/duel-logique.js  duel : ce que le téléphone déduit de l'état du serveur
   js/duel-serveur.js  duel : échanges avec le serveur et mises à jour en direct
   js/ecran-duel.js    l'onglet « Duel » (recherche, défis, liens)
+  js/social-logique.js  classement, blasons, liens de cercle (sans réseau, testé)
+  js/social-serveur.js  classement, amis et cercles : échanges avec le serveur
+  js/ecran-cercles.js l'onglet « Cercles » (classement, amis, cercles)
   js/config.js        adresse et clé PUBLIQUE du projet Supabase
   vendor/             bibliothèque Supabase (copie locale)
   sw.js               fonctionnement hors ligne

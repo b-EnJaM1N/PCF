@@ -13,7 +13,7 @@ L'arbitre ne prononce jamais de pseudo : il nomme les joueurs par leur côté
 (jaune = le joueur, rouge = l'adversaire). Les scores rares au-delà de 20–18
 restent lus par la voix de synthèse.
 
-## Arbitre — grave et sobre (67 répliques)
+## Arbitre — grave et sobre (73 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -41,6 +41,12 @@ restent lus par la voix de synthèse.
 | `arbitre_sets_trois_a_zero_01.mp3` | Trois sets à zéro. |
 | `arbitre_sets_trois_a_un_01.mp3` | Trois sets à un. |
 | `arbitre_sets_trois_a_deux_01.mp3` | Trois sets à deux. |
+| `arbitre_set_unique_01.mp3` | Set unique. |
+| `arbitre_point_decisif_01.mp3` | Point décisif. |
+| `arbitre_score_un_a_zero_01.mp3` | Un à zéro. |
+| `arbitre_score_trois_a_zero_01.mp3` | Trois à zéro. |
+| `arbitre_score_trois_a_un_01.mp3` | Trois à un. |
+| `arbitre_score_trois_a_deux_01.mp3` | Trois à deux. |
 | `arbitre_score_sept_a_zero_01.mp3` | Sept à zéro. |
 | `arbitre_score_sept_a_un_01.mp3` | Sept à un. |
 | `arbitre_score_sept_a_deux_01.mp3` | Sept à deux. |
