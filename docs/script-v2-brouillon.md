@@ -1,6 +1,7 @@
-# Script des voix — version 3 (brouillon à relire)
+# Script des voix — version 4 (brouillon à relire)
 
 > Fusion de ton document « PCF — Script des annonces et commentaires » et de mes propositions.
+> **Version 4 :** tes corrections du premier passage sont appliquées, et les répliques ont été **renumérotées**.
 > **Pour relire :** chaque réplique a un numéro. Réponds-moi simplement dans la conversation, par exemple :
 > « ★ 12, 45, 80 » (j'adore) · « ✗ 30, 51 » (à supprimer) · « 64 → Il a encore joué Pierre, le malheureux » (à réécrire) · « Il manque : … »
 > Rien n'est encore dans l'application : une fois le texte validé, je l'intègre, puis on génère les voix.
@@ -33,7 +34,7 @@ et sans nom de personnalité.
 
 Toujours les mêmes « faits », pour qu'ils deviennent familiers :
 
-- **La finale de 1997** — gagnée par la commentatrice avec trois Ciseaux de suite sur balle de match. « Personne n'a applaudi. Ils avaient peur. »
+- **La finale de 1997** — gagnée par la commentatrice avec trois Ciseaux de suite sur balle de match. **Elle n'en parle jamais. Lui, tout le temps.** Elle coupe court : « Nous n'en parlerons pas. »
 - **Le schisme de la Feuille (2003)** — la Feuille bat-elle vraiment la Pierre ? Le sujet reste sensible.
 - **L'école lyonnaise** — des puristes du Ciseaux, froids et imprévisibles.
 - **Le Mur de Clermont** — un joueur qui n'a joué que Pierre de toute sa carrière. Et qui a gagné.
@@ -124,20 +125,20 @@ Répliques courtes et presque figées. Les scores s'assemblent à partir de peti
 ### Craquage (balle de set ou de match ratée)
 - **11.** 🎙️ Il est en train de craquer sous la pression !
 - **12.** 🎙️ Il avait le set au bout des doigts… et il l'a laissé filer !
-- **13.** 🎙️ Chute en tête de course ! Il avait le set en poche ! *(cyclisme)*
-- **14.** 🎙️ Coiffé sur le poteau ! Il a mené tout le set ! *(hippisme)*
+- **13.** 🎙️ Chute à l'avant ! Il avait le set en poche ! *(cyclisme)*
+- **14.** 🎙️ Coiffé sur le poteau ! *(hippisme)*
 - **15.** 🎙️ Il enfourche la dernière porte ! *(ski)*
 - **16.** 🎙️ J'ai glissé, chef ! *(La 7e compagnie)*
 - **17.** 🧊 Oh… la main a tremblé.
 - **18.** 🧊 Elle était là, cette balle. Juste là.
 - **19.** 🧊 La tête a dit Pierre. Le cœur a dit Feuille. Le cœur a tort, en général.
 - **20.** 🧊 Quand l'enjeu monte, la lucidité s'en va. Chez certains.
-- **21.** 🧊 Un mental de chips. Ça s'effrite à la première balle de set. *(tennis)*
+- **21.** 🧊 Un mental de chips. *(tennis)*
 - **22.** 🧊 Il a vu la ligne d'arrivée. Et il a freiné. Fascinant.
 
 ### Balle sauvée
 - **23.** 🎙️ Sauvée ! Quel sang-froid !
-- **24.** 🎙️ Pas aujourd'hui ! Pas comme ça !
+- **24.** 🎙️ Pas aujourd'hui ! Pas comme ça ! Pas après tout ce que tu as fait…
 - **25.** 🎙️ Il refuse de mourir ! Encore en vie ! Toujours en vie !
 - **26.** 🎙️ Sauvé par le gong ! Enfin… par les Ciseaux ! *(boxe, trois versions)*
 - **27.** 🎙️ Il était dans les cordes, et il en sort ! *(boxe)*
@@ -145,12 +146,12 @@ Répliques courtes et presque figées. Les scores s'assemblent à partir de peti
 - **29.** 🧊 Glacial. Absolument glacial. J'approuve.
 - **30.** 🧊 Tout le monde la voyait perdue. Sauf lui. C'est touchant.
 - **31.** 🧊 Des nerfs d'acier. Ou aucune conscience du danger. On ne saura jamais.
-- **32.** 🧊 Pas mal. Je n'aurais pas fait mieux. Enfin, si. En 1997.
+- **32.** 🎙️ Madame, vous n'auriez pas fait mieux ! Enfin… sauf en 1997 !
 
 ### Remontée (mené de 4 points ou plus, retour à égalité)
 - **33.** 🎙️ Quelle remontée extraordinaire !
 - **34.** 🎙️ On l'avait enterré un peu trop vite !
-- **35.** 🎙️ Le vent a tourné, mesdames et messieurs !
+- **35.** 🎙️ Le vent a tourné, mesdames et mesdames !
 - **36.** 🎙️ De l'enfer au paradis en quelques coups !
 - **37.** 🎙️ La cabane est tombée sur le chien ! *(rugby)*
 - **38.** 🎙️ Il a fait l'élastique, et le revoilà dans la roue ! *(cyclisme)*
@@ -162,7 +163,7 @@ Répliques courtes et presque figées. Les scores s'assemblent à partir de peti
 
 ### Série de 4 points (pour le joueur)
 - **44.** 🎙️ Plus rien ne l'arrête !
-- **45.** 🎙️ Quatre à la suite ! Il est en feu !
+- **45.** 🎙️ Quatre à la suite ! *(sur le ton d'un présentateur de jeu télévisé)*
 - **46.** 🎙️ Ça déroule, ça déroule !
 - **47.** 🎙️ Il a mis une mine, ça explose derrière ! *(cyclisme)*
 - **48.** 🎙️ C'est du Pierre-Feuille-Ciseaux champagne ! *(rugby)*
@@ -171,184 +172,183 @@ Répliques courtes et presque figées. Les scores s'assemblent à partir de peti
 - **51.** 🧊 Il a trouvé la faille. Il appuie dessus. Enfin quelqu'un de sérieux.
 - **52.** 🧊 Il gagne dans un fauteuil. *(hippisme)*
 - **53.** 🧊 Une démonstration. Je note.
+- **54.** 🎙️ « Il est injouable ! Il est… » — 🧊 « Je vous demande de vous arrêter. » *(pastiche d'un meeting de 1995 : elle calme le commentateur)*
 
 ### Série de 4 points (pour l'adversaire)
-- **54.** 🎙️ Quelqu'un peut arrêter ça ?!
-- **55.** 🎙️ Il est dans les cordes ! Il faut réagir !
-- **56.** 🎙️ Allez, petit bonhomme ! *(encouragement)*
-- **57.** 🎙️ Oublie que t'as aucune chance, vas-y, fonce ! *(Les Bronzés font du ski)*
-- **58.** 🧊 Ça commence à ressembler à une correction.
-- **59.** 🧊 Muscle ton jeu, Robert. *(football)*
-- **60.** 🧊 Ce soir, c'est plus le cousin que le champion. *(tennis)*
+- **55.** 🎙️ Quelqu'un peut arrêter ça ?!
+- **56.** 🎙️ Il est dans les cordes ! Il faut réagir !
+- **57.** 🎙️ Allez, petit bonhomme ! *(encouragement)*
+- **58.** 🎙️ Oublie que t'as aucune chance, vas-y, fonce ! *(Les Bronzés font du ski)*
+- **59.** 🧊 Ça commence à ressembler à une correction.
+- **60.** 🧊 Muscle ton jeu, Robert. *(football)*
 - **61.** 🧊 Jusqu'ici, tout va bien… jusqu'ici. *(La Haine)*
-- **62.** 🧊 Sur un malentendu, ça peut marcher. Mais il faudrait un malentendu. *(Les Bronzés font du ski)*
+- **62.** 🧊 Sur un malentendu, ça peut marcher. *(Les Bronzés font du ski)*
 
 ### Obstination (même signe 3 fois de suite)
 - **63.** 🎙️ Troisième Pierre d'affilée ! C'est audacieux ! *(trois versions)*
 - **64.** 🎙️ Soit c'est du génie, soit c'est de l'entêtement !
-- **65.** 🎙️ Il a le besoin… le besoin de Pierre ! *(Top Gun, trois versions)*
-- **66.** 🎙️ Sa Pierre… son précieux… *(Le Seigneur des anneaux, trois versions)*
-- **67.** 🧊 Encore Ciseaux. C'est de la provocation. *(trois versions)*
-- **68.** 🧊 Culot ou manque d'imagination ? Je penche pour l'imagination.
-- **69.** 🧊 Il gare le bus devant ses Ciseaux. *(football)*
-- **70.** 🧊 Pierre, Pierre, Pierre… Il pointe, il pointe, il ne tire jamais. *(pétanque)*
-- **71.** 🧊 Les Ciseaux, ça ose tout. C'est même à ça qu'on les reconnaît. *(Les Tontons flingueurs)*
-- **72.** 🧊 C'est une bonne situation, ça, Ciseaux ? *(Astérix : Mission Cléopâtre, trois versions)*
-- **73.** 🧊 Le Mur de Clermont aurait approuvé. Moi, non.
+- **65.** 🎙️ Sa Pierre… son précieux… *(Le Seigneur des anneaux, trois versions)*
+- **66.** 🧊 Encore Ciseaux. C'est de la provocation. *(trois versions)*
+- **67.** 🧊 Culot ou manque d'imagination ? Je penche pour l'imagination.
+- **68.** 🧊 Il gare le bus devant ses Ciseaux. *(football)*
+- **69.** 🧊 Les Ciseaux, ça ose tout. C'est même à ça qu'on les reconnaît. *(Les Tontons flingueurs)*
+- **70.** 🧊 C'est une bonne situation, ça, Ciseaux ? *(Astérix : Mission Cléopâtre, trois versions)*
+- **71.** 🧊 Le Mur de Clermont aurait approuvé. Moi, non.
+- **72.** 🧊 C'est de la poudre de perlimpinpin. *(pastiche d'un débat présidentiel de 2017)*
 
 ### Duel d'esprits (3 égalités de suite)
-- **74.** 🎙️ Ils se lisent dans les pensées !
-- **75.** 🎙️ Télépathie sur le court !
-- **76.** 🎙️ Surplace sur la piste ! Personne ne veut lancer le sprint ! *(cyclisme sur piste)*
-- **77.** 🎙️ Coude à coude ! Impossible de les séparer ! *(hippisme)*
-- **78.** 🎙️ Cinq égalités ! On n'avait pas vu ça depuis le schisme de la Feuille !
-- **79.** 🧊 Deux esprits. Une seule idée. Pas la bonne.
-- **80.** 🧊 On pourrait rester là toute la nuit. Je préférerais éviter.
-- **81.** 🧊 Une partie d'échecs à trois pièces. Sans les échecs.
-- **82.** 🧊 À ce niveau, l'égalité, c'est de la politesse.
+- **73.** 🎙️ Ils se lisent dans les pensées !
+- **74.** 🎙️ Télépathie sur le court !
+- **75.** 🎙️ Surplace sur la piste ! Personne ne veut lancer le sprint ! *(cyclisme sur piste)*
+- **76.** 🎙️ Coude à coude ! Impossible de les séparer ! *(hippisme)*
+- **77.** 🎙️ Cinq égalités ! On n'avait pas vu ça depuis le schisme de la Feuille !
+- **78.** 🧊 Deux esprits. Une seule idée. Jamais la bonne.
+- **79.** 🧊 On pourrait rester là toute la nuit. Je préférerais éviter.
+- **80.** 🧊 Une partie d'échecs à trois pièces. Sans les échecs.
+- **81.** 🧊 À ce niveau, l'égalité, c'est de la politesse.
+- **82.** 🧊 Vous n'avez pas le monopole de la Pierre. *(pastiche d'un débat présidentiel de 1974, trois versions : Pierre, Feuille, Ciseaux)*
 
 ### Lecture (un réflexe répété se fait contrer)
 - **83.** 🎙️ Il l'attendait ! Il l'attendait !
-- **84.** 🎙️ Carreau ! Il a pris la place exacte du signe adverse ! *(pétanque)*
-- **85.** 🎙️ Pleine lucarne ! Il l'avait lu depuis le vestiaire ! *(football)*
-- **86.** 🎙️ Deuxième poteau, la Pierre ! *(football, trois versions)*
-- **87.** 🧊 Lu comme un livre ouvert. Un livre court.
-- **88.** 🧊 Trop prévisible. L'adversaire a pris des notes. Moi aussi.
-- **89.** 🧊 Ses tics sont en train de le trahir.
-- **90.** 🧊 C'était écrit. En gros caractères.
-- **91.** 🧊 Coup de maître. *(échecs, très calmement)*
-- **92.** 🧊 Il lui a fait une offre qu'il ne pouvait pas refuser. *(Le Parrain)*
+- **84.** 🎙️ Pleine lucarne ! Il l'avait lu depuis le vestiaire ! *(football)*
+- **85.** 🎙️ Second poteau, la Pierre ! *(football, trois versions)*
+- **86.** 🧊 Lu comme un livre ouvert. Un livre court.
+- **87.** 🧊 Trop prévisible. L'adversaire a pris des notes. Moi aussi.
+- **88.** 🧊 Ses tics sont en train de le trahir.
+- **89.** 🧊 C'était écrit. En gros caractères.
+- **90.** 🧊 Coup de maître. *(échecs, très calmement)*
+- **91.** 🎙️ Il vous a compris ! *(pastiche d'un discours historique)*
 
 ### Temps écoulé (coup joué d'office)
-- **93.** 🎙️ Il a oublié de jouer !
-- **94.** 🎙️ Calé sur la grille de départ ! *(Formule 1)*
-- **95.** 🎙️ Faux départ… enfin, pas de départ du tout ! *(athlétisme)*
-- **96.** 🧊 Le chrono ne pardonne pas. Moi non plus.
-- **97.** 🧊 Trop de réflexion tue la réflexion.
-- **98.** 🧊 Jouer au hasard, c'est avouer qu'on n'a plus de plan.
-- **99.** 🧊 L'affaire du chronomètre. On n'en parle pas.
-- **100.** 🧊 Un blanc. Un blanc total. C'est presque artistique.
+- **92.** 🎙️ Il a oublié de jouer !
+- **93.** 🎙️ Calé sur la grille de départ ! *(Formule 1)*
+- **94.** 🎙️ Faux départ… enfin, pas de départ du tout ! *(athlétisme)*
+- **95.** 🧊 Le chrono ne pardonne pas. Moi non plus.
+- **96.** 🧊 Trop de réflexion tue la réflexion.
+- **97.** 🧊 Jouer au hasard, c'est avouer qu'on n'a plus de plan.
+- **98.** 🧊 L'affaire du chronomètre. On n'en parle pas.
 
 ### Set écrasant (6 points d'écart ou plus)
-- **101.** 🎙️ Une leçon ! Une démonstration de force !
-- **102.** 🎙️ Au tapis ! L'arbitre peut compter jusqu'à dix ! *(boxe)*
-- **103.** 🎙️ Fanny ! Onze à zéro, il va falloir embrasser Fanny ! *(pétanque, seulement pour un 11–0)*
-- **104.** 🧊 Sèche correction.
-- **105.** 🧊 Il n'y a pas eu de match dans ce set. Il y a eu une exécution.
-- **106.** 🧊 L'adversaire est resté au vestiaire. Il aurait dû y rester.
-- **107.** 🧊 Le maillon faible de ce set est tout désigné. Au revoir.
-- **108.** 🧊 Un set à oublier. Je l'ai déjà oublié.
+- **99.** 🎙️ Une leçon ! Une démonstration de force !
+- **100.** 🎙️ Au tapis ! L'arbitre peut compter jusqu'à dix ! *(boxe)*
+- **101.** 🎙️ Fanny ! Onze à zéro, il va falloir embrasser Fanny ! *(pétanque, seulement pour un 11–0)*
+- **102.** 🧊 Sèche correction.
+- **103.** 🧊 Il n'y a pas eu de match dans ce set.
+- **104.** 🧊 L'adversaire est resté au vestiaire. Il aurait dû y rester.
+- **105.** 🧊 Vous êtes le maillon faible. Au revoir ! *(variante : « Il est le maillon faible. Au revoir ! »)*
+- **106.** 🧊 Un set à oublier. Je l'ai déjà oublié.
 
 ### Set au couteau (gagné après une égalité en fin de set)
-- **109.** 🎙️ Irrespirable !
-- **110.** 🎙️ Quel set, mesdames et messieurs !
-- **111.** 🎙️ Photo-finish ! Il faut la photo pour les départager ! *(hippisme)*
-- **112.** 🎙️ Arrivée au sprint, et ça passe d'un boyau ! *(cyclisme)*
-- **113.** 🧊 Arraché. Mérité, on en reparlera.
-- **114.** 🧊 Il fallait des nerfs solides pour conclure celui-là. Il en avait. Juste assez.
-- **115.** 🧊 Personne ne méritait de le perdre. L'un des deux l'a quand même perdu.
+- **107.** 🎙️ Irrespirable !
+- **108.** 🎙️ Quel set, mesdames et messieurs !
+- **109.** 🎙️ Photo-finish ! Il faut la photo pour les départager ! *(hippisme)*
+- **110.** 🎙️ Arrivée au sprint, et ça passe d'un boyau ! *(cyclisme)*
+- **111.** 🧊 Arraché. Mérité, on en reparlera.
+- **112.** 🧊 Il fallait des nerfs solides pour conclure celui-là. Il en avait. Juste assez.
+- **113.** 🧊 Personne ne méritait de le perdre. L'un des deux l'a quand même perdu.
 
 ### Renversement (premier set perdu, match gagné)
-- **116.** 🎙️ Mené un set à zéro, il renverse tout !
-- **117.** 🎙️ Le retour du siècle !
-- **118.** 🎙️ Il était dans les cordes, c'est l'autre qui finit au tapis ! *(boxe)*
-- **119.** 🎙️ Tête-à-queue complet dans ce match ! *(Formule 1)*
-- **120.** 🧊 On le croyait fini. Quelle erreur. Pas la mienne, évidemment.
-- **121.** 🧊 Il a perdu une bataille. Il gagne la guerre. Classique.
+- **114.** 🎙️ Mené un set à zéro, il renverse tout !
+- **115.** 🎙️ Le retour du siècle !
+- **116.** 🎙️ Il était dans les cordes, c'est l'autre qui finit au tapis ! *(boxe)*
+- **117.** 🎙️ Tête-à-queue complet dans ce match ! *(Formule 1)*
+- **118.** 🧊 Il a perdu une bataille. Il gagne la guerre. Classique.
 
 ### Tension (balle de match, dite à voix basse)
-- **122.** 🎙️ Silence dans la salle…
-- **123.** 🎙️ Tout un match… pour un seul signe.
-- **124.** 🧊 C'est maintenant que les champions se révèlent. Et les autres aussi.
-- **125.** 🧊 Pas de Pierre ici. Tout le monde attend la Pierre.
+- **119.** 🎙️ Silence dans la salle…
+- **120.** 🎙️ Tout un match… pour un seul signe.
+- **121.** 🧊 C'est maintenant que les champions se révèlent. Et les autres aussi.
+- **122.** 🧊 Pas de Pierre ici. Tout le monde attend la Pierre.
+- **123.** 🧊 Pas d'enflammade, pas d'enflammade. *(finale de la Coupe du monde 1998, à la mi-temps ; avant une balle de match ou une balle de titre)*
+- **124.** 🎙️ « Madame, c'est historique ! » — 🧊 « Pas d'enflammade. Pas d'enflammade. » *(avant une balle de titre)*
 
 ### Point décisif (sets de 3 et 1 point)
-- **126.** 🎙️ Un point. Un seul. Pour tout !
-- **127.** 🧊 Ici, pas de deuxième chance. Comme dans la vie.
+- **125.** 🎙️ Un point. Un seul. Pour tout !
+- **126.** 🧊 Ici, pas de deuxième chance. Comme dans la vie.
 
 ### Balle de match convertie
-- **128.** 🎙️ Drapeau à damier ! *(Formule 1)*
-- **129.** 🎙️ Pieeeeerre ! Pierre ! Pierre ! *(football sud-américain, trois versions)*
-- **130.** 🎙️ Il franchit la ligne les bras levés ! *(cyclisme)*
-- **131.** 🎙️ Après avoir vu ça, on peut aller se coucher tranquille ! *(football, après un match très disputé)*
-- **132.** 🧊 Échec et mat. *(échecs, très calmement)*
-- **133.** 🧊 Hasta la vista, baby. *(Terminator 2)*
-- **134.** 🧊 C'est tout. *(elle clôt le sujet)*
+- **127.** 🎙️ Pieeeeerre ! Pierre ! Pierre ! *(football sud-américain, trois versions)*
+- **128.** 🎙️ Il franchit la ligne les bras levés ! *(cyclisme)*
+- **129.** 🎙️ Après avoir vu ça, on peut aller se coucher tranquille ! *(football, après un match très disputé)*
+- **130.** 🧊 Échec et mat. *(échecs, très calmement)*
+- **131.** 🧊 Hasta la vista, baby. *(Terminator 2)*
+- **132.** 🧊 C'est tout. *(elle clôt le sujet)*
 
 ## 5. Les temps morts (dialogues)
 
 **Avant le match**
-- **135.** 🎙️ « Madame, on sent une tension palpable. » — 🧊 « On sent surtout deux personnes devant leur téléphone. Mais oui. »
-- **136.** 🎙️ « Deux styles, deux écoles ! » — 🧊 « Trois signes. Il n'y en a jamais eu que trois. »
-- **137.** 🎙️ « Un pronostic, Madame ? » — 🧊 « Je ne fais pas de pronostic. Je constate. Après. »
-- **138.** 🎙️ « Vous le sentez comment, ce match ? » — 🧊 « Long. »
+- **133.** 🎙️ « Madame, on sent une tension palpable. » — 🧊 « On sent surtout deux personnes devant leur téléphone. Mais oui. »
+- **134.** 🎙️ « Deux styles, deux écoles ! » — 🧊 « Trois signes. Il n'y en a jamais eu que trois. »
+- **135.** 🎙️ « Un pronostic, Madame ? » — 🧊 « Je ne fais pas de pronostic. Je constate. Après. »
+- **136.** 🎙️ « Vous le sentez comment, ce match ? » — 🧊 « Long. »
 
 **Fin de set** (en plus des répliques « set écrasant » et « set au couteau »)
-- **139.** 🎙️ Premier set bouclé, et quelle bataille !
-- **140.** 🎙️ Un set maîtrisé de bout en bout !
-- **141.** 🎙️ Un set partout, tout se jouera maintenant !
-- **142.** 🎙️ Le public retient son souffle avant la suite !
-- **143.** 🧊 Il a pris les commandes. À l'autre de réagir. S'il sait comment.
-- **144.** 🧊 Il faudra changer de plan. Ou en avoir un.
-- **145.** 🧊 Le rapport de force est clair. Pour l'instant.
-- **146.** 🎙️ « Madame, un mot sur ce set ? » — 🧊 « Solide. Sans génie. Mais solide. »
-- **147.** 🎙️ « Un set parfait ! » — 🧊 « Parfait, non. La perfection, c'était 1997. »
-- **148.** 🎙️ « Qu'est-ce qu'il doit changer ? » — 🧊 « Tout. Ou rien. C'est ça, le PCF. »
+- **137.** 🎙️ Premier set bouclé, et quelle bataille !
+- **138.** 🎙️ Un set maîtrisé de bout en bout !
+- **139.** 🎙️ Un set partout, tout se jouera maintenant !
+- **140.** 🎙️ Le public retient son souffle avant la suite !
+- **141.** 🧊 Il a pris les commandes. À l'autre de réagir. S'il sait comment.
+- **142.** 🧊 Il faudra changer de plan. Ou en avoir un.
+- **143.** 🧊 Le rapport de force est clair. Pour l'instant.
+- **144.** 🎙️ « Madame, un mot sur ce set ? » — 🧊 « Solide. Sans génie. Mais solide. »
+- **145.** 🎙️ « Un set parfait ! Comme vous en 1997, Madame ! » — 🧊 « Nous n'en parlerons pas. »
+- **146.** 🎙️ « Qu'est-ce qu'il doit changer ? » — 🧊 « Tout. Ou rien. C'est ça, le PCF. »
 
 **Avant le set décisif**
-- **149.** 🎙️ Set décisif ! Tout se joue maintenant !
-- **150.** 🧊 Les statistiques ne servent plus à rien. C'est le caractère qui parle. Quand il y en a.
-- **151.** 🎙️ « Un set pour l'éternité, Madame ! » — 🧊 « Un set pour ce soir. Ce sera déjà bien. »
+- **147.** 🎙️ Set décisif ! Tout se joue maintenant !
+- **148.** 🧊 Les statistiques ne servent plus à rien. C'est le caractère qui parle. Quand il y en a.
+- **149.** 🎙️ « Un set pour l'éternité, Madame ! » — 🧊 « Un set pour ce soir. Ce sera déjà bien. »
 
 **Fin du match**
-- **152.** 🎙️ C'est fini ! Quel combat !
-- **153.** 🎙️ Il l'a fait !
-- **154.** 🎙️ Et c'est la délivrance !
-- **155.** 🎙️ Un match qui fera date !
-- **156.** 🎙️ Bravo aux deux joueurs, quel spectacle !
-- **157.** 🧊 Rideau.
-- **158.** 🧊 Mission accomplie. Sans éclat, mais accomplie.
-- **159.** 🧊 Rien à dire. Et je trouve toujours quelque chose à dire.
-- **160.** 🎙️ « Il n'a pas démérité ! » — 🧊 « Si. Un peu. »
+- **150.** 🎙️ C'est fini ! Quel combat !
+- **151.** 🎙️ Il l'a fait !
+- **152.** 🎙️ Et c'est la délivrance !
+- **153.** 🎙️ Un match qui fera date !
+- **154.** 🎙️ Bravo aux deux joueurs, quel spectacle !
+- **155.** 🧊 Rideau.
+- **156.** 🧊 Mission accomplie. Sans éclat, mais accomplie.
+- **157.** 🧊 Rien à dire. Et je trouve toujours quelque chose à dire.
+- **158.** 🎙️ « Il n'a pas démérité ! » — 🧊 « Si. Un peu quand même. »
 
 **Défaite**
-- **161.** 🎙️ Battu, mais pas abattu !
-- **162.** 🎙️ Je reviendrai ! Il reviendra ! *(Terminator)*
-- **163.** 🧊 Il faudra revoir ce match. Ou l'oublier. Je conseille l'oubli.
-- **164.** 🧊 On apprend plus d'une défaite. Il a beaucoup appris, ce soir.
+- **159.** 🧊 Au revoir. *(pastiche d'un départ télévisé de 1981 : elle le dit lentement, puis silence ; aussi pour un joueur éliminé d'un tournoi)*
+- **160.** 🎙️ Battu, mais pas abattu !
+- **161.** 🎙️ Je reviendrai ! Il reviendra ! *(Terminator)*
+- **162.** 🧊 Il faudra revoir ce match. Ou l'oublier. Je conseille l'oubli.
+- **163.** 🧊 On apprend plus d'une défaite. Il a beaucoup appris, ce soir.
 
 **Adversaire qui domine le face-à-face**
-- **165.** 🧊 Je suis ton père. *(Star Wars, quand un joueur domine nettement le bilan de leurs face-à-face)*
+- **164.** 🧊 Je suis ton père. *(Star Wars, quand un joueur domine nettement le bilan de leurs face-à-face)*
 
 ## 6. Contre un humain
 
 Les répliques qui parlent de « la machine » ont une version pour un adversaire humain :
-- **166.** 🎙️ C'est un duel ! Un vrai ! Les yeux dans les yeux !
-- **167.** 🧊 Ils se connaissent. Et ça se voit.
-- **168.** 🧊 Entre amis, il n'y a pas de pitié. Il n'y a que des signes.
+- **165.** 🎙️ C'est un duel ! Un vrai ! Les yeux dans les yeux !
+- **166.** 🧊 Ils se connaissent. Et ça se voit.
+- **167.** 🧊 Entre amis, il n'y a pas de pitié. Il n'y a que des signes.
 
 ## 7. Le journaliste 🎤 — seulement après une finale
 
 Le vainqueur choisit sa réponse parmi trois propositions (texte), qui finiront sur « La Une ».
 
 **Questions**
-- **169.** « Félicitations. Que ressentez-vous ? »
-- **170.** « À quel moment avez-vous senti que le titre était pour vous ? »
-- **171.** « Un mot pour votre adversaire ? »
-- **172.** « On vous a vu jouer beaucoup de Pierre ce soir. C'était prévu ? » *(trois versions)*
-- **173.** « Qu'allez-vous faire maintenant ? »
+- **168.** « Félicitations. Que ressentez-vous ? »
+- **169.** « À quel moment avez-vous senti que le titre était pour vous ? »
+- **170.** « Un mot pour votre adversaire ? »
+- **171.** « On vous a vu jouer beaucoup de Pierre ce soir. C'était prévu ? » *(trois versions)*
+- **172.** « Qu'allez-vous faire maintenant ? »
 
 **Réponses au choix**
-- **174.** « Je n'ai fait que jouer mon jeu. »
-- **175.** « Le Pierre, c'est une philosophie. »
-- **176.** « Je dédie cette victoire à ma mère. »
-- **177.** « Je savais. Depuis le premier signe, je savais. »
-- **178.** « Respect à mon adversaire. Il a été digne. Pas assez, mais digne. »
-- **179.** « Je ne commente pas les Ciseaux. »
-- **180.** « C'est une victoire collective. Même si j'étais seul. »
+- **173.** « Je n'ai fait que jouer mon jeu. »
+- **174.** « Le Pierre, c'est une philosophie. »
+- **175.** « Je dédie cette victoire à ma mère. » *(variantes : à ma grand-mère, à mon chat, à mon chien…)*
+- **176.** « Je savais. Depuis le premier signe, je savais. »
+- **177.** « Respect à mon adversaire. Il a été digne. Pas assez, mais digne. »
+- **178.** « Je ne commente pas les Ciseaux. »
+- **179.** « C'est une victoire collective. Même si j'étais seul. »
 
 **Conclusion**
-- **181.** « Merci. Et encore bravo. » · « C'était… un honneur. À vous les studios. »
+- **180.** « Merci. Et encore bravo. » · « C'était… un honneur. À vous les studios. »
 
 ## 8. L'ambiance sonore (sons, pas de voix)
 
@@ -358,6 +358,25 @@ un petit son sec pour chaque signe à la révélation.
 
 **Ordre d'un point :** 1. révélation des deux signes avec leur son → 2. réaction du public → 3. annonce de l'arbitre →
 4. réplique du commentaire, si la réserve de parole le permet.
+
+## Nouvelles idées (à valider)
+
+Dans l'esprit de tes ajouts. Réponds par exemple « P2, P5, P9 oui ; P7 non ».
+
+- **P1.** 🎙️ Et un, et deux, et trois sets à zéro ! *(victoire 3–0 ; finale de 1998)*
+- **P2.** 🎙️ « Il doit tout changer, Madame ! » — 🧊 « Vaste programme. » *(un général célèbre)*
+- **P3.** 🧊 Laissez du temps au temps. *(duel d'esprits, longues égalités ; un président des années 80)*
+- **P4.** 🧊 Sa maison brûle, et il regarde ailleurs. *(série de points contre lui ; sommet de 2002)*
+- **P5.** 🎙️ Le changement, c'est maintenant ! *(il change enfin de signe après une obstination ; campagne de 2012)*
+- **P6.** 🧊 C'est abracadabrantesque. *(match absurde : 5 égalités, remontée folle ; un président des années 2000)*
+- **P7.** 🎙️ *(voix grave)* Le côté jaune a peur. *(balle de match contre lui ; journal télévisé de 1976)*
+- **P8.** 🎙️ « Le Pierre, c'est la base, Madame ! » — 🧊 « C'est pas faux. » *(Kaamelott)*
+- **P9.** 🧊 Ennuyeux. *(elle soupire ; égalités à répétition)*
+- **P10.** 🧊 Qu'on m'apporte un café. Et un autre match. *(match à sens unique)*
+- **P11.** Interview d'après-finale, réponse au choix : « Je vous ai compris. »
+- **P12.** Interview d'après-finale, réponse au choix du finaliste battu : « Non, je ne regrette rien. »
+- **P13.** 🎙️ C'est la der des ders ! *(avant le set décisif)*
+- **P14.** 🧊 Le ridicule ne tue pas. Heureusement pour lui. *(coup joué au hasard sur une balle de match)*
 
 ---
 
