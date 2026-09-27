@@ -286,7 +286,9 @@ function finir() {
   }) : [];
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("again").hidden = enTournoi || !!S.duel; $("tNext").hidden = !enTournoi;
-  $("revanche").hidden = !S.duel; $("retourDuels").hidden = !S.duel; $("revanche").disabled = false;
+  const tournoiId = S.duel && D ? D.duel.tournoi_id : null;   // match de tournoi en ligne
+  $("revanche").hidden = !S.duel || !!tournoiId; $("retourDuels").hidden = !S.duel || !!tournoiId; $("revanche").disabled = false;
+  $("voirTournoi").hidden = !tournoiId;
   if (!S.duel) $("endClassement").hidden = true;
   $("abandonDuelZone").hidden = true;
   if (enTournoi) $("tNext").textContent = gagne ? (S.tour === 2 ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
@@ -361,7 +363,7 @@ let minuteriesIntro = [];
 function ouvrirFaceAFace() {
   $("startCard").hidden = true; $("tourCard").hidden = true;
   try { ambiance.initialiser(); } catch { /* le match se joue aussi sans son */ } // geste de l'utilisateur : le son peut démarrer
-  const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN, classementMoi: monClassement, classe: D?.duel?.classe !== false });
+  const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN, classementMoi: monClassement, classe: D?.duel?.classe !== false, tournoi: !!D?.duel?.tournoi_id });
   $("foGo").disabled = false; $("foGo").textContent = "Commencer";
   $("foBack").textContent = S.duel ? "Abandonner le duel" : "Retour";
   $("foStage").textContent = pr.bandeau; $("foFmt").textContent = pr.format;
@@ -820,6 +822,7 @@ function abandonnerDuel() {
 }
 $("abandonDuel").addEventListener("click", abandonnerDuel);
 $("retourDuels").addEventListener("click", () => { quitterDuel(); ouvrirOnglet("duel"); });
+$("voirTournoi").addEventListener("click", () => { const id = D?.duel?.tournoi_id; quitterDuel(); if (id) cerclesUI.ouvrirTournoi(id); });
 $("revanche").addEventListener("click", async () => {
   const f = S.match.format, adv = OPP.uid;
   $("revanche").disabled = true;
@@ -842,6 +845,7 @@ cerclesUI = installerCercles({
   compte: compteUI,
   ouvrirOnglet,
   defier: p => duelsUI.defier(p),
+  lancerDuel,
   surClassement: points => {
     monClassement = points;
     $("pClassement").hidden = points === null; $("pClassement").textContent = `Niveau officiel : ${points}`;

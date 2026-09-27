@@ -64,6 +64,14 @@ niveau d'entraînement, à part. Au moment du défi, on peut décocher « Match 
 Onglet **Cercles** : son classement, ses amis (demande puis acceptation) et ses **cercles**, des groupes privés
 (famille, travail…) avec un blason, un lien d'invitation et leur propre classement.
 
+## Tournois en ligne (étape 5)
+
+Dans l'onglet **Cercles** : un tournoi à élimination directe (de 3 à 32 joueurs), soit dans un cercle (réservé
+aux membres), soit privé avec un lien d'invitation. Les têtes de série sont placées selon le niveau officiel.
+Chaque tour a une date limite (15 min, 1 h, 24 h ou 3 jours) : les deux joueurs jouent leur match quand ils veulent.
+Match non joué à temps : il revient à la personne qui a essayé de le jouer, sinon à la meilleure tête de série.
+Au format officiel, les matchs comptent pour le niveau officiel. Tout est arbitré par le serveur.
+
 ## Organisation du code
 
 ```
@@ -86,6 +94,8 @@ app/                  l'application publiée (HTML, CSS, JavaScript, sans étape
   js/social-logique.js  classement, blasons, liens de cercle (sans réseau, testé)
   js/social-serveur.js  classement, amis et cercles : échanges avec le serveur
   js/ecran-cercles.js l'onglet « Cercles » (classement, amis, cercles)
+  js/tournoi-logique.js  tournois en ligne : noms des tours, temps restant… (sans réseau, testé)
+  js/ecran-tournois.js   tournois en ligne : création, inscriptions, tableau, « Jouer mon match »
   js/config.js        adresse et clé PUBLIQUE du projet Supabase
   vendor/             bibliothèque Supabase (copie locale)
   sw.js               fonctionnement hors ligne
