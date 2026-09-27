@@ -36,10 +36,23 @@ export function installerCercles(ctx) {
     rendre();
     return { lire: () => ({ ...etat }), ecrire: b => { Object.assign(etat, normaliserBlason(b)); rendre(); } };
   }
-  // Les pages de l'onglet : liste, un cercle, un tournoi, création d'un tournoi.
-  const VUES = ["socListe", "socCercle", "socTournoi", "socTournoiNouveau"];
-  const montrer = vue => { VUES.forEach(v => { $(v).hidden = v !== vue; }); window.scrollTo(0, 0); };
-  const retour = () => { if (cercleOuvert) { montrer("socCercle"); chargerCercle(); } else { montrer("socListe"); rafraichir(); } };
+  // Les pages : dans l'onglet Cercles, la liste ou un cercle ; ailleurs, un tournoi ou sa création
+  // (ouverts depuis un cercle ou depuis « Jouer › Tournois » : le retour ramène d'où l'on vient).
+  let origine = null;
+  const montrer = vue => {
+    if (vue === "socTournoi" || vue === "socTournoiNouveau") {
+      const ici = ctx.vueCourante();
+      if (ici !== "socTournoi" && ici !== "socTournoiNouveau") origine = ici;
+      ctx.aller(vue); return;
+    }
+    ctx.aller("viewCercles");
+    ["socListe", "socCercle"].forEach(v => { $(v).hidden = v !== vue; });
+    window.scrollTo(0, 0);
+  };
+  const retour = () => {
+    if (origine && origine !== "viewCercles") { ctx.aller(origine); rafraichir(); return; }
+    if (cercleOuvert) { montrer("socCercle"); chargerCercle(); } else { montrer("socListe"); rafraichir(); }
+  };
   const tournois = installerTournois({
     uid: () => uid, montrer, retour, lancerDuel: (d, p) => ctx.lancerDuel(d, p), profils,
     apresChangement: () => { rafraichir(); if (cercleOuvert) chargerCercle(); },
@@ -53,7 +66,8 @@ export function installerCercles(ctx) {
     uid = session?.user?.id || null;
     $("socHors").hidden = !!uid; $("socOn").hidden = !uid;
     clearInterval(minuterie);
-    if (!uid) { $("pastilleCercles").hidden = true; ctx.surClassement(null); fermerCercle(); return; }
+    $("tournoisCard").hidden = !uid; $("tournoisHors").hidden = !!uid;
+    if (!uid) { $("pastilleCercles").hidden = true; ctx.signaler("tournois", []); ctx.surClassement(null); fermerCercle(); return; }
     minuterie = setInterval(() => { rafraichir(); if (cercleOuvert && visible() && !$("socCercle").hidden) chargerCercle(); }, 20000);
     rafraichir();
     rejoindreLienEnAttente();
@@ -72,6 +86,7 @@ export function installerCercles(ctx) {
     if (mesTournois) {
       $("socTournoisVide").hidden = mesTournois.length > 0;
       tournois.liste($("socTournois"), mesTournois);
+      ctx.signaler("tournois", mesTournois.filter(t => t.a_jouer));
     }
     if (cl) {
       const c = cl.get(uid);
@@ -84,7 +99,7 @@ export function installerCercles(ctx) {
     if (listeAmis) { amis = listeAmis; renderAmis(); }
     if (cercles) renderCercles(cercles);
     if (listeAmis && cercles) {
-      const n = amis.filter(a => a.recue).length + cercles.invitations.length + (mesTournois || []).filter(t => t.a_jouer).length;
+      const n = amis.filter(a => a.recue).length + cercles.invitations.length;
       $("pastilleCercles").hidden = !n; $("pastilleCercles").textContent = n;
       $("socInvitCard").hidden = !n;
       $("socInvit").innerHTML = amis.filter(a => a.recue).map(a => ligneJoueur(a, "Demande d'ami",
@@ -197,8 +212,7 @@ export function installerCercles(ctx) {
   }
   function fermerCercle() {
     cercleOuvert = null; detail = null;
-    tournois.fermer();
-    montrer("socListe");
+    ["socListe", "socCercle"].forEach(v => { $(v).hidden = v !== "socListe"; });
   }
   $("cercleRetour").addEventListener("click", () => { fermerCercle(); rafraichir(); });
 
@@ -340,6 +354,6 @@ export function installerCercles(ctx) {
   surSession(ctx.compte.session());
   return {
     rafraichir: () => { rafraichir(); if (!$("socTournoi").hidden) tournois.rafraichir(); else if (cercleOuvert) chargerCercle(); },
-    ouvrirTournoi: id => { ctx.ouvrirOnglet("cercles"); tournois.ouvrir(id); },
+    ouvrirTournoi: id => tournois.ouvrir(id),
   };
 }

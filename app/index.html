@@ -34,16 +34,26 @@
   <header>
     <div><h1>PCF</h1><div class="rule" id="ruleTxt">Sets de 11, 2 sets gagnants</div></div>
     <div style="display:flex;align-items:center;gap:12px">
-      <button class="test" id="testSnd">Tester le son</button>
       <label class="sound"><input type="checkbox" id="snd" checked> Son</label>
+      <button class="icone" id="btnOptions" aria-label="Options" title="Options">⚙️</button>
     </div>
   </header>
   <p class="sndnote" id="sndNote" hidden></p>
-  <nav class="tabs"><button data-v="match" aria-pressed="true">Match</button><button data-v="duel" aria-pressed="false">Duel<span class="pastille" id="pastilleDuel" hidden></span></button><button data-v="cercles" aria-pressed="false">Cercles<span class="pastille" id="pastilleCercles" hidden></span></button><button data-v="profile" aria-pressed="false">Ma fiche</button><button data-v="options" aria-pressed="false">Options</button></nav>
+  <nav class="tabs"><button data-v="jouer" aria-pressed="true">🎮 Jouer<span class="pastille" id="pastilleJouer" hidden></span></button><button data-v="cercles" aria-pressed="false">👥 Cercles<span class="pastille" id="pastilleCercles" hidden></span></button><button data-v="profile" aria-pressed="false">🧑 Ma fiche</button></nav>
 
-  <div class="view" id="viewMatch">
+  <div class="view" id="viewJouer">
+    <div id="hubAlertes"></div>
+    <button class="hub" data-aller="viewDuel"><span class="hub-i">🤝</span><span><b>Défier un ami</b><small>Un duel en direct, par pseudo ou par lien</small></span></button>
+    <button class="hub" data-aller="viewSng"><span class="hub-i">⚡</span><span><b>Sit &amp; Go</b><small>Tournois express publics : départ dès que la salle est pleine</small></span></button>
+    <button class="hub" data-aller="viewTournois"><span class="hub-i">🏆</span><span><b>Tournois</b><small>Tes tournois en cours, tournois privés entre amis</small></span></button>
+    <button class="hub" data-aller="viewMatch"><span class="hub-i">🎯</span><span><b>Entraînement</b><small>Contre les 7 bots, et le PCF Open</small></span></button>
+    <p class="hint" id="hubHors" hidden style="text-align:center;margin-top:14px">Les parties en ligne demandent un compte gratuit, sans mot de passe : <button class="linkbtn" data-aller="viewProfile">le créer</button>.</p>
+  </div>
+
+  <div class="view" id="viewMatch" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
     <section class="card" id="startCard">
-      <h2>Prêt pour un match ?</h2>
+      <h2>Entraînement contre les bots</h2>
       <div class="seg" id="segMode"><button data-v="amical" aria-pressed="true">Match amical</button><button data-v="tournoi" aria-pressed="false">Tournoi</button></div>
       <div id="amicalBox">
         <span class="fmt-lbl">Adversaire</span>
@@ -105,9 +115,11 @@
     <p class="readout" id="read">L'analyse de ton jeu démarre au premier coup.</p>
     <p class="record" id="record"></p>
     <p style="text-align:center;margin:0" id="abandonDuelZone" hidden><button class="linkbtn" id="abandonDuel">Abandonner le duel</button></p>
+    <p style="text-align:center;margin:0" id="quitterSoloZone" hidden><button class="linkbtn" id="quitterSolo">Quitter le match</button></p>
   </div>
 
   <div class="view" id="viewDuel" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
     <section class="card" id="duelHors">
       <h2>Duel en ligne</h2>
       <p class="hint" id="duelHorsTexte">Défie tes amis en direct ! Pour jouer en ligne, il faut un compte (gratuit, sans mot de passe).</p>
@@ -121,13 +133,6 @@
       <section class="card" id="duelRecusCard" hidden>
         <h2>Défis reçus</h2>
         <div id="duelRecus"></div>
-      </section>
-      <section class="card" id="sngCard" hidden>
-        <h2>Tournois express (Sit &amp; Go)</h2>
-        <p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours.</p>
-        <p class="sndnote" id="sngMien" hidden style="margin-top:10px"></p>
-        <div id="sngSalles" class="resultats"></div>
-        <p class="locknote" id="sngMsg" role="status"></p>
       </section>
       <section class="card edit">
         <h2>Défier un joueur</h2>
@@ -184,12 +189,6 @@
             <button class="btn" id="cercleCreer" style="margin-top:14px">Créer le cercle</button>
           </div>
         </section>
-        <section class="card">
-          <h2>Mes tournois</h2>
-          <div id="socTournois" class="resultats"></div>
-          <p class="hint" id="socTournoisVide">Organise un tournoi à élimination directe : dans un de tes cercles (page du cercle), ou entre amis avec un lien d'invitation.</p>
-          <button class="btn alt" id="tournoiPrive" style="margin-top:10px">Créer un tournoi privé (par lien)</button>
-        </section>
         <section class="card edit">
           <h2>Mes amis</h2>
           <div id="socAmis" class="resultats"></div>
@@ -239,51 +238,76 @@
         <p style="text-align:center;margin:6px 0 0"><button class="linkbtn" id="cQuitter">Quitter le cercle</button></p>
       </div>
 
-      <div id="socTournoiNouveau" hidden>
-        <p style="margin:0 0 10px"><button class="linkbtn" id="tnRetour">← Retour</button></p>
-        <section class="card edit">
-          <h2 id="tnTitre">Nouveau tournoi</h2>
-          <p class="hint" id="tnPrecision"></p>
-          <label class="lbl" for="inTNom">Nom du tournoi</label>
-          <input type="text" id="inTNom" maxlength="40" autocomplete="off" placeholder="Ex. L'Open de la Famille">
-          <span class="lbl">Points par set</span>
-          <div class="seg" id="tnLen"></div>
-          <span class="lbl">Format des matchs</span>
-          <div class="seg" id="tnWin"></div>
-          <span class="lbl">Durée de chaque tour</span>
-          <div class="seg" id="tnDuree"></div>
-          <p class="hint" id="tnHint"></p>
-          <button class="btn" id="tnCreer" style="margin-top:12px">Créer le tournoi</button>
-          <p class="locknote" id="tnMsg" role="status"></p>
-        </section>
-      </div>
-
-      <div id="socTournoi" hidden>
-        <p style="margin:0 0 10px"><button class="linkbtn" id="tRetour">← Retour</button></p>
-        <section class="card cercle-tete">
-          <span class="blason-grand" id="tIcone"></span>
-          <div><h2 id="tNom"></h2><p class="hint" id="tInfo"></p><p class="hint" id="tEtat" style="color:var(--line);margin-top:4px"></p></div>
-        </section>
-        <section class="card" id="tMonMatch" hidden>
-          <h2 id="tMonMatchTitre"></h2>
-          <div id="tMonMatchCorps"></div>
-        </section>
-        <section class="card" id="tInscriptions" hidden>
-          <h2>Inscrits</h2>
-          <div id="tInscrits" class="resultats"></div>
-          <div id="tActions" class="actions-col"></div>
-        </section>
-        <section class="card" id="tTableauCarte" hidden>
-          <h2>Tableau</h2>
-          <div id="tTableau"></div>
-          <p class="hint" id="tRegleAbsence"></p>
-        </section>
-        <p class="locknote" id="tMsg" role="status"></p>
-      </div>
     </div>
   </div>
 
+  <div class="view" id="viewSng" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
+    <section class="card" id="sngCard" hidden>
+      <h2>Tournois express (Sit &amp; Go)</h2>
+      <p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours.</p>
+      <p class="sndnote" id="sngMien" hidden style="margin-top:10px"></p>
+      <div id="sngSalles" class="resultats"></div>
+      <p class="locknote" id="sngMsg" role="status"></p>
+    </section>
+    <section class="card" id="sngHors" hidden><p class="hint">Les Sit &amp; Go se jouent en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
+  </div>
+
+  <div class="view" id="viewTournois" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
+    <section class="card" id="tournoisCard" hidden>
+      <h2>Mes tournois</h2>
+      <div id="socTournois" class="resultats"></div>
+      <p class="hint" id="socTournoisVide">Organise un tournoi à élimination directe : dans un de tes cercles (page du cercle), ou entre amis avec un lien d'invitation.</p>
+      <button class="btn alt" id="tournoiPrive" style="margin-top:10px">Créer un tournoi privé (par lien)</button>
+    </section>
+    <section class="card" id="tournoisHors" hidden><p class="hint">Les tournois se jouent en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
+  </div>
+
+  <div class="view" id="socTournoiNouveau" hidden>
+    <p style="margin:0 0 10px"><button class="linkbtn" id="tnRetour">← Retour</button></p>
+    <section class="card edit">
+      <h2 id="tnTitre">Nouveau tournoi</h2>
+      <p class="hint" id="tnPrecision"></p>
+      <label class="lbl" for="inTNom">Nom du tournoi</label>
+      <input type="text" id="inTNom" maxlength="40" autocomplete="off" placeholder="Ex. L'Open de la Famille">
+      <span class="lbl">Points par set</span>
+      <div class="seg" id="tnLen"></div>
+      <span class="lbl">Format des matchs</span>
+      <div class="seg" id="tnWin"></div>
+      <span class="lbl">Durée de chaque tour</span>
+      <div class="seg" id="tnDuree"></div>
+      <p class="hint" id="tnHint"></p>
+      <button class="btn" id="tnCreer" style="margin-top:12px">Créer le tournoi</button>
+      <p class="locknote" id="tnMsg" role="status"></p>
+    </section>
+  </div>
+
+  <div class="view" id="socTournoi" hidden>
+    <p style="margin:0 0 10px"><button class="linkbtn" id="tRetour">← Retour</button></p>
+    <section class="card cercle-tete">
+      <span class="blason-grand" id="tIcone"></span>
+      <div><h2 id="tNom"></h2><p class="hint" id="tInfo"></p><p class="hint" id="tEtat" style="color:var(--line);margin-top:4px"></p></div>
+    </section>
+    <section class="card" id="tMonMatch" hidden>
+      <h2 id="tMonMatchTitre"></h2>
+      <div id="tMonMatchCorps"></div>
+    </section>
+    <section class="card" id="tInscriptions" hidden>
+      <h2>Inscrits</h2>
+      <div id="tInscrits" class="resultats"></div>
+      <div id="tActions" class="actions-col"></div>
+    </section>
+    <section class="card" id="tTableauCarte" hidden>
+      <h2>Tableau</h2>
+      <div id="tTableau"></div>
+      <p class="hint" id="tRegleAbsence"></p>
+    </section>
+    <p class="locknote" id="tMsg" role="status"></p>
+  </div>
+
   <div class="view" id="viewOptions" hidden>
+    <p class="retour-hub"><button class="linkbtn" id="optionsRetour">← Retour</button></p>
     <section class="card">
       <h2>Points par set</h2>
       <div class="seg" id="segLen"><button data-v="11">11 (officiel)</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
@@ -294,6 +318,7 @@
     <section class="card">
       <h2>Voix de l'arbitre et du commentateur</h2>
       <p class="hint" id="voixInfo"></p>
+      <button class="test" id="testSnd" style="margin-top:12px">Tester le son</button>
       <label class="sound" style="margin-top:12px;align-items:flex-start"><input type="checkbox" id="synthese"> <span>Lire aussi les répliques avec la voix de synthèse du téléphone (voix robotique)</span></label>
     </section>
     <section class="card" id="installCard">
@@ -372,7 +397,7 @@
     <section class="card" id="cGame"><h2>Mon jeu</h2><div id="gameBody"></div></section>
     <section class="card" id="cMental"><h2>Mon mental</h2><div class="lines" id="mentalBody"></div></section>
     <section class="card" id="cRecords"><h2>Mes records</h2><div class="lines" id="recBody"></div></section>
-    <section class="card" id="cElo"><h2>Niveau d'entraînement</h2><div class="spark" id="spark"></div><p class="hint">Calculé comme un ELO, sur tes matchs contre les bots. Ton niveau officiel, contre les autres joueurs, est dans l'onglet Cercles.</p></section>
+    <section class="card" id="cElo"><h2>Niveau d'entraînement</h2><div class="spark" id="spark"></div><p class="hint">Calculé comme un ELO, sur tes matchs contre les bots. Ton niveau officiel, contre les autres joueurs, est affiché en haut de ta fiche.</p></section>
     <section class="card"><h2>Palmarès</h2><div class="badges" id="badges"></div></section>
     <section class="card" id="cLast"><h2>Derniers matchs</h2><div class="lines hist-list" id="lastBody"></div></section>
     <p class="hint" style="text-align:center" id="infoConnexion">Sans compte, ta fiche est gardée seulement sur ce téléphone.</p>

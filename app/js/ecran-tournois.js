@@ -1,4 +1,4 @@
-// Tournois en ligne (dans l'onglet « Cercles ») : liste, création, inscriptions,
+// Tournois en ligne (menu Jouer › Tournois, ou page d'un cercle) : liste, création, inscriptions,
 // tableau à élimination directe, et « Jouer mon match ».
 import * as social from "./social-serveur.js";
 import { avatarSVG } from "./avatar.js";
