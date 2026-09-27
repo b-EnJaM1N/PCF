@@ -3,7 +3,7 @@
 //
 // Sur le serveur, joueur 0 = celui qui a lancé le défi. À l'écran, on est
 // toujours le côté 0 (jaune) : on retourne donc les coups si on est le joueur 1.
-import { nouveauMatch, jouerCoup, EMOJI, NOM } from "./regles.js";
+import { nouveauMatch, jouerCoup, EMOJI, NOM, texteFormat } from "./regles.js";
 import { indiceImprevisibilite } from "./analyse.js";
 import { normaliserProfil, signeFavori, dernierTitre, titresObtenus } from "./profil.js";
 
@@ -20,7 +20,7 @@ export function coupVuDe(c, moi) {
 // Rejoue tous les coups révélés avec les règles de l'application.
 // Renvoie le match (de mon point de vue) et les événements de chaque coup.
 export function rejouer(duel, moi) {
-  const match = nouveauMatch({ pointsParSet: duel.points_par_set, setsGagnants: duel.sets_gagnants });
+  const match = nouveauMatch(formatDuel(duel));
   const evenements = (duel.coups || []).map(c => { const v = coupVuDe(c, moi); return jouerCoup(match, v.a, v.b, v.auto); });
   return { match, evenements };
 }
@@ -28,7 +28,8 @@ export function rejouer(duel, moi) {
 // Le score calculé par le téléphone est-il bien celui du serveur ?
 export function coherent(match, duel, moi) {
   const memes = (x, y) => x[0] === y[0] && x[1] === y[1];
-  return memes(match.points, vuDe(duel.points, moi)) && memes(match.sets, vuDe(duel.sets, moi));
+  return memes(match.points, vuDe(duel.points, moi)) && memes(match.sets, vuDe(duel.sets, moi))
+    && memes(match.jeux, vuDe(duel.jeux || [0, 0], moi));
 }
 
 // Un adversaire humain, décrit comme un bot pour réutiliser l'écran de présentation.
@@ -62,4 +63,6 @@ export const codeDepuisAdresse = recherche => {
   return c && /^[a-z0-9]{6,20}$/i.test(c) ? c : null;
 };
 
-export const FORMAT = d => `Sets de ${d.points_par_set} points · ${d.sets_gagnants} sets gagnants${d.classe === false ? " · amical" : " · officiel"}`;
+// Le format d'un duel (colonnes du serveur) pour les règles de l'application.
+export const formatDuel = d => ({ pointsParSet: d.points_par_set, setsGagnants: d.sets_gagnants, jeuxParSet: d.jeux_par_set || 1 });
+export const FORMAT = d => `${texteFormat(formatDuel(d))}${d.classe === false ? " · amical" : " · officiel"}`;
