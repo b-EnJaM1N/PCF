@@ -8,8 +8,11 @@
    - **Défier un ami avec une barre de recherche** : on tape un pseudo, les joueurs correspondants s'affichent (avatar, niveau), bouton « Défier » ; l'ami reçoit l'invitation dans l'application.
    - **Défi par lien**, pour inviter quelqu'un qui n'a pas encore l'application.
    - Option « Ne pas apparaître dans la recherche ».
-4. **Niveau ELO entre joueurs humains, amis et groupes privés.**
-   - **Groupe privé**, nom retenu : **Cercle** ou **Club** (choix final à faire). Un nom, un blason, des invitations par lien ou par la recherche, la liste des membres et le **classement du cercle**. Un joueur peut être dans plusieurs cercles (famille, travail, amis). Il remplace le « classement entre amis ».
+4. **Classement PCF entre joueurs humains, amis et cercles.** *Fait, testé, en attente de validation.* Choix validés :
+   - **deux niveaux séparés** : le **Classement PCF** (calculé par le serveur, uniquement avec les duels entre humains, départ à 1200) et le niveau d'entraînement contre les bots ;
+   - duel **classé par défaut**, avec une case pour un match amical ; anti-arrangement : au plus 5 duels classés par jour entre les deux mêmes joueurs, et un duel sans aucun coup joué ne compte pas ;
+   - **amis** : demande puis acceptation ;
+   - **Cercle** (nom retenu) : un nom, un blason (emblème + couleur), des invitations par lien ou parmi ses amis, un responsable (👑) qui peut renommer, retirer un membre, changer le lien ou supprimer le cercle. Le **classement du cercle** range les membres par Classement PCF, avec leurs victoires et défaites entre membres. Un joueur peut être dans 20 cercles, un cercle compte jusqu'à 100 membres.
 5. **Tournois en ligne**, dont les **tournois de cercle**.
 
 ## Décisions à prendre
@@ -18,7 +21,8 @@
 - **Connexion** : ✅ par e-mail, sans mot de passe : lien « Sign in » pour l'instant (Supabase gratuit ne permet pas de modifier l'e-mail), code à 6 chiffres ensuite. Compte facultatif ; la fiche du téléphone est transférée à la création du compte.
 - **Envoi d'e-mails** : à brancher avant l'ouverture au public (limite du service inclus).
 - **Pseudos** : ✅ décidé — **pseudo avec numéro** (ex. « Benji#4821 »). Plusieurs joueurs peuvent choisir le même pseudo ; le numéro les distingue.
-- **Nom du groupe privé** : **Cercle** (préféré) ou **Club**.
+- **Nom du groupe privé** : ✅ décidé — **Cercle**.
+- **Niveau entre humains** : ✅ décidé — Classement PCF séparé du niveau d'entraînement contre les bots.
 
 ## Idées notées en chemin
 

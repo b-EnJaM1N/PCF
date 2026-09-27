@@ -56,6 +56,14 @@ que les deux aient joué, le score est calculé par la base de données (mêmes 
 par un test qui compare 40 matchs), 5 secondes par coup. Si un joueur perd la connexion : pause, puis forfait
 après 60 secondes. Les duels comptent dans la fiche (statistiques, historique, titres) mais pas dans le niveau.
 
+## Classement PCF, amis et cercles (étape 4)
+
+Le **Classement PCF** se calcule uniquement sur les duels classés entre joueurs (formule ELO, départ à 1200,
+32 points en jeu), par le serveur : personne ne peut modifier le sien. Le niveau contre les bots reste un
+niveau d'entraînement, à part. Au moment du défi, on peut décocher « Match classé » pour un match amical.
+Onglet **Cercles** : son classement, ses amis (demande puis acceptation) et ses **cercles**, des groupes privés
+(famille, travail…) avec un blason, un lien d'invitation et leur propre classement.
+
 ## Organisation du code
 
 ```
@@ -75,6 +83,9 @@ app/                  l'application publiée (HTML, CSS, JavaScript, sans étape
   js/duel-logique.js  duel : ce que le téléphone déduit de l'état du serveur
   js/duel-serveur.js  duel : échanges avec le serveur et mises à jour en direct
   js/ecran-duel.js    l'onglet « Duel » (recherche, défis, liens)
+  js/social-logique.js  classement, blasons, liens de cercle (sans réseau, testé)
+  js/social-serveur.js  classement, amis et cercles : échanges avec le serveur
+  js/ecran-cercles.js l'onglet « Cercles » (classement, amis, cercles)
   js/config.js        adresse et clé PUBLIQUE du projet Supabase
   vendor/             bibliothèque Supabase (copie locale)
   sw.js               fonctionnement hors ligne

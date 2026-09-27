@@ -15,6 +15,8 @@ import { lire, ecrire } from "./stockage.js";
 import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
 import { installerDuels } from "./ecran-duel.js";
+import { installerCercles } from "./ecran-cercles.js";
+import { texteClassementFin } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
 import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant } from "./duel-logique.js";
 
@@ -39,7 +41,8 @@ const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier
 const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
-let duelsUI = null;
+let duelsUI = null, cerclesUI = null;
+let monClassement = null;   // Classement PCF (duels entre humains), connu une fois connecté
 let panneauOuvert = null, faceAFaceOuvert = false;
 
 // ---------------------------------------------------------------- son
@@ -266,6 +269,7 @@ function finir() {
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("again").hidden = enTournoi || !!S.duel; $("tNext").hidden = !enTournoi;
   $("revanche").hidden = !S.duel; $("retourDuels").hidden = !S.duel; $("revanche").disabled = false;
+  if (!S.duel) $("endClassement").hidden = true;
   $("abandonDuelZone").hidden = true;
   if (enTournoi) $("tNext").textContent = gagne ? (S.tour === 2 ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
   $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (t.debloque ? ` (débloque ${t.debloque})` : "")).join(", ") + " !" : "";
@@ -335,7 +339,7 @@ let minuteriesIntro = [];
 function ouvrirFaceAFace() {
   $("startCard").hidden = true; $("tourCard").hidden = true;
   try { ambiance.initialiser(); } catch { /* le match se joue aussi sans son */ } // geste de l'utilisateur : le son peut démarrer
-  const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN });
+  const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN, classementMoi: monClassement, classe: D?.duel?.classe !== false });
   $("foGo").disabled = false; $("foGo").textContent = "Commencer";
   $("foBack").textContent = S.duel ? "Abandonner le duel" : "Retour";
   $("foStage").textContent = pr.bandeau; $("foFmt").textContent = pr.format;
@@ -405,7 +409,8 @@ function renderFiche() {
   $("pAv").innerHTML = avatarSVG(P.av);
   afficherNomFiche();
   $("pTitle").textContent = dernierTitre(P);
-  $("pElo").textContent = `Niveau PCF : ${P.elo}`;
+  $("pElo").textContent = `Niveau d'entraînement : ${P.elo}`;
+  $("pClassement").hidden = monClassement === null; $("pClassement").textContent = `Classement PCF : ${monClassement}`;
   $("kM").textContent = P.matchs;
   $("kW").textContent = P.matchs ? Math.round(100 * P.victoires / P.matchs) + " %" : "–";
   $("kS").textContent = P.serieEnCours;
@@ -443,7 +448,7 @@ function renderFiche() {
     const h = P.historiqueElo, lo = Math.min(...h) - 20, hi = Math.max(...h) + 20, W = 300, H = 80;
     const y = v => H - 5 - ((v - lo) / (hi - lo)) * (H - 10);
     const pts = h.map((v, i) => `${h.length === 1 ? W / 2 : i * (W - 10) / (h.length - 1) + 5},${y(v)}`).join(" ");
-    $("spark").innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Évolution du niveau, de ${h[0]} à ${h[h.length - 1]}">
+    $("spark").innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Évolution du niveau d'entraînement, de ${h[0]} à ${h[h.length - 1]}">
       <line x1="0" x2="${W}" y1="${y(1200)}" y2="${y(1200)}" stroke="rgba(255,255,255,.2)" stroke-dasharray="4 4"/>
       <polyline points="${pts}" fill="none" stroke="var(--me)" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>`;
     $("lastBody").innerHTML = P.derniers.map(d => {
@@ -493,9 +498,11 @@ document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click
   const v = b.dataset.v;
   document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
   $("viewMatch").hidden = v !== "match"; $("viewProfile").hidden = v !== "profile"; $("viewOptions").hidden = v !== "options"; $("viewDuel").hidden = v !== "duel";
+  $("viewCercles").hidden = v !== "cercles";
   $("lenLock").hidden = true;
   if (v === "profile") renderFiche();
   if (v === "duel") duelsUI?.rafraichir();
+  if (v === "cercles") cerclesUI?.rafraichir();
   window.scrollTo(0, 0);
 }));
 
@@ -760,6 +767,9 @@ function terminerDuel(duel) {
   D.arret?.(); clearInterval(D.boucle); clearTimeout(D.decompte); arreterMinuteur(); boutons(false);
   if (faceAFaceOuvert) fermerFaceAFace();
   if (panneauOuvert) fermerPanneau();
+  const cl = texteClassementFin(duel, D.moi);
+  $("endClassement").textContent = cl; $("endClassement").hidden = !cl;
+  cerclesUI?.rafraichir();
   if (duel.fin !== "score" || !S.match.termine) {
     // Forfait ou abandon : le match s'arrête là.
     D.finSpeciale = duel.fin;
@@ -788,7 +798,7 @@ $("revanche").addEventListener("click", async () => {
   const f = S.match.format, adv = OPP.uid;
   $("revanche").disabled = true;
   try {
-    await serveur.creer(adv, f.pointsParSet, f.setsGagnants);
+    await serveur.creer(adv, f.pointsParSet, f.setsGagnants, D?.duel?.classe !== false);
     quitterDuel(); ouvrirOnglet("duel");
     $("duelMsg").textContent = `Revanche proposée à ${OPP.nom} ! La partie démarre dès que ${OPP.nom} accepte.`;
   } catch (e) { $("revanche").disabled = false; $("verdict").textContent = e.message; }
@@ -799,6 +809,17 @@ duelsUI = installerDuels({
   lancerDuel,
   duelEnCours: () => !!D && !D.fini,
   ouvrirOnglet,
+});
+
+// ---------------------------------------------------------------- amis et cercles
+cerclesUI = installerCercles({
+  compte: compteUI,
+  ouvrirOnglet,
+  defier: p => duelsUI.defier(p),
+  surClassement: points => {
+    monClassement = points;
+    $("pClassement").hidden = points === null; $("pClassement").textContent = `Classement PCF : ${points}`;
+  },
 });
 
 // ---------------------------------------------------------------- démarrage

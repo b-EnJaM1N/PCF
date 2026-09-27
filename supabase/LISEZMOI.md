@@ -17,6 +17,12 @@ Même manipulation avec le fichier [`etape-3-duels.sql`](etape-3-duels.sql), **a
 SQL Editor → New query → coller tout le fichier → **Run** (confirmer si Supabase affiche
 « Potential issue detected »). Le script active aussi les mises à jour en direct (Realtime) des duels.
 
+## 1 ter. Classement PCF, amis et cercles (étape 4)
+
+Même manipulation avec le fichier [`etape-4-classement.sql`](etape-4-classement.sql), **après** celui de l'étape 3.
+Il ajoute le Classement PCF (calculé par le serveur à la fin de chaque duel classé), les amis et les cercles.
+À relancer après l'étape 3 si celle-ci est relancée un jour (la recherche afficherait sinon l'ancien niveau).
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

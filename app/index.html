@@ -39,7 +39,7 @@
     </div>
   </header>
   <p class="sndnote" id="sndNote" hidden></p>
-  <nav class="tabs"><button data-v="match" aria-pressed="true">Match</button><button data-v="duel" aria-pressed="false">Duel<span class="pastille" id="pastilleDuel" hidden></span></button><button data-v="profile" aria-pressed="false">Ma fiche</button><button data-v="options" aria-pressed="false">Options</button></nav>
+  <nav class="tabs"><button data-v="match" aria-pressed="true">Match</button><button data-v="duel" aria-pressed="false">Duel<span class="pastille" id="pastilleDuel" hidden></span></button><button data-v="cercles" aria-pressed="false">Cercles<span class="pastille" id="pastilleCercles" hidden></span></button><button data-v="profile" aria-pressed="false">Ma fiche</button><button data-v="options" aria-pressed="false">Options</button></nav>
 
   <div class="view" id="viewMatch">
     <section class="card" id="startCard">
@@ -93,6 +93,7 @@
       <p id="endLine"></p>
       <div class="bars" id="bars"></div>
       <p class="readout" id="endRead"></p>
+      <p class="news" id="endClassement" hidden></p>
       <p class="news" id="news"></p>
       <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button><button class="btn" id="revanche" hidden>Proposer une revanche</button><button class="btn alt" id="retourDuels" hidden>Retour aux duels</button></p>
     </section>
@@ -129,6 +130,7 @@
         <span class="lbl">Format</span>
         <div class="seg" id="duelLen"><button data-v="11">Sets de 11</button><button data-v="7">Sets de 7</button></div>
         <div class="seg" id="duelWin"><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
+        <label class="sound" style="align-items:flex-start;margin-bottom:10px"><input type="checkbox" id="duelClasse" checked> <span>Match classé : compte pour le Classement PCF (décoche pour un match amical)</span></label>
         <p class="hint">Ton ami n'a pas encore PCF, ou il n'apparaît pas ? Envoie-lui un lien :</p>
         <button class="btn alt" id="duelLien" style="margin-top:8px">Inviter par un lien (WhatsApp, SMS…)</button>
         <p class="locknote" id="duelMsg" role="status"></p>
@@ -141,6 +143,81 @@
         <label class="sound" style="align-items:flex-start"><input type="checkbox" id="duelVisible" checked> <span>Apparaître dans la recherche des autres joueurs</span></label>
         <p class="hint">Même caché, tu peux toujours être invité par un lien.</p>
       </section>
+    </div>
+  </div>
+
+  <div class="view" id="viewCercles" hidden>
+    <section class="card" id="socHors">
+      <h2>Amis et cercles</h2>
+      <p class="hint" id="socHorsTexte">Ajoute tes amis, crée un cercle (famille, travail, bande d'amis…) et comparez-vous au Classement PCF. Il faut un compte (gratuit, sans mot de passe).</p>
+      <button class="btn" id="socVersCompte" style="margin-top:12px">Créer mon compte ou me connecter</button>
+    </section>
+    <div id="socOn" hidden>
+      <div id="socListe">
+        <section class="card">
+          <h2>Mon Classement PCF</h2>
+          <div class="cl-grand"><b id="clPoints">–</b><span id="clDetail"></span></div>
+          <p class="hint">Calculé par le serveur, uniquement avec les duels classés contre d'autres joueurs. Ton niveau contre les bots est un niveau d'entraînement, à part.</p>
+        </section>
+        <section class="card" id="socInvitCard" hidden>
+          <h2>Invitations</h2>
+          <div id="socInvit" class="resultats"></div>
+        </section>
+        <section class="card edit">
+          <h2>Mes cercles</h2>
+          <div id="socCercles" class="resultats"></div>
+          <p class="hint" id="socCerclesVide">Un cercle, c'est ton groupe privé (famille, travail, amis) avec son propre classement. Crée le tien, puis invite tes proches par un lien.</p>
+          <button class="btn alt" id="cercleNouveau" style="margin-top:10px">Créer un cercle</button>
+          <div id="cercleForm" hidden>
+            <label class="lbl" for="inCercleNom">Nom du cercle</label>
+            <input type="text" id="inCercleNom" maxlength="30" autocomplete="off" placeholder="Ex. La Famille, Les collègues…">
+            <span class="lbl">Blason</span>
+            <div class="blason-choix"><span class="blason-apercu" id="cercleApercu"></span><div><div class="sw emblemes" id="cercleEmblemes"></div><div class="sw" id="cercleFonds" style="margin-top:10px"></div></div></div>
+            <button class="btn" id="cercleCreer" style="margin-top:14px">Créer le cercle</button>
+          </div>
+        </section>
+        <section class="card edit">
+          <h2>Mes amis</h2>
+          <div id="socAmis" class="resultats"></div>
+          <p class="hint" id="socAmisVide">Pas encore d'ami. Cherche un joueur par son pseudo pour lui envoyer une demande.</p>
+          <label class="lbl" for="inAmi">Ajouter un ami</label>
+          <input type="search" id="inAmi" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ex. Benji ou Benji#4821">
+          <div id="amiResultats" class="resultats"></div>
+        </section>
+        <p class="locknote" id="socMsg" role="status"></p>
+      </div>
+
+      <div id="socCercle" hidden>
+        <p style="margin:0 0 10px"><button class="linkbtn" id="cercleRetour">← Mes cercles</button></p>
+        <section class="card cercle-tete">
+          <span class="blason-grand" id="cBlason"></span>
+          <div><h2 id="cNom"></h2><p class="hint" id="cInfo"></p></div>
+        </section>
+        <section class="card">
+          <h2>Classement du cercle</h2>
+          <ol class="classement" id="cClassement"></ol>
+          <p class="hint">Rangé par Classement PCF. Victoires et défaites : duels joués entre membres depuis la création du cercle.</p>
+        </section>
+        <section class="card">
+          <h2>Inviter dans le cercle</h2>
+          <button class="btn" id="cPartager">Envoyer le lien d'invitation (WhatsApp, SMS…)</button>
+          <div id="cAmis" class="resultats" style="margin-top:12px"></div>
+        </section>
+        <section class="card edit" id="cGestion" hidden>
+          <h2>Gérer le cercle</h2>
+          <label class="lbl" for="inCNom">Nom</label>
+          <input type="text" id="inCNom" maxlength="30" autocomplete="off">
+          <span class="lbl">Blason</span>
+          <div class="blason-choix"><span class="blason-apercu" id="cApercu"></span><div><div class="sw emblemes" id="cEmblemes"></div><div class="sw" id="cFonds" style="margin-top:10px"></div></div></div>
+          <button class="btn" id="cEnregistrer" style="margin-top:14px">Enregistrer</button>
+          <div id="cMembresGestion" class="resultats" style="margin-top:16px"></div>
+          <button class="btn alt" id="cNouveauLien" style="margin-top:8px">Changer le lien d'invitation</button>
+          <p class="hint">L'ancien lien ne fonctionnera plus.</p>
+          <button class="btn alt danger" id="cSupprimer" style="margin-top:12px">Supprimer le cercle</button>
+        </section>
+        <p class="locknote" id="cMsg" role="status"></p>
+        <p style="text-align:center;margin:6px 0 0"><button class="linkbtn" id="cQuitter">Quitter le cercle</button></p>
+      </div>
     </div>
   </div>
 
@@ -166,7 +243,7 @@
     </section>
     <section class="card">
       <h2>Confidentialité</h2>
-      <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, PCF enregistre ton adresse e-mail (jamais visible par les autres joueurs), ton pseudo, ton pays, ton avatar et tes statistiques, chez l'hébergeur Supabase, en Europe (Paris). Les autres joueurs connectés peuvent voir ton pseudo, ton avatar et tes statistiques. Tu peux supprimer ton compte et toutes ses données à tout moment.</p>
+      <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, PCF enregistre ton adresse e-mail (jamais visible par les autres joueurs), ton pseudo, ton pays, ton avatar, tes statistiques, ton Classement PCF, tes amis et tes cercles, chez l'hébergeur Supabase, en Europe (Paris). Les autres joueurs connectés peuvent voir ton pseudo, ton avatar, tes statistiques et ton Classement PCF ; seuls les membres d'un cercle en voient la liste des membres. Tu peux supprimer ton compte et toutes ses données à tout moment.</p>
       <button class="btn alt danger" id="supprimerCompte" style="margin-top:12px" hidden>Supprimer mon compte</button>
     </section>
     <p class="record" id="version"></p>
@@ -175,7 +252,7 @@
   <div class="view" id="viewProfile" hidden>
     <section class="card">
       <div class="id"><div class="av" id="pAv"></div>
-        <div><div class="pseudo" id="pName"></div><div class="title" id="pTitle"></div><div class="elo" id="pElo"></div></div>
+        <div><div class="pseudo" id="pName"></div><div class="title" id="pTitle"></div><div class="elo" id="pElo"></div><div class="elo" id="pClassement" hidden></div></div>
       </div>
       <div class="kpis">
         <div><b id="kM">0</b><span>matchs</span></div>
@@ -232,7 +309,7 @@
     <section class="card" id="cGame"><h2>Mon jeu</h2><div id="gameBody"></div></section>
     <section class="card" id="cMental"><h2>Mon mental</h2><div class="lines" id="mentalBody"></div></section>
     <section class="card" id="cRecords"><h2>Mes records</h2><div class="lines" id="recBody"></div></section>
-    <section class="card" id="cElo"><h2>Évolution du niveau</h2><div class="spark" id="spark"></div><p class="hint">Niveau PCF calculé comme un ELO, sur tes matchs contre les bots.</p></section>
+    <section class="card" id="cElo"><h2>Niveau d'entraînement</h2><div class="spark" id="spark"></div><p class="hint">Calculé comme un ELO, sur tes matchs contre les bots. Ton Classement PCF, contre les autres joueurs, est dans l'onglet Cercles.</p></section>
     <section class="card"><h2>Palmarès</h2><div class="badges" id="badges"></div></section>
     <section class="card" id="cLast"><h2>Derniers matchs</h2><div class="lines hist-list" id="lastBody"></div></section>
     <p class="hint" style="text-align:center" id="infoConnexion">Sans compte, ta fiche est gardée seulement sur ce téléphone.</p>
