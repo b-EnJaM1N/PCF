@@ -85,7 +85,7 @@ Toujours les mêmes « faits », pour qu'ils deviennent familiers :
 
 Un surnom a **deux parties** qui se combinent : **un nom**, tiré du style de jeu, et **un complément**, gagné par les exploits
 et les habitudes. Par exemple : « Le Menhir aux nerfs d'acier », « L'Origami de minuit », « Le Caméléon des balles de match ».
-Avec 30 noms et 36 compléments, cela fait **plus de 1 000 surnoms possibles**.
+Avec 31 noms et 37 compléments, cela fait **plus de 1 100 surnoms possibles**.
 
 - Chaque partie est enregistrée **une seule fois**, et le speaker les enchaîne : « Dans le coin jaune… le Menhir… aux nerfs d'acier ! »
 - Les noms sont des **objets, des animaux ou des figures**, et les compléments commencent par « de », « du », « aux », « sans »…
