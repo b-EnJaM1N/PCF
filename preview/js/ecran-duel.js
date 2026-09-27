@@ -94,7 +94,7 @@ export function installerDuels(ctx) {
         if ($("inRecherche").value.trim() !== t) return;
         $("duelResultats").innerHTML = res.length ? res.map(p => `<div class="joueur" data-id="${p.id}">
             <span class="mini">${avatarSVG(p.avatar || {})}</span>
-            <div style="min-width:0"><div class="jn">${esc(p.drapeau)} ${nomComplet(p)}</div><div class="jd">Classement ${p.niveau}</div></div>
+            <div style="min-width:0"><div class="jn">${esc(p.drapeau)} ${nomComplet(p)}</div><div class="jd">Niveau ${p.niveau}</div></div>
             <div class="actions"><button class="petit alt" data-a="ami" aria-label="Ajouter en ami">Ami +</button><button class="petit" data-a="defier">Défier</button></div></div>`).join("")
           : `<p class="hint">Aucun joueur trouvé. Invite-le plutôt par un lien.</p>`;
         $("duelResultats").querySelectorAll("button").forEach(b => b.addEventListener("click", async () => {
@@ -117,7 +117,7 @@ export function installerDuels(ctx) {
   // Défier un joueur (depuis la recherche, la liste d'amis ou un cercle), au format choisi dans l'onglet Duel.
   async function defier(p) {
     await serveur.creer(p.id, format.len, format.win, format.classe);
-    const texte = `Défi ${format.classe ? "classé" : "amical"} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra dans son onglet Duel, et la partie démarrera dès son acceptation.`;
+    const texte = `Défi ${format.classe ? "officiel" : "amical"} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra dans son onglet Duel, et la partie démarrera dès son acceptation.`;
     dire(texte); rafraichir();
     return texte;
   }

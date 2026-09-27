@@ -130,7 +130,7 @@
         <span class="lbl">Format</span>
         <div class="seg" id="duelLen"><button data-v="11">Sets de 11</button><button data-v="7">Sets de 7</button></div>
         <div class="seg" id="duelWin"><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
-        <label class="sound" style="align-items:flex-start;margin-bottom:10px"><input type="checkbox" id="duelClasse" checked> <span>Match classé : compte pour le Classement PCF (décoche pour un match amical)</span></label>
+        <label class="sound" style="align-items:flex-start;margin-bottom:10px"><input type="checkbox" id="duelClasse" checked> <span>Match officiel : compte pour ton niveau officiel (décoche pour un match amical)</span></label>
         <p class="hint">Ton ami n'a pas encore PCF, ou il n'apparaît pas ? Envoie-lui un lien :</p>
         <button class="btn alt" id="duelLien" style="margin-top:8px">Inviter par un lien (WhatsApp, SMS…)</button>
         <p class="locknote" id="duelMsg" role="status"></p>
@@ -149,15 +149,15 @@
   <div class="view" id="viewCercles" hidden>
     <section class="card" id="socHors">
       <h2>Amis et cercles</h2>
-      <p class="hint" id="socHorsTexte">Ajoute tes amis, crée un cercle (famille, travail, bande d'amis…) et comparez-vous au Classement PCF. Il faut un compte (gratuit, sans mot de passe).</p>
+      <p class="hint" id="socHorsTexte">Ajoute tes amis, crée un cercle (famille, travail, bande d'amis…) et comparez vos niveaux officiels. Il faut un compte (gratuit, sans mot de passe).</p>
       <button class="btn" id="socVersCompte" style="margin-top:12px">Créer mon compte ou me connecter</button>
     </section>
     <div id="socOn" hidden>
       <div id="socListe">
         <section class="card">
-          <h2>Mon Classement PCF</h2>
+          <h2>Mon niveau officiel</h2>
           <div class="cl-grand"><b id="clPoints">–</b><span id="clDetail"></span></div>
-          <p class="hint">Calculé par le serveur, uniquement avec les duels classés contre d'autres joueurs. Ton niveau contre les bots est un niveau d'entraînement, à part.</p>
+          <p class="hint">Calculé par le serveur, uniquement avec les duels officiels contre d'autres joueurs. Ton niveau contre les bots est un niveau d'entraînement, à part.</p>
         </section>
         <section class="card" id="socInvitCard" hidden>
           <h2>Invitations</h2>
@@ -196,7 +196,7 @@
         <section class="card">
           <h2>Classement du cercle</h2>
           <ol class="classement" id="cClassement"></ol>
-          <p class="hint">Rangé par Classement PCF. Victoires et défaites : duels joués entre membres depuis la création du cercle.</p>
+          <p class="hint">Rangé par niveau officiel. Victoires et défaites : duels joués entre membres depuis la création du cercle.</p>
         </section>
         <section class="card">
           <h2>Inviter dans le cercle</h2>
@@ -243,7 +243,7 @@
     </section>
     <section class="card">
       <h2>Confidentialité</h2>
-      <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, PCF enregistre ton adresse e-mail (jamais visible par les autres joueurs), ton pseudo, ton pays, ton avatar, tes statistiques, ton Classement PCF, tes amis et tes cercles, chez l'hébergeur Supabase, en Europe (Paris). Les autres joueurs connectés peuvent voir ton pseudo, ton avatar, tes statistiques et ton Classement PCF ; seuls les membres d'un cercle en voient la liste des membres. Tu peux supprimer ton compte et toutes ses données à tout moment.</p>
+      <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, PCF enregistre ton adresse e-mail (jamais visible par les autres joueurs), ton pseudo, ton pays, ton avatar, tes statistiques, ton niveau officiel, tes amis et tes cercles, chez l'hébergeur Supabase, en Europe (Paris). Les autres joueurs connectés peuvent voir ton pseudo, ton avatar, tes statistiques et ton niveau officiel ; seuls les membres d'un cercle en voient la liste des membres. Tu peux supprimer ton compte et toutes ses données à tout moment.</p>
       <button class="btn alt danger" id="supprimerCompte" style="margin-top:12px" hidden>Supprimer mon compte</button>
     </section>
     <p class="record" id="version"></p>
@@ -309,7 +309,7 @@
     <section class="card" id="cGame"><h2>Mon jeu</h2><div id="gameBody"></div></section>
     <section class="card" id="cMental"><h2>Mon mental</h2><div class="lines" id="mentalBody"></div></section>
     <section class="card" id="cRecords"><h2>Mes records</h2><div class="lines" id="recBody"></div></section>
-    <section class="card" id="cElo"><h2>Niveau d'entraînement</h2><div class="spark" id="spark"></div><p class="hint">Calculé comme un ELO, sur tes matchs contre les bots. Ton Classement PCF, contre les autres joueurs, est dans l'onglet Cercles.</p></section>
+    <section class="card" id="cElo"><h2>Niveau d'entraînement</h2><div class="spark" id="spark"></div><p class="hint">Calculé comme un ELO, sur tes matchs contre les bots. Ton niveau officiel, contre les autres joueurs, est dans l'onglet Cercles.</p></section>
     <section class="card"><h2>Palmarès</h2><div class="badges" id="badges"></div></section>
     <section class="card" id="cLast"><h2>Derniers matchs</h2><div class="lines hist-list" id="lastBody"></div></section>
     <p class="hint" style="text-align:center" id="infoConnexion">Sans compte, ta fiche est gardée seulement sur ce téléphone.</p>

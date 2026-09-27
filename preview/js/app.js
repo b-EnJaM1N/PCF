@@ -42,7 +42,7 @@ const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
 let duelsUI = null, cerclesUI = null;
-let monClassement = null;   // Classement PCF (duels entre humains), connu une fois connecté
+let monClassement = null;   // niveau officiel (duels entre humains), connu une fois connecté
 let panneauOuvert = null, faceAFaceOuvert = false;
 
 // ---------------------------------------------------------------- son
@@ -410,7 +410,7 @@ function renderFiche() {
   afficherNomFiche();
   $("pTitle").textContent = dernierTitre(P);
   $("pElo").textContent = `Niveau d'entraînement : ${P.elo}`;
-  $("pClassement").hidden = monClassement === null; $("pClassement").textContent = `Classement PCF : ${monClassement}`;
+  $("pClassement").hidden = monClassement === null; $("pClassement").textContent = `Niveau officiel : ${monClassement}`;
   $("kM").textContent = P.matchs;
   $("kW").textContent = P.matchs ? Math.round(100 * P.victoires / P.matchs) + " %" : "–";
   $("kS").textContent = P.serieEnCours;
@@ -818,7 +818,7 @@ cerclesUI = installerCercles({
   defier: p => duelsUI.defier(p),
   surClassement: points => {
     monClassement = points;
-    $("pClassement").hidden = points === null; $("pClassement").textContent = `Classement PCF : ${points}`;
+    $("pClassement").hidden = points === null; $("pClassement").textContent = `Niveau officiel : ${points}`;
   },
 });
 

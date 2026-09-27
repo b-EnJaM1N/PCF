@@ -1,10 +1,10 @@
-// Classement PCF, amis et cercles : ce que le téléphone calcule ou affiche lui-même.
+// Niveau officiel, amis et cercles : ce que le téléphone calcule ou affiche lui-même.
 // Aucune connexion réseau ici : ces fonctions sont testées automatiquement.
 import { FONDS } from "./avatar.js";
 import { K_ELO } from "./profil.js";
 
 export const CLASSEMENT_DEPART = 1200;
-export const LIMITE_PAIRE = 5;   // duels classés par jour entre les deux mêmes joueurs (voir supabase/etape-4-classement.sql)
+export const LIMITE_PAIRE = 5;   // duels officiels par jour entre les deux mêmes joueurs (voir supabase/etape-4-classement.sql)
 
 // Points gagnés par le vainqueur et perdus par le perdant (même calcul que le serveur).
 export const variationClassement = (gagnant, perdant) =>
@@ -15,12 +15,12 @@ export function texteClassementFin(duel, moi) {
   if (!duel) return "";
   if (duel.classement_avant && duel.classement_apres) {
     const avant = duel.classement_avant[moi], apres = duel.classement_apres[moi], d = apres - avant;
-    return `Classement PCF : ${avant} → ${apres} (${d >= 0 ? "+" : "−"}${Math.abs(d)})`;
+    return `Niveau officiel : ${avant} → ${apres} (${d >= 0 ? "+" : "−"}${Math.abs(d)})`;
   }
   switch (duel.classement_motif) {
-    case "amical": return "Match amical : le Classement PCF ne change pas.";
-    case "non_dispute": return "Aucun coup joué : le Classement PCF ne change pas.";
-    case "limite": return `Déjà ${LIMITE_PAIRE} duels classés entre vous aujourd'hui : celui-ci ne compte pas pour le Classement PCF.`;
+    case "amical": return "Match amical : le niveau officiel ne change pas.";
+    case "non_dispute": return "Aucun coup joué : le niveau officiel ne change pas.";
+    case "limite": return `Déjà ${LIMITE_PAIRE} duels officiels entre vous aujourd'hui : celui-ci ne compte pas pour le niveau officiel.`;
     default: return "";
   }
 }
