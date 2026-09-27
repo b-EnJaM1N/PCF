@@ -122,6 +122,21 @@ function lancerMinuteur() {
   raf = requestAnimationFrame(tick);
 }
 function arreterMinuteur() { cancelAnimationFrame(raf); }
+
+// Solo : décompte « 3, 2, 1 » avant le premier coup de chaque set, comme en duel.
+const DECOMPTE_S = 3;
+function decompteSolo() {
+  const seance = S;
+  S.occupe = true; boutons(false); arreterMinuteur(); $("bar").style.transform = "scaleX(1)"; $("timer").classList.remove("urgent");
+  let n = DECOMPTE_S;
+  const pas = () => {
+    if (S !== seance) return;                               // match abandonné entre-temps
+    if (n > 0) { $("verdict").textContent = `Premier coup dans ${n}…`; n--; S.decompte = setTimeout(pas, 1000); return; }
+    $("verdict").textContent = "À toi de jouer !";
+    S.occupe = false; boutons(true); lancerMinuteur();
+  };
+  pas();
+}
 // En solo, si on quitte l'application en plein match, le minuteur repart de zéro au retour.
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState !== "visible") return;
@@ -189,7 +204,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
       next: suivant.texte.replace(/\.$/, ""),
       go: `Lancer le ${decisif ? "set décisif" : ORD[n].toLowerCase() + " set"}`,
       resteOuvert: !!S.duel,
-      onGo: S.duel ? duelPret : () => { nouveauSet(); S.occupe = false; boutons(true); lancerMinuteur(); },
+      onGo: S.duel ? duelPret : () => { nouveauSet(); decompteSolo(); },
     });
       if (S.duel) majBoutonsPret();
     }, 1200);
@@ -289,7 +304,7 @@ function afficherBilan() {
 
 // ---------------------------------------------------------------- nouvelle séance
 function nouvelleSeance() {
-  voix.arreter(); arreterMinuteur();
+  voix.arreter(); arreterMinuteur(); if (S) clearTimeout(S.decompte);
   const mm = monMatch(T);
   if (mm) { WIN = SETS_PAR_TOUR[T.tour]; OPP = botParId(mm.a === "moi" ? mm.b : mm.a); }
   else if (!T) { WIN = fmt.win; OPP = botParId(amicalId); }
@@ -390,8 +405,9 @@ $("foGo").addEventListener("click", () => {
   if (S.duel) { try { ambiance.initialiser(); } catch { /* sans son */ } duelPret(); return; }   // on attend que l'adversaire soit prêt
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false;
   S.enJeu = true;
-  boutons(true); $("status").textContent = "Set 1, coup 1"; lancerMinuteur();
+  $("status").textContent = "Set 1, coup 1";
   annoncer([annonceDebutSet(S.match)]);
+  decompteSolo();
 });
 $("foBack").addEventListener("click", () => {
   if (S.duel) { abandonnerDuel(); return; }
