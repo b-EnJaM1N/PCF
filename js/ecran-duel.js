@@ -1,9 +1,10 @@
 // Onglet « Duel » : chercher un joueur, le défier, inviter par lien,
 // voir les défis reçus et envoyés, reprendre un duel en cours.
 import * as serveur from "./duel-serveur.js";
-import { lienDefi, codeDepuisAdresse, adversaireDe, FORMAT } from "./duel-logique.js";
+import { lienDefi, codeDepuisAdresse, adversaireDe, FORMAT, formatCourt } from "./duel-logique.js";
 import { avatarSVG } from "./avatar.js";
 import { lire, ecrire } from "./stockage.js";
+import { demanderAmi } from "./social-serveur.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -12,7 +13,7 @@ const nomComplet = p => `${esc(p.pseudo)}<small>#${p.numero}</small>`;
 // ctx : { compte (installerCompte), lancerDuel(duel, profilAdversaire), duelEnCours(), ouvrirOnglet(nom) }
 export function installerDuels(ctx) {
   let uid = null, arrets = [], minuterie = 0, recherche = 0;
-  const format = { len: lire("duelLen", 11), win: lire("duelWin", 2) };
+  const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), classe: lire("duelClasse", true) };
   const dire = (t, erreur = false) => { $("duelMsg").textContent = t; $("duelMsg").classList.toggle("erreur", erreur); };
   const base = () => location.origin + location.pathname;
 
@@ -20,10 +21,16 @@ export function installerDuels(ctx) {
   const renderFormat = () => {
     document.querySelectorAll("#duelLen button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === format.len)));
     document.querySelectorAll("#duelWin button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === format.win)));
+    // Les formats courts (1 set, sets de 3 ou 1 point) sont toujours amicaux.
+    const court = formatCourt(format.len, format.win);
+    $("duelClasse").disabled = court; $("duelClasse").checked = format.classe && !court;
+    $("duelClasseTexte").textContent = court ? `${format.win === 1 ? "Match en 1 set" : `Sets de ${format.len} point${format.len > 1 ? "s" : ""}`} : toujours amical, ton niveau officiel ne bouge pas.`
+      : "Match officiel : compte pour ton niveau officiel (décoche pour un match amical)";
   };
   document.querySelectorAll("#duelLen button").forEach(b => b.addEventListener("click", () => { format.len = +b.dataset.v; ecrire("duelLen", format.len); renderFormat(); }));
   document.querySelectorAll("#duelWin button").forEach(b => b.addEventListener("click", () => { format.win = +b.dataset.v; ecrire("duelWin", format.win); renderFormat(); }));
   renderFormat();
+  $("duelClasse").addEventListener("change", e => { format.classe = e.target.checked; ecrire("duelClasse", format.classe); });
 
   // ------------------------------------------------ connecté ou pas
   function surSession(session) {
@@ -92,20 +99,32 @@ export function installerDuels(ctx) {
         $("duelResultats").innerHTML = res.length ? res.map(p => `<div class="joueur" data-id="${p.id}">
             <span class="mini">${avatarSVG(p.avatar || {})}</span>
             <div style="min-width:0"><div class="jn">${esc(p.drapeau)} ${nomComplet(p)}</div><div class="jd">Niveau ${p.niveau}</div></div>
-            <div class="actions"><button class="petit">Défier</button></div></div>`).join("")
+            <div class="actions"><button class="petit alt" data-a="ami" aria-label="Ajouter en ami">Ami +</button><button class="petit" data-a="defier">Défier</button></div></div>`).join("")
           : `<p class="hint">Aucun joueur trouvé. Invite-le plutôt par un lien.</p>`;
         $("duelResultats").querySelectorAll("button").forEach(b => b.addEventListener("click", async () => {
           const ligne = b.closest(".joueur"), p = res.find(x => x.id === ligne.dataset.id);
           b.disabled = true;
+          if (b.dataset.a === "ami") {
+            try { const r = await demanderAmi(p.id); b.textContent = r === "amis" ? "Amis ✓" : "Demandé ✓"; dire(r === "amis" ? `${p.pseudo} et toi êtes maintenant amis.` : `Demande d'ami envoyée à ${p.pseudo}#${p.numero}.`); }
+            catch (e) { dire(e.message, true); b.disabled = false; }
+            return;
+          }
           try {
-            await serveur.creer(p.id, format.len, format.win);
-            dire(`Défi envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra dans son onglet Duel, et la partie démarrera dès son acceptation.`);
-            $("inRecherche").value = ""; $("duelResultats").innerHTML = ""; rafraichir();
+            await defier(p);
+            $("inRecherche").value = ""; $("duelResultats").innerHTML = "";
           } catch (e) { dire(e.message, true); b.disabled = false; }
         }));
       } catch (e) { dire(e.message, true); }
     }, 350);
   });
+
+  // Défier un joueur (depuis la recherche, la liste d'amis ou un cercle), au format choisi dans l'onglet Duel.
+  async function defier(p) {
+    await serveur.creer(p.id, format.len, format.win, format.classe);
+    const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra dans son onglet Duel, et la partie démarrera dès son acceptation.`;
+    dire(texte); rafraichir();
+    return texte;
+  }
 
   // ------------------------------------------------ défi par lien
   async function partager(code) {
@@ -120,7 +139,7 @@ export function installerDuels(ctx) {
   }
   $("duelLien").addEventListener("click", async () => {
     $("duelLien").disabled = true;
-    try { const d = await serveur.creer(null, format.len, format.win); await partager(d.code); rafraichir(); }
+    try { const d = await serveur.creer(null, format.len, format.win, format.classe); await partager(d.code); rafraichir(); }
     catch (e) { dire(e.message, true); }
     $("duelLien").disabled = false;
   });
@@ -152,5 +171,5 @@ export function installerDuels(ctx) {
   });
 
   surSession(ctx.compte.session());
-  return { rafraichir, uid: () => uid };
+  return { rafraichir, defier, uid: () => uid };
 }

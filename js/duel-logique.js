@@ -3,7 +3,7 @@
 //
 // Sur le serveur, joueur 0 = celui qui a lancé le défi. À l'écran, on est
 // toujours le côté 0 (jaune) : on retourne donc les coups si on est le joueur 1.
-import { nouveauMatch, jouerCoup, EMOJI, NOM } from "./regles.js";
+import { nouveauMatch, jouerCoup, EMOJI, NOM, texteFormat } from "./regles.js";
 import { indiceImprevisibilite } from "./analyse.js";
 import { normaliserProfil, signeFavori, dernierTitre, titresObtenus } from "./profil.js";
 
@@ -20,7 +20,7 @@ export function coupVuDe(c, moi) {
 // Rejoue tous les coups révélés avec les règles de l'application.
 // Renvoie le match (de mon point de vue) et les événements de chaque coup.
 export function rejouer(duel, moi) {
-  const match = nouveauMatch({ pointsParSet: duel.points_par_set, setsGagnants: duel.sets_gagnants });
+  const match = nouveauMatch(formatDuel(duel));
   const evenements = (duel.coups || []).map(c => { const v = coupVuDe(c, moi); return jouerCoup(match, v.a, v.b, v.auto); });
   return { match, evenements };
 }
@@ -41,6 +41,7 @@ export function adversaireHumain(ligne) {
     style: `${ligne.drapeau || "🌍"} ${dernierTitre(P)}`,
     desc: P.matchs ? `${P.victoires} V – ${P.matchs - P.victoires} D · ${Math.round(100 * P.victoires / P.matchs)} % de victoires` : "Premier match officiel",
     elo: P.elo,
+    classement: ligne.classement ?? null,          // niveau officiel (duels entre humains)
     specialite: fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`,
     imprevisibilite: P.lisibles >= 10 ? indiceImprevisibilite(P.devines / P.lisibles) : null,
     titres: titresObtenus(P).length,
@@ -61,4 +62,9 @@ export const codeDepuisAdresse = recherche => {
   return c && /^[a-z0-9]{6,20}$/i.test(c) ? c : null;
 };
 
-export const FORMAT = d => `Sets de ${d.points_par_set} points · ${d.sets_gagnants} sets gagnants`;
+// Formats courts (match en 1 set, sets de 3 ou 1 point) : toujours amicaux en duel.
+export const formatCourt = (points, sets) => sets === 1 || points < 7;
+
+// Le format d'un duel (colonnes du serveur) pour les règles de l'application.
+export const formatDuel = d => ({ pointsParSet: d.points_par_set, setsGagnants: d.sets_gagnants });
+export const FORMAT = d => `${texteFormat(formatDuel(d))}${d.classe === false ? " · amical" : " · officiel"}`;

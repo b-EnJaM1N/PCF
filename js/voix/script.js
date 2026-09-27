@@ -46,17 +46,21 @@ const ARBITRE = {
   arbitre_sets_trois_a_zero_01: "Trois sets à zéro.",
   arbitre_sets_trois_a_un_01: "Trois sets à un.",
   arbitre_sets_trois_a_deux_01: "Trois sets à deux.",
+  // Match en un seul set, sets de 3 et 1 point.
+  arbitre_set_unique_01: "Set unique.",
+  arbitre_point_decisif_01: "Point décisif.",
 };
 
 // Répliques de l'arbitre construites à partir d'un score.
 export const scoreSet = (g, p) => ({ id: `arbitre_score_${slug(enLettres(g))}_a_${slug(enLettres(p))}_01`, texte: `${maj(enLettres(g))} à ${enLettres(p)}.` });
 export const partout = n => ({ id: `arbitre_partout_${slug(enLettres(n))}_01`, texte: `${maj(enLettres(n))} partout. Deux points d'écart.` });
 
-// Les scores de fin de set possibles jusqu'à 20–18, pour les sets de 7 et de 11.
+// Les scores de fin de set possibles jusqu'à 20–18, pour les sets de 7 et de 11, et ceux des sets de 3 et 1 point.
 function scoresCourants() {
   const s = [];
   for (const len of [7, 11]) for (let p = 0; p <= len - 2; p++) s.push([len, p]);
   for (let p = 6; p <= 18; p++) s.push([p + 2, p]);
+  s.push([1, 0], [3, 0], [3, 1], [3, 2]);          // sets de 1 et 3 points (un point d'écart suffit)
   const vus = new Set();
   return s.filter(([g, p]) => { const k = `${g}-${p}`; if (vus.has(k)) return false; vus.add(k); return true; })
     .sort((x, y) => x[0] - y[0] || x[1] - y[1]);

@@ -77,7 +77,7 @@ export function enregistrerMatch(P, r) {
   P.devines += r.devines; P.lisibles += r.lisibles;
   P.ballesObtenues += stats.ballesObtenues; P.ballesConverties += stats.ballesConverties;
   P.ballesSubies += stats.ballesSubies; P.ballesSauvees += stats.ballesSauvees;
-  if (match.scoresSets.length === 2 * match.format.setsGagnants - 1) { P.decisifsJoues++; if (gagne) P.decisifsGagnes++; }
+  if (match.format.setsGagnants > 1 && match.scoresSets.length === 2 * match.format.setsGagnants - 1) { P.decisifsJoues++; if (gagne) P.decisifsGagnes++; }
   if (stats.premierSetPerdu && gagne) P.remontadas++;
   P.meilleureSeriePoints = Math.max(P.meilleureSeriePoints, stats.meilleureSerie);
   P.meilleureRemontee = Math.max(P.meilleureRemontee, stats.meilleureRemontee);

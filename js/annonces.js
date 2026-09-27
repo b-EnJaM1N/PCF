@@ -1,7 +1,7 @@
 // Décide ce que disent l'arbitre et le commentateur après chaque coup.
 // L'arbitre annonce les moments clés ; le commentateur parle rarement,
 // à bon escient, en s'appuyant sur les vraies données du match.
-import { COTE } from "./regles.js";
+import { COTE, ecartRequis, pointDecisif } from "./regles.js";
 import { replique, repliqueScore, repliquePartout, versions, ORDINAUX, slug } from "./voix/script.js";
 
 export function nouvelEtatAnnonces({ humain = false } = {}) {
@@ -33,7 +33,7 @@ const SIGNE_SLUG = ["pierre", "ciseaux", "feuille"];
 // lisibles : les 10 derniers « le modèle avait-il deviné ton coup ? ».
 // Renvoie { lignes, commentaire, public, ambiance }.
 export function annoncerCoup(match, evt, etat, { recents = [] } = {}, rng = Math.random) {
-  const lignes = [], n = match.coups.length, len = match.format.pointsParSet;
+  const lignes = [], n = match.coups.length, len = match.format.pointsParSet, court = ecartRequis(len) === 1;   // sets de 3 et 1 point
   const peutCommenter = ecart => n - etat.dernierCom >= ecart;
   let com = null, pub = null;
 
@@ -49,7 +49,8 @@ export function annoncerCoup(match, evt, etat, { recents = [] } = {}, rng = Math
     if (evt.finMatch) {
       const [a, b] = [match.sets[g], match.sets[1 - g]];
       lignes.push(replique(`arbitre_jeu_set_et_match_${cote}_01`));
-      lignes.push(replique(`arbitre_sets_${slug(["zéro", "un", "deux", "trois"][a])}_a_${slug(["zéro", "un", "deux", "trois"][b])}_01`));
+      if (match.format.setsGagnants > 1) lignes.push(replique(`arbitre_sets_${slug(["zéro", "un", "deux", "trois"][a])}_a_${slug(["zéro", "un", "deux", "trois"][b])}_01`));
+      else lignes.push(repliqueScore(Math.max(...evt.scoreSet), Math.min(...evt.scoreSet)));   // match en un set : le score du set
       com = g === 0 ? (match.sets[1] > 0 ? "victoire_combat" : "victoire_nette") : "defaite";
       pub = g === 0 ? "ovation" : "set";
     } else if (evt.finSet) {
@@ -59,12 +60,13 @@ export function annoncerCoup(match, evt, etat, { recents = [] } = {}, rng = Math
       lignes.push(repliqueScore(haut, bas));
       if (etat.ballesSubies[g]) com = `set_renverse_${cote}`;
       else if (haut - bas >= 6) com = `set_ecrasant_${cote}`;
-      else if (bas >= len - 1) com = "set_arrache";
+      else if (!court && bas >= len - 1) com = "set_arrache";
       pub = "set";
     } else {
       const [a, b] = match.points, h = evt.balleApres;
       if (h) lignes.push(replique(`arbitre_balle_de_${h.type}_${COTE[h.joueur]}_01`));
-      else if (a === b && a >= len - 1) lignes.push(repliquePartout(a));
+      else if (pointDecisif(match)) lignes.push(replique("arbitre_point_decisif_01"));
+      else if (!court && a === b && a >= len - 1) lignes.push(repliquePartout(a));
 
       etat.ecartMin = Math.min(etat.ecartMin, a - b);
       if (evt.balleAvant && evt.balleAvant.joueur !== g && peutCommenter(2)) {
@@ -97,6 +99,7 @@ export function annoncerCoup(match, evt, etat, { recents = [] } = {}, rng = Math
 
 // Annonce du début d'un set : « Premier set. », « Set décisif. »…
 export function annonceDebutSet(match) {
+  if (match.format.setsGagnants === 1) return replique("arbitre_set_unique_01");
   const decisif = match.sets[0] === match.format.setsGagnants - 1 && match.sets[1] === match.format.setsGagnants - 1;
   if (decisif) return replique("arbitre_set_decisif_01");
   return replique(`arbitre_${slug(ORDINAUX[match.scoresSets.length])}_set_01`);

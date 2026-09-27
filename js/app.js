@@ -1,5 +1,5 @@
 // Écran principal : relie les règles, les bots, les annonces, le son et la fiche joueur.
-import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, setDecisif, signeAuHasard } from "./regles.js";
+import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet } from "./annonces.js";
@@ -15,8 +15,10 @@ import { lire, ecrire } from "./stockage.js";
 import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
 import { installerDuels } from "./ecran-duel.js";
+import { installerCercles } from "./ecran-cercles.js";
+import { texteClassementFin } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
-import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant } from "./duel-logique.js";
+import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel } from "./duel-logique.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -25,8 +27,9 @@ const reduitMouvement = () => matchMedia("(prefers-reduced-motion: reduce)").mat
 
 // ---------------------------------------------------------------- état
 const fmt = { len: 11, win: 2, ...(lire("format") || {}) };
-if (![7, 11].includes(fmt.len)) fmt.len = 11;
-if (![2, 3].includes(fmt.win)) fmt.win = 2;
+if (!POINTS_PAR_SET.includes(fmt.len)) fmt.len = 11;
+if (![1, 2, 3].includes(fmt.win)) fmt.win = 2;
+const lenTournoi = () => (fmt.len >= 7 ? fmt.len : 11);   // le tournoi se joue en sets de 11 ou de 7 points
 let WIN = fmt.win;                               // sets gagnants du match en cours (le tournoi l'impose)
 let amicalId = botParId(lire("adversaire")) ? lire("adversaire") : "stratege";
 let OPP = botParId(amicalId);
@@ -39,7 +42,8 @@ const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier
 const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
-let duelsUI = null;
+let duelsUI = null, cerclesUI = null;
+let monClassement = null;   // niveau officiel (duels entre humains), connu une fois connecté
 let panneauOuvert = null, faceAFaceOuvert = false;
 
 // ---------------------------------------------------------------- son
@@ -119,6 +123,21 @@ function lancerMinuteur() {
   raf = requestAnimationFrame(tick);
 }
 function arreterMinuteur() { cancelAnimationFrame(raf); }
+
+// Solo : décompte « 3, 2, 1 » avant le premier coup de chaque set, comme en duel.
+const DECOMPTE_S = 3;
+function decompteSolo() {
+  const seance = S;
+  S.occupe = true; boutons(false); arreterMinuteur(); $("bar").style.transform = "scaleX(1)"; $("timer").classList.remove("urgent");
+  let n = DECOMPTE_S;
+  const pas = () => {
+    if (S !== seance) return;                               // match abandonné entre-temps
+    if (n > 0) { $("verdict").textContent = `Premier coup dans ${n}…`; n--; S.decompte = setTimeout(pas, 1000); return; }
+    $("verdict").textContent = "À toi de jouer !";
+    S.occupe = false; boutons(true); lancerMinuteur();
+  };
+  pas();
+}
 // En solo, si on quitte l'application en plein match, le minuteur repart de zéro au retour.
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState !== "visible") return;
@@ -186,7 +205,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
       next: suivant.texte.replace(/\.$/, ""),
       go: `Lancer le ${decisif ? "set décisif" : ORD[n].toLowerCase() + " set"}`,
       resteOuvert: !!S.duel,
-      onGo: S.duel ? duelPret : () => { nouveauSet(); S.occupe = false; boutons(true); lancerMinuteur(); },
+      onGo: S.duel ? duelPret : () => { nouveauSet(); decompteSolo(); },
     });
       if (S.duel) majBoutonsPret();
     }, 1200);
@@ -212,6 +231,7 @@ function render() {
   if (m.termine) st.textContent = m.vainqueur === 0 ? "Match gagné" : "Match perdu";
   else if (h) { st.textContent = `Balle de ${h.type} pour ${h.joueur === 0 ? "toi" : OPP.nom}`; st.classList.add("hot"); }
   else if (egaliteFinDeSet(m)) st.textContent = "Égalité, il faut 2 points d'écart";
+  else if (pointDecisif(m)) { st.textContent = `Point décisif : le prochain point gagne le ${m.sets[0] === m.format.setsGagnants - 1 && m.sets[1] === m.format.setsGagnants - 1 ? "match" : "set"}`; st.classList.add("hot"); }
   else st.textContent = `Set ${m.scoresSets.length + 1}, coup ${m.coups.length + 1}`;
 }
 
@@ -238,9 +258,10 @@ function finir() {
   const special = S.duel && D ? D.finSpeciale : null;   // duel gagné ou perdu par forfait ou abandon
   $("endTitle").textContent = special === "forfait" ? (gagne ? `Victoire par forfait : ${OPP.nom} a quitté le duel` : "Défaite par forfait")
     : special === "abandon" ? (gagne ? `Victoire : ${OPP.nom} a abandonné` : "Tu as abandonné")
+    : m.format.setsGagnants === 1 ? `${gagne ? "Victoire" : "Défaite"} ${m.scoresSets[0]?.join("–") ?? ""}`
     : `${gagne ? "Victoire" : "Défaite"} ${m.sets[0]} sets à ${m.sets[1]}`;
   const egalites = c.filter(x => x.gagnant === null).length;
-  $("endLine").textContent = n ? `Sets : ${m.scoresSets.map(([a, b]) => `${a}–${b}`).join(", ") || "aucun terminé"}. ${n} coups joués, dont ${egalites} égalités. Ta répartition :` : "Aucun coup joué.";
+  $("endLine").textContent = n ? `Sets : ${m.scoresSets.map(([a, b]) => `${a}–${b}`).join(", ") || "aucun terminé"}. ${n} coups joués, dont ${egalites} égalité${egalites > 1 ? "s" : ""}. Ta répartition :` : "Aucun coup joué.";
   const cpt = [0, 0, 0]; c.forEach(x => cpt[x.a]++);
   $("bars").innerHTML = barres(cpt, n);
   let meme = 0, apresV = 0;
@@ -266,6 +287,7 @@ function finir() {
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("again").hidden = enTournoi || !!S.duel; $("tNext").hidden = !enTournoi;
   $("revanche").hidden = !S.duel; $("retourDuels").hidden = !S.duel; $("revanche").disabled = false;
+  if (!S.duel) $("endClassement").hidden = true;
   $("abandonDuelZone").hidden = true;
   if (enTournoi) $("tNext").textContent = gagne ? (S.tour === 2 ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
   $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (t.debloque ? ` (débloque ${t.debloque})` : "")).join(", ") + " !" : "";
@@ -285,12 +307,12 @@ function afficherBilan() {
 
 // ---------------------------------------------------------------- nouvelle séance
 function nouvelleSeance() {
-  voix.arreter(); arreterMinuteur();
+  voix.arreter(); arreterMinuteur(); if (S) clearTimeout(S.decompte);
   const mm = monMatch(T);
   if (mm) { WIN = SETS_PAR_TOUR[T.tour]; OPP = botParId(mm.a === "moi" ? mm.b : mm.a); }
   else if (!T) { WIN = fmt.win; OPP = botParId(amicalId); }
   S = {
-    match: nouveauMatch({ pointsParSet: fmt.len, setsGagnants: WIN }),
+    match: nouveauMatch({ pointsParSet: T ? lenTournoi() : fmt.len, setsGagnants: WIN }),
     stats: nouvellesStats(), annonces: nouvelEtatAnnonces(), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false,
   };
@@ -315,9 +337,13 @@ function preparerEcranMatch() {
 function renderFormat() {
   document.querySelectorAll("#segLen button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === fmt.len)));
   document.querySelectorAll("#segWin button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === fmt.win)));
-  const est = { 7: { 2: "30 à 45", 3: "45 à 70" }, 11: { 2: "50 à 75", 3: "75 à 110" } }[fmt.len][fmt.win];
-  $("fmtHint").textContent = `Sets de ${fmt.len} points${fmt.len === 11 ? " (format officiel)" : ""}, environ ${est} coups.${fmt.len === 11 ? "" : " Tu peux revenir au format officiel dans les Options."}`;
-  $("ruleTxt").textContent = `Sets de ${fmt.len}, ${WIN} sets gagnants`;
+  // Durée : coups par set (égalités comprises), du plus court au plus long match possible.
+  const parSet = { 11: 20, 7: 12, 3: 5, 1: 1.5 }[fmt.len], w = fmt.win;
+  const arrondi = x => (x >= 20 ? Math.round(x / 5) * 5 : Math.max(1, Math.round(x)));
+  const court = arrondi(w * parSet), long = arrondi((2 * w - 1) * parSet * 1.25);
+  const officiel = fmt.len === 11;
+  $("fmtHint").textContent = `${texteFormat({ pointsParSet: fmt.len, setsGagnants: w })}${officiel ? " (format officiel)" : ""}, environ ${court} à ${long} coups.${officiel ? "" : " Tu peux revenir au format officiel dans les Options."}`;
+  $("ruleTxt").textContent = texteFormat({ pointsParSet: T ? lenTournoi() : fmt.len, setsGagnants: WIN });
 }
 const matchEnCours = () => S && S.enJeu && S.match.coups.length > 0 && !S.match.termine;
 const sauverFormat = () => ecrire("format", { len: fmt.len, win: fmt.win });
@@ -335,7 +361,7 @@ let minuteriesIntro = [];
 function ouvrirFaceAFace() {
   $("startCard").hidden = true; $("tourCard").hidden = true;
   try { ambiance.initialiser(); } catch { /* le match se joue aussi sans son */ } // geste de l'utilisateur : le son peut démarrer
-  const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN });
+  const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN, classementMoi: monClassement, classe: D?.duel?.classe !== false });
   $("foGo").disabled = false; $("foGo").textContent = "Commencer";
   $("foBack").textContent = S.duel ? "Abandonner le duel" : "Retour";
   $("foStage").textContent = pr.bandeau; $("foFmt").textContent = pr.format;
@@ -386,8 +412,9 @@ $("foGo").addEventListener("click", () => {
   if (S.duel) { try { ambiance.initialiser(); } catch { /* sans son */ } duelPret(); return; }   // on attend que l'adversaire soit prêt
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false;
   S.enJeu = true;
-  boutons(true); $("status").textContent = "Set 1, coup 1"; lancerMinuteur();
+  $("status").textContent = "Set 1, coup 1";
   annoncer([annonceDebutSet(S.match)]);
+  decompteSolo();
 });
 $("foBack").addEventListener("click", () => {
   if (S.duel) { abandonnerDuel(); return; }
@@ -405,7 +432,8 @@ function renderFiche() {
   $("pAv").innerHTML = avatarSVG(P.av);
   afficherNomFiche();
   $("pTitle").textContent = dernierTitre(P);
-  $("pElo").textContent = `Niveau PCF : ${P.elo}`;
+  $("pElo").textContent = `Niveau d'entraînement : ${P.elo}`;
+  $("pClassement").hidden = monClassement === null; $("pClassement").textContent = `Niveau officiel : ${monClassement}`;
   $("kM").textContent = P.matchs;
   $("kW").textContent = P.matchs ? Math.round(100 * P.victoires / P.matchs) + " %" : "–";
   $("kS").textContent = P.serieEnCours;
@@ -443,7 +471,7 @@ function renderFiche() {
     const h = P.historiqueElo, lo = Math.min(...h) - 20, hi = Math.max(...h) + 20, W = 300, H = 80;
     const y = v => H - 5 - ((v - lo) / (hi - lo)) * (H - 10);
     const pts = h.map((v, i) => `${h.length === 1 ? W / 2 : i * (W - 10) / (h.length - 1) + 5},${y(v)}`).join(" ");
-    $("spark").innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Évolution du niveau, de ${h[0]} à ${h[h.length - 1]}">
+    $("spark").innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Évolution du niveau d'entraînement, de ${h[0]} à ${h[h.length - 1]}">
       <line x1="0" x2="${W}" y1="${y(1200)}" y2="${y(1200)}" stroke="rgba(255,255,255,.2)" stroke-dasharray="4 4"/>
       <polyline points="${pts}" fill="none" stroke="var(--me)" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>`;
     $("lastBody").innerHTML = P.derniers.map(d => {
@@ -493,9 +521,11 @@ document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click
   const v = b.dataset.v;
   document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
   $("viewMatch").hidden = v !== "match"; $("viewProfile").hidden = v !== "profile"; $("viewOptions").hidden = v !== "options"; $("viewDuel").hidden = v !== "duel";
+  $("viewCercles").hidden = v !== "cercles";
   $("lenLock").hidden = true;
   if (v === "profile") renderFiche();
   if (v === "duel") duelsUI?.rafraichir();
+  if (v === "cercles") cerclesUI?.rafraichir();
   window.scrollTo(0, 0);
 }));
 
@@ -549,7 +579,7 @@ $("tPlay").addEventListener("click", () => {
   if (T.fini) { T = nouveauTournoi(P.elo); sauverT(); nouvelleSeance(); return; }
   const mm = monMatch(T); if (!mm) return;
   OPP = botParId(mm.a === "moi" ? mm.b : mm.a); WIN = SETS_PAR_TOUR[T.tour];
-  S.match = nouveauMatch({ pointsParSet: fmt.len, setsGagnants: WIN });
+  S.match = nouveauMatch({ pointsParSet: lenTournoi(), setsGagnants: WIN });
   S.tour = T.tour; renderFormat(); render(); rafraichirAvatars(); ouvrirFaceAFace();
 });
 $("tQuit").addEventListener("click", () => {
@@ -557,7 +587,7 @@ $("tQuit").addEventListener("click", () => {
   T = null; sauverT(); nouvelleSeance();
 });
 $("tNext").addEventListener("click", () => {
-  terminerTour(T, fmt.len); if (T.elimine) while (!T.fini) terminerTour(T, fmt.len);
+  terminerTour(T, lenTournoi()); if (T.elimine) while (!T.fini) terminerTour(T, lenTournoi());
   sauverT(); nouvelleSeance();
 });
 
@@ -607,14 +637,14 @@ function lancerDuel(duel, ligneAdv) {
   quitterDuel({ solo: false });
   OPP = adversaireHumain(ligneAdv); WIN = duel.sets_gagnants;
   S = {
-    match: nouveauMatch({ pointsParSet: duel.points_par_set, setsGagnants: duel.sets_gagnants }),
+    match: nouveauMatch(formatDuel(duel)),
     stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ humain: true }), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false, duel: true,
   };
   D = { id: duel.id, moi, duel, decalage: 0, mancheEnvoyee: null, presente: false, fini: false, apresPanneau: null, finSpeciale: null };
   preparerEcranMatch();
   $("startCard").hidden = true; $("tourCard").hidden = true; $("abandonDuelZone").hidden = false;
-  $("ruleTxt").textContent = `Duel · sets de ${duel.points_par_set}, ${duel.sets_gagnants} sets gagnants`;
+  $("ruleTxt").textContent = `Duel · ${texteFormat(formatDuel(duel))}`;
   rafraichirAvatars(); render();
   ouvrirOnglet("match");
   D.arret = serveur.ecouter("duel", `id=eq.${duel.id}`, majDuel);
@@ -657,9 +687,12 @@ function majDuel(duel) {
     if (!D.presente) { D.presente = true; ouvrirFaceAFace(); }
   } else if (duel.phase === "jeu") {
     if (faceAFaceOuvert) { fermerFaceAFace(); annoncer([annonceDebutSet(S.match)]); }
+    // Set suivant lancé par le serveur : on ferme le panneau et on reprend la main tout de suite
+    // (sinon le premier coup du set pouvait partir au hasard).
+    const reprise = !!panneauOuvert;
     if (panneauOuvert) { fermerPanneau(); D.apresPanneau?.(); D.apresPanneau = null; }
     S.enJeu = true;
-    if (!S.occupe) duelReprendre();
+    if (!S.occupe || reprise) duelReprendre();
   } else if (duel.phase === "termine") {
     terminerDuel(duel);
   } else if (duel.phase === "annule" || duel.phase === "refuse") {
@@ -760,6 +793,9 @@ function terminerDuel(duel) {
   D.arret?.(); clearInterval(D.boucle); clearTimeout(D.decompte); arreterMinuteur(); boutons(false);
   if (faceAFaceOuvert) fermerFaceAFace();
   if (panneauOuvert) fermerPanneau();
+  const cl = texteClassementFin(duel, D.moi);
+  $("endClassement").textContent = cl; $("endClassement").hidden = !cl;
+  cerclesUI?.rafraichir();
   if (duel.fin !== "score" || !S.match.termine) {
     // Forfait ou abandon : le match s'arrête là.
     D.finSpeciale = duel.fin;
@@ -788,7 +824,7 @@ $("revanche").addEventListener("click", async () => {
   const f = S.match.format, adv = OPP.uid;
   $("revanche").disabled = true;
   try {
-    await serveur.creer(adv, f.pointsParSet, f.setsGagnants);
+    await serveur.creer(adv, f.pointsParSet, f.setsGagnants, D?.duel?.classe !== false);
     quitterDuel(); ouvrirOnglet("duel");
     $("duelMsg").textContent = `Revanche proposée à ${OPP.nom} ! La partie démarre dès que ${OPP.nom} accepte.`;
   } catch (e) { $("revanche").disabled = false; $("verdict").textContent = e.message; }
@@ -799,6 +835,17 @@ duelsUI = installerDuels({
   lancerDuel,
   duelEnCours: () => !!D && !D.fini,
   ouvrirOnglet,
+});
+
+// ---------------------------------------------------------------- amis et cercles
+cerclesUI = installerCercles({
+  compte: compteUI,
+  ouvrirOnglet,
+  defier: p => duelsUI.defier(p),
+  surClassement: points => {
+    monClassement = points;
+    $("pClassement").hidden = points === null; $("pClassement").textContent = `Niveau officiel : ${points}`;
+  },
 });
 
 // ---------------------------------------------------------------- démarrage
