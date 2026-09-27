@@ -618,7 +618,7 @@ function lancerDuel(duel, ligneAdv) {
   rafraichirAvatars(); render();
   ouvrirOnglet("match");
   D.arret = serveur.ecouter("duel", `id=eq.${duel.id}`, majDuel);
-  D.boucle = setInterval(battement, 1500);
+  D.boucle = setInterval(battement, 1000);
   majDuel(duel); battement();
 }
 
@@ -675,6 +675,16 @@ function duelReprendre() {
   S.occupe = false;
   const d = D.duel;
   if (d.phase !== "jeu" || d.pause_depuis || D.mancheEnvoyee === d.manche || panneauOuvert || faceAFaceOuvert) { if (D.mancheEnvoyee !== d.manche) boutons(false); return; }
+  // Début de set : décompte « 3, 2, 1 » donné par le serveur, identique sur les deux téléphones.
+  const avantDepart = tempsRestant(d.echeance, D.decalage) - DUREE_COUP_MS;
+  clearTimeout(D.decompte);
+  if (avantDepart > 250) {
+    boutons(false); arreterMinuteur(); $("bar").style.transform = "scaleX(1)";
+    $("verdict").textContent = `Premier coup dans ${Math.ceil(avantDepart / 1000)}…`;
+    D.decompte = setTimeout(duelReprendre, Math.min(avantDepart, (avantDepart % 1000) || 1000));
+    return;
+  }
+  if ($("verdict").textContent.startsWith("Premier coup dans")) $("verdict").textContent = "À toi de jouer !";
   boutons(true); lancerMinuteurDuel();
 }
 
@@ -747,7 +757,7 @@ function afficherEtatDuel() {
 function terminerDuel(duel) {
   if (D.fini) return;
   D.fini = true;
-  D.arret?.(); clearInterval(D.boucle); arreterMinuteur(); boutons(false);
+  D.arret?.(); clearInterval(D.boucle); clearTimeout(D.decompte); arreterMinuteur(); boutons(false);
   if (faceAFaceOuvert) fermerFaceAFace();
   if (panneauOuvert) fermerPanneau();
   if (duel.fin !== "score" || !S.match.termine) {
@@ -760,7 +770,7 @@ function terminerDuel(duel) {
 
 function quitterDuel({ solo = true } = {}) {
   if (!D) return;
-  D.arret?.(); clearInterval(D.boucle); arreterMinuteur();
+  D.arret?.(); clearInterval(D.boucle); clearTimeout(D.decompte); arreterMinuteur();
   if (faceAFaceOuvert) fermerFaceAFace();
   if (panneauOuvert) fermerPanneau();
   D = null;
