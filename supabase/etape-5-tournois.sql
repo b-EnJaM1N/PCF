@@ -258,7 +258,7 @@ $$;
 
 create or replace function public.lancer_tournoi(p_id uuid) returns void
 language plpgsql security definer set search_path = public as $$
-declare t public.tournois; n int; taille int; o int[]; p int; a uuid; b uuid;
+declare t public.tournois; n int; v_taille int; o int[]; p int; a uuid; b uuid;
 begin
   select * into t from tournois where id = p_id for update;
   if t.id is null or not _organise(t) then raise exception 'Seul l''organisateur peut lancer le tournoi'; end if;
@@ -270,15 +270,15 @@ begin
   from (select x.joueur, row_number() over (order by coalesce(c.points, _classement_depart()) desc, x.inscrit_le, x.joueur) as rang
         from inscrits_tournoi x left join classements c on c.joueur = x.joueur where x.tournoi_id = p_id) r
   where i.tournoi_id = p_id and i.joueur = r.joueur;
-  taille := 2; while taille < n loop taille := taille * 2; end loop;
-  o := _ordre_tableau(taille);
-  for p in 1 .. taille / 2 loop
+  v_taille := 2; while v_taille < n loop v_taille := v_taille * 2; end loop;
+  o := _ordre_tableau(v_taille);
+  for p in 1 .. v_taille / 2 loop
     select joueur into a from inscrits_tournoi where tournoi_id = p_id and tete = o[2 * p - 1];
     select joueur into b from inscrits_tournoi where tournoi_id = p_id and tete = o[2 * p];
     insert into matchs_tournoi (tournoi_id, tour, position, j0, j1) values (p_id, 1, p, a, b);
     a := null; b := null;
   end loop;
-  update tournois set phase = 'en_cours', tour = 1, nb_tours = round(log(2, taille))::int, echeance = now() + duree_tour, lance_le = now()
+  update tournois set phase = 'en_cours', tour = 1, nb_tours = round(log(2, v_taille))::int, echeance = now() + duree_tour, lance_le = now()
   where id = p_id;
   perform _avancer_tournoi(p_id);
 end $$;

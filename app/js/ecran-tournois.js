@@ -73,8 +73,9 @@ export function installerTournois(ctx) {
     dire(message);
     ctx.montrer("socTournoi"); window.scrollTo(0, 0);
     clearInterval(minuterie);
-    minuterie = setInterval(() => { if (!$("socTournoi").hidden && !document.hidden) charger(); }, 10000);
     await charger();
+    // Sit & Go en direct : mise à jour plus fréquente.
+    if (ouvert === id) { clearInterval(minuterie); minuterie = setInterval(() => { if (!$("socTournoi").hidden && !document.hidden) charger(); }, detail?.mode === "direct" ? 4000 : 10000); }
   }
   function fermer() { ouvert = null; detail = null; clearInterval(minuterie); }
   $("tRetour").addEventListener("click", () => { fermer(); ctx.retour(); });
@@ -93,11 +94,12 @@ export function installerTournois(ctx) {
     const t = detail, uid = ctx.uid(), maintenant = Date.now() + decalage;
     $("tIcone").innerHTML = t.cercle ? blasonSVG(t.cercle.blason) : '<span class="trophee grand">🏆</span>';
     $("tNom").textContent = t.nom;
-    $("tInfo").textContent = `${t.cercle ? `Cercle « ${t.cercle.nom} » · ` : "Tournoi privé · "}${texteFormat({ pointsParSet: t.points_par_set, setsGagnants: t.sets_gagnants })}`
-      + `${formatCourt(t.points_par_set, t.sets_gagnants) ? " · amical" : " · officiel"} · tours de ${texteDuree(t.duree_minutes)}`;
+    const direct = t.mode === "direct";   // Sit & Go : matchs lancés automatiquement, sans date limite
+    $("tInfo").textContent = `${direct ? "Sit & Go public · " : t.cercle ? `Cercle « ${t.cercle.nom} » · ` : "Tournoi privé · "}${texteFormat({ pointsParSet: t.points_par_set, setsGagnants: t.sets_gagnants })}`
+      + `${formatCourt(t.points_par_set, t.sets_gagnants) ? " · amical" : " · officiel"}${direct ? "" : ` · tours de ${texteDuree(t.duree_minutes)}`}`;
     const reste = texteReste(t.echeance, maintenant);
     $("tEtat").textContent = t.phase === "inscriptions" ? `Inscriptions ouvertes · ${t.joueurs.length} joueur${t.joueurs.length > 1 ? "s" : ""} (de 3 à 32)`
-      : t.phase === "en_cours" ? `${nomTour(t.tour, t.nb_tours)} · ${reste ? `date limite dans ${reste}` : "date limite passée, résultats en cours"}`
+      : t.phase === "en_cours" ? (direct ? `${nomTour(t.tour, t.nb_tours)} · en direct` : `${nomTour(t.tour, t.nb_tours)} · ${reste ? `date limite dans ${reste}` : "date limite passée, résultats en cours"}`)
       : t.phase === "termine" ? (t.vainqueur ? `🏆 Vainqueur : ${t.vainqueur.pseudo}#${t.vainqueur.numero}` : "Tournoi terminé") : "Tournoi annulé";
 
     // Mon match à jouer
@@ -109,6 +111,14 @@ export function installerTournois(ctx) {
       const attendMoi = duel && duel.phase === "attente" && duel.j0 !== uid;
       const jattends = duel && duel.phase === "attente" && duel.j0 === uid;
       $("tMonMatchTitre").textContent = `À toi de jouer : ${monTour(t.tour, t.nb_tours)}`;
+      if (direct) {
+        // Sit & Go : le serveur lance le match ; on le rejoint (60 secondes pour arriver).
+        $("tMonMatchCorps").innerHTML = `<div class="joueur"><span class="mini">${avatarSVG(adv.avatar || {})}</span>
+          <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">Niveau ${adv.classement} · tête de série n° ${adv.tete}</div></div><span></span></div>
+          <p class="hint">${duel ? "Ton match est lancé : tu as 60 secondes pour le rejoindre, sinon c'est perdu par forfait." : "Ton match va se lancer tout seul. Reste dans l'appli."}</p>
+          ${duel ? `<button class="btn" id="tJouer">Rejoindre le match</button>` : ""}`;
+        $("tJouer")?.addEventListener("click", () => jouerMonMatch(mm));
+      } else {
       $("tMonMatchCorps").innerHTML = `<div class="joueur"><span class="mini">${avatarSVG(adv.avatar || {})}</span>
         <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">Niveau ${adv.classement} · tête de série n° ${adv.tete}</div></div><span></span></div>
         <p class="hint">${enCours ? "Votre match est en cours." : attendMoi ? `${esc(adv.pseudo)} t'attend pour jouer !`
@@ -116,7 +126,11 @@ export function installerTournois(ctx) {
           : `Retrouvez-vous pour jouer avant la date limite${reste ? ` (dans ${reste})` : ""}. Si un seul de vous deux essaie de jouer, la victoire lui revient par forfait.`}</p>
         <button class="btn" id="tJouer" ${jattends ? "disabled" : ""}>${enCours ? "Reprendre le match" : attendMoi ? "Jouer maintenant" : jattends ? `En attente de ${esc(adv.pseudo)}…` : "Jouer mon match"}</button>`;
       $("tJouer").addEventListener("click", () => jouerMonMatch(mm));
+      }
     }
+    $("tRegleAbsence").textContent = direct
+      ? "Chaque match se lance dès que les deux joueurs sont libres. Un joueur absent au bout de 60 secondes perd par forfait ; si aucun des deux ne vient, la meilleure tête de série passe."
+      : "Un match non joué à la date limite revient à la personne qui a essayé de le jouer ; si personne ne s'est manifesté, à la meilleure tête de série.";
 
     // Inscriptions
     const insc = t.phase === "inscriptions";

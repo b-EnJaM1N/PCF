@@ -72,6 +72,13 @@ Chaque tour a une date limite (15 min, 1 h, 24 h ou 3 jours) : les deux joueurs 
 Match non joué à temps : il revient à la personne qui a essayé de le jouer, sinon à la meilleure tête de série.
 Au format officiel, les matchs comptent pour le niveau officiel. Tout est arbitré par le serveur.
 
+## Sit & Go (étape 6)
+
+Dans l'onglet **Duel** : des tournois publics de 8, 16, 32 ou 64 joueurs, qui démarrent dès que la salle est pleine.
+Il faut rester dans l'application : un inscrit absent plus de 45 s est retiré de la salle. Pendant le tournoi,
+chaque match se lance tout seul dès que les deux joueurs sont libres ; 60 secondes pour le rejoindre, sinon forfait.
+Format officiel (sets de 11, 2 sets gagnants) : les matchs comptent pour le niveau officiel.
+
 ## Organisation du code
 
 ```
@@ -96,6 +103,7 @@ app/                  l'application publiée (HTML, CSS, JavaScript, sans étape
   js/ecran-cercles.js l'onglet « Cercles » (classement, amis, cercles)
   js/tournoi-logique.js  tournois en ligne : noms des tours, temps restant… (sans réseau, testé)
   js/ecran-tournois.js   tournois en ligne : création, inscriptions, tableau, « Jouer mon match »
+  js/ecran-sng.js        Sit & Go : les salles publiques de l'onglet Duel
   js/config.js        adresse et clé PUBLIQUE du projet Supabase
   vendor/             bibliothèque Supabase (copie locale)
   sw.js               fonctionnement hors ligne

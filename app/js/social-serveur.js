@@ -39,3 +39,9 @@ export const desinscrireTournoi = id => rpc("desinscrire_tournoi", { p_id: id })
 export const lancerTournoi = id => rpc("lancer_tournoi", { p_id: id });
 export const annulerTournoi = id => rpc("annuler_tournoi", { p_id: id });
 export const jouerMatchTournoi = id => rpc("jouer_match_tournoi", { p_match: id });                        // → le duel
+
+// Sit & Go publics (supabase/etape-6-sit-and-go.sql).
+export const sallesSng = () => rpc("salles_sit_and_go");                         // → { salles: [{ taille, inscrits }], mien }
+export const rejoindreSng = taille => rpc("rejoindre_sit_and_go", { p_taille: taille });
+export const presenceSng = () => rpc("presence_sit_and_go");                    // → mon Sit & Go, ou null
+export const quitterSng = () => rpc("quitter_sit_and_go");

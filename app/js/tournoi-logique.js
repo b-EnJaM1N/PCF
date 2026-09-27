@@ -57,3 +57,7 @@ export const codeTournoiDepuisAdresse = recherche => {
   const c = new URLSearchParams(recherche || "").get("tournoi");
   return c && /^[a-z0-9]{6,20}$/i.test(c) ? c : null;
 };
+
+// Sit & Go : durée approximative (matchs en sets de 11, 2 sets gagnants, environ 5 min chacun).
+export const TAILLES_SNG = [8, 16, 32, 64];
+export const dureeSng = taille => ({ 8: "15 à 20 min", 16: "20 à 25 min", 32: "25 à 35 min", 64: "30 à 40 min" }[taille] || "");

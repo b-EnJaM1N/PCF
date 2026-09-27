@@ -22,6 +22,11 @@
 
    - **Nouveaux formats** (demandés pendant l'étape 4), en solo et en duel : match en **1 set**, et sets de **3** ou **1 point** en plus de 7 et 11. Sans écart de 2 points pour 3 et 1 (3–2 gagne ; à 1 point, le premier point gagne le set). En duel, ces formats courts sont toujours amicaux. Le tournoi se joue en sets de 11 ou 7.
 
+6. **Tournois en direct, façon poker.** Tout le monde est présent, les matchs s'enchaînent automatiquement, on reste connecté tant qu'on est en lice.
+   - **Sit & Go** : *fait, testé, en attente de validation.* Salles **publiques** de 8, 16, 32 ou 64 joueurs, départ dès que la salle est pleine. Il faut rester dans l'appli (inscrit absent plus de 45 s : retiré de la salle). Chaque match démarre dès que les deux joueurs sont libres ; **60 secondes pour arriver**, sinon forfait (si aucun des deux ne vient : la meilleure tête de série passe). Format officiel, compte pour le niveau officiel. Un seul Sit & Go à la fois par joueur.
+   - **Tournois programmés (MTT)** : *à faire plus tard.* Départ à heure fixe (ex. 20 h) avec les inscrits présents, exempts s'il manque des joueurs. Durée estimée : 30 à 40 min pour 64 joueurs (1 h 30 même pour 1 000). Il faudra probablement les **notifications** (« ton match commence ») et un minuteur côté serveur pour le départ à l'heure.
+   - À surveiller : au-delà de quelques centaines de joueurs connectés en même temps, l'offre gratuite de Supabase ne suffira plus (environ 25 $/mois). Façon poker, mais **jamais d'argent en jeu** (réglementation des jeux d'argent).
+
 ## Décisions à prendre
 
 - **Service en ligne** : ✅ décidé — Supabase (gratuit au démarrage).
