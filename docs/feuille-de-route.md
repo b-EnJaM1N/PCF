@@ -8,7 +8,7 @@
    - **Défier un ami avec une barre de recherche** : on tape un pseudo, les joueurs correspondants s'affichent (avatar, niveau), bouton « Défier » ; l'ami reçoit l'invitation dans l'application.
    - **Défi par lien**, pour inviter quelqu'un qui n'a pas encore l'application.
    - Option « Ne pas apparaître dans la recherche ».
-4. **Niveau officiel entre joueurs humains, amis et cercles.** *Fait, testé, en attente de validation.* Choix validés :
+4. **Niveau officiel entre joueurs humains, amis et cercles.** *Fait et validé.* Choix validés :
    - **deux niveaux séparés** : le **niveau officiel** (calculé par le serveur, uniquement avec les duels entre humains, départ à 1200) et le niveau d'entraînement contre les bots ;
    - duel **officiel par défaut**, avec une case pour un match amical ; anti-arrangement : au plus 5 duels officiels par jour entre les deux mêmes joueurs, et un duel sans aucun coup joué ne compte pas ;
    - **amis** : demande puis acceptation ;
