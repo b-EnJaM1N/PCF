@@ -16,6 +16,7 @@ import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
 import { installerDuels } from "./ecran-duel.js";
 import { installerCercles } from "./ecran-cercles.js";
+import { installerSng } from "./ecran-sng.js";
 import { texteClassementFin } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
 import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel } from "./duel-logique.js";
@@ -850,6 +851,13 @@ cerclesUI = installerCercles({
     monClassement = points;
     $("pClassement").hidden = points === null; $("pClassement").textContent = `Niveau officiel : ${points}`;
   },
+});
+
+// ---------------------------------------------------------------- Sit & Go
+installerSng({
+  compte: compteUI,
+  ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
+  chercherMatch: () => { if (!D || D.fini) duelsUI.rafraichir(); },   // mon match suivant est-il lancé ?
 });
 
 // ---------------------------------------------------------------- démarrage
