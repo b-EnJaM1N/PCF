@@ -31,6 +31,8 @@
 8. **Partie rapide** : *à faire.* Un adversaire en ligne au hasard, de son niveau, en quelques secondes (il suffit de 2 joueurs, là où un Sit & Go en demande 8).
 9. **Jetons fictifs et boutique** : *plus tard, quand il y aura des joueurs réguliers.* Jetons gagnés (départ + bonus quotidien), droits d'entrée des Sit & Go en jetons et cagnotte partagée, tables selon le niveau officiel, boutique. Trois règles d'or : jamais d'achat de jetons avec de l'argent réel ni de revente (sinon : jeu d'argent) ; la boutique ne vend que de l'apparence (gants, blasons, voix d'arbitre, animations…), jamais d'avantage en jeu ; tout est géré par le serveur.
 
+10. **Le spectacle** : *en cours.* Script des voix validé (`docs/script-v2-brouillon.md`) : speaker, arbitre, commentateur, commentatrice glaciale, journaliste d'après-finale ; surnoms en deux parties ; fausse histoire de la discipline. Voix : ElevenLabs. Puis « La Une » (image de fin de match à partager) et la carte de joueur.
+
 ## Décisions à prendre
 
 - **Service en ligne** : ✅ décidé — Supabase (gratuit au démarrage).
@@ -39,6 +41,8 @@
 - **Pseudos** : ✅ décidé — **pseudo avec numéro** (ex. « Benji#4821 »). Plusieurs joueurs peuvent choisir le même pseudo ; le numéro les distingue.
 - **Nom du groupe privé** : ✅ décidé — **Cercle**.
 - **Niveau entre humains** : ✅ décidé — **niveau officiel** séparé du niveau d'entraînement contre les bots.
+- **Langue** : ✅ français seulement au lancement (l'anglais sera une réécriture, pas une traduction).
+- **Voix** : ✅ ElevenLabs (synthèse), un comédien plus tard si le concept prend.
 - **Vocabulaire** : ✅ un **niveau** est un chiffre (ex. 1200) ; un **classement** est une place (1er, 2e…). Un duel qui compte est un duel **officiel**, sinon **amical**.
 - **Nom de l'application** : à choisir. Idées : **Handslam**, **Hand Up**, **Hand to Hand**, **Mano**. On garde PCF en attendant, puis on renommera tout d'un coup. Avant de choisir : vérifier que le nom est libre (marques à l'INPI, stores, nom de domaine).
 

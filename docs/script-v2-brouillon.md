@@ -1,4 +1,4 @@
-# Script des voix — version 6
+# Script des voix — version 6 (validée)
 
 > Fusion de ton document « PCF — Script des annonces et commentaires » et de mes propositions.
 > **Version 6 :** surnoms en deux parties (plus de 1 000 combinaisons) et répliques « match miroir » ; répliques **renumérotées**.
@@ -409,5 +409,5 @@ un petit son sec pour chaque signe à la révélation.
 ## Questions ouvertes
 
 1. **Noms** des personnages (pistes en haut).
-2. **Langue** : français seulement au lancement, ou l'anglais dès le départ ? *(question de ton document)*
-3. **Voix** : ton document prévoyait de tester avec une voix de synthèse, puis de passer à un comédien si le concept prend. On garde ce plan ?
+2. ~~Langue~~ → ✅ **français seulement au lancement.** L'humour repose sur des références françaises : une version anglaise sera une réécriture avec ses propres références, si l'appli prend.
+3. ~~Voix~~ → ✅ **ElevenLabs** (voix de synthèse). Essai gratuit pour choisir les 5 voix, puis un mois payant pour générer les fichiers. Un comédien plus tard, si le concept prend.
