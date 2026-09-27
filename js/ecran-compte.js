@@ -11,6 +11,9 @@ const heure = d => d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-d
 // ctx : { lireP(), remplacerP(fiche), sauverLocal(), rafraichir(), ouvrirFiche() }
 export function installerCompte(ctx) {
   let session = null, email = lire("compteEmail", ""), minuterie = 0, occupe = false;
+  // Qui veut savoir quand on est connecté (avec une fiche en ligne) ou déconnecté : l'écran des duels.
+  const auditeurs = [];
+  const prevenir = () => auditeurs.forEach(f => { try { f(session); } catch { /* rien */ } });
 
   const montrer = etat => {
     for (const [id, e] of [["compteHors", "hors"], ["compteCode", "code"], ["comptePseudo", "pseudo"], ["compteOn", "on"]]) $(id).hidden = etat !== e;
@@ -58,6 +61,7 @@ export function installerCompte(ctx) {
     afficherConnecte();
     if (choix.envoyer) await envoyer();
     else $("compteEtat").textContent = "☁️ Fiche en ligne retrouvée et chargée sur ce téléphone.";
+    prevenir();
   }
 
   $("btnCode").addEventListener("click", () => attendre($("btnCode"), async () => {
@@ -88,13 +92,13 @@ export function installerCompte(ctx) {
     if (!confirm("Te déconnecter ? Ta fiche reste sur ce téléphone et en ligne.")) return;
     await compte.deconnecter().catch(() => {});
     session = null; delete ctx.lireP().numero; ctx.sauverLocal(); ctx.remplacerP(ctx.lireP());
-    montrer("hors"); dire("Déconnecté.");
+    montrer("hors"); dire("Déconnecté."); prevenir();
   }));
   $("supprimerCompte").addEventListener("click", () => attendre($("supprimerCompte"), async () => {
     if (!confirm("Supprimer définitivement ton compte et ta fiche en ligne ?\n\nTa fiche restera seulement sur ce téléphone.")) return;
     await compte.supprimerCompte();
     session = null; delete ctx.lireP().numero; ctx.sauverLocal(); ctx.remplacerP(ctx.lireP());
-    montrer("hors"); dire("Ton compte a été supprimé.");
+    montrer("hors"); dire("Ton compte a été supprimé."); prevenir();
   }));
   window.addEventListener("online", () => { if (lire("synchroEnAttente", false)) envoyer(); });
 
@@ -110,7 +114,7 @@ export function installerCompte(ctx) {
     if (retour?.ok) dire("Connexion réussie !");
     try { await apresConnexion(s); } catch (e) { session = s; afficherConnecte(); $("compteEtat").textContent = `⏳ ${e.message}`; }
   });
-  compte.surChangement(s => { if (!s && session) { session = null; montrer("hors"); } });
+  compte.surChangement(s => { if (!s && session) { session = null; montrer("hors"); prevenir(); } });
 
-  return { planifier, connecte: () => !!session };
+  return { planifier, connecte: () => !!session, session: () => session, surConnexion: f => auditeurs.push(f) };
 }
