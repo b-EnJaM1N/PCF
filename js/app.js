@@ -7,6 +7,8 @@ import { surnomDe, NOMS, COMPLEMENTS, debloques } from "./surnoms.js";
 import { voirTournoi } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
+import { carteDe, notesDe, RARETES } from "./carte-logique.js";
+import { dessinerCarte } from "./carte.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
@@ -321,8 +323,23 @@ function finir() {
   if (n && !special && S.annonces.finale) setTimeout(() => ouvrirInterview(gagne), 2500);
 }
 
+// ---------------------------------------------------------------- images à partager (La Une, la carte)
+// Aperçu, bouton « Partager » (si le téléphone sait partager une image) et lien « Enregistrer ».
+async function preparerPartage(canvas, { img, partager, enregistrer, msg, fichier, alt, titre }) {
+  const blob = await new Promise(ok => canvas.toBlob(ok, "image/png"));
+  if (img.dataset.url) URL.revokeObjectURL(img.dataset.url);
+  const url = URL.createObjectURL(blob), f = new File([blob], fichier, { type: "image/png" });
+  img.dataset.url = url; img.src = url; img.alt = alt; enregistrer.href = url;
+  const ok = !!navigator.canShare?.({ files: [f] });
+  partager.hidden = !ok;
+  msg.textContent = ok ? "" : "Enregistre l'image, puis partage-la depuis ta galerie.";
+  partager.onclick = async () => {
+    try { await navigator.share({ files: [f], title: titre }); }
+    catch (e) { if (e?.name !== "AbortError") msg.textContent = "Le partage n'a pas marché : enregistre l'image, puis partage-la depuis ta galerie."; }
+  };
+}
+
 // ---------------------------------------------------------------- La Une
-let uneFichier = null, uneUrl = null;
 $("btnUne").addEventListener("click", async () => {
   const u = S?.pourUne; if (!u) return;
   const m = S.match, unSet = m.format.setsGagnants === 1;
@@ -338,21 +355,27 @@ $("btnUne").addEventListener("click", async () => {
     detail: unSet ? "Set unique" : m.scoresSets.map(([a, b]) => `${a}–${b}`).join(" · "),
     numero: u.numero, date: new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }), adresse,
   });
-  const blob = await new Promise(ok => canvas.toBlob(ok, "image/png"));
-  if (uneUrl) URL.revokeObjectURL(uneUrl);
-  uneUrl = URL.createObjectURL(blob);
-  uneFichier = new File([blob], "la-une.png", { type: "image/png" });
-  $("uneImg").src = uneUrl; $("uneImg").alt = `La Une : ${h.titre}. ${h.chapo}`;
-  $("uneEnregistrer").href = uneUrl;
-  const partage = !!navigator.canShare?.({ files: [uneFichier] });
-  $("unePartager").hidden = !partage;
-  $("uneMsg").textContent = partage ? "" : "Enregistre l'image, puis partage-la depuis ta galerie.";
-});
-$("unePartager").addEventListener("click", async () => {
-  try { await navigator.share({ files: [uneFichier], title: MARQUE.journal }); }
-  catch (e) { if (e?.name !== "AbortError") $("uneMsg").textContent = "Le partage n'a pas marché : enregistre l'image, puis partage-la depuis ta galerie."; }
+  await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
+    fichier: "la-une.png", alt: `La Une : ${h.titre}. ${h.chapo}`, titre: MARQUE.journal });
 });
 $("uneFermer").addEventListener("click", () => $("une").classList.remove("show"));
+
+// ---------------------------------------------------------------- la carte de joueur (Ma fiche)
+let carteT = 0, carteJeton = 0;
+function renderCarte() {
+  clearTimeout(carteT);
+  carteT = setTimeout(async () => {
+    const jeton = ++carteJeton;
+    const c = carteDe(P, { niveauOfficiel: monClassement, surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
+    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(P.av) });
+    if (jeton !== carteJeton) return;
+    const r = RARETES[c.rarete];
+    $("carteRarete").textContent = `Carte ${r.nom.toLowerCase()}. ${r.suivant}`;
+    $("carteNotes").innerHTML = notesDe(P).map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
+    await preparerPartage(canvas, { img: $("carteImg"), partager: $("cartePartager"), enregistrer: $("carteEnregistrer"), msg: $("carteMsg"),
+      fichier: "ma-carte.png", alt: `Carte de joueur de ${nomAffiche(P)} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
+  }, 250);
+}
 
 // ---------------------------------------------------------------- interview d'après-finale
 function ouvrirInterview(gagne) {
@@ -542,7 +565,7 @@ $("inSurnomComp").addEventListener("change", choisirSurnom);
 document.querySelectorAll("#segGenre button").forEach(b => b.addEventListener("click", () => { P.genre = b.dataset.v; sauverP(); renderSurnom(); }));
 
 function renderFiche() {
-  renderSurnom();
+  renderSurnom(); renderCarte();
   $("pAv").innerHTML = avatarSVG(P.av);
   afficherNomFiche();
   $("pTitle").textContent = dernierTitre(P);
@@ -1017,6 +1040,7 @@ cerclesUI = installerCercles({
   surClassement: points => {
     monClassement = points;
     $("pClassement").hidden = points === null; $("pClassement").textContent = `Niveau officiel : ${points}`;
+    renderCarte();
   },
 });
 
