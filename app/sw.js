@@ -30,6 +30,8 @@ const FICHIERS = [
   "js/marque.js",
   "js/une.js",
   "js/une-logique.js",
+  "js/carte.js",
+  "js/carte-logique.js",
   "js/config.js",
   "js/compte.js",
   "js/synchro.js",

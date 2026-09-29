@@ -343,3 +343,10 @@ body.en-match .tabs, body.en-match .retour-hub, body.en-match #btnOptions { disp
 .une-panel img { width: 100%; aspect-ratio: 4 / 5; display: block; border-radius: 4px; background: #F2ECDF; margin-bottom: 10px; }
 .une-panel .hint:empty { display: none; }
 a.btn { display: block; box-sizing: border-box; text-decoration: none; text-align: center; margin-top: 8px; }
+
+/* La carte de joueur */
+.carte-img { width: min(100%, 320px); aspect-ratio: 1080 / 1512; display: block; margin: 4px auto 10px; filter: drop-shadow(0 10px 24px rgba(0, 0, 0, .45)); }
+.carte-aide { margin: 0 0 10px; font-size: .9rem; }
+.carte-aide summary { cursor: pointer; color: var(--muted); }
+.carte-aide ul { margin: 6px 0 0; padding-left: 20px; line-height: 1.5; }
+#cCarte .hint:empty { display: none; }
