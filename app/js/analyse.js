@@ -67,3 +67,13 @@ export class Suivi {
   }
   get taux() { return this.lisibles ? this.devines / this.lisibles : null; }
 }
+
+// J'ai lu un réflexe de l'adversaire : il a rejoué le signe avec lequel il venait de gagner,
+// ou le même signe pour la troisième fois, et je l'ai contré. coups : ceux du match (le dernier vient d'être joué).
+export function lectureReussie(coups) {
+  const n = coups.length;
+  if (n < 2 || coups[n - 1].gagnant !== 0) return false;
+  const [p, d] = [coups[n - 2], coups[n - 1]];
+  if (d.b !== p.b) return false;
+  return p.gagnant === 1 || (n >= 3 && coups[n - 3].b === p.b);
+}

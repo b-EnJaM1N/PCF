@@ -25,6 +25,8 @@ const FICHIERS = [
   "js/version.js",
   "js/voix/script.js",
   "js/voix/lecteur.js",
+  "js/voix/repliques.js",
+  "js/surnoms.js",
   "js/config.js",
   "js/compte.js",
   "js/synchro.js",

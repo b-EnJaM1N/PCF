@@ -1,13 +1,15 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { CATALOGUE, replique, repliqueScore, repliquePartout, versions, SITUATIONS_COMMENTATEUR } from "../app/js/voix/script.js";
-import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces } from "../app/js/annonces.js";
+import { CATALOGUE, replique, repliqueScore, repliquePartout, POOLS, DIALOGUES_IDS } from "../app/js/voix/script.js";
+import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces, annoncesAvantMatch, interview, etiquetteDe } from "../app/js/annonces.js";
+import { surnomDe } from "../app/js/surnoms.js";
+import { profilParDefaut } from "../app/js/profil.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX, FEUILLE } from "../app/js/regles.js";
 import { rngFixe } from "./outils.js";
 
 test("chaque réplique a un nom de fichier valide : role_situation_NN", () => {
   for (const [id, r] of CATALOGUE) {
-    assert.match(id, /^(arbitre|commentateur)_[a-z0-9_]+_\d{2}$/, id);
+    assert.match(id, /^(arbitre|commentateur|commentatrice|speaker|journaliste)_[a-z0-9_]+_\d{2}(_(pierre|ciseaux|feuille))?(_f)?$/, id);
     assert.ok(id.startsWith(r.role + "_"), id);
     assert.ok(r.texte.length > 3, id);
   }
@@ -15,6 +17,7 @@ test("chaque réplique a un nom de fichier valide : role_situation_NN", () => {
 
 test("exemples de noms de répliques", () => {
   assert.equal(replique("commentateur_craquage_02").role, "commentateur");
+  assert.equal(replique("commentatrice_craquage_01").role, "commentatrice");
   assert.equal(repliqueScore(11, 9).id, "arbitre_score_onze_a_neuf_01");
   assert.equal(repliqueScore(11, 9).texte, "Onze à neuf.");
   assert.equal(repliqueScore(17, 15).id, "arbitre_score_dix_sept_a_quinze_01");
@@ -25,8 +28,19 @@ test("exemples de noms de répliques", () => {
   assert.throws(() => replique("arbitre_inexistant_01"));
 });
 
-test("chaque situation du commentateur a au moins deux versions", () => {
-  for (const s of SITUATIONS_COMMENTATEUR) assert.ok(versions(s).length >= 2, s);
+test("chaque moment du match a au moins une réplique, et les dialogues ont deux voix", () => {
+  for (const [m, pool] of Object.entries(POOLS)) assert.ok(pool.length >= 1, m);
+  for (const [m, ds] of Object.entries(DIALOGUES_IDS)) for (const d of ds) {
+    assert.deepEqual(d.map(id => CATALOGUE.get(id).role), ["commentateur", "commentatrice"], m);
+  }
+  assert.equal(replique("commentateur_craquage_01").texte, "Il est en train de craquer sous la pression !");
+  assert.equal(replique("commentateur_craquage_01_f").texte, "Elle est en train de craquer sous la pression !");
+  assert.equal(replique("commentatrice_obstination_01_ciseaux").texte, "Encore Ciseaux. C'est de la provocation.");
+  assert.equal(replique("commentatrice_dialogue_fin_set_02").texte, "Nous n'en parlerons pas.");
+});
+
+test("la commentatrice n'évoque jamais 1997", () => {
+  for (const r of CATALOGUE.values()) if (r.role === "commentatrice") assert.ok(!/1997/.test(r.texte), r.texte);
 });
 
 // Joue un match complet au hasard et vérifie que toutes les annonces existent.
@@ -104,4 +118,66 @@ test("contre un humain, le commentateur ne parle jamais de « la machine »", ()
       for (const l of a.lignes) assert.ok(!/machine/i.test(l.texte), l.texte);
     }
   }
+});
+
+test("la réserve de parole : les commentateurs parlent peu pendant le jeu", () => {
+  const rng = rngFixe(8);
+  let coms = 0, coups = 0;
+  for (let k = 0; k < 20; k++) {
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces();
+    const vus = new Set();
+    while (!m.termine) {
+      const a = annoncerCoup(m, jouerCoup(m, Math.floor(rng() * 3), Math.floor(rng() * 3)), etat, {}, rng);
+      coups++;
+      if (a.commentaire) { coms++; assert.ok(!vus.has(a.commentaire.id), "jamais deux fois la même"); vus.add(a.commentaire.id); }
+      if (!a.commentaire && !a.dialogue.length) assert.ok(a.lignes.every(l => l.role === "arbitre"));
+    }
+  }
+  assert.ok(coms > 0 && coms < coups / 8, `${coms} commentaires pour ${coups} coups`);
+});
+
+test("la version au féminin et le signe joué sont respectés", () => {
+  const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces({ genre: "f" }), rng = () => 0.1;
+  const toutes = [];
+  for (let i = 0; i < 11; i++) toutes.push(...annoncerCoup(m, jouerCoup(m, FEUILLE, PIERRE), etat, {}, rng).lignes);
+  for (const l of toutes) {
+    if (CATALOGUE.has(`${l.id}_f`)) assert.fail(`version masculine choisie : ${l.id}`);
+    if (/_(pierre|ciseaux)(_f)?$/.test(l.id)) assert.fail(`mauvais signe : ${l.id}`);
+  }
+});
+
+test("fin de set et fin de match : un temps mort avec commentaire ou dialogue", () => {
+  const rng = rngFixe(3);
+  let avecDialogue = 0;
+  for (let k = 0; k < 30; k++) {
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces({ finale: k % 2 === 0 });
+    let a;
+    while (!m.termine) a = annoncerCoup(m, jouerCoup(m, Math.floor(rng() * 3), Math.floor(rng() * 3)), etat, {}, rng);
+    assert.ok(a.dialogue.length >= 1, "un mot à la fin du match");
+    if (a.dialogue.length >= 2) avecDialogue++;
+    for (const l of a.dialogue) assert.ok(CATALOGUE.has(l.id), l.id);
+  }
+  assert.ok(avecDialogue > 0);
+});
+
+test("le speaker présente les joueurs par leur côté et leur surnom", () => {
+  const P = profilParDefaut();
+  const moi = { surnom: surnomDe(P), genre: "f", etiquette: etiquetteDe(P) };
+  const { speaker, commentaires } = annoncesAvantMatch({ moi, adv: { bot: "rocky" }, tour: 2 }, () => 0);
+  assert.deepEqual(speaker.map(l => l.id), ["speaker_finale_01", "speaker_coin_jaune_01", "speaker_debutant_01",
+    "speaker_surnom_le_bleu_01", "speaker_surnom_de_l_ombre_01", "speaker_coin_rouge_01", "speaker_bot_rocky_01", "speaker_cloture_01"]);
+  assert.ok(speaker.every(l => l.role === "speaker"));
+  assert.ok(commentaires.every(l => CATALOGUE.has(l.id)));
+  // deux joueurs au même surnom : le speaker le remarque
+  const m2 = annoncesAvantMatch({ moi, adv: { surnom: surnomDe(P) }, humain: true }, () => 0);
+  assert.ok(m2.speaker.some(l => l.id.startsWith("speaker_miroir_")));
+});
+
+test("l'interview d'après finale : une question, trois réponses, le mot de la fin", () => {
+  const i = interview(true, rngFixe(4));
+  assert.equal(i.question.role, "journaliste");
+  assert.equal(i.reponses.length, 3);
+  assert.equal(new Set(i.reponses).size, 3);
+  assert.equal(i.champion.id, "speaker_champion_01");
+  assert.equal(interview(false, rngFixe(4)).question.id, "journaliste_question_defaite_01");
 });
