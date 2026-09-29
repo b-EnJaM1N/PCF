@@ -181,3 +181,17 @@ test("l'interview d'après finale : une question, trois réponses, le mot de la 
   assert.equal(i.champion.id, "speaker_champion_01");
   assert.equal(interview(false, rngFixe(4)).question.id, "journaliste_question_defaite_01");
 });
+
+test("un jeu de mots sur un signe n'est dit que si le joueur vient de jouer ce signe", () => {
+  const rng = rngFixe(13);
+  for (let k = 0; k < 200; k++) {
+    const m = nouveauMatch({ pointsParSet: 3, setsGagnants: 2 }), etat = nouvelEtatAnnonces();
+    let a;
+    while (!m.termine) a = annoncerCoup(m, jouerCoup(m, Math.floor(rng() * 3), Math.floor(rng() * 3)), etat, {}, rng);
+    const dernier = m.coups[m.coups.length - 1].a;
+    for (const l of a.dialogue) {
+      const item = POOLS.balle_match_convertie.find(e => l.id.startsWith(e.base));
+      if (item && item.seul !== undefined) assert.equal(item.seul, dernier, `${l.texte} après ${dernier}`);
+    }
+  }
+});

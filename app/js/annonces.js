@@ -35,7 +35,7 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
 // ---------------------------------------------------------------- choisir une réplique
 const CONDITIONS = {
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
-  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, un_partout: c => c.unPartout,
+  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, un_partout: c => c.unPartout, finale: c => c.finale,
 };
 
 // Choisit une réplique d'un moment : jamais deux fois la même dans un match, les répliques
@@ -43,14 +43,19 @@ const CONDITIONS = {
 function choisir(etat, moment, ctx = {}, rng = Math.random) {
   const pool = POOLS[moment];
   if (!pool) return null;
-  const valides = pool.filter(e => !etat.dits.has(e.base) && (!e.si || CONDITIONS[e.si]?.(ctx)) && (e.clin !== "cine" || !etat.cine));
+  // Les jeux de mots sur un signe (« seul ») ne se disent que si le joueur vient de jouer ce signe.
+  const valides = pool.filter(e => !etat.dits.has(e.base) && (!e.si || CONDITIONS[e.si]?.(ctx)) && (e.seul === undefined || e.seul === ctx.signe) && (e.clin !== "cine" || !etat.cine));
   if (!valides.length) return null;
-  const speciales = valides.filter(e => e.si);
+  // Les répliques « spéciales » passent en priorité : une condition remplie (7 fois sur 10),
+  // un jeu de mots sur le signe joué (4 fois sur 10, pour qu'il reste une surprise).
+  const conditions = valides.filter(e => e.si), jeux = valides.filter(e => !e.si && e.seul !== undefined);
+  const speciales = [...conditions, ...jeux];
   let item;
-  if (speciales.length && rng() < 0.7) item = speciales[Math.floor(rng() * speciales.length)];
+  if (conditions.length && rng() < 0.7) item = conditions[Math.floor(rng() * conditions.length)];
+  else if (jeux.length && rng() < 0.4) item = jeux[Math.floor(rng() * jeux.length)];
   else {
     const groupes = { cine: [], sport: [], normal: [] };
-    valides.filter(e => !e.si).forEach(e => groupes[e.clin || "normal"].push(e));
+    valides.filter(e => !e.si && e.seul === undefined).forEach(e => groupes[e.clin || "normal"].push(e));
     const r = rng();
     const ordre = r < 0.2 ? ["cine", "sport", "normal"] : r < 0.5 ? ["sport", "normal", "cine"] : ["normal", "sport", "cine"];
     const g = ordre.map(k => groupes[k]).find(x => x.length) || speciales;
@@ -124,6 +129,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
       const obstination = n >= 3 && c[n - 1].a === c[n - 2].a && c[n - 2].a === c[n - 3].a && (n < 4 || c[n - 4].a !== c[n - 1].a);
       if (evt.balleAvant && evt.balleAvant.joueur !== g && peutCommenter(3, 0.5)) {
         moment = evt.balleAvant.joueur === 0 ? "craquage" : "balle_sauvee";
+        if (moment === "balle_sauvee" && evt.balleAvant.type === "match" && rng() < 0.5) moment = "main_legendaire";
       } else if (a === b && a >= 4 && etat.ecartMin <= -4 && peutCommenter(3, 0.5)) {
         moment = "remontee"; etat.ecartMin = 0;
       } else if ((etat.serie.n === 4 || etat.serie.n === 6) && peutCommenter(4) && rng() < 0.7) {
@@ -187,8 +193,10 @@ function finDeMatch(match, evt, etat, ctx, rng) {
     const troisZero = match.sets[0] === 3 && match.sets[1] === 0;
     if (premierPerdu) ajoute(choisir(etat, "renversement", ctx, rng));
     else if (troisZero || rng() < 0.5) ajoute(choisir(etat, "balle_match_convertie", { ...ctx, troisZero }, rng));
-    if (etat.finale) ajoute(dialogue(etat, "titre", rng));
-    else if (!out.length || rng() < 0.4) ajoute(choisir(etat, "victoire", ctx, rng));
+    if (etat.finale) {
+      if (!out.length) ajoute(choisir(etat, "main_legendaire", ctx, rng));
+      ajoute(rng() < 0.5 ? dialogue(etat, "titre", rng) : choisir(etat, "victoire", { ...ctx, finale: true }, rng));
+    } else if (!out.length || rng() < 0.4) ajoute(choisir(etat, "victoire", ctx, rng));
   } else if (rng() < 0.3) ajoute(dialogue(etat, "fin_match", rng));
   else ajoute(choisir(etat, "defaite", ctx, rng));
   return out;

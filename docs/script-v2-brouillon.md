@@ -411,3 +411,18 @@ un petit son sec pour chaque signe à la révélation.
 1. **Noms** des personnages (pistes en haut).
 2. ~~Langue~~ → ✅ **français seulement au lancement.** L'humour repose sur des références françaises : une version anglaise sera une réécriture avec ses propres références, si l'appli prend.
 3. ~~Voix~~ → ✅ **ElevenLabs** (voix de synthèse). Essai gratuit pour choisir les 5 voix, puis un mois payant pour générer les fichiers. Un comédien plus tard, si le concept prend.
+
+---
+
+## Ajouts v7 — « Commentaires MANO » (liste envoyée après la v6)
+
+Répliques ajoutées et réparties par moment (texte exact dans `app/js/voix/repliques.js`) :
+
+- **Égalités** (commentateur et commentatrice) : « Deux mains, zéro vainqueur ! », « Ils ont exactement la même idée. Inquiétant. »…
+- **Séries** pour et contre : « La main est chaude ! Très chaude ! », « Une série noire. Absolument magnifique. »…
+- **Main légendaire** (nouveau moment : balle de match sauvée, ou point du titre en finale) : « La main du siècle ! », « Arrêtez tout ! Nous venons d'assister à un moment d'histoire ! »…
+- **Jeux de mots sur les signes** : dits seulement quand le point gagnant a été joué avec ce signe (« Une victoire gravée dans la Pierre ! », « Il a tourné la page de son adversaire ! », « Une victoire au scalpel. »…).
+- **Victoire, défaite, obstination, craquage, set serré** : « Masterclass ! », « Propre. Net. Sans bavure. », « Quelqu'un peut lui expliquer les règles ? », « Tous les chemins mènent à la Pierre ! », « Il ne faut jamais vendre la Feuille avant de l'avoir jouée. »…
+
+Adaptations : « match nul » est devenu « égalité » (un seul coup), les phrases très proches n'ont été gardées qu'une fois, la commentatrice a reçu les répliques les plus sèches, et chaque « il » a sa version « elle ».
+« Il est actuellement injouable ! » n'a pas été repris : il existe déjà dans le dialogue « Il est injouable ! Il est… / Je vous demande de vous arrêter. »
