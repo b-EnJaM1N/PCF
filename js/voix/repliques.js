@@ -5,7 +5,8 @@
 //   t     : le texte ; ou un tableau de 3 textes, un par signe [Pierre, Ciseaux, Feuille] (ordre de regles.js)
 //   f     : la version quand le joueur dont on parle est une joueuse (même forme que t)
 //   clin  : "sport" ou "cine" — clin d'œil, tiré plus rarement
-//   si    : condition — "onze_zero", "serie6", "trois_zero", "titre", "humain"
+//   si    : condition — "onze_zero", "serie6", "trois_zero", "cinq_egalites", "balle_match", "balle_contre", "un_partout", "finale"
+//   seul  : jeu de mots sur un signe — dit seulement si le joueur vient de jouer ce signe (0 Pierre, 1 Ciseaux, 2 Feuille)
 //   signe : pour les textes par signe, le signe de qui — "moi" (défaut) ou "adv"
 //
 // Le moteur (annonces.js) choisit la réplique ; script.js en fait des fichiers audio nommés
@@ -26,6 +27,19 @@ export const MOMENTS = {
     { r: "d", t: "Quand l'enjeu monte, la lucidité s'en va. Chez certains." },
     { r: "d", t: "Un mental de chips.", clin: "sport" },
     { r: "d", t: "Il a vu la ligne d'arrivée. Et il a freiné. Fascinant.", f: "Elle a vu la ligne d'arrivée. Et elle a freiné. Fascinant." },
+    { r: "d", t: "Il ne faut jamais vendre la Feuille avant de l'avoir jouée." },
+  ],
+  // Une balle de match sauvée, ou le point qui donne le titre : la main entre dans la légende.
+  main_legendaire: [
+    { r: "c", t: "La main du siècle !" },
+    { r: "c", t: "Une main pour l'histoire !" },
+    { r: "c", t: "La main du destin !" },
+    { r: "c", t: "Une main qui entre dans la légende !" },
+    { r: "c", t: "Arrêtez tout ! Nous venons d'assister à un moment d'histoire !" },
+    { r: "c", t: "On pourra parler de cette main pendant des années !" },
+    { r: "c", t: "Mesdames et messieurs… quelle main !" },
+    { r: "c", t: "Dans cinquante ans, on racontera encore cette main !" },
+    { r: "d", t: "Je note l'heure. Pour les archives." },
   ],
   balle_sauvee: [
     { r: "c", t: "Sauvée ! Quel sang-froid !" },
@@ -66,6 +80,11 @@ export const MOMENTS = {
     { r: "d", t: "Il a trouvé la faille. Il appuie dessus. Enfin quelqu'un de sérieux.", f: "Elle a trouvé la faille. Elle appuie dessus. Enfin quelqu'un de sérieux." },
     { r: "d", t: "Il gagne dans un fauteuil.", f: "Elle gagne dans un fauteuil.", clin: "sport" },
     { r: "d", t: "Une démonstration. Je note." },
+    { r: "c", t: "Il marche sur son adversaire !", f: "Elle marche sur son adversaire !" },
+    { r: "c", t: "Qui va réussir à l'arrêter ?" },
+    { r: "c", t: "La main est chaude ! Très chaude !" },
+    { r: "d", t: "Il ne joue plus. Il distribue des corrections.", f: "Elle ne joue plus. Elle distribue des corrections." },
+    { r: "d", t: "Six points d'affilée. Ça devient indécent.", si: "serie6" },
   ],
   serie_contre: [
     { r: "c", t: "Quelqu'un peut arrêter ça ?!" },
@@ -77,6 +96,11 @@ export const MOMENTS = {
     { r: "d", t: "Jusqu'ici, tout va bien… jusqu'ici.", clin: "cine" },
     { r: "d", t: "Sur un malentendu, ça peut marcher.", clin: "cine" },
     { r: "d", t: "Sa maison brûle, et il regarde ailleurs.", f: "Sa maison brûle, et elle regarde ailleurs.", clin: "cine" },
+    { r: "d", t: "Il faudrait peut-être arrêter pour aujourd'hui." },
+    { r: "d", t: "Son adversaire connaît maintenant son jeu par cœur." },
+    { r: "d", t: "Une série noire. Absolument magnifique." },
+    { r: "d", t: "Il faudrait peut-être essayer… autre chose." },
+    { r: "d", t: "Fidèle à lui-même : toujours du mauvais côté.", f: "Fidèle à elle-même : toujours du mauvais côté." },
   ],
   obstination: [
     { r: "c", t: ["Troisième Pierre d'affilée ! C'est audacieux !", "Troisièmes Ciseaux d'affilée ! C'est audacieux !", "Troisième Feuille d'affilée ! C'est audacieux !"] },
@@ -90,6 +114,9 @@ export const MOMENTS = {
     { r: "d", t: ["C'est une bonne situation, ça, Pierre ?", "C'est une bonne situation, ça, Ciseaux ?", "C'est une bonne situation, ça, Feuille ?"], clin: "cine" },
     { r: "d", t: "Le Mur de Clermont aurait approuvé. Moi, non." },
     { r: "d", t: "C'est de la poudre de perlimpinpin.", clin: "cine" },
+    { r: "c", t: "Tous les chemins mènent à la Pierre !", seul: 0 },
+    { r: "d", t: "Quand on veut, on peut. Quand on peut, on choisit Pierre, apparemment.", seul: 0 },
+    { r: "d", t: "Mieux vaut une Feuille en main que deux Ciseaux dans le pot. C'est sa philosophie.", seul: 2 },
   ],
   // Il change enfin de signe après une obstination.
   changement: [
@@ -108,6 +135,13 @@ export const MOMENTS = {
     { r: "d", t: ["Vous n'avez pas le monopole de la Pierre.", "Vous n'avez pas le monopole des Ciseaux.", "Vous n'avez pas le monopole de la Feuille."], clin: "cine" },
     { r: "d", t: "Laissez du temps au temps.", clin: "cine" },
     { r: "d", t: "Ennuyeux." },
+    { r: "c", t: "Deux mains, zéro vainqueur !" },
+    { r: "c", t: "Égalité ! Les cerveaux sont connectés !" },
+    { r: "c", t: "Ils se regardent… et ils recommencent !" },
+    { r: "c", t: "Égalité parfaite ! La tension monte !" },
+    { r: "d", t: "Ils ont exactement la même idée. Inquiétant." },
+    { r: "d", t: "Personne ne veut prendre de risque aujourd'hui." },
+    { r: "d", t: "Encore la même chose. Ça sent le duel interminable." },
   ],
   // L'adversaire a lu mon réflexe.
   lecture_subie: [
@@ -167,6 +201,7 @@ export const MOMENTS = {
     { r: "d", t: "Arraché. Mérité, on en reparlera." },
     { r: "d", t: "Il fallait des nerfs solides pour conclure celui-là. Il y en avait. Juste assez." },
     { r: "d", t: "Personne ne méritait de le perdre. L'un des deux l'a quand même perdu." },
+    { r: "d", t: "La goutte d'eau qui fait déborder la Feuille." },
   ],
   resume_set: [
     { r: "c", t: "Set bouclé, et quelle bataille !" },
@@ -197,6 +232,26 @@ export const MOMENTS = {
     { r: "d", t: "Hasta la vista, baby.", clin: "cine" },
     { r: "d", t: "C'est tout." },
     { r: "c", t: "Et un, et deux, et trois sets à zéro !", clin: "sport", si: "trois_zero" },
+    { r: "c", t: "Une victoire gravée dans la Pierre !", seul: 0 },
+    { r: "c", t: "Un coup de Pierre, un coup de maître !", seul: 0 },
+    { r: "c", t: "Pierre de taille, victoire de taille !", seul: 0 },
+    { r: "c", t: "Il a jeté la Pierre… et elle a fait mouche !", f: "Elle a jeté la Pierre… et elle a fait mouche !", seul: 0 },
+    { r: "c", t: "C'est du solide !", seul: 0 },
+    { r: "d", t: "La Pierre a parlé. Elle n'a demandé l'avis de personne.", seul: 0 },
+    { r: "d", t: "La Pierre angulaire de la victoire. Évidemment.", seul: 0 },
+    { r: "d", t: "On ne fait pas d'omelette sans casser des Ciseaux.", seul: 0 },
+    { r: "c", t: "Il a tourné la page de son adversaire !", f: "Elle a tourné la page de son adversaire !", seul: 2 },
+    { r: "c", t: "Il a écrit l'histoire… sur une belle Feuille !", f: "Elle a écrit l'histoire… sur une belle Feuille !", seul: 2 },
+    { r: "c", t: "Il vient de découper son adversaire en deux !", f: "Elle vient de découper son adversaire en deux !", seul: 1 },
+    { r: "c", t: "Il a taillé son adversaire en pièces !", f: "Elle a taillé son adversaire en pièces !", seul: 1 },
+    { r: "c", t: "Il a coupé l'herbe sous le pied de son adversaire !", f: "Elle a coupé l'herbe sous le pied de son adversaire !", seul: 1 },
+    { r: "c", t: "Il vient de couper les ponts avec la défaite !", f: "Elle vient de couper les ponts avec la défaite !", seul: 1 },
+    { r: "c", t: "Il a pris les choses en main… et les Ciseaux aussi !", f: "Elle a pris les choses en main… et les Ciseaux aussi !", seul: 1 },
+    { r: "d", t: "Il a tranché la question.", f: "Elle a tranché la question.", seul: 1 },
+    { r: "d", t: "Il a coupé court au suspense. Merci.", f: "Elle a coupé court au suspense. Merci.", seul: 1 },
+    { r: "d", t: "Une victoire taillée sur mesure.", seul: 1 },
+    { r: "d", t: "Une victoire au scalpel.", seul: 1 },
+    { r: "d", t: "Quelle violence… pour une Feuille.", seul: 1 },
   ],
   victoire: [
     { r: "c", t: "C'est fini ! Quel combat !" },
@@ -207,6 +262,21 @@ export const MOMENTS = {
     { r: "d", t: "Rideau." },
     { r: "d", t: "Mission accomplie. Sans éclat, mais accomplie." },
     { r: "d", t: "Rien à dire. Et je trouve toujours quelque chose à dire." },
+    { r: "c", t: "Et c'est gagné ! Quelle démonstration de maîtrise !" },
+    { r: "c", t: "Il l'a vu venir à trois kilomètres !", f: "Elle l'a vu venir à trois kilomètres !" },
+    { r: "c", t: "Quel match ! Quelle audace ! Quel poignet !" },
+    { r: "c", t: "Une victoire qui ne souffre d'aucune contestation !" },
+    { r: "c", t: "Il avait la bonne main au bon moment !", f: "Elle avait la bonne main au bon moment !" },
+    { r: "c", t: "Masterclass !" },
+    { r: "c", t: "Ça, c'est du Pierre-Feuille-Ciseaux de très haut niveau !" },
+    { r: "c", t: "Mesdames et messieurs, quel duel !" },
+    { r: "c", t: "Ce duel va rester dans les mémoires !" },
+    { r: "c", t: "Une main en or, une victoire en béton !" },
+    { r: "c", t: "Une victoire en trois actes : Pierre. Feuille. Ciseaux. Légende." },
+    { r: "c", t: "Ce n'était pas un simple duel. C'était une bataille pour l'éternité !", si: "finale" },
+    { r: "c", t: "Il vient peut-être de changer l'histoire du Pierre-Feuille-Ciseaux !", f: "Elle vient peut-être de changer l'histoire du Pierre-Feuille-Ciseaux !", si: "finale" },
+    { r: "d", t: "Propre. Net. Sans bavure." },
+    { r: "d", t: "On ne reverra peut-être jamais ça. Tant mieux, j'ai eu mon compte." },
   ],
   defaite: [
     { r: "d", t: "Au revoir.", clin: "cine" },
@@ -214,6 +284,10 @@ export const MOMENTS = {
     { r: "c", t: "Je reviendrai ! Il reviendra !", f: "Je reviendrai ! Elle reviendra !", clin: "cine" },
     { r: "d", t: "Il faudra revoir ce match. Ou l'oublier. Je conseille l'oubli." },
     { r: "d", t: "On apprend plus d'une défaite. Il a beaucoup appris, ce soir.", f: "On apprend plus d'une défaite. Elle a beaucoup appris, ce soir." },
+    { r: "d", t: "Quelqu'un peut lui expliquer les règles ?" },
+    { r: "d", t: "C'est officiel : la stratégie n'était pas au rendez-vous." },
+    { r: "d", t: "Il va falloir se remettre en question. Ou changer de main." },
+    { r: "c", t: "Il cherche encore où il a perdu la Feuille !", f: "Elle cherche encore où elle a perdu la Feuille !", seul: 2 },
   ],
   // L'adversaire domine nettement nos face-à-face (dit avant le match).
   domination: [
