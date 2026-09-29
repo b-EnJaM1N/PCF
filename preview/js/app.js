@@ -5,6 +5,9 @@ import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe } from "./annonces.js";
 import { surnomDe, NOMS, COMPLEMENTS, debloques } from "./surnoms.js";
 import { voirTournoi } from "./social-serveur.js";
+import { histoireDuMatch } from "./une-logique.js";
+import { dessinerUne } from "./une.js";
+import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { TOURS, TOUR_SINGULIER, SETS_PAR_TOUR, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
@@ -179,6 +182,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   S.suivi.enregistrer(signe, evt.gagnant === null ? "e" : evt.gagnant === 0 ? "g" : "p");
   suivreCoup(S.stats, m, evt);
   const a = annoncerCoup(m, evt, S.annonces, { recents: S.suivi.recents, auto: !!auto[0] });
+  (S.citations ||= []).push(...a.lignes.filter(l => l.role !== "arbitre"));   // pour « La Une »
   if (silencieux) return evt;
 
   // Révélation immédiate des deux signes : aucun effet pendant l'échange.
@@ -297,6 +301,13 @@ function finir() {
     finaleTournoi: enTournoi && S.tour === 2, compteNiveau: !S.duel,
   }) : [];
   sauverP(); rafraichirAvatars(); afficherBilan();
+  // « La Une » : on garde de quoi raconter ce match.
+  S.pourUne = n && !special ? {
+    etape: S.duel ? (D?.duel?.tournoi_id ? (D.tourVoix === 2 ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
+      : enTournoi ? `${TOUR_SINGULIER[S.tour]} du PCF Open` : "Match d'entraînement",
+    finale: !!S.annonces.finale, numero: P.matchs,
+  } : null;
+  $("btnUne").hidden = !S.pourUne;
   $("again").hidden = enTournoi || !!S.duel; $("tNext").hidden = !enTournoi;
   const tournoiId = S.duel && D ? D.duel.tournoi_id : null;   // match de tournoi en ligne
   $("revanche").hidden = !S.duel || !!tournoiId; $("retourDuels").hidden = !S.duel || !!tournoiId; $("revanche").disabled = false;
@@ -309,6 +320,39 @@ function finir() {
   // Après une finale (tournoi solo ou en ligne) : l'interview du journaliste.
   if (n && !special && S.annonces.finale) setTimeout(() => ouvrirInterview(gagne), 2500);
 }
+
+// ---------------------------------------------------------------- La Une
+let uneFichier = null, uneUrl = null;
+$("btnUne").addEventListener("click", async () => {
+  const u = S?.pourUne; if (!u) return;
+  const m = S.match, unSet = m.format.setsGagnants === 1;
+  const sn = surnomDe(P).texte, snAdv = OPP.humain ? OPP.surnom?.texte : null;
+  const moi = { nom: nomAffiche(P), surnom: sn, legende: sn, genre: P.genre, av: avatarSVG(P.av) };
+  const adv = { nom: OPP.nom, surnom: snAdv, legende: snAdv || OPP.style, genre: OPP.genre, av: avatarSVG(OPP.av) };
+  const h = histoireDuMatch(m, S.stats, moi, adv, { etape: u.etape, finale: u.finale, citations: S.citations || [] });
+  $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
+  $("une").classList.add("show");
+  const adresse = (location.host + location.pathname).replace(/index\.html$/, "").replace(/preview\/$/, "");
+  const canvas = await dessinerUne(document.createElement("canvas"), h, { moi, adv }, {
+    sets: unSet ? m.scoresSets[0].join(" – ") : `${m.sets[0]} – ${m.sets[1]}`,
+    detail: unSet ? "Set unique" : m.scoresSets.map(([a, b]) => `${a}–${b}`).join(" · "),
+    numero: u.numero, date: new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }), adresse,
+  });
+  const blob = await new Promise(ok => canvas.toBlob(ok, "image/png"));
+  if (uneUrl) URL.revokeObjectURL(uneUrl);
+  uneUrl = URL.createObjectURL(blob);
+  uneFichier = new File([blob], "la-une.png", { type: "image/png" });
+  $("uneImg").src = uneUrl; $("uneImg").alt = `La Une : ${h.titre}. ${h.chapo}`;
+  $("uneEnregistrer").href = uneUrl;
+  const partage = !!navigator.canShare?.({ files: [uneFichier] });
+  $("unePartager").hidden = !partage;
+  $("uneMsg").textContent = partage ? "" : "Enregistre l'image, puis partage-la depuis ta galerie.";
+});
+$("unePartager").addEventListener("click", async () => {
+  try { await navigator.share({ files: [uneFichier], title: MARQUE.journal }); }
+  catch (e) { if (e?.name !== "AbortError") $("uneMsg").textContent = "Le partage n'a pas marché : enregistre l'image, puis partage-la depuis ta galerie."; }
+});
+$("uneFermer").addEventListener("click", () => $("une").classList.remove("show"));
 
 // ---------------------------------------------------------------- interview d'après-finale
 function ouvrirInterview(gagne) {
