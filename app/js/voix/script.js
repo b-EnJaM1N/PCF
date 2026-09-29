@@ -19,6 +19,9 @@ const maj = t => t.charAt(0).toUpperCase() + t.slice(1);
 
 export const ORDINAUX = ["premier", "deuxième", "troisième", "quatrième", "cinquième"];
 
+import { MOMENTS, DIALOGUES, SPEAKER, NOMS_BOTS, JOURNALISTE } from "./repliques.js";
+import { NOMS, COMPLEMENTS, idPartie } from "../surnoms.js";
+
 // ---------------------------------------------------------------- arbitre
 // Répliques fixes, écrites à la main.
 const ARBITRE = {
@@ -49,6 +52,22 @@ const ARBITRE = {
   // Match en un seul set, sets de 3 et 1 point.
   arbitre_set_unique_01: "Set unique.",
   arbitre_point_decisif_01: "Point décisif.",
+  arbitre_les_joueurs_sont_prets_01: "Les joueurs sont prêts. Premier set.",
+  arbitre_troisieme_et_dernier_set_01: "Troisième et dernier set.",
+  arbitre_silence_01: "Silence, s'il vous plaît.",
+  arbitre_temps_01: "Temps.",
+  arbitre_coup_joue_d_office_01: "Coup joué d'office.",
+  // Pour les prochaines cérémonies (temps mort, réclamation, poignée de main, forfait).
+  arbitre_temps_mort_jaune_01: "Temps mort, côté jaune.",
+  arbitre_temps_mort_rouge_01: "Temps mort, côté rouge.",
+  arbitre_reprise_du_jeu_01: "Reprise du jeu.",
+  arbitre_reclamation_rejetee_01: "Réclamation rejetée.",
+  arbitre_reclamation_rejetee_02: "Réclamation rejetée. Le signe était valide.",
+  arbitre_reclamation_rejetee_03: "Réclamation rejetée. L'arbitre a vu.",
+  arbitre_poignee_de_main_01: "Les joueurs se serrent la main.",
+  arbitre_forfait_jaune_01: "Victoire par forfait, côté jaune.",
+  arbitre_forfait_rouge_01: "Victoire par forfait, côté rouge.",
+  arbitre_abandon_01: "Abandon. Le match est terminé.",
 };
 
 // Répliques de l'arbitre construites à partir d'un score.
@@ -66,125 +85,6 @@ function scoresCourants() {
     .sort((x, y) => x[0] - y[0] || x[1] - y[1]);
 }
 
-// ---------------------------------------------------------------- commentateur
-// Plusieurs versions par situation, pour éviter les répétitions.
-// « jaune » = le joueur, « rouge » = l'adversaire (la machine en solo ;
-// les situations en « _h » servent quand l'adversaire est humain).
-const COMMENTATEUR = {
-  egalites: [
-    "Trois égalités de suite. Ils se lisent dans les pensées.",
-    "Encore le même signe ! On tourne en rond sur ce court.",
-    "Troisième égalité d'affilée. Personne ne veut lâcher le morceau.",
-  ],
-  balle_sauvee: [
-    "Balle sauvée ! Quel sang-froid.",
-    "Sauvée ! Il ne tremble pas quand ça compte.",
-    "Il écarte la balle. Des nerfs d'acier.",
-  ],
-  craquage: [
-    "La main a tremblé. Balle envolée, la pression fait son œuvre.",
-    "Oh, la balle lui échappe ! Le bras s'est crispé.",
-    "Il avait la balle en main… et elle file. La pression, toujours la pression.",
-  ],
-  remontee: [
-    "Mené de quatre points, et le voilà revenu. Tout est à refaire !",
-    "Quelle remontée ! Le retard a fondu comme neige au soleil.",
-    "Il était dos au mur, il est revenu à hauteur. Le public se réveille !",
-  ],
-  serie_jaune: [
-    "Quatre points d'affilée. La machine vacille.",
-    "Quatre de suite ! Il a trouvé la faille.",
-    "Il enchaîne. La machine ne sait plus où donner de la tête.",
-  ],
-  serie_rouge: [
-    "La machine déroule. Quatre points de suite.",
-    "Quatre points d'affilée pour la machine. Il faut réagir, et vite.",
-    "La machine s'envole. Il est temps de changer quelque chose.",
-  ],
-  lisible: [
-    "La machine a flairé le coup. Encore. Il devient lisible.",
-    "Elle l'a vu venir de loin. Ses habitudes le trahissent.",
-    "Trop prévisible en ce moment. La machine lit dans son jeu.",
-  ],
-  obstination_pierre: [
-    "Troisième Pierre de suite… c'est audacieux.",
-    "Encore la Pierre ! Il s'entête, ou il bluffe ?",
-  ],
-  obstination_ciseaux: [
-    "Troisièmes Ciseaux de suite… c'est audacieux.",
-    "Toujours les Ciseaux ! Il a de la suite dans les idées.",
-  ],
-  obstination_feuille: [
-    "Troisième Feuille de suite… c'est audacieux.",
-    "Encore la Feuille ! Une obstination qui intrigue.",
-  ],
-  set_renverse_jaune: [
-    "Il a renversé la situation au meilleur moment !",
-    "Balle de set sauvée, et le set avec ! Quel retournement.",
-  ],
-  set_renverse_rouge: [
-    "La balle de set lui a filé entre les doigts.",
-    "Il tenait ce set… et la machine le lui arrache.",
-  ],
-  set_ecrasant_jaune: [
-    "Une leçon. La machine va devoir se remettre en question.",
-    "Set à sens unique. Démonstration de force.",
-  ],
-  set_ecrasant_rouge: [
-    "Sèche correction. Il va falloir changer de plan.",
-    "Rien n'a fonctionné dans ce set. Il faut tout remettre à plat.",
-  ],
-  set_arrache: [
-    "Un set arraché au bout du suspense.",
-    "Quel set ! Décidé au bout du bout.",
-  ],
-  victoire_combat: [
-    "Un combat de tous les instants. Le public est debout.",
-    "Quelle bataille ! Une victoire gagnée à la sueur du front.",
-  ],
-  victoire_nette: [
-    "Démonstration. La machine n'a rien vu venir.",
-    "Victoire sans trembler. Du grand art.",
-  ],
-  defaite: [
-    "La machine l'emporte. Il faudra revoir ses habitudes.",
-    "La machine a été la plus lucide aujourd'hui. Place à l'analyse.",
-  ],
-  // Duels entre humains : les situations où l'adversaire n'est plus « la machine ».
-  serie_jaune_h: [
-    "Quatre points d'affilée. L'adversaire vacille.",
-    "Quatre de suite ! Il a trouvé la faille.",
-    "Il enchaîne. En face, on ne sait plus où donner de la tête.",
-  ],
-  serie_rouge_h: [
-    "L'adversaire déroule. Quatre points de suite.",
-    "Quatre points d'affilée en face. Il faut réagir, et vite.",
-    "L'adversaire s'envole. Il est temps de changer quelque chose.",
-  ],
-  lisible_h: [
-    "L'adversaire a flairé le coup. Encore. Il devient lisible.",
-    "Il l'a vu venir de loin. Ses habitudes le trahissent.",
-    "Trop prévisible en ce moment. En face, on lit dans son jeu.",
-  ],
-  set_renverse_rouge_h: [
-    "La balle de set lui a filé entre les doigts.",
-    "Il tenait ce set… et l'adversaire le lui arrache.",
-  ],
-  set_ecrasant_jaune_h: [
-    "Une leçon. L'adversaire va devoir se remettre en question.",
-    "Set à sens unique. Démonstration de force.",
-  ],
-  victoire_nette_h: [
-    "Démonstration. L'adversaire n'a rien vu venir.",
-    "Victoire sans trembler. Du grand art.",
-  ],
-  defaite_h: [
-    "L'adversaire l'emporte. Il faudra revoir ses habitudes.",
-    "L'adversaire a été le plus lucide aujourd'hui. Place à l'analyse.",
-  ],
-};
-const num2 = i => String(i + 1).padStart(2, "0");
-
 // ---------------------------------------------------------------- catalogue
 // Toutes les répliques connues : id → { id, role, texte }.
 export const CATALOGUE = new Map();
@@ -192,11 +92,66 @@ const ajouter = (id, role, texte) => CATALOGUE.set(id, { id, role, texte });
 Object.entries(ARBITRE).forEach(([id, t]) => ajouter(id, "arbitre", t));
 scoresCourants().forEach(([g, p]) => { const r = scoreSet(g, p); ajouter(r.id, "arbitre", r.texte); });
 for (let n = 6; n <= 20; n++) { const r = partout(n); ajouter(r.id, "arbitre", r.texte); }
-Object.entries(COMMENTATEUR).forEach(([cat, lignes]) => lignes.forEach((t, i) => ajouter(`commentateur_${cat}_${num2(i)}`, "commentateur", t)));
 
-// Les versions disponibles d'une situation du commentateur.
-export const versions = situation => (COMMENTATEUR[situation] || []).map((_, i) => `commentateur_${situation}_${num2(i)}`);
-export const SITUATIONS_COMMENTATEUR = Object.keys(COMMENTATEUR);
+const num2 = i => String(i + 1).padStart(2, "0");
+export const SIGNES_FICHIER = ["pierre", "ciseaux", "feuille"];   // même ordre que regles.js
+const ROLE = { c: "commentateur", d: "commentatrice" };
+const texteDe = (x, fem) => (typeof x === "string" ? x : fem && x.f ? x.f : x.t);
+
+// Une entrée (moment ou réplique du speaker) devient une ou plusieurs répliques :
+// une par signe si le texte en a trois, et une au féminin si elle existe.
+function declinaisons(base, role, e) {
+  const t = e.t, f = e.f;
+  const variantes = Array.isArray(t) ? t.map((x, s) => [`_${SIGNES_FICHIER[s]}`, x, Array.isArray(f) ? f[s] : null]) : [["", t, f || null]];
+  for (const [suffixe, texte, fem] of variantes) {
+    ajouter(`${base}${suffixe}`, role, texte);
+    if (fem) ajouter(`${base}${suffixe}_f`, role, fem);
+  }
+}
+
+// Les moments du commentaire : pour chacun, la liste des répliques possibles (avec leur id de base).
+export const POOLS = {};
+for (const [moment, entrees] of Object.entries(MOMENTS)) {
+  const compte = { c: 0, d: 0 };
+  POOLS[moment] = entrees.map(e => {
+    const role = ROLE[e.r], base = `${role}_${moment}_${num2(compte[e.r]++)}`;
+    declinaisons(base, role, e);
+    return { ...e, role, base, parSigne: Array.isArray(e.t), fem: !!e.f };
+  });
+}
+// La réplique à dire, selon le signe et le genre du joueur dont on parle.
+export function ligneMoment(item, { genre = "m", signe = 0, signeAdv = 0 } = {}) {
+  let id = item.base;
+  if (item.parSigne) id += `_${SIGNES_FICHIER[item.signe === "adv" ? signeAdv : signe] ?? "pierre"}`;
+  if (genre === "f" && item.fem && CATALOGUE.has(`${id}_f`)) id += "_f";
+  return CATALOGUE.get(id);
+}
+
+// Les dialogues : commentateur puis commentatrice.
+export const DIALOGUES_IDS = {};
+for (const [moment, liste] of Object.entries(DIALOGUES)) {
+  DIALOGUES_IDS[moment] = liste.map((d, k) => d.map((x, i) => {
+    const role = i === 0 ? "commentateur" : "commentatrice", id = `${role}_dialogue_${moment}_${num2(k)}`;
+    ajouter(id, role, texteDe(x, false));
+    if (typeof x !== "string" && x.f) ajouter(`${id}_f`, role, x.f);
+    return id;
+  }));
+}
+export function ligneDialogue(moment, k, genre = "m") {
+  return DIALOGUES_IDS[moment][k].map(id => (genre === "f" && CATALOGUE.has(`${id}_f`) ? CATALOGUE.get(`${id}_f`) : CATALOGUE.get(id)));
+}
+
+// Le speaker, les bots, les parties de surnom, le journaliste.
+for (const [cle, liste] of Object.entries(SPEAKER)) liste.forEach((e, k) => declinaisons(`speaker_${cle}_${num2(k)}`, "speaker", typeof e === "string" ? { t: e } : e));
+export function ligneSpeaker(cle, k = 0, genre = "m") {
+  const id = `speaker_${cle}_${num2(k)}`;
+  return genre === "f" && CATALOGUE.has(`${id}_f`) ? CATALOGUE.get(`${id}_f`) : CATALOGUE.get(id);
+}
+export const nbSpeaker = cle => SPEAKER[cle].length;
+for (const [id, t] of Object.entries(NOMS_BOTS)) ajouter(`speaker_bot_${id}_01`, "speaker", t);
+for (const p of [...NOMS, ...COMPLEMENTS]) ajouter(idPartie(p), "speaker", `${p.t}…`);
+for (const [cle, liste] of Object.entries(JOURNALISTE)) liste.forEach((t, k) => ajouter(`journaliste_${cle}_${num2(k)}`, "journaliste", t));
+export const ligneJournaliste = (cle, k) => CATALOGUE.get(`journaliste_${cle}_${num2(k)}`);
 
 // Retrouve une réplique, y compris un score hors catalogue (lu par la voix de synthèse).
 export function replique(id) {

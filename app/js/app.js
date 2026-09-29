@@ -2,7 +2,9 @@
 import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe } from "./annonces.js";
+import { surnomDe, NOMS, COMPLEMENTS, debloques } from "./surnoms.js";
+import { voirTournoi } from "./social-serveur.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { TOURS, TOUR_SINGULIER, SETS_PAR_TOUR, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
@@ -70,7 +72,7 @@ $("testSnd").addEventListener("click", () => {
   ambiance.activer(true); ambiance.raquette(); setTimeout(() => ambiance.public("point", 0.5), 400);
   const test = CATALOGUE.get("arbitre_balle_de_match_jaune_01");
   if (!voix.peutDire(test)) {
-    note("Tu dois entendre un coup de raquette puis des applaudissements. Si ce n'est pas le cas, vérifie le volume et le mode silencieux. Les voix de l'arbitre et du commentateur sont coupées en attendant les vrais enregistrements : leurs annonces s'affichent par écrit.");
+    note("Tu dois entendre un coup de raquette puis des applaudissements. Si ce n'est pas le cas, vérifie le volume et le mode silencieux. Les voix (arbitre, commentateurs, speaker) sont coupées en attendant les vrais enregistrements : leurs annonces s'affichent par écrit.");
     setTimeout(() => note(""), 8000); return;
   }
   let demarre = false;
@@ -96,12 +98,19 @@ function annoncer(lignes, silencieux = false) {
   clearTimeout(fanerT); fanerT = setTimeout(() => band.classList.add("stale"), 4000);
   if (!silencieux) voix.dire(lignes);
 }
+// Des répliques affichées par écrit, chacune avec l'icône de qui parle.
+function afficherRepliques(el, lignes) {
+  el.textContent = "";
+  lignes.forEach(l => { const d = document.createElement("div"); d.className = l.role; d.textContent = l.texte; el.append(d); });
+  el.hidden = !lignes.length;
+}
 
 // ---------------------------------------------------------------- panneaux
 let panneauGo = null;
 function ouvrirPanneau({ kick = "", big = "", bigCls = "", sc = "", tally = "", com = "", next = "", go, onGo, resteOuvert = false }) {
   $("iKick").textContent = kick; $("iBig").textContent = big; $("iBig").className = "big " + bigCls;
-  $("iSc").textContent = sc; $("iTally").textContent = tally; $("iCom").textContent = com; $("iNext").textContent = next;
+  $("iSc").textContent = sc; $("iTally").textContent = tally; $("iNext").textContent = next;
+  afficherRepliques($("iCom"), com || []);
   $("iGo").textContent = go;
   $("iGo").disabled = false;
   panneauGo = () => { if (!resteOuvert) fermerPanneau(); onGo && onGo(); };
@@ -169,7 +178,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   const evt = jouerCoup(m, signe, signeAdv, auto);
   S.suivi.enregistrer(signe, evt.gagnant === null ? "e" : evt.gagnant === 0 ? "g" : "p");
   suivreCoup(S.stats, m, evt);
-  const a = annoncerCoup(m, evt, S.annonces, { recents: S.suivi.recents });
+  const a = annoncerCoup(m, evt, S.annonces, { recents: S.suivi.recents, auto: !!auto[0] });
   if (silencieux) return evt;
 
   // Révélation immédiate des deux signes : aucun effet pendant l'échange.
@@ -185,7 +194,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   annoncer(a.lignes);
   render(); renderHistorique(); renderLecture();
 
-  if (m.termine) { setTimeout(finir, 1100); return evt; }
+  if (m.termine) { S.dialogueFin = a.dialogue; setTimeout(finir, 1100); return evt; }
   if (evt.finSet) {
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
     const suivant = annonceDebutSet(m), decisif = setDecisif(m);
@@ -202,7 +211,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
       big: g === 0 ? "Set pour toi" : `Set pour ${OPP.nom}`, bigCls: g === 0 ? "me" : "bot",
       sc: `${pa}–${pb}`,
       tally: `Sets : toi ${m.sets[0]}, ${OPP.nom} ${m.sets[1]}`,
-      com: a.commentaire ? a.commentaire.texte : "",
+      com: a.dialogue,
       next: suivant.texte.replace(/\.$/, ""),
       go: `Lancer le ${decisif ? "set décisif" : ORD[n].toLowerCase() + " set"}`,
       resteOuvert: !!S.duel,
@@ -274,6 +283,7 @@ function finir() {
     habitude = p >= 50 ? ` Après une victoire, tu rejoues le même signe ${p} % du temps : c'est exploitable.`
       : p <= 15 ? ` Après une victoire, tu changes presque toujours de signe (${100 - p} %) : c'est aussi un schéma.` : "";
   }
+  afficherRepliques($("endVoix"), S.dialogueFin || []);
   $("endRead").textContent = `Ton coup était prévisible ${Math.round(100 * (S.suivi.taux || 0))} % du temps.${habitude}`;
   $("end").hidden = false;
   $("bar").style.transform = "scaleX(0)";
@@ -296,7 +306,29 @@ function finir() {
   if (enTournoi) $("tNext").textContent = gagne ? (S.tour === 2 ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
   $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (t.debloque ? ` (débloque ${t.debloque})` : "")).join(", ") + " !" : "";
   $("end").scrollIntoView({ behavior: reduitMouvement() ? "auto" : "smooth", block: "start" });
+  // Après une finale (tournoi solo ou en ligne) : l'interview du journaliste.
+  if (n && !special && S.annonces.finale) setTimeout(() => ouvrirInterview(gagne), 2500);
 }
+
+// ---------------------------------------------------------------- interview d'après-finale
+function ouvrirInterview(gagne) {
+  const iv = interview(gagne);
+  $("ivChamp").textContent = iv.champion ? `📣 ${iv.champion.texte}` : "";
+  $("ivQ").textContent = iv.question.texte;
+  $("ivRep").innerHTML = iv.reponses.map((r, i) => `<button data-i="${i}">${esc(r)}</button>`).join("");
+  $("ivRep").hidden = false; $("ivMoi").hidden = true; $("ivFin").hidden = true; $("ivGo").hidden = true;
+  $("ivRep").onclick = e => {
+    const b = e.target.closest("button[data-i]"); if (!b) return;
+    $("ivRep").hidden = true;
+    $("ivMoi").textContent = iv.reponses[+b.dataset.i]; $("ivMoi").hidden = false;
+    $("ivFin").textContent = iv.conclusion.texte; $("ivFin").hidden = false;
+    $("ivGo").hidden = false; $("ivGo").focus();
+    voix.dire([iv.conclusion]);
+  };
+  $("interview").classList.add("show");
+  voix.dire([iv.champion, iv.question].filter(Boolean));
+}
+$("ivGo").addEventListener("click", () => $("interview").classList.remove("show"));
 
 const barres = (cpt, total) => [0, 2, 1].map(s => {
   const p = total ? Math.round(100 * cpt[s] / total) : 0;
@@ -317,7 +349,7 @@ function nouvelleSeance() {
   else if (!T) { WIN = fmt.win; OPP = botParId(amicalId); }
   S = {
     match: nouveauMatch({ pointsParSet: T ? lenTournoi() : fmt.len, setsGagnants: WIN }),
-    stats: nouvellesStats(), annonces: nouvelEtatAnnonces(), suivi: new Suivi(),
+    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ genre: P.genre }), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false,
   };
   preparerEcranMatch();
@@ -329,7 +361,7 @@ function nouvelleSeance() {
 function preparerEcranMatch() {
   $("hMe").textContent = "❔"; $("hBot").textContent = "❔"; $("hMe").className = "hand"; $("hBot").className = "hand";
   $("verdict").textContent = "";
-  $("band").innerHTML = `<div class="idle">Les annonces de l'arbitre et du commentateur s'afficheront ici.</div>`; $("band").classList.remove("stale");
+  $("band").innerHTML = `<div class="idle">Les annonces de l'arbitre et des commentateurs s'afficheront ici.</div>`; $("band").classList.remove("stale");
   $("tape").innerHTML = `<p class="empty">Les coups apparaîtront ici. Observe-les : ton adversaire le fait.</p>`;
   $("read").textContent = "L'analyse de ton jeu démarre au premier coup.";
   $("end").hidden = true; $("bar").style.transform = "scaleX(1)"; $("timer").classList.remove("urgent");
@@ -361,7 +393,7 @@ document.querySelectorAll("#segWin button").forEach(b => b.addEventListener("cli
 }));
 
 // ---------------------------------------------------------------- face-à-face
-let minuteriesIntro = [];
+let minuteriesIntro = [], voixIntro = 0;
 function ouvrirFaceAFace() {
   $("startCard").hidden = true; $("tourCard").hidden = true;
   try { ambiance.initialiser(); } catch { /* le match se joue aussi sans son */ } // geste de l'utilisateur : le son peut démarrer
@@ -375,6 +407,10 @@ function ouvrirFaceAFace() {
   const cellule = (texte, n, adv) => `<span class="${adv ? "adv" : ""}${n === undefined && texte.length > 3 ? " txt" : ""}"${n !== null && n !== undefined ? ` data-n="${n}"` : ""}>${esc(texte)}</span>`;
   $("foRows").innerHTML = pr.lignes.map((l, i) => `<div class="fo-row" style="--i:${i}">${cellule(l.g, l.gn, l.avantage === "g")}<span>${l.label}</span>${cellule(l.d, l.dn, l.avantage === "d")}</div>`).join("");
   $("foKey").innerHTML = `${esc(pr.cle)} Tu joues <b>côté jaune</b>.`;
+  $("foSurMe").textContent = surnomDe(P).texte;
+  $("foSurBot").textContent = OPP.humain && OPP.surnom ? OPP.surnom.texte : "";
+  if (!S.duel) S.annonces.finale = S.tour === 2;
+  presenterSpeaker();
 
   // Chorégraphie : bandeau, entrée des joueurs, VS (et le public applaudit), puis les stats une à une.
   const ov = $("faceoff"), debutStats = 1.6, pas = 0.28, fin = debutStats + pr.lignes.length * pas + 0.3;
@@ -392,6 +428,21 @@ function ouvrirFaceAFace() {
   else $("foGo").focus();
   // Filet de sécurité : quoi qu'il arrive à l'animation, tout est affiché peu après.
   minuteriesIntro.push(setTimeout(() => ov.classList.add("vite"), (fin + 0.8) * 1000));
+}
+// Le speaker présente les joueurs (et les commentateurs lancent le match), par écrit et à voix haute.
+function presenterSpeaker() {
+  const f = P.faceAFace[OPP.id];
+  const av = annoncesAvantMatch({
+    moi: { surnom: surnomDe(P), genre: P.genre, etiquette: etiquetteDe(P) },
+    adv: OPP.humain ? { surnom: OPP.surnom, genre: OPP.genre, etiquette: etiquetteDe(OPP.fiche) } : { bot: OPP.id },
+    tour: S.duel ? D?.tourVoix ?? null : S.tour, sng: !!(S.duel && D?.sng),
+    humain: !!OPP.humain, domination: !!(f && f.d >= f.v + 3), genre: P.genre,
+  });
+  const el = $("foSpeaker"); el.textContent = "";
+  const sp = document.createElement("div"); sp.className = "speaker"; sp.textContent = av.speaker.map(l => l.texte).join(" "); el.append(sp);
+  av.commentaires.forEach(l => { const d = document.createElement("div"); d.className = l.role; d.textContent = l.texte; el.append(d); });
+  clearTimeout(voixIntro);
+  voixIntro = setTimeout(() => { if (faceAFaceOuvert) voix.dire([...av.speaker, ...av.commentaires]); }, reduitMouvement() ? 0 : 1300);
 }
 // Les nombres défilent jusqu'à leur valeur, comme au tableau d'affichage.
 function compter(el) {
@@ -432,7 +483,22 @@ function rafraichirAvatars() {
   $("miniAv").innerHTML = avatarSVG(P.av); $("pseudoMe").textContent = nomAffiche(P);
 }
 
+// Mon surnom : un nom et un complément, parmi ceux débloqués ; « il » ou « elle ».
+function renderSurnom() {
+  const sn = surnomDe(P), noms = debloques(NOMS, P), comps = debloques(COMPLEMENTS, P);
+  $("surnomApercu").textContent = sn.texte;
+  $("inSurnomNom").innerHTML = noms.map(x => `<option value="${x.id}"${x.id === sn.nom.id ? " selected" : ""}>${esc(x.t)}</option>`).join("");
+  $("inSurnomComp").innerHTML = comps.map(x => `<option value="${x.id}"${x.id === sn.complement.id ? " selected" : ""}>${esc(x.t)}</option>`).join("");
+  $("surnomCompte").textContent = `${noms.length} nom${noms.length > 1 ? "s" : ""} sur ${NOMS.length} et ${comps.length} complément${comps.length > 1 ? "s" : ""} sur ${COMPLEMENTS.length} débloqués.`;
+  document.querySelectorAll("#segGenre button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === P.genre)));
+}
+const choisirSurnom = () => { P.surnom = { nom: $("inSurnomNom").value, complement: $("inSurnomComp").value }; sauverP(); renderSurnom(); };
+$("inSurnomNom").addEventListener("change", choisirSurnom);
+$("inSurnomComp").addEventListener("change", choisirSurnom);
+document.querySelectorAll("#segGenre button").forEach(b => b.addEventListener("click", () => { P.genre = b.dataset.v; sauverP(); renderSurnom(); }));
+
 function renderFiche() {
+  renderSurnom();
   $("pAv").innerHTML = avatarSVG(P.av);
   afficherNomFiche();
   $("pTitle").textContent = dernierTitre(P);
@@ -682,7 +748,7 @@ function lancerDuel(duel, ligneAdv) {
   OPP = adversaireHumain(ligneAdv); WIN = duel.sets_gagnants;
   S = {
     match: nouveauMatch(formatDuel(duel)),
-    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ humain: true }), suivi: new Suivi(),
+    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ humain: true, genre: P.genre }), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false, duel: true,
   };
   D = { id: duel.id, moi, duel, decalage: 0, mancheEnvoyee: null, presente: false, fini: false, apresPanneau: null, finSpeciale: null };
@@ -691,9 +757,23 @@ function lancerDuel(duel, ligneAdv) {
   $("ruleTxt").textContent = `Duel · ${texteFormat(formatDuel(duel))}`;
   rafraichirAvatars(); render();
   ouvrirOnglet("match");
+  if (duel.tournoi_id) reperesTournoi(duel);
   D.arret = serveur.ecouter("duel", `id=eq.${duel.id}`, majDuel);
   D.boucle = setInterval(battement, 1000);
   majDuel(duel); battement();
+}
+
+// Match de tournoi en ligne : quel tour ? (le speaker l'annonce, et la finale se termine par une interview)
+async function reperesTournoi(duel) {
+  try {
+    const t = await voirTournoi(duel.tournoi_id);
+    const m = (t?.matchs || []).find(x => x.id === duel.tournoi_match);
+    if (!D || D.id !== duel.id || !m) return;
+    D.tourVoix = { 0: 2, 1: 1, 2: 0 }[t.nb_tours - m.tour] ?? null;
+    D.sng = t.mode === "direct" && m.tour === 1;
+    S.annonces.finale = D.tourVoix === 2;
+    if (faceAFaceOuvert) presenterSpeaker();
+  } catch { /* sans réseau : présentation simple */ }
 }
 
 // Signe de vie + application des délais par le serveur ; donne aussi l'heure du serveur.

@@ -6,7 +6,11 @@ import { CATALOGUE } from "../app/js/voix/script.js";
 import { FICHIERS_AMBIANCE } from "../app/js/ambiance.js";
 
 export function scriptMarkdown() {
-  const roles = { arbitre: "Arbitre — grave et sobre", commentateur: "Commentateur — vif et décalé" };
+  const roles = {
+    arbitre: "Arbitre — grave et sobre", commentateur: "Commentateur — vif, enthousiaste, plein de références",
+    commentatrice: "Commentatrice — glaciale, cinglante, jamais impressionnée", speaker: "Speaker — voix de salle, voyelles étirées",
+    journaliste: "Journaliste — après une finale seulement",
+  };
   let md = `# Script des annonces et commentaires
 
 Ce fichier est généré automatiquement à partir de \`app/js/voix/script.js\`
@@ -17,7 +21,10 @@ nom indiqué, et dépose-le dans \`app/audio/\`. Exemple :
 \`commentateur_craquage_02.mp3\`. Tant qu'un fichier manque, la réplique est
 seulement affichée par écrit (voix de synthèse activable dans les Options).
 
-Nom d'un fichier = qui parle _ situation _ numéro de version.
+Nom d'un fichier = qui parle _ situation _ numéro de version, suivi si besoin
+du signe (\`_pierre\`, \`_ciseaux\`, \`_feuille\`) et de \`_f\` pour la version
+dite à une joueuse. Le speaker annonce les surnoms en deux fichiers (le nom,
+puis le complément).
 L'arbitre ne prononce jamais de pseudo : il nomme les joueurs par leur côté
 (jaune = le joueur, rouge = l'adversaire). Les scores rares au-delà de 20–18
 restent lus par la voix de synthèse.
