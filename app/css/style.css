@@ -336,3 +336,10 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .hub.alerte { border-color: var(--me); background: rgba(244, 197, 66, .1); }
 .hub:active { transform: scale(.99); }
 body.en-match .tabs, body.en-match .retour-hub, body.en-match #btnOptions { display: none; }
+
+/* La Une */
+.une-btn { margin-bottom: 8px; }
+.une-panel { max-width: 440px; padding: 14px; }
+.une-panel img { width: 100%; aspect-ratio: 4 / 5; display: block; border-radius: 4px; background: #F2ECDF; margin-bottom: 10px; }
+.une-panel .hint:empty { display: none; }
+a.btn { display: block; box-sizing: border-box; text-decoration: none; text-align: center; margin-top: 8px; }

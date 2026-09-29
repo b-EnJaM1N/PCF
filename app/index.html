@@ -106,6 +106,7 @@
       <p class="readout" id="endRead"></p>
       <p class="news" id="endClassement" hidden></p>
       <p class="news" id="news"></p>
+      <button class="btn une-btn" id="btnUne" hidden>📰 Voir la Une du journal</button>
       <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button><button class="btn" id="revanche" hidden>Proposer une revanche</button><button class="btn alt" id="retourDuels" hidden>Retour aux duels</button><button class="btn" id="voirTournoi" hidden>Voir le tableau du tournoi</button></p>
     </section>
 
@@ -446,6 +447,16 @@
     <p class="com" id="iCom"></p>
     <div class="next" id="iNext"></div>
     <button class="btn" id="iGo"></button>
+  </div>
+</div>
+
+<div class="inter" id="une" role="dialog" aria-modal="true" aria-label="La Une du journal">
+  <div class="panel une-panel">
+    <img id="uneImg" alt="">
+    <p class="hint" id="uneMsg" role="status"></p>
+    <button class="btn" id="unePartager">Partager</button>
+    <a class="btn alt" id="uneEnregistrer" download="la-une.png" href="#">Enregistrer l'image</a>
+    <button class="btn alt" id="uneFermer">Fermer</button>
   </div>
 </div>
 
