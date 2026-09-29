@@ -1,3 +1,4 @@
+import { lectureReussie } from "./analyse.js";
 // Statistiques « mental » et records d'un match, du point de vue du joueur (côté 0).
 
 export function nouvellesStats() {
@@ -7,11 +8,13 @@ export function nouvellesStats() {
     serie: { joueur: null, n: 0 }, meilleureSerie: 0,
     retardMaxSet: 0, meilleureRemontee: 0,
     premierSetPerdu: false,
+    lecturesReussies: 0,                      // réflexes de l'adversaire lus et contrés
   };
 }
 
 export function suivreCoup(st, match, evt) {
   if (evt.egalite) return st;
+  if (lectureReussie(match.coups)) st.lecturesReussies++;
   const g = evt.gagnant, ba = evt.balleAvant;
   st.serie = st.serie.joueur === g ? { joueur: g, n: st.serie.n + 1 } : { joueur: g, n: 1 };
   if (ba) {

@@ -6,6 +6,7 @@
 import { nouveauMatch, jouerCoup, EMOJI, NOM, texteFormat } from "./regles.js";
 import { indiceImprevisibilite } from "./analyse.js";
 import { normaliserProfil, signeFavori, dernierTitre, titresObtenus } from "./profil.js";
+import { surnomDe } from "./surnoms.js";
 
 export const maPlace = (duel, uid) => (duel.j0 === uid ? 0 : duel.j1 === uid ? 1 : null);
 export const adversaireDe = (duel, uid) => (duel.j0 === uid ? duel.j1 : duel.j0);
@@ -46,6 +47,8 @@ export function adversaireHumain(ligne) {
     imprevisibilite: P.lisibles >= 10 ? indiceImprevisibilite(P.devines / P.lisibles) : null,
     titres: titresObtenus(P).length,
     av: { ...P.av, ...(ligne.avatar || {}) },
+    // Pour le speaker et les commentateurs
+    surnom: surnomDe(P), genre: P.genre, fiche: P,
   };
 }
 

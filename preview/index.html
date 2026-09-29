@@ -85,7 +85,7 @@
       <div class="done-sets" id="doneSets"></div>
     </section>
 
-    <div class="band" id="band" aria-live="polite"><div class="idle">Les annonces de l'arbitre et du commentateur s'afficheront ici.</div></div>
+    <div class="band" id="band" aria-live="polite"><div class="idle">Les annonces de l'arbitre et des commentateurs s'afficheront ici.</div></div>
 
     <div>
       <div class="arena"><div class="hand" id="hMe">❔</div><div class="vs">contre</div><div class="hand" id="hBot">❔</div></div>
@@ -100,6 +100,7 @@
 
     <section class="end" id="end" hidden>
       <h2 id="endTitle"></h2>
+      <div class="voix-fin" id="endVoix" hidden></div>
       <p id="endLine"></p>
       <div class="bars" id="bars"></div>
       <p class="readout" id="endRead"></p>
@@ -316,7 +317,7 @@
       <p class="hint" id="lenLock" hidden>Le format ne peut pas changer pendant un match ou un tournoi.</p>
     </section>
     <section class="card">
-      <h2>Voix de l'arbitre et du commentateur</h2>
+      <h2>Les voix du match</h2>
       <p class="hint" id="voixInfo"></p>
       <button class="test" id="testSnd" style="margin-top:12px">Tester le son</button>
       <label class="sound" style="margin-top:12px;align-items:flex-start"><input type="checkbox" id="synthese"> <span>Lire aussi les répliques avec la voix de synthèse du téléphone (voix robotique)</span></label>
@@ -348,6 +349,19 @@
         <div><b id="kS">0</b><span>série en cours</span></div>
       </div>
       <p class="hint" id="pEmpty"></p>
+    </section>
+
+    <section class="card edit" id="cSurnom">
+      <h2>Mon surnom</h2>
+      <p class="hint">Avant chaque match, le speaker te présente avec ton surnom. Tu en débloques de nouveaux en jouant : ton signe favori, tes exploits, tes heures de jeu…</p>
+      <p class="surnom" id="surnomApercu"></p>
+      <label class="lbl" for="inSurnomNom">Nom</label>
+      <select id="inSurnomNom"></select>
+      <label class="lbl" for="inSurnomComp">Complément</label>
+      <select id="inSurnomComp"></select>
+      <p class="hint" id="surnomCompte"></p>
+      <p class="lbl" id="genreLbl">Les commentateurs parlent de toi en disant</p>
+      <div class="seg" id="segGenre" role="group" aria-labelledby="genreLbl"><button data-v="m">« il »</button><button data-v="f">« elle »</button></div>
     </section>
 
     <section class="card edit" id="cCompte">
@@ -408,10 +422,11 @@
 <div class="inter intro" id="faceoff" role="dialog" aria-modal="true" aria-label="Présentation du match">
   <div class="fo">
     <div class="fo-banner"><div class="fo-stage" id="foStage"></div><div class="fo-fmt" id="foFmt"></div></div>
+    <p class="fo-speaker" id="foSpeaker"></p>
     <div class="fo-top">
-      <div class="fo-p left"><div class="fo-av" id="foAvMe"></div><div class="fo-name" id="foNameMe"></div><div class="fo-sub" id="foSubMe"></div><div class="fo-rec" id="foRecMe"></div></div>
+      <div class="fo-p left"><div class="fo-av" id="foAvMe"></div><div class="fo-name" id="foNameMe"></div><div class="fo-sub" id="foSubMe"></div><div class="fo-rec" id="foRecMe"></div><div class="fo-surnom" id="foSurMe"></div></div>
       <div class="fo-vs" aria-hidden="true">VS</div>
-      <div class="fo-p right"><div class="fo-av" id="foAvBot"></div><div class="fo-name" id="foNameBot"></div><div class="fo-sub" id="foSubBot"></div><div class="fo-rec" id="foRecBot"></div></div>
+      <div class="fo-p right"><div class="fo-av" id="foAvBot"></div><div class="fo-name" id="foNameBot"></div><div class="fo-sub" id="foSubBot"></div><div class="fo-rec" id="foRecBot"></div><div class="fo-surnom" id="foSurBot"></div></div>
     </div>
     <div class="fo-rows" id="foRows"></div>
     <p class="fo-key" id="foKey"></p>
@@ -431,6 +446,18 @@
     <p class="com" id="iCom"></p>
     <div class="next" id="iNext"></div>
     <button class="btn" id="iGo"></button>
+  </div>
+</div>
+
+<div class="inter" id="interview" role="dialog" aria-modal="true" aria-labelledby="ivQ">
+  <div class="panel">
+    <div class="kick">🎤 Interview d'après-finale</div>
+    <p class="iv-champ" id="ivChamp"></p>
+    <p class="iv-q" id="ivQ"></p>
+    <div class="iv-rep" id="ivRep"></div>
+    <p class="iv-moi" id="ivMoi" hidden></p>
+    <p class="iv-q" id="ivFin" hidden></p>
+    <button class="btn" id="ivGo" hidden>Fermer</button>
   </div>
 </div>
 

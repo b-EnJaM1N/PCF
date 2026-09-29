@@ -51,8 +51,27 @@ h1 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1
 .band { min-height: 3.6em; padding: 10px 14px; border-left: 4px solid var(--line); background: var(--panel); border-radius: 0 8px 8px 0; transition: opacity .6s; }
 .band.stale { opacity: .45; }
 .band .arbitre { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.35rem; line-height: 1.2; }
-.band .commentateur { font-style: italic; color: var(--muted); line-height: 1.35; margin-top: 2px; }
-.band .commentateur::before { content: "🎙️ "; font-style: normal; }
+/* Une icône par voix : 🧑‍⚖️ arbitre (sans icône, en gros), 🎙️ commentateur, 👠 commentatrice, 📣 speaker, 🎤 journaliste. */
+.band :is(.commentateur, .commentatrice, .speaker, .journaliste), .voix-fin > div, .panel .com > div, .fo-speaker > div { font-style: italic; color: var(--muted); line-height: 1.35; margin-top: 2px; }
+:is(.band, .voix-fin, .panel .com, .fo-speaker) .commentateur::before { content: "🎙️ "; font-style: normal; }
+:is(.band, .voix-fin, .panel .com, .fo-speaker) .commentatrice::before { content: "👠 "; font-style: normal; }
+:is(.band, .voix-fin, .panel .com, .fo-speaker) .speaker::before { content: "📣 "; font-style: normal; }
+:is(.band, .voix-fin, .panel .com, .fo-speaker) .journaliste::before { content: "🎤 "; font-style: normal; }
+.fo-speaker > .speaker { color: var(--line); }
+.fo-speaker { text-align: center; font-size: .9rem; margin: -6px 0 12px; min-height: 1.3em; }
+.fo-speaker:empty { display: none; }
+.fo-surnom { font-size: .8rem; color: var(--me); font-style: italic; margin-top: 4px; line-height: 1.25; }
+.fo-p.right .fo-surnom { color: var(--bot); }
+.voix-fin { margin: 0 0 10px; }
+.surnom { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--me); margin: 4px 0 8px; }
+.iv-champ { font-weight: 600; color: var(--me); margin: 10px 0 0; }
+.iv-champ:empty { display: none; }
+.iv-q { font-style: italic; line-height: 1.4; margin: 12px 0; }
+.iv-q::before { content: "🎤 "; font-style: normal; }
+.iv-rep { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.iv-rep button { font: inherit; text-align: left; padding: 10px 12px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: var(--line); cursor: pointer; }
+.iv-moi { font-weight: 600; margin: 0 0 8px; }
+.iv-moi::before { content: "« "; } .iv-moi::after { content: " »"; }
 .band .idle { color: var(--muted); font-size: .9rem; }
 
 /* L'échange : révélation immédiate, sans animation */
