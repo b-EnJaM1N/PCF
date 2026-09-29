@@ -1,0 +1,314 @@
+// Les répliques des voix (texte validé : docs/script-v2-brouillon.md, version 6).
+//
+// Chaque entrée : { r, t, f?, clin?, si?, signe? }
+//   r     : qui parle — "c" le commentateur, "d" la commentatrice
+//   t     : le texte ; ou un tableau de 3 textes, un par signe [Pierre, Ciseaux, Feuille] (ordre de regles.js)
+//   f     : la version quand le joueur dont on parle est une joueuse (même forme que t)
+//   clin  : "sport" ou "cine" — clin d'œil, tiré plus rarement
+//   si    : condition — "onze_zero", "serie6", "trois_zero", "titre", "humain"
+//   signe : pour les textes par signe, le signe de qui — "moi" (défaut) ou "adv"
+//
+// Le moteur (annonces.js) choisit la réplique ; script.js en fait des fichiers audio nommés
+// qui_moment_NN (+ _pierre / _ciseaux / _feuille pour les signes, + _f pour la version au féminin).
+
+// ---------------------------------------------------------------- les moments du match
+export const MOMENTS = {
+  craquage: [
+    { r: "c", t: "Il est en train de craquer sous la pression !", f: "Elle est en train de craquer sous la pression !" },
+    { r: "c", t: "Il avait le set au bout des doigts… et il l'a laissé filer !", f: "Elle avait le set au bout des doigts… et elle l'a laissé filer !" },
+    { r: "c", t: "Chute à l'avant ! Il avait le set en poche !", f: "Chute à l'avant ! Elle avait le set en poche !", clin: "sport" },
+    { r: "c", t: "Coiffé sur le poteau !", f: "Coiffée sur le poteau !", clin: "sport" },
+    { r: "c", t: "Il enfourche la dernière porte !", f: "Elle enfourche la dernière porte !", clin: "sport" },
+    { r: "c", t: "J'ai glissé, chef !", clin: "cine" },
+    { r: "d", t: "Oh… la main a tremblé." },
+    { r: "d", t: "Elle était là, cette balle. Juste là." },
+    { r: "d", t: "La tête a dit Pierre. Le cœur a dit Feuille. Le cœur a tort, en général." },
+    { r: "d", t: "Quand l'enjeu monte, la lucidité s'en va. Chez certains." },
+    { r: "d", t: "Un mental de chips.", clin: "sport" },
+    { r: "d", t: "Il a vu la ligne d'arrivée. Et il a freiné. Fascinant.", f: "Elle a vu la ligne d'arrivée. Et elle a freiné. Fascinant." },
+  ],
+  balle_sauvee: [
+    { r: "c", t: "Sauvée ! Quel sang-froid !" },
+    { r: "c", t: "Pas aujourd'hui ! Pas comme ça ! Pas après tout ce que tu as fait…" },
+    { r: "c", t: "Il refuse de mourir ! Encore en vie ! Toujours en vie !", f: "Elle refuse de mourir ! Encore en vie ! Toujours en vie !" },
+    { r: "c", t: ["Sauvé par le gong ! Enfin… par la Pierre !", "Sauvé par le gong ! Enfin… par les Ciseaux !", "Sauvé par le gong ! Enfin… par la Feuille !"],
+      f: ["Sauvée par le gong ! Enfin… par la Pierre !", "Sauvée par le gong ! Enfin… par les Ciseaux !", "Sauvée par le gong ! Enfin… par la Feuille !"], clin: "sport" },
+    { r: "c", t: "Il était dans les cordes, et il en sort !", f: "Elle était dans les cordes, et elle en sort !", clin: "sport" },
+    { r: "c", t: ["Parade réflexe ! Il a vu la Pierre arriver !", "Parade réflexe ! Il a vu les Ciseaux arriver !", "Parade réflexe ! Il a vu la Feuille arriver !"],
+      f: ["Parade réflexe ! Elle a vu la Pierre arriver !", "Parade réflexe ! Elle a vu les Ciseaux arriver !", "Parade réflexe ! Elle a vu la Feuille arriver !"], clin: "sport", signe: "adv" },
+    { r: "d", t: "Glacial. Absolument glacial. J'approuve." },
+    { r: "d", t: "Tout le monde la voyait perdue. Sauf lui. C'est touchant.", f: "Tout le monde la voyait perdue. Sauf elle. C'est touchant." },
+    { r: "d", t: "Des nerfs d'acier. Ou aucune conscience du danger. On ne saura jamais." },
+    { r: "c", t: "Madame, vous n'auriez pas fait mieux ! Enfin… sauf en 1997 !" },
+  ],
+  remontee: [
+    { r: "c", t: "Quelle remontée extraordinaire !" },
+    { r: "c", t: "On l'avait enterré un peu trop vite !", f: "On l'avait enterrée un peu trop vite !" },
+    { r: "c", t: "Le vent a tourné, mesdames et mesdames !" },
+    { r: "c", t: "De l'enfer au paradis en quelques coups !" },
+    { r: "c", t: "La cabane est tombée sur le chien !", clin: "sport" },
+    { r: "c", t: "Il a fait l'élastique, et le revoilà dans la roue !", f: "Elle a fait l'élastique, et la revoilà dans la roue !", clin: "sport" },
+    { r: "c", t: "C'est dingue ! C'est dingue !" },
+    { r: "d", t: "Personne n'y croyait. Lui, si. C'est bien le seul.", f: "Personne n'y croyait. Elle, si. C'est bien la seule." },
+    { r: "d", t: "Ne jamais enterrer un joueur de Pierre. Jamais.", f: "Ne jamais enterrer une joueuse de Pierre. Jamais." },
+    { r: "d", t: "Son adversaire a avalé la trompette.", clin: "sport" },
+    { r: "d", t: "Un match n'est jamais fini. Surtout quand on joue mal." },
+    { r: "d", t: "C'est abracadabrantesque.", clin: "cine" },
+  ],
+  serie_pour: [
+    { r: "c", t: "Plus rien ne l'arrête !" },
+    { r: "c", t: "Quatre à la suite !" },
+    { r: "c", t: "Ça déroule, ça déroule !" },
+    { r: "c", t: "Il a mis une mine, ça explose derrière !", f: "Elle a mis une mine, ça explose derrière !", clin: "sport" },
+    { r: "c", t: "C'est du Pierre-Feuille-Ciseaux champagne !", clin: "sport" },
+    { r: "c", t: "Vers l'infini et au-delà !", clin: "cine" },
+    { r: "c", t: "Cours, Forrest, cours !", clin: "cine", si: "serie6" },
+    { r: "d", t: "Il a trouvé la faille. Il appuie dessus. Enfin quelqu'un de sérieux.", f: "Elle a trouvé la faille. Elle appuie dessus. Enfin quelqu'un de sérieux." },
+    { r: "d", t: "Il gagne dans un fauteuil.", f: "Elle gagne dans un fauteuil.", clin: "sport" },
+    { r: "d", t: "Une démonstration. Je note." },
+  ],
+  serie_contre: [
+    { r: "c", t: "Quelqu'un peut arrêter ça ?!" },
+    { r: "c", t: "Il est dans les cordes ! Il faut réagir !", f: "Elle est dans les cordes ! Il faut réagir !", clin: "sport" },
+    { r: "c", t: "Allez, petit bonhomme !", f: "Allez, petite bonne femme !" },
+    { r: "c", t: "Oublie que t'as aucune chance, vas-y, fonce !", clin: "cine" },
+    { r: "d", t: "Ça commence à ressembler à une correction." },
+    { r: "d", t: "Muscle ton jeu, Robert.", clin: "sport" },
+    { r: "d", t: "Jusqu'ici, tout va bien… jusqu'ici.", clin: "cine" },
+    { r: "d", t: "Sur un malentendu, ça peut marcher.", clin: "cine" },
+    { r: "d", t: "Sa maison brûle, et il regarde ailleurs.", f: "Sa maison brûle, et elle regarde ailleurs.", clin: "cine" },
+  ],
+  obstination: [
+    { r: "c", t: ["Troisième Pierre d'affilée ! C'est audacieux !", "Troisièmes Ciseaux d'affilée ! C'est audacieux !", "Troisième Feuille d'affilée ! C'est audacieux !"] },
+    { r: "c", t: "Soit c'est du génie, soit c'est de l'entêtement !" },
+    { r: "c", t: ["Sa Pierre… son précieux…", "Ses Ciseaux… son précieux…", "Sa Feuille… son précieux…"], clin: "cine" },
+    { r: "d", t: ["Encore Pierre. C'est de la provocation.", "Encore Ciseaux. C'est de la provocation.", "Encore Feuille. C'est de la provocation."] },
+    { r: "d", t: "Culot ou manque d'imagination ? Je penche pour l'imagination." },
+    { r: "d", t: ["Il gare le bus devant sa Pierre.", "Il gare le bus devant ses Ciseaux.", "Il gare le bus devant sa Feuille."],
+      f: ["Elle gare le bus devant sa Pierre.", "Elle gare le bus devant ses Ciseaux.", "Elle gare le bus devant sa Feuille."], clin: "sport" },
+    { r: "d", t: ["La Pierre, ça ose tout. C'est même à ça qu'on la reconnaît.", "Les Ciseaux, ça ose tout. C'est même à ça qu'on les reconnaît.", "La Feuille, ça ose tout. C'est même à ça qu'on la reconnaît."], clin: "cine" },
+    { r: "d", t: ["C'est une bonne situation, ça, Pierre ?", "C'est une bonne situation, ça, Ciseaux ?", "C'est une bonne situation, ça, Feuille ?"], clin: "cine" },
+    { r: "d", t: "Le Mur de Clermont aurait approuvé. Moi, non." },
+    { r: "d", t: "C'est de la poudre de perlimpinpin.", clin: "cine" },
+  ],
+  // Il change enfin de signe après une obstination.
+  changement: [
+    { r: "c", t: "Le changement, c'est maintenant !", clin: "cine" },
+  ],
+  duel_esprits: [
+    { r: "c", t: "Ils se lisent dans les pensées !" },
+    { r: "c", t: "Télépathie sur le court !" },
+    { r: "c", t: "Surplace sur la piste ! Personne ne veut lancer le sprint !", clin: "sport" },
+    { r: "c", t: "Coude à coude ! Impossible de les séparer !", clin: "sport" },
+    { r: "c", t: "Cinq égalités ! On n'avait pas vu ça depuis le schisme de la Feuille !", si: "cinq_egalites" },
+    { r: "d", t: "Deux esprits. Une seule idée. Jamais la bonne." },
+    { r: "d", t: "On pourrait rester là toute la nuit. Je préférerais éviter." },
+    { r: "d", t: "Une partie d'échecs à trois pièces. Sans les échecs." },
+    { r: "d", t: "À ce niveau, l'égalité, c'est de la politesse." },
+    { r: "d", t: ["Vous n'avez pas le monopole de la Pierre.", "Vous n'avez pas le monopole des Ciseaux.", "Vous n'avez pas le monopole de la Feuille."], clin: "cine" },
+    { r: "d", t: "Laissez du temps au temps.", clin: "cine" },
+    { r: "d", t: "Ennuyeux." },
+  ],
+  // L'adversaire a lu mon réflexe.
+  lecture_subie: [
+    { r: "d", t: "Lu comme un livre ouvert. Un livre court." },
+    { r: "d", t: "Trop prévisible. L'adversaire a pris des notes. Moi aussi." },
+    { r: "d", t: "Ses tics sont en train de le trahir.", f: "Ses tics sont en train de la trahir." },
+    { r: "d", t: "C'était écrit. En gros caractères." },
+  ],
+  // J'ai lu le réflexe de l'adversaire.
+  lecture_reussie: [
+    { r: "c", t: "Il l'attendait ! Il l'attendait !", f: "Elle l'attendait ! Elle l'attendait !" },
+    { r: "c", t: "Pleine lucarne ! Il l'avait lu depuis le vestiaire !", f: "Pleine lucarne ! Elle l'avait lu depuis le vestiaire !", clin: "sport" },
+    { r: "c", t: ["Second poteau, la Pierre !", "Second poteau, les Ciseaux !", "Second poteau, la Feuille !"], clin: "sport" },
+    { r: "c", t: "Il vous a compris !", f: "Elle vous a compris !", clin: "cine" },
+    { r: "d", t: "Coup de maître.", clin: "sport" },
+  ],
+  temps_ecoule: [
+    { r: "c", t: "Il a oublié de jouer !", f: "Elle a oublié de jouer !" },
+    { r: "c", t: "Calé sur la grille de départ !", f: "Calée sur la grille de départ !", clin: "sport" },
+    { r: "c", t: "Faux départ… enfin, pas de départ du tout !", clin: "sport" },
+    { r: "d", t: "Le chrono ne pardonne pas. Moi non plus." },
+    { r: "d", t: "Trop de réflexion tue la réflexion." },
+    { r: "d", t: "Jouer au hasard, c'est avouer qu'on n'a plus de plan." },
+    { r: "d", t: "L'affaire du chronomètre. On n'en parle pas." },
+    { r: "d", t: "Le ridicule ne tue pas. Heureusement pour lui.", f: "Le ridicule ne tue pas. Heureusement pour elle.", si: "balle_match" },
+  ],
+  // Balle de match (dite à voix basse, avant le point).
+  tension: [
+    { r: "c", t: "Silence dans la salle…" },
+    { r: "c", t: "Tout un match… pour un seul signe." },
+    { r: "d", t: "C'est maintenant que les champions se révèlent. Et les autres aussi." },
+    { r: "d", t: "Pas de Pierre ici. Tout le monde attend la Pierre." },
+    { r: "d", t: "Pas d'enflammade, pas d'enflammade.", clin: "sport" },
+    { r: "c", t: "Le côté jaune a peur.", clin: "cine", si: "balle_contre" },
+  ],
+  point_decisif: [
+    { r: "c", t: "Un point. Un seul. Pour tout !" },
+    { r: "d", t: "Ici, pas de deuxième chance. Comme dans la vie." },
+  ],
+  // Temps morts : fin de set, fin de match.
+  set_ecrasant: [
+    { r: "c", t: "Une leçon ! Une démonstration de force !" },
+    { r: "c", t: "Au tapis ! L'arbitre peut compter jusqu'à dix !", clin: "sport" },
+    { r: "c", t: "Fanny ! Onze à zéro, il va falloir embrasser Fanny !", clin: "sport", si: "onze_zero" },
+    { r: "d", t: "Sèche correction." },
+    { r: "d", t: "Il n'y a pas eu de match dans ce set." },
+    { r: "d", t: "L'adversaire est resté au vestiaire. Il aurait dû y rester." },
+    { r: "d", t: "Vous êtes le maillon faible. Au revoir !", clin: "cine" },
+    { r: "d", t: "Un set à oublier. Je l'ai déjà oublié." },
+    { r: "d", t: "Qu'on m'apporte un café. Et un autre match." },
+  ],
+  set_couteau: [
+    { r: "c", t: "Irrespirable !" },
+    { r: "c", t: "Quel set, mesdames et messieurs !" },
+    { r: "c", t: "Photo-finish ! Il faut la photo pour les départager !", clin: "sport" },
+    { r: "c", t: "Arrivée au sprint, et ça passe d'un boyau !", clin: "sport" },
+    { r: "d", t: "Arraché. Mérité, on en reparlera." },
+    { r: "d", t: "Il fallait des nerfs solides pour conclure celui-là. Il y en avait. Juste assez." },
+    { r: "d", t: "Personne ne méritait de le perdre. L'un des deux l'a quand même perdu." },
+  ],
+  resume_set: [
+    { r: "c", t: "Set bouclé, et quelle bataille !" },
+    { r: "c", t: "Un set maîtrisé de bout en bout !" },
+    { r: "c", t: "Un set partout, tout se jouera maintenant !", si: "un_partout" },
+    { r: "c", t: "Le public retient son souffle avant la suite !" },
+    { r: "d", t: "L'un a pris les commandes. À l'autre de réagir. S'il sait comment." },
+    { r: "d", t: "Il faudra changer de plan. Ou en avoir un." },
+    { r: "d", t: "Le rapport de force est clair. Pour l'instant." },
+  ],
+  set_decisif: [
+    { r: "c", t: "Set décisif ! Tout se joue maintenant !" },
+    { r: "d", t: "Les statistiques ne servent plus à rien. C'est le caractère qui parle. Quand il y en a." },
+    { r: "c", t: "C'est la der des ders !" },
+  ],
+  renversement: [
+    { r: "c", t: "Mené un set à zéro, il renverse tout !", f: "Menée un set à zéro, elle renverse tout !" },
+    { r: "c", t: "Le retour du siècle !" },
+    { r: "c", t: "Il était dans les cordes, c'est l'autre qui finit au tapis !", f: "Elle était dans les cordes, c'est l'autre qui finit au tapis !", clin: "sport" },
+    { r: "c", t: "Tête-à-queue complet dans ce match !", clin: "sport" },
+    { r: "d", t: "Il a perdu une bataille. Il gagne la guerre. Classique.", f: "Elle a perdu une bataille. Elle gagne la guerre. Classique." },
+  ],
+  balle_match_convertie: [
+    { r: "c", t: ["Pieeeeerre ! Pierre ! Pierre !", "Ciseaaaaux ! Ciseaux ! Ciseaux !", "Feuiiiiille ! Feuille ! Feuille !"], clin: "sport" },
+    { r: "c", t: "Il franchit la ligne les bras levés !", f: "Elle franchit la ligne les bras levés !", clin: "sport" },
+    { r: "c", t: "Après avoir vu ça, on peut aller se coucher tranquille !", clin: "sport" },
+    { r: "d", t: "Échec et mat.", clin: "sport" },
+    { r: "d", t: "Hasta la vista, baby.", clin: "cine" },
+    { r: "d", t: "C'est tout." },
+    { r: "c", t: "Et un, et deux, et trois sets à zéro !", clin: "sport", si: "trois_zero" },
+  ],
+  victoire: [
+    { r: "c", t: "C'est fini ! Quel combat !" },
+    { r: "c", t: "Il l'a fait !", f: "Elle l'a fait !" },
+    { r: "c", t: "Et c'est la délivrance !" },
+    { r: "c", t: "Un match qui fera date !" },
+    { r: "c", t: "Bravo aux deux joueurs, quel spectacle !" },
+    { r: "d", t: "Rideau." },
+    { r: "d", t: "Mission accomplie. Sans éclat, mais accomplie." },
+    { r: "d", t: "Rien à dire. Et je trouve toujours quelque chose à dire." },
+  ],
+  defaite: [
+    { r: "d", t: "Au revoir.", clin: "cine" },
+    { r: "c", t: "Battu, mais pas abattu !", f: "Battue, mais pas abattue !" },
+    { r: "c", t: "Je reviendrai ! Il reviendra !", f: "Je reviendrai ! Elle reviendra !", clin: "cine" },
+    { r: "d", t: "Il faudra revoir ce match. Ou l'oublier. Je conseille l'oubli." },
+    { r: "d", t: "On apprend plus d'une défaite. Il a beaucoup appris, ce soir.", f: "On apprend plus d'une défaite. Elle a beaucoup appris, ce soir." },
+  ],
+  // L'adversaire domine nettement nos face-à-face (dit avant le match).
+  domination: [
+    { r: "d", t: "Je suis ton père.", clin: "cine" },
+  ],
+  humain: [
+    { r: "c", t: "C'est un duel ! Un vrai ! Les yeux dans les yeux !" },
+    { r: "d", t: "Ils se connaissent. Et ça se voit." },
+    { r: "d", t: "Entre amis, il n'y a pas de pitié. Il n'y a que des signes." },
+  ],
+};
+
+// ---------------------------------------------------------------- les dialogues (temps morts)
+// Chaque dialogue : une réplique du commentateur, puis la réponse de la commentatrice
+// (texte, ou { t, f } quand la version au féminin diffère).
+export const DIALOGUES = {
+  avant_match: [
+    ["Madame, on sent une tension palpable.", "On sent surtout deux personnes devant leur téléphone. Mais oui."],
+    ["Deux styles, deux écoles !", "Trois signes. Il n'y en a jamais eu que trois."],
+    ["Un pronostic, Madame ?", "Je ne fais pas de pronostic. Je constate. Après."],
+    ["Vous le sentez comment, ce match ?", "Long."],
+    ["Le Pierre, c'est la base, Madame !", "C'est pas faux."],
+  ],
+  fin_set: [
+    ["Madame, un mot sur ce set ?", "Solide. Sans génie. Mais solide."],
+    ["Un set parfait ! Comme vous en 1997, Madame !", "Nous n'en parlerons pas."],
+    [{ t: "Qu'est-ce qu'il doit changer ?", f: "Qu'est-ce qu'elle doit changer ?" }, "Tout. Ou rien. C'est ça, le PCF."],
+    [{ t: "Il doit tout changer, Madame !", f: "Elle doit tout changer, Madame !" }, "Vaste programme."],
+  ],
+  set_decisif: [
+    ["Un set pour l'éternité, Madame !", "Un set pour ce soir. Ce sera déjà bien."],
+  ],
+  serie: [
+    [{ t: "Il est injouable ! Il est…", f: "Elle est injouable ! Elle est…" }, "Je vous demande de vous arrêter."],
+  ],
+  titre: [
+    ["Madame, c'est historique !", "Pas d'enflammade. Pas d'enflammade."],
+  ],
+  // après une défaite
+  fin_match: [
+    [{ t: "Il n'a pas démérité !", f: "Elle n'a pas démérité !" }, "Si. Un peu quand même."],
+  ],
+};
+
+// ---------------------------------------------------------------- le speaker
+// Les joueurs sont présentés par leur côté et leur surnom (voir surnoms.js).
+export const SPEAKER = {
+  bienvenue: ["Mesdaaames et messieuuurs… bienvenue pour ce duel !", "Mesdames et messieurs, veuillez regagner vos places. Le match va commencer."],
+  coin_jaune: ["Dans le coin jaaaune…"],
+  coin_rouge: ["Et dans le coin rouuuge…"],
+  debutant: [{ t: "Pour son tout premier match officiel…" }],
+  invaincu: [{ t: "Invaincu depuis trois rencontres…", f: "Invaincue depuis trois rencontres…" }],
+  imprevisible: [{ t: "On le dit imprévisible. On le dit dangereux…", f: "On la dit imprévisible. On la dit dangereuse…" }],
+  figuration: [{ t: "Il ne vient pas pour faire de la figuration…", f: "Elle ne vient pas pour faire de la figuration…" }],
+  cloture: ["Que le meilleur gagne !", "Que le spectacle commence !"],
+  miroir: ["Mesdames et messieurs… ce soir, c'est un duel de jumeaux.", "Même surnom… même ambition… un seul vainqueur !", "Deux surnoms identiques. Il n'en restera qu'un."],
+  quarts: ["Place aux quarts de finale !"],
+  demis: ["Place aux demi-finales !"],
+  finale: ["Mesdames et messieurs… voici… la finaaale !"],
+  sit_and_go: ["Les portes sont fermées. Le tournoi commence. Un seul sortira vainqueur."],
+  champion: ["Mesdames et messieurs… votre champion !"],
+};
+// Les bots, annoncés par leur nom.
+export const NOMS_BOTS = { rocky: "Rocky !", miroir: "Miroir !", cyclo: "Cyclo !", boomerang: "Boomerang !", chaos: "Chaos !", stratege: "Stratège !", professeur: "Le Professeur !" };
+
+// ---------------------------------------------------------------- le journaliste (après une finale gagnée)
+export const JOURNALISTE = {
+  question: [
+    "Félicitations. Que ressentez-vous ?",
+    "À quel moment avez-vous senti que le titre était pour vous ?",
+    "Un mot pour votre adversaire ?",
+    "On vous a vu jouer beaucoup de signes ce soir. C'était prévu ?",
+    "Qu'allez-vous faire maintenant ?",
+  ],
+  // au finaliste battu
+  question_defaite: ["Une finale perdue… Que retiendrez-vous de cette soirée ?"],
+  conclusion: ["Merci. Et encore bravo.", "C'était… un honneur. À vous les studios."],
+};
+// Les réponses du joueur (texte seulement, pas de voix).
+export const REPONSES_INTERVIEW = [
+  "Je n'ai fait que jouer mon jeu.",
+  "Le Pierre, c'est une philosophie.",
+  "Je dédie cette victoire à ma mère.",
+  "Je dédie cette victoire à ma grand-mère.",
+  "Je dédie cette victoire à mon chat.",
+  "Je dédie cette victoire à mon chien.",
+  "Je savais. Depuis le premier signe, je savais.",
+  "Respect à mon adversaire. Digne. Pas assez, mais digne.",
+  "Je ne commente pas les Ciseaux.",
+  "C'est une victoire collective. Même en solo.",
+  "Je vous ai compris.",
+];
+export const REPONSES_DEFAITE = [
+  "Non, je ne regrette rien.",
+  "Je reviendrai.",
+  "Bravo à mon adversaire. Enfin… bravo.",
+  "Je n'ai pas envie d'en parler.",
+];

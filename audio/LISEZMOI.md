@@ -1,4 +1,4 @@
-# Fichiers audio de l'arbitre et du commentateur
+# Fichiers audio des voix du match
 
 Dépose ici les enregistrements au format **MP3**, nommés exactement comme
 l'identifiant de la réplique dans le script, par exemple :

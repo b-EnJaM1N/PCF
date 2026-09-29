@@ -34,6 +34,11 @@ export function profilParDefaut() {
     decisifsJoues: 0, decisifsGagnes: 0, remontadas: 0,
     meilleureSeriePoints: 0, meilleureRemontee: 0, plusLongMatch: 0,
     derniers: [], titres: {},
+    // Pour les surnoms et les commentaires (voir surnoms.js)
+    genre: "m",                               // « il » ou « elle » dans la bouche des commentateurs
+    surnom: null,                             // { nom, complement } choisis, sinon les plus rares
+    egalites: 0, autos: 0, fannys: 0, ballesDeMatchSauvees: 0, lecturesReussies: 0,
+    heures: { nuit: 0, matin: 0, dimanche: 0 },
   };
 }
 
@@ -41,7 +46,8 @@ export function profilParDefaut() {
 export function normaliserProfil(brut) {
   const d = profilParDefaut();
   if (!brut || typeof brut !== "object") return d;
-  const P = { ...d, ...brut, av: { ...d.av, ...(brut.av || {}) } };
+  const P = { ...d, ...brut, av: { ...d.av, ...(brut.av || {}) }, heures: { ...d.heures, ...(brut.heures || {}) } };
+  if (P.genre !== "f") P.genre = "m";
   for (const k of Object.keys(d)) if (Array.isArray(d[k]) && !Array.isArray(P[k])) P[k] = d[k];
   return P;
 }
@@ -82,6 +88,16 @@ export function enregistrerMatch(P, r) {
   P.meilleureSeriePoints = Math.max(P.meilleureSeriePoints, stats.meilleureSerie);
   P.meilleureRemontee = Math.max(P.meilleureRemontee, stats.meilleureRemontee);
   P.plusLongMatch = Math.max(P.plusLongMatch, n);
+  P.egalites += c.filter(x => x.gagnant === null).length;
+  P.autos += c.filter(x => x.auto && x.auto[0]).length;
+  P.fannys += match.scoresSets.filter(([a, b]) => Math.max(a, b) === 11 && Math.min(a, b) === 0).length;
+  P.ballesDeMatchSauvees += stats.ballesDeMatchSauvees || 0;
+  P.lecturesReussies += stats.lecturesReussies || 0;
+  const quand = new Date(r.date ?? Date.now()), h = quand.getHours(), jour = quand.getDay();
+  P.heures = { ...P.heures };
+  if (h >= 23 || h < 5) P.heures.nuit++;
+  else if (h >= 5 && h < 9) P.heures.matin++;
+  if (jour === 0 || jour === 6) P.heures.dimanche++;
   if (r.compteNiveau !== false) {
     P.elo = nouvelElo(P.elo, r.adversaire.elo, gagne);
     P.historiqueElo.push(P.elo); if (P.historiqueElo.length > 60) P.historiqueElo.shift();

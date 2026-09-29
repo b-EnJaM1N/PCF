@@ -1,4 +1,4 @@
-// Lit les répliques de l'arbitre et du commentateur.
+// Lit les répliques des voix (arbitre, commentateurs, speaker, journaliste).
 // Pour chaque réplique : si le fichier audio/<id>.mp3 existe, on le joue ;
 // sinon, si l'option est activée, on utilise la voix de synthèse du téléphone.
 // Sans fichier ni synthèse, la réplique reste seulement affichée par écrit.
@@ -83,7 +83,9 @@ export class LecteurVoix {
     if (!this.voix) this.choisirVoix();
     const u = new SpeechSynthesisUtterance(r.texte.replace(/[–-]/g, " "));
     u.lang = "fr-FR"; if (this.voix) u.voice = this.voix;
-    if (r.role === "arbitre") { u.rate = 0.88; u.pitch = 0.8; } else { u.rate = 1.08; u.pitch = 1.05; }
+    // En attendant les vraies voix, on distingue un peu les personnages.
+    const [rate, pitch] = { arbitre: [0.88, 0.8], commentateur: [1.1, 1.05], commentatrice: [0.92, 1.3], speaker: [0.95, 0.9], journaliste: [1, 1.15] }[r.role] || [1, 1];
+    u.rate = rate; u.pitch = pitch;
     u.onstart = debut; u.onend = fin; u.onerror = fin;
     synth.speak(u);
   }
