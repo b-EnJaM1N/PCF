@@ -43,8 +43,9 @@
 
   <div class="view" id="viewJouer">
     <div id="hubAlertes"></div>
+    <button class="hub" data-aller="viewRapide"><span class="hub-i">⚡</span><span><b>Partie rapide</b><small>Un adversaire de ton niveau, en un clic</small></span></button>
     <button class="hub" data-aller="viewDuel"><span class="hub-i">🤝</span><span><b>Défier un ami</b><small>Un duel en direct, par pseudo ou par lien</small></span></button>
-    <button class="hub" data-aller="viewSng"><span class="hub-i">⚡</span><span><b>Sit &amp; Go</b><small>Tournois express publics : départ dès que la salle est pleine</small></span></button>
+    <button class="hub" data-aller="viewSng"><span class="hub-i">🏁</span><span><b>Sit &amp; Go</b><small>Tournois express publics : départ dès que la salle est pleine</small></span></button>
     <button class="hub" data-aller="viewTournois"><span class="hub-i">🏆</span><span><b>Tournois</b><small>Tes tournois en cours, tournois privés entre amis</small></span></button>
     <button class="hub" data-aller="viewMatch"><span class="hub-i">🎯</span><span><b>Entraînement</b><small>Contre les 7 bots, et le PCF Open</small></span></button>
     <p class="hint" id="hubHors" hidden style="text-align:center;margin-top:14px">Les parties en ligne demandent un compte gratuit, sans mot de passe : <button class="linkbtn" data-aller="viewProfile">le créer</button>.</p>
@@ -107,7 +108,7 @@
       <p class="news" id="endClassement" hidden></p>
       <p class="news" id="news"></p>
       <button class="btn une-btn" id="btnUne" hidden>📰 Voir la Une du journal</button>
-      <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button><button class="btn" id="revanche" hidden>Proposer une revanche</button><button class="btn alt" id="retourDuels" hidden>Retour aux duels</button><button class="btn" id="voirTournoi" hidden>Voir le tableau du tournoi</button></p>
+      <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button><button class="btn" id="revanche" hidden>Proposer une revanche</button><button class="btn alt" id="retourDuels" hidden>Retour aux duels</button><button class="btn" id="encoreRapide" hidden>Nouvelle partie rapide</button><button class="btn" id="voirTournoi" hidden>Voir le tableau du tournoi</button></p>
     </section>
 
     <section>
@@ -241,6 +242,34 @@
       </div>
 
     </div>
+  </div>
+
+  <div class="view" id="viewRapide" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
+    <section class="card" id="rapideCard" hidden>
+      <h2>⚡ Partie rapide</h2>
+      <div id="rapideChoix">
+        <p class="hint">Choisis ton format : on te trouve un adversaire humain, du niveau le plus proche du tien. Reste sur cet écran pendant la recherche.</p>
+        <div class="resultats">
+          <button class="joueur rapide-choix" data-format="officiel"><span><span class="jn">Officielle</span><span class="jd">Sets de 11, 2 sets gagnants · compte pour ton niveau officiel</span></span><span class="rapide-nb" id="rapideNb_officiel"></span></button>
+          <button class="joueur rapide-choix" data-format="eclair"><span><span class="jn">Éclair</span><span class="jd">Un set de 7 · amicale, sans effet sur le niveau</span></span><span class="rapide-nb" id="rapideNb_eclair"></span></button>
+        </div>
+        <p class="hint" id="rapideFile"></p>
+      </div>
+      <div id="rapideAttente" hidden>
+        <div class="rapide-radar" aria-hidden="true">⚡</div>
+        <p class="rapide-titre">Recherche d'un adversaire <span id="rapideChrono">0:00</span></p>
+        <p class="hint" id="rapideFormat"></p>
+        <p class="hint" id="rapideEtat" role="status"></p>
+        <div id="rapideBot" hidden>
+          <p class="sndnote">Personne n'est disponible pour l'instant. Tu peux jouer contre un bot en attendant : ce sera un bot, pas un humain, et le match ne comptera pas pour ton niveau officiel.</p>
+          <button class="btn" id="rapideBotGo">Jouer contre un bot</button>
+        </div>
+        <button class="btn alt" id="rapideAnnuler" style="margin-top:8px">Annuler la recherche</button>
+      </div>
+      <p class="locknote" id="rapideMsg" role="status"></p>
+    </section>
+    <section class="card" id="rapideHors" hidden><p class="hint">La Partie rapide se joue en ligne contre d'autres joueurs : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
   </div>
 
   <div class="view" id="viewSng" hidden>

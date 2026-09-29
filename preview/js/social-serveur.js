@@ -45,3 +45,8 @@ export const sallesSng = () => rpc("salles_sit_and_go");                        
 export const rejoindreSng = taille => rpc("rejoindre_sit_and_go", { p_taille: taille });
 export const presenceSng = () => rpc("presence_sit_and_go");                    // → mon Sit & Go, ou null
 export const quitterSng = () => rpc("quitter_sit_and_go");
+
+// Partie rapide (supabase/etape-7-partie-rapide.sql)
+export const chercherPartie = format => rpc("chercher_partie", { p_format: format });   // → { duel } ou { attente, depuis, en_attente, maintenant }
+export const quitterPartie = () => rpc("quitter_partie");
+export const fileRapide = () => rpc("file_partie_rapide");                            // → { officiel, eclair } : joueurs en attente
