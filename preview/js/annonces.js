@@ -44,7 +44,7 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
   const pool = POOLS[moment];
   if (!pool) return null;
   // Les jeux de mots sur un signe (« seul ») ne se disent que si le joueur vient de jouer ce signe.
-  const valides = pool.filter(e => !etat.dits.has(e.base) && (!e.si || CONDITIONS[e.si]?.(ctx)) && (e.seul === undefined || e.seul === ctx.signe) && (e.clin !== "cine" || !etat.cine));
+  const valides = pool.filter(e => !etat.dits.has(e.base) && (!e.si || CONDITIONS[e.si]?.(ctx)) && (e.seul === undefined || e.seul === ctx.signe) && (!e.quand || e.quand === ctx.quand) && (e.clin !== "cine" || !etat.cine));
   if (!valides.length) return null;
   // Les répliques « spéciales » passent en priorité : une condition remplie (7 fois sur 10),
   // un jeu de mots sur le signe joué (4 fois sur 10, pour qu'il reste une surprise).
@@ -128,7 +128,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
       etat.ecartMin = Math.min(etat.ecartMin, a - b);
       const obstination = n >= 3 && c[n - 1].a === c[n - 2].a && c[n - 2].a === c[n - 3].a && (n < 4 || c[n - 4].a !== c[n - 1].a);
       if (evt.balleAvant && evt.balleAvant.joueur !== g && peutCommenter(3, 0.5)) {
-        moment = evt.balleAvant.joueur === 0 ? "craquage" : "balle_sauvee";
+        moment = evt.balleAvant.joueur === 0 ? "craquage" : "balle_sauvee"; ctx.quand = evt.balleAvant.type;
         if (moment === "balle_sauvee" && evt.balleAvant.type === "match" && rng() < 0.5) moment = "main_legendaire";
       } else if (a === b && a >= 4 && etat.ecartMin <= -4 && peutCommenter(3, 0.5)) {
         moment = "remontee"; etat.ecartMin = 0;
