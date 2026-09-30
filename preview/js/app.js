@@ -7,7 +7,7 @@ import { surnomDe, NOMS, COMPLEMENTS, debloques } from "./surnoms.js";
 import { voirTournoi } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
-import { carteDe, notesDe, RARETES } from "./carte-logique.js";
+import { carteDe, notesDe, texteRang } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
 import { installerRapide } from "./ecran-rapide.js";
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
@@ -374,8 +374,7 @@ function renderCarte() {
     const c = carteDe(P, { niveauOfficiel: monClassement, surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
     const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(P.av) });
     if (jeton !== carteJeton) return;
-    const r = RARETES[c.rarete];
-    $("carteRarete").textContent = `Carte ${r.nom.toLowerCase()}. ${r.suivant}`;
+    $("carteRarete").textContent = texteRang(c.rang);
     $("carteNotes").innerHTML = notesDe(P).map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
     await preparerPartage(canvas, { img: $("carteImg"), partager: $("cartePartager"), enregistrer: $("carteEnregistrer"), msg: $("carteMsg"),
       fichier: "ma-carte.png", alt: `Carte de joueur de ${nomAffiche(P)} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
