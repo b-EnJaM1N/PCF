@@ -6,6 +6,7 @@
 //   f     : la version quand le joueur dont on parle est une joueuse (même forme que t)
 //   clin  : "sport" ou "cine" — clin d'œil, tiré plus rarement
 //   si    : condition — "onze_zero", "serie6", "trois_zero", "cinq_egalites", "balle_match", "balle_contre", "un_partout", "finale"
+//   quand : "set" ou "match" — dit seulement sur une balle de set, ou seulement sur une balle de match
 //   seul  : jeu de mots sur un signe — dit seulement si le joueur vient de jouer ce signe (0 Pierre, 1 Ciseaux, 2 Feuille)
 //   signe : pour les textes par signe, le signe de qui — "moi" (défaut) ou "adv"
 //
@@ -16,8 +17,8 @@
 export const MOMENTS = {
   craquage: [
     { r: "c", t: "Il est en train de craquer sous la pression !", f: "Elle est en train de craquer sous la pression !" },
-    { r: "c", t: "Il avait le set au bout des doigts… et il l'a laissé filer !", f: "Elle avait le set au bout des doigts… et elle l'a laissé filer !" },
-    { r: "c", t: "Chute à l'avant ! Il avait le set en poche !", f: "Chute à l'avant ! Elle avait le set en poche !", clin: "sport" },
+    { r: "c", t: "Il avait le set au bout des doigts… et il l'a laissé filer !", f: "Elle avait le set au bout des doigts… et elle l'a laissé filer !", quand: "set" },
+    { r: "c", t: "Chute à l'avant ! Il avait le set en poche !", f: "Chute à l'avant ! Elle avait le set en poche !", clin: "sport", quand: "set" },
     { r: "c", t: "Coiffé sur le poteau !", f: "Coiffée sur le poteau !", clin: "sport" },
     { r: "c", t: "Il enfourche la dernière porte !", f: "Elle enfourche la dernière porte !", clin: "sport" },
     { r: "c", t: "J'ai glissé, chef !", clin: "cine" },
@@ -28,6 +29,8 @@ export const MOMENTS = {
     { r: "d", t: "Un mental de chips.", clin: "sport" },
     { r: "d", t: "Il a vu la ligne d'arrivée. Et il a freiné. Fascinant.", f: "Elle a vu la ligne d'arrivée. Et elle a freiné. Fascinant." },
     { r: "d", t: "Il ne faut jamais vendre la Feuille avant de l'avoir jouée." },
+    { r: "c", t: "Il avait le match au bout des doigts… et il l'a laissé filer !", f: "Elle avait le match au bout des doigts… et elle l'a laissé filer !", quand: "match" },
+    { r: "c", t: "Chute à l'avant ! Il avait le match en poche !", f: "Chute à l'avant ! Elle avait le match en poche !", clin: "sport", quand: "match" },
   ],
   // Une balle de match sauvée, ou le point qui donne le titre : la main entre dans la légende.
   main_legendaire: [
