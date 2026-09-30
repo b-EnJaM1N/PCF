@@ -59,7 +59,9 @@
 - **Commentateurs** (décision) : Roland Pignon et Monique Latouffe.
 - **Nom : HandSlam** (décision). HandSlam est le nom de l'appli et des compétitions (HandSlam Open, L'Écho du HandSlam) ; le sport reste le Pierre-Feuille-Ciseaux dans la bouche des commentateurs. Marque vérifiée (INPI). L'adresse du site changera au moment de brancher le nom de domaine.
 
-## Prochain lot (validé, à faire)
+## Dernier lot : *fait (à valider)*
+
+Fait : bouton « Passer » en haut de la présentation ; cris de victoire (bulle en fin de set, en grand avec confettis en fin de match, choix dans « Ma fiche » → Mon surnom) ; nouveaux sons branchés (il reste à les créer avec ElevenLabs et à les déposer dans `app/audio/`, voir `app/audio/LISEZMOI.md`). À confirmer : l'orthographe de « Hija ! ».
 
 1. **Passer la présentation** : bouton « Passer » pendant la présentation du speaker. Contre un bot : on passe tout de suite. En duel en ligne : il faut que les deux joueurs aient appuyé (le premier voit « En attente de l'adversaire », l'autre « L'adversaire veut passer »).
 2. **Célébrations** : à la fin d'un set gagné, une bulle avec le cri du joueur et le gant qui serre le poing ; à la fin du match, le cri en grand avec des confettis aux couleurs du gant ; un cri plus fort après une balle de match sauvée. Chaque joueur choisit son cri dans « Ma fiche » ; chaque bot a le sien selon son caractère ; en duel, l'adversaire voit le cri ; les commentateurs réagissent parfois (Roland : « Ah, il y a de la voix ! » — Monique : « On l'avait entendu. »).

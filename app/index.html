@@ -92,7 +92,8 @@
     <div class="band" id="band" aria-live="polite"><div class="idle">Les annonces de l'arbitre et des commentateurs s'afficheront ici.</div></div>
 
     <div>
-      <div class="arena"><div class="hand" id="hMe">❔</div><div class="vs">contre</div><div class="hand" id="hBot">❔</div></div>
+      <div class="arena"><div class="hand" id="hMe">❔</div><div class="vs">contre</div><div class="hand" id="hBot">❔</div>
+        <div class="cri-bulle" id="criBulle" aria-live="polite" hidden><span class="cri-poing" id="criPoing"></span><span class="cri-texte" id="criTexte"></span></div></div>
       <div class="verdict" id="verdict"></div>
     </div>
     <div class="timer" id="timer" aria-hidden="true"><div id="bar"></div></div>
@@ -419,6 +420,9 @@
       <p class="lbl" id="poigneeLbl">Ma poignée de main habituelle</p>
       <div class="seg seg4" id="segPoignee" role="group" aria-labelledby="poigneeLbl"><button data-v="franche">💪 Franche</button><button data-v="normale">🤝 Normale</button><button data-v="legere">🤏 Légère</button><button data-v="froide">🧊 Froide</button></div>
       <p class="hint" id="poigneeInfo">À la fin de chaque match, tu as 3 secondes pour choisir ta poignée de main. Sinon, c'est celle-ci.</p>
+      <label class="lbl" for="inCri">Mon cri de victoire</label>
+      <select id="inCri"></select>
+      <p class="hint">Dans une bulle quand tu gagnes un set, en grand avec des confettis quand tu gagnes le match. En duel, ton adversaire le voit.</p>
     </section>
 
     <section class="card edit" id="cCompte">
@@ -478,6 +482,7 @@
 
 <div class="inter intro" id="faceoff" role="dialog" aria-modal="true" aria-label="Présentation du match">
   <div class="fo">
+    <button class="fo-passer" id="foPasser">Passer ⏭</button>
     <div class="fo-banner"><div class="fo-stage" id="foStage"></div><div class="fo-fmt" id="foFmt"></div></div>
     <p class="fo-speaker" id="foSpeaker"></p>
     <div class="fo-top">
@@ -488,6 +493,7 @@
     <div class="fo-rows" id="foRows"></div>
     <p class="fo-key" id="foKey"></p>
     <div class="fo-end">
+      <p class="fo-attente" id="foAttente" role="status" hidden></p>
       <button class="btn" id="foGo">Commencer</button>
       <button class="btn alt" id="foBack">Retour</button>
     </div>
@@ -534,6 +540,12 @@
     <div class="pm-temps" id="pmTemps"><div id="pmBarre"></div></div>
     <p class="com" id="pmCom"></p>
   </div>
+</div>
+
+<div class="celebration" id="celebration" aria-live="polite" hidden>
+  <div class="cel-confettis" id="celConfettis" aria-hidden="true"></div>
+  <div class="cel-av" id="celAv"></div>
+  <div class="cel-cri" id="celCri"></div>
 </div>
 
 <div class="inter" id="une" role="dialog" aria-modal="true" aria-label="La Une du journal">

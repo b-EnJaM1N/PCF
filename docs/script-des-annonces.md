@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (199 répliques)
+## Commentateur — vif, enthousiaste, plein de références (200 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -314,8 +314,9 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_titre_01.mp3` | Madame, c'est historique ! |
 | `commentateur_dialogue_fin_match_01.mp3` | Il n'a pas démérité ! |
 | `commentateur_dialogue_fin_match_01_f.mp3` | Elle n'a pas démérité ! |
+| `commentateur_dialogue_cri_01.mp3` | Ah, il y a de la voix ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (149 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (150 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -468,6 +469,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_serie_01.mp3` | Je vous demande de vous arrêter. |
 | `commentatrice_dialogue_titre_01.mp3` | Pas d'enflammade. Pas d'enflammade. |
 | `commentatrice_dialogue_fin_match_01.mp3` | Si. Un peu quand même. |
+| `commentatrice_dialogue_cri_01.mp3` | On l'avait entendu. |
 
 ## Speaker — voix de salle, voyelles étirées (144 répliques)
 
@@ -637,8 +639,10 @@ Fabriqués par le code en attendant. Un vrai enregistrement portant ce nom les r
 
 | Fichier | Son |
 |---|---|
-| `raquette_01.mp3` | Coup de raquette, à chaque signe joué |
 | `public_point_01.mp3` | Applaudissements courts, après chaque point |
 | `public_clameur_01.mp3` | Clameur et applaudissements nourris (balle sauvée, remontée…) |
 | `public_set_01.mp3` | Applaudissements de fin de set |
 | `public_ovation_01.mp3` | Ovation de fin de match |
+| `public_fond_01.mp3` | undefined |
+| `public_tension_01.mp3` | undefined |
+| `public_ooh_01.mp3` | undefined |
