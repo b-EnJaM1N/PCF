@@ -48,7 +48,7 @@ export function adversaireHumain(ligne) {
     titres: titresObtenus(P).length,
     av: { ...P.av, ...(ligne.avatar || {}) },
     // Pour le speaker et les commentateurs
-    surnom: surnomDe(P), genre: P.genre, fiche: P,
+    surnom: surnomDe(P), genre: P.genre, fiche: P, drapeau: ligne.drapeau || null,
   };
 }
 

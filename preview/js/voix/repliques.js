@@ -335,14 +335,48 @@ export const DIALOGUES = {
 // ---------------------------------------------------------------- le speaker
 // Les joueurs sont présentés par leur côté et leur surnom (voir surnoms.js).
 export const SPEAKER = {
-  bienvenue: ["Mesdaaames et messieuuurs… bienvenue pour ce duel !", "Mesdames et messieurs, veuillez regagner vos places. Le match va commencer."],
-  coin_jaune: ["Dans le coin jaaaune…"],
-  coin_rouge: ["Et dans le coin rouuuge…"],
+  // A. L'accueil (docs/speaker-brouillon.md, validé)
+  bienvenue: [
+    "Mesdaaames et messieuuurs… bienvenue pour ce duel !",
+    "Mesdames et messieurs, veuillez regagner vos places. Le match va commencer.",
+    "Mesdames et messieurs… bonsoir, et bienvenue sur le court central !",
+    "Le public est là… les joueurs sont là… il ne manque plus que le premier signe !",
+    "Mesdames et messieurs… éteignez vos téléphones. Enfin… pas celui-là.",
+    "Bienvenue dans le temple du Pierre-Feuille-Ciseaux !",
+    "Mesdames et messieurs, faites du bruit pour le prochain duel !",
+    "Silence dans les tribunes… les joueurs entrent sur le court.",
+  ],
+  // B. La situation du match (juste après l'accueil, quand elle s'applique)
+  revanche: ["Ils se sont déjà affrontés… et ils se retrouvent ce soir !", "Le match retour, mesdames et messieurs !", "Une revanche est dans l'air…"],
+  david_goliath: ["David… contre Goliath !", "Sur le papier, c'est déséquilibré. Mais on ne joue pas sur le papier !"],
+  coude_a_coude: ["Deux joueurs au coude à coude au classement… impossible de faire un pronostic !"],
+  compatriotes: ["Un duel entre compatriotes ! Il n'y aura pas de jaloux."],
+  nuit: ["Il est tard, mesdames et messieurs… mais le Pierre-Feuille-Ciseaux ne dort jamais !", "Bienvenue aux noctambules !"],
+  matin: ["Un duel au lever du soleil ! Les champions se lèvent tôt."],
+  dimanche: ["Le match du dimanche, mesdames et messieurs !"],
+  partie_rapide: ["Deux joueurs… un appariement… et c'est parti !", "Ils ne se connaissaient pas il y a trente secondes. Ils vont s'affronter maintenant !"],
+  officiel: ["Attention : ce match compte pour le classement officiel !", "Des points de niveau sont en jeu ce soir…"],
+  un_set: ["Un seul set… aucune seconde chance !"],
+  marathon: ["Trois sets gagnants… installez-vous confortablement, ce sera un marathon !"],
+  contre_bot: ["Un humain… contre la machine !"],
+  // C. Les coins
+  coin_jaune: ["Dans le coin jaaaune…", "À ma gauche… dans le coin jaaaune…", "Côté jaune… accueillez…"],
+  coin_rouge: ["Et dans le coin rouuuge…", "Et à ma droite… dans le coin rouuuge…", { t: "Face à lui… côté rouge…", f: "Face à elle… côté rouge…" }],
+  // D. Ce qu'on dit d'un joueur (avant son surnom)
   debutant: [{ t: "Pour son tout premier match officiel…" }],
   invaincu: [{ t: "Invaincu depuis trois rencontres…", f: "Invaincue depuis trois rencontres…" }],
+  serie: ["Sur une série de victoires impressionnante…"],
   imprevisible: [{ t: "On le dit imprévisible. On le dit dangereux…", f: "On la dit imprévisible. On la dit dangereuse…" }],
   figuration: [{ t: "Il ne vient pas pour faire de la figuration…", f: "Elle ne vient pas pour faire de la figuration…" }],
-  cloture: ["Que le meilleur gagne !", "Que le spectacle commence !"],
+  trophee: [{ t: "Il a déjà soulevé un trophée…", f: "Elle a déjà soulevé un trophée…" }],
+  habitue: ["Un habitué des grands rendez-vous…"],
+  laver_affront: [{ t: "Il revient pour laver l'affront…", f: "Elle revient pour laver l'affront…" }],
+  patron: ["Le patron de la soirée…"],
+  faim: [{ t: "Il a faim de victoire…", f: "Elle a faim de victoire…" }],
+  // E. La clôture
+  cloture: ["Que le meilleur gagne !", "Que le spectacle commence !", "Joueurs… à vos mains !", "Trois signes… deux joueurs… un seul vainqueur !",
+    "Mesdames et messieurs… que le duel commence !", "Pierre… Feuille… Ciseaux… c'est parti !"],
+  // F. Inchangé
   miroir: ["Mesdames et messieurs… ce soir, c'est un duel de jumeaux.", "Même surnom… même ambition… un seul vainqueur !", "Deux surnoms identiques. Il n'en restera qu'un."],
   quarts: ["Place aux quarts de finale !"],
   demis: ["Place aux demi-finales !"],

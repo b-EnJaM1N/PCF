@@ -2,7 +2,7 @@
 import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch } from "./annonces.js";
 import { surnomDe, NOMS, COMPLEMENTS, debloques } from "./surnoms.js";
 import { voirTournoi } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
@@ -505,13 +505,23 @@ function ouvrirFaceAFace() {
 }
 // Le speaker présente les joueurs (et les commentateurs lancent le match), par écrit et à voix haute.
 function presenterSpeaker() {
-  const f = P.faceAFace[OPP.id];
+  const f = P.faceAFace[OPP.id], humain = !!OPP.humain;
+  const niveauMoi = humain ? monClassement ?? 1200 : P.elo, niveauAdv = humain ? OPP.classement ?? 1200 : OPP.elo;
+  const monId = `h:${compteUI.session()?.user?.id}`;
+  let recents = []; try { recents = lire("speakerRecents", []) || []; } catch { /* rien */ }
   const av = annoncesAvantMatch({
-    moi: { surnom: surnomDe(P), genre: P.genre, etiquette: etiquetteDe(P) },
-    adv: OPP.humain ? { surnom: OPP.surnom, genre: OPP.genre, etiquette: etiquetteDe(OPP.fiche) } : { bot: OPP.id },
+    moi: { surnom: surnomDe(P), genre: P.genre, etiquette: etiquetteDe(P, { advId: OPP.id, niveauMoi, niveauAdv }) },
+    adv: humain ? { surnom: OPP.surnom, genre: OPP.genre, etiquette: etiquetteDe(OPP.fiche, { advId: monId, niveauMoi: niveauAdv, niveauAdv: niveauMoi }) } : { bot: OPP.id },
     tour: S.duel ? D?.tourVoix ?? null : S.tour, sng: !!(S.duel && D?.sng),
-    humain: !!OPP.humain, domination: !!(f && f.d >= f.v + 3), genre: P.genre,
+    humain, domination: !!(f && f.d >= f.v + 3), genre: P.genre,
+    situations: situationsDuMatch({
+      humain, dejaJoues: !!(f && f.v + f.d > 0), niveauMoi, niveauAdv, memePays: humain && OPP.drapeau === P.drapeau,
+      rapide: !!(D?.duel?.rapide || S.contreBotRapide), officiel: !!(S.duel && D?.duel?.classe), setsGagnants: S.match.format.setsGagnants,
+    }),
+    recents,
   });
+  // On retient les phrases dites, pour ne pas les répéter aux prochains matchs.
+  ecrire("speakerRecents", [...av.speaker, ...av.commentaires].map(l => l.id).concat(recents).slice(0, 80));
   const el = $("foSpeaker"); el.textContent = "";
   const sp = document.createElement("div"); sp.className = "speaker"; sp.textContent = av.speaker.map(l => l.texte).join(" "); el.append(sp);
   av.commentaires.forEach(l => { const d = document.createElement("div"); d.className = l.role; d.textContent = l.texte; el.append(d); });

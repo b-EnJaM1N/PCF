@@ -211,38 +211,94 @@ export function annonceDebutSet(match) {
 }
 
 // ---------------------------------------------------------------- avant le match : le speaker
-// Ce que le speaker peut dire d'un joueur, d'après sa fiche.
-export function etiquetteDe(P, rng = Math.random) {
-  if (!P || !P.matchs) return "debutant";
-  if (P.serieEnCours >= 3) return "invaincu";
-  if (P.lisibles >= 30 && indiceImprevisibilite(P.devines / P.lisibles) >= 80) return "imprevisible";
-  return rng() < 0.3 ? "figuration" : null;
+// Ce que le speaker peut dire d'un joueur, du plus marquant au plus banal.
+// rel : { advId (pour la revanche), niveauMoi, niveauAdv }
+export function etiquettesDe(P, { advId = null, niveauMoi = null, niveauAdv = null } = {}) {
+  if (!P || !P.matchs) return ["debutant"];
+  const out = [], contreLui = advId ? (P.derniers || []).find(d => d.adv === advId) : null;
+  if (contreLui && !contreLui.gagne) out.push("laver_affront");
+  if (niveauMoi !== null && niveauAdv !== null && niveauMoi - niveauAdv >= 150) out.push("patron");
+  if (P.serieEnCours >= 5) out.push("serie");
+  else if (P.serieEnCours >= 3) out.push("invaincu");
+  if (P.tournoisGagnes >= 1) out.push("trophee");
+  if (P.derniers?.[0] && !P.derniers[0].gagne && !out.includes("laver_affront")) out.push("faim");
+  if (P.lisibles >= 30 && indiceImprevisibilite(P.devines / P.lisibles) >= 80) out.push("imprevisible");
+  if (P.matchs >= 100) out.push("habitue");
+  return out;
 }
+// Une seule étiquette : souvent la plus marquante, parfois une autre, et parfois rien (sauf pour un début).
+export function etiquetteDe(P, rel = {}, rng = Math.random) {
+  const l = etiquettesDe(P, rel);
+  if (l[0] === "debutant") return "debutant";
+  if (!l.length) return rng() < 0.3 ? "figuration" : null;
+  if (rng() < 0.2) return null;
+  return rng() < 0.6 ? l[0] : l[Math.floor(rng() * l.length)];
+}
+
+// Les situations du match que le speaker peut relever.
+export function situationsDuMatch({ humain = false, dejaJoues = false, niveauMoi = null, niveauAdv = null, memePays = false,
+  date = new Date(), rapide = false, officiel = false, setsGagnants = 2 } = {}) {
+  const s = [], h = date.getHours();
+  if (humain && dejaJoues) s.push("revanche");
+  if (niveauMoi !== null && niveauAdv !== null) {
+    if (niveauAdv - niveauMoi >= 150) s.push("david_goliath");
+    else if (humain && Math.abs(niveauAdv - niveauMoi) <= 15) s.push("coude_a_coude");
+  }
+  if (humain && memePays) s.push("compatriotes");
+  if (h >= 23 || h < 5) s.push("nuit");
+  else if (h >= 5 && h < 9) s.push("matin");
+  if (date.getDay() === 0) s.push("dimanche");
+  if (rapide) s.push("partie_rapide");
+  if (officiel) s.push("officiel");
+  if (setsGagnants === 1) s.push("un_set");
+  if (setsGagnants >= 3) s.push("marathon");
+  if (!humain) s.push("contre_bot");
+  return s;
+}
+// Les plus rares d'abord : une revanche ou un David contre Goliath se remarquent plus qu'un match du dimanche.
+const RARES = ["revanche", "david_goliath", "compatriotes", "coude_a_coude", "nuit", "matin", "partie_rapide"];
+
 const TOURS = { 0: "quarts", 1: "demis", 2: "finale" };
-const pris = (cle, rng) => Math.floor(rng() * nbSpeaker(cle));
 const partiesSurnom = s => (s ? [CATALOGUE.get(idPartie(s.nom)), CATALOGUE.get(idPartie(s.complement))] : []);
 
 // moi, adv : { surnom (voir surnomDe), genre, etiquette, bot (id d'un bot) }.
 // tour : 0 quarts, 1 demies, 2 finale (ou null) ; sng : premier tour d'un Sit & Go.
+// situations : situationsDuMatch() ; recents : les phrases dites aux derniers matchs (on évite de les répéter).
 // Renvoie { speaker, commentaires } : les deux listes de répliques, dans l'ordre.
-export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = false, humain = false, domination = false, genre = "m" } = {}, rng = Math.random) {
+export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = false, humain = false, domination = false, genre = "m",
+  situations = [], recents = [] } = {}, rng = Math.random) {
+  const deja = new Set(recents);
+  // Une version de la phrase, en évitant celles déjà entendues récemment.
+  const dire = (cle, g = "m") => {
+    const n = nbSpeaker(cle), ks = [...Array(n).keys()];
+    const neuves = ks.filter(k => !deja.has(ligneSpeaker(cle, k, g).id));
+    const k = (neuves.length ? neuves : ks)[Math.floor(rng() * (neuves.length || n))];
+    return ligneSpeaker(cle, k, g);
+  };
   const sp = [];
   if (sng) sp.push(ligneSpeaker("sit_and_go", 0));
   else if (TOURS[tour]) sp.push(ligneSpeaker(TOURS[tour], 0));
-  else sp.push(ligneSpeaker("bienvenue", pris("bienvenue", rng)));
-  sp.push(ligneSpeaker("coin_jaune", 0));
+  else sp.push(dire("bienvenue"));
+  if (situations.length) {
+    const rares = situations.filter(x => RARES.includes(x));
+    const liste = rares.length && rng() < 0.7 ? rares : situations;
+    sp.push(dire(liste[Math.floor(rng() * liste.length)]));
+  }
+  sp.push(dire("coin_jaune"));
   if (moi.etiquette) sp.push(ligneSpeaker(moi.etiquette, 0, moi.genre));
   sp.push(...partiesSurnom(moi.surnom));
-  sp.push(ligneSpeaker("coin_rouge", 0));
+  sp.push(dire("coin_rouge", moi.genre));
   if (adv.bot && CATALOGUE.has(`speaker_bot_${adv.bot}_01`)) sp.push(CATALOGUE.get(`speaker_bot_${adv.bot}_01`));
   else {
     if (adv.etiquette) sp.push(ligneSpeaker(adv.etiquette, 0, adv.genre));
     sp.push(...partiesSurnom(adv.surnom));
   }
-  if (humain && moi.surnom && adv.surnom && moi.surnom.texte === adv.surnom.texte) sp.push(ligneSpeaker("miroir", pris("miroir", rng)));
-  sp.push(ligneSpeaker("cloture", pris("cloture", rng)));
+  if (humain && moi.surnom && adv.surnom && moi.surnom.texte === adv.surnom.texte) sp.push(dire("miroir"));
+  sp.push(dire("cloture"));
 
+  // Les commentateurs lancent le match (en évitant, eux aussi, ce qu'ils ont dit récemment).
   const etat = nouvelEtatAnnonces({ humain, genre });
+  recents.forEach(id => { const m = /^commentat(?:eur|rice)_dialogue_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
   let com = null;
   if (domination) com = choisir(etat, "domination", {}, rng);
   else if (humain && rng() < 0.5) com = choisir(etat, "humain", {}, rng);
