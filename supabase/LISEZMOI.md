@@ -51,6 +51,23 @@ Si un jour on relance l'étape 4, il faut relancer celui-ci ensuite.
 
 Même manipulation avec le fichier [`etape-9-poignee.sql`](etape-9-poignee.sql), **après** celui de l'étape 8.
 
+## 1 decies. Signalements et réveil quotidien (étape 10)
+
+Même manipulation avec le fichier [`etape-10-moderation.sql`](etape-10-moderation.sql), **après** celui de l'étape 9.
+
+**Voir les signalements** : dans Supabase, **Table Editor** → dans la liste à gauche, **signalements_a_traiter**.
+Chaque ligne indique le motif, le pseudo signalé, les précisions éventuelles et qui a signalé.
+
+**Retirer un pseudo toi-même** (sans attendre 3 signalements) : copie l'« identifiant_du_joueur » de la ligne,
+puis dans **SQL Editor** : `select moderer_pseudo('colle-l-identifiant-ici');` → **Run**.
+Le pseudo devient « Joueur » et ne pourra plus être repris.
+
+**Classer un signalement** (comportement, avatar) une fois traité : dans **SQL Editor** :
+`update signalements set traite = true where id = 12;` (le numéro est la colonne « id » de la vue).
+
+**Réveil quotidien** : chaque jour, GitHub appelle Supabase pour éviter la mise en pause du projet gratuit
+(onglet **Actions** du dépôt → « Réveil de Supabase »). Rien à faire.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

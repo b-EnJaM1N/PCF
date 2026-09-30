@@ -7,7 +7,8 @@ trap 'psql -d postgres -qc "drop database if exists $DB"' EXIT
 cd "$(dirname "$0")/../.."
 psql -d "$DB" -q -v ON_ERROR_STOP=1 -f tests/base-de-donnees/simulateur-supabase.sql
 for i in 1 2; do  # deux fois : les scripts doivent pouvoir être relancés sans erreur
-  for f in supabase/etape-*.sql; do
+  # dans l'ordre des étapes : 2, 3, 4, 4b… 9, 10
+  for f in $(ls supabase/etape-*.sql | sort -t- -k2,2n); do
   psql -d "$DB" -q -v ON_ERROR_STOP=1 -f "$f" 2>&1 | { grep -v -e "does not exist, skipping" -e "already exists, skipping" || true; }
   done
 done

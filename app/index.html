@@ -112,6 +112,7 @@
       <p class="news" id="news"></p>
       <button class="btn une-btn" id="btnUne" hidden>📰 Voir la Une du journal</button>
       <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button><button class="btn" id="revanche" hidden>Proposer une revanche</button><button class="btn alt" id="retourDuels" hidden>Retour aux duels</button><button class="btn" id="encoreRapide" hidden>Nouvelle partie rapide</button><button class="btn" id="voirTournoi" hidden>Voir le tableau du tournoi</button></p>
+      <p style="text-align:center;margin:6px 0 0" id="signalerZone" hidden><button class="linkbtn" id="signalerAdv">⚑ Signaler ce joueur</button></p>
     </section>
 
     <section>
@@ -495,6 +496,22 @@
     <p class="com" id="iCom"></p>
     <div class="next" id="iNext"></div>
     <button class="btn" id="iGo"></button>
+  </div>
+</div>
+
+<div class="inter" id="signaler" role="dialog" aria-modal="true" aria-labelledby="sgTitre">
+  <div class="panel sg-panel">
+    <div class="kick" id="sgTitre">Signaler <b id="sgQui"></b></div>
+    <p class="hint">Pour quelle raison ?</p>
+    <div class="sg-motifs" id="sgMotifs">
+      <button data-m="pseudo">Pseudo choquant</button><button data-m="avatar">Avatar</button><button data-m="comportement">Comportement</button>
+    </div>
+    <label class="lbl" for="sgDetail">Précisions (facultatif)</label>
+    <textarea id="sgDetail" maxlength="300" rows="3" placeholder="Ce qui s'est passé…"></textarea>
+    <p class="locknote" id="sgMsg" role="status"></p>
+    <button class="btn" id="sgEnvoyer" disabled>Envoyer le signalement</button>
+    <button class="btn alt" id="sgAnnuler">Annuler</button>
+    <p class="hint" style="margin-top:10px">Les signalements sont anonymes pour le joueur signalé. Un pseudo signalé par plusieurs joueurs est retiré automatiquement.</p>
   </div>
 </div>
 
