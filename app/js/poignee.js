@@ -35,8 +35,11 @@ export function rencontre(moi, lui) {
   return { animation: froid, ligne };
 }
 
-// Le compte des poignées de main dans la fiche (pour un futur titre « fair-play »).
-export function compterPoignee(P, style) {
+// Le compte des poignées de main dans la fiche (pour les trophées fair-play).
+// defaite : le match vient d'être perdu (une poignée chaleureuse compte alors comme « main tendue »).
+export function compterPoignee(P, style, defaite = false) {
   P.poignees = { franche: 0, normale: 0, legere: 0, froide: 0, ...(P.poignees || {}) };
-  P.poignees[styleValide(style)]++;
+  const s = styleValide(style);
+  P.poignees[s]++;
+  if (defaite && (s === "franche" || s === "normale")) P.mainsTendues = (P.mainsTendues || 0) + 1;
 }
