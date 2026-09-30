@@ -51,6 +51,24 @@ export async function desactiverNotifications() {
   return "inactif";
 }
 
+// La notification de test : la base appelle la fonction « notifier », qui envoie et note le résultat.
+// On attend ce résultat (jusqu'à ~12 s) pour dire ce qui marche, ou ce qui bloque.
+export async function testerNotification(attendre = ms => new Promise(ok => setTimeout(ok, ms))) {
+  const rpc = (nom, args) => essayer(async () => verifier(await clientSupabase().rpc(nom, args)));
+  const id = await rpc("tester_notification");
+  for (let k = 0; k < 12; k++) {
+    await attendre(1000);
+    const e = await rpc("etat_notification", { p_id: id }).catch(() => null);
+    if (e?.partie && e.resultat) return { ok: /^[1-9]/.test(e.resultat), resultat: e.resultat };
+  }
+  return { ok: false, resultat: null };
+}
+export function texteTest(r) {
+  if (!r.resultat) return "❌ La fonction « notifier » n'a pas répondu. Dans Supabase : vérifie qu'elle existe sous ce nom exact, et que « Verify JWT » est désactivé dans ses réglages.";
+  if (r.ok) return `✅ Notification envoyée (${r.resultat}). Tu devrais la voir apparaître. Si ce n'est pas le cas, vérifie que les notifications de ton navigateur ne sont pas coupées dans les réglages du téléphone.`;
+  return `❌ La fonction a répondu, mais l'envoi a échoué (${r.resultat}). Désactive puis réactive les notifications, et réessaie.`;
+}
+
 // À chaque connexion : si ce téléphone est abonné, on le rattache au compte connecté.
 export async function rattacherAbonnement() {
   if (!notificationsPossibles() || Notification.permission !== "granted") return;

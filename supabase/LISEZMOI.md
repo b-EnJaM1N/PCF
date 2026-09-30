@@ -86,6 +86,15 @@ Deux choses à faire, dans cet ordre :
 Aucune clé à copier : la fonction crée elle-même ses clés d'envoi au premier appel et les garde dans la base.
 Pour vérifier : dans l'appli, **Options (⚙️)** → **Notifications** → **Activer les notifications**.
 
+## 1 duodecies. Notification de test (étape 12)
+
+1. Même manipulation que d'habitude avec [`etape-12-test-notification.sql`](etape-12-test-notification.sql).
+2. **Mettre à jour la fonction « notifier »** : **Edge Functions** → **notifier** → onglet **Code** →
+   remplace tout le code par la nouvelle version de [`functions/notifier/index.ts`](functions/notifier/index.ts) →
+   **Deploy** (les réglages, dont « Verify JWT » désactivé, sont conservés).
+
+Ensuite, dans l'appli : **Options (⚙️)** → **Notifications** → **Envoyer une notification de test**.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

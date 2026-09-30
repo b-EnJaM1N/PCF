@@ -5,7 +5,8 @@
 //
 // Deux usages :
 //  * { action: "cle" }      → renvoie la clé publique d'envoi (le téléphone en a besoin pour s'abonner) ;
-//  * { notification: 123 }  → envoie la notification n° 123 (inscrite par la base, voir etape-11-notifications.sql).
+//  * { notification: 123 }  → envoie la notification n° 123 (inscrite par la base, voir etape-11-notifications.sql)
+//                             et note le résultat (etape-12-test-notification.sql).
 // Les clés d'envoi sont créées ici au premier appel et gardées dans la base (table config_push) :
 // aucune clé secrète n'est écrite dans le code. Chaque notification n'est envoyée qu'une fois.
 
@@ -22,6 +23,9 @@ export const texteFormat = (points: number, sets: number) =>
 
 // evenement : "defi" | "accepte" | "tournoi" ; duel : la ligne du duel ; adv : { pseudo, numero } de l'adversaire.
 export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }) {
+  if (evenement === "test") return {
+    titre: "🔔 Notification de test", texte: "Si tu lis ceci, les notifications marchent sur ce téléphone !", url: "./", tag: "test",
+  };
   const qui = `${adv.pseudo}#${adv.numero}`;
   if (evenement === "defi") return {
     titre: `⚔️ ${qui} te défie !`,
@@ -66,14 +70,17 @@ async function servir(req: Request) {
   const { data: notif } = await sb.from("notifications").update({ envoye_le: new Date().toISOString() })
     .eq("id", id).is("envoye_le", null).select("duel_id, joueur, evenement").maybeSingle();
   if (!notif) return reponse({ ok: true, deja: true });
-  const { data: duel } = await sb.from("duels").select("*").eq("id", notif.duel_id).single();
-  const advId = duel.j0 === notif.joueur ? duel.j1 : duel.j0;
-  const { data: adv } = await sb.from("profils").select("pseudo, numero").eq("id", advId).single();
+  let duel = null, adv = null;
+  if (notif.duel_id) {
+    ({ data: duel } = await sb.from("duels").select("*").eq("id", notif.duel_id).single());
+    const advId = duel.j0 === notif.joueur ? duel.j1 : duel.j0;
+    ({ data: adv } = await sb.from("profils").select("pseudo, numero").eq("id", advId).single());
+  }
   const m = message(notif.evenement, duel, adv || { pseudo: "Un joueur", numero: 0 });
 
   webpush.setVapidDetails(ADRESSE_APPLI, cles.publique, cles.privee);
   const { data: abonnements } = await sb.from("abonnements_push").select("endpoint, p256dh, auth").eq("joueur", notif.joueur);
-  let envoyees = 0;
+  let envoyees = 0; const erreurs: string[] = [];
   for (const a of abonnements || []) {
     try {
       await webpush.sendNotification({ endpoint: a.endpoint, keys: { p256dh: a.p256dh, auth: a.auth } }, JSON.stringify(m), { TTL: 600 });
@@ -81,8 +88,12 @@ async function servir(req: Request) {
     } catch (e: any) {
       // Appareil désabonné (application désinstallée, notifications coupées) : on l'oublie.
       if (e?.statusCode === 404 || e?.statusCode === 410) await sb.from("abonnements_push").delete().eq("endpoint", a.endpoint);
+      erreurs.push(e?.statusCode ? `refus ${e.statusCode}` : String(e?.message || e).slice(0, 80));
     }
   }
+  // Le résultat, lisible par l'appli (notification de test) : « 1 appareil sur 1 », ou l'erreur rencontrée.
+  const total = (abonnements || []).length;
+  await sb.from("notifications").update({ resultat: `${envoyees} appareil${envoyees > 1 ? "s" : ""} sur ${total}${erreurs.length ? ` (${erreurs.join(", ")})` : ""}` }).eq("id", id);
   return reponse({ ok: true, envoyees });
 }
 
