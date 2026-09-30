@@ -34,7 +34,12 @@ export async function activerNotifications() {
   const permission = await Notification.requestPermission();
   if (permission !== "granted") return permission === "denied" ? "refuse" : "inactif";
   const { data, error } = await clientSupabase().functions.invoke("notifier", { body: { action: "cle" } });
-  if (error || !data?.cle) throw new Error("Le service de notifications ne répond pas. Réessaie plus tard.");
+  if (error || !data?.cle) {
+    // On donne le détail : il aide à trouver ce qui bloque (fonction absente, erreur dans son code…).
+    let detail = error?.message || "réponse sans clé";
+    try { const r = error?.context; if (r?.status) detail = `erreur ${r.status}${r.statusText ? ` ${r.statusText}` : ""}`; } catch { /* rien */ }
+    throw new Error(`Le service de notifications ne répond pas (${detail}). Réessaie plus tard.`);
+  }
   const reg = await navigator.serviceWorker.ready;
   let abo = await reg.pushManager.getSubscription();
   if (!abo) abo = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: octetsDepuisBase64Url(data.cle) });

@@ -70,7 +70,7 @@ async function servir(req: Request) {
   const { data: notif } = await sb.from("notifications").update({ envoye_le: new Date().toISOString() })
     .eq("id", id).is("envoye_le", null).select("duel_id, joueur, evenement").maybeSingle();
   if (!notif) return reponse({ ok: true, deja: true });
-  let duel = null, adv = null;
+  let duel: any = null, adv: any = null;
   if (notif.duel_id) {
     ({ data: duel } = await sb.from("duels").select("*").eq("id", notif.duel_id).single());
     const advId = duel.j0 === notif.joueur ? duel.j1 : duel.j0;
