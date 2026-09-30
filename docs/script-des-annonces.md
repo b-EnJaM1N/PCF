@@ -109,7 +109,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (193 répliques)
+## Commentateur — vif, enthousiaste, plein de références (197 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -124,6 +124,10 @@ restent lus par la voix de synthèse.
 | `commentateur_craquage_05.mp3` | Il enfourche la dernière porte ! |
 | `commentateur_craquage_05_f.mp3` | Elle enfourche la dernière porte ! |
 | `commentateur_craquage_06.mp3` | J'ai glissé, chef ! |
+| `commentateur_craquage_07.mp3` | Il avait le match au bout des doigts… et il l'a laissé filer ! |
+| `commentateur_craquage_07_f.mp3` | Elle avait le match au bout des doigts… et elle l'a laissé filer ! |
+| `commentateur_craquage_08.mp3` | Chute à l'avant ! Il avait le match en poche ! |
+| `commentateur_craquage_08_f.mp3` | Chute à l'avant ! Elle avait le match en poche ! |
 | `commentateur_main_legendaire_01.mp3` | La main du siècle ! |
 | `commentateur_main_legendaire_02.mp3` | Une main pour l'histoire ! |
 | `commentateur_main_legendaire_03.mp3` | La main du destin ! |

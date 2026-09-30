@@ -224,3 +224,18 @@ test("le speaker ne répète pas les phrases des derniers matchs", () => {
   }
   assert.equal(accueils.size, 8, "8 matchs, 8 accueils différents");
 });
+
+test("sur une balle de match, on ne parle pas de « set »", () => {
+  // Troisième set décisif : le joueur a une balle de match et la laisse filer, plusieurs fois.
+  for (let k = 0; k < 40; k++) {
+    const m = nouveauMatch({ pointsParSet: 7, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = rngFixe(k);
+    const coup = g => annoncerCoup(m, g ? jouerCoup(m, PIERRE, CISEAUX) : jouerCoup(m, CISEAUX, PIERRE), etat, {}, rng);
+    for (let i = 0; i < 7; i++) coup(true);           // 1er set pour moi
+    for (let i = 0; i < 7; i++) coup(false);          // 2e set pour l'adversaire
+    for (let i = 0; i < 6; i++) coup(true);           // 6–0 : balle de match
+    for (let i = 0; i < 6; i++) {                     // l'adversaire les sauve une à une
+      const a = coup(false);
+      if (a.commentaire) assert.ok(!/\bset\b/.test(a.commentaire.texte), a.commentaire.texte);
+    }
+  }
+});
