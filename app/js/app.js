@@ -26,7 +26,7 @@ import { installerCompte } from "./ecran-compte.js";
 import { installerDuels } from "./ecran-duel.js";
 import { installerCercles } from "./ecran-cercles.js";
 import { installerSng } from "./ecran-sng.js";
-import { texteClassementFin } from "./social-logique.js";
+import { texteClassementFin, texteNiveau, provisoire } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
 import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel } from "./duel-logique.js";
 
@@ -53,7 +53,10 @@ const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
 let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null;
-let monClassement = null;   // niveau officiel (duels entre humains), connu une fois connecté
+let monClassement = null, mesDuelsOfficiels = 0;
+// « Niveau officiel : 1232 ? · provisoire, encore 9 duels de calibrage »
+const texteNiveauFiche = (points, joues) => `Niveau officiel : ${texteNiveau(points, joues)}` +
+  (provisoire(joues) ? ` · provisoire, encore ${10 - joues} duel${10 - joues > 1 ? "s" : ""} de calibrage` : "");   // niveau officiel (duels entre humains), connu une fois connecté
 let panneauOuvert = null, faceAFaceOuvert = false;
 
 // ---------------------------------------------------------------- son
@@ -371,7 +374,7 @@ function renderCarte() {
   clearTimeout(carteT);
   carteT = setTimeout(async () => {
     const jeton = ++carteJeton;
-    const c = carteDe(P, { niveauOfficiel: monClassement, surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
+    const c = carteDe(P, { niveauOfficiel: monClassement, provisoire: monClassement !== null && provisoire(mesDuelsOfficiels), surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
     const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(P.av) });
     if (jeton !== carteJeton) return;
     $("carteRarete").textContent = texteRang(c.rang);
@@ -586,7 +589,7 @@ function renderFiche() {
   afficherNomFiche();
   $("pTitle").textContent = dernierTitre(P);
   $("pElo").textContent = `Niveau d'entraînement : ${P.elo}`;
-  $("pClassement").hidden = monClassement === null; $("pClassement").textContent = `Niveau officiel : ${monClassement}`;
+  $("pClassement").hidden = monClassement === null; $("pClassement").textContent = monClassement === null ? "" : texteNiveauFiche(monClassement, mesDuelsOfficiels);
   $("kM").textContent = P.matchs;
   $("kW").textContent = P.matchs ? Math.round(100 * P.victoires / P.matchs) + " %" : "–";
   $("kS").textContent = P.serieEnCours;
@@ -1009,7 +1012,8 @@ function terminerDuel(duel) {
   D.arret?.(); clearInterval(D.boucle); clearTimeout(D.decompte); arreterMinuteur(); boutons(false);
   if (faceAFaceOuvert) fermerFaceAFace();
   if (panneauOuvert) fermerPanneau();
-  const cl = texteClassementFin(duel, D.moi);
+  let cl = texteClassementFin(duel, D.moi);
+  if (cl && duel.classement_apres && provisoire(mesDuelsOfficiels)) cl += " · calibrage : ta variation compte double";
   $("endClassement").textContent = cl; $("endClassement").hidden = !cl;
   cerclesUI?.rafraichir();
   if (duel.fin !== "score" || !S.match.termine) {
@@ -1063,9 +1067,10 @@ cerclesUI = installerCercles({
   ouvrirOnglet,
   defier: p => duelsUI.defier(p),
   lancerDuel,
-  surClassement: points => {
-    monClassement = points;
-    $("pClassement").hidden = points === null; $("pClassement").textContent = `Niveau officiel : ${points}`;
+  surClassement: (points, joues = 0) => {
+    monClassement = points; mesDuelsOfficiels = joues;
+    $("pClassement").hidden = points === null;
+    $("pClassement").textContent = points === null ? "" : texteNiveauFiche(points, joues);
     renderCarte();
   },
 });

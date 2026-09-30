@@ -11,6 +11,16 @@ export const variationClassement = (gagnant, perdant) =>
   Math.round(K_ELO * (1 - 1 / (1 + Math.pow(10, (perdant - gagnant) / 400))));
 
 // Ce que le joueur « moi » (0 ou 1) voit à la fin d'un duel.
+// Les 10 premiers duels officiels : le niveau est « provisoire » (il bouge deux fois plus vite, voir supabase/etape-8-calibrage.sql).
+export const CALIBRAGE = 10;
+export const provisoire = joues => (joues ?? 0) < CALIBRAGE;
+export const texteNiveau = (points, joues) => (provisoire(joues) ? `${points} ?` : `${points}`);
+export function texteCalibrage(joues) {
+  const reste = CALIBRAGE - (joues ?? 0);
+  if (reste <= 0) return "";
+  return `Niveau provisoire : encore ${reste} duel${reste > 1 ? "s" : ""} officiel${reste > 1 ? "s" : ""} de calibrage, pendant lesquels ton niveau bouge deux fois plus vite.`;
+}
+
 export function texteClassementFin(duel, moi) {
   if (!duel) return "";
   if (duel.classement_avant && duel.classement_apres) {

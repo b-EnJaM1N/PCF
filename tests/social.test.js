@@ -52,3 +52,10 @@ test("format d'un duel : classé ou amical", () => {
 });
 
 test("rangs", () => { assert.equal(rang(1), "1er"); assert.equal(rang(2), "2e"); assert.equal(rang(11), "11e"); });
+
+test("calibrage : le niveau est provisoire pendant les 10 premiers duels officiels", async () => {
+  const { texteNiveau, texteCalibrage, provisoire } = await import("../app/js/social-logique.js");
+  assert.equal(texteNiveau(1200, 0), "1200 ?"); assert.equal(texteNiveau(1264, 9), "1264 ?"); assert.equal(texteNiveau(1264, 10), "1264");
+  assert.ok(provisoire(undefined)); assert.ok(!provisoire(12));
+  assert.match(texteCalibrage(9), /encore 1 duel officiel de calibrage/); assert.equal(texteCalibrage(10), "");
+});
