@@ -314,7 +314,7 @@ function finir() {
   // « La Une » : on garde de quoi raconter ce match.
   S.pourUne = n && !special ? {
     etape: S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.classe ? "officielle" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
-      : enTournoi ? `${tourDe(T, S.tour).singulier} du PCF Open` : "Match d'entraînement",
+      : enTournoi ? `${tourDe(T, S.tour).singulier} du HandSlam Open` : "Match d'entraînement",
     finale: !!S.annonces.finale, numero: P.matchs,
   } : null;
   $("btnUne").hidden = !S.pourUne;
@@ -817,8 +817,8 @@ function renderTableau() {
   $("bracket").innerHTML = h;
   const mm = monMatch(T);
   if (T.fini) {
-    $("tMsg").textContent = T.champion === "moi" ? "🏆 Tu remportes le PCF Open ! Le titre est à toi."
-      : `🏆 ${infoJoueur(T.champion).nom} remporte le PCF Open.` + (T.elimine ? ` Ton parcours s'arrête en ${tourDe(T, T.tourElimination).nom.toLowerCase()}.` : "");
+    $("tMsg").textContent = T.champion === "moi" ? "🏆 Tu remportes le HandSlam Open ! Le titre est à toi."
+      : `🏆 ${infoJoueur(T.champion).nom} remporte le HandSlam Open.` + (T.elimine ? ` Ton parcours s'arrête en ${tourDe(T, T.tourElimination).nom.toLowerCase()}.` : "");
     $("tPlay").textContent = "Nouveau tournoi"; $("tQuit").textContent = "Retour à l'accueil";
   } else if (mm) {
     const adv = infoJoueur(mm.a === "moi" ? mm.b : mm.a);
@@ -828,7 +828,7 @@ function renderTableau() {
     $("tQuit").textContent = "Abandonner le tournoi";
   }
 }
-// Le PCF Open à 8 ou à 16 joueurs.
+// Le HandSlam Open à 8 ou à 16 joueurs.
 let tailleOpen = lire("tailleOpen", 8) === 16 ? 16 : 8;
 const renderTailleOpen = () => document.querySelectorAll("#segOpen button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === tailleOpen)));
 document.querySelectorAll("#segOpen button").forEach(b => b.addEventListener("click", () => { tailleOpen = +b.dataset.v; ecrire("tailleOpen", tailleOpen); renderTailleOpen(); }));

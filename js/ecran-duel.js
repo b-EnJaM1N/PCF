@@ -129,9 +129,9 @@ export function installerDuels(ctx) {
   // ------------------------------------------------ défi par lien
   async function partager(code) {
     const url = lienDefi(base(), code);
-    const texte = "Je te défie à PCF, le Pierre-Ciseaux-Feuille en sets de 11 ! Clique pour relever le défi :";
+    const texte = "Je te défie sur HandSlam, le Pierre-Feuille-Ciseaux en sets de 11 ! Clique pour relever le défi :";
     try {
-      if (navigator.share) { await navigator.share({ title: "Défi PCF", text: texte, url }); return; }
+      if (navigator.share) { await navigator.share({ title: "Défi HandSlam", text: texte, url }); return; }
     } catch (e) { if (e && e.name === "AbortError") return; }
     try { await navigator.clipboard.writeText(url); dire("Lien copié ! Colle-le dans WhatsApp ou un SMS."); }
     catch { dire(""); }
