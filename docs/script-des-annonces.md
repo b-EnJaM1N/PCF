@@ -457,7 +457,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_titre_01.mp3` | Pas d'enflammade. Pas d'enflammade. |
 | `commentatrice_dialogue_fin_match_01.mp3` | Si. Un peu quand même. |
 
-## Speaker — voix de salle, voyelles étirées (135 répliques)
+## Speaker — voix de salle, voyelles étirées (144 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -519,11 +519,20 @@ restent lus par la voix de synthèse.
 | `speaker_miroir_01.mp3` | Mesdames et messieurs… ce soir, c'est un duel de jumeaux. |
 | `speaker_miroir_02.mp3` | Même surnom… même ambition… un seul vainqueur ! |
 | `speaker_miroir_03.mp3` | Deux surnoms identiques. Il n'en restera qu'un. |
+| `speaker_huitiemes_01.mp3` | Place aux huitièmes de finale ! |
 | `speaker_quarts_01.mp3` | Place aux quarts de finale ! |
 | `speaker_demis_01.mp3` | Place aux demi-finales ! |
 | `speaker_finale_01.mp3` | Mesdames et messieurs… voici… la finaaale ! |
 | `speaker_sit_and_go_01.mp3` | Les portes sont fermées. Le tournoi commence. Un seul sortira vainqueur. |
 | `speaker_champion_01.mp3` | Mesdames et messieurs… votre champion ! |
+| `speaker_bot_bambi_01.mp3` | Bambi ! |
+| `speaker_bot_papyrus_01.mp3` | Papyrus ! |
+| `speaker_bot_tictac_01.mp3` | Tic-Tac ! |
+| `speaker_bot_rancune_01.mp3` | Rancune ! |
+| `speaker_bot_bluffeur_01.mp3` | Le Bluffeur ! |
+| `speaker_bot_mante_01.mp3` | La Mante ! |
+| `speaker_bot_nemesis_01.mp3` | Némésis ! |
+| `speaker_bot_titan_01.mp3` | Titan ! |
 | `speaker_bot_rocky_01.mp3` | Rocky ! |
 | `speaker_bot_miroir_01.mp3` | Miroir ! |
 | `speaker_bot_cyclo_01.mp3` | Cyclo ! |

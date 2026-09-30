@@ -1,6 +1,6 @@
 // Écran principal : relie les règles, les bots, les annonces, le son et la fiche joueur.
 import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
-import { BOTS, botParId, choisirCoup } from "./bots.js";
+import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch } from "./annonces.js";
 import { surnomDe, NOMS, COMPLEMENTS, debloques } from "./surnoms.js";
@@ -14,7 +14,7 @@ import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
-import { TOURS, TOUR_SINGULIER, SETS_PAR_TOUR, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
+import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { presentation } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, PAYS } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
@@ -41,7 +41,7 @@ if (!POINTS_PAR_SET.includes(fmt.len)) fmt.len = 11;
 if (![1, 2, 3].includes(fmt.win)) fmt.win = 2;
 const lenTournoi = () => (fmt.len >= 7 ? fmt.len : 11);   // le tournoi se joue en sets de 11 ou de 7 points
 let WIN = fmt.win;                               // sets gagnants du match en cours (le tournoi l'impose)
-let amicalId = botParId(lire("adversaire")) ? lire("adversaire") : "stratege";
+let amicalId = botParId(lire("adversaire")) ? lire("adversaire") : "tictac";   // un adversaire proche du niveau de départ (1200)
 let OPP = botParId(amicalId);
 let P = normaliserProfil(lire("profil"));
 let T = lire("tournoi");
@@ -172,7 +172,7 @@ function jouer(signe, auto = false) {
   const m = S.match;
   // Le bot choisit sans connaître le coup du joueur.
   const histBot = m.coups.map(c => ({ moi: c.b, adv: c.a, res: c.gagnant === null ? "e" : c.gagnant === 1 ? "g" : "p" }));
-  const signeBot = choisirCoup(OPP, histBot);
+  const signeBot = choisirCoup(OPP, histBot, Math.random, contexteBot(m));
   ambiance.raquette(signe);
   afficherCoup(signe, signeBot, [auto, false]);
 }
@@ -302,13 +302,13 @@ function finir() {
   const nouveaux = n ? enregistrerMatch(P, {
     match: m, stats: S.stats, devines: S.suivi.devines, lisibles: S.suivi.lisibles,
     adversaire: { id: OPP.id, elo: OPP.elo, nom: S.duel ? `${OPP.nom}#${OPP.numero}` : OPP.nom },
-    finaleTournoi: enTournoi && S.tour === 2, compteNiveau: !S.duel,
+    finaleTournoi: enTournoi && tourDe(T, S.tour).finale, compteNiveau: !S.duel,
   }) : [];
   sauverP(); rafraichirAvatars(); afficherBilan();
   // « La Une » : on garde de quoi raconter ce match.
   S.pourUne = n && !special ? {
-    etape: S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.classe ? "officielle" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.tourVoix === 2 ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
-      : enTournoi ? `${TOUR_SINGULIER[S.tour]} du PCF Open` : "Match d'entraînement",
+    etape: S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.classe ? "officielle" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
+      : enTournoi ? `${tourDe(T, S.tour).singulier} du PCF Open` : "Match d'entraînement",
     finale: !!S.annonces.finale, numero: P.matchs,
   } : null;
   $("btnUne").hidden = !S.pourUne;
@@ -321,7 +321,7 @@ function finir() {
   $("voirTournoi").hidden = !tournoiId;
   if (!S.duel) $("endClassement").hidden = true;
   $("abandonDuelZone").hidden = true;
-  if (enTournoi) $("tNext").textContent = gagne ? (S.tour === 2 ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
+  if (enTournoi) $("tNext").textContent = gagne ? (tourDe(T, S.tour).finale ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
   $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (t.debloque ? ` (débloque ${t.debloque})` : "")).join(", ") + " !" : "";
   $("end").scrollIntoView({ behavior: reduitMouvement() ? "auto" : "smooth", block: "start" });
   // Après une finale (tournoi solo ou en ligne) : l'interview du journaliste.
@@ -416,7 +416,7 @@ function afficherBilan() {
 function nouvelleSeance() {
   voix.arreter(); arreterMinuteur(); if (S) clearTimeout(S.decompte);
   const mm = monMatch(T);
-  if (mm) { WIN = SETS_PAR_TOUR[T.tour]; OPP = botParId(mm.a === "moi" ? mm.b : mm.a); }
+  if (mm) { WIN = tourDe(T).sets; OPP = botParId(mm.a === "moi" ? mm.b : mm.a); }
   else if (!T) { WIN = fmt.win; OPP = botParId(amicalId); }
   S = {
     match: nouveauMatch({ pointsParSet: T ? lenTournoi() : fmt.len, setsGagnants: WIN }),
@@ -468,7 +468,7 @@ let minuteriesIntro = [], voixIntro = 0;
 function ouvrirFaceAFace() {
   $("startCard").hidden = true; $("tourCard").hidden = true;
   try { ambiance.initialiser(); } catch { /* le match se joue aussi sans son */ } // geste de l'utilisateur : le son peut démarrer
-  const pr = presentation(P, OPP, { tour: S.tour, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN, classementMoi: monClassement, classe: D?.duel?.classe !== false, tournoi: !!D?.duel?.tournoi_id });
+  const pr = presentation(P, OPP, { tour: S.tour !== null && T ? tourDe(T, S.tour).singulier : null, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN, classementMoi: monClassement, classe: D?.duel?.classe !== false, tournoi: !!D?.duel?.tournoi_id });
   $("foGo").disabled = false; $("foGo").textContent = "Commencer";
   $("foBack").textContent = S.duel ? "Abandonner le duel" : "Retour";
   $("foStage").textContent = pr.bandeau; $("foFmt").textContent = pr.format;
@@ -482,7 +482,7 @@ function ouvrirFaceAFace() {
   $("foKey").innerHTML = `${esc(pr.cle)} Tu joues <b>côté jaune</b>.`;
   $("foSurMe").textContent = surnomDe(P).texte;
   $("foSurBot").textContent = OPP.humain && OPP.surnom ? OPP.surnom.texte : "";
-  if (!S.duel) S.annonces.finale = S.tour === 2;
+  if (!S.duel) S.annonces.finale = S.tour !== null && !!T && tourDe(T, S.tour).finale;
   presenterSpeaker();
 
   // Chorégraphie : bandeau, entrée des joueurs, VS (et le public applaudit), puis les stats une à une.
@@ -511,7 +511,7 @@ function presenterSpeaker() {
   const av = annoncesAvantMatch({
     moi: { surnom: surnomDe(P), genre: P.genre, etiquette: etiquetteDe(P, { advId: OPP.id, niveauMoi, niveauAdv }) },
     adv: humain ? { surnom: OPP.surnom, genre: OPP.genre, etiquette: etiquetteDe(OPP.fiche, { advId: monId, niveauMoi: niveauAdv, niveauAdv: niveauMoi }) } : { bot: OPP.id },
-    tour: S.duel ? D?.tourVoix ?? null : S.tour, sng: !!(S.duel && D?.sng),
+    tour: S.duel ? D?.tourVoix ?? null : S.tour !== null && T ? tourDe(T, S.tour).cle : null, sng: !!(S.duel && D?.sng),
     humain, domination: !!(f && f.d >= f.v + 3), genre: P.genre,
     situations: situationsDuMatch({
       humain, dejaJoues: !!(f && f.v + f.d > 0), niveauMoi, niveauAdv, memePays: humain && OPP.drapeau === P.drapeau,
@@ -749,7 +749,7 @@ function renderTableau() {
   let h = "";
   T.tours.forEach((R, ri) => {
     if (!R.length) return;
-    h += `<div class="rnd">${TOURS[ri]}</div>`;
+    h += `<div class="rnd">${tourDe(T, ri).nom}</div>`;
     R.forEach(m => {
       const A = infoJoueur(m.a), B = infoJoueur(m.b), cls = x => (m.v === x ? "win" : m.v ? "lose" : ""), mien = m.a === "moi" || m.b === "moi" ? " mine" : "";
       h += `<div class="bm${mien}"><div class="bp ${cls(m.a)}"><span class="mini">${avatarSVG(A.av)}</span><span class="bn">${esc(A.nom)}</span></div><div class="bs">${m.score || "vs"}</div><div class="bp r ${cls(m.b)}"><span class="bn">${esc(B.nom)}</span><span class="mini">${avatarSVG(B.av)}</span></div></div>`;
@@ -759,20 +759,26 @@ function renderTableau() {
   const mm = monMatch(T);
   if (T.fini) {
     $("tMsg").textContent = T.champion === "moi" ? "🏆 Tu remportes le PCF Open ! Le titre est à toi."
-      : `🏆 ${infoJoueur(T.champion).nom} remporte le PCF Open.` + (T.elimine ? ` Ton parcours s'arrête en ${TOURS[T.tourElimination].toLowerCase()}.` : "");
+      : `🏆 ${infoJoueur(T.champion).nom} remporte le PCF Open.` + (T.elimine ? ` Ton parcours s'arrête en ${tourDe(T, T.tourElimination).nom.toLowerCase()}.` : "");
     $("tPlay").textContent = "Nouveau tournoi"; $("tQuit").textContent = "Retour à l'accueil";
   } else if (mm) {
     const adv = infoJoueur(mm.a === "moi" ? mm.b : mm.a);
-    $("tMsg").textContent = `${TOUR_SINGULIER[T.tour]} contre ${adv.nom}, ${adv.style.toLowerCase()}. ${SETS_PAR_TOUR[T.tour]} sets gagnants.`;
-    $("tPlay").textContent = `Jouer ${T.tour === 2 ? "la finale" : T.tour === 1 ? "ma demi-finale" : "mon quart de finale"}`;
+    const tr = tourDe(T);
+    $("tMsg").textContent = `${tr.singulier} contre ${adv.nom}, ${adv.style.toLowerCase()}. ${tr.sets} sets gagnants.`;
+    $("tPlay").textContent = `Jouer ${tr.mon}`;
     $("tQuit").textContent = "Abandonner le tournoi";
   }
 }
-$("tourBtn").addEventListener("click", () => { T = nouveauTournoi(P.elo); sauverT(); nouvelleSeance(); });
+// Le PCF Open à 8 ou à 16 joueurs.
+let tailleOpen = lire("tailleOpen", 8) === 16 ? 16 : 8;
+const renderTailleOpen = () => document.querySelectorAll("#segOpen button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === tailleOpen)));
+document.querySelectorAll("#segOpen button").forEach(b => b.addEventListener("click", () => { tailleOpen = +b.dataset.v; ecrire("tailleOpen", tailleOpen); renderTailleOpen(); }));
+renderTailleOpen();
+$("tourBtn").addEventListener("click", () => { T = nouveauTournoi(P.elo, tailleOpen); sauverT(); nouvelleSeance(); });
 $("tPlay").addEventListener("click", () => {
-  if (T.fini) { T = nouveauTournoi(P.elo); sauverT(); nouvelleSeance(); return; }
+  if (T.fini) { T = nouveauTournoi(P.elo, T.taille || tailleOpen); sauverT(); nouvelleSeance(); return; }
   const mm = monMatch(T); if (!mm) return;
-  OPP = botParId(mm.a === "moi" ? mm.b : mm.a); WIN = SETS_PAR_TOUR[T.tour];
+  OPP = botParId(mm.a === "moi" ? mm.b : mm.a); WIN = tourDe(T).sets;
   S.match = nouveauMatch({ pointsParSet: lenTournoi(), setsGagnants: WIN });
   S.tour = T.tour; renderFormat(); render(); rafraichirAvatars(); ouvrirFaceAFace();
 });
@@ -854,9 +860,9 @@ async function reperesTournoi(duel) {
     const t = await voirTournoi(duel.tournoi_id);
     const m = (t?.matchs || []).find(x => x.id === duel.tournoi_match);
     if (!D || D.id !== duel.id || !m) return;
-    D.tourVoix = { 0: 2, 1: 1, 2: 0 }[t.nb_tours - m.tour] ?? null;
+    D.tourVoix = { 0: "finale", 1: "demis", 2: "quarts", 3: "huitiemes" }[t.nb_tours - m.tour] ?? null;
     D.sng = t.mode === "direct" && m.tour === 1;
-    S.annonces.finale = D.tourVoix === 2;
+    S.annonces.finale = D.tourVoix === "finale";
     if (faceAFaceOuvert) presenterSpeaker();
   } catch { /* sans réseau : présentation simple */ }
 }

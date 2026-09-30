@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { profilParDefaut, normaliserProfil, enregistrerMatch, nouvelElo, remettreAZero, estVerrouille, dernierTitre } from "../app/js/profil.js";
 import { nouvellesStats, suivreCoup } from "../app/js/stats-match.js";
-import { nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour, simulerMatch, SETS_PAR_TOUR } from "../app/js/tournoi.js";
+import { nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour, simulerMatch, tourDe } from "../app/js/tournoi.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX } from "../app/js/regles.js";
 import { rngFixe } from "./outils.js";
 
@@ -59,27 +59,37 @@ test("une fiche abîmée ou ancienne est complétée", () => {
   assert.equal(P.pseudo, "X"); assert.equal(P.av.gant, "vert"); assert.equal(P.av.fond, "court"); assert.deepEqual(P.signes, [0, 0, 0]);
 });
 
-test("tournoi : 8 joueurs, têtes de série, quarts en 2 sets, finale en 3", () => {
-  assert.deepEqual(SETS_PAR_TOUR, [2, 2, 3]);
+test("tournoi à 8 : les 7 bots les plus proches, têtes de série, quarts en 2 sets, finale en 3", () => {
   const T = nouveauTournoi(1200);
-  assert.equal(T.tours[0].length, 4);
+  assert.equal(T.taille, 8); assert.equal(T.tours.length, 3); assert.equal(T.tours[0].length, 4);
+  assert.deepEqual([0, 1, 2].map(t => [tourDe(T, t).nom, tourDe(T, t).sets]), [["Quarts de finale", 2], ["Demi-finales", 2], ["Finale", 3]]);
   const joueurs = T.tours[0].flatMap(m => [m.a, m.b]);
   assert.equal(new Set(joueurs).size, 8);
-  assert.deepEqual([T.tours[0][0].a, T.tours[0][0].b], ["professeur", "rocky"], "tête de série 1 contre 8");
+  // à 1200, les 7 bots les plus proches vont de 1050 à 1350 (Boomerang à Némésis)
+  assert.ok(!joueurs.includes("titan") && !joueurs.includes("rocky"));
+  assert.equal(T.tours[0][0].a, "nemesis", "tête de série 1");
   assert.ok(monMatch(T));
 });
 
-test("tournoi complet en gagnant tout", () => {
-  const rng = rngFixe(9), T = nouveauTournoi(1200);
-  for (let tour = 0; tour < 3; tour++) {
-    enregistrerMonMatch(T, true, [SETS_PAR_TOUR[tour], 0]);
-    terminerTour(T, 11, rng);
-  }
-  assert.ok(T.fini); assert.equal(T.champion, "moi");
+test("tournoi à 16 : toi et les 15 bots, huitièmes, quarts, demies, finale", () => {
+  const T = nouveauTournoi(1200, 16);
+  assert.equal(T.taille, 16); assert.equal(T.tours.length, 4); assert.equal(T.tours[0].length, 8);
+  assert.equal(new Set(T.tours[0].flatMap(m => [m.a, m.b])).size, 16);
+  assert.deepEqual([T.tours[0][0].a, T.tours[0][0].b], ["titan", "rocky"], "tête de série 1 contre 16");
+  assert.deepEqual([0, 1, 2, 3].map(t => tourDe(T, t).cle), ["huitiemes", "quarts", "demis", "finale"]);
+  assert.equal(tourDe(T, 3).sets, 3); assert.equal(tourDe(T, 2).mon, "ma demi-finale");
 });
 
-test("tournoi : éliminé en quart, le reste est simulé", () => {
-  const rng = rngFixe(4), T = nouveauTournoi(1200);
+test("tournoi complet en gagnant tout (8 et 16)", () => {
+  for (const taille of [8, 16]) {
+    const rng = rngFixe(9), T = nouveauTournoi(1200, taille);
+    while (!T.fini) { enregistrerMonMatch(T, true, [tourDe(T).sets, 0]); terminerTour(T, 11, rng); }
+    assert.equal(T.champion, "moi"); assert.equal(T.tours.at(-1).length, 1);
+  }
+});
+
+test("tournoi : éliminé au premier tour, le reste est simulé", () => {
+  const rng = rngFixe(4), T = nouveauTournoi(1200, 16);
   enregistrerMonMatch(T, false, [1, 2]);
   assert.ok(T.elimine); assert.equal(T.tourElimination, 0);
   while (!T.fini) terminerTour(T, 11, rng);
