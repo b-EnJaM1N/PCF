@@ -35,7 +35,7 @@ export async function activerNotifications() {
   if (permission !== "granted") return permission === "denied" ? "refuse" : "inactif";
   // La clé publique : d'abord dans la base ; sinon (toute première fois), la fonction « notifier » la crée.
   const cle = await essayer(async () => verifier(await clientSupabase().rpc("cle_publique_push"))).catch(() => null);
-  const { data, error } = cle ? { data: { cle }, error: null } : await clientSupabase().functions.invoke("notifier", { body: { action: "cle" } });
+  const { data, error } = cle ? { data: { cle }, error: null } : await clientSupabase().functions.invoke("Notifier", { body: { action: "cle" } });
   if (error || !data?.cle) {
     // On donne le détail : il aide à trouver ce qui bloque (fonction absente, erreur dans son code…).
     let detail = error?.message || "réponse sans clé";
