@@ -47,7 +47,7 @@
     <button class="hub" data-aller="viewDuel"><span class="hub-i">🤝</span><span><b>Défier un ami</b><small>Un duel en direct, par pseudo ou par lien</small></span></button>
     <button class="hub" data-aller="viewSng"><span class="hub-i">🏁</span><span><b>Sit &amp; Go</b><small>Tournois express publics : départ dès que la salle est pleine</small></span></button>
     <button class="hub" data-aller="viewTournois"><span class="hub-i">🏆</span><span><b>Tournois</b><small>Tes tournois en cours, tournois privés entre amis</small></span></button>
-    <button class="hub" data-aller="viewMatch"><span class="hub-i">🎯</span><span><b>Entraînement</b><small>Contre les 7 bots, et le PCF Open</small></span></button>
+    <button class="hub" data-aller="viewMatch"><span class="hub-i">🎯</span><span><b>Entraînement</b><small>Contre les 15 bots, et le PCF Open (8 ou 16 joueurs)</small></span></button>
     <p class="hint" id="hubHors" hidden style="text-align:center;margin-top:14px">Les parties en ligne demandent un compte gratuit, sans mot de passe : <button class="linkbtn" data-aller="viewProfile">le créer</button>.</p>
   </div>
 
@@ -66,7 +66,10 @@
         <button class="btn" id="startBtn">Commencer un match</button>
       </div>
       <div id="tourBox" hidden>
-        <p class="hint" style="margin-bottom:14px">Le PCF Open : toi et les 7 bots, en élimination directe. Quarts et demi-finales en 2 sets gagnants, finale en 3 sets gagnants, comme un Grand Chelem. Les têtes de série sont placées selon leur niveau.</p>
+        <p class="hint" style="margin-bottom:14px">Le PCF Open : un tournoi à élimination directe contre les bots. Tous les tours en 2 sets gagnants, la finale en 3 sets gagnants, comme un Grand Chelem. Les têtes de série sont placées selon leur niveau.</p>
+        <span class="fmt-lbl">Nombre de joueurs</span>
+        <div class="seg" id="segOpen"><button data-v="8">8 joueurs</button><button data-v="16">16 joueurs</button></div>
+        <p class="hint" style="margin-bottom:14px">À 8 : toi et les 7 bots les plus proches de ton niveau (3 matchs à gagner). À 16 : toi et les 15 bots (4 matchs à gagner, huitièmes de finale compris).</p>
         <button class="btn" id="tourBtn">Lancer le tournoi</button>
       </div>
     </section>
