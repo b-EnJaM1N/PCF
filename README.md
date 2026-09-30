@@ -10,8 +10,8 @@ L'application a trois onglets : **Jouer** (Défier un ami, Sit & Go, Tournois, E
 l'écran de jeu prend toute la place.
 
 
-- **Version validée** (branche `main`) : https://b-enjam1n.github.io/PCF/
-- **Version à tester** (dernière branche de travail) : https://b-enjam1n.github.io/PCF/preview/
+- **Version validée** (branche `main`) : https://handslam.fr/
+- **Version à tester** (dernière branche de travail) : https://handslam.fr/preview/
 
 Pour l'installer comme une application : ouvre le lien dans Safari (iPhone) ou Chrome (Android),
 puis « Sur l'écran d'accueil » / « Installer l'application ». Le détail est dans les Options (roue ⚙️ en haut à droite).

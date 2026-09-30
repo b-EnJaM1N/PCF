@@ -7,6 +7,7 @@ const CACHE = "pcf-" + new URL(self.registration.scope).pathname;
 const FICHIERS = [
   "./",
   "index.html",
+  "mentions.html",
   "manifest.webmanifest",
   "css/style.css",
   "js/app.js",
