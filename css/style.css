@@ -448,3 +448,11 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
   .cri-bulle, .cri-poing svg, .cel-av svg, .cel-cri { animation: none !important; }
   .cel-confettis { display: none; }
 }
+
+/* Palmarès par familles, et bandeau « Nouveau trophée » */
+.badges .famille { grid-column: 1 / -1; margin: 8px 0 -2px; font-size: 1rem; font-family: "Barlow Condensed", sans-serif; font-weight: 700; }
+.badges .famille:first-child { margin-top: 0; }
+.badges .famille small { color: var(--muted); font-weight: 500; margin-left: 4px; }
+.toast { position: fixed; left: 16px; right: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 80px); z-index: 20; max-width: 440px; margin: 0 auto;
+  background: var(--me); color: #1A1A1A; font-weight: 600; line-height: 1.35; padding: 12px 14px; border-radius: 12px; box-shadow: 0 6px 24px rgba(0, 0, 0, .45); cursor: pointer; }
+.toast[hidden] { display: none; }

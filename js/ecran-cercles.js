@@ -13,7 +13,8 @@ const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 const nomComplet = p => `${esc(p.pseudo)}<small>#${p.numero}</small>`;
 const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 
-// ctx : { compte, ouvrirOnglet(nom), defier(profil) → texte, surClassement(points ou null), lancerDuel(duel, profil) }
+// ctx : { compte, ouvrirOnglet(nom), defier(profil) → texte, surClassement(points ou null), lancerDuel(duel, profil),
+//         trophees(donnees) : trophées des cercles et tournois en ligne (voir titresEnLigne dans profil.js) }
 export function installerCercles(ctx) {
   let uid = null, minuterie = 0, recherche = 0, amis = [], cercleOuvert = null, detail = null;
   const base = () => location.origin + location.pathname;
@@ -99,6 +100,7 @@ export function installerCercles(ctx) {
     }
     if (listeAmis) { amis = listeAmis; renderAmis(); }
     if (cercles) renderCercles(cercles);
+    if (cercles || mesTournois) ctx.trophees?.({ cercles: cercles?.cercles || [], tournois: mesTournois || [] });
     if (listeAmis && cercles) {
       const n = amis.filter(a => a.recue).length + cercles.invitations.length;
       $("pastilleCercles").hidden = !n; $("pastilleCercles").textContent = n;
@@ -195,6 +197,7 @@ export function installerCercles(ctx) {
     $("cercleCreer").disabled = true;
     try {
       const c = await social.creerCercle(nom, blasonNouveau.lire());
+      ctx.trophees?.({ cree: true });
       $("inCercleNom").value = ""; $("cercleForm").hidden = true; $("cercleNouveau").hidden = false; dire("socMsg", "");
       await rafraichir();
       ouvrirCercle(c.id, "Cercle créé ! Invite maintenant tes proches avec le lien.");
@@ -233,6 +236,8 @@ export function installerCercles(ctx) {
       tournois.liste($("cTournois"), ts);
     }).catch(() => {});
     const membres = c.membres || [];
+    const moi = membres.find(m => m.id === uid);
+    if (moi) ctx.trophees?.({ duelsCercle: (moi.v || 0) + (moi.d || 0) });
     $("cBlason").innerHTML = blasonSVG(c.blason);
     $("cNom").textContent = c.nom;
     $("cInfo").textContent = `${pluriel(membres.length, "membre")} · ${pluriel(c.matchs, "duel")} entre membres`;

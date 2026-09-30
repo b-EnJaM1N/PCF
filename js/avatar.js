@@ -1,27 +1,39 @@
 // Avatar : une main stylisée (pas de photo), personnalisable.
 // Le symbole est au choix : poing fermé (Pierre), main ouverte (Feuille) ou V de la victoire (Ciseaux).
-export const FONDS = { court: ["Court", "#1F5FA8"], gazon: ["Gazon", "#2E8B57"], terre: ["Terre battue", "#C8643B"], violet: ["Violet", "#6A4C93"], ardoise: ["Ardoise", "#3B4556"], or: ["Or", "#C9971C"] };
-export const GANTS = { blanc: ["Blanc", "#F5F7FA"], jaune: ["Jaune", "#F4C542"], rouge: ["Rouge", "#E8574A"], bleu: ["Bleu", "#4DA3FF"], vert: ["Vert", "#6BD49A"], or: ["Or", "#FFD34D"] };
-export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], blanc: ["Blanc", "#F5F7FA"], bleu: ["Bleu", "#2C6FD1"], jaune: ["Jaune", "#F4C542"], noir: ["Noir", "#23262B"], or: ["Or", "#E0B12A"] };
+export const FONDS = { court: ["Court", "#1F5FA8"], gazon: ["Gazon", "#2E8B57"], terre: ["Terre battue", "#C8643B"], violet: ["Violet", "#6A4C93"], ardoise: ["Ardoise", "#3B4556"], or: ["Or", "#C9971C"], minuit: ["Minuit", "#1B2140"], rubis: ["Rubis", "#9B1B30"] };
+export const GANTS = { blanc: ["Blanc", "#F5F7FA"], jaune: ["Jaune", "#F4C542"], rouge: ["Rouge", "#E8574A"], bleu: ["Bleu", "#4DA3FF"], vert: ["Vert", "#6BD49A"], or: ["Or", "#FFD34D"], argent: ["Argent", "#C9CED6"] };
+export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], blanc: ["Blanc", "#F5F7FA"], bleu: ["Bleu", "#2C6FD1"], jaune: ["Jaune", "#F4C542"], noir: ["Noir", "#23262B"], or: ["Or", "#E0B12A"], argent: ["Argent", "#AEB6C2"] };
 export const SYMBOLES = { pierre: "✊ Pierre", feuille: "✋ Feuille", ciseaux: "✌️ Ciseaux" };
 export const MOTIFS = { uni: "Uni", rayures: "Rayures", etoile: "Étoile", eclair: "Éclair" };
+// Le motif du gant (la seconde couleur est celle du poignet).
+export const MOTIFS_GANT = { uni: "Uni", rayures: "Rayé", pois: "À pois", bicolore: "Bicolore", coutures: "Coutures dorées", bandeau: "Bandeau de champion" };
 export const PAYS = [["🇫🇷", "France"], ["🇧🇪", "Belgique"], ["🇨🇭", "Suisse"], ["🇨🇦", "Canada"], ["🇱🇺", "Luxembourg"], ["🇲🇦", "Maroc"], ["🇩🇿", "Algérie"], ["🇹🇳", "Tunisie"], ["🇸🇳", "Sénégal"], ["🇨🇮", "Côte d'Ivoire"], ["🇪🇸", "Espagne"], ["🇮🇹", "Italie"], ["🇩🇪", "Allemagne"], ["🇬🇧", "Royaume-Uni"], ["🇺🇸", "États-Unis"], ["🇧🇷", "Brésil"], ["🇯🇵", "Japon"], ["🌍", "Autre"]];
 
 let n = 0;
 export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], gant = (GANTS[a.gant] || GANTS.blanc)[1], poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
-  const id = "av" + (++n), ink = "rgba(0,0,0,.22)";
+  const id = "av" + (++n), ink = "rgba(0,0,0,.22)", gm = a.gantMotif;
+  // Gant rayé, à pois ou bicolore : on le remplit avec un motif SVG.
+  const remplissage = {
+    rayures: `<pattern id="${id}g" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="8" height="8" fill="${gant}"/><rect width="3" height="8" fill="${poignet}"/></pattern>`,
+    pois: `<pattern id="${id}g" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="${gant}"/><circle cx="4.5" cy="4.5" r="1.9" fill="${poignet}"/></pattern>`,
+    bicolore: `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0"><stop offset=".5" stop-color="${gant}"/><stop offset=".5" stop-color="${poignet}"/></linearGradient>`,
+  }[gm] || "";
+  const fillGant = remplissage ? `url(#${id}g)` : gant;
+  let deco = "";
+  if (gm === "coutures") deco = `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#E7C04A")}</g>`;
+  if (gm === "bandeau") deco = `<rect x="28" y="64" width="44" height="7" rx="2" fill="#E0B12A" stroke="${ink}" stroke-width="1.5"/><rect x="28" y="67" width="44" height="1.4" fill="rgba(255,255,255,.7)"/>`;
   let motif = "";
   if (a.motif === "rayures") motif = `<g clip-path="url(#${id})" opacity=".16">${[...Array(9)].map((_, i) => `<rect x="${i * 16 - 40}" y="-10" width="7" height="140" fill="#fff" transform="rotate(30 50 50)"/>`).join("")}</g>`;
   if (a.motif === "etoile") motif = `<path d="M50 6 L61 38 L95 38 L67 58 L78 92 L50 71 L22 92 L33 58 L5 38 L39 38 Z" fill="#fff" opacity=".14"/>`;
   if (a.motif === "eclair") motif = `<path d="M60 2 L28 54 L48 54 L36 98 L76 40 L54 40 L68 2 Z" fill="#fff" opacity=".16"/>`;
   return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath></defs>
+    <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath>${remplissage}</defs>
     <circle cx="50" cy="50" r="48" fill="${fond}"/>${motif}
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>
     <rect x="37" y="72" width="26" height="16" rx="3" fill="${poignet}" stroke="${ink}" stroke-width="1.5"/>
     <rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>
-    ${main(a.symbole, gant, ink)}
+    ${main(a.symbole, fillGant, ink)}${deco}
   </svg>`;
 }
 

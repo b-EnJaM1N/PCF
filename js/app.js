@@ -16,10 +16,10 @@ import { etatNotifications, activerNotifications, desactiverNotifications, ratta
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
-import { TITRES, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
+import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { presentation, etatPasser } from "./presentation.js";
-import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, PAYS } from "./avatar.js";
+import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE, ligneDialogue } from "./voix/script.js";
 import { Ambiance, reactionsPublic, egalitesAvantDernier } from "./ambiance.js";
@@ -358,6 +358,8 @@ function finir() {
     match: m, stats: S.stats, devines: S.suivi.devines, lisibles: S.suivi.lisibles,
     adversaire: { id: OPP.id, elo: OPP.elo, nom: S.duel ? `${OPP.nom}#${OPP.numero}` : OPP.nom },
     finaleTournoi: enTournoi && tourDe(T, S.tour).finale, compteNiveau: !S.duel,
+    abandon: !!special && !gagne, officiel: !!(S.duel && D?.duel?.classe), niveauMoi: monClassement ?? 1200, niveauAdv: OPP.classement ?? 1200,
+    finaleEnLigne: !!(S.duel && D?.tourVoix === "finale"), sitAndGo: !!(S.duel && D?.direct),
   }) : [];
   sauverP(); rafraichirAvatars(); afficherBilan();
   // « La Une » : on garde de quoi raconter ce match.
@@ -404,7 +406,7 @@ function poigneeDeMain(apres) {
     if (fait) return; fait = true; clearTimeout(minuterie);
     style = styleValide(style);
     choix.hidden = true; $("pmTemps").hidden = true;
-    compterPoignee(P, style); sauverP();
+    compterPoignee(P, style, S.match.vainqueur === 1); sauverP();
     let adv;
     if (S.duel && D) adv = await styleAdversaire(style);
     else adv = styleDuBot(OPP.id, style);
@@ -756,9 +758,15 @@ function renderFiche() {
       return `<div class="ln"><span>${d.gagne ? "✅ Victoire" : "❌ Défaite"} ${d.sets}${nom ? ` contre ${esc(nom)}` : ""}</span><span style="font-weight:400;color:var(--muted)">${esc(d.detail)}</span></div>`;
     }).join("");
   }
-  $("badges").innerHTML = TITRES.map(t => {
-    const on = !!P.titres[t.id];
-    return `<div class="badge ${on ? "on" : "off"}"><div class="bn">${on ? "🏅" : "🔒"} ${t.nom}</div><div class="bd">${t.desc}</div>${t.debloque ? `<div class="bu">Débloque ${t.debloque}</div>` : ""}</div>`;
+  // Le palmarès : les trophées, famille par famille.
+  const obtenus = TITRES.filter(t => P.titres[t.id]).length;
+  $("palmaresCompte").textContent = `${obtenus} trophée${obtenus > 1 ? "s" : ""} sur ${TITRES.length}`;
+  $("badges").innerHTML = FAMILLES.map(f => {
+    const liste = TITRES.filter(t => t.famille === f.id), n = liste.filter(t => P.titres[t.id]).length;
+    return `<h3 class="famille">${f.icone} ${f.nom} <small>${n} / ${liste.length}</small></h3>` + liste.map(t => {
+      const on = !!P.titres[t.id];
+      return `<div class="badge ${on ? "on" : "off"}"><div class="bn">${on ? "🏅" : "🔒"} ${t.nom}</div><div class="bd">${t.desc}</div>${t.debloque ? `<div class="bu">Débloque ${t.debloque}</div>` : ""}</div>`;
+    }).join("");
   }).join("");
   renderEditeur();
 }
@@ -775,7 +783,7 @@ function renderEditeur() {
       $("lockNote").textContent = ""; P.av[type] = k; sauverP(); renderFiche(); rafraichirAvatars();
     }));
   };
-  mk($("swSymbole"), "symbole", SYMBOLES, true); mk($("swBg"), "fond", FONDS); mk($("swGlove"), "gant", GANTS); mk($("swWrist"), "poignet", POIGNETS); mk($("swMotif"), "motif", MOTIFS, true);
+  mk($("swSymbole"), "symbole", SYMBOLES, true); mk($("swBg"), "fond", FONDS); mk($("swGlove"), "gant", GANTS); mk($("swWrist"), "poignet", POIGNETS); mk($("swMotif"), "motif", MOTIFS, true); mk($("swGantMotif"), "gantMotif", MOTIFS_GANT, true);
 }
 $("inFlag").innerHTML = PAYS.map(([f, n]) => `<option value="${f}">${f} ${n}</option>`).join("");
 $("inFlag").value = P.drapeau;
@@ -986,6 +994,7 @@ async function reperesTournoi(duel) {
     if (!D || D.id !== duel.id || !m) return;
     D.tourVoix = { 0: "finale", 1: "demis", 2: "quarts", 3: "huitiemes" }[t.nb_tours - m.tour] ?? null;
     D.sng = t.mode === "direct" && m.tour === 1;
+    D.direct = t.mode === "direct";
     S.annonces.finale = D.tourVoix === "finale";
     if (faceAFaceOuvert) presenterSpeaker();
   } catch { /* sans réseau : présentation simple */ }
@@ -1196,6 +1205,7 @@ cerclesUI = installerCercles({
   ouvrirOnglet,
   defier: p => duelsUI.defier(p),
   lancerDuel,
+  trophees: donnees => gagnerTrophees(accorderTitres(P, titresEnLigne(donnees))),
   surClassement: (points, joues = 0) => {
     monClassement = points; mesDuelsOfficiels = joues;
     $("pClassement").hidden = points === null;
@@ -1203,6 +1213,17 @@ cerclesUI = installerCercles({
     renderCarte();
   },
 });
+
+// Des trophées gagnés hors d'un match (cercles, tournois en ligne) : on le dit dans un bandeau.
+let toastT = 0;
+function gagnerTrophees(nouveaux) {
+  if (!nouveaux.length) return;
+  sauverP(); if (vueCourante === "viewProfile") renderFiche();
+  const t = $("toast");
+  t.textContent = `🏅 Nouveau trophée : ${nouveaux.map(x => x.nom + (x.debloque ? ` (débloque ${x.debloque})` : "")).join(", ")} !`;
+  t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 5000);
+}
+$("toast").addEventListener("click", () => { $("toast").hidden = true; });
 
 // ---------------------------------------------------------------- Sit & Go
 // Partie rapide : personne n'est disponible, on joue contre le bot du niveau le plus proche (et on le dit).
