@@ -53,12 +53,12 @@ export function texteRang({ rang, numero, suivant }) {
 }
 
 // Tout ce que la carte affiche. niveauOfficiel : le niveau des duels entre humains, s'il est connu.
-export function carteDe(P, { niveauOfficiel = null, surnom = "", titre = "" } = {}) {
+export function carteDe(P, { niveauOfficiel = null, provisoire = false, surnom = "", titre = "" } = {}) {
   const fav = P.matchs ? signeFavori(P.signes) : null;
   return {
     rarete: rangDe(P, niveauOfficiel).rang.id, rang: rangDe(P, niveauOfficiel),
     niveau: niveauOfficiel ?? P.elo,
-    typeNiveau: niveauOfficiel !== null && niveauOfficiel !== undefined ? "NIVEAU OFFICIEL" : "NIVEAU",
+    typeNiveau: niveauOfficiel === null || niveauOfficiel === undefined ? "NIVEAU" : provisoire ? "NIVEAU PROVISOIRE" : "NIVEAU OFFICIEL",
     signe: fav,                        // 0 Pierre, 1 Ciseaux, 2 Feuille, ou null
     notes: notesDe(P),
     surnom, titre,

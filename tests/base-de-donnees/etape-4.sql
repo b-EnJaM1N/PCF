@@ -119,20 +119,20 @@ select pg_temp.verifier((select voir_cercle(pg_temp.v('cercle')::uuid)->>'nom' =
 -- 4. Niveau officiel : un duel officiel
 insert into t select 'd1', pg_temp.duel_complet(:'A', :'B', true);
 select pg_temp.en_tant_que(:'B');
-select pg_temp.verifier((select classement_avant = '{1200,1200}' and classement_apres = '{1216,1184}' and classement_motif is null
-  from duels where id = pg_temp.v('d1')::uuid), 'Alice gagne : 1200 → 1216, Bob : 1200 → 1184');
-select pg_temp.verifier((select points = 1216 and joues = 1 and gagnes = 1 and meilleur = 1216 from classements where joueur = :'A'), 'classement d''Alice enregistré');
-select pg_temp.verifier((select points = 1184 and joues = 1 and gagnes = 0 from classements where joueur = :'B'), 'classement de Bob enregistré');
+select pg_temp.verifier((select classement_avant = '{1200,1200}' and classement_apres = '{1232,1168}' and classement_motif is null
+  from duels where id = pg_temp.v('d1')::uuid), 'Alice gagne : 1200 → 1232, Bob : 1200 → 1168 (deux joueurs en calibrage : ±32)');
+select pg_temp.verifier((select points = 1232 and joues = 1 and gagnes = 1 and meilleur = 1232 from classements where joueur = :'A'), 'classement d''Alice enregistré');
+select pg_temp.verifier((select points = 1168 and joues = 1 and gagnes = 0 from classements where joueur = :'B'), 'classement de Bob enregistré');
 select pg_temp.interdit(format('update classements set points = 3000 where joueur = %L', :'B'), 'un joueur ne peut pas changer son classement');
 select pg_temp.interdit(format('insert into classements (joueur, points) values (%L, 3000)', :'D'), 'un joueur ne peut pas s''inventer un classement');
 select pg_temp.interdit(format('select _variation(1200, 1200)'), 'fonction interne interdite aux joueurs');
-select pg_temp.verifier((select niveau = 1216 from chercher_joueurs('alice')), 'la recherche affiche le niveau officiel');
-select pg_temp.verifier((select (mes_amis()->0->>'classement')::int = 1216), 'la liste d''amis affiche le niveau officiel');
+select pg_temp.verifier((select niveau = 1232 from chercher_joueurs('alice')), 'la recherche affiche le niveau officiel');
+select pg_temp.verifier((select (mes_amis()->0->>'classement')::int = 1232), 'la liste d''amis affiche le niveau officiel');
 
 -- 5. Duel amical : ne compte pas
 insert into t select 'd2', pg_temp.duel_complet(:'B', :'A', false);
 select pg_temp.verifier((select classement_apres is null and classement_motif = 'amical' from duels where id = pg_temp.v('d2')::uuid), 'duel amical : pas de changement');
-select pg_temp.verifier((select points = 1216 from classements where joueur = :'A'), 'le classement d''Alice n''a pas bougé');
+select pg_temp.verifier((select points = 1232 from classements where joueur = :'A'), 'le classement d''Alice n''a pas bougé');
 
 -- 6. Abandon avant le premier coup : ne compte pas ; abandon en cours de match : compte
 select pg_temp.en_tant_que(:'C'); insert into t select 'd3', (lancer_defi(:'D', 11, 2)).id;
@@ -142,7 +142,7 @@ select pg_temp.en_tant_que(:'C'); insert into t select 'd4', (lancer_defi(:'D', 
 select pg_temp.en_tant_que(:'D'); select repondre_duel(pg_temp.v('d4')::uuid, true); select pret(pg_temp.v('d4')::uuid);
 select pg_temp.en_tant_que(:'C'); select pret(pg_temp.v('d4')::uuid); select jouer(pg_temp.v('d4')::uuid, 1, 0);
 select pg_temp.en_tant_que(:'D'); select jouer(pg_temp.v('d4')::uuid, 1, 2); select abandonner(pg_temp.v('d4')::uuid);
-select pg_temp.verifier((select classement_apres = '{1216,1184}' from duels where id = pg_temp.v('d4')::uuid), 'abandon en cours de match : défaite classée');
+select pg_temp.verifier((select classement_apres = '{1232,1168}' from duels where id = pg_temp.v('d4')::uuid), 'abandon en cours de match : défaite classée');
 
 -- 7. Anti-arrangement : au plus 5 duels officiels par jour entre les deux mêmes joueurs
 do $$ begin for i in 1..4 loop perform pg_temp.duel_complet('bbbbbbbb-0000-0000-0000-000000000002', 'aaaaaaaa-0000-0000-0000-000000000001', true); end loop; end $$;

@@ -51,3 +51,4 @@
 - Remplacer les sons fabriqués et la voix par de vrais enregistrements (noms des fichiers dans `script-des-annonces.md`).
 - Applaudissements à l'entrée des joueurs : à garder ou à retirer.
 - Notifications sur le téléphone quand on reçoit un défi (appli fermée).
+- **Calibrage du niveau officiel** (étape 8, fait) : départ à 1200 ; pendant les 10 premiers duels officiels, le niveau bouge deux fois plus vite et s'affiche « 1200 ? ».

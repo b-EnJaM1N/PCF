@@ -3,7 +3,7 @@
 import * as social from "./social-serveur.js";
 import { chercher } from "./duel-serveur.js";
 import { avatarSVG, FONDS } from "./avatar.js";
-import { EMBLEMES, blasonSVG, normaliserBlason, blasonParDefaut, erreurNomCercle, lienCercle, codeCercleDepuisAdresse, rang, CLASSEMENT_DEPART } from "./social-logique.js";
+import { EMBLEMES, blasonSVG, normaliserBlason, blasonParDefaut, erreurNomCercle, lienCercle, codeCercleDepuisAdresse, rang, CLASSEMENT_DEPART, texteNiveau, texteCalibrage, provisoire } from "./social-logique.js";
 import { lire, ecrire } from "./stockage.js";
 import { installerTournois } from "./ecran-tournois.js";
 import { profils } from "./duel-serveur.js";
@@ -90,11 +90,12 @@ export function installerCercles(ctx) {
     }
     if (cl) {
       const c = cl.get(uid);
-      $("clPoints").textContent = c ? c.points : CLASSEMENT_DEPART;
+      $("clPoints").textContent = texteNiveau(c ? c.points : CLASSEMENT_DEPART, c?.joues);
       $("clDetail").textContent = c && c.joues
         ? `${pluriel(c.joues, "duel officiel")} · ${c.gagnes} V – ${c.joues - c.gagnes} D · meilleur : ${c.meilleur}`
         : `Aucun duel officiel pour l'instant : tout le monde démarre à ${CLASSEMENT_DEPART}.`;
-      ctx.surClassement(c ? c.points : CLASSEMENT_DEPART);
+      if (provisoire(c?.joues)) $("clDetail").textContent += ` ${texteCalibrage(c?.joues)}`;
+      ctx.surClassement(c ? c.points : CLASSEMENT_DEPART, c?.joues ?? 0);
     }
     if (listeAmis) { amis = listeAmis; renderAmis(); }
     if (cercles) renderCercles(cercles);
@@ -120,7 +121,7 @@ export function installerCercles(ctx) {
     const liste = amis.filter(a => !a.recue);
     $("socAmisVide").hidden = liste.length > 0;
     $("socAmis").innerHTML = liste.map(a => a.statut === "amis"
-      ? ligneJoueur(a, `Niveau ${a.classement}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`,
+      ? ligneJoueur(a, `Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`,
         `<button class="petit" data-a="defier">Défier</button><button class="petit alt" data-a="retirer" aria-label="Retirer de mes amis">✕</button>`)
       : ligneJoueur(a, "Demande envoyée", `<button class="petit alt" data-a="annuler">Annuler</button>`)).join("");
   }
