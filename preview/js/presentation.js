@@ -6,6 +6,15 @@ import { nomAffiche, dernierTitre, titresObtenus, signeFavori } from "./profil.j
 
 const pourcent = (a, b) => (b ? Math.round(100 * a / b) : null);
 
+// Bouton « Passer » en duel : la présentation s'arrête quand les deux joueurs ont appuyé.
+// prets : [joueur 0, joueur 1] (vu par le serveur) ; moi : ma place (0 ou 1).
+// "aucun" : personne n'a appuyé ; "attente" : moi seulement (« En attente de l'adversaire ») ;
+// "adversaire" : lui seulement (« L'adversaire veut passer ») ; "go" : les deux.
+export function etatPasser(prets, moi) {
+  const a = !!prets?.[moi], b = !!prets?.[1 - moi];
+  return a && b ? "go" : a ? "attente" : b ? "adversaire" : "aucun";
+}
+
 // Renvoie { bandeau, format, joueur, adversaire, lignes, cle }.
 // Chaque ligne : { label, g, d } (texte à gauche et à droite) ; pour les nombres,
 // gn / dn donnent la valeur (animée à l'écran) et `avantage` le côté mis en valeur.
