@@ -12,7 +12,7 @@ import { dessinerCarte } from "./carte.js";
 import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee } from "./poignee.js";
 import { installerRapide } from "./ecran-rapide.js";
 import { installerSignalement } from "./ecran-signaler.js";
-import { etatNotifications, activerNotifications, desactiverNotifications, rattacherAbonnement } from "./notifications.js";
+import { etatNotifications, activerNotifications, desactiverNotifications, rattacherAbonnement, testerNotification, texteTest } from "./notifications.js";
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
@@ -1179,6 +1179,7 @@ async function renderNotifs(message = "") {
   b.hidden = !connecte || etat === "indisponible" || etat === "refuse";
   b.textContent = etat === "actif" ? "Désactiver les notifications" : "Activer les notifications";
   b.classList.toggle("alt", etat === "actif");
+  $("btnTestNotif").hidden = !connecte || etat !== "actif";
   m.classList.remove("erreur");
   m.textContent = message || (!connecte ? "Les notifications demandent un compte : connecte-toi dans « Ma fiche »."
     : etat === "indisponible" ? "Ce navigateur ne permet pas les notifications. Sur iPhone, ajoute d'abord l'appli à l'écran d'accueil (bouton Partager → « Sur l'écran d'accueil »)."
@@ -1192,6 +1193,13 @@ $("btnNotifs").addEventListener("click", async () => {
     const apres = avant === "actif" ? await desactiverNotifications() : await activerNotifications();
     await renderNotifs(apres === "actif" ? "✅ C'est fait : tu recevras une notification quand on te défie." : apres === "inactif" && avant === "actif" ? "Notifications désactivées sur ce téléphone." : "");
   } catch (e) { await renderNotifs(); $("notifsMsg").textContent = e.message; $("notifsMsg").classList.add("erreur"); }
+  finally { b.disabled = false; }
+});
+$("btnTestNotif").addEventListener("click", async () => {
+  const b = $("btnTestNotif"), m = $("notifsMsg");
+  b.disabled = true; m.classList.remove("erreur"); m.textContent = "⏳ Envoi en cours… Tu peux fermer l'appli pour voir la notification arriver.";
+  try { const r = await testerNotification(); m.textContent = texteTest(r); m.classList.toggle("erreur", !r.ok); }
+  catch (e) { m.textContent = e.message; m.classList.add("erreur"); }
   finally { b.disabled = false; }
 });
 // Ouvrir l'appli depuis une notification : ?ouvrir=duels ou ?ouvrir=tournois (ou message du service worker si elle est déjà ouverte).
