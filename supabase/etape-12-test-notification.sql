@@ -46,6 +46,11 @@ language sql security definer set search_path = public as $$
   from notifications where id = p_id and joueur = auth.uid()
 $$;
 
+-- La clé publique d'envoi (elle n'a rien de secret : le téléphone en a besoin pour s'abonner).
+-- Lue directement dans la base : l'activation des notifications ne dépend plus d'un appel à la fonction « notifier ».
+create or replace function public.cle_publique_push() returns text
+language sql stable security definer set search_path = public as $$ select publique from config_push where id = 1 $$;
+
 revoke all on function public._appeler_notifier(bigint) from public, anon, authenticated;
-revoke all on function public.tester_notification(), public.etat_notification(bigint) from public, anon;
-grant execute on function public.tester_notification(), public.etat_notification(bigint) to authenticated;
+revoke all on function public.tester_notification(), public.etat_notification(bigint), public.cle_publique_push() from public, anon;
+grant execute on function public.tester_notification(), public.etat_notification(bigint), public.cle_publique_push() to authenticated;

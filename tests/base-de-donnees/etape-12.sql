@@ -22,7 +22,10 @@ end $$;
 do $$
 declare n bigint; e jsonb;
 begin
+  insert into config_push (id, publique, privee) values (1, 'CLE_PUBLIQUE', 'CLE_PRIVEE') on conflict do nothing;
   perform pg_temp.en_tant_que('00000000-0000-0000-0000-000000000001');
+  perform pg_temp.verifier(cle_publique_push() = 'CLE_PUBLIQUE', 'la clé publique est lisible (et seulement elle)');
+  perform pg_temp.interdit('select privee from config_push', 'la clé privée ne l''est pas');
   perform pg_temp.interdit('select tester_notification()', 'pas de test sans appareil abonné');
   perform enregistrer_abonnement_push('https://push.exemple/1', 'c', 's');
   n := tester_notification();
