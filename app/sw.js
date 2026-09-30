@@ -48,6 +48,7 @@ const FICHIERS = [
   "js/rapide-logique.js",
   "js/poignee.js",
   "js/ecran-signaler.js",
+  "js/notifications.js",
   "js/tournoi-logique.js",
   "vendor/supabase.js",
   "fonts/barlow-latin-400-normal.woff2",
@@ -67,6 +68,27 @@ self.addEventListener("install", e => {
 });
 
 self.addEventListener("activate", e => { e.waitUntil(self.clients.claim()); });
+
+// Notifications (envoyées par la fonction Supabase « notifier ») : { titre, texte, url, tag }.
+self.addEventListener("push", e => {
+  let m = {};
+  try { m = e.data ? e.data.json() : {}; } catch { m = { texte: e.data ? e.data.text() : "" }; }
+  e.waitUntil(self.registration.showNotification(m.titre || "PCF", {
+    body: m.texte || "", icon: "icons/icon-192.png", badge: "icons/icon-192.png",
+    tag: m.tag, renotify: !!m.tag, data: { url: m.url || "./" },
+  }));
+});
+// Toucher la notification : on ouvre l'appli (ou on revient dessus) au bon écran.
+self.addEventListener("notificationclick", e => {
+  e.notification.close();
+  const url = new URL(e.notification.data?.url || "./", self.registration.scope);
+  e.waitUntil((async () => {
+    const fenetres = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    const ouverte = fenetres.find(c => c.url.startsWith(self.registration.scope));
+    if (ouverte) { await ouverte.focus(); ouverte.postMessage({ ouvrir: url.searchParams.get("ouvrir") }); return; }
+    await self.clients.openWindow(url.href);
+  })());
+});
 
 self.addEventListener("fetch", e => {
   const req = e.request;
