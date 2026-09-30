@@ -378,6 +378,7 @@ export const SPEAKER = {
     "Mesdames et messieurs… que le duel commence !", "Pierre… Feuille… Ciseaux… c'est parti !"],
   // F. Inchangé
   miroir: ["Mesdames et messieurs… ce soir, c'est un duel de jumeaux.", "Même surnom… même ambition… un seul vainqueur !", "Deux surnoms identiques. Il n'en restera qu'un."],
+  huitiemes: ["Place aux huitièmes de finale !"],
   quarts: ["Place aux quarts de finale !"],
   demis: ["Place aux demi-finales !"],
   finale: ["Mesdames et messieurs… voici… la finaaale !"],
@@ -385,7 +386,8 @@ export const SPEAKER = {
   champion: ["Mesdames et messieurs… votre champion !"],
 };
 // Les bots, annoncés par leur nom.
-export const NOMS_BOTS = { rocky: "Rocky !", miroir: "Miroir !", cyclo: "Cyclo !", boomerang: "Boomerang !", chaos: "Chaos !", stratege: "Stratège !", professeur: "Le Professeur !" };
+export const NOMS_BOTS = { bambi: "Bambi !", papyrus: "Papyrus !", tictac: "Tic-Tac !", rancune: "Rancune !", bluffeur: "Le Bluffeur !",
+  mante: "La Mante !", nemesis: "Némésis !", titan: "Titan !", rocky: "Rocky !", miroir: "Miroir !", cyclo: "Cyclo !", boomerang: "Boomerang !", chaos: "Chaos !", stratege: "Stratège !", professeur: "Le Professeur !" };
 
 // ---------------------------------------------------------------- le journaliste (après une finale gagnée)
 export const JOURNALISTE = {
