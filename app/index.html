@@ -465,7 +465,8 @@
       <span class="lbl">Fond</span><div class="sw" id="swBg"></div>
       <span class="lbl">Gant</span><div class="sw" id="swGlove"></div>
       <span class="lbl">Poignet</span><div class="sw" id="swWrist"></div>
-      <span class="lbl">Motif</span><div class="sw" id="swMotif"></div>
+      <span class="lbl">Motif du fond</span><div class="sw" id="swMotif"></div>
+      <span class="lbl">Motif du gant</span><div class="sw" id="swGantMotif"></div>
       <p class="locknote" id="lockNote"></p>
     </section>
 
@@ -473,7 +474,7 @@
     <section class="card" id="cMental"><h2>Mon mental</h2><div class="lines" id="mentalBody"></div></section>
     <section class="card" id="cRecords"><h2>Mes records</h2><div class="lines" id="recBody"></div></section>
     <section class="card" id="cElo"><h2>Niveau d'entraînement</h2><div class="spark" id="spark"></div><p class="hint">Calculé comme un ELO, sur tes matchs contre les bots. Ton niveau officiel, contre les autres joueurs, est affiché en haut de ta fiche.</p></section>
-    <section class="card"><h2>Palmarès</h2><div class="badges" id="badges"></div></section>
+    <section class="card"><h2>Palmarès</h2><p class="hint" id="palmaresCompte"></p><div class="badges" id="badges"></div></section>
     <section class="card" id="cLast"><h2>Derniers matchs</h2><div class="lines hist-list" id="lastBody"></div></section>
     <p class="hint" style="text-align:center" id="infoConnexion">Sans compte, ta fiche est gardée seulement sur ce téléphone.</p>
     <p style="text-align:center;margin:0"><button class="linkbtn" id="resetProfile">Remettre ma fiche à zéro</button></p>
@@ -569,6 +570,8 @@
     <button class="btn" id="ivGo" hidden>Fermer</button>
   </div>
 </div>
+
+<div class="toast" id="toast" role="status" hidden></div>
 
 <script src="vendor/supabase.js" defer></script>
 <script type="module" src="js/app.js"></script>

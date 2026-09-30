@@ -38,7 +38,7 @@ test("fin de match : la fiche et les titres se mettent à jour", () => {
   assert.deepEqual(P.sets, [2, 1]);
   assert.equal(P.faceAFace.rocky.v, 1);
   assert.ok(P.elo > 1200);
-  assert.deepEqual(nouveaux.map(t => t.id).sort(), ["imprevisible", "premier", "remontada", "rouleau", "sangfroid"]);
+  assert.deepEqual(nouveaux.map(t => t.id).sort(), ["imprevisible", "lazare", "phenix", "premier", "remontada", "rouleau", "sangfroid"]);
   assert.equal(P.derniers[0].detail, "0–7, 7–5, 8–6");
   assert.equal(P.decisifsJoues, 1); assert.equal(P.decisifsGagnes, 1);
   assert.ok(!estVerrouille(P, "poignet", "or"));

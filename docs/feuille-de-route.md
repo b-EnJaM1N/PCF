@@ -59,7 +59,13 @@
 - **Commentateurs** (décision) : Roland Pignon et Monique Latouffe.
 - **Nom : HandSlam** (décision). HandSlam est le nom de l'appli et des compétitions (HandSlam Open, L'Écho du HandSlam) ; le sport reste le Pierre-Feuille-Ciseaux dans la bouche des commentateurs. Marque vérifiée (INPI). L'adresse du site changera au moment de brancher le nom de domaine.
 
-## Dernier lot : *fait (à valider)*
+## Trophées et avatars : *faits (à valider)*
+
+34 trophées en 7 familles (fair-play, remontées, séries, endurance, tournois, cercles, duels), affichés par famille dans « Ma fiche » → Palmarès. Le plus dur de chaque famille débloque un élément d'avatar : gant bicolore, poignet argent, coutures dorées, gant argent, bandeau de champion, fonds minuit et rubis. Nouveaux motifs de gant libres : rayé, à pois. Les trophées des cercles et des tournois en ligne sont donnés en ouvrant l'onglet Cercles (bandeau « Nouveau trophée »). « Derby » : 10 duels contre les membres d'un même cercle.
+
+## Lot précédent : *validé et fusionné*
+
+Sons du court : à créer avec ElevenLabs **sur un ordinateur** (le site ne génère pas les sons depuis le téléphone, ni dans Chrome ni dans Firefox, et l'appli Android n'a pas les effets sonores).
 
 Fait : bouton « Passer » en haut de la présentation ; cris de victoire (bulle en fin de set, en grand avec confettis en fin de match, choix dans « Ma fiche » → Mon surnom) ; nouveaux sons branchés (il reste à les créer avec ElevenLabs et à les déposer dans `app/audio/`, voir `app/audio/LISEZMOI.md`). À confirmer : l'orthographe de « Hija ! ».
 
@@ -81,5 +87,5 @@ Fait : bouton « Passer » en haut de la présentation ; cris de victoire (bulle
 
    Décision : tester d'abord 2 ou 3 sons avec l'offre gratuite, puis un seul mois payant à la fin pour tout générer (sons + voix) avec la licence commerciale. Le guider pas à pas (création, téléchargement, dépôt sur GitHub depuis le téléphone).
 
-Ensuite : plus de récompenses (une trentaine de trophées par familles : fair-play, remontées, séries, tournois, cercles — proposer la liste avant de coder) et des avatars plus travaillés (gants rayés, à pois, bicolores, coutures dorées, bandeaux…).
+Ensuite : à décider avec le porteur du projet (tournois programmés, jetons fictifs…).
 En attente du porteur du projet : l'adresse e-mail de contact (→ mentions légales et confidentialité) et l'achat du domaine handslam.com (→ adresse du site, redirections Supabase, e-mails en français).
