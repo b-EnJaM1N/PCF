@@ -299,7 +299,7 @@ export function installerCercles(ctx) {
 
   async function partagerCercle(code) {
     const url = lienCercle(base(), code);
-    const texte = `Rejoins mon cercle « ${detail.nom} » sur PCF, le Pierre-Ciseaux-Feuille en sets de 11 :`;
+    const texte = `Rejoins mon cercle « ${detail.nom} » sur HandSlam, le Pierre-Feuille-Ciseaux en sets de 11 :`;
     try { if (navigator.share) { await navigator.share({ title: `Cercle ${detail.nom}`, text: texte, url }); return; } }
     catch (e) { if (e && e.name === "AbortError") return; }
     try { await navigator.clipboard.writeText(url); dire("cMsg", "Lien copié ! Colle-le dans WhatsApp ou un SMS."); } catch { dire("cMsg", ""); }

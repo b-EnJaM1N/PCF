@@ -320,7 +320,7 @@ export const DIALOGUES = {
   fin_set: [
     ["Madame, un mot sur ce set ?", "Solide. Sans génie. Mais solide."],
     ["Un set parfait ! Comme vous en 1997, Madame !", "Nous n'en parlerons pas."],
-    [{ t: "Qu'est-ce qu'il doit changer ?", f: "Qu'est-ce qu'elle doit changer ?" }, "Tout. Ou rien. C'est ça, le PCF."],
+    [{ t: "Qu'est-ce qu'il doit changer ?", f: "Qu'est-ce qu'elle doit changer ?" }, "Tout. Ou rien. C'est ça, le HandSlam."],
     [{ t: "Il doit tout changer, Madame !", f: "Elle doit tout changer, Madame !" }, "Vaste programme."],
   ],
   set_decisif: [
