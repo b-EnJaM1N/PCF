@@ -1,5 +1,6 @@
 // Fiche joueur : carte d'identité sportive qui se remplit toute seule au fil des matchs.
 // Pour l'instant elle est gardée sur le téléphone (voir stockage.js).
+import { CRI_DEFAUT, criValide } from "./celebrations.js";
 
 export const ELO_DEPART = 1200;
 export const K_ELO = 32;
@@ -41,6 +42,7 @@ export function profilParDefaut() {
     heures: { nuit: 0, matin: 0, dimanche: 0 },
     poignee: "normale",                       // ma poignée de main habituelle (si je ne choisis pas à temps)
     poignees: { franche: 0, normale: 0, legere: 0, froide: 0 },
+    cri: CRI_DEFAUT,                          // mon cri de victoire (voir celebrations.js)
   };
 }
 
@@ -51,6 +53,7 @@ export function normaliserProfil(brut) {
   const P = { ...d, ...brut, av: { ...d.av, ...(brut.av || {}) }, heures: { ...d.heures, ...(brut.heures || {}) }, poignees: { ...d.poignees, ...(brut.poignees || {}) } };
   if (P.genre !== "f") P.genre = "m";
   if (!["franche", "normale", "legere", "froide"].includes(P.poignee)) P.poignee = "normale";
+  P.cri = criValide(P.cri);
   for (const k of Object.keys(d)) if (Array.isArray(d[k]) && !Array.isArray(P[k])) P[k] = d[k];
   return P;
 }

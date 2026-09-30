@@ -338,6 +338,10 @@ export const DIALOGUES = {
   fin_match: [
     [{ t: "Il n'a pas démérité !", f: "Elle n'a pas démérité !" }, "Si. Un peu quand même."],
   ],
+  // Un joueur vient de pousser son cri de victoire (voir celebrations.js).
+  cri: [
+    ["Ah, il y a de la voix !", "On l'avait entendu."],
+  ],
 };
 
 // ---------------------------------------------------------------- le speaker
