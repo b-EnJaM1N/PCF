@@ -195,3 +195,32 @@ test("un jeu de mots sur un signe n'est dit que si le joueur vient de jouer ce s
     }
   }
 });
+
+test("le speaker relève la situation du match", async () => {
+  const { situationsDuMatch } = await import("../app/js/annonces.js");
+  const dimancheSoir = new Date(2026, 8, 27, 23, 30);   // un dimanche, 23 h 30
+  assert.deepEqual(situationsDuMatch({ humain: true, dejaJoues: true, niveauMoi: 1200, niveauAdv: 1400, memePays: true, date: dimancheSoir, rapide: true, officiel: true }),
+    ["revanche", "david_goliath", "compatriotes", "nuit", "dimanche", "partie_rapide", "officiel"]);
+  const mardiMidi = new Date(2026, 8, 29, 12, 0);
+  assert.deepEqual(situationsDuMatch({ niveauMoi: 1200, niveauAdv: 1210, date: mardiMidi, setsGagnants: 3 }), ["marathon", "contre_bot"]);
+});
+
+test("ce que le speaker dit d'un joueur", async () => {
+  const { etiquettesDe } = await import("../app/js/annonces.js");
+  const P = profilParDefaut();
+  assert.deepEqual(etiquettesDe(P), ["debutant"]);
+  Object.assign(P, { matchs: 120, serieEnCours: 6, tournoisGagnes: 1, derniers: [{ adv: "h:bob", gagne: true }, { adv: "h:zoe", gagne: false }] });
+  assert.deepEqual(etiquettesDe(P, { advId: "h:zoe", niveauMoi: 1500, niveauAdv: 1300 }), ["laver_affront", "patron", "serie", "trophee", "habitue"]);
+});
+
+test("le speaker ne répète pas les phrases des derniers matchs", () => {
+  const P = profilParDefaut(), moi = { surnom: surnomDe(P) };
+  let recents = [];
+  const accueils = new Set();
+  for (let k = 0; k < 8; k++) {
+    const { speaker } = annoncesAvantMatch({ moi, adv: { bot: "rocky" }, recents }, rngFixe(k));
+    accueils.add(speaker[0].id);
+    recents = [...speaker.map(l => l.id), ...recents].slice(0, 80);
+  }
+  assert.equal(accueils.size, 8, "8 matchs, 8 accueils différents");
+});

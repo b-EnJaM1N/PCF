@@ -457,23 +457,65 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_titre_01.mp3` | Pas d'enflammade. Pas d'enflammade. |
 | `commentatrice_dialogue_fin_match_01.mp3` | Si. Un peu quand même. |
 
-## Speaker — voix de salle, voyelles étirées (93 répliques)
+## Speaker — voix de salle, voyelles étirées (135 répliques)
 
 | Fichier | Texte |
 |---|---|
 | `speaker_bienvenue_01.mp3` | Mesdaaames et messieuuurs… bienvenue pour ce duel ! |
 | `speaker_bienvenue_02.mp3` | Mesdames et messieurs, veuillez regagner vos places. Le match va commencer. |
+| `speaker_bienvenue_03.mp3` | Mesdames et messieurs… bonsoir, et bienvenue sur le court central ! |
+| `speaker_bienvenue_04.mp3` | Le public est là… les joueurs sont là… il ne manque plus que le premier signe ! |
+| `speaker_bienvenue_05.mp3` | Mesdames et messieurs… éteignez vos téléphones. Enfin… pas celui-là. |
+| `speaker_bienvenue_06.mp3` | Bienvenue dans le temple du Pierre-Feuille-Ciseaux ! |
+| `speaker_bienvenue_07.mp3` | Mesdames et messieurs, faites du bruit pour le prochain duel ! |
+| `speaker_bienvenue_08.mp3` | Silence dans les tribunes… les joueurs entrent sur le court. |
+| `speaker_revanche_01.mp3` | Ils se sont déjà affrontés… et ils se retrouvent ce soir ! |
+| `speaker_revanche_02.mp3` | Le match retour, mesdames et messieurs ! |
+| `speaker_revanche_03.mp3` | Une revanche est dans l'air… |
+| `speaker_david_goliath_01.mp3` | David… contre Goliath ! |
+| `speaker_david_goliath_02.mp3` | Sur le papier, c'est déséquilibré. Mais on ne joue pas sur le papier ! |
+| `speaker_coude_a_coude_01.mp3` | Deux joueurs au coude à coude au classement… impossible de faire un pronostic ! |
+| `speaker_compatriotes_01.mp3` | Un duel entre compatriotes ! Il n'y aura pas de jaloux. |
+| `speaker_nuit_01.mp3` | Il est tard, mesdames et messieurs… mais le Pierre-Feuille-Ciseaux ne dort jamais ! |
+| `speaker_nuit_02.mp3` | Bienvenue aux noctambules ! |
+| `speaker_matin_01.mp3` | Un duel au lever du soleil ! Les champions se lèvent tôt. |
+| `speaker_dimanche_01.mp3` | Le match du dimanche, mesdames et messieurs ! |
+| `speaker_partie_rapide_01.mp3` | Deux joueurs… un appariement… et c'est parti ! |
+| `speaker_partie_rapide_02.mp3` | Ils ne se connaissaient pas il y a trente secondes. Ils vont s'affronter maintenant ! |
+| `speaker_officiel_01.mp3` | Attention : ce match compte pour le classement officiel ! |
+| `speaker_officiel_02.mp3` | Des points de niveau sont en jeu ce soir… |
+| `speaker_un_set_01.mp3` | Un seul set… aucune seconde chance ! |
+| `speaker_marathon_01.mp3` | Trois sets gagnants… installez-vous confortablement, ce sera un marathon ! |
+| `speaker_contre_bot_01.mp3` | Un humain… contre la machine ! |
 | `speaker_coin_jaune_01.mp3` | Dans le coin jaaaune… |
+| `speaker_coin_jaune_02.mp3` | À ma gauche… dans le coin jaaaune… |
+| `speaker_coin_jaune_03.mp3` | Côté jaune… accueillez… |
 | `speaker_coin_rouge_01.mp3` | Et dans le coin rouuuge… |
+| `speaker_coin_rouge_02.mp3` | Et à ma droite… dans le coin rouuuge… |
+| `speaker_coin_rouge_03.mp3` | Face à lui… côté rouge… |
+| `speaker_coin_rouge_03_f.mp3` | Face à elle… côté rouge… |
 | `speaker_debutant_01.mp3` | Pour son tout premier match officiel… |
 | `speaker_invaincu_01.mp3` | Invaincu depuis trois rencontres… |
 | `speaker_invaincu_01_f.mp3` | Invaincue depuis trois rencontres… |
+| `speaker_serie_01.mp3` | Sur une série de victoires impressionnante… |
 | `speaker_imprevisible_01.mp3` | On le dit imprévisible. On le dit dangereux… |
 | `speaker_imprevisible_01_f.mp3` | On la dit imprévisible. On la dit dangereuse… |
 | `speaker_figuration_01.mp3` | Il ne vient pas pour faire de la figuration… |
 | `speaker_figuration_01_f.mp3` | Elle ne vient pas pour faire de la figuration… |
+| `speaker_trophee_01.mp3` | Il a déjà soulevé un trophée… |
+| `speaker_trophee_01_f.mp3` | Elle a déjà soulevé un trophée… |
+| `speaker_habitue_01.mp3` | Un habitué des grands rendez-vous… |
+| `speaker_laver_affront_01.mp3` | Il revient pour laver l'affront… |
+| `speaker_laver_affront_01_f.mp3` | Elle revient pour laver l'affront… |
+| `speaker_patron_01.mp3` | Le patron de la soirée… |
+| `speaker_faim_01.mp3` | Il a faim de victoire… |
+| `speaker_faim_01_f.mp3` | Elle a faim de victoire… |
 | `speaker_cloture_01.mp3` | Que le meilleur gagne ! |
 | `speaker_cloture_02.mp3` | Que le spectacle commence ! |
+| `speaker_cloture_03.mp3` | Joueurs… à vos mains ! |
+| `speaker_cloture_04.mp3` | Trois signes… deux joueurs… un seul vainqueur ! |
+| `speaker_cloture_05.mp3` | Mesdames et messieurs… que le duel commence ! |
+| `speaker_cloture_06.mp3` | Pierre… Feuille… Ciseaux… c'est parti ! |
 | `speaker_miroir_01.mp3` | Mesdames et messieurs… ce soir, c'est un duel de jumeaux. |
 | `speaker_miroir_02.mp3` | Même surnom… même ambition… un seul vainqueur ! |
 | `speaker_miroir_03.mp3` | Deux surnoms identiques. Il n'en restera qu'un. |

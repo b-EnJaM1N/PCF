@@ -1,4 +1,4 @@
-# Le speaker — brouillon à annoter (v1)
+# Le speaker — phrases validées (v1, toutes gardées)
 
 Le speaker, c'est la voix de la salle avant le match : voyelles étirées, grandiloquent, jamais moqueur (ça, c'est le travail de la commentatrice).
 Il ne prononce jamais de pseudo : il présente les joueurs par leur **coin** (jaune, rouge) et leur **surnom** (« Le Roc… du Grand Nord… »), ou par le nom du bot.
