@@ -45,7 +45,7 @@ test("match en un set : le score du set dans le chapô", () => {
 
 test("la phrase du match : la commentatrice d'abord", () => {
   const c = [{ role: "commentatrice", texte: "Propre. Net. Sans bavure." }, { role: "commentateur", texte: "Masterclass !" }];
-  assert.deepEqual(citationDuMatch(c), { texte: "Propre. Net. Sans bavure.", auteur: "La commentatrice" });
-  assert.equal(citationDuMatch([c[1]]).auteur, "Le commentateur");
+  assert.deepEqual(citationDuMatch(c), { texte: "Propre. Net. Sans bavure.", auteur: "Monique Latouffe" });
+  assert.equal(citationDuMatch([c[1]]).auteur, "Roland Pignon");
   assert.equal(citationDuMatch([]), null);
 });

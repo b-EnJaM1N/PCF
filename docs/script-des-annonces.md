@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (197 répliques)
+## Commentateur — vif, enthousiaste, plein de références (199 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -300,6 +300,8 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_avant_match_03.mp3` | Un pronostic, Madame ? |
 | `commentateur_dialogue_avant_match_04.mp3` | Vous le sentez comment, ce match ? |
 | `commentateur_dialogue_avant_match_05.mp3` | Le Pierre, c'est la base, Madame ! |
+| `commentateur_dialogue_avant_match_06.mp3` | Bonsoir à tous ! Roland Pignon, en direct du court central, aux côtés de Monique Latouffe ! |
+| `commentateur_dialogue_avant_match_07.mp3` | Monique Latouffe, la finale de 1997, les trois Ciseaux… |
 | `commentateur_dialogue_fin_set_01.mp3` | Madame, un mot sur ce set ? |
 | `commentateur_dialogue_fin_set_02.mp3` | Un set parfait ! Comme vous en 1997, Madame ! |
 | `commentateur_dialogue_fin_set_03.mp3` | Qu'est-ce qu'il doit changer ? |
@@ -313,7 +315,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_fin_match_01.mp3` | Il n'a pas démérité ! |
 | `commentateur_dialogue_fin_match_01_f.mp3` | Elle n'a pas démérité ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (147 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (149 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -456,6 +458,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_avant_match_03.mp3` | Je ne fais pas de pronostic. Je constate. Après. |
 | `commentatrice_dialogue_avant_match_04.mp3` | Long. |
 | `commentatrice_dialogue_avant_match_05.mp3` | C'est pas faux. |
+| `commentatrice_dialogue_avant_match_06.mp3` | Bonsoir. Commençons, Roland. |
+| `commentatrice_dialogue_avant_match_07.mp3` | Roland. Le match. |
 | `commentatrice_dialogue_fin_set_01.mp3` | Solide. Sans génie. Mais solide. |
 | `commentatrice_dialogue_fin_set_02.mp3` | Nous n'en parlerons pas. |
 | `commentatrice_dialogue_fin_set_03.mp3` | Tout. Ou rien. C'est ça, le HandSlam. |

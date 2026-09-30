@@ -59,6 +59,7 @@ const FICHIERS = [
   "fonts/barlow-condensed-latin-700-normal.woff2",
   "fonts/barlow-condensed-latin-800-normal.woff2",
   "icons/icon.svg",
+  "icons/logo.svg",
   "icons/icon-192.png",
   "icons/apple-touch-icon.png",
 ];

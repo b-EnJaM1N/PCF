@@ -26,8 +26,8 @@ et sans nom de personnalité.
 | 🎤 | **Le journaliste** | N'apparaît qu'après une finale, pour l'interview du vainqueur. | Neutre, un peu trop sérieux |
 
 **Noms à choisir** — pistes :
-- Commentateur : Patrice Vallon · Jean-Marc Dauvier · Bernard Lescot
-- Commentatrice : **Madame Delorme** (il l'appelle toujours « Madame ») · Victoire de Saint-Aubin · Hélène Castaing
+- Commentateur : **Roland Pignon** (il l'appelle toujours « Madame »)
+- Commentatrice : **Monique Latouffe** (elle l'appelle « Roland »)
 - Speaker : « Big » Tony Castel · Maxime Rolland
 
 ## La fausse histoire de la discipline

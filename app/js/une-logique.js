@@ -2,6 +2,7 @@
 // Ici, seulement les mots (titre, chapô, chiffre, citation) : testé automatiquement.
 // Le dessin de l'image est dans une.js.
 
+import { MARQUE } from "./marque.js";
 const MAJ = t => t.toLocaleUpperCase("fr-FR");
 const setsTexte = (a, b) => `${a} set${a > 1 ? "s" : ""} à ${b}`;
 
@@ -58,7 +59,7 @@ export function chiffreDuMatch(m, stats) {
 export function citationDuMatch(citations) {
   for (const role of ["commentatrice", "commentateur"]) {
     const r = [...citations].reverse().find(l => l.role === role && l.texte.length <= 90);
-    if (r) return { texte: r.texte, auteur: role === "commentatrice" ? "La commentatrice" : "Le commentateur" };
+    if (r) return { texte: r.texte, auteur: MARQUE[role] };
   }
   return null;
 }
