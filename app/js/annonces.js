@@ -258,11 +258,11 @@ export function situationsDuMatch({ humain = false, dejaJoues = false, niveauMoi
 // Les plus rares d'abord : une revanche ou un David contre Goliath se remarquent plus qu'un match du dimanche.
 const RARES = ["revanche", "david_goliath", "compatriotes", "coude_a_coude", "nuit", "matin", "partie_rapide"];
 
-const TOURS = { 0: "quarts", 1: "demis", 2: "finale" };
+const TOURS = ["huitiemes", "quarts", "demis", "finale"];
 const partiesSurnom = s => (s ? [CATALOGUE.get(idPartie(s.nom)), CATALOGUE.get(idPartie(s.complement))] : []);
 
 // moi, adv : { surnom (voir surnomDe), genre, etiquette, bot (id d'un bot) }.
-// tour : 0 quarts, 1 demies, 2 finale (ou null) ; sng : premier tour d'un Sit & Go.
+// tour : "huitiemes", "quarts", "demis", "finale" (ou null) ; sng : premier tour d'un Sit & Go.
 // situations : situationsDuMatch() ; recents : les phrases dites aux derniers matchs (on évite de les répéter).
 // Renvoie { speaker, commentaires } : les deux listes de répliques, dans l'ordre.
 export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = false, humain = false, domination = false, genre = "m",
@@ -277,7 +277,7 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
   };
   const sp = [];
   if (sng) sp.push(ligneSpeaker("sit_and_go", 0));
-  else if (TOURS[tour]) sp.push(ligneSpeaker(TOURS[tour], 0));
+  else if (TOURS.includes(tour)) sp.push(ligneSpeaker(tour, 0));
   else sp.push(dire("bienvenue"));
   if (situations.length) {
     const rares = situations.filter(x => RARES.includes(x));

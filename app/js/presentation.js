@@ -3,7 +3,6 @@
 import { EMOJI, NOM, texteFormat } from "./regles.js";
 import { indiceImprevisibilite } from "./analyse.js";
 import { nomAffiche, dernierTitre, titresObtenus, signeFavori } from "./profil.js";
-import { TOUR_SINGULIER } from "./tournoi.js";
 
 const pourcent = (a, b) => (b ? Math.round(100 * a / b) : null);
 
@@ -29,7 +28,7 @@ export function presentation(P, bot, { tour = null, pointsParSet = 11, setsGagna
   ];
   const pct = pourcent(P.victoires, P.matchs);
   return {
-    bandeau: bot.humain ? (tournoi ? "Tournoi en ligne" : classe ? "Duel officiel" : "Duel amical") : tour === null ? "Match amical" : `PCF Open · ${TOUR_SINGULIER[tour]}`,
+    bandeau: bot.humain ? (tournoi ? "Tournoi en ligne" : classe ? "Duel officiel" : "Duel amical") : tour === null ? "Match amical" : `PCF Open · ${tour}`,
     format: texteFormat({ pointsParSet, setsGagnants }),
     joueur: {
       nom: nomAffiche(P), sous: `${P.drapeau} ${dernierTitre(P)}`,

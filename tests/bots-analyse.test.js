@@ -6,10 +6,35 @@ import { rngFixe } from "./outils.js";
 import { PIERRE, CISEAUX, FEUILLE, contre, gagnantCoup } from "../app/js/regles.js";
 
 
-test("sept bots, niveaux croissants de 1050 à 1400", () => {
-  assert.equal(BOTS.length, 7);
-  assert.deepEqual(BOTS.map(b => b.elo), [1050, 1100, 1150, 1200, 1250, 1300, 1400]);
-  assert.equal(botParId("professeur").nom, "Professeur");
+test("quinze bots, niveaux croissants de 850 à 1600", () => {
+  assert.equal(BOTS.length, 15);
+  const e = BOTS.map(b => b.elo);
+  assert.deepEqual(e, [...e].sort((a, b) => a - b));
+  assert.equal(e[0], 850); assert.equal(e[14], 1600);
+  assert.equal(new Set(BOTS.map(b => b.id)).size, 15);
+  assert.equal(botParId("titan").nom, "Titan");
+});
+
+test("les nouveaux bots ont leur faille (ou leur force)", () => {
+  const rng = rngFixe(3);
+  // Tic-Tac ne rejoue jamais son dernier signe
+  for (const s of [PIERRE, FEUILLE, CISEAUX]) for (let i = 0; i < 50; i++) assert.notEqual(choisirCoup(botParId("tictac"), [{ moi: s, adv: 0, res: "e" }], rng), s);
+  // Bambi garde son signe tant qu'il n'a pas perdu deux fois de suite
+  assert.equal(choisirCoup(botParId("bambi"), [{ moi: FEUILLE, adv: CISEAUX, res: "p" }], rng), FEUILLE);
+  const deux = [{ moi: FEUILLE, adv: CISEAUX, res: "p" }, { moi: FEUILLE, adv: CISEAUX, res: "p" }];
+  for (let i = 0; i < 20; i++) assert.notEqual(choisirCoup(botParId("bambi"), deux, rng), FEUILLE);
+  // Papyrus joue Feuille plus d'une fois sur deux
+  let f = 0; for (let i = 0; i < 3000; i++) if (choisirCoup(botParId("papyrus"), [], rng) === FEUILLE) f++;
+  assert.ok(f > 1700, `${f}`);
+  // Titan punit un joueur qui joue toujours Pierre
+  const b = botParId("titan"), hist = []; let gagnes = 0;
+  const m = { points: [0, 0], pointsParSet: 11, set: 0, balle: false };
+  for (let i = 0; i < 60; i++) {
+    const s = choisirCoup(b, hist, rng, m), g = gagnantCoup(s, PIERRE);
+    if (i >= 20 && g === 0) gagnes++;
+    hist.push({ moi: s, adv: PIERRE, res: g === null ? "e" : g === 0 ? "g" : "p" });
+  }
+  assert.ok(gagnes >= 30, `${gagnes} sur 40`);
 });
 
 test("chaque bot joue toujours un signe valide", () => {

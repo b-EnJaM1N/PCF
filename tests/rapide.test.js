@@ -4,7 +4,8 @@ import { botProche, chrono, texteFile, FORMATS_RAPIDES } from "../app/js/rapide-
 import { BOTS } from "../app/js/bots.js";
 
 test("le bot proposé est celui dont le niveau est le plus proche", () => {
-  assert.equal(botProche(1050, BOTS).id, "rocky");
+  assert.equal(botProche(1050, BOTS).id, "boomerang");
+  assert.equal(botProche(1200, BOTS).id, "chaos");
   const haut = Math.max(...BOTS.map(b => b.elo));
   assert.equal(botProche(3000, BOTS).elo, haut);
 });
