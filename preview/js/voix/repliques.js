@@ -316,6 +316,8 @@ export const DIALOGUES = {
     ["Un pronostic, Madame ?", "Je ne fais pas de pronostic. Je constate. Après."],
     ["Vous le sentez comment, ce match ?", "Long."],
     ["Le Pierre, c'est la base, Madame !", "C'est pas faux."],
+    ["Bonsoir à tous ! Roland Pignon, en direct du court central, aux côtés de Monique Latouffe !", "Bonsoir. Commençons, Roland."],
+    ["Monique Latouffe, la finale de 1997, les trois Ciseaux…", "Roland. Le match."],
   ],
   fin_set: [
     ["Madame, un mot sur ce set ?", "Solide. Sans génie. Mais solide."],
