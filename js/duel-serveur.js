@@ -19,6 +19,7 @@ export const pret = id => rpc("pret", { p_id: id });
 export const jouer = (id, manche, signe) => rpc("jouer", { p_id: id, p_manche: manche, p_signe: signe });
 export const reclamer = id => rpc("reclamer", { p_id: id });      // → { maintenant, duel }
 export const abandonner = id => rpc("abandonner", { p_id: id });
+export const serrerLaMain = (id, style) => rpc("serrer_la_main", { p_id: id, p_style: style });   // → le duel (avec poignee0, poignee1)
 
 // Mes duels en cours ou en attente (la base ne renvoie que ceux qui me concernent).
 export const mesDuels = () => essayer(async () => verifier(await client().from("duels")

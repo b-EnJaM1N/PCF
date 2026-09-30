@@ -408,6 +408,9 @@
       <p class="hint" id="surnomCompte"></p>
       <p class="lbl" id="genreLbl">Les commentateurs parlent de toi en disant</p>
       <div class="seg" id="segGenre" role="group" aria-labelledby="genreLbl"><button data-v="m">« il »</button><button data-v="f">« elle »</button></div>
+      <p class="lbl" id="poigneeLbl">Ma poignée de main habituelle</p>
+      <div class="seg seg4" id="segPoignee" role="group" aria-labelledby="poigneeLbl"><button data-v="franche">💪 Franche</button><button data-v="normale">🤝 Normale</button><button data-v="legere">🤏 Légère</button><button data-v="froide">🧊 Froide</button></div>
+      <p class="hint" id="poigneeInfo">À la fin de chaque match, tu as 3 secondes pour choisir ta poignée de main. Sinon, c'est celle-ci.</p>
     </section>
 
     <section class="card edit" id="cCompte">
@@ -492,6 +495,20 @@
     <p class="com" id="iCom"></p>
     <div class="next" id="iNext"></div>
     <button class="btn" id="iGo"></button>
+  </div>
+</div>
+
+<div class="inter" id="poignee" role="dialog" aria-modal="true" aria-labelledby="pmTitre">
+  <div class="panel pm-panel">
+    <div class="kick" id="pmTitre">La poignée de main</div>
+    <div class="pm-scene" id="pmScene">
+      <div class="pm-j"><div class="pm-av" id="pmMoi"></div><div class="pm-style" id="pmStyleMoi"></div></div>
+      <div class="pm-main" id="pmMain" aria-hidden="true">🤝</div>
+      <div class="pm-j"><div class="pm-av adv" id="pmAdv"></div><div class="pm-style" id="pmStyleAdv"></div></div>
+    </div>
+    <div class="pm-choix" id="pmChoix"><button data-s="franche">💪<br>Franche</button><button data-s="normale">🤝<br>Normale</button><button data-s="legere">🤏<br>Légère</button><button data-s="froide">🧊<br>Froide</button></div>
+    <div class="pm-temps" id="pmTemps"><div id="pmBarre"></div></div>
+    <p class="com" id="pmCom"></p>
   </div>
 </div>
 
