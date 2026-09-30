@@ -68,6 +68,24 @@ Le pseudo devient « Joueur » et ne pourra plus être repris.
 **Réveil quotidien** : chaque jour, GitHub appelle Supabase pour éviter la mise en pause du projet gratuit
 (onglet **Actions** du dépôt → « Réveil de Supabase »). Rien à faire.
 
+## 1 undecies. Notifications (étape 11)
+
+Deux choses à faire, dans cet ordre :
+
+1. **Le fichier SQL** : même manipulation que d'habitude avec [`etape-11-notifications.sql`](etape-11-notifications.sql).
+2. **La fonction « notifier »** (le petit programme qui envoie les notifications) :
+   1. Dans Supabase, menu de gauche : **Edge Functions** → **Deploy a new function** → **Via Editor**.
+   2. Nom de la fonction : `notifier` (exactement).
+   3. Efface l'exemple, puis colle tout le contenu de
+      [`functions/notifier/index.ts`](functions/notifier/index.ts)
+      (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/functions/notifier/index.ts).
+   4. **Deploy function**.
+   5. Dans la page de la fonction : **Details** (ou **Settings**) → désactive **Verify JWT with legacy secret**
+      (ou « Enforce JWT verification ») → **Save**. Sans ça, la base ne peut pas l'appeler.
+
+Aucune clé à copier : la fonction crée elle-même ses clés d'envoi au premier appel et les garde dans la base.
+Pour vérifier : dans l'appli, **Options (⚙️)** → **Notifications** → **Activer les notifications**.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
