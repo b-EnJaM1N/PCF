@@ -7,12 +7,18 @@ const MAJ = t => String(t).toLocaleUpperCase("fr-FR");
 const COND = "\"Barlow Condensed\", sans-serif", TEXTE = "Barlow, sans-serif";
 const SIGNES = ["PIERRE", "CISEAUX", "FEUILLE"];
 
-// Les couleurs de chaque rareté : dégradé du fond, encre, liseré.
+// Les couleurs de chaque rang : dégradé du fond, encre, liseré ; « eclat » ajoute des étincelles (rangs rares).
 const TEINTES = {
-  bronze: { fond: ["#6E4424", "#C98A52", "#7A4B28"], encre: "#2A1608", clair: "#FBE3C8", lisere: "#F0C08E" },
-  argent: { fond: ["#5E6873", "#DDE3EA", "#6F7A86"], encre: "#1C232B", clair: "#FFFFFF", lisere: "#FFFFFF" },
-  or: { fond: ["#8A6A12", "#F4D06F", "#9C7A1E"], encre: "#2B2003", clair: "#FFF6D6", lisere: "#FFF1B8" },
-  legende: { fond: ["#0B0D12", "#2A2F3A", "#07080B"], encre: "#F4D06F", clair: "#F4D06F", lisere: "#F4D06F" },
+  bois: { fond: ["#5A3B22", "#9C6B41", "#4E3220"], encre: "#F3E2CC", lisere: "#C99A6B" },
+  bronze: { fond: ["#6E4424", "#C98A52", "#7A4B28"], encre: "#2A1608", lisere: "#F0C08E" },
+  argent: { fond: ["#5E6873", "#DDE3EA", "#6F7A86"], encre: "#1C232B", lisere: "#FFFFFF" },
+  or: { fond: ["#8A6A12", "#F4D06F", "#9C7A1E"], encre: "#2B2003", lisere: "#FFF1B8" },
+  platine: { fond: ["#6C8F94", "#E6F0F0", "#7FA3A8"], encre: "#12302F", lisere: "#FFFFFF" },
+  diamant: { fond: ["#1E5F8C", "#A9E4FF", "#1B4F78"], encre: "#062238", lisere: "#E6F8FF", eclat: true },
+  rubis: { fond: ["#5C0715", "#D7263D", "#4A0510"], encre: "#FFE3E6", lisere: "#FF9AA8", eclat: true },
+  maitre: { fond: ["#2E1352", "#7B3FC4", "#24103F"], encre: "#F1E6FF", lisere: "#C9A6FF", eclat: true },
+  grand_maitre: { fond: ["#12060A", "#8C1C2B", "#0B0306"], encre: "#FFD9A0", lisere: "#FF6B5A", eclat: true },
+  legende: { fond: ["#0B0D12", "#2A2F3A", "#07080B"], encre: "#F4D06F", lisere: "#F4D06F", eclat: true },
 };
 
 async function chargerPolices() {
@@ -57,6 +63,18 @@ export async function dessinerCarte(canvas, c, j) {
   for (let i = -2; i < 8; i++) { ctx.beginPath(); ctx.moveTo(i * 220, 0); ctx.lineTo(i * 220 + 90, 0); ctx.lineTo(i * 220 - 410, H); ctx.lineTo(i * 220 - 500, H); ctx.fill(); }
   ctx.restore();
   ctx.lineWidth = 10; ctx.strokeStyle = T.lisere; arrondi(ctx, 34, 34, L - 68, H - 68, 48); ctx.stroke();
+  if (T.eclat) {
+    // Des étincelles, toujours au même endroit (la carte ne change pas d'un affichage à l'autre).
+    let graine = 7; const hasard = () => ((graine = (graine * 16807) % 2147483647) / 2147483647);
+    ctx.fillStyle = T.lisere;
+    for (let k = 0; k < 26; k++) {
+      const x = 60 + hasard() * (L - 120), y = 60 + hasard() * (H - 120), r = 4 + hasard() * 10;
+      ctx.globalAlpha = 0.25 + hasard() * 0.5;
+      ctx.beginPath(); ctx.moveTo(x, y - r); ctx.lineTo(x + r * 0.25, y - r * 0.25); ctx.lineTo(x + r, y); ctx.lineTo(x + r * 0.25, y + r * 0.25);
+      ctx.lineTo(x, y + r); ctx.lineTo(x - r * 0.25, y + r * 0.25); ctx.lineTo(x - r, y); ctx.lineTo(x - r * 0.25, y - r * 0.25); ctx.closePath(); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
 
   // En haut à gauche : le niveau, le signe favori, le drapeau
   ctx.fillStyle = T.encre; ctx.textAlign = "center";
@@ -91,7 +109,7 @@ export async function dessinerCarte(canvas, c, j) {
 
   // Le pied de carte : rareté, titres, marque
   ctx.textAlign = "center"; ctx.font = `700 34px ${COND}`;
-  const pied = [`CARTE ${MAJ({ bronze: "Bronze", argent: "Argent", or: "Or", legende: "Légende" }[c.rarete])}`,
+  const pied = [`CARTE ${MAJ(c.rang ? c.rang.rang.nom : c.rarete)}`,
     `${c.titres} TITRE${c.titres > 1 ? "S" : ""}`, `${c.matchs} MATCH${c.matchs > 1 ? "S" : ""}`].join("  ·  ");
   ctx.fillText(pied, L / 2, H - 140);
   if (c.titre) { ctx.font = `italic 400 30px ${TEXTE}`; ctx.fillText(c.titre, L / 2, H - 96); }
