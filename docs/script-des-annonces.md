@@ -16,7 +16,7 @@ L'arbitre ne prononce jamais de pseudo : il nomme les joueurs par leur côté
 (jaune = le joueur, rouge = l'adversaire). Les scores rares au-delà de 20–18
 restent lus par la voix de synthèse.
 
-## Arbitre — grave et sobre (88 répliques)
+## Arbitre — grave et sobre (90 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -58,6 +58,8 @@ restent lus par la voix de synthèse.
 | `arbitre_reclamation_rejetee_02.mp3` | Réclamation rejetée. Le signe était valide. |
 | `arbitre_reclamation_rejetee_03.mp3` | Réclamation rejetée. L'arbitre a vu. |
 | `arbitre_poignee_de_main_01.mp3` | Les joueurs se serrent la main. |
+| `arbitre_poignee_franche_01.mp3` | Belle poignée de main. |
+| `arbitre_poignee_legere_01.mp3` | Poignée de main… discrète. |
 | `arbitre_forfait_jaune_01.mp3` | Victoire par forfait, côté jaune. |
 | `arbitre_forfait_rouge_01.mp3` | Victoire par forfait, côté rouge. |
 | `arbitre_abandon_01.mp3` | Abandon. Le match est terminé. |
@@ -311,7 +313,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_fin_match_01.mp3` | Il n'a pas démérité ! |
 | `commentateur_dialogue_fin_match_01_f.mp3` | Elle n'a pas démérité ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (145 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (147 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -445,6 +447,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_defaite_05.mp3` | C'est officiel : la stratégie n'était pas au rendez-vous. |
 | `commentatrice_defaite_06.mp3` | Il va falloir se remettre en question. Ou changer de main. |
 | `commentatrice_domination_01.mp3` | Je suis ton père. |
+| `commentatrice_poignee_froide_01.mp3` | Glacial. J'approuve. |
+| `commentatrice_poignee_contraste_01.mp3` | L'un tend la main. L'autre tend un glaçon. |
 | `commentatrice_humain_01.mp3` | Ils se connaissent. Et ça se voit. |
 | `commentatrice_humain_02.mp3` | Entre amis, il n'y a pas de pitié. Il n'y a que des signes. |
 | `commentatrice_dialogue_avant_match_01.mp3` | On sent surtout deux personnes devant leur téléphone. Mais oui. |

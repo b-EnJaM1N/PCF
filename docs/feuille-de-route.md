@@ -53,3 +53,4 @@
 - Notifications sur le téléphone quand on reçoit un défi (appli fermée).
 - **Calibrage du niveau officiel** (étape 8, fait) : départ à 1200 ; pendant les 10 premiers duels officiels, le niveau bouge deux fois plus vite et s'affiche « 1200 ? ».
 - **Cérémonie** (décision) : pas de temps mort ni de réclamation, pour garder le rythme rapide des échanges. Le spectacle se concentre sur le début (présentation), le milieu (entre les sets) et la fin du match (poignée de main, La Une, interview).
+- **Poignée de main** (étape 9, faite) : 3 secondes pour choisir (franche, normale, légère, froide), sinon le style habituel réglé dans « Ma fiche » ; les bots serrent la main selon leur caractère ; en ligne, chacun voit le choix de l'autre. Les poignées sont comptées dans la fiche (pour un futur titre fair-play).

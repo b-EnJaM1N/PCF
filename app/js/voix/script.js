@@ -65,6 +65,8 @@ const ARBITRE = {
   arbitre_reclamation_rejetee_02: "Réclamation rejetée. Le signe était valide.",
   arbitre_reclamation_rejetee_03: "Réclamation rejetée. L'arbitre a vu.",
   arbitre_poignee_de_main_01: "Les joueurs se serrent la main.",
+  arbitre_poignee_franche_01: "Belle poignée de main.",
+  arbitre_poignee_legere_01: "Poignée de main… discrète.",
   arbitre_forfait_jaune_01: "Victoire par forfait, côté jaune.",
   arbitre_forfait_rouge_01: "Victoire par forfait, côté rouge.",
   arbitre_abandon_01: "Abandon. Le match est terminé.",
