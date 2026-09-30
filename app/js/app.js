@@ -9,6 +9,7 @@ import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
 import { carteDe, notesDe, texteRang } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
+import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee } from "./poignee.js";
 import { installerRapide } from "./ecran-rapide.js";
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
@@ -205,7 +206,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   annoncer(a.lignes);
   render(); renderHistorique(); renderLecture();
 
-  if (m.termine) { S.dialogueFin = a.dialogue; setTimeout(finir, 1100); return evt; }
+  if (m.termine) { S.dialogueFin = a.dialogue; setTimeout(() => poigneeDeMain(finir), 1000); return evt; }
   if (evt.finSet) {
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
     const suivant = annonceDebutSet(m), decisif = setDecisif(m);
@@ -329,6 +330,56 @@ function finir() {
   $("end").scrollIntoView({ behavior: reduitMouvement() ? "auto" : "smooth", block: "start" });
   // Après une finale (tournoi solo ou en ligne) : l'interview du journaliste.
   if (n && !special && S.annonces.finale) setTimeout(() => ouvrirInterview(gagne), 2500);
+}
+
+// ---------------------------------------------------------------- la poignée de main
+// 3 secondes pour choisir (sinon, mon style habituel), puis une courte animation, puis l'écran de fin.
+// Contre un humain, on envoie son choix et on attend un peu celui de l'adversaire (sinon, son style habituel).
+function poigneeDeMain(apres) {
+  const seance = S;
+  if (!S || (S.duel && (!D || D.finSpeciale))) { apres(); return; }
+  const ov = $("poignee"), scene = $("pmScene"), choix = $("pmChoix");
+  $("pmMoi").innerHTML = avatarSVG(P.av); $("pmAdv").innerHTML = avatarSVG(OPP.av);
+  $("pmStyleMoi").textContent = ""; $("pmStyleAdv").textContent = ""; $("pmCom").textContent = "";
+  scene.className = "pm-scene"; choix.hidden = false; $("pmTemps").hidden = false;
+  choix.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === P.poignee)));
+  const barre = $("pmTemps"); barre.classList.remove("court"); void barre.offsetWidth; barre.classList.add("court");
+  ov.classList.add("show");
+  let fait = false, fini = false;
+  const terminer = () => { if (fini) return; fini = true; ov.classList.remove("show"); ov.onclick = null; if (S === seance) apres(); };
+  const minuterie = setTimeout(() => choisir(P.poignee), DELAI_CHOIX_MS);
+  async function choisir(style) {
+    if (fait) return; fait = true; clearTimeout(minuterie);
+    style = styleValide(style);
+    choix.hidden = true; $("pmTemps").hidden = true;
+    compterPoignee(P, style); sauverP();
+    let adv;
+    if (S.duel && D) adv = await styleAdversaire(style);
+    else adv = styleDuBot(OPP.id, style);
+    montrer(style, adv);
+  }
+  function montrer(moi, adv) {
+    const r = rencontre(moi, adv), ligne = CATALOGUE.get(r.ligne);
+    $("pmStyleMoi").textContent = `${STYLES[moi].icone} ${STYLES[moi].nom}`;
+    $("pmStyleAdv").textContent = `${STYLES[adv].icone} ${STYLES[adv].nom}`;
+    $("pmMain").textContent = "🤝";
+    scene.classList.add("go", r.animation);
+    if (ligne) { $("pmCom").innerHTML = ""; afficherRepliques($("pmCom"), [ligne]); setTimeout(() => voix.dire([ligne]), 500); }
+    (S.citations ||= []).push(...(ligne && ligne.role !== "arbitre" ? [ligne] : []));
+    ov.onclick = terminer;                                   // toucher l'écran : on passe
+    setTimeout(terminer, reduitMouvement() ? 1200 : 2400);
+  }
+  choix.onclick = e => { const b = e.target.closest("button[data-s]"); if (b) choisir(b.dataset.s); };
+}
+// Duel : j'envoie ma poignée de main, puis je regarde (jusqu'à ~2 s) si l'adversaire a choisi.
+async function styleAdversaire(moi) {
+  const id = D.id, sa = D.moi === 0 ? "poignee1" : "poignee0";
+  const habituel = styleValide(OPP.fiche?.poignee);
+  try {
+    let d = await serveur.serrerLaMain(id, moi);
+    for (let k = 0; !d?.[sa] && k < 3; k++) { await new Promise(ok => setTimeout(ok, 700)); d = await serveur.lireDuel(id); }
+    return d?.[sa] ? styleValide(d[sa]) : habituel;
+  } catch { return habituel; }
 }
 
 // ---------------------------------------------------------------- images à partager (La Une, la carte)
@@ -577,11 +628,13 @@ function renderSurnom() {
   $("inSurnomComp").innerHTML = comps.map(x => `<option value="${x.id}"${x.id === sn.complement.id ? " selected" : ""}>${esc(x.t)}</option>`).join("");
   $("surnomCompte").textContent = `${noms.length} nom${noms.length > 1 ? "s" : ""} sur ${NOMS.length} et ${comps.length} complément${comps.length > 1 ? "s" : ""} sur ${COMPLEMENTS.length} débloqués.`;
   document.querySelectorAll("#segGenre button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === P.genre)));
+  document.querySelectorAll("#segPoignee button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === P.poignee)));
 }
 const choisirSurnom = () => { P.surnom = { nom: $("inSurnomNom").value, complement: $("inSurnomComp").value }; sauverP(); renderSurnom(); };
 $("inSurnomNom").addEventListener("change", choisirSurnom);
 $("inSurnomComp").addEventListener("change", choisirSurnom);
 document.querySelectorAll("#segGenre button").forEach(b => b.addEventListener("click", () => { P.genre = b.dataset.v; sauverP(); renderSurnom(); }));
+document.querySelectorAll("#segPoignee button").forEach(b => b.addEventListener("click", () => { P.poignee = b.dataset.v; sauverP(); renderSurnom(); }));
 
 function renderFiche() {
   renderSurnom(); renderCarte();

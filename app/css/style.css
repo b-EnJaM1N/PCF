@@ -361,3 +361,38 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 @media (prefers-reduced-motion: reduce) { .rapide-radar { animation: none; } }
 .rapide-titre { text-align: center; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.4rem; margin: 0 0 6px; }
 #rapideAttente .hint { text-align: center; }
+
+/* La poignée de main */
+.seg4 button { font-size: .85rem; padding: 10px 2px; }
+.pm-panel { max-width: 400px; }
+.pm-scene { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin: 14px 0 10px; position: relative; }
+.pm-j { text-align: center; }
+.pm-av svg { width: 84px; height: 84px; border-radius: 50%; box-shadow: 0 0 0 4px var(--me); display: block; margin: 0 auto; }
+.pm-av.adv svg { box-shadow: 0 0 0 4px var(--bot); }
+.pm-style { font-size: .85rem; color: var(--muted); margin-top: 8px; min-height: 1.2em; }
+.pm-main { font-size: 3rem; opacity: 0; transform: scale(.4); }
+.pm-choix { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.pm-choix button { font: inherit; font-size: .85rem; line-height: 1.4; padding: 8px 2px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: var(--line); cursor: pointer; }
+.pm-choix button[aria-pressed=true] { border-color: var(--me); color: var(--me); }
+.pm-temps { height: 5px; background: rgba(255, 255, 255, .12); border-radius: 3px; margin: 10px 0 0; overflow: hidden; }
+.pm-temps div { height: 100%; background: var(--me); transform-origin: left; }
+.pm-temps.court div { animation: pm-temps 3s linear forwards; }
+@keyframes pm-temps { to { transform: scaleX(0); } }
+/* Les joueurs se rapprochent, puis la main selon le style (celui du plus froid des deux). */
+.pm-scene.go .pm-j:first-child { animation: pm-vers-d .5s ease-out forwards; }
+.pm-scene.go .pm-j:last-child { animation: pm-vers-g .5s ease-out forwards; }
+@keyframes pm-vers-d { to { transform: translateX(18px); } }
+@keyframes pm-vers-g { to { transform: translateX(-18px); } }
+.pm-scene.go .pm-main { animation: pm-apparait .3s .4s ease-out forwards; }
+@keyframes pm-apparait { to { opacity: 1; transform: scale(1); } }
+.pm-scene.go.franche .pm-main { animation: pm-apparait .3s .4s ease-out forwards, pm-secoue .22s .7s ease-in-out 3 alternate; }
+.pm-scene.go.normale .pm-main { animation: pm-apparait .3s .4s ease-out forwards, pm-secoue .3s .7s ease-in-out 2 alternate; }
+@keyframes pm-secoue { from { transform: scale(1) translateY(0); } to { transform: scale(1.05) translateY(-14px); } }
+.pm-scene.go.legere .pm-main { animation: pm-effleure 1s .4s ease-out forwards; }
+@keyframes pm-effleure { 0% { opacity: 0; transform: scale(.4); } 40% { opacity: 1; transform: scale(.75); } 100% { opacity: .5; transform: scale(.7); } }
+.pm-scene.go.froide .pm-main { animation: pm-froid 1.3s .4s ease-out forwards; }
+@keyframes pm-froid { 0% { opacity: 0; transform: scale(.4); } 30% { opacity: 1; transform: scale(.9); } 60% { opacity: 1; transform: scale(.9) translateX(0); } 100% { opacity: .15; transform: scale(.8) translateX(22px); } }
+.pm-scene.go.froide::after { content: "❄️ ❄️ ❄️"; position: absolute; inset: -18px 0 auto; text-align: center; font-size: 1.1rem; letter-spacing: 10px; opacity: 0; animation: pm-givre 1s .8s forwards; }
+.pm-scene.go.froide .pm-av svg { transition: filter 1s .6s; filter: saturate(.4) hue-rotate(180deg) brightness(1.1); }
+@keyframes pm-givre { to { opacity: .9; } }
+@media (prefers-reduced-motion: reduce) { .pm-scene.go * , .pm-scene.go::after { animation-duration: .01s !important; animation-delay: 0s !important; } .pm-scene.go .pm-main { opacity: 1; transform: none; } }

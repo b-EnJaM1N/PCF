@@ -47,6 +47,10 @@ Si un jour on relance les étapes 3, 5 ou 6, il faut relancer celui-ci ensuite.
 Même manipulation avec le fichier [`etape-8-calibrage.sql`](etape-8-calibrage.sql), **après** celui de l'étape 7.
 Si un jour on relance l'étape 4, il faut relancer celui-ci ensuite.
 
+## 1 nonies. Poignée de main (étape 9)
+
+Même manipulation avec le fichier [`etape-9-poignee.sql`](etape-9-poignee.sql), **après** celui de l'étape 8.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

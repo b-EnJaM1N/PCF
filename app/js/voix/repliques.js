@@ -296,6 +296,9 @@ export const MOMENTS = {
   domination: [
     { r: "d", t: "Je suis ton père.", clin: "cine" },
   ],
+  // La poignée de main de fin de match (voir poignee.js)
+  poignee_froide: [{ r: "d", t: "Glacial. J'approuve." }],
+  poignee_contraste: [{ r: "d", t: "L'un tend la main. L'autre tend un glaçon." }],
   humain: [
     { r: "c", t: "C'est un duel ! Un vrai ! Les yeux dans les yeux !" },
     { r: "d", t: "Ils se connaissent. Et ça se voit." },

@@ -39,6 +39,8 @@ export function profilParDefaut() {
     surnom: null,                             // { nom, complement } choisis, sinon les plus rares
     egalites: 0, autos: 0, fannys: 0, ballesDeMatchSauvees: 0, lecturesReussies: 0,
     heures: { nuit: 0, matin: 0, dimanche: 0 },
+    poignee: "normale",                       // ma poignée de main habituelle (si je ne choisis pas à temps)
+    poignees: { franche: 0, normale: 0, legere: 0, froide: 0 },
   };
 }
 
@@ -46,8 +48,9 @@ export function profilParDefaut() {
 export function normaliserProfil(brut) {
   const d = profilParDefaut();
   if (!brut || typeof brut !== "object") return d;
-  const P = { ...d, ...brut, av: { ...d.av, ...(brut.av || {}) }, heures: { ...d.heures, ...(brut.heures || {}) } };
+  const P = { ...d, ...brut, av: { ...d.av, ...(brut.av || {}) }, heures: { ...d.heures, ...(brut.heures || {}) }, poignees: { ...d.poignees, ...(brut.poignees || {}) } };
   if (P.genre !== "f") P.genre = "m";
+  if (!["franche", "normale", "legere", "froide"].includes(P.poignee)) P.poignee = "normale";
   for (const k of Object.keys(d)) if (Array.isArray(d[k]) && !Array.isArray(P[k])) P[k] = d[k];
   return P;
 }
