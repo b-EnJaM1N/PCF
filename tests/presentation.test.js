@@ -18,7 +18,7 @@ test("présentation d'un joueur confirmé en demi-finale", () => {
   const P = profilParDefaut();
   Object.assign(P, { elo: 1350, matchs: 10, victoires: 7, signes: [5, 20, 3], devines: 30, lisibles: 100, faceAFace: { professeur: { v: 2, d: 3, signes: [0, 0, 0] } } });
   const p = presentation(P, botParId("professeur"), { tour: "Demi-finale", pointsParSet: 7, setsGagnants: 2 });
-  assert.equal(p.bandeau, "PCF Open · Demi-finale");
+  assert.equal(p.bandeau, "HandSlam Open · Demi-finale");
   assert.equal(p.format, "Sets de 7 points · 2 sets gagnants");
   assert.equal(p.joueur.bilan, "7 V – 3 D · 70 % de victoires");
   assert.equal(p.lignes[0].avantage, "d");

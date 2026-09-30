@@ -458,7 +458,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_avant_match_05.mp3` | C'est pas faux. |
 | `commentatrice_dialogue_fin_set_01.mp3` | Solide. Sans génie. Mais solide. |
 | `commentatrice_dialogue_fin_set_02.mp3` | Nous n'en parlerons pas. |
-| `commentatrice_dialogue_fin_set_03.mp3` | Tout. Ou rien. C'est ça, le PCF. |
+| `commentatrice_dialogue_fin_set_03.mp3` | Tout. Ou rien. C'est ça, le HandSlam. |
 | `commentatrice_dialogue_fin_set_04.mp3` | Vaste programme. |
 | `commentatrice_dialogue_set_decisif_01.mp3` | Un set pour ce soir. Ce sera déjà bien. |
 | `commentatrice_dialogue_serie_01.mp3` | Je vous demande de vous arrêter. |

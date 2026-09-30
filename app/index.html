@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>PCF</title>
-<meta name="description" content="PCF — Pierre-Ciseaux-Feuille, le sport numérique. Sets de 11 points, arbitre, commentateur et tournois.">
+<title>HandSlam</title>
+<meta name="description" content="HandSlam — le Pierre-Feuille-Ciseaux devient un sport. Sets de 11 points, arbitre, commentateur et tournois.">
 <meta name="theme-color" content="#0F2C52">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="PCF">
+<meta name="apple-mobile-web-app-title" content="HandSlam">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -32,7 +32,7 @@
 <body>
 <div class="wrap">
   <header>
-    <div><h1>PCF</h1><div class="rule" id="ruleTxt">Sets de 11, 2 sets gagnants</div></div>
+    <div><h1>HandSlam</h1><div class="rule" id="ruleTxt">Sets de 11, 2 sets gagnants</div></div>
     <div style="display:flex;align-items:center;gap:12px">
       <label class="sound"><input type="checkbox" id="snd" checked> Son</label>
       <button class="icone" id="btnOptions" aria-label="Options" title="Options">⚙️</button>
@@ -47,7 +47,7 @@
     <button class="hub" data-aller="viewDuel"><span class="hub-i">🤝</span><span><b>Défier un ami</b><small>Un duel en direct, par pseudo ou par lien</small></span></button>
     <button class="hub" data-aller="viewSng"><span class="hub-i">🏁</span><span><b>Sit &amp; Go</b><small>Tournois express publics : départ dès que la salle est pleine</small></span></button>
     <button class="hub" data-aller="viewTournois"><span class="hub-i">🏆</span><span><b>Tournois</b><small>Tes tournois en cours, tournois privés entre amis</small></span></button>
-    <button class="hub" data-aller="viewMatch"><span class="hub-i">🎯</span><span><b>Entraînement</b><small>Contre les 15 bots, et le PCF Open (8 ou 16 joueurs)</small></span></button>
+    <button class="hub" data-aller="viewMatch"><span class="hub-i">🎯</span><span><b>Entraînement</b><small>Contre les 15 bots, et le HandSlam Open (8 ou 16 joueurs)</small></span></button>
     <p class="hint" id="hubHors" hidden style="text-align:center;margin-top:14px">Les parties en ligne demandent un compte gratuit, sans mot de passe : <button class="linkbtn" data-aller="viewProfile">le créer</button>.</p>
   </div>
 
@@ -66,7 +66,7 @@
         <button class="btn" id="startBtn">Commencer un match</button>
       </div>
       <div id="tourBox" hidden>
-        <p class="hint" style="margin-bottom:14px">Le PCF Open : un tournoi à élimination directe contre les bots. Tous les tours en 2 sets gagnants, la finale en 3 sets gagnants, comme un Grand Chelem. Les têtes de série sont placées selon leur niveau.</p>
+        <p class="hint" style="margin-bottom:14px">Le HandSlam Open : un tournoi à élimination directe contre les bots. Tous les tours en 2 sets gagnants, la finale en 3 sets gagnants, comme un Grand Chelem. Les têtes de série sont placées selon leur niveau.</p>
         <span class="fmt-lbl">Nombre de joueurs</span>
         <div class="seg" id="segOpen"><button data-v="8">8 joueurs</button><button data-v="16">16 joueurs</button></div>
         <p class="hint" style="margin-bottom:14px">À 8 : toi et les 7 bots les plus proches de ton niveau (3 matchs à gagner). À 16 : toi et les 15 bots (4 matchs à gagner, huitièmes de finale compris).</p>
@@ -75,7 +75,7 @@
     </section>
 
     <section class="card" id="tourCard" hidden>
-      <h2>🏆 PCF Open</h2>
+      <h2>🏆 HandSlam Open</h2>
       <div id="bracket"></div>
       <p class="tmsg" id="tMsg"></p>
       <button class="btn" id="tPlay"></button>
@@ -151,7 +151,7 @@
         <div class="seg" id="duelLen"><button data-v="11">11</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
         <div class="seg" id="duelWin"><button data-v="1">1 set</button><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
         <label class="sound" style="align-items:flex-start;margin-bottom:10px"><input type="checkbox" id="duelClasse" checked> <span id="duelClasseTexte">Match officiel : compte pour ton niveau officiel (décoche pour un match amical)</span></label>
-        <p class="hint">Ton ami n'a pas encore PCF, ou il n'apparaît pas ? Envoie-lui un lien :</p>
+        <p class="hint">Ton ami n'a pas encore HandSlam, ou il n'apparaît pas ? Envoie-lui un lien :</p>
         <button class="btn alt" id="duelLien" style="margin-top:8px">Inviter par un lien (WhatsApp, SMS…)</button>
         <p class="locknote" id="duelMsg" role="status"></p>
       </section>
@@ -346,7 +346,7 @@
     <section class="card">
       <h2>Points par set</h2>
       <div class="seg" id="segLen"><button data-v="11">11 (officiel)</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
-      <p class="hint">Le format officiel du PCF est le set de 11 points, avec 2 points d'écart. Le set de 7 points (2 points d'écart aussi) donne des matchs plus courts. Les sets de 3 et de 1 point se jouent sans écart : le premier à 3 gagne (même 3–2), et à 1 point, le premier point gagne le set.</p>
+      <p class="hint">Le format officiel du HandSlam est le set de 11 points, avec 2 points d'écart. Le set de 7 points (2 points d'écart aussi) donne des matchs plus courts. Les sets de 3 et de 1 point se jouent sans écart : le premier à 3 gagne (même 3–2), et à 1 point, le premier point gagne le set.</p>
       <p class="hint">Le tournoi se joue en sets de 11 ou de 7 points. En duel, les sets de 3 et 1 point sont toujours des matchs amicaux.</p>
       <p class="hint" id="lenLock" hidden>Le format ne peut pas changer pendant un match ou un tournoi.</p>
     </section>
@@ -364,7 +364,7 @@
       <label class="sound" style="margin-top:12px;align-items:flex-start"><input type="checkbox" id="synthese"> <span>Lire aussi les répliques avec la voix de synthèse du téléphone (voix robotique)</span></label>
     </section>
     <section class="card" id="installCard">
-      <h2>Installer PCF sur l'écran d'accueil</h2>
+      <h2>Installer HandSlam sur l'écran d'accueil</h2>
       <p class="hint"><b>iPhone (Safari)</b> :</p>
       <ol class="steps"><li>touche le bouton Partager (le carré avec une flèche) ;</li><li>choisis « Sur l'écran d'accueil » ;</li><li>touche « Ajouter ».</li></ol>
       <p class="hint" style="margin-top:10px"><b>Android (Chrome)</b> :</p>
@@ -373,7 +373,7 @@
     </section>
     <section class="card">
       <h2>Confidentialité</h2>
-      <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, PCF enregistre ton adresse e-mail (jamais visible par les autres joueurs), ton pseudo, ton pays, ton avatar, tes statistiques, ton niveau officiel, tes amis et tes cercles, chez l'hébergeur Supabase, en Europe (Paris). Les autres joueurs connectés peuvent voir ton pseudo, ton avatar, tes statistiques et ton niveau officiel ; seuls les membres d'un cercle en voient la liste des membres. Tu peux supprimer ton compte et toutes ses données à tout moment.</p>
+      <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, HandSlam enregistre ton adresse e-mail (jamais visible par les autres joueurs), ton pseudo, ton pays, ton avatar, tes statistiques, ton niveau officiel, tes amis et tes cercles, chez l'hébergeur Supabase, en Europe (Paris). Les autres joueurs connectés peuvent voir ton pseudo, ton avatar, tes statistiques et ton niveau officiel ; seuls les membres d'un cercle en voient la liste des membres. Tu peux supprimer ton compte et toutes ses données à tout moment.</p>
       <button class="btn alt danger" id="supprimerCompte" style="margin-top:12px" hidden>Supprimer mon compte</button>
     </section>
     <p class="record" id="version"></p>

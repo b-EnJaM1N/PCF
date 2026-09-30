@@ -28,7 +28,7 @@ export function presentation(P, bot, { tour = null, pointsParSet = 11, setsGagna
   ];
   const pct = pourcent(P.victoires, P.matchs);
   return {
-    bandeau: bot.humain ? (tournoi ? "Tournoi en ligne" : classe ? "Duel officiel" : "Duel amical") : tour === null ? "Match amical" : `PCF Open · ${tour}`,
+    bandeau: bot.humain ? (tournoi ? "Tournoi en ligne" : classe ? "Duel officiel" : "Duel amical") : tour === null ? "Match amical" : `HandSlam Open · ${tour}`,
     format: texteFormat({ pointsParSet, setsGagnants }),
     joueur: {
       nom: nomAffiche(P), sous: `${P.drapeau} ${dernierTitre(P)}`,

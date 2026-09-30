@@ -1,6 +1,6 @@
 {
-  "name": "PCF — Pierre-Ciseaux-Feuille",
-  "short_name": "PCF",
+  "name": "HandSlam — Pierre-Feuille-Ciseaux",
+  "short_name": "HandSlam",
   "description": "Pierre-Ciseaux-Feuille, le sport numérique : sets de 11 points, arbitre, commentateur et tournois.",
   "lang": "fr",
   "start_url": "./",

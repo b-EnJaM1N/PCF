@@ -73,7 +73,7 @@ self.addEventListener("activate", e => { e.waitUntil(self.clients.claim()); });
 self.addEventListener("push", e => {
   let m = {};
   try { m = e.data ? e.data.json() : {}; } catch { m = { texte: e.data ? e.data.text() : "" }; }
-  e.waitUntil(self.registration.showNotification(m.titre || "PCF", {
+  e.waitUntil(self.registration.showNotification(m.titre || "HandSlam", {
     body: m.texte || "", icon: "icons/icon-192.png", badge: "icons/icon-192.png",
     tag: m.tag, renotify: !!m.tag, data: { url: m.url || "./" },
   }));

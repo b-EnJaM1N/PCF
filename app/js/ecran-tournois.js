@@ -189,7 +189,7 @@ export function installerTournois(ctx) {
 
   async function partager() {
     const url = lienTournoi(base(), detail.code);
-    const texte = `Inscris-toi au tournoi « ${detail.nom} » sur PCF, le Pierre-Ciseaux-Feuille en sets de 11 :`;
+    const texte = `Inscris-toi au tournoi « ${detail.nom} » sur HandSlam, le Pierre-Feuille-Ciseaux en sets de 11 :`;
     try { if (navigator.share) { await navigator.share({ title: `Tournoi ${detail.nom}`, text: texte, url }); return; } }
     catch (e) { if (e && e.name === "AbortError") return; }
     try { await navigator.clipboard.writeText(url); dire("Lien copié ! Colle-le dans WhatsApp ou un SMS."); } catch { dire(""); }

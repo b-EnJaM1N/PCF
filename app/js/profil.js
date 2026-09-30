@@ -13,7 +13,7 @@ export const TITRES = [
   { id: "imprevisible", nom: "Imprévisible", desc: "Gagner un match en étant prévisible moins de 30 % du temps.", debloque: "le gant or", objet: ["gant", "or"] },
   { id: "invincible", nom: "Invincible", desc: "Gagner 3 matchs d'affilée.", debloque: "le fond or", objet: ["fond", "or"] },
   { id: "marathon", nom: "Marathonien", desc: "Jouer un match de 60 coups ou plus." },
-  { id: "vainqueur", nom: "Vainqueur du PCF Open", desc: "Remporter un tournoi." },
+  { id: "vainqueur", nom: "Vainqueur du HandSlam Open", desc: "Remporter un tournoi." },
 ];
 
 // Titre qui débloque un élément d'avatar (ou undefined si l'élément est libre).
