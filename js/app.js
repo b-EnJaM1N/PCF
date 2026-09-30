@@ -2,13 +2,15 @@
 import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch } from "./annonces.js";
 import { surnomDe, NOMS, COMPLEMENTS, debloques } from "./surnoms.js";
 import { voirTournoi } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
 import { carteDe, notesDe, RARETES } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
+import { installerRapide } from "./ecran-rapide.js";
+import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
@@ -50,7 +52,7 @@ const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier
 const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
-let duelsUI = null, cerclesUI = null, sngUI = null;
+let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null;
 let monClassement = null;   // niveau officiel (duels entre humains), connu une fois connecté
 let panneauOuvert = null, faceAFaceOuvert = false;
 
@@ -305,14 +307,17 @@ function finir() {
   sauverP(); rafraichirAvatars(); afficherBilan();
   // « La Une » : on garde de quoi raconter ce match.
   S.pourUne = n && !special ? {
-    etape: S.duel ? (D?.duel?.tournoi_id ? (D.tourVoix === 2 ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
+    etape: S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.classe ? "officielle" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.tourVoix === 2 ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
       : enTournoi ? `${TOUR_SINGULIER[S.tour]} du PCF Open` : "Match d'entraînement",
     finale: !!S.annonces.finale, numero: P.matchs,
   } : null;
   $("btnUne").hidden = !S.pourUne;
   $("again").hidden = enTournoi || !!S.duel; $("tNext").hidden = !enTournoi;
   const tournoiId = S.duel && D ? D.duel.tournoi_id : null;   // match de tournoi en ligne
-  $("revanche").hidden = !S.duel || !!tournoiId; $("retourDuels").hidden = !S.duel || !!tournoiId; $("revanche").disabled = false;
+  const rapide = !!(S.duel && D?.duel?.rapide) || !!S.contreBotRapide;
+  $("revanche").hidden = !S.duel || !!tournoiId; $("retourDuels").hidden = !S.duel || !!tournoiId || rapide; $("revanche").disabled = false;
+  $("encoreRapide").hidden = !rapide;
+  if (S.contreBotRapide) $("again").hidden = true;
   $("voirTournoi").hidden = !tournoiId;
   if (!S.duel) $("endClassement").hidden = true;
   $("abandonDuelZone").hidden = true;
@@ -434,7 +439,7 @@ function preparerEcranMatch() {
   $("end").hidden = true; $("bar").style.transform = "scaleX(1)"; $("timer").classList.remove("urgent");
   render(); $("status").textContent = "Choisis ton premier coup";
   boutons(false); afficherBilan(); window.scrollTo(0, 0);
-  $("revanche").hidden = true; $("retourDuels").hidden = true; $("abandonDuelZone").hidden = true;
+  $("revanche").hidden = true; $("retourDuels").hidden = true; $("encoreRapide").hidden = true; $("abandonDuelZone").hidden = true;
 }
 
 function renderFormat() {
@@ -468,6 +473,8 @@ function ouvrirFaceAFace() {
   $("foGo").disabled = false; $("foGo").textContent = "Commencer";
   $("foBack").textContent = S.duel ? "Abandonner le duel" : "Retour";
   $("foStage").textContent = pr.bandeau; $("foFmt").textContent = pr.format;
+  if (S.contreBotRapide) $("foStage").textContent = "Partie rapide · 🤖 contre un bot";
+  else if (D?.duel?.rapide) $("foStage").textContent = `Partie rapide ${D.duel.classe ? "officielle" : "éclair"}`;
   $("foAvMe").innerHTML = avatarSVG(P.av); $("foAvBot").innerHTML = avatarSVG(OPP.av);
   $("foNameMe").textContent = pr.joueur.nom; $("foSubMe").textContent = pr.joueur.sous; $("foRecMe").textContent = pr.joueur.bilan;
   $("foNameBot").textContent = pr.adversaire.nom; $("foSubBot").textContent = pr.adversaire.sous; $("foRecBot").textContent = pr.adversaire.bilan;
@@ -498,13 +505,23 @@ function ouvrirFaceAFace() {
 }
 // Le speaker présente les joueurs (et les commentateurs lancent le match), par écrit et à voix haute.
 function presenterSpeaker() {
-  const f = P.faceAFace[OPP.id];
+  const f = P.faceAFace[OPP.id], humain = !!OPP.humain;
+  const niveauMoi = humain ? monClassement ?? 1200 : P.elo, niveauAdv = humain ? OPP.classement ?? 1200 : OPP.elo;
+  const monId = `h:${compteUI.session()?.user?.id}`;
+  let recents = []; try { recents = lire("speakerRecents", []) || []; } catch { /* rien */ }
   const av = annoncesAvantMatch({
-    moi: { surnom: surnomDe(P), genre: P.genre, etiquette: etiquetteDe(P) },
-    adv: OPP.humain ? { surnom: OPP.surnom, genre: OPP.genre, etiquette: etiquetteDe(OPP.fiche) } : { bot: OPP.id },
+    moi: { surnom: surnomDe(P), genre: P.genre, etiquette: etiquetteDe(P, { advId: OPP.id, niveauMoi, niveauAdv }) },
+    adv: humain ? { surnom: OPP.surnom, genre: OPP.genre, etiquette: etiquetteDe(OPP.fiche, { advId: monId, niveauMoi: niveauAdv, niveauAdv: niveauMoi }) } : { bot: OPP.id },
     tour: S.duel ? D?.tourVoix ?? null : S.tour, sng: !!(S.duel && D?.sng),
-    humain: !!OPP.humain, domination: !!(f && f.d >= f.v + 3), genre: P.genre,
+    humain, domination: !!(f && f.d >= f.v + 3), genre: P.genre,
+    situations: situationsDuMatch({
+      humain, dejaJoues: !!(f && f.v + f.d > 0), niveauMoi, niveauAdv, memePays: humain && OPP.drapeau === P.drapeau,
+      rapide: !!(D?.duel?.rapide || S.contreBotRapide), officiel: !!(S.duel && D?.duel?.classe), setsGagnants: S.match.format.setsGagnants,
+    }),
+    recents,
   });
+  // On retient les phrases dites, pour ne pas les répéter aux prochains matchs.
+  ecrire("speakerRecents", [...av.speaker, ...av.commentaires].map(l => l.id).concat(recents).slice(0, 80));
   const el = $("foSpeaker"); el.textContent = "";
   const sp = document.createElement("div"); sp.className = "speaker"; sp.textContent = av.speaker.map(l => l.texte).join(" "); el.append(sp);
   av.commentaires.forEach(l => { const d = document.createElement("div"); d.className = l.role; d.textContent = l.texte; el.append(d); });
@@ -656,12 +673,14 @@ $("resetProfile").addEventListener("click", () => {
 // ---------------------------------------------------------------- navigation
 // Trois onglets (Jouer, Cercles, Ma fiche) et la roue des Options. L'onglet « Jouer » est un menu
 // qui mène aux pages Défier un ami, Sit & Go, Tournois et Entraînement (l'écran de match).
-const VUES = ["viewJouer", "viewMatch", "viewDuel", "viewSng", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
-const ONGLET_DE = { viewJouer: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
+const VUES = ["viewJouer", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
+const ONGLET_DE = { viewJouer: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
 let vueCourante = "viewJouer", avantOptions = "viewJouer";
 function aller(vue) {
   if (!VUES.includes(vue)) return;
   if (vue === "viewOptions" && vueCourante !== "viewOptions") avantOptions = vueCourante;
+  if (vueCourante === "viewRapide" && vue !== "viewRapide") rapideUI?.quitterEcran();   // la recherche demande de rester sur l'écran
+  if (vue === "viewRapide") rapideUI?.rafraichir();
   VUES.forEach(v => { $(v).hidden = v !== vue; });
   vueCourante = vue;
   const onglet = ONGLET_DE[vue];
@@ -887,6 +906,7 @@ function majDuel(duel) {
   } else if (duel.phase === "termine") {
     terminerDuel(duel);
   } else if (duel.phase === "annule" || duel.phase === "refuse") {
+    if (duel.rapide) { quitterDuel(); aller("viewRapide"); rapideUI?.annulee(); return; }   // l'adversaire n'est jamais arrivé
     quitterDuel(); ouvrirOnglet("duel");
   }
   majBoutonsPret();
@@ -1011,6 +1031,7 @@ function abandonnerDuel() {
 }
 $("abandonDuel").addEventListener("click", abandonnerDuel);
 $("retourDuels").addEventListener("click", () => { quitterDuel(); ouvrirOnglet("duel"); });
+$("encoreRapide").addEventListener("click", () => { quitterDuel(); if (!D) nouvelleSeance(); aller("viewRapide"); });
 $("voirTournoi").addEventListener("click", () => { const id = D?.duel?.tournoi_id; quitterDuel(); if (id) cerclesUI.ouvrirTournoi(id); });
 $("revanche").addEventListener("click", async () => {
   const f = S.match.format, adv = OPP.uid;
@@ -1045,6 +1066,31 @@ cerclesUI = installerCercles({
 });
 
 // ---------------------------------------------------------------- Sit & Go
+// Partie rapide : personne n'est disponible, on joue contre le bot du niveau le plus proche (et on le dit).
+function jouerBotRapide(format) {
+  if (D && !D.fini) return;
+  const f = FORMATS_RAPIDES[format] || FORMATS_RAPIDES.officiel;
+  voix.arreter(); arreterMinuteur(); if (S) clearTimeout(S.decompte);
+  OPP = botProche(P.elo, BOTS); WIN = f.setsGagnants;
+  S = {
+    match: nouveauMatch({ pointsParSet: f.pointsParSet, setsGagnants: f.setsGagnants }),
+    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ genre: P.genre }), suivi: new Suivi(),
+    tour: null, occupe: false, enJeu: false, contreBotRapide: true,
+  };
+  preparerEcranMatch();
+  $("startCard").hidden = true; $("tourCard").hidden = true;
+  $("ruleTxt").textContent = `Partie rapide contre un bot (${OPP.nom}) · ${texteFormat(S.match.format)}`;
+  rafraichirAvatars(); render();
+  aller("viewMatch");
+  ouvrirFaceAFace();
+}
+rapideUI = installerRapide({
+  compte: compteUI,
+  lancerDuel,
+  duelEnCours: () => !!D && !D.fini,
+  jouerBot: jouerBotRapide,
+});
+
 sngUI = installerSng({
   signaler,
   compte: compteUI,

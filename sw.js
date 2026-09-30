@@ -44,6 +44,8 @@ const FICHIERS = [
   "js/ecran-cercles.js",
   "js/ecran-tournois.js",
   "js/ecran-sng.js",
+  "js/ecran-rapide.js",
+  "js/rapide-logique.js",
   "js/tournoi-logique.js",
   "vendor/supabase.js",
   "fonts/barlow-latin-400-normal.woff2",
