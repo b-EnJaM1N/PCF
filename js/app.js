@@ -12,6 +12,7 @@ import { dessinerCarte } from "./carte.js";
 import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee } from "./poignee.js";
 import { installerRapide } from "./ecran-rapide.js";
 import { installerSignalement } from "./ecran-signaler.js";
+import { etatNotifications, activerNotifications, desactiverNotifications, rattacherAbonnement } from "./notifications.js";
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
@@ -1169,5 +1170,36 @@ sngUI = installerSng({
 renderAdversaires();
 renderVoixInfo();
 nouvelleSeance();
-compteUI.surConnexion(session => { $("hubHors").hidden = !!session?.user; });
+compteUI.surConnexion(session => { $("hubHors").hidden = !!session?.user; if (session?.user) rattacherAbonnement(); renderNotifs(); });
+
+// ---------------------------------------------------------------- notifications
+async function renderNotifs(message = "") {
+  const connecte = !!compteUI.session()?.user, etat = await etatNotifications().catch(() => "indisponible");
+  const b = $("btnNotifs"), m = $("notifsMsg");
+  b.hidden = !connecte || etat === "indisponible" || etat === "refuse";
+  b.textContent = etat === "actif" ? "Désactiver les notifications" : "Activer les notifications";
+  b.classList.toggle("alt", etat === "actif");
+  m.classList.remove("erreur");
+  m.textContent = message || (!connecte ? "Les notifications demandent un compte : connecte-toi dans « Ma fiche »."
+    : etat === "indisponible" ? "Ce navigateur ne permet pas les notifications. Sur iPhone, ajoute d'abord l'appli à l'écran d'accueil (bouton Partager → « Sur l'écran d'accueil »)."
+    : etat === "refuse" ? "Tu as refusé les notifications. Pour les réactiver : touche le cadenas à côté de l'adresse → Autorisations → Notifications."
+    : etat === "actif" ? "✅ Notifications activées sur ce téléphone." : "");
+}
+$("btnNotifs").addEventListener("click", async () => {
+  const b = $("btnNotifs"); b.disabled = true;
+  try {
+    const avant = await etatNotifications();
+    const apres = avant === "actif" ? await desactiverNotifications() : await activerNotifications();
+    await renderNotifs(apres === "actif" ? "✅ C'est fait : tu recevras une notification quand on te défie." : apres === "inactif" && avant === "actif" ? "Notifications désactivées sur ce téléphone." : "");
+  } catch (e) { await renderNotifs(); $("notifsMsg").textContent = e.message; $("notifsMsg").classList.add("erreur"); }
+  finally { b.disabled = false; }
+});
+// Ouvrir l'appli depuis une notification : ?ouvrir=duels ou ?ouvrir=tournois (ou message du service worker si elle est déjà ouverte).
+const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); };
+{
+  const cible = new URLSearchParams(location.search).get("ouvrir");
+  if (cible) { ouvrirDepuisNotification(cible); history.replaceState(null, "", location.pathname + location.hash); }
+  navigator.serviceWorker?.addEventListener?.("message", e => ouvrirDepuisNotification(e.data?.ouvrir));
+}
+renderNotifs();
 $("hubHors").hidden = !!compteUI.session()?.user;
