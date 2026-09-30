@@ -1,0 +1,30 @@
+# Chaque jour, un petit appel à Supabase pour qu'il ne mette pas le projet en pause.
+# (La formule gratuite de Supabase met en pause un projet sans activité pendant une semaine.)
+# L'adresse et la clé publique sont lues dans app/js/config.js : ce ne sont pas des secrets.
+# Remarque : GitHub arrête les tâches programmées d'un dépôt sans aucun envoi de code pendant 60 jours ;
+# il suffit alors de la relancer (onglet « Actions » → « Réveil de Supabase » → « Enable workflow »).
+name: Réveil de Supabase
+
+on:
+  schedule:
+    - cron: "17 5 * * *"      # tous les jours vers 7 h (heure de Paris)
+  workflow_dispatch:           # et à la demande, depuis l'onglet « Actions »
+
+permissions:
+  contents: read
+
+jobs:
+  reveil:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Appeler Supabase
+        run: |
+          URL=$(grep -o 'https://[a-z0-9]*\.supabase\.co' app/js/config.js | head -1)
+          CLE=$(grep -o 'sb_publishable_[A-Za-z0-9_-]*' app/js/config.js | head -1)
+          REPONSE=$(curl -fsS -X POST "$URL/rest/v1/rpc/ping" -H "apikey: $CLE" -H "Content-Type: application/json" -d '{}' || echo "")
+          echo "Réponse de Supabase : $REPONSE"
+          if [ "$REPONSE" != '"pong"' ]; then
+            echo "::warning::Supabase n'a pas répondu « pong ». Le fichier supabase/etape-10-moderation.sql a-t-il été lancé ? Le projet est-il en pause ?"
+            curl -fsS "$URL/rest/v1/" -H "apikey: $CLE" -o /dev/null || true   # au moins une requête, pour compter comme activité
+          fi
