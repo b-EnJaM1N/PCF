@@ -19,3 +19,14 @@ test("la clé publique est convertie en octets", async () => {
   assert.deepEqual([...octetsDepuisBase64Url("AQID_-8")], [1, 2, 3, 255, 239]);
   assert.equal(octetsDepuisBase64Url("B".repeat(87)).length, 65);   // une clé publique P-256 fait 65 octets
 });
+
+test("la notification de test", () => {
+  assert.equal(message("test", null, { pseudo: "x", numero: 0 }).titre, "🔔 Notification de test");
+});
+
+test("le texte du résultat de la notification de test", async () => {
+  const { texteTest } = await import("../app/js/notifications.js");
+  assert.match(texteTest({ ok: true, resultat: "1 appareil sur 1" }), /^✅ Notification envoyée \(1 appareil sur 1\)/);
+  assert.match(texteTest({ ok: false, resultat: null }), /Verify JWT/);
+  assert.match(texteTest({ ok: false, resultat: "0 appareil sur 1 (refus 403)" }), /refus 403/);
+});

@@ -75,7 +75,7 @@ Deux choses à faire, dans cet ordre :
 1. **Le fichier SQL** : même manipulation que d'habitude avec [`etape-11-notifications.sql`](etape-11-notifications.sql).
 2. **La fonction « notifier »** (le petit programme qui envoie les notifications) :
    1. Dans Supabase, menu de gauche : **Edge Functions** → **Deploy a new function** → **Via Editor**.
-   2. Nom de la fonction : `notifier` (exactement).
+   2. Nom de la fonction : `Notifier` (exactement, avec la majuscule : c'est le nom utilisé par le projet).
    3. Efface l'exemple, puis colle tout le contenu de
       [`functions/notifier/index.ts`](functions/notifier/index.ts)
       (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/functions/notifier/index.ts).
@@ -85,6 +85,15 @@ Deux choses à faire, dans cet ordre :
 
 Aucune clé à copier : la fonction crée elle-même ses clés d'envoi au premier appel et les garde dans la base.
 Pour vérifier : dans l'appli, **Options (⚙️)** → **Notifications** → **Activer les notifications**.
+
+## 1 duodecies. Notification de test (étape 12)
+
+1. Même manipulation que d'habitude avec [`etape-12-test-notification.sql`](etape-12-test-notification.sql).
+2. **Mettre à jour la fonction « notifier »** : **Edge Functions** → **notifier** → onglet **Code** →
+   remplace tout le code par la nouvelle version de [`functions/notifier/index.ts`](functions/notifier/index.ts) →
+   **Deploy** (les réglages, dont « Verify JWT » désactivé, sont conservés).
+
+Ensuite, dans l'appli : **Options (⚙️)** → **Notifications** → **Envoyer une notification de test**.
 
 ## 2. Adresses du site (connexion par lien)
 
