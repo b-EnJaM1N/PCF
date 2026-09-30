@@ -75,7 +75,7 @@ Deux choses à faire, dans cet ordre :
 1. **Le fichier SQL** : même manipulation que d'habitude avec [`etape-11-notifications.sql`](etape-11-notifications.sql).
 2. **La fonction « notifier »** (le petit programme qui envoie les notifications) :
    1. Dans Supabase, menu de gauche : **Edge Functions** → **Deploy a new function** → **Via Editor**.
-   2. Nom de la fonction : `notifier` (exactement).
+   2. Nom de la fonction : `Notifier` (exactement, avec la majuscule : c'est le nom utilisé par le projet).
    3. Efface l'exemple, puis colle tout le contenu de
       [`functions/notifier/index.ts`](functions/notifier/index.ts)
       (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/functions/notifier/index.ts).

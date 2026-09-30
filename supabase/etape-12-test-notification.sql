@@ -11,6 +11,11 @@ alter table public.notifications drop constraint if exists notifications_eveneme
 alter table public.notifications add constraint notifications_evenement_check check (evenement in ('defi', 'accepte', 'tournoi', 'test'));
 alter table public.notifications add column if not exists resultat text;   -- ce que la fonction a pu envoyer
 
+-- L'adresse de la fonction : elle s'appelle « Notifier », avec une majuscule (Supabase distingue les majuscules).
+create or replace function public._url_notifier() returns text language sql immutable as $$
+  select 'https://fvfdcyglwngosxfougje.supabase.co/functions/v1/Notifier'
+$$;
+
 -- Demande à la fonction « notifier » d'envoyer la notification n.
 create or replace function public._appeler_notifier(n bigint) returns void
 language plpgsql security definer set search_path = public as $$

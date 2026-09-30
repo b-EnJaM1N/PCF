@@ -48,7 +48,7 @@ alter table public.notifications enable row level security;
 revoke all on public.notifications from public, anon, authenticated;
 
 create or replace function public._url_notifier() returns text language sql immutable as $$
-  select 'https://fvfdcyglwngosxfougje.supabase.co/functions/v1/notifier'
+  select 'https://fvfdcyglwngosxfougje.supabase.co/functions/v1/Notifier'
 $$;
 
 -- Inscrit une notification (une seule fois) et demande à la fonction « notifier » de l'envoyer.
