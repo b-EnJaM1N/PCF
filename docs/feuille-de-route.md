@@ -58,3 +58,26 @@
 - **Logo** (décision) : un médaillon vert et or, « Club de Pierre · Feuille · Ciseaux — Fondé en 2026 », un gant blanc qui fait le V des Ciseaux et le nom en écriture attachée (Pinyon Script). L'icône du téléphone ne garde que la main dans le médaillon. Fichiers : `app/icons/logo.svg` et `app/icons/icon.svg`.
 - **Commentateurs** (décision) : Roland Pignon et Monique Latouffe.
 - **Nom : HandSlam** (décision). HandSlam est le nom de l'appli et des compétitions (HandSlam Open, L'Écho du HandSlam) ; le sport reste le Pierre-Feuille-Ciseaux dans la bouche des commentateurs. Marque vérifiée (INPI). L'adresse du site changera au moment de brancher le nom de domaine.
+
+## Prochain lot (validé, à faire)
+
+1. **Passer la présentation** : bouton « Passer » pendant la présentation du speaker. Contre un bot : on passe tout de suite. En duel en ligne : il faut que les deux joueurs aient appuyé (le premier voit « En attente de l'adversaire », l'autre « L'adversaire veut passer »).
+2. **Célébrations** : à la fin d'un set gagné, une bulle avec le cri du joueur et le gant qui serre le poing ; à la fin du match, le cri en grand avec des confettis aux couleurs du gant ; un cri plus fort après une balle de match sauvée. Chaque joueur choisit son cri dans « Ma fiche » ; chaque bot a le sien selon son caractère ; en duel, l'adversaire voit le cri ; les commentateurs réagissent parfois (Roland : « Ah, il y a de la voix ! » — Monique : « On l'avait entendu. »).
+   Cris validés : « Vamos ! », « Allez ! », « Come on ! », « Hija ! » (orthographe à confirmer), « Yes ! », « Let's go ! », « Forza ! », « Andiamo ! », « Dale ! », « Kom igen ! », « Davai ! », « Auf geht's ! », « Ouiii ! », « Voilààà ! », « C'est ça ! », « Je suis là ! », « Allez, allez, allez ! », « Ciseaux, bébé ! », « Caillou ! », « Pas aujourd'hui ! », « La main est chaude ! », « Merci. », « Suivant. », et le poing serré en silence.
+3. **Ambiance du court** : brancher de nouveaux sons (fichiers à déposer dans `app/audio/`, sinon son fabriqué ou rien) : un murmure de fond en boucle (baisse pendant l'échange, reprend entre les points), un brouhaha de tension sur les balles de set et de match, un « ooh » sur les points disputés, 4 variantes de raquette. Sons à créer avec ElevenLabs (Sound Effects), texte en anglais :
+
+| Fichier | Quand | Durée | Texte pour ElevenLabs |
+|---|---|---|---|
+| raquette_01 à 04 | chaque coup | 1 s | Single tennis ball hit with a racket, crisp pop, close-up, no crowd |
+| public_fond_01 | fond, en boucle | 30 s | Tennis stadium crowd ambience, quiet murmurs, soft whispers, calm, seamless loop |
+| public_tension_01 | balles de set et de match | 6 s | Tennis crowd murmuring nervously, rising tension, buzzing anticipation |
+| public_ooh_01 | point disputé | 2 s | Tennis crowd "ooh" reaction to a near miss |
+| public_point_01 | point gagné | 3 s | Polite tennis applause, short |
+| public_clameur_01 | point spectaculaire | 3 s | Tennis crowd cheering burst after a great point |
+| public_set_01 | fin de set | 5 s | Warm tennis crowd applause with a few cheers |
+| public_ovation_01 | fin de match | 8 s | Standing ovation in a tennis stadium, loud cheers and whistles |
+
+   Décision : tester d'abord 2 ou 3 sons avec l'offre gratuite, puis un seul mois payant à la fin pour tout générer (sons + voix) avec la licence commerciale. Le guider pas à pas (création, téléchargement, dépôt sur GitHub depuis le téléphone).
+
+Ensuite : plus de récompenses (une trentaine de trophées par familles : fair-play, remontées, séries, tournois, cercles — proposer la liste avant de coder) et des avatars plus travaillés (gants rayés, à pois, bicolores, coutures dorées, bandeaux…).
+En attente du porteur du projet : l'adresse e-mail de contact (→ mentions légales et confidentialité) et l'achat du domaine handslam.com (→ adresse du site, redirections Supabase, e-mails en français).
