@@ -50,3 +50,6 @@ export const quitterSng = () => rpc("quitter_sit_and_go");
 export const chercherPartie = format => rpc("chercher_partie", { p_format: format });   // → { duel } ou { attente, depuis, en_attente, maintenant }
 export const quitterPartie = () => rpc("quitter_partie");
 export const fileRapide = () => rpc("file_partie_rapide");                            // → { officiel, eclair } : joueurs en attente
+
+// Signaler un joueur (supabase/etape-10-moderation.sql) : motif « pseudo », « avatar » ou « comportement ».
+export const signalerJoueur = (id, motif, detail) => rpc("signaler_joueur", { p_joueur: id, p_motif: motif, p_detail: detail || null });   // → "envoye" ou "deja"

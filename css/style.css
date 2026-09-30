@@ -396,3 +396,11 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 .pm-scene.go.froide .pm-av svg { transition: filter 1s .6s; filter: saturate(.4) hue-rotate(180deg) brightness(1.1); }
 @keyframes pm-givre { to { opacity: .9; } }
 @media (prefers-reduced-motion: reduce) { .pm-scene.go * , .pm-scene.go::after { animation-duration: .01s !important; animation-delay: 0s !important; } .pm-scene.go .pm-main { opacity: 1; transform: none; } }
+
+/* Signaler un joueur */
+.sg-panel { text-align: left; }
+.sg-panel .kick { text-align: center; }
+.sg-motifs { display: grid; gap: 8px; margin-bottom: 12px; }
+.sg-motifs button { font: inherit; text-align: left; padding: 10px 12px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: var(--line); cursor: pointer; }
+.sg-motifs button[aria-pressed=true] { border-color: var(--bot); color: #FFB3AB; }
+.sg-panel textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 10px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: var(--line); margin-bottom: 8px; resize: vertical; }
