@@ -1,6 +1,7 @@
 # À chaque envoi de code : on lance les tests, puis, s'ils passent, on met en ligne.
-#   branche main           → https://<compte>.github.io/PCF/          (version validée)
-#   autres branches        → https://<compte>.github.io/PCF/preview/  (version à tester)
+#   branche main           → https://handslam.fr/          (version validée)
+#   autres branches        → https://handslam.fr/preview/  (version à tester)
+# Le fichier CNAME (le nom de domaine, réglé dans Settings → Pages) est conservé à chaque mise en ligne.
 name: Tests et mise en ligne
 
 on:
@@ -73,7 +74,7 @@ jobs:
             (cd site && git checkout --orphan gh-pages-new && git rm -rfq .)
           fi
           if [ "$GITHUB_REF_NAME" = "main" ]; then
-            find site -mindepth 1 -maxdepth 1 ! -name preview ! -name .git -exec rm -rf {} +
+            find site -mindepth 1 -maxdepth 1 ! -name preview ! -name .git ! -name CNAME -exec rm -rf {} +
             cp -r app/. site/
           else
             rm -rf site/preview && mkdir -p site/preview

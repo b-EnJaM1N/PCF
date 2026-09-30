@@ -10,7 +10,7 @@
 // Les clés d'envoi sont créées ici au premier appel et gardées dans la base (table config_push) :
 // aucune clé secrète n'est écrite dans le code. Chaque notification n'est envoyée qu'une fois.
 
-const ADRESSE_APPLI = "https://b-enjam1n.github.io/PCF/";
+const ADRESSE_APPLI = "https://handslam.fr/";
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",

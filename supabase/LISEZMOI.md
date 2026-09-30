@@ -102,9 +102,10 @@ le joueur reçoit donc l'e-mail par défaut « Your sign-in link » et touche **
 Le lien le ramène dans PCF, connecté. Il faut autoriser les adresses de retour :
 
 1. Ouvre https://supabase.com/dashboard/project/fvfdcyglwngosxfougje/auth/url-configuration
-2. **Site URL** : `https://b-enjam1n.github.io/PCF/` → **Save**.
-3. **Redirect URLs** → **Add URL** : `https://b-enjam1n.github.io/PCF/**` → **Save**.
-   (Les deux étoiles couvrent aussi la version de test `/PCF/preview/`.)
+2. **Site URL** : `https://handslam.fr/` → **Save**.
+3. **Redirect URLs** → **Add URL** : `https://handslam.fr/**` → **Save**.
+   (Les deux étoiles couvrent aussi la version de test `/preview/`. On garde aussi l'ancienne adresse
+   `https://b-enjam1n.github.io/PCF/**`, qui renvoie désormais vers handslam.fr.)
 
 ## 3. Plus tard : code à 6 chiffres et e-mails en français
 
