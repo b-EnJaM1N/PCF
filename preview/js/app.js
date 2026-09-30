@@ -11,6 +11,7 @@ import { carteDe, notesDe, texteRang } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
 import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee } from "./poignee.js";
 import { installerRapide } from "./ecran-rapide.js";
+import { installerSignalement } from "./ecran-signaler.js";
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
@@ -323,6 +324,7 @@ function finir() {
   $("encoreRapide").hidden = !rapide;
   if (S.contreBotRapide) $("again").hidden = true;
   $("voirTournoi").hidden = !tournoiId;
+  $("signalerZone").hidden = !(S.duel && OPP.humain);
   if (!S.duel) $("endClassement").hidden = true;
   $("abandonDuelZone").hidden = true;
   if (enTournoi) $("tNext").textContent = gagne ? (tourDe(T, S.tour).finale ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
@@ -492,7 +494,7 @@ function preparerEcranMatch() {
   $("end").hidden = true; $("bar").style.transform = "scaleX(1)"; $("timer").classList.remove("urgent");
   render(); $("status").textContent = "Choisis ton premier coup";
   boutons(false); afficherBilan(); window.scrollTo(0, 0);
-  $("revanche").hidden = true; $("retourDuels").hidden = true; $("encoreRapide").hidden = true; $("abandonDuelZone").hidden = true;
+  $("revanche").hidden = true; $("retourDuels").hidden = true; $("encoreRapide").hidden = true; $("abandonDuelZone").hidden = true; $("signalerZone").hidden = true;
 }
 
 function renderFormat() {
@@ -1147,6 +1149,8 @@ function jouerBotRapide(format) {
   aller("viewMatch");
   ouvrirFaceAFace();
 }
+const ouvrirSignalement = installerSignalement();
+$("signalerAdv").addEventListener("click", () => { if (OPP?.humain) ouvrirSignalement({ id: OPP.uid, pseudo: OPP.nom, numero: OPP.numero }); });
 rapideUI = installerRapide({
   compte: compteUI,
   lancerDuel,
