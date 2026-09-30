@@ -772,6 +772,7 @@ function renderFiche() {
 }
 
 function renderEditeur() {
+  $("avApercu").innerHTML = avatarSVG(P.av);             // l'aperçu reste visible pendant qu'on fait défiler les choix
   const mk = (el, type, table, texte) => {
     el.innerHTML = Object.keys(table).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
