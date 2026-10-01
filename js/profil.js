@@ -1,6 +1,7 @@
 // Fiche joueur : carte d'identité sportive qui se remplit toute seule au fil des matchs.
 // Pour l'instant elle est gardée sur le téléphone (voir stockage.js).
 import { CRI_DEFAUT, criValide } from "./celebrations.js";
+import { possede, gesteValide, celebrationValide, cadreValide } from "./catalogue.js";
 
 export const ELO_DEPART = 1200;
 export const K_ELO = 32;
@@ -82,7 +83,8 @@ export function titresEnLigne({ cercles = [], tournois = [], duelsCercle = 0, cr
 
 // Titre qui débloque un élément d'avatar (ou undefined si l'élément est libre).
 export const verrouDe = (type, cle) => TITRES.find(t => t.objet && t.objet[0] === type && t.objet[1] === cle);
-export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); return !!t && !P.titres[t.id]; };
+// Verrouillé : réservé à un trophée pas encore obtenu, ou article de la boutique pas encore acheté.
+export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); return (!!t && !P.titres[t.id]) || !possede(P, type, cle); };
 
 export function profilParDefaut() {
   return {
@@ -108,6 +110,8 @@ export function profilParDefaut() {
     cri: CRI_DEFAUT,                          // mon cri de victoire (voir celebrations.js)
     mainsTendues: 0,                          // poignées chaleureuses après une défaite
     duelsFinis: 0,                            // duels en ligne joués sans abandonner
+    // La boutique (voir catalogue.js) : les articles achetés et ceux qu'on utilise.
+    achats: [], geste: "poing", celebration: "confettis", cadre: "aucun",
   };
 }
 
@@ -119,6 +123,7 @@ export function normaliserProfil(brut) {
   if (P.genre !== "f") P.genre = "m";
   if (!["franche", "normale", "legere", "froide"].includes(P.poignee)) P.poignee = "normale";
   P.cri = criValide(P.cri);
+  P.geste = gesteValide(P.geste); P.celebration = celebrationValide(P.celebration); P.cadre = cadreValide(P.cadre);
   for (const k of Object.keys(d)) if (Array.isArray(d[k]) && !Array.isArray(P[k])) P[k] = d[k];
   return P;
 }
@@ -208,6 +213,9 @@ export function enregistrerMatch(P, r) {
 export function remettreAZero(P) {
   const N = profilParDefaut();
   N.pseudo = P.pseudo; N.drapeau = P.drapeau;
-  for (const k of Object.keys(N.av)) N.av[k] = verrouDe(k, P.av[k]) ? N.av[k] : P.av[k];
+  // Les achats de la boutique sont gardés (ils sont aussi enregistrés sur le serveur) ; les éléments des trophées repartent.
+  N.achats = [...(P.achats || [])];
+  for (const k of Object.keys(N.av)) N.av[k] = verrouDe(k, P.av[k]) || !possede(N, k, P.av[k]) ? N.av[k] : P.av[k];
+  for (const k of ["cri", "geste", "celebration", "cadre"]) N[k] = P[k] ?? N[k];
   return N;
 }
