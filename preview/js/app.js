@@ -339,7 +339,11 @@ function renderHistorique() {
 }
 
 // Lire l'adversaire : sa répartition, ses réflexes, et la piste pour le prochain coup (d'après l'historique).
+// En match officiel (il compte pour le niveau), c'est au joueur de lire seul : l'encadré n'apparaît qu'à la fin.
 function renderLectureAdversaire() {
+  const cache = !!(S.duel && D?.duel?.classe) && !S.match.termine;
+  $("lecture").hidden = cache; $("lectureOff").hidden = !cache;
+  if (cache) return;
   const c = S.match.coups, n = c.length, r = repartition(c);
   $("lectureRep").innerHTML = [0, 2, 1].map(s => `<div><b>${EMOJIS[s]}</b>${n ? Math.round(100 * r[s] / n) : 0} %<i><span style="width:${n ? Math.round(100 * r[s] / n) : 0}%"></span></i></div>`).join("");
   const h = habitudes(c).slice(0, 3);
@@ -761,12 +765,11 @@ function noterMatchDuJour(r) {
 function renderMatchDuJour() {
   const jour = jourParis(), m = matchDuJour(jour), b = botParId(m.bot), res = resultatsDuJour(), r = res[jour], s = serie(res, jour);
   $("mdjAv").innerHTML = avatarSVG(b.av);
-  $("mdjTitre").textContent = `📅 Le match du jour n° ${m.numero}`;
-  $("mdjSous").textContent = `Contre ${b.nom} 🤖, ${b.style.toLowerCase()} · un set de 7 points · un seul essai`;
-  $("mdjJouer").hidden = !!r; $("mdjPartager").hidden = !r; $("mdjGrille").hidden = !r?.grille;
-  $("mdjGrille").textContent = r?.grille || "";
-  $("mdjEtat").textContent = r ? `${r.abandon ? "🏳️ Abandon" : `${r.gagne ? "✅ Victoire" : "❌ Défaite"} ${r.score.join("–")}`}. Nouveau match demain${s > 1 ? ` · 🔥 ${s} jours de suite` : ""}.`
-    : `Le même adversaire pour tout le monde aujourd'hui : joue, puis partage ton résultat !${s ? ` 🔥 Série : ${s} jour${s > 1 ? "s" : ""}.` : ""}`;
+  $("mdjTitre").textContent = `📅 Match du jour n° ${m.numero}`;
+  $("mdjJouer").hidden = !!r; $("mdjPartager").hidden = !r;
+  const feu = s > 1 ? ` · 🔥 ${s} jours` : "";
+  $("mdjEtat").textContent = r ? `${r.abandon ? "🏳️ Abandon" : `${r.gagne ? "✅ Victoire" : "❌ Défaite"} ${r.score.join("–")}`}${feu} · nouveau match demain`
+    : `Contre ${b.nom} 🤖 · un set de 7, un seul essai${s ? ` · 🔥 ${s} jour${s > 1 ? "s" : ""}` : ""}`;
 }
 $("mdjJouer").addEventListener("click", () => {
   if (D && !D.fini) return;
@@ -960,9 +963,9 @@ $("resetProfile").addEventListener("click", () => {
 
 // ---------------------------------------------------------------- navigation
 // Trois onglets (Jouer, Cercles, Ma fiche) et la roue des Options. L'onglet « Jouer » est un menu
-// qui mène aux pages Défier un ami, Sit & Go, Tournois et Entraînement (l'écran de match).
-const VUES = ["viewJouer", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewBoutique", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
-const ONGLET_DE = { viewJouer: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewBoutique: "profile", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
+// qui mène aux pages Partie rapide, Défier un ami, Tournois (Programmés, Sit & Go, Mes tournois) et Entraînement.
+const VUES = ["viewJouer", "viewCompet", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewBoutique", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
+const ONGLET_DE = { viewJouer: "jouer", viewCompet: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewBoutique: "profile", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
 let vueCourante = "viewJouer", avantOptions = "viewJouer";
 function aller(vue) {
   if (!VUES.includes(vue)) return;
