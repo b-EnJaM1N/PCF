@@ -51,10 +51,10 @@ export function installerFreeroll(ctx) {
     if (!etat) return;
     const t = etat, maintenant = Date.now() + decalage, depart = Date.parse(t.depart), cagnotte = t.cagnotte;
     let statut;
-    if (t.phase === "inscriptions") statut = `<b>Ce soir à 20 h</b> · départ dans ${dans(depart - maintenant)} · ${t.inscrits} inscrit${t.inscrits > 1 ? "s" : ""}<br>Cagnotte : <b>${texteJetons(cagnotte)}</b> <br><small>${texteDotations(cagnotte, Math.max(t.inscrits, 4))}</small>`;
+    if (t.phase === "inscriptions") statut = `<b>Ce soir à 20 h</b> · départ dans ${dans(depart - maintenant)} · ${t.inscrits} inscrit${t.inscrits > 1 ? "s" : ""}<br>Cagnotte : <b>${texteJetons(cagnotte)}</b> <br><small>${texteDotations(cagnotte, Math.max(t.inscrits - (t.bots || 0), 2))}</small>`;
     else if (t.phase === "en_cours") statut = `<b>Le freeroll est en cours</b> · ${esc(resume(t))}`;
     else if (t.phase === "termine") statut = `<b>Freeroll terminé</b> · ${t.vainqueur ? `🏆 ${esc(t.vainqueur.pseudo)}#${t.vainqueur.numero}` : ""}. Rendez-vous demain à 20 h !`;
-    else statut = "Pas assez de joueurs présents ce soir (il en faut 4). Rendez-vous demain à 20 h !";
+    else statut = "Pas assez de joueurs présents ce soir (il en faut 2). Rendez-vous demain à 20 h !";
     $("freeStatut").innerHTML = statut;
     const ouvert = t.phase === "inscriptions" && depart > maintenant;
     $("freeInscrire").hidden = !ouvert || t.inscrit;

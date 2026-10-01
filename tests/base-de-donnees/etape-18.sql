@@ -30,33 +30,32 @@ end $$;
 do $$
 declare r jsonb; x jsonb; t public.tournois; d public.duels; m uuid;
 begin
-  -- Le programme : 4 tournois affichés (le prochain de chaque), avec leur entrée.
+  -- Le programme (allégé à l'étape 21) : le Grand Chelem du dimanche, avec son entrée.
   perform pg_temp.en_tant_que(pg_temp.u(1)::text);
   r := tournois_programmes();
-  perform pg_temp.verifier(jsonb_array_length(r->'tournois') = 4, '4 tournois au programme');
+  perform pg_temp.verifier(jsonb_array_length(r->'tournois') = 1, '1 tournoi au programme (le Grand Chelem)');
   select x2 into x from jsonb_array_elements(r->'tournois') x2 where x2->>'cle' = 'grand_chelem';
   perform pg_temp.verifier((x->>'mise')::int = 1000 and (x->>'cagnotte')::int = 5000 and (x->>'finale_sets')::int = 3
     and extract(isodow from ((x->>'depart')::timestamptz at time zone 'Europe/Paris')) = 7, 'Grand Chelem : le dimanche, 1 000 jetons, 5 000 garantis, finale en 3 sets');
-  select x2 into x from jsonb_array_elements(r->'tournois') x2 where x2->>'cle' = 'apero';
-  perform pg_temp.verifier((x->>'mise')::int = 100 and x->>'nom' = 'L''Apéro', 'L''Apéro : 100 jetons');
   perform pg_temp.verifier(r->'tenant' = 'null'::jsonb, 'pas encore de tenant du titre');
 
   -- Inscription : l'entrée est prélevée ; désinscription : rendue.
-  r := inscrire_programme('midi');
-  select x2 into x from jsonb_array_elements(r->'tournois') x2 where x2->>'cle' = 'midi';
-  perform pg_temp.verifier((x->>'inscrit')::boolean and pg_temp.solde(1) = 900 and (x->>'cagnotte')::int = 90, 'inscription au Midi : −100, cagnotte 90');
-  r := inscrire_programme('midi');
-  perform pg_temp.verifier(pg_temp.solde(1) = 900, 'une seule inscription (pas de double prélèvement)');
-  perform pg_temp.verifier((salles_sit_and_go()->'mien') = 'null'::jsonb, 'un inscrit au Midi peut encore jouer un Sit & Go');
+  r := inscrire_programme('grand_chelem');
+  select x2 into x from jsonb_array_elements(r->'tournois') x2 where x2->>'cle' = 'grand_chelem';
+  perform pg_temp.verifier((x->>'inscrit')::boolean and pg_temp.solde(1) = 0 and (x->>'cagnotte')::int = 5000, 'inscription au Grand Chelem : −1 000');
+  r := inscrire_programme('grand_chelem');
+  perform pg_temp.verifier(pg_temp.solde(1) = 0, 'une seule inscription (pas de double prélèvement)');
+  perform pg_temp.verifier((salles_sit_and_go()->'mien') = 'null'::jsonb, 'un inscrit au Grand Chelem peut encore jouer un Sit & Go');
   perform quitter_sit_and_go();
-  perform pg_temp.verifier(pg_temp.solde(1) = 900, 'quitter une salle de Sit & Go ne désinscrit pas du Midi');
-  r := desinscrire_programme('midi');
+  perform pg_temp.verifier(pg_temp.solde(1) = 0, 'quitter une salle de Sit & Go ne désinscrit pas du Grand Chelem');
+  r := desinscrire_programme('grand_chelem');
   perform pg_temp.verifier(pg_temp.solde(1) = 1000, 'désinscription : entrée rendue');
   perform pg_temp.interdit('select inscrire_programme(''inconnu'')', 'tournoi inconnu refusé');
+  perform pg_temp.interdit('select inscrire_programme(''midi'')', 'Le Midi est en pause');
   execute 'reset role';
   update jetons set solde = 150 where joueur = pg_temp.u(1);
   perform pg_temp.en_tant_que(pg_temp.u(1)::text);
-  perform pg_temp.interdit('select inscrire_programme(''nocturne'')', 'pas assez de jetons pour le Nocturne (200)');
+  perform pg_temp.interdit('select inscrire_programme(''grand_chelem'')', 'pas assez de jetons pour le Grand Chelem');
   execute 'reset role';
   update jetons set solde = 1000 where joueur = pg_temp.u(1);
 
@@ -67,7 +66,7 @@ begin
   perform _lancer_programme(t.id);
   select * into t from tournois where id = t.id;
   perform pg_temp.verifier(t.phase = 'en_cours' and t.taille = 8 and t.nb_tours = 3 and t.entrees = 6, 'départ à 5 présents, tableau de 8, 6 entrées payées');
-  perform pg_temp.verifier((select count(*) from inscrits_tournoi where tournoi_id = t.id) = 5, 'l''absent est retiré');
+  perform pg_temp.verifier(_humains(t.id) = 5 and (select count(*) from inscrits_tournoi where tournoi_id = t.id) = 8, 'l''absent est retiré, 3 bots complètent le tableau');
   perform pg_temp.verifier(pg_temp.solde(6) = 900 and pg_temp.solde(1) = 900, 'l''absent n''est pas remboursé');
   perform pg_temp.verifier(_cagnotte_programme(t) = 540, 'cagnotte : 6 × 100 − 10 % = 540 (l''entrée de l''absent y reste)');
 
@@ -82,14 +81,15 @@ begin
   perform pg_temp.verifier(pg_temp.solde(1) = 1251 and pg_temp.solde(2) = 1089 and pg_temp.solde(3) = 900 and pg_temp.solde(4) = 900 and pg_temp.solde(5) = 900,
     'gains : 351, 189');
 
-  -- Moins de 4 présents : annulé, et tout le monde est remboursé (absents compris).
+  -- Un seul présent (il en faut 2) : annulé, et tout le monde est remboursé (absents compris).
   t := _tournoi_programme('apero', _aujourdhui() - 1);
-  perform pg_temp.inscrire(t.id, 7, 8, t.depart - interval '10 seconds');
-  perform pg_temp.inscrire(t.id, 6, 6, t.depart - interval '10 seconds');
+  perform pg_temp.inscrire(t.id, 7, 7, t.depart - interval '10 seconds');
+  perform pg_temp.inscrire(t.id, 8, 8, t.depart - interval '2 hours');
+  perform pg_temp.inscrire(t.id, 6, 6, t.depart - interval '2 hours');
   perform pg_temp.inscrire(t.id, 5, 5, t.depart - interval '2 hours');
   perform pg_temp.verifier(pg_temp.solde(7) = 900, 'entrée prélevée');
   perform _lancer_programme(t.id);
-  perform pg_temp.verifier((select phase from tournois where id = t.id) = 'annule', 'moins de 4 présents : annulé');
+  perform pg_temp.verifier((select phase from tournois where id = t.id) = 'annule', 'un seul présent : annulé');
   perform pg_temp.verifier(pg_temp.solde(7) = 1000 and pg_temp.solde(6) = 900 and pg_temp.solde(5) = 900, 'tout le monde est remboursé');
 
   -- Un tournoi resté en attente (personne n'est passé à l'heure) est réglé au passage suivant.
@@ -107,9 +107,9 @@ begin
   perform _lancer_programme(t.id);
   select * into t from tournois where id = t.id;
   perform pg_temp.verifier(_cagnotte_programme(t) = 5000, '4 × 1 000 − 10 % = 3 600 : la garantie de 5 000 s''applique');
-  perform pg_temp.verifier((select bool_and(sets_gagnants = 2) from duels where tournoi_id = t.id) and (select count(*) from duels where tournoi_id = t.id) = 2,
-    'demi-finales en 2 sets gagnants');
-  insert into matchs_tournoi (tournoi_id, tour, position, j0, j1) values (t.id, 2, 1, pg_temp.u(1), pg_temp.u(2)) returning id into m;
+  perform pg_temp.verifier((select bool_and(sets_gagnants = 2) from duels where tournoi_id = t.id) and (select count(*) from duels where tournoi_id = t.id) = 4,
+    '1er tour (contre les bots) en 2 sets gagnants');
+  insert into matchs_tournoi (tournoi_id, tour, position, j0, j1) values (t.id, t.nb_tours, 1, pg_temp.u(1), pg_temp.u(2)) returning id into m;
   insert into duels (j0, j1, points_par_set, sets_gagnants, classe, tournoi_id, tournoi_match, phase)
   values (pg_temp.u(1), pg_temp.u(2), 11, 2, true, t.id, m, 'presentation') returning * into d;
   perform pg_temp.verifier(d.sets_gagnants = 3, 'finale en 3 sets gagnants');
