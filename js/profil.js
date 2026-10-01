@@ -48,6 +48,7 @@ export const TITRES = [
   { id: "grand_chelem", famille: "tournois", nom: "Grand Chelem", desc: "Remporter 4 HandSlam Open.", debloque: "le bandeau de champion", objet: ["gantMotif", "bandeau"] },
   { id: "finaliste", famille: "tournois", nom: "Finaliste", desc: "Jouer la finale d'un tournoi en ligne." },
   { id: "roi_sng", famille: "tournois", nom: "Roi du Sit & Go", desc: "Remporter un Sit & Go." },
+  { id: "champion_dimanche", famille: "tournois", nom: "Champion du dimanche", desc: "Remporter le Grand Chelem du dimanche soir." },
   { id: "organisateur", famille: "tournois", nom: "Organisateur", desc: "Organiser un tournoi de cercle joué jusqu'au bout." },
 
   { id: "fondateur", famille: "cercles", nom: "Fondateur", desc: "Créer un cercle." },
@@ -142,7 +143,7 @@ export const signeFavori = c => (c.reduce((a, b) => a + b, 0) ? c.indexOf(Math.m
 // r = { match, stats, devines, lisibles, adversaire: { id, elo, nom }, finaleTournoi, date, compteNiveau }
 // compteNiveau = false : duel entre humains, sans effet sur le niveau (étape 4).
 // Pour les trophées des duels : abandon (j'ai abandonné ou quitté le duel), officiel, niveauMoi / niveauAdv
-// (niveaux officiels avant le match), finaleEnLigne (finale d'un tournoi en ligne), sitAndGo.
+// (niveaux officiels avant le match), finaleEnLigne (finale d'un tournoi en ligne), sitAndGo, grandChelem.
 export function enregistrerMatch(P, r) {
   const { match, stats } = r, c = match.coups, n = c.length, gagne = match.vainqueur === 0;
   // Revanche : le match précédent, perdu contre le même joueur humain.
@@ -202,6 +203,7 @@ export function enregistrerMatch(P, r) {
     oiseau_de_nuit: P.heures.nuit >= 10, leve_tot: P.heures.matin >= 10,
     vainqueur: tournoi, grand_chelem: P.tournoisGagnes >= 4,
     finaliste: !!r.finaleEnLigne, roi_sng: !!(r.finaleEnLigne && r.sitAndGo && gagne),
+    champion_dimanche: !!(r.finaleEnLigne && r.grandChelem && gagne),
     imprevisible: gagne && r.lisibles >= 10 && taux < 0.3,
     tueur_geant: gagne && !!r.officiel && r.niveauAdv - r.niveauMoi >= 200,
     revanche,
