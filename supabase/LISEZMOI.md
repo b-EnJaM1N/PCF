@@ -149,6 +149,14 @@ Même manipulation avec [`etape-19-dotations.sql`](etape-19-dotations.sql), **ap
 Même manipulation avec [`etape-20-dotations-sit-and-go.sql`](etape-20-dotations-sit-and-go.sql), **après** l'étape 19
 (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-20-dotations-sit-and-go.sql).
 
+## 1 unvicies. Les bots dans les tournois (étape 21)
+
+Même manipulation avec [`etape-21-bots-tournois.sql`](etape-21-bots-tournois.sql), **après** l'étape 20
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-21-bots-tournois.sql).
+Elle crée les comptes des bots (Rocky 🤖, Papyrus 🤖… : ils apparaissent dans **Authentication → Users** avec une adresse
+en `@bots.handslam.fr`, personne ne peut s'y connecter), allège le programme (freeroll chaque soir, Grand Chelem le dimanche)
+et ajoute un minuteur qui lance les tournois à l'heure, chaque minute.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

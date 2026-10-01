@@ -58,7 +58,7 @@
     <button class="hub" data-aller="viewRapide"><span class="hub-i">⚡</span><span><b>Partie rapide</b><small>Un adversaire de ton niveau, en un clic</small></span></button>
     <button class="hub" data-aller="viewDuel"><span class="hub-i">🤝</span><span><b>Défier un ami</b><small>Un duel en direct, par pseudo ou par lien</small></span></button>
     <button class="hub" data-aller="viewSng"><span class="hub-i">🏁</span><span><b>Sit &amp; Go</b><small>Tournois express publics : départ dès que la salle est pleine</small></span></button>
-    <button class="hub" data-aller="viewFreeroll"><span class="hub-i">🗓️</span><span><b>Tournois programmés</b><small>Freeroll gratuit à 20 h, Le Midi, L'Apéro, Le Nocturne, le Grand Chelem du dimanche · classement du mois</small></span></button>
+    <button class="hub" data-aller="viewFreeroll"><span class="hub-i">🗓️</span><span><b>Tournois programmés</b><small>Le freeroll gratuit chaque soir à 20 h, le Grand Chelem le dimanche à 21 h · classement du mois</small></span></button>
     <button class="hub" data-aller="viewTournois"><span class="hub-i">🏆</span><span><b>Tournois</b><small>Tes tournois en cours, tournois privés entre amis</small></span></button>
     <button class="hub" data-aller="viewMatch"><span class="hub-i">🎯</span><span><b>Entraînement</b><small>Contre les 15 bots, et le HandSlam Open (8 ou 16 joueurs)</small></span></button>
     <p class="hint" id="hubHors" hidden style="text-align:center;margin-top:14px">Les parties en ligne demandent un compte gratuit, sans mot de passe : <button class="linkbtn" data-aller="viewProfile">le créer</button>.</p>
@@ -300,7 +300,7 @@
     <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
     <section class="card" id="sngCard" hidden>
       <h2>Tournois express (Sit &amp; Go)</h2>
-      <p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours.</p>
+      <p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours. 🤖 Deux minutes après l'arrivée du premier joueur, s'il y a au moins 2 joueurs (et au moins un quart de la salle), des bots complètent la salle (matchs contre un bot amicaux, les bots ne gagnent jamais de jetons).</p>
       <p class="sndnote" id="sngMien" hidden style="margin-top:10px"></p>
       <div id="sngSalles" class="resultats"></div>
       <h2 style="margin-top:18px">🪙 Sit &amp; Go à mise</h2>
@@ -316,7 +316,7 @@
     <p class="sndnote tenant" id="progTenant" hidden></p>
     <section class="card" id="freeCard" hidden>
       <h2>🌙 Freeroll de 20 h</h2>
-      <p class="hint">Un tournoi gratuit chaque soir à 20 h, avec une cagnotte offerte : 1 000 jetons + 50 par joueur, partagée comme au poker (environ 10 à 15 % des joueurs payés). Inscris-toi dans la journée ; à 20 h, sois dans l'appli : le tournoi démarre avec les inscrits présents (au moins 4). Sets de 11, 2 sets gagnants : il compte pour ton niveau officiel.</p>
+      <p class="hint">Un tournoi gratuit chaque soir à 20 h, avec une cagnotte offerte : 1 000 jetons + 50 par joueur, partagée comme au poker (environ 10 à 15 % des joueurs payés). Inscris-toi dans la journée ; à 20 h, sois dans l'appli : le tournoi démarre avec les inscrits présents (au moins 2). 🤖 S'il manque du monde, des bots complètent le tableau : ils ne gagnent jamais de jetons, les gains vont aux joueurs selon leur parcours. Sets de 11, 2 sets gagnants (les matchs contre un bot sont amicaux).</p>
       <p class="sndnote" id="freeStatut" style="margin-top:10px"></p>
       <p class="hint" id="freeInfo"></p>
       <button class="btn" id="freeInscrire" hidden>M'inscrire pour ce soir</button>
@@ -326,7 +326,7 @@
     </section>
     <section class="card" id="progCard" hidden>
       <h2>🗓️ Tournois à jetons</h2>
-      <p class="hint">À heure fixe, payants en jetons. L'entrée est payée à l'inscription et rendue si tu te désinscris avant le départ (ou si le tournoi est annulé faute de joueurs). Au départ, sois dans l'appli : le tournoi démarre avec les inscrits présents (au moins 4). Un inscrit absent n'est pas remboursé. La cagnotte (les entrées moins 10 %) est partagée comme au poker : environ 10 à 15 % des joueurs sont payés, au moins 1,5 fois l'entrée pour le plus petit gain. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel.</p>
+      <p class="hint">Le grand rendez-vous de la semaine : le Grand Chelem, chaque dimanche à 21 h. Payant en jetons. L'entrée est payée à l'inscription et rendue si tu te désinscris avant le départ (ou si le tournoi est annulé faute de joueurs). Au départ, sois dans l'appli : le tournoi démarre avec les inscrits présents (au moins 2). Un inscrit absent n'est pas remboursé. 🤖 S'il manque du monde, des bots complètent le tableau : ils ne gagnent jamais de jetons, les gains vont aux joueurs selon leur parcours. La cagnotte (les entrées moins 10 %) est partagée comme au poker : environ 10 à 15 % des joueurs sont payés, au moins 1,5 fois l'entrée pour le plus petit gain. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel (sauf les matchs contre un bot, amicaux).</p>
       <div id="progListe" class="resultats"></div>
       <p class="locknote" id="progMsg" role="status"></p>
     </section>
