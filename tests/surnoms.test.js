@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { NOMS, COMPLEMENTS, surnomDe, debloques, idPartie } from "../app/js/surnoms.js";
+import { NOMS, COMPLEMENTS, surnomDe, debloques, aDebloquer, idPartie } from "../app/js/surnoms.js";
 import { profilParDefaut, normaliserProfil } from "../app/js/profil.js";
 import { CATALOGUE } from "../app/js/voix/script.js";
 
@@ -31,4 +31,15 @@ test("une ancienne fiche sans les nouveaux compteurs fonctionne", () => {
   assert.equal(P.genre, "m");
   assert.ok(debloques(COMPLEMENTS, P).some(c => c.id === "de_minuit"));
   assert.ok(surnomDe(P).texte);
+});
+
+test("une douzaine de noms et de compléments libres dès le départ, et une aide pour chaque surnom à débloquer", () => {
+  const P = profilParDefaut();
+  assert.ok(debloques(NOMS, P).length >= 13 && debloques(COMPLEMENTS, P).length >= 13);
+  for (const x of [...NOMS, ...COMPLEMENTS]) assert.ok(x.aide && typeof x.ok === "function", x.id);
+  assert.equal(aDebloquer(NOMS, P).length + debloques(NOMS, P).length, NOMS.length);
+  // les nouveautés : trophées, poignées de main, duels
+  Object.assign(P, { titres: { fondateur: 1, roi_sng: 2 }, poignees: { franche: 0, normale: 0, legere: 0, froide: 10 }, duelsFinis: 10 });
+  const ids = debloques([...NOMS, ...COMPLEMENTS], P).map(x => x.id);
+  for (const id of ["le_fondateur", "le_croupier", "l_iceberg", "le_duelliste", "a_la_poignee_glaciale", "des_sit_and_go"]) assert.ok(ids.includes(id), id);
 });
