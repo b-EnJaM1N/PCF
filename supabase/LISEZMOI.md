@@ -144,6 +144,11 @@ Même manipulation avec [`etape-17-boutique.sql`](etape-17-boutique.sql)
 Même manipulation avec [`etape-19-dotations.sql`](etape-19-dotations.sql), **après** l'étape 18
 (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-19-dotations.sql).
 
+## 1 vicies. Les Sit & Go à mise façon poker (étape 20)
+
+Même manipulation avec [`etape-20-dotations-sit-and-go.sql`](etape-20-dotations-sit-and-go.sql), **après** l'étape 19
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-20-dotations-sit-and-go.sql).
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
