@@ -21,10 +21,15 @@ const CORS = {
 export const texteFormat = (points: number, sets: number) =>
   `Sets de ${points} point${points > 1 ? "s" : ""} · ${sets === 1 ? "match en 1 set" : `${sets} sets gagnants`}`;
 
-// evenement : "defi" | "accepte" | "tournoi" ; duel : la ligne du duel ; adv : { pseudo, numero } de l'adversaire.
+// evenement : "defi" | "accepte" | "tournoi" | "test" | "freeroll" ; duel : la ligne du duel ; adv : { pseudo, numero } de l'adversaire.
 export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }) {
   if (evenement === "test") return {
     titre: "🔔 Notification de test", texte: "Si tu lis ceci, les notifications marchent sur ce téléphone !", url: "./", tag: "test",
+  };
+  if (evenement === "freeroll") return {
+    titre: "🌙 Le freeroll commence dans 10 minutes",
+    texte: "Ouvre HandSlam et garde l'appli ouverte : le tournoi démarre à 20 h avec les inscrits présents.",
+    url: "./?ouvrir=freeroll", tag: "freeroll",
   };
   const qui = `${adv.pseudo}#${adv.numero}`;
   if (evenement === "defi") return {

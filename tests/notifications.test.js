@@ -30,3 +30,9 @@ test("le texte du résultat de la notification de test", async () => {
   assert.match(texteTest({ ok: false, resultat: null }), /Verify JWT/);
   assert.match(texteTest({ ok: false, resultat: "0 appareil sur 1 (refus 403)" }), /refus 403/);
 });
+
+test("la notification du freeroll de 20 h", () => {
+  const m = message("freeroll", null, { pseudo: "x", numero: 0 });
+  assert.equal(m.titre, "🌙 Le freeroll commence dans 10 minutes");
+  assert.equal(m.url, "./?ouvrir=freeroll");
+});
