@@ -3,7 +3,7 @@ import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDe
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch } from "./annonces.js";
-import { surnomDe, NOMS, COMPLEMENTS, debloques } from "./surnoms.js";
+import { surnomDe, NOMS, COMPLEMENTS, debloques, aDebloquer } from "./surnoms.js";
 import { voirTournoi } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
@@ -694,6 +694,11 @@ function renderSurnom() {
   $("inSurnomNom").innerHTML = noms.map(x => `<option value="${x.id}"${x.id === sn.nom.id ? " selected" : ""}>${esc(x.t)}</option>`).join("");
   $("inSurnomComp").innerHTML = comps.map(x => `<option value="${x.id}"${x.id === sn.complement.id ? " selected" : ""}>${esc(x.t)}</option>`).join("");
   $("surnomCompte").textContent = `${noms.length} nom${noms.length > 1 ? "s" : ""} sur ${NOMS.length} et ${comps.length} complément${comps.length > 1 ? "s" : ""} sur ${COMPLEMENTS.length} débloqués.`;
+  // Ce qu'il reste à débloquer, et comment.
+  const restants = [...aDebloquer(NOMS, P), ...aDebloquer(COMPLEMENTS, P)];
+  $("surnomVerrouTitre").textContent = `Surnoms à débloquer (${restants.length})`;
+  const bloc = (titre, liste) => liste.length ? `<p class="lbl">${titre}</p><ul>${liste.map(x => `<li><b>${esc(x.t)}</b> · ${esc(x.aide)}</li>`).join("")}</ul>` : "";
+  $("surnomVerrou").innerHTML = bloc("Noms", aDebloquer(NOMS, P)) + bloc("Compléments", aDebloquer(COMPLEMENTS, P));
   document.querySelectorAll("#segGenre button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === P.genre)));
   document.querySelectorAll("#segPoignee button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === P.poignee)));
   $("inCri").innerHTML = CRIS.map(c => `<option value="${c.id}"${c.id === P.cri ? " selected" : ""}>${esc(libelleCri(c.id))}</option>`).join("");
