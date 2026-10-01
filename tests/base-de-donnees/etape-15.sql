@@ -27,23 +27,23 @@ begin
   -- Le freeroll du jour existe, gratuit, à 20 h.
   perform pg_temp.en_tant_que(pg_temp.u(1)::text);
   r := freeroll_du_jour();
-  perform pg_temp.verifier(r->>'phase' = 'inscriptions' and (r->>'mise')::int = 0 and (r->>'cagnotte')::int = 1000, 'freeroll du jour : inscriptions, cagnotte de départ 1 000');
+  -- (après 20 h, heure de Paris, le freeroll du jour est déjà parti : on ne teste alors que le freeroll de la veille, plus bas)
   if now() < _heure_freeroll(_aujourdhui()) then
+    perform pg_temp.verifier(r->>'phase' = 'inscriptions' and (r->>'mise')::int = 0 and (r->>'cagnotte')::int = 1000, 'freeroll du jour : inscriptions, cagnotte de départ 1 000');
     r := inscrire_freeroll();
     perform pg_temp.verifier((r->>'inscrit')::boolean and (r->>'cagnotte')::int = 1050, 'inscription : +50 à la cagnotte');
     r := desinscrire_freeroll();
     perform pg_temp.verifier(not (r->>'inscrit')::boolean, 'désinscription');
   end if;
-  -- L'inscrit au freeroll n'est pas « en salle » de Sit & Go.
+  -- L'inscrit au freeroll n'est pas « en salle » de Sit & Go. (Le freeroll de la veille, encore en inscriptions.)
   execute 'reset role';
-  select * into t from tournois where freeroll = _aujourdhui();
+  insert into tournois (nom, points_par_set, sets_gagnants, duree_tour, mode, taille, freeroll) values ('Freeroll', 11, 2, '1 hour', 'direct', 64, _aujourdhui() - 1) returning * into t;
   insert into inscrits_tournoi (tournoi_id, joueur, vu) select t.id, pg_temp.u(k), now() from generate_series(1, 5) k;
   perform pg_temp.en_tant_que(pg_temp.u(1)::text);
   perform pg_temp.verifier((salles_sit_and_go()->'mien') = 'null'::jsonb, 'un inscrit au freeroll peut encore jouer un Sit & Go');
 
-  -- 20 h passées (on recule le freeroll d'un jour) : 4 présents, 1 absent retiré.
+  -- 20 h passées (le freeroll de la veille) : 4 présents, 1 absent retiré.
   execute 'reset role';
-  update tournois set freeroll = _aujourdhui() - 1 where id = t.id;
   update inscrits_tournoi set vu = _heure_freeroll(_aujourdhui() - 1) - interval '1 hour' where tournoi_id = t.id and joueur = pg_temp.u(5);
   update inscrits_tournoi set vu = _heure_freeroll(_aujourdhui() - 1) - interval '10 seconds' where tournoi_id = t.id and joueur <> pg_temp.u(5);
   perform _lancer_freeroll(t.id);
