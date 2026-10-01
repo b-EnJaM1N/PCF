@@ -20,3 +20,15 @@ export function texteSerie(e) {
 
 // Version courte, à côté du solde : « 🔥 3 j » (jours d'affilée), rien sans série.
 export const serieCourte = e => (e && e.serie > 0 ? `🔥 ${e.serie} j` : "");
+
+// ---------------------------------------------------------------- les mises (supabase/etape-14-mises.sql)
+export const MISES = [0, 50, 100, 200, 500, 1000];       // 0 = sans mise
+export const COMMISSION = 0.10;
+// Duel : le gagnant remporte 1,8 fois la mise.
+export const gainDuel = mise => Math.floor(2 * mise * (1 - COMMISSION));
+// Sit & Go à mise (8 joueurs) : 50 % au 1er, 30 % au 2e, 10 % aux 3e et 4e, après la commission.
+export function gainsSng(mise, joueurs = 8) {
+  const pot = Math.floor(mise * joueurs * (1 - COMMISSION));
+  return [0.5, 0.3, 0.1, 0.1].map(p => Math.floor(pot * p));
+}
+export const texteMise = m => (m ? `${m.toLocaleString("fr-FR").replace(/\s/g, " ")} jetons` : "Sans mise");

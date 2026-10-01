@@ -482,3 +482,7 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 .jetons-msg { flex-basis: 100%; text-align: right; font-size: .8rem; }
 .jetons-msg:empty { display: none; }
 .jetons-msg.erreur { color: #FF8A80; }
+
+/* Choix de la mise en jetons */
+.seg.seg-mise { display: grid; grid-template-columns: repeat(3, 1fr); }
+.seg.seg-mise button { padding: 9px 4px; font-size: .9rem; }
