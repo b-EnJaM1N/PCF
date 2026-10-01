@@ -32,6 +32,7 @@ import { installerCercles } from "./ecran-cercles.js";
 import { installerSng } from "./ecran-sng.js";
 import { installerJetons } from "./ecran-jetons.js";
 import { installerFreeroll } from "./ecran-freeroll.js";
+import { installerProgrammes } from "./ecran-programmes.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
 import { GESTES, CELEBRATIONS, CADRES, gesteValide, celebrationValide, articleDe, possede } from "./catalogue.js";
@@ -62,7 +63,7 @@ const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier
 const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
-let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, defisUI = null, boutiqueUI = null;
+let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, programmesUI = null, defisUI = null, boutiqueUI = null;
 let monClassement = null, mesDuelsOfficiels = 0;
 // « Niveau officiel : 1232 ? · provisoire, encore 9 duels de calibrage »
 const texteNiveauFiche = (points, joues) => `Niveau officiel : ${texteNiveau(points, joues)}` +
@@ -372,7 +373,7 @@ function finir() {
     adversaire: { id: OPP.id, elo: OPP.elo, nom: S.duel ? `${OPP.nom}#${OPP.numero}` : OPP.nom },
     finaleTournoi: enTournoi && tourDe(T, S.tour).finale, compteNiveau: !S.duel,
     abandon: !!special && !gagne, officiel: !!(S.duel && D?.duel?.classe), niveauMoi: monClassement ?? 1200, niveauAdv: OPP.classement ?? 1200,
-    finaleEnLigne: !!(S.duel && D?.tourVoix === "finale"), sitAndGo: !!(S.duel && D?.direct),
+    finaleEnLigne: !!(S.duel && D?.tourVoix === "finale"), sitAndGo: !!(S.duel && D?.direct), grandChelem: !!(S.duel && D?.grandChelem),
   }) : [];
   sauverP(); rafraichirAvatars(); afficherBilan();
   // « La Une » : on garde de quoi raconter ce match.
@@ -864,7 +865,7 @@ function aller(vue) {
   if (vue === "viewCercles" || vue === "viewTournois") cerclesUI?.rafraichir();
   if (vue === "viewSng") sngUI?.rafraichir();
   if (vue === "viewJouer") { jetonsUI?.rafraichir(); defisUI?.rafraichir(); }
-  if (vue === "viewFreeroll") freerollUI?.rafraichir();
+  if (vue === "viewFreeroll") { freerollUI?.rafraichir(); programmesUI?.rafraichir(); }
   if (vue === "viewBoutique") boutiqueUI?.rafraichir();
   window.scrollTo(0, 0);
 }
@@ -874,7 +875,7 @@ $("btnOptions").addEventListener("click", () => aller(vueCourante === "viewOptio
 $("optionsRetour").addEventListener("click", () => aller(avantOptions));
 
 // Les alertes en haut du menu « Jouer » (et la pastille de l'onglet).
-const alertes = { duels: { recus: 0, enCours: 0 }, tournois: [], sng: null, freeroll: null };
+const alertes = { duels: { recus: 0, enCours: 0 }, tournois: [], sng: null, freeroll: null, programme: null };
 function signaler(cle, valeur) { alertes[cle] = valeur; renderAlertes(); }
 function renderAlertes() {
   const a = alertes, carte = (attr, icone, titre, texte) => `<button class="hub alerte" ${attr}><span class="hub-i">${icone}</span><span><b>${titre}</b><small>${texte}</small></span></button>`;
@@ -883,6 +884,7 @@ function renderAlertes() {
     a.duels.recus ? carte('data-aller="viewDuel"', "📨", `${a.duels.recus} défi${a.duels.recus > 1 ? "s" : ""} reçu${a.duels.recus > 1 ? "s" : ""}`, "Accepte ou refuse") : "",
     ...a.tournois.map(t => carte(`data-tournoi="${t.id}"`, "🏆", "Ton match de tournoi t'attend", esc(t.nom))),
     a.freeroll ? carte('data-aller="viewFreeroll"', "🌙", a.freeroll.phase === "en_cours" ? "Le freeroll est en cours" : "Le freeroll commence à 20 h", "Garde l'appli ouverte : ton match se lance tout seul") : "",
+    a.programme ? carte('data-aller="viewFreeroll"', "🗓️", a.programme.phase === "en_cours" ? `${esc(a.programme.nom)} est en cours` : `${esc(a.programme.nom)} commence bientôt`, "Garde l'appli ouverte : ton match se lance tout seul") : "",
     a.sng ? carte('data-aller="viewSng"', "⚡", a.sng.phase === "inscriptions" ? "Tu es en salle de Sit & Go" : "Ton Sit & Go est en cours", "Garde l'appli ouverte") : "",
   ].join("");
   const n = a.duels.recus + a.tournois.length;
@@ -1041,7 +1043,8 @@ async function reperesTournoi(duel) {
     if (!D || D.id !== duel.id || !m) return;
     D.tourVoix = { 0: "finale", 1: "demis", 2: "quarts", 3: "huitiemes" }[t.nb_tours - m.tour] ?? null;
     D.sng = t.mode === "direct" && m.tour === 1;
-    D.direct = t.mode === "direct" && !t.freeroll;   // (le trophée « Roi du Sit & Go » ne vaut pas pour le freeroll)
+    D.direct = t.mode === "direct" && !t.freeroll && !t.programme;   // (le trophée « Roi du Sit & Go » ne vaut ni pour le freeroll ni pour les tournois programmés)
+    D.grandChelem = t.programme === "grand_chelem";
     S.annonces.finale = D.tourVoix === "finale";
     if (faceAFaceOuvert) presenterSpeaker();
   } catch { /* sans réseau : présentation simple */ }
@@ -1310,6 +1313,12 @@ freerollUI = installerFreeroll({
   chercherMatch: () => { if (!D || D.fini) duelsUI.rafraichir(); },
   jetons: () => jetonsUI?.rafraichir(),
 });
+programmesUI = installerProgrammes({
+  compte: compteUI, signaler,
+  ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
+  chercherMatch: () => { if (!D || D.fini) duelsUI.rafraichir(); },
+  jetons: () => jetonsUI?.rafraichir(),
+});
 sngUI = installerSng({
   jetons: () => jetonsUI?.rafraichir(),
   signaler,
@@ -1355,7 +1364,7 @@ $("btnTestNotif").addEventListener("click", async () => {
   finally { b.disabled = false; }
 });
 // Ouvrir l'appli depuis une notification : ?ouvrir=duels ou ?ouvrir=tournois (ou message du service worker si elle est déjà ouverte).
-const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); else if (cible === "freeroll") aller("viewFreeroll"); };
+const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); else if (cible === "freeroll" || cible === "programmes") aller("viewFreeroll"); };
 {
   const cible = new URLSearchParams(location.search).get("ouvrir");
   if (cible) { ouvrirDepuisNotification(cible); history.replaceState(null, "", location.pathname + location.hash); }
