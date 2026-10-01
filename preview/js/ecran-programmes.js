@@ -3,7 +3,7 @@
 import * as social from "./social-serveur.js";
 import { texteJetons } from "./jetons-logique.js";
 import { resume } from "./tournoi-logique.js";
-import { icone, texteDepart, gainsCagnotte, enJeu, aSignaler } from "./programmes-logique.js";
+import { icone, texteDepart, texteDotations, enJeu, aSignaler } from "./programmes-logique.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -63,13 +63,13 @@ export function installerProgrammes(ctx) {
     $("progTenant").hidden = !ten;
     if (ten) $("progTenant").innerHTML = `🏆 <b>Tenant du titre du Grand Chelem :</b> ${esc(ten.pseudo)}<small>#${ten.numero}</small>`;
     $("progListe").innerHTML = liste().map(t => {
-      const depart = Date.parse(t.depart), ouvert = t.phase === "inscriptions" && depart > maintenant, g = gainsCagnotte(t.cagnotte);
+      const depart = Date.parse(t.depart), ouvert = t.phase === "inscriptions" && depart > maintenant;
       let etatTxt;
       if (t.phase === "inscriptions") etatTxt = `${texteDepart(t.depart, maintenant)}${depart - maintenant < 6 * 3600000 ? ` · dans ${dans(depart - maintenant)}` : ""} · ${t.inscrits} inscrit${t.inscrits > 1 ? "s" : ""}`;
       else if (t.phase === "en_cours") etatTxt = `En cours · ${esc(resume(t))}`;
       else if (t.phase === "termine") etatTxt = `Terminé${t.vainqueur ? ` · 🏆 ${esc(t.vainqueur.pseudo)}#${t.vainqueur.numero}` : ""}`;
       else etatTxt = "Annulé : moins de 4 joueurs présents (entrées rendues)";
-      const cagnotte = `Entrée ${texteJetons(t.mise)} · cagnotte ${texteJetons(t.cagnotte)}${t.garantie ? " (garantie)" : ""} · 1er : ${g[0]}, 2e : ${g[1]}, 3e-4e : ${g[2]}${t.finale_sets ? ` · finale en ${t.finale_sets} sets gagnants` : ""}`;
+      const cagnotte = `Entrée ${texteJetons(t.mise)} · cagnotte ${texteJetons(t.cagnotte)}${t.garantie ? " (garantie)" : ""} · ${texteDotations(t.cagnotte, Math.max(t.inscrits, 4))}${t.finale_sets ? ` · finale en ${t.finale_sets} sets gagnants` : ""}`;
       const action = ouvert ? (t.inscrit ? `<button class="petit alt" data-a="sortir">Me désinscrire</button>` : `<button class="petit" data-a="entrer">M'inscrire</button>`)
         : t.phase === "en_cours" || t.phase === "termine" ? `<button class="petit alt" data-a="voir">Tableau</button>` : "";
       return `<div class="joueur${t.inscrit && t.phase !== "termine" && t.phase !== "annule" ? " a-jouer" : ""}" data-cle="${esc(t.cle)}" data-id="${esc(t.id)}">
