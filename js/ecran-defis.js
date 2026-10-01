@@ -21,10 +21,10 @@ export function installerDefis(ctx) {
   function render() {
     if (!defis?.length) { $("defisCarte").hidden = true; return; }
     const e = jour(), etats = defis.map(d => ({ d, ...etatDefi(d, e) }));
-    const faits = etats.filter(x => x.fait).length;
-    const aEncaisser = etats.some(x => x.pret && !x.fait);
+    const reussis = etats.filter(x => x.reussi).length;
+    const aEncaisser = etats.some(x => x.reussi && !x.fait);
     $("defisCarte").hidden = false;
-    $("defisTitre").textContent = `🎯 Défis du jour · ${faits}/${defis.length}${aEncaisser ? " · 🎁 à encaisser" : ""}`;
+    $("defisTitre").textContent = `🎯 Défis du jour · ${reussis}/${defis.length}${aEncaisser ? " · 🎁 à encaisser" : ""}`;
     if (aEncaisser) $("defisCarte").open = true;   // replié le reste du temps, pour ne pas charger le menu
     $("defisListe").innerHTML = etats.map(x => `<li class="${x.fait ? "fait" : ""}">
       <span>${x.fait ? "✅" : "▫️"} ${esc(x.texte)}${x.progression && !x.fait ? ` <small>${x.progression}</small>` : ""}</span>
