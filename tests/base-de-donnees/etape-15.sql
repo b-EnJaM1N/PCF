@@ -52,14 +52,14 @@ begin
   perform pg_temp.verifier((select count(*) from inscrits_tournoi where tournoi_id = t.id) = 4, 'l''absent est retiré');
   perform pg_temp.verifier((select count(*) from duels where tournoi_id = t.id and phase = 'presentation' and classe) = 2, 'les deux demi-finales officielles sont lancées');
 
-  -- Fin simulée : 1 bat 2 en finale ; 3 et 4 perdent en demi-finale. Cagnotte : 1 000 + 4 × 50 = 1 200.
+  -- Fin simulée : 1 bat 2 en finale ; 3 et 4 perdent en demi-finale. Cagnotte : 1 000 + 4 × 50 = 1 200 (grille de l'étape 19).
   delete from matchs_tournoi where tournoi_id = t.id;
   insert into matchs_tournoi (tournoi_id, tour, position, j0, j1, vainqueur, fin) values
     (t.id, 1, 1, pg_temp.u(1), pg_temp.u(4), pg_temp.u(1), 'score'),
     (t.id, 1, 2, pg_temp.u(2), pg_temp.u(3), pg_temp.u(2), 'score'),
     (t.id, 2, 1, pg_temp.u(1), pg_temp.u(2), pg_temp.u(1), 'score');
   update tournois set phase = 'termine', vainqueur = pg_temp.u(1) where id = t.id;
-  perform pg_temp.verifier(pg_temp.solde(1) = 1600 and pg_temp.solde(2) = 1360 and pg_temp.solde(3) = 1120 and pg_temp.solde(4) = 1120, 'gains : 600, 360, 120, 120');
+  perform pg_temp.verifier(pg_temp.solde(1) = 1780 and pg_temp.solde(2) = 1420 and pg_temp.solde(3) = 1000 and pg_temp.solde(4) = 1000, 'gains (4 joueurs : 2 payés) : 780, 420');
 
   -- Moins de 4 présents : annulé.
   insert into tournois (nom, points_par_set, sets_gagnants, duree_tour, mode, taille, freeroll) values ('Freeroll', 11, 2, '1 hour', 'direct', 64, _aujourdhui() - 2) returning * into t;
@@ -86,7 +86,7 @@ begin
   -- Classement du mois : bénéfice des jeux (les gains du freeroll comptent, pas les bonus ni les défis).
   perform pg_temp.en_tant_que(pg_temp.u(2)::text);
   r := classement_mois();
-  perform pg_temp.verifier((r->'top'->0->>'id')::uuid = pg_temp.u(1) and (r->'top'->0->>'benefice')::int = 600, 'le vainqueur du freeroll est 1er avec 600');
+  perform pg_temp.verifier((r->'top'->0->>'id')::uuid = pg_temp.u(1) and (r->'top'->0->>'benefice')::int = 780, 'le vainqueur du freeroll est 1er avec 780');
   perform pg_temp.verifier((r->'moi'->>'rang')::int = 2, 'le finaliste est 2e');
   perform pg_temp.en_tant_que(pg_temp.u(6)::text);
   perform pg_temp.verifier(classement_mois()->'moi' = 'null'::jsonb, 'les défis ne comptent pas au classement');
