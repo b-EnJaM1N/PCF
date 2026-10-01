@@ -34,6 +34,7 @@ import { installerJetons } from "./ecran-jetons.js";
 import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerProgrammes } from "./ecran-programmes.js";
 import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
+import { repartition, habitudes, piste, lecturesReussies, EMOJIS } from "./lecture-adversaire.js";
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
@@ -333,8 +334,23 @@ function renderHistorique() {
     return `<td class="${cls}">${EMOJI[x[cle]]}</td>`;
   }).join("") + "</tr>";
   $("tape").innerHTML = `<table>${ligne("a", "Toi")}${ligne("b", OPP.nom)}</table>`;
+  renderLectureAdversaire();
   const t = $("tape"); t.scrollLeft = t.scrollWidth;
 }
+
+// Lire l'adversaire : sa répartition, ses réflexes, et la piste pour le prochain coup (d'après l'historique).
+function renderLectureAdversaire() {
+  const c = S.match.coups, n = c.length, r = repartition(c);
+  $("lectureRep").innerHTML = [0, 2, 1].map(s => `<div><b>${EMOJIS[s]}</b>${n ? Math.round(100 * r[s] / n) : 0} %<i><span style="width:${n ? Math.round(100 * r[s] / n) : 0}%"></span></i></div>`).join("");
+  const h = habitudes(c).slice(0, 3);
+  $("lectureHab").innerHTML = n < 4 ? `<li>Observe ses premiers coups : ses réflexes s'afficheront ici.</li>`
+    : h.length ? h.map(x => `<li>${esc(x.texte)}</li>`).join("") : `<li>Pas de réflexe net pour l'instant : il varie bien.</li>`;
+  const p = S.match.termine ? null : piste(c);
+  $("lecturePiste").hidden = !p;
+  if (p) $("lecturePiste").textContent = `💡 ${p.texte}`;
+}
+$("lecture").open = lire("lectureOuverte") !== false;
+$("lecture").addEventListener("toggle", () => ecrire("lectureOuverte", $("lecture").open));
 
 function renderLecture() {
   const s = S.suivi;
@@ -364,7 +380,8 @@ function finir() {
       : p <= 15 ? ` Après une victoire, tu changes presque toujours de signe (${100 - p} %) : c'est aussi un schéma.` : "";
   }
   afficherRepliques($("endVoix"), S.dialogueFin || []);
-  $("endRead").textContent = `Ton coup était prévisible ${Math.round(100 * (S.suivi.taux || 0))} % du temps.${habitude}`;
+  const lues = lecturesReussies(c);
+  $("endRead").textContent = `Ton coup était prévisible ${Math.round(100 * (S.suivi.taux || 0))} % du temps.${habitude}${lues ? ` 🔎 Tu as lu ${OPP.nom} ${lues} fois : tu as joué la bonne piste et gagné le point.` : ""}`;
   $("end").hidden = false;
   $("bar").style.transform = "scaleX(0)";
 
@@ -582,6 +599,7 @@ function preparerEcranMatch() {
   boutons(false); afficherBilan(); window.scrollTo(0, 0);
   $("revanche").hidden = true; $("retourDuels").hidden = true; $("encoreRapide").hidden = true; $("abandonDuelZone").hidden = true; $("signalerZone").hidden = true;
   $("coach").hidden = true; $("mdjPartagerFin").hidden = true;
+  if (S?.match) renderLectureAdversaire();
 }
 
 function renderFormat() {
