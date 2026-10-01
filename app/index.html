@@ -158,6 +158,9 @@
         <div class="seg" id="duelLen"><button data-v="11">11</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
         <div class="seg" id="duelWin"><button data-v="1">1 set</button><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
         <label class="sound" style="align-items:flex-start;margin-bottom:10px"><input type="checkbox" id="duelClasse" checked> <span id="duelClasseTexte">Match officiel : compte pour ton niveau officiel (décoche pour un match amical)</span></label>
+        <span class="fmt-lbl">Mise en jetons</span>
+        <div class="seg seg-mise" id="duelMise"><button data-v="0">Sans mise</button><button data-v="50">50</button><button data-v="100">100</button><button data-v="200">200</button><button data-v="500">500</button><button data-v="1000">1 000</button></div>
+        <p class="hint" id="duelMiseTexte" style="margin-bottom:10px"></p>
         <p class="hint">Ton ami n'a pas encore HandSlam, ou il n'apparaît pas ? Envoie-lui un lien :</p>
         <button class="btn alt" id="duelLien" style="margin-top:8px">Inviter par un lien (WhatsApp, SMS…)</button>
         <p class="locknote" id="duelMsg" role="status"></p>
@@ -260,7 +263,10 @@
     <section class="card" id="rapideCard" hidden>
       <h2>⚡ Partie rapide</h2>
       <div id="rapideChoix">
-        <p class="hint">Choisis ton format : on te trouve un adversaire humain, du niveau le plus proche du tien. Reste sur cet écran pendant la recherche.</p>
+        <p class="hint">Choisis ta mise et ton format : on te trouve un adversaire humain, du niveau le plus proche du tien, qui a choisi la même mise. Reste sur cet écran pendant la recherche.</p>
+        <span class="fmt-lbl">Mise en jetons</span>
+        <div class="seg seg-mise" id="rapideMise"><button data-v="0">Sans mise</button><button data-v="50">50</button><button data-v="100">100</button><button data-v="200">200</button><button data-v="500">500</button><button data-v="1000">1 000</button></div>
+        <p class="hint" id="rapideMiseTexte" style="margin-bottom:10px"></p>
         <div class="resultats">
           <button class="joueur rapide-choix" data-format="officiel"><span><span class="jn">Officielle</span><span class="jd">Sets de 11, 2 sets gagnants · compte pour ton niveau officiel</span></span><span class="rapide-nb" id="rapideNb_officiel"></span></button>
           <button class="joueur rapide-choix" data-format="eclair"><span><span class="jn">Éclair</span><span class="jd">Un set de 7 · amicale, sans effet sur le niveau</span></span><span class="rapide-nb" id="rapideNb_eclair"></span></button>
@@ -273,7 +279,7 @@
         <p class="hint" id="rapideFormat"></p>
         <p class="hint" id="rapideEtat" role="status"></p>
         <div id="rapideBot" hidden>
-          <p class="sndnote">Personne n'est disponible pour l'instant. Tu peux jouer contre un bot en attendant : ce sera un bot, pas un humain, et le match ne comptera pas pour ton niveau officiel.</p>
+          <p class="sndnote">Personne n'est disponible pour l'instant. Tu peux jouer contre un bot en attendant : ce sera un bot, pas un humain, sans mise, et le match ne comptera pas pour ton niveau officiel.</p>
           <button class="btn" id="rapideBotGo">Jouer contre un bot</button>
         </div>
         <button class="btn alt" id="rapideAnnuler" style="margin-top:8px">Annuler la recherche</button>
@@ -290,6 +296,9 @@
       <p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours.</p>
       <p class="sndnote" id="sngMien" hidden style="margin-top:10px"></p>
       <div id="sngSalles" class="resultats"></div>
+      <h2 style="margin-top:18px">🪙 Sit &amp; Go à mise</h2>
+      <p class="hint">Salles de 8 joueurs. L'entrée est payée en jetons (rendue si tu quittes la salle avant le départ). La cagnotte, moins 10 %, est partagée : 50 % au 1er, 30 % au 2e, 10 % aux 3e et 4e.</p>
+      <div id="sngMises" class="resultats"></div>
       <p class="locknote" id="sngMsg" role="status"></p>
     </section>
     <section class="card" id="sngHors" hidden><p class="hint">Les Sit &amp; Go se jouent en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>

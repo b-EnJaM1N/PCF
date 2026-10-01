@@ -102,6 +102,14 @@ Même manipulation que d'habitude avec [`etape-13-jetons.sql`](etape-13-jetons.s
 Elle crée les portefeuilles : 1 000 jetons de bienvenue, bonus quotidien en série (50 à 200), renflouement
 sous 100 jetons (+200, une fois par jour) et quelques jetons pour les victoires contre les bots (100 par jour au plus).
 
+## 1 quattuordecies. Les mises en jetons (étape 14)
+
+Même manipulation avec [`etape-14-mises.sql`](etape-14-mises.sql), **après** l'étape 13
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-14-mises.sql).
+Supabase peut afficher « Potential issue detected » : c'est normal, confirmer.
+Elle ajoute les mises (50, 100, 200, 500 ou 1 000 jetons) aux défis, à la Partie rapide et aux Sit & Go à 8,
+avec 10 % de commission.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

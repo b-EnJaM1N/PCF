@@ -70,3 +70,9 @@ test("liens d'invitation", () => {
   assert.equal(codeDepuisAdresse("?duel=<script>"), null);
   assert.equal(codeDepuisAdresse(""), null);
 });
+
+test("le format d'un duel indique la mise en jetons", async () => {
+  const { FORMAT } = await import("../app/js/duel-logique.js");
+  assert.match(FORMAT({ points_par_set: 11, sets_gagnants: 2, classe: true, mise: 200 }), /mise de 200 jetons/);
+  assert.doesNotMatch(FORMAT({ points_par_set: 11, sets_gagnants: 2, classe: false, mise: 0 }), /jetons/);
+});
