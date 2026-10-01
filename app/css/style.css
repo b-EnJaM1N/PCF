@@ -496,3 +496,40 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 .defis-liste li small { color: var(--muted); white-space: nowrap; }
 .defis-liste li.fait > span { color: var(--muted); text-decoration: line-through; }
 #defisMsg:empty { display: none; }
+
+/* La boutique */
+.boutique-solde { float: right; font-family: "Barlow", sans-serif; font-weight: 600; font-size: .9rem; color: var(--me); }
+.boutique-onglets { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 2px; }
+.boutique-onglets button { flex: none; font: inherit; font-size: .85rem; font-weight: 600; padding: 7px 11px; border-radius: 999px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: var(--line); cursor: pointer; }
+.boutique-onglets button[aria-pressed=true] { border-color: var(--me); color: var(--me); }
+.articles { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+.article { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 8px; border-radius: 12px; background: var(--panel); border: 2px solid rgba(255, 255, 255, .12); text-align: center; }
+.article.rare { border-color: #4DA3FF; } .article.epique { border-color: #B57CF2; } .article.legendaire { border-color: #FFD34D; box-shadow: 0 0 14px rgba(255, 211, 77, .25); }
+.article .ap { width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; }
+.article .ap svg { width: 72px; height: 72px; display: block; border-radius: 50%; }
+.art-nom { font-weight: 600; font-size: .85rem; line-height: 1.2; min-height: 2.4em; display: flex; align-items: center; }
+.art-rarete { font-size: .72rem; color: var(--muted); }
+.article .petit { margin-top: 4px; }
+.ap-cri { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1rem; line-height: 1.05; color: var(--me); }
+.ap-celeb { font-size: 1.5rem; letter-spacing: 2px; }
+.ap-celeb i { font-style: normal; }
+.ap-cadre { display: block; border-radius: 12px; padding: 3px; background: var(--c); box-shadow: 0 0 12px var(--c); }
+.ap-cadre svg { width: 62px !important; height: 62px !important; }
+.sw button.boutique.locked::after { content: "🛍️"; }
+.jetons-puce.alt { background: var(--panel); color: var(--line); border: 1px solid rgba(255, 255, 255, .25); }
+
+/* Les gestes de victoire (boutique) : l'animation de la main */
+[class^="geste-"] { display: inline-block; transform-origin: 50% 85%; }
+.geste-poing_tremble { animation: g-tremble .14s ease-in-out infinite alternate; }
+.geste-poing_leve { animation: g-leve .45s ease-in-out infinite alternate; }
+.geste-salut { animation: g-salut .4s ease-in-out infinite alternate; }
+.geste-v_victoire { animation: g-salut .5s ease-in-out infinite alternate; }
+.geste-pouce_leve, .geste-doigt_leve { animation: g-rebond .5s cubic-bezier(.3, 1.6, .5, 1) infinite alternate; }
+.geste-uppercut { animation: g-uppercut .9s cubic-bezier(.2, 1.4, .4, 1) infinite; }
+@keyframes g-tremble { from { transform: translateX(-4px) rotate(-6deg); } to { transform: translateX(4px) rotate(6deg); } }
+@keyframes g-leve { from { transform: translateY(6px); } to { transform: translateY(-10px); } }
+@keyframes g-salut { from { transform: rotate(-16deg); } to { transform: rotate(16deg); } }
+@keyframes g-rebond { from { transform: translateY(3px) scale(.96); } to { transform: translateY(-6px) scale(1.06); } }
+@keyframes g-uppercut { 0% { transform: translate(-8px, 10px) rotate(-20deg); } 40% { transform: translate(4px, -16px) rotate(12deg); } 100% { transform: translate(-8px, 10px) rotate(-20deg); } }
+.cel-confettis i.forme { width: auto; height: auto; background: none; border-radius: 0; line-height: 1; }
+@media (prefers-reduced-motion: reduce) { [class^="geste-"] { animation: none !important; } }

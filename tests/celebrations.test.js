@@ -8,7 +8,7 @@ import { ligneDialogue } from "../app/js/voix/script.js";
 import { rngFixe } from "./outils.js";
 
 test("les 24 cris validés, dont le poing serré en silence", () => {
-  assert.equal(CRIS.length, 24);
+  assert.equal(CRIS.filter(c => !c.boutique).length, 24);
   assert.equal(new Set(CRIS.map(c => c.id)).size, CRIS.length);
   assert.equal(texteCri("vamos"), "Vamos !");
   assert.equal(texteCri("silence"), "");

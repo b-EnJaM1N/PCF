@@ -125,6 +125,11 @@ Supabase peut afficher « Potential issue detected » : c'est normal, confirmer.
    remplace tout le code par la nouvelle version de [`functions/notifier/index.ts`](functions/notifier/index.ts)
    (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/functions/notifier/index.ts) → **Deploy**.
 
+## 1 septendecies. La boutique (étape 17)
+
+Même manipulation avec [`etape-17-boutique.sql`](etape-17-boutique.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-17-boutique.sql).
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
