@@ -95,8 +95,8 @@ export function installerTournois(ctx) {
     $("tIcone").innerHTML = t.cercle ? blasonSVG(t.cercle.blason) : '<span class="trophee grand">🏆</span>';
     $("tNom").textContent = t.nom;
     const direct = t.mode === "direct";   // Sit & Go : matchs lancés automatiquement, sans date limite
-    $("tInfo").textContent = `${direct ? "Sit & Go public · " : t.cercle ? `Cercle « ${t.cercle.nom} » · ` : "Tournoi privé · "}${texteFormat({ pointsParSet: t.points_par_set, setsGagnants: t.sets_gagnants })}`
-      + `${formatCourt(t.points_par_set, t.sets_gagnants) ? " · amical" : " · officiel"}${direct ? "" : ` · tours de ${texteDuree(t.duree_minutes)}`}`;
+    $("tInfo").textContent = `${t.programme ? "Tournoi programmé · " : t.freeroll ? "Freeroll · " : direct ? "Sit & Go public · " : t.cercle ? `Cercle « ${t.cercle.nom} » · ` : "Tournoi privé · "}${texteFormat({ pointsParSet: t.points_par_set, setsGagnants: t.sets_gagnants })}`
+      + `${formatCourt(t.points_par_set, t.sets_gagnants) ? " · amical" : " · officiel"}${direct ? "" : ` · tours de ${texteDuree(t.duree_minutes)}`}${t.finale_sets ? ` · finale en ${t.finale_sets} sets gagnants` : ""}`;
     const reste = texteReste(t.echeance, maintenant);
     $("tEtat").textContent = t.phase === "inscriptions" ? `Inscriptions ouvertes · ${t.joueurs.length} joueur${t.joueurs.length > 1 ? "s" : ""} (de 3 à 32)`
       : t.phase === "en_cours" ? (direct ? `${nomTour(t.tour, t.nb_tours)} · en direct` : `${nomTour(t.tour, t.nb_tours)} · ${reste ? `date limite dans ${reste}` : "date limite passée, résultats en cours"}`)

@@ -21,8 +21,15 @@ const CORS = {
 export const texteFormat = (points: number, sets: number) =>
   `Sets de ${points} point${points > 1 ? "s" : ""} · ${sets === 1 ? "match en 1 set" : `${sets} sets gagnants`}`;
 
-// evenement : "defi" | "accepte" | "tournoi" | "test" | "freeroll" ; duel : la ligne du duel ; adv : { pseudo, numero } de l'adversaire.
-export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }) {
+// L'heure de Paris, à la française : « 12 h 30 », « 18 h ».
+export const heureParis = (date: string) => {
+  const [h, m] = new Date(date).toLocaleTimeString("fr-FR", { timeZone: "Europe/Paris", hour: "2-digit", minute: "2-digit" }).split(":");
+  return `${Number(h)} h${m === "00" ? "" : ` ${m}`}`;
+};
+
+// evenement : "defi" | "accepte" | "tournoi" | "test" | "freeroll" | "programme" ; duel : la ligne du duel ;
+// adv : { pseudo, numero } de l'adversaire ; tournoi : { nom, depart } (tournoi programmé).
+export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }, tournoi?: { nom: string; depart: string }) {
   if (evenement === "test") return {
     titre: "🔔 Notification de test", texte: "Si tu lis ceci, les notifications marchent sur ce téléphone !", url: "./", tag: "test",
   };
@@ -30,6 +37,11 @@ export function message(evenement: string, duel: any, adv: { pseudo: string; num
     titre: "🌙 Le freeroll commence dans 10 minutes",
     texte: "Ouvre HandSlam et garde l'appli ouverte : le tournoi démarre à 20 h avec les inscrits présents.",
     url: "./?ouvrir=freeroll", tag: "freeroll",
+  };
+  if (evenement === "programme") return {
+    titre: `🗓️ ${tournoi?.nom || "Ton tournoi"} commence dans 10 minutes`,
+    texte: `Ouvre HandSlam et garde l'appli ouverte : le tournoi démarre à ${tournoi ? heureParis(tournoi.depart) : "l'heure"} avec les inscrits présents.`,
+    url: "./?ouvrir=programmes", tag: "programme",
   };
   const qui = `${adv.pseudo}#${adv.numero}`;
   if (evenement === "defi") return {
@@ -73,7 +85,7 @@ async function servir(req: Request) {
   if (!id) return reponse({ erreur: "notification manquante" }, 400);
   // On « prend » la notification : si elle est déjà partie, on ne la renvoie pas.
   const { data: notif } = await sb.from("notifications").update({ envoye_le: new Date().toISOString() })
-    .eq("id", id).is("envoye_le", null).select("duel_id, joueur, evenement").maybeSingle();
+    .eq("id", id).is("envoye_le", null).select("duel_id, joueur, evenement, tournoi_id").maybeSingle();
   if (!notif) return reponse({ ok: true, deja: true });
   let duel: any = null, adv: any = null;
   if (notif.duel_id) {
@@ -81,7 +93,9 @@ async function servir(req: Request) {
     const advId = duel.j0 === notif.joueur ? duel.j1 : duel.j0;
     ({ data: adv } = await sb.from("profils").select("pseudo, numero").eq("id", advId).single());
   }
-  const m = message(notif.evenement, duel, adv || { pseudo: "Un joueur", numero: 0 });
+  let tournoi: any = null;
+  if (notif.tournoi_id) ({ data: tournoi } = await sb.from("tournois").select("nom, depart").eq("id", notif.tournoi_id).maybeSingle());
+  const m = message(notif.evenement, duel, adv || { pseudo: "Un joueur", numero: 0 }, tournoi || undefined);
 
   webpush.setVapidDetails(ADRESSE_APPLI, cles.publique, cles.privee);
   const { data: abonnements } = await sb.from("abonnements_push").select("endpoint, p256dh, auth").eq("joueur", notif.joueur);

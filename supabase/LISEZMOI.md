@@ -130,6 +130,15 @@ Supabase peut afficher « Potential issue detected » : c'est normal, confirmer.
 Même manipulation avec [`etape-17-boutique.sql`](etape-17-boutique.sql)
 (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-17-boutique.sql).
 
+## 1 duodevicies. Les tournois programmés (étape 18)
+
+1. Même manipulation avec [`etape-18-tournois-programmes.sql`](etape-18-tournois-programmes.sql)
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-18-tournois-programmes.sql).
+   Supabase peut afficher « Potential issue detected » : c'est normal, confirmer.
+   Elle crée le programme (Le Midi, L'Apéro, Le Nocturne, le Grand Chelem du dimanche) et un minuteur (toutes les 5 minutes)
+   qui prévient les inscrits 10 minutes avant le départ.
+2. **Mettre à jour la fonction « Notifier »** (même manipulation qu'à l'étape 16) : le message du rappel des tournois programmés.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

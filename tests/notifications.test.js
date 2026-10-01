@@ -36,3 +36,11 @@ test("la notification du freeroll de 20 h", () => {
   assert.equal(m.titre, "🌙 Le freeroll commence dans 10 minutes");
   assert.equal(m.url, "./?ouvrir=freeroll");
 });
+
+test("la notification d'un tournoi programmé, avec son nom et son heure", () => {
+  const m = message("programme", null, { pseudo: "x", numero: 0 }, { nom: "Le Midi", depart: "2026-10-01T10:30:00Z" });
+  assert.equal(m.titre, "🗓️ Le Midi commence dans 10 minutes");
+  assert.match(m.texte, /démarre à 12 h 30 /);
+  assert.equal(m.url, "./?ouvrir=programmes");
+  assert.match(message("programme", null, { pseudo: "x", numero: 0 }, { nom: "L'Apéro", depart: "2026-12-01T17:00:00Z" }).texte, /à 18 h avec/);
+});

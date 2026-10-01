@@ -54,6 +54,8 @@ const FICHIERS = [
   "js/defis-logique.js",
   "js/ecran-defis.js",
   "js/ecran-freeroll.js",
+  "js/programmes-logique.js",
+  "js/ecran-programmes.js",
   "js/catalogue.js",
   "js/ecran-boutique.js",
   "js/ecran-signaler.js",

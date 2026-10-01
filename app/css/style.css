@@ -31,6 +31,8 @@ h1 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1
 .sound input { width: 20px; height: 20px; accent-color: var(--me); margin: 0; cursor: pointer; }
 .test { font: inherit; font-size: .85rem; color: var(--muted); background: none; border: 1px solid rgba(255, 255, 255, .25); border-radius: 8px; padding: 6px 10px; cursor: pointer; }
 .sndnote { margin: 0; font-size: .88rem; line-height: 1.4; color: var(--line); background: var(--panel); border-radius: 8px; padding: 10px 12px; }
+.tenant { margin: 0 0 12px; text-align: center; border: 1px solid #F2C14E; }
+.tenant small { opacity: .7; }
 :is(button, input, select):focus-visible { outline: 3px solid var(--me); outline-offset: 2px; }
 
 /* Tableau de score */
