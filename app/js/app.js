@@ -30,6 +30,7 @@ import { installerCompte } from "./ecran-compte.js";
 import { installerDuels } from "./ecran-duel.js";
 import { installerCercles } from "./ecran-cercles.js";
 import { installerSng } from "./ecran-sng.js";
+import { installerJetons } from "./ecran-jetons.js";
 import { texteClassementFin, texteNiveau, provisoire } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
 import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel } from "./duel-logique.js";
@@ -56,7 +57,7 @@ const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier
 const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
-let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null;
+let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null;
 let monClassement = null, mesDuelsOfficiels = 0;
 // « Niveau officiel : 1232 ? · provisoire, encore 9 duels de calibrage »
 const texteNiveauFiche = (points, joues) => `Niveau officiel : ${texteNiveau(points, joues)}` +
@@ -381,6 +382,8 @@ function finir() {
   $("abandonDuelZone").hidden = true;
   if (enTournoi) $("tNext").textContent = gagne ? (tourDe(T, S.tour).finale ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
   $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (t.debloque ? ` (débloque ${t.debloque})` : "")).join(", ") + " !" : "";
+  // Une victoire contre un bot rapporte quelques jetons (avec un compte).
+  if (n && gagne && !S.duel) jetonsUI?.gagnerEntrainement().then(g => { if (g) $("news").textContent = `🪙 +${g} jetons. ${$("news").textContent}`.trim(); });
   $("end").scrollIntoView({ behavior: reduitMouvement() ? "auto" : "smooth", block: "start" });
   // Après une finale (tournoi solo ou en ligne) : l'interview du journaliste.
   if (n && !special && S.annonces.finale) setTimeout(() => ouvrirInterview(gagne), 2500);
@@ -826,6 +829,7 @@ function aller(vue) {
   if (vue === "viewDuel") duelsUI?.rafraichir();
   if (vue === "viewCercles" || vue === "viewTournois") cerclesUI?.rafraichir();
   if (vue === "viewSng") sngUI?.rafraichir();
+  if (vue === "viewJouer") jetonsUI?.rafraichir();
   window.scrollTo(0, 0);
 }
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => aller({ jouer: "viewJouer", cercles: "viewCercles", profile: "viewProfile" }[b.dataset.v])));
@@ -1259,6 +1263,7 @@ rapideUI = installerRapide({
   jouerBot: jouerBotRapide,
 });
 
+jetonsUI = installerJetons({ compte: compteUI });
 sngUI = installerSng({
   signaler,
   compte: compteUI,

@@ -95,6 +95,13 @@ Pour vérifier : dans l'appli, **Options (⚙️)** → **Notifications** → **
 
 Ensuite, dans l'appli : **Options (⚙️)** → **Notifications** → **Envoyer une notification de test**.
 
+## 1 terdecies. Les jetons (étape 13)
+
+Même manipulation que d'habitude avec [`etape-13-jetons.sql`](etape-13-jetons.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-13-jetons.sql).
+Elle crée les portefeuilles : 1 000 jetons de bienvenue, bonus quotidien en série (50 à 200), renflouement
+sous 100 jetons (+200, une fois par jour) et quelques jetons pour les victoires contre les bots (100 par jour au plus).
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
