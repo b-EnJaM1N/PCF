@@ -43,6 +43,17 @@
 
   <div class="view" id="viewJouer">
     <div id="hubAlertes"></div>
+    <section class="card jetons-carte" id="jetonsCarte" hidden>
+      <div id="jetonsDedans">
+        <div class="jetons-solde" id="jetonsSolde">…</div>
+        <p class="hint" id="jetonsSerie"></p>
+        <button class="btn" id="jetonsBonus" hidden></button>
+        <button class="btn alt" id="jetonsRenfl" hidden>🛟 Renflouement : +200 jetons</button>
+        <p class="hint">Bientôt : duels à mise et tournois en jetons. Les jetons sont fictifs : ils ne s'achètent pas et ne s'échangent pas.</p>
+      </div>
+      <p class="hint" id="jetonsHors" hidden>🪙 <b>1 000 jetons offerts</b> à la création de ton compte, puis un bonus chaque jour : <button class="linkbtn" data-aller="viewProfile">créer mon compte</button>.</p>
+      <p class="hint" id="jetonsMsg" role="status"></p>
+    </section>
     <button class="hub" data-aller="viewRapide"><span class="hub-i">⚡</span><span><b>Partie rapide</b><small>Un adversaire de ton niveau, en un clic</small></span></button>
     <button class="hub" data-aller="viewDuel"><span class="hub-i">🤝</span><span><b>Défier un ami</b><small>Un duel en direct, par pseudo ou par lien</small></span></button>
     <button class="hub" data-aller="viewSng"><span class="hub-i">🏁</span><span><b>Sit &amp; Go</b><small>Tournois express publics : départ dès que la salle est pleine</small></span></button>
