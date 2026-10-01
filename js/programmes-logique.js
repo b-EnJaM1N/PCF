@@ -1,7 +1,8 @@
 // Les tournois programmés (supabase/etape-18-tournois-programmes.sql) : ce que le téléphone déduit de l'état du serveur.
 // Aucune connexion réseau ici : ces fonctions sont testées automatiquement.
 
-// Le programme, pour l'affichage (le serveur fait foi : heures de Paris, entrées, garantie).
+// Le programme, pour l'affichage (le serveur fait foi : heures de Paris, entrées, garantie, et les tournois actifs :
+// depuis l'étape 21, seulement le Grand Chelem ; les autres sont en pause en attendant plus de joueurs).
 export const PROGRAMME = [
   { cle: "midi", icone: "🥪", nom: "Le Midi", quand: "Tous les jours à 12 h 30", mise: 100 },
   { cle: "apero", icone: "🌆", nom: "L'Apéro", quand: "Tous les jours à 18 h", mise: 100 },
