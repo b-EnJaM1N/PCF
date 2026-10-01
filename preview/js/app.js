@@ -33,6 +33,8 @@ import { installerSng } from "./ecran-sng.js";
 import { installerJetons } from "./ecran-jetons.js";
 import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerDefis } from "./ecran-defis.js";
+import { installerBoutique } from "./ecran-boutique.js";
+import { GESTES, CELEBRATIONS, CADRES, gesteValide, celebrationValide, articleDe, possede } from "./catalogue.js";
 import { gainDuel } from "./jetons-logique.js";
 import { texteClassementFin, texteNiveau, provisoire } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
@@ -60,7 +62,7 @@ const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier
 const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
-let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, defisUI = null;
+let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, defisUI = null, boutiqueUI = null;
 let monClassement = null, mesDuelsOfficiels = 0;
 // « Niveau officiel : 1232 ? · provisoire, encore 9 duels de calibrage »
 const texteNiveauFiche = (points, joues) => `Niveau officiel : ${texteNiveau(points, joues)}` +
@@ -271,7 +273,9 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
 // joueur 0 : moi ; 1 : l'adversaire (humain : son cri choisi dans sa fiche ; bot : le sien).
 const criDe = g => (g === 0 ? P.cri : OPP.humain ? criValide(OPP.fiche?.cri) : (S.criBot ||= criDuBot(OPP.id, P.cri)));
 const avDe = g => (g === 0 ? P.av : OPP.av);
-const poingDe = g => avatarSVG({ ...avDe(g), symbole: "pierre" });   // le gant qui serre le poing
+// Le geste de victoire (boutique) : la forme de la main et son animation ; par défaut, le poing serré.
+const gesteDe = g => (g === 0 ? gesteValide(P.geste) : OPP.humain ? gesteValide(OPP.fiche?.geste) : "poing");
+const poingDe = g => { const geste = gesteDe(g); return `<span class="geste-${geste}">${avatarSVG({ ...avDe(g), symbole: GESTES[geste].symbole })}</span>`; };
 let bulleT = 0;
 function criEnBulle(cel) {
   const b = $("criBulle"); clearTimeout(bulleT);
@@ -285,12 +289,17 @@ function criEnBulle(cel) {
 function criEnGrand(cel, apres) {
   const seance = S, ov = $("celebration"), vite = reduitMouvement();
   if (!cel) { apres(); return; }
-  const couleurs = couleursConfettis(avDe(cel.joueur)), hasard = (a, b) => a + Math.random() * (b - a);
+  const couleursGant = couleursConfettis(avDe(cel.joueur)), hasard = (a, b) => a + Math.random() * (b - a);
+  // La célébration (boutique) : étoiles, cœurs, éclairs, feu d'artifice, pluie d'or ; par défaut, des confettis aux couleurs du gant.
+  const style = CELEBRATIONS[celebrationValide(cel.joueur === 0 ? P.celebration : OPP.humain ? OPP.fiche?.celebration : "confettis")];
+  const couleurs = style.couleurs || couleursGant;
   $("celAv").innerHTML = poingDe(cel.joueur); $("celCri").textContent = cel.texte;
-  ov.style.setProperty("--c", couleurs[0]); ov.classList.toggle("fort", cel.fort);
+  ov.style.setProperty("--c", couleursGant[0]); ov.classList.toggle("fort", cel.fort);
   ov.setAttribute("aria-label", `${cel.joueur === 0 ? "Toi" : OPP.nom} : ${cel.silence ? "le poing serré, en silence" : cel.texte}`);
   $("celConfettis").innerHTML = vite ? "" : Array.from({ length: cel.fort ? 90 : 60 }, (_, i) =>
-    `<i style="left:${hasard(0, 100).toFixed(1)}%;background:${couleurs[i % couleurs.length]};--d:${hasard(1.8, 3.2).toFixed(2)}s;--r:${hasard(0, 0.7).toFixed(2)}s;--x:${Math.round(hasard(-80, 80))}px;--t:${Math.round(hasard(360, 900))}deg"></i>`).join("");
+    style.formes
+      ? `<i class="forme" style="left:${hasard(0, 100).toFixed(1)}%;color:${couleurs[i % couleurs.length]};font-size:${Math.round(hasard(14, 30))}px;--d:${hasard(1.8, 3.2).toFixed(2)}s;--r:${hasard(0, 0.7).toFixed(2)}s;--x:${Math.round(hasard(-80, 80))}px;--t:${Math.round(hasard(90, 360))}deg">${style.formes[i % style.formes.length]}</i>`
+      : `<i style="left:${hasard(0, 100).toFixed(1)}%;background:${couleurs[i % couleurs.length]};--d:${hasard(1.8, 3.2).toFixed(2)}s;--r:${hasard(0, 0.7).toFixed(2)}s;--x:${Math.round(hasard(-80, 80))}px;--t:${Math.round(hasard(360, 900))}deg"></i>`).join("");
   $("criBulle").hidden = true; ov.hidden = false;
   setTimeout(() => { ov.hidden = true; $("celConfettis").innerHTML = ""; if (S === seance) apres(); }, vite ? 1500 : 2600);
 }
@@ -494,7 +503,7 @@ function renderCarte() {
   carteT = setTimeout(async () => {
     const jeton = ++carteJeton;
     const c = carteDe(P, { niveauOfficiel: monClassement, provisoire: monClassement !== null && provisoire(mesDuelsOfficiels), surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
-    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(P.av) });
+    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(P.av), cadre: CADRES[P.cadre]?.couleur });
     if (jeton !== carteJeton) return;
     $("carteRarete").textContent = texteRang(c.rang);
     $("carteNotes").innerHTML = notesDe(P).map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
@@ -716,7 +725,12 @@ function renderSurnom() {
   $("surnomVerrou").innerHTML = bloc("Noms", aDebloquer(NOMS, P)) + bloc("Compléments", aDebloquer(COMPLEMENTS, P));
   document.querySelectorAll("#segGenre button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === P.genre)));
   document.querySelectorAll("#segPoignee button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === P.poignee)));
-  $("inCri").innerHTML = CRIS.map(c => `<option value="${c.id}"${c.id === P.cri ? " selected" : ""}>${esc(libelleCri(c.id))}</option>`).join("");
+  // Les cris gratuits, et ceux achetés à la boutique ; de même pour le geste, la célébration et le cadre.
+  $("inCri").innerHTML = CRIS.filter(c => possede(P, "cri", c.id)).map(c => `<option value="${c.id}"${c.id === P.cri ? " selected" : ""}>${esc(libelleCri(c.id))}${c.boutique ? " 🛍️" : ""}</option>`).join("");
+  const options = (type, table, actuel) => Object.keys(table).filter(k => possede(P, type, k)).map(k => `<option value="${k}"${k === actuel ? " selected" : ""}>${esc(table[k].nom)}</option>`).join("");
+  $("inGeste").innerHTML = options("geste", GESTES, P.geste);
+  $("inCelebration").innerHTML = options("celebration", CELEBRATIONS, P.celebration);
+  $("inCadre").innerHTML = options("cadre", CADRES, P.cadre);
 }
 const choisirSurnom = () => { P.surnom = { nom: $("inSurnomNom").value, complement: $("inSurnomComp").value }; sauverP(); renderSurnom(); };
 $("inSurnomNom").addEventListener("change", choisirSurnom);
@@ -724,6 +738,9 @@ $("inSurnomComp").addEventListener("change", choisirSurnom);
 document.querySelectorAll("#segGenre button").forEach(b => b.addEventListener("click", () => { P.genre = b.dataset.v; sauverP(); renderSurnom(); }));
 document.querySelectorAll("#segPoignee button").forEach(b => b.addEventListener("click", () => { P.poignee = b.dataset.v; sauverP(); renderSurnom(); }));
 $("inCri").addEventListener("change", e => { P.cri = criValide(e.target.value); sauverP(); });
+$("inGeste").addEventListener("change", e => { P.geste = gesteValide(e.target.value); sauverP(); });
+$("inCelebration").addEventListener("change", e => { P.celebration = celebrationValide(e.target.value); sauverP(); });
+$("inCadre").addEventListener("change", e => { P.cadre = e.target.value in CADRES ? e.target.value : "aucun"; sauverP(); renderCarte(); });
 
 function renderFiche() {
   renderSurnom(); renderCarte();
@@ -796,11 +813,16 @@ function renderEditeur() {
   const mk = (el, type, table, texte) => {
     el.innerHTML = Object.keys(table).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
-      return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][1]}"`}>${texte ? label : ""}</button>`;
+      return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
     }).join("");
     el.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
       const k = b.dataset.k, t = verrouDe(type, k);
-      if (estVerrouille(P, type, k)) { $("lockNote").textContent = `Verrouillé. Obtiens le titre « ${t.nom} » : ${t.desc.charAt(0).toLowerCase() + t.desc.slice(1)}`; return; }
+      if (estVerrouille(P, type, k)) {
+        const x = articleDe(type, k);
+        $("lockNote").innerHTML = t ? `Verrouillé. Obtiens le titre « ${esc(t.nom)} » : ${esc(t.desc.charAt(0).toLowerCase() + t.desc.slice(1))}`
+          : `🛍️ « ${esc(x.nom)} » est en vente à la boutique : ${x.prix} jetons. <button class="linkbtn" data-aller="viewBoutique">Voir la boutique</button>`;
+        return;
+      }
       $("lockNote").textContent = ""; P.av[type] = k; sauverP(); renderFiche(); rafraichirAvatars();
     }));
   };
@@ -824,8 +846,8 @@ $("resetProfile").addEventListener("click", () => {
 // ---------------------------------------------------------------- navigation
 // Trois onglets (Jouer, Cercles, Ma fiche) et la roue des Options. L'onglet « Jouer » est un menu
 // qui mène aux pages Défier un ami, Sit & Go, Tournois et Entraînement (l'écran de match).
-const VUES = ["viewJouer", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
-const ONGLET_DE = { viewJouer: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
+const VUES = ["viewJouer", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewBoutique", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
+const ONGLET_DE = { viewJouer: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewBoutique: "profile", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
 let vueCourante = "viewJouer", avantOptions = "viewJouer";
 function aller(vue) {
   if (!VUES.includes(vue)) return;
@@ -843,6 +865,7 @@ function aller(vue) {
   if (vue === "viewSng") sngUI?.rafraichir();
   if (vue === "viewJouer") { jetonsUI?.rafraichir(); defisUI?.rafraichir(); }
   if (vue === "viewFreeroll") freerollUI?.rafraichir();
+  if (vue === "viewBoutique") boutiqueUI?.rafraichir();
   window.scrollTo(0, 0);
 }
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => aller({ jouer: "viewJouer", cercles: "viewCercles", profile: "viewProfile" }[b.dataset.v])));
@@ -1279,6 +1302,8 @@ rapideUI = installerRapide({
 
 jetonsUI = installerJetons({ compte: compteUI });
 defisUI = installerDefis({ compte: compteUI, jetons: () => jetonsUI?.rafraichir() });
+boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, jetons: () => jetonsUI?.rafraichir(),
+  apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); } });
 freerollUI = installerFreeroll({
   compte: compteUI, signaler,
   ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),

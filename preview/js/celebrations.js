@@ -12,6 +12,11 @@ export const CRIS = [
   { id: "allez_allez", t: "Allez, allez, allez !" }, { id: "ciseaux_bebe", t: "Ciseaux, bébé !" }, { id: "caillou", t: "Caillou !" },
   { id: "pas_aujourdhui", t: "Pas aujourd'hui !" }, { id: "main_chaude", t: "La main est chaude !" }, { id: "merci", t: "Merci." },
   { id: "suivant", t: "Suivant." }, { id: "silence", t: "", nom: "✊ Le poing serré, en silence" },
+  // Les cris de la boutique (à acheter avec des jetons : voir catalogue.js).
+  { id: "jeu_set_et_main", t: "Jeu, set et main !", boutique: true }, { id: "trop_facile", t: "Trop facile.", boutique: true },
+  { id: "ole", t: "Olé !", boutique: true }, { id: "boum", t: "Boum !", boutique: true }, { id: "le_metier", t: "C'est le métier qui rentre !", boutique: true },
+  { id: "sayonara", t: "Sayonara !", boutique: true }, { id: "ca_fait_mal", t: "Et ça fait mal !", boutique: true },
+  { id: "le_patron", t: "Le patron, c'est moi.", boutique: true }, { id: "qui_le_patron", t: "C'est qui le patron ?!", boutique: true },
 ];
 export const CRI_DEFAUT = "allez";
 const PAR_ID = new Map(CRIS.map(c => [c.id, c]));
@@ -28,7 +33,7 @@ const DES_BOTS = {
 };
 export function criDuBot(botId, monCri, rng = Math.random) {
   if (botId === "miroir") return criValide(monCri);
-  if (botId === "chaos") return CRIS[Math.floor(rng() * CRIS.length)].id;
+  if (botId === "chaos") { const libres = CRIS.filter(c => !c.boutique); return libres[Math.floor(rng() * libres.length)].id; }
   return DES_BOTS[botId] || CRI_DEFAUT;
 }
 

@@ -61,3 +61,7 @@ export const desinscrireFreeroll = () => rpc("desinscrire_freeroll");
 export const defisDuJour = () => rpc("defis_du_jour");
 export const validerDefi = id => rpc("valider_defi", { p_defi: id });
 export const classementMois = () => rpc("classement_mois");
+
+// La boutique (supabase/etape-17-boutique.sql) : { achats, vitrine, solde } ; acheter → la même chose, avec l'article acheté.
+export const boutique = () => rpc("boutique");
+export const acheter = id => rpc("acheter", { p_article: id });
