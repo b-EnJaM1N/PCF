@@ -490,7 +490,9 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 .seg.seg-mise button { padding: 9px 4px; font-size: .9rem; }
 
 /* Défis du jour (menu « Jouer ») */
-.defis-carte { padding: 12px 14px; }
+.defis-carte { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, .15); }
+.defis-carte[hidden] { display: none; }
+.mdj-jour { font-size: .75rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: 8px; }
 .defis-titre { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 6px; }
 .defis-liste { list-style: none; margin: 0; padding: 0; }
 .defis-liste li { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: .9rem; padding: 5px 0; border-top: 1px solid rgba(255, 255, 255, .08); }
