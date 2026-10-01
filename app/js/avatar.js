@@ -86,16 +86,23 @@ function main(symbole, gant, ink) {
     <rect x="12" y="44" width="26" height="11" rx="5.5" fill="${gant}" stroke="${ink}" stroke-width="1.5" transform="rotate(-35 34 50)"/>
     ${paume(44, gant, ink)}
     <path d="M40 60 q10 4 20 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
-  // Doigt levé (« numéro 1 ») et pouce levé : les gestes de victoire de la boutique.
+  // Doigt levé (l'index, « numéro 1 ») et pouce levé : les gestes de victoire de la boutique.
+  // L'index est à gauche, côté pouce (comme pour la pierre) ; le pouce replié passe devant.
   if (symbole === "index") return `
-    ${doigt(40, 6, 46, gant, ink)}
-    ${paume(40, gant, ink)}
-    ${doigt(50.5, 34, 16, gant, ink)}${doigt(61, 36, 14, gant, ink)}${doigt(29.5, 38, 13, gant, ink)}
-    <path d="M56 58 q6 3 12 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
-  if (symbole === "pouce") return `
+    ${doigt(40, 36, 18, gant, ink)}${doigt(50.5, 37, 17, gant, ink)}${doigt(61, 40, 15, gant, ink)}
     ${paume(44, gant, ink)}
-    ${[0, 1, 2, 3].map(i => `<rect x="44" y="${46 + i * 7.5}" width="30" height="8" rx="4" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`).join("")}
-    <rect x="30" y="12" width="12" height="38" rx="6" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`;
+    ${doigt(29.5, 7, 48, gant, ink)}
+    <path d="M33 11.5 q2.2 -2 4.4 0" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>
+    <path d="M31.5 30 h7.5" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>
+    <rect x="24" y="52" width="36" height="12" rx="6" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
+    <path d="M58 68 q5 2.5 10 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
+  // Le poing vu de côté : les doigts repliés empilés, le pouce bien dressé au-dessus.
+  if (symbole === "pouce") return `
+    <rect x="30" y="40" width="30" height="36" rx="10" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
+    ${[0, 1, 2, 3].map(i => `<rect x="${i === 0 ? 40 : 43}" y="${41 + i * 8.5}" width="${[32, 28, 26, 23][i]}" height="9.5" rx="4.75" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`).join("")}
+    <path d="M30 48 C28.5 38 30.5 26 34.5 16.5 C37 11 45.5 11.5 46.5 17.5 C47.5 25 48.5 35 49 43 C49 47 46 48.5 41 48.5 Z" fill="${gant}" stroke="${ink}" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M36.5 18.5 q4 -2.5 7.5 0.5 l0 5.5 q-3.5 1.5 -7.5 0 z" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linejoin="round" opacity=".55"/>
+    <path d="M33 34 q6.5 2 13.5 0" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>`;
   if (symbole === "ciseaux") return `
     ${doigt(31, 10, 40, gant, ink, "-14 36 50")}${doigt(44, 10, 40, gant, ink, "12 49 50")}
     ${paume(40, gant, ink)}
