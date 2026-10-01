@@ -70,4 +70,4 @@ export const formatCourt = (points, sets) => sets === 1 || points < 7;
 
 // Le format d'un duel (colonnes du serveur) pour les règles de l'application.
 export const formatDuel = d => ({ pointsParSet: d.points_par_set, setsGagnants: d.sets_gagnants });
-export const FORMAT = d => `${texteFormat(formatDuel(d))}${d.classe === false ? " · amical" : " · officiel"}`;
+export const FORMAT = d => `${texteFormat(formatDuel(d))}${d.classe === false ? " · amical" : " · officiel"}${d.mise ? ` · 🪙 mise de ${d.mise} jetons` : ""}`;

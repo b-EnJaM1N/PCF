@@ -42,12 +42,12 @@ export const jouerMatchTournoi = id => rpc("jouer_match_tournoi", { p_match: id 
 
 // Sit & Go publics (supabase/etape-6-sit-and-go.sql).
 export const sallesSng = () => rpc("salles_sit_and_go");                         // → { salles: [{ taille, inscrits }], mien }
-export const rejoindreSng = taille => rpc("rejoindre_sit_and_go", { p_taille: taille });
+export const rejoindreSng = (taille, mise = 0) => rpc("rejoindre_sit_and_go", { p_taille: taille, p_mise: mise });
 export const presenceSng = () => rpc("presence_sit_and_go");                    // → mon Sit & Go, ou null
 export const quitterSng = () => rpc("quitter_sit_and_go");
 
 // Partie rapide (supabase/etape-7-partie-rapide.sql)
-export const chercherPartie = format => rpc("chercher_partie", { p_format: format });   // → { duel } ou { attente, depuis, en_attente, maintenant }
+export const chercherPartie = (format, mise = 0) => rpc("chercher_partie", { p_format: format, p_mise: mise });   // → { duel } ou { attente, depuis, en_attente, maintenant }
 export const quitterPartie = () => rpc("quitter_partie");
 export const fileRapide = () => rpc("file_partie_rapide");                            // → { officiel, eclair } : joueurs en attente
 
