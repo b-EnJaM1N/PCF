@@ -116,6 +116,15 @@ Même manipulation avec [`etape-15-freeroll.sql`](etape-15-freeroll.sql), **apr�
 (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-15-freeroll.sql).
 Supabase peut afficher « Potential issue detected » : c'est normal, confirmer.
 
+## 1 sedecies. Rappel du freeroll (étape 16)
+
+1. Même manipulation avec [`etape-16-rappel-freeroll.sql`](etape-16-rappel-freeroll.sql)
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-16-rappel-freeroll.sql).
+   Elle active le minuteur du serveur (pg_cron) : chaque soir vers 19 h 50, les inscrits au freeroll sont prévenus.
+2. **Mettre à jour la fonction « Notifier »** : **Edge Functions** → **Notifier** → onglet **Code** →
+   remplace tout le code par la nouvelle version de [`functions/notifier/index.ts`](functions/notifier/index.ts)
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/functions/notifier/index.ts) → **Deploy**.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
