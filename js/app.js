@@ -33,6 +33,7 @@ import { installerSng } from "./ecran-sng.js";
 import { installerJetons } from "./ecran-jetons.js";
 import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerProgrammes } from "./ecran-programmes.js";
+import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
 import { GESTES, CELEBRATIONS, CADRES, gesteValide, celebrationValide, articleDe, possede } from "./catalogue.js";
@@ -234,6 +235,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
   annoncer(a.lignes);
   render(); renderHistorique(); renderLecture();
+  if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);
 
   if (m.termine) { S.dialogueFin = a.dialogue; setTimeout(() => criEnGrand(cel, () => poigneeDeMain(finir)), 600); return evt; }
   if (cel) setTimeout(() => criEnBulle(cel), 250);
@@ -368,6 +370,7 @@ function finir() {
   const enTournoi = !!(S.tour !== null && T && !S.duel);
   if (enTournoi) { enregistrerMonMatch(T, gagne, m.sets); sauverT(); }
   // Un duel compte dans la fiche (statistiques, historique, titres) mais pas dans le niveau.
+  const matchsAvant = P.matchs;
   const nouveaux = n ? enregistrerMatch(P, {
     match: m, stats: S.stats, devines: S.suivi.devines, lisibles: S.suivi.lisibles,
     adversaire: { id: OPP.id, elo: OPP.elo, nom: S.duel ? `${OPP.nom}#${OPP.numero}` : OPP.nom },
@@ -376,6 +379,9 @@ function finir() {
     finaleEnLigne: !!(S.duel && D?.tourVoix === "finale"), sitAndGo: !!(S.duel && D?.direct), grandChelem: !!(S.duel && D?.grandChelem),
   }) : [];
   sauverP(); rafraichirAvatars(); afficherBilan();
+  $("coach").hidden = true;
+  // La première visite : ce qui vient de s'ouvrir dans le menu.
+  const ouvert = lire("menuComplet") ? [] : nouveautes(matchsAvant, P.matchs);
   // « La Une » : on garde de quoi raconter ce match.
   S.pourUne = n && !special ? {
     etape: S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.classe ? "officielle" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
@@ -395,6 +401,7 @@ function finir() {
   $("abandonDuelZone").hidden = true;
   if (enTournoi) $("tNext").textContent = gagne ? (tourDe(T, S.tour).finale ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
   $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (t.debloque ? ` (débloque ${t.debloque})` : "")).join(", ") + " !" : "";
+  if (ouvert.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${ouvert.join(" ")} ${$("news").textContent}`.trim();
   // Duel à mise : ce qu'on gagne ou perd (le serveur a déjà réglé les jetons).
   if (S.duel && D?.duel?.mise) {
     $("news").textContent = `${gagne ? `🪙 +${gainDuel(D.duel.mise)} jetons` : `🪙 −${D.duel.mise} jetons`}. ${$("news").textContent}`.trim();
@@ -571,6 +578,7 @@ function preparerEcranMatch() {
   render(); $("status").textContent = "Choisis ton premier coup";
   boutons(false); afficherBilan(); window.scrollTo(0, 0);
   $("revanche").hidden = true; $("retourDuels").hidden = true; $("encoreRapide").hidden = true; $("abandonDuelZone").hidden = true; $("signalerZone").hidden = true;
+  $("coach").hidden = true;
 }
 
 function renderFormat() {
@@ -710,7 +718,36 @@ $("foBack").addEventListener("click", () => {
 function rafraichirAvatars() {
   $("miniBot").innerHTML = avatarSVG(OPP.av); $("botName").textContent = OPP.nom;
   $("miniAv").innerHTML = avatarSVG(P.av); $("pseudoMe").textContent = nomAffiche(P);
+  majDecouverte();   // (la fiche a pu changer : le menu s'ouvre au fil des matchs)
 }
+
+// ---------------------------------------------------------------- la première visite
+// Le menu « Jouer » s'ouvre au fil des matchs ; au tout début, un écran de bienvenue propose un premier match contre Bambi.
+function majDecouverte() {
+  const n = palier(P.matchs, !!lire("menuComplet"));
+  document.body.dataset.decouverte = String(n);
+  $("accueil").hidden = n !== 0; $("menuSuite").hidden = n >= 5;
+}
+function toutLeMenu() { ecrire("menuComplet", true); majDecouverte(); }
+$("toutLeMenu").addEventListener("click", toutLeMenu);
+$("toutLeMenu2").addEventListener("click", toutLeMenu);
+$("premierMatch").addEventListener("click", () => {
+  if (D && !D.fini) return;
+  voix.arreter(); arreterMinuteur(); if (S) clearTimeout(S.decompte);
+  OPP = botParId(PREMIER_MATCH.bot); WIN = PREMIER_MATCH.setsGagnants;
+  S = {
+    match: nouveauMatch({ pointsParSet: PREMIER_MATCH.pointsParSet, setsGagnants: PREMIER_MATCH.setsGagnants }),
+    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ genre: P.genre }), suivi: new Suivi(),
+    tour: null, occupe: false, enJeu: false, premier: true,
+  };
+  preparerEcranMatch();
+  $("startCard").hidden = true; $("tourCard").hidden = true;
+  $("ruleTxt").textContent = `Premier match contre ${OPP.nom} · ${texteFormat(S.match.format)}`;
+  $("coach").textContent = conseil(0, null); $("coach").hidden = false;
+  rafraichirAvatars(); render();
+  aller("viewMatch");
+  ouvrirFaceAFace();
+});
 
 // Mon surnom : un nom et un complément, parmi ceux débloqués ; « il » ou « elle ».
 function renderSurnom() {
