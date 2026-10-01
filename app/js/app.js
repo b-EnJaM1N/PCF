@@ -31,6 +31,7 @@ import { installerDuels } from "./ecran-duel.js";
 import { installerCercles } from "./ecran-cercles.js";
 import { installerSng } from "./ecran-sng.js";
 import { installerJetons } from "./ecran-jetons.js";
+import { gainDuel } from "./jetons-logique.js";
 import { texteClassementFin, texteNiveau, provisoire } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
 import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel } from "./duel-logique.js";
@@ -382,6 +383,11 @@ function finir() {
   $("abandonDuelZone").hidden = true;
   if (enTournoi) $("tNext").textContent = gagne ? (tourDe(T, S.tour).finale ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
   $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (t.debloque ? ` (débloque ${t.debloque})` : "")).join(", ") + " !" : "";
+  // Duel à mise : ce qu'on gagne ou perd (le serveur a déjà réglé les jetons).
+  if (S.duel && D?.duel?.mise) {
+    $("news").textContent = `${gagne ? `🪙 +${gainDuel(D.duel.mise)} jetons` : `🪙 −${D.duel.mise} jetons`}. ${$("news").textContent}`.trim();
+    setTimeout(() => jetonsUI?.rafraichir(), 1500);
+  }
   // Une victoire contre un bot rapporte quelques jetons (avec un compte).
   if (n && gagne && !S.duel) jetonsUI?.gagnerEntrainement().then(g => { if (g) $("news").textContent = `🪙 +${g} jetons. ${$("news").textContent}`.trim(); });
   $("end").scrollIntoView({ behavior: reduitMouvement() ? "auto" : "smooth", block: "start" });
@@ -584,6 +590,7 @@ function ouvrirFaceAFace() {
   $("foPasser").disabled = false; $("foPasser").textContent = "Passer ⏭"; $("foPasser").classList.remove("appel"); $("foAttente").hidden = true;
   $("foBack").textContent = S.duel ? "Abandonner le duel" : "Retour";
   $("foStage").textContent = pr.bandeau; $("foFmt").textContent = pr.format;
+  if (D?.duel?.mise) $("foFmt").textContent += ` · 🪙 mise de ${D.duel.mise} jetons, le gagnant en remporte ${gainDuel(D.duel.mise)}`;
   if (S.contreBotRapide) $("foStage").textContent = "Partie rapide · 🤖 contre un bot";
   else if (D?.duel?.rapide) $("foStage").textContent = `Partie rapide ${D.duel.classe ? "officielle" : "éclair"}`;
   $("foAvMe").innerHTML = avatarSVG(P.av); $("foAvBot").innerHTML = avatarSVG(OPP.av);
@@ -1194,7 +1201,7 @@ $("revanche").addEventListener("click", async () => {
   const f = S.match.format, adv = OPP.uid;
   $("revanche").disabled = true;
   try {
-    await serveur.creer(adv, f.pointsParSet, f.setsGagnants, D?.duel?.classe !== false);
+    await serveur.creer(adv, f.pointsParSet, f.setsGagnants, D?.duel?.classe !== false, D?.duel?.mise || 0);
     quitterDuel(); ouvrirOnglet("duel");
     $("duelMsg").textContent = `Revanche proposée à ${OPP.nom} ! La partie démarre dès que ${OPP.nom} accepte.`;
   } catch (e) { $("revanche").disabled = false; $("verdict").textContent = e.message; }
@@ -1265,6 +1272,7 @@ rapideUI = installerRapide({
 
 jetonsUI = installerJetons({ compte: compteUI });
 sngUI = installerSng({
+  jetons: () => jetonsUI?.rafraichir(),
   signaler,
   compte: compteUI,
   ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),

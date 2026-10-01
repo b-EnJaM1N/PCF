@@ -5,6 +5,7 @@ import { lienDefi, codeDepuisAdresse, adversaireDe, FORMAT, formatCourt } from "
 import { avatarSVG } from "./avatar.js";
 import { lire, ecrire } from "./stockage.js";
 import { demanderAmi } from "./social-serveur.js";
+import { MISES, gainDuel } from "./jetons-logique.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -13,7 +14,7 @@ const nomComplet = p => `${esc(p.pseudo)}<small>#${p.numero}</small>`;
 // ctx : { compte (installerCompte), lancerDuel(duel, profilAdversaire), duelEnCours(), ouvrirOnglet(nom), signaler(cle, valeur) }
 export function installerDuels(ctx) {
   let uid = null, arrets = [], minuterie = 0, recherche = 0;
-  const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), classe: lire("duelClasse", true) };
+  const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), classe: lire("duelClasse", true), mise: MISES.includes(lire("duelMise", 0)) ? lire("duelMise", 0) : 0 };
   const dire = (t, erreur = false) => { $("duelMsg").textContent = t; $("duelMsg").classList.toggle("erreur", erreur); };
   const base = () => location.origin + location.pathname;
 
@@ -27,6 +28,14 @@ export function installerDuels(ctx) {
     $("duelClasseTexte").textContent = court ? `${format.win === 1 ? "Match en 1 set" : `Sets de ${format.len} point${format.len > 1 ? "s" : ""}`} : toujours amical, ton niveau officiel ne bouge pas.`
       : "Match officiel : compte pour ton niveau officiel (décoche pour un match amical)";
   };
+  const renderMise = () => {
+    document.querySelectorAll("#duelMise button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === format.mise)));
+    $("duelMiseTexte").textContent = format.mise
+      ? `Chacun paie ${format.mise} jetons quand le match commence ; le gagnant en remporte ${gainDuel(format.mise)}. Refusé ou annulé : personne ne paie.`
+      : "Sans mise : on joue pour le plaisir (et pour le niveau officiel, si le match est officiel).";
+  };
+  document.querySelectorAll("#duelMise button").forEach(b => b.addEventListener("click", () => { format.mise = +b.dataset.v; ecrire("duelMise", format.mise); renderMise(); }));
+  renderMise();
   document.querySelectorAll("#duelLen button").forEach(b => b.addEventListener("click", () => { format.len = +b.dataset.v; ecrire("duelLen", format.len); renderFormat(); }));
   document.querySelectorAll("#duelWin button").forEach(b => b.addEventListener("click", () => { format.win = +b.dataset.v; ecrire("duelWin", format.win); renderFormat(); }));
   renderFormat();
@@ -120,8 +129,8 @@ export function installerDuels(ctx) {
 
   // Défier un joueur (depuis la recherche, la liste d'amis ou un cercle), au format choisi dans « Défier un ami ».
   async function defier(p) {
-    await serveur.creer(p.id, format.len, format.win, format.classe);
-    const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra en haut de son menu « Jouer », et la partie démarrera dès son acceptation.`;
+    await serveur.creer(p.id, format.len, format.win, format.classe, format.mise);
+    const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"}${format.mise ? ` avec une mise de ${format.mise} jetons` : ""} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra en haut de son menu « Jouer », et la partie démarrera dès son acceptation.`;
     dire(texte); rafraichir();
     return texte;
   }
@@ -139,7 +148,7 @@ export function installerDuels(ctx) {
   }
   $("duelLien").addEventListener("click", async () => {
     $("duelLien").disabled = true;
-    try { const d = await serveur.creer(null, format.len, format.win, format.classe); await partager(d.code); rafraichir(); }
+    try { const d = await serveur.creer(null, format.len, format.win, format.classe, format.mise); await partager(d.code); rafraichir(); }
     catch (e) { dire(e.message, true); }
     $("duelLien").disabled = false;
   });
