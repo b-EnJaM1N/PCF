@@ -409,13 +409,14 @@
 
     <section class="card edit" id="cSurnom">
       <h2>Mon surnom</h2>
-      <p class="hint">Avant chaque match, le speaker te présente avec ton surnom. Tu en débloques de nouveaux en jouant : ton signe favori, tes exploits, tes heures de jeu…</p>
+      <p class="hint">Avant chaque match, le speaker te présente avec ton surnom. Une douzaine de noms et de compléments sont libres dès le départ ; tu en débloques d'autres en jouant : ton signe favori, tes exploits, tes trophées, tes heures de jeu…</p>
       <p class="surnom" id="surnomApercu"></p>
       <label class="lbl" for="inSurnomNom">Nom</label>
       <select id="inSurnomNom"></select>
       <label class="lbl" for="inSurnomComp">Complément</label>
       <select id="inSurnomComp"></select>
       <p class="hint" id="surnomCompte"></p>
+      <details class="surnoms-verrou"><summary id="surnomVerrouTitre">Surnoms à débloquer</summary><div id="surnomVerrou"></div></details>
       <p class="lbl" id="genreLbl">Les commentateurs parlent de toi en disant</p>
       <div class="seg" id="segGenre" role="group" aria-labelledby="genreLbl"><button data-v="m">« il »</button><button data-v="f">« elle »</button></div>
       <p class="lbl" id="poigneeLbl">Ma poignée de main habituelle</p>
