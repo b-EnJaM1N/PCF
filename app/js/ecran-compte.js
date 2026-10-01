@@ -69,7 +69,7 @@ export function installerCompte(ctx) {
     if (!EMAIL.test(e)) throw new Error("Cette adresse e-mail ne semble pas valide.");
     await compte.envoyerCode(e);
     email = e; ecrire("compteEmail", e);
-    $("codeInfo").innerHTML = `E-mail envoyé à <b>${e.replace(/[<>&"]/g, "")}</b>. Ouvre-le (regarde aussi les indésirables) et touche le lien <b>« Sign in »</b> : tu reviendras ici, connecté. Il peut mettre une minute à arriver.`;
+    $("codeInfo").innerHTML = `E-mail envoyé à <b>${e.replace(/[<>&"]/g, "")}</b> (regarde aussi les indésirables ; il peut mettre une minute à arriver). <b>Tape ici le code qu'il contient</b> : c'est le plus sûr, surtout si HandSlam est installé sur ton écran d'accueil. Tu peux aussi toucher le lien de l'e-mail.`;
     $("inCode").value = ""; montrer("code"); $("inCode").focus();
   }));
   $("btnValider").addEventListener("click", () => attendre($("btnValider"), async () => {
