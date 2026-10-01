@@ -52,7 +52,7 @@ export function installerSng(ctx) {
       const ici = mien?.phase === "inscriptions" && mien.mise === s.mise, g = gainsSng(s.mise);
       return `<div class="joueur${ici ? " a-jouer" : ""}" data-taille="8" data-mise="${s.mise}">
         <span class="mini"><span class="trophee">🪙</span></span>
-        <div style="min-width:0"><div class="jn">Entrée ${s.mise} jetons</div><div class="jd">${s.inscrits}/8 en salle · 1er : ${g[0]}, 2e : ${g[1]}, 3e-4e : ${g[2]}</div></div>
+        <div style="min-width:0"><div class="jn">Entrée ${s.mise} jetons</div><div class="jd">${s.inscrits}/8 en salle · 1er : ${g[0]}, 2e : ${g[1]}</div></div>
         <div class="actions">${ici ? `<button class="petit alt" data-a="quitter">Quitter</button>` : mien ? "" : `<button class="petit" data-a="entrer">Entrer</button>`}</div></div>`;
     }).join("");
     const dernier = etat?.dernier;
