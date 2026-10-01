@@ -66,10 +66,10 @@ export function installerProgrammes(ctx) {
       const depart = Date.parse(t.depart), ouvert = t.phase === "inscriptions" && depart > maintenant;
       let etatTxt;
       if (t.phase === "inscriptions") etatTxt = `${texteDepart(t.depart, maintenant)}${depart - maintenant < 6 * 3600000 ? ` · dans ${dans(depart - maintenant)}` : ""} · ${t.inscrits} inscrit${t.inscrits > 1 ? "s" : ""}`;
-      else if (t.phase === "en_cours") etatTxt = `En cours · ${esc(resume(t))}`;
+      else if (t.phase === "en_cours") etatTxt = `En cours · ${esc(resume(t))}${t.bots ? ` · ${t.inscrits - t.bots} joueurs + ${t.bots} bots` : ""}`;
       else if (t.phase === "termine") etatTxt = `Terminé${t.vainqueur ? ` · 🏆 ${esc(t.vainqueur.pseudo)}#${t.vainqueur.numero}` : ""}`;
-      else etatTxt = "Annulé : moins de 4 joueurs présents (entrées rendues)";
-      const cagnotte = `Entrée ${texteJetons(t.mise)} · cagnotte ${texteJetons(t.cagnotte)}${t.garantie ? " (garantie)" : ""} · ${texteDotations(t.cagnotte, Math.max(t.inscrits, 4))}${t.finale_sets ? ` · finale en ${t.finale_sets} sets gagnants` : ""}`;
+      else etatTxt = "Annulé : moins de 2 joueurs présents (entrées rendues)";
+      const cagnotte = `Entrée ${texteJetons(t.mise)} · cagnotte ${texteJetons(t.cagnotte)}${t.garantie ? " (garantie)" : ""} · ${texteDotations(t.cagnotte, Math.max(t.inscrits - (t.bots || 0), 2))}${t.finale_sets ? ` · finale en ${t.finale_sets} sets gagnants` : ""}`;
       const action = ouvert ? (t.inscrit ? `<button class="petit alt" data-a="sortir">Me désinscrire</button>` : `<button class="petit" data-a="entrer">M'inscrire</button>`)
         : t.phase === "en_cours" || t.phase === "termine" ? `<button class="petit alt" data-a="voir">Tableau</button>` : "";
       return `<div class="joueur${t.inscrit && t.phase !== "termine" && t.phase !== "annule" ? " a-jouer" : ""}" data-cle="${esc(t.cle)}" data-id="${esc(t.id)}">
