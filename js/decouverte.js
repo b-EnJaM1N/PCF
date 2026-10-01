@@ -5,7 +5,7 @@
 // Au départ : le premier match, Défier un ami et l'Entraînement.
 export const PALIERS = [
   { matchs: 1, texte: "⚡ Nouveau : la Partie rapide, un adversaire de ton niveau en un clic." },
-  { matchs: 3, texte: "🪙 Nouveau : les jetons, les défis du jour et la boutique." },
+  { matchs: 3, texte: "📅 Nouveau : le match du jour (à partager avec tes amis), les jetons, les défis du jour et la boutique." },
   { matchs: 5, texte: "🏆 Nouveau : les tournois (Sit & Go, freeroll du soir, Grand Chelem du dimanche)." },
 ];
 

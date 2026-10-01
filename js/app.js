@@ -34,6 +34,7 @@ import { installerJetons } from "./ecran-jetons.js";
 import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerProgrammes } from "./ecran-programmes.js";
 import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
+import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
 import { GESTES, CELEBRATIONS, CADRES, gesteValide, celebrationValide, articleDe, possede } from "./catalogue.js";
@@ -188,7 +189,7 @@ function jouer(signe, auto = false) {
   const m = S.match;
   // Le bot choisit sans connaître le coup du joueur.
   const histBot = m.coups.map(c => ({ moi: c.b, adv: c.a, res: c.gagnant === null ? "e" : c.gagnant === 1 ? "g" : "p" }));
-  const signeBot = choisirCoup(OPP, histBot, Math.random, contexteBot(m));
+  const signeBot = choisirCoup(OPP, histBot, S.hasard || Math.random, contexteBot(m));   // (match du jour : le même tirage pour tout le monde)
   ambiance.raquette(signe);
   afficherCoup(signe, signeBot, [auto, false]);
 }
@@ -380,6 +381,7 @@ function finir() {
   }) : [];
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("coach").hidden = true;
+  if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
   // La première visite : ce qui vient de s'ouvrir dans le menu.
   const ouvert = lire("menuComplet") ? [] : nouveautes(matchsAvant, P.matchs);
   // « La Une » : on garde de quoi raconter ce match.
@@ -394,7 +396,8 @@ function finir() {
   const rapide = !!(S.duel && D?.duel?.rapide) || !!S.contreBotRapide;
   $("revanche").hidden = !S.duel || !!tournoiId; $("retourDuels").hidden = !S.duel || !!tournoiId || rapide; $("revanche").disabled = false;
   $("encoreRapide").hidden = !rapide;
-  if (S.contreBotRapide) $("again").hidden = true;
+  if (S.contreBotRapide || S.matchJour) $("again").hidden = true;
+  $("mdjPartagerFin").hidden = !S.matchJour;
   $("voirTournoi").hidden = !tournoiId;
   $("signalerZone").hidden = !(S.duel && OPP.humain);
   if (!S.duel) $("endClassement").hidden = true;
@@ -578,7 +581,7 @@ function preparerEcranMatch() {
   render(); $("status").textContent = "Choisis ton premier coup";
   boutons(false); afficherBilan(); window.scrollTo(0, 0);
   $("revanche").hidden = true; $("retourDuels").hidden = true; $("encoreRapide").hidden = true; $("abandonDuelZone").hidden = true; $("signalerZone").hidden = true;
-  $("coach").hidden = true;
+  $("coach").hidden = true; $("mdjPartagerFin").hidden = true;
 }
 
 function renderFormat() {
@@ -694,6 +697,7 @@ $("foGo").addEventListener("click", () => {
 });
 function commencerSolo() {
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false;
+  if (S.matchJour) noterMatchDuJour({ abandon: true });   // un seul essai : quitter en route compte comme un abandon
   S.enJeu = true; majModeMatch();
   $("status").textContent = "Set 1, coup 1";
   annoncer([annonceDebutSet(S.match)]);
@@ -728,6 +732,61 @@ function majDecouverte() {
   document.body.dataset.decouverte = String(n);
   $("accueil").hidden = n !== 0; $("menuSuite").hidden = n >= 5;
 }
+// ---------------------------------------------------------------- le match du jour
+// Chaque jour, le même adversaire (et le même tirage) pour tout le monde, un seul essai, un résultat à partager.
+const resultatsDuJour = () => lire("matchsDuJour") || {};
+function noterMatchDuJour(r) {
+  const { jour, numero, bot } = S.matchJour;
+  ecrire("matchsDuJour", garder(resultatsDuJour(), jour, { numero, bot, ...r }));
+  renderMatchDuJour();
+}
+function renderMatchDuJour() {
+  const jour = jourParis(), m = matchDuJour(jour), b = botParId(m.bot), res = resultatsDuJour(), r = res[jour], s = serie(res, jour);
+  $("mdjAv").innerHTML = avatarSVG(b.av);
+  $("mdjTitre").textContent = `📅 Le match du jour n° ${m.numero}`;
+  $("mdjSous").textContent = `Contre ${b.nom} 🤖, ${b.style.toLowerCase()} · un set de 7 points · un seul essai`;
+  $("mdjJouer").hidden = !!r; $("mdjPartager").hidden = !r; $("mdjGrille").hidden = !r?.grille;
+  $("mdjGrille").textContent = r?.grille || "";
+  $("mdjEtat").textContent = r ? `${r.abandon ? "🏳️ Abandon" : `${r.gagne ? "✅ Victoire" : "❌ Défaite"} ${r.score.join("–")}`}. Nouveau match demain${s > 1 ? ` · 🔥 ${s} jours de suite` : ""}.`
+    : `Le même adversaire pour tout le monde aujourd'hui : joue, puis partage ton résultat !${s ? ` 🔥 Série : ${s} jour${s > 1 ? "s" : ""}.` : ""}`;
+}
+$("mdjJouer").addEventListener("click", () => {
+  if (D && !D.fini) return;
+  const jour = jourParis(), mj = matchDuJour(jour);
+  if (resultatsDuJour()[jour]) { renderMatchDuJour(); return; }
+  voix.arreter(); arreterMinuteur(); if (S) clearTimeout(S.decompte);
+  OPP = botParId(mj.bot); WIN = FORMAT_DU_JOUR.setsGagnants;
+  S = {
+    match: nouveauMatch({ ...FORMAT_DU_JOUR }),
+    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ genre: P.genre }), suivi: new Suivi(),
+    tour: null, occupe: false, enJeu: false, matchJour: mj, hasard: hasardGraine(mj.graine),
+  };
+  preparerEcranMatch();
+  $("startCard").hidden = true; $("tourCard").hidden = true;
+  $("ruleTxt").textContent = `Match du jour n° ${mj.numero} contre ${OPP.nom} · ${texteFormat(S.match.format)}`;
+  rafraichirAvatars(); render();
+  aller("viewMatch");
+  ouvrirFaceAFace();
+});
+async function partagerMatchDuJour() {
+  const jour = jourParis(), r = resultatsDuJour()[jour];
+  if (!r) return;
+  const texte = texteAPartager(r, { nomBot: botParId(r.bot)?.nom || r.bot, serie: serie(resultatsDuJour(), jour) });
+  const t = $("toast");
+  try {
+    if (navigator.share) { await navigator.share({ text: texte }); return; }
+    await navigator.clipboard.writeText(texte);
+    t.textContent = "📋 Résultat copié : colle-le dans un message !";
+  } catch (e) {
+    if (e?.name === "AbortError") return;
+    t.textContent = texte;
+  }
+  t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 6000);
+}
+$("mdjPartager").addEventListener("click", partagerMatchDuJour);
+$("mdjPartagerFin").addEventListener("click", partagerMatchDuJour);
+renderMatchDuJour();
+
 function toutLeMenu() { ecrire("menuComplet", true); majDecouverte(); }
 $("toutLeMenu").addEventListener("click", toutLeMenu);
 $("toutLeMenu2").addEventListener("click", toutLeMenu);
@@ -901,7 +960,7 @@ function aller(vue) {
   if (vue === "viewDuel") duelsUI?.rafraichir();
   if (vue === "viewCercles" || vue === "viewTournois") cerclesUI?.rafraichir();
   if (vue === "viewSng") sngUI?.rafraichir();
-  if (vue === "viewJouer") { jetonsUI?.rafraichir(); defisUI?.rafraichir(); }
+  if (vue === "viewJouer") { jetonsUI?.rafraichir(); defisUI?.rafraichir(); renderMatchDuJour(); }
   if (vue === "viewFreeroll") { freerollUI?.rafraichir(); programmesUI?.rafraichir(); }
   if (vue === "viewBoutique") boutiqueUI?.rafraichir();
   window.scrollTo(0, 0);

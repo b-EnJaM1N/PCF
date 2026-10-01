@@ -490,7 +490,9 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 .seg.seg-mise button { padding: 9px 4px; font-size: .9rem; }
 
 /* Défis du jour (menu « Jouer ») */
-.defis-carte { padding: 12px 14px; }
+.defis-carte { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, .15); }
+.defis-carte[hidden] { display: none; }
+.mdj-jour { font-size: .75rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: 8px; }
 .defis-titre { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 6px; }
 .defis-liste { list-style: none; margin: 0; padding: 0; }
 .defis-liste li { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: .9rem; padding: 5px 0; border-top: 1px solid rgba(255, 255, 255, .08); }
@@ -546,3 +548,14 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .accueil .btn { margin: 8px 0 4px; }
 .coach { margin: 8px 0 0; padding: 10px 12px; border-radius: 8px; background: rgba(242, 193, 78, .14); border: 1px solid #F2C14E; font-size: .92rem; line-height: 1.4; }
 .coach[hidden] { display: none; }
+
+/* Le match du jour (match-du-jour.js). */
+.mdj { margin-bottom: 14px; }
+.mdj-tete { display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center; }
+.mdj-tete b { display: block; font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.35rem; line-height: 1.1; }
+.mdj-tete small { display: block; color: var(--muted); font-size: .88rem; margin-top: 3px; line-height: 1.3; }
+.mdj-av { width: 52px; height: 52px; display: block; }
+.mdj-av svg { width: 100%; height: 100%; }
+.mdj p { margin: 10px 0; }
+.mdj-grille { font-size: 1.1rem; letter-spacing: 2px; line-height: 1.5; word-break: break-all; margin: 6px 0 12px; }
+.mdj-grille[hidden] { display: none; }
