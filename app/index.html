@@ -52,17 +52,17 @@
       <p class="hint"><button class="linkbtn" id="toutLeMenu">J'ai déjà joué : afficher tout le menu</button></p>
     </section>
     <section class="card mdj" id="mdj" data-palier="3">
-      <div class="mdj-jour">Aujourd'hui</div>
-      <div class="mdj-tete"><span class="mdj-av" id="mdjAv"></span><div><b id="mdjTitre">📅 Le match du jour</b><small id="mdjSous"></small></div></div>
-      <p class="hint" id="mdjEtat"></p>
-      <div class="mdj-grille" id="mdjGrille" hidden></div>
-      <button class="btn" id="mdjJouer">Jouer le match du jour</button>
-      <button class="btn alt" id="mdjPartager" hidden>📤 Partager mon résultat</button>
-      <div class="defis-carte" id="defisCarte" hidden>
-        <div class="defis-titre" id="defisTitre">🎯 Défis du jour</div>
+      <div class="mdj-ligne">
+        <span class="mdj-av" id="mdjAv"></span>
+        <div><b id="mdjTitre">📅 Le match du jour</b><small id="mdjEtat"></small></div>
+        <button class="btn mdj-btn" id="mdjJouer">Jouer</button>
+        <button class="btn alt mdj-btn" id="mdjPartager" hidden title="Partager mon résultat" aria-label="Partager mon résultat">📤</button>
+      </div>
+      <details class="defis-carte" id="defisCarte" hidden>
+        <summary class="defis-titre" id="defisTitre">🎯 Défis du jour</summary>
         <ul class="defis-liste" id="defisListe"></ul>
         <p class="hint" id="defisMsg" role="status"></p>
-      </div>
+      </details>
     </section>
     <div class="jetons-barre" id="jetonsCarte" data-palier="3" hidden>
       <span id="jetonsDedans"><span class="jetons-solde" id="jetonsSolde" title="Tes jetons (fictifs : ils ne s'achètent pas et ne s'échangent pas)">…</span><span class="jetons-serie" id="jetonsSerie"></span>
@@ -73,9 +73,7 @@
     </div>
     <button class="hub" data-aller="viewRapide" data-palier="1"><span class="hub-i">⚡</span><span><b>Partie rapide</b><small>Un adversaire de ton niveau, en un clic</small></span></button>
     <button class="hub" data-aller="viewDuel"><span class="hub-i">🤝</span><span><b>Défier un ami</b><small>Un duel en direct, par pseudo ou par lien</small></span></button>
-    <button class="hub" data-aller="viewSng" data-palier="5"><span class="hub-i">🏁</span><span><b>Sit &amp; Go</b><small>Tournois express publics : départ dès que la salle est pleine</small></span></button>
-    <button class="hub" data-aller="viewFreeroll" data-palier="5"><span class="hub-i">🗓️</span><span><b>Tournois programmés</b><small>Le freeroll gratuit chaque soir à 20 h, le Grand Chelem le dimanche à 21 h · classement du mois</small></span></button>
-    <button class="hub" data-aller="viewTournois" data-palier="5"><span class="hub-i">🏆</span><span><b>Tournois</b><small>Tes tournois en cours, tournois privés entre amis</small></span></button>
+    <button class="hub" data-aller="viewCompet" data-palier="5"><span class="hub-i">🏆</span><span><b>Tournois</b><small>Sit &amp; Go, freeroll du soir, Grand Chelem du dimanche, tournois entre amis</small></span></button>
     <button class="hub" data-aller="viewMatch"><span class="hub-i">🎯</span><span><b>Entraînement</b><small>Contre les 15 bots, et le HandSlam Open (8 ou 16 joueurs)</small></span></button>
     <p class="hint" id="menuSuite" hidden style="text-align:center;margin-top:14px">Le reste du menu s'ouvre au fil de tes matchs. <button class="linkbtn" id="toutLeMenu2">Tout afficher</button></p>
     <p class="hint" id="hubHors" hidden style="text-align:center;margin-top:14px">Les parties en ligne demandent un compte gratuit, sans mot de passe : <button class="linkbtn" data-aller="viewProfile">le créer</button>.</p>
@@ -139,6 +137,7 @@
       <ul class="lecture-hab" id="lectureHab"></ul>
       <p class="lecture-piste" id="lecturePiste" hidden></p>
     </details>
+    <p class="hint lecture-off" id="lectureOff" hidden>🔎 Match officiel : à toi de lire l'adversaire ! L'analyse de ses coups s'affichera à la fin.</p>
 
     <section class="end" id="end" hidden>
       <h2 id="endTitle"></h2>
@@ -321,8 +320,15 @@
     <section class="card" id="rapideHors" hidden><p class="hint">La Partie rapide se joue en ligne contre d'autres joueurs : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
   </div>
 
-  <div class="view" id="viewSng" hidden>
+  <div class="view" id="viewCompet" hidden>
     <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
+    <button class="hub" data-aller="viewFreeroll"><span class="hub-i">🗓️</span><span><b>Tournois programmés</b><small>Le freeroll gratuit chaque soir à 20 h, le Grand Chelem le dimanche à 21 h · classement du mois</small></span></button>
+    <button class="hub" data-aller="viewSng"><span class="hub-i">🏁</span><span><b>Sit &amp; Go</b><small>Tournois express publics : départ dès que la salle est pleine</small></span></button>
+    <button class="hub" data-aller="viewTournois"><span class="hub-i">📋</span><span><b>Mes tournois</b><small>Tes tournois en cours, tournois de cercle et tournois privés entre amis</small></span></button>
+  </div>
+
+  <div class="view" id="viewSng" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewCompet">← Tournois</button></p>
     <section class="card" id="sngCard" hidden>
       <h2>Tournois express (Sit &amp; Go)</h2>
       <p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours. 🤖 Deux minutes après l'arrivée du premier joueur, s'il y a au moins 2 joueurs (et au moins un quart de la salle), des bots complètent la salle (matchs contre un bot amicaux, les bots ne gagnent jamais de jetons).</p>
@@ -337,7 +343,7 @@
   </div>
 
   <div class="view" id="viewFreeroll" hidden>
-    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewCompet">← Tournois</button></p>
     <p class="sndnote tenant" id="progTenant" hidden></p>
     <section class="card" id="freeCard" hidden>
       <h2>🌙 Freeroll de 20 h</h2>
@@ -383,7 +389,7 @@
   </div>
 
   <div class="view" id="viewTournois" hidden>
-    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewCompet">← Tournois</button></p>
     <section class="card" id="tournoisCard" hidden>
       <h2>Mes tournois</h2>
       <div id="socTournois" class="resultats"></div>

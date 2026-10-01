@@ -1,4 +1,4 @@
-// Les défis du jour, en haut du menu « Jouer » : 3 défis, une coche quand c'est fait, un bouton pour encaisser.
+// Les défis du jour, en haut du menu « Jouer » (repliés sous le match du jour) : 3 défis, une coche quand c'est fait, un bouton pour encaisser.
 import * as social from "./social-serveur.js";
 import { jourDeParis, journee, suivreMatch, suivrePoignee, etatDefi } from "./defis-logique.js";
 import { lire, ecrire } from "./stockage.js";
@@ -22,8 +22,10 @@ export function installerDefis(ctx) {
     if (!defis?.length) { $("defisCarte").hidden = true; return; }
     const e = jour(), etats = defis.map(d => ({ d, ...etatDefi(d, e) }));
     const faits = etats.filter(x => x.fait).length;
+    const aEncaisser = etats.some(x => x.pret && !x.fait);
     $("defisCarte").hidden = false;
-    $("defisTitre").textContent = `🎯 Défis du jour · ${faits}/${defis.length}`;
+    $("defisTitre").textContent = `🎯 Défis du jour · ${faits}/${defis.length}${aEncaisser ? " · 🎁 à encaisser" : ""}`;
+    if (aEncaisser) $("defisCarte").open = true;   // replié le reste du temps, pour ne pas charger le menu
     $("defisListe").innerHTML = etats.map(x => `<li class="${x.fait ? "fait" : ""}">
       <span>${x.fait ? "✅" : "▫️"} ${esc(x.texte)}${x.progression && !x.fait ? ` <small>${x.progression}</small>` : ""}</span>
       ${x.fait ? `<small>+${x.d.recompense}</small>` : x.pret ? `<button class="jetons-puce" data-defi="${x.d.id}">+${x.d.recompense}</button>` : `<small>${x.d.recompense} jetons</small>`}</li>`).join("");
