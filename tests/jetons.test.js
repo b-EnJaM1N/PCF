@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { texteJetons, bonusDuJour, texteSerie } from "../app/js/jetons-logique.js";
+import { texteJetons, bonusDuJour, texteSerie, serieCourte } from "../app/js/jetons-logique.js";
 
 test("affichage des jetons", () => {
   assert.equal(texteJetons(1), "1 jeton");
@@ -20,4 +20,10 @@ test("la ligne de la série", () => {
   assert.match(texteSerie({ bonus_dispo: true, serie: 0 }), /200 jetons/);
   assert.equal(texteSerie({ bonus_dispo: true, serie: 3 }), "Série : 3 jours d'affilée. Ne la perds pas !");
   assert.equal(texteSerie({ bonus_dispo: false, serie: 1, bonus_montant: 75 }), "Série : 1 jour d'affilée · demain : +75");
+});
+
+test("la série en version courte", () => {
+  assert.equal(serieCourte({ serie: 3 }), "🔥 3 j");
+  assert.equal(serieCourte({ serie: 0 }), "");
+  assert.equal(serieCourte(null), "");
 });
