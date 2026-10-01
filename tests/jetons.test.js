@@ -28,12 +28,12 @@ test("la série en version courte", () => {
   assert.equal(serieCourte(null), "");
 });
 
-test("les mises : duel à 1,8 fois la mise, Sit & Go partagé 50 / 30 / 10 / 10 après 10 %", async () => {
+test("les mises : duel à 1,8 fois la mise, Sit & Go partagé façon poker (65 / 35) après 10 %", async () => {
   const { MISES, gainDuel, gainsSng, texteMise } = await import("../app/js/jetons-logique.js");
   assert.deepEqual(MISES, [0, 50, 100, 200, 500, 1000]);
   assert.deepEqual([50, 100, 200, 500, 1000].map(gainDuel), [90, 180, 360, 900, 1800]);
-  assert.deepEqual(gainsSng(50), [180, 108, 36, 36]);
-  assert.deepEqual(gainsSng(1000), [3600, 2160, 720, 720]);
+  assert.deepEqual(gainsSng(50), [234, 126]);
+  assert.deepEqual(gainsSng(1000), [4680, 2520]);
   assert.equal(texteMise(0), "Sans mise");
   assert.equal(texteMise(1000), "1 000 jetons");
   const sql = readFileSync(new URL("../supabase/etape-14-mises.sql", import.meta.url), "utf8");

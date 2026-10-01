@@ -103,8 +103,8 @@ begin
     (t.id, 3, 1, pg_temp.u(1), pg_temp.u(2), pg_temp.u(1), 'score');
   update tournois set phase = 'termine', vainqueur = pg_temp.u(1) where id = t.id;
   -- cagnotte : 8 × 50 = 400, moins 10 % = 360 → 180, 108, 36, 36
-  perform pg_temp.verifier(pg_temp.solde(1) = 900 - 50 + 180, '1er : 180 jetons');
-  perform pg_temp.verifier(pg_temp.solde(2) = 1080 - 50 + 108, '2e : 108 jetons');
-  perform pg_temp.verifier(pg_temp.solde(3) = 1000 - 50 + 36 and pg_temp.solde(4) = 1000 - 50 + 36, 'demi-finalistes : 36 jetons chacun');
+  perform pg_temp.verifier(pg_temp.solde(1) = 900 - 50 + 234, '1er : 234 jetons (65 % de 360, étape 20)');
+  perform pg_temp.verifier(pg_temp.solde(2) = 1080 - 50 + 126, '2e : 126 jetons (35 %)');
+  perform pg_temp.verifier(pg_temp.solde(3) = 1000 - 50 and pg_temp.solde(4) = 1000 - 50, 'demi-finalistes : pas payés (façon poker)');
   perform pg_temp.verifier(pg_temp.solde(6) = 950, 'éliminé au 1er tour : l''entrée est perdue');
 end $$;
