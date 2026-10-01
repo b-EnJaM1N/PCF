@@ -53,3 +53,11 @@ export const fileRapide = () => rpc("file_partie_rapide");                      
 
 // Signaler un joueur (supabase/etape-10-moderation.sql) : motif « pseudo », « avatar » ou « comportement ».
 export const signalerJoueur = (id, motif, detail) => rpc("signaler_joueur", { p_joueur: id, p_motif: motif, p_detail: detail || null });   // → "envoye" ou "deja"
+
+// Freeroll de 20 h, défis du jour, classement du mois (supabase/etape-15-freeroll.sql).
+export const freeroll = () => rpc("freeroll_du_jour");
+export const inscrireFreeroll = () => rpc("inscrire_freeroll");
+export const desinscrireFreeroll = () => rpc("desinscrire_freeroll");
+export const defisDuJour = () => rpc("defis_du_jour");
+export const validerDefi = id => rpc("valider_defi", { p_defi: id });
+export const classementMois = () => rpc("classement_mois");
