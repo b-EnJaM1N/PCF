@@ -535,3 +535,14 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 @keyframes g-uppercut { 0% { transform: translate(-8px, 10px) rotate(-20deg); } 40% { transform: translate(4px, -16px) rotate(12deg); } 100% { transform: translate(-8px, 10px) rotate(-20deg); } }
 .cel-confettis i.forme { width: auto; height: auto; background: none; border-radius: 0; line-height: 1; }
 @media (prefers-reduced-motion: reduce) { [class^="geste-"] { animation: none !important; } }
+
+/* La première visite : le menu « Jouer » s'ouvre au fil des matchs (decouverte.js). */
+body[data-decouverte="0"] [data-palier="1"], body[data-decouverte="0"] [data-palier="3"], body[data-decouverte="0"] [data-palier="5"],
+body[data-decouverte="1"] [data-palier="3"], body[data-decouverte="1"] [data-palier="5"],
+body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
+.accueil { text-align: center; margin-bottom: 14px; border-color: #F2C14E; }
+.accueil-mains { font-size: 2.4rem; letter-spacing: 8px; margin-bottom: 6px; }
+.accueil p { margin: 8px 0; line-height: 1.4; }
+.accueil .btn { margin: 8px 0 4px; }
+.coach { margin: 8px 0 0; padding: 10px 12px; border-radius: 8px; background: rgba(242, 193, 78, .14); border: 1px solid #F2C14E; font-size: .92rem; line-height: 1.4; }
+.coach[hidden] { display: none; }
