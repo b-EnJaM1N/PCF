@@ -51,6 +51,13 @@
       <p class="hint">Contre Bambi 🤖, le débutant · un set de 7 points, environ 2 minutes · sans compte.</p>
       <p class="hint"><button class="linkbtn" id="toutLeMenu">J'ai déjà joué : afficher tout le menu</button></p>
     </section>
+    <section class="card mdj" id="mdj" data-palier="1">
+      <div class="mdj-tete"><span class="mdj-av" id="mdjAv"></span><div><b id="mdjTitre">📅 Le match du jour</b><small id="mdjSous"></small></div></div>
+      <p class="hint" id="mdjEtat"></p>
+      <div class="mdj-grille" id="mdjGrille" hidden></div>
+      <button class="btn" id="mdjJouer">Jouer le match du jour</button>
+      <button class="btn alt" id="mdjPartager" hidden>📤 Partager mon résultat</button>
+    </section>
     <div class="jetons-barre" id="jetonsCarte" data-palier="3" hidden>
       <span id="jetonsDedans"><span class="jetons-solde" id="jetonsSolde" title="Tes jetons (fictifs : ils ne s'achètent pas et ne s'échangent pas)">…</span><span class="jetons-serie" id="jetonsSerie"></span>
         <button class="jetons-puce" id="jetonsBonus" hidden></button><button class="jetons-puce" id="jetonsRenfl" hidden title="Renflouement : moins de 100 jetons, une fois par jour">🛟 +200</button>
@@ -135,6 +142,7 @@
       <p class="news" id="endClassement" hidden></p>
       <p class="news" id="news"></p>
       <button class="btn une-btn" id="btnUne" hidden>📰 Voir la Une du journal</button>
+      <button class="btn" id="mdjPartagerFin" hidden>📤 Partager mon résultat du jour</button>
       <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button><button class="btn" id="revanche" hidden>Proposer une revanche</button><button class="btn alt" id="retourDuels" hidden>Retour aux duels</button><button class="btn" id="encoreRapide" hidden>Nouvelle partie rapide</button><button class="btn" id="voirTournoi" hidden>Voir le tableau du tournoi</button></p>
       <p style="text-align:center;margin:6px 0 0" id="signalerZone" hidden><button class="linkbtn" id="signalerAdv">⚑ Signaler ce joueur</button></p>
     </section>
