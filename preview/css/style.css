@@ -27,8 +27,14 @@ header { display: flex; justify-content: space-between; align-items: center; gap
 .marque .logo { width: 46px; height: 46px; flex: none; border-radius: 50%; }
 h1 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.6rem; margin: 0; }
 .rule { color: var(--muted); font-size: .85rem; }
+.haut-droite { display: flex; align-items: center; gap: 8px; flex: none; }
 .sound { display: flex; align-items: center; gap: 8px; font-size: .9rem; cursor: pointer; user-select: none; }
 .sound input { width: 20px; height: 20px; accent-color: var(--me); margin: 0; cursor: pointer; }
+.son-haut { display: flex; align-items: center; cursor: pointer; user-select: none; position: relative; }
+.son-haut input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+.son-haut input:focus-visible ~ span { outline: 2px solid var(--me); outline-offset: 2px; }
+.son-haut .snd-off, .son-haut input:not(:checked) ~ .snd-on { display: none; }
+.son-haut input:not(:checked) ~ .snd-off { display: inline; }
 .test { font: inherit; font-size: .85rem; color: var(--muted); background: none; border: 1px solid rgba(255, 255, 255, .25); border-radius: 8px; padding: 6px 10px; cursor: pointer; }
 .sndnote { margin: 0; font-size: .88rem; line-height: 1.4; color: var(--line); background: var(--panel); border-radius: 8px; padding: 10px 12px; }
 .tenant { margin: 0 0 12px; text-align: center; border: 1px solid #F2C14E; }
@@ -339,7 +345,7 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .hub-i { font-size: 2rem; text-align: center; }
 .hub.alerte { border-color: var(--me); background: rgba(244, 197, 66, .1); }
 .hub:active { transform: scale(.99); }
-body.en-match .tabs, body.en-match .retour-hub, body.en-match #btnOptions { display: none; }
+body.en-match .tabs, body.en-match .retour-hub, body.en-match #btnOptions, body.en-match #jetonsHaut { display: none; }
 
 /* La Une */
 .une-btn { margin-bottom: 8px; }
@@ -473,15 +479,15 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 .surnoms-verrou li b { color: var(--line); font-weight: 600; }
 
 /* Les jetons (menu « Jouer ») : une petite ligne discrète */
-.jetons-barre { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px 8px; font-size: .85rem; color: var(--muted); margin: -4px 0 -6px; min-height: 28px; }
+.jetons-barre { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 8px; font-size: .85rem; color: var(--muted); margin: 0 0 12px; }
 .jetons-barre[hidden] { display: none; }
 #jetonsDedans { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
-.jetons-solde { font-weight: 600; color: var(--line); }
-.jetons-solde::before { content: "🪙 "; }
-.jetons-serie:empty { display: none; }
+#jetonsDedans[hidden], #jetonsHors[hidden] { display: none; }
+.jetons-haut { font: inherit; font-size: .9rem; font-weight: 700; color: var(--line); background: var(--panel); border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; padding: 5px 10px; cursor: pointer; white-space: nowrap; }
+.jetons-haut[hidden] { display: none; }
 .jetons-puce { font: inherit; font-size: .8rem; font-weight: 600; color: #1A1A1A; background: var(--me); border: 0; border-radius: 999px; padding: 3px 10px; cursor: pointer; }
 .jetons-puce:disabled { opacity: .6; }
-.jetons-msg { flex-basis: 100%; text-align: right; font-size: .8rem; }
+.jetons-msg { flex-basis: 100%; text-align: center; font-size: .8rem; }
 .jetons-msg:empty { display: none; }
 .jetons-msg.erreur { color: #FF8A80; }
 

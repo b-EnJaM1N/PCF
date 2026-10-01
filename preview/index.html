@@ -33,8 +33,9 @@
 <div class="wrap">
   <header>
     <div class="marque"><img class="logo" src="icons/icon.svg" alt="" width="46" height="46"><div><h1>HandSlam</h1><div class="rule" id="ruleTxt">Sets de 11, 2 sets gagnants</div></div></div>
-    <div style="display:flex;align-items:center;gap:12px">
-      <label class="sound"><input type="checkbox" id="snd" checked> Son</label>
+    <div class="haut-droite">
+      <button class="jetons-haut" id="jetonsHaut" data-palier="3" data-aller="viewBoutique" hidden title="Tes jetons (fictifs : ils ne s'achètent pas et ne s'échangent pas) · touche pour la boutique">🪙 <span id="jetonsSolde">…</span></button>
+      <label class="son-haut icone" title="Son"><input type="checkbox" id="snd" checked aria-label="Son"><span class="snd-on" aria-hidden="true">🔊</span><span class="snd-off" aria-hidden="true">🔇</span></label>
       <button class="icone" id="btnOptions" aria-label="Options" title="Options">⚙️</button>
     </div>
   </header>
@@ -65,9 +66,7 @@
       </details>
     </section>
     <div class="jetons-barre" id="jetonsCarte" data-palier="3" hidden>
-      <span id="jetonsDedans"><span class="jetons-solde" id="jetonsSolde" title="Tes jetons (fictifs : ils ne s'achètent pas et ne s'échangent pas)">…</span><span class="jetons-serie" id="jetonsSerie"></span>
-        <button class="jetons-puce" id="jetonsBonus" hidden></button><button class="jetons-puce" id="jetonsRenfl" hidden title="Renflouement : moins de 100 jetons, une fois par jour">🛟 +200</button>
-        <button class="jetons-puce alt" data-aller="viewBoutique" title="La boutique">🛍️</button></span>
+      <span id="jetonsDedans"><button class="jetons-puce" id="jetonsBonus" hidden></button><button class="jetons-puce" id="jetonsRenfl" hidden title="Renflouement : moins de 100 jetons, une fois par jour">🛟 +200 jetons</button></span>
       <span id="jetonsHors" hidden>🪙 1 000 jetons offerts avec un compte · <button class="linkbtn" data-aller="viewProfile">le créer</button></span>
       <span class="jetons-msg" id="jetonsMsg" role="status"></span>
     </div>
