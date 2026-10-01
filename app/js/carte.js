@@ -62,7 +62,9 @@ export async function dessinerCarte(canvas, c, j) {
   ctx.globalAlpha = 0.12; ctx.fillStyle = "#fff";
   for (let i = -2; i < 8; i++) { ctx.beginPath(); ctx.moveTo(i * 220, 0); ctx.lineTo(i * 220 + 90, 0); ctx.lineTo(i * 220 - 410, H); ctx.lineTo(i * 220 - 500, H); ctx.fill(); }
   ctx.restore();
-  ctx.lineWidth = 10; ctx.strokeStyle = T.lisere; arrondi(ctx, 34, 34, L - 68, H - 68, 48); ctx.stroke();
+  // Le liseré : la couleur du rang, ou celle du cadre acheté à la boutique (j.cadre).
+  if (j.cadre) { ctx.save(); ctx.shadowColor = j.cadre; ctx.shadowBlur = 30; ctx.lineWidth = 16; ctx.strokeStyle = j.cadre; arrondi(ctx, 30, 30, L - 60, H - 60, 50); ctx.stroke(); ctx.restore(); }
+  else { ctx.lineWidth = 10; ctx.strokeStyle = T.lisere; arrondi(ctx, 34, 34, L - 68, H - 68, 48); ctx.stroke(); }
   if (T.eclat) {
     // Des étincelles, toujours au même endroit (la carte ne change pas d'un affichage à l'autre).
     let graine = 7; const hasard = () => ((graine = (graine * 16807) % 2147483647) / 2147483647);

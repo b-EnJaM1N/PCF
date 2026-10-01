@@ -45,7 +45,8 @@
     <div id="hubAlertes"></div>
     <div class="jetons-barre" id="jetonsCarte" hidden>
       <span id="jetonsDedans"><span class="jetons-solde" id="jetonsSolde" title="Tes jetons (fictifs : ils ne s'achètent pas et ne s'échangent pas)">…</span><span class="jetons-serie" id="jetonsSerie"></span>
-        <button class="jetons-puce" id="jetonsBonus" hidden></button><button class="jetons-puce" id="jetonsRenfl" hidden title="Renflouement : moins de 100 jetons, une fois par jour">🛟 +200</button></span>
+        <button class="jetons-puce" id="jetonsBonus" hidden></button><button class="jetons-puce" id="jetonsRenfl" hidden title="Renflouement : moins de 100 jetons, une fois par jour">🛟 +200</button>
+        <button class="jetons-puce alt" data-aller="viewBoutique" title="La boutique">🛍️</button></span>
       <span id="jetonsHors" hidden>🪙 1 000 jetons offerts avec un compte · <button class="linkbtn" data-aller="viewProfile">le créer</button></span>
       <span class="jetons-msg" id="jetonsMsg" role="status"></span>
     </div>
@@ -331,6 +332,24 @@
     <section class="card" id="freeHors" hidden><p class="hint">Le freeroll se joue en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
   </div>
 
+  <div class="view" id="viewBoutique" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewProfile">← Ma fiche</button></p>
+    <section class="card">
+      <h2>🛍️ La boutique <span class="boutique-solde" id="boutiqueSolde"></span></h2>
+      <p class="hint">De l'apparence seulement, achetée avec tes jetons : jamais d'avantage en match, jamais d'argent réel. Un achat est définitif et il est à toi pour toujours.</p>
+      <p class="locknote" id="boutiqueMsg" role="status"></p>
+      <p class="hint" id="boutiqueHors" hidden>La boutique demande un compte : <button class="linkbtn" data-aller="viewProfile">crée le tien</button> (1 000 jetons offerts).</p>
+    </section>
+    <section class="card" id="boutiqueVitrineCarte" hidden>
+      <h2>⭐ La vitrine du jour · −30 %</h2>
+      <div class="articles" id="boutiqueVitrine"></div>
+    </section>
+    <section class="card">
+      <div class="boutique-onglets" id="boutiqueOnglets"></div>
+      <div class="articles" id="boutiqueArticles"></div>
+    </section>
+  </div>
+
   <div class="view" id="viewTournois" hidden>
     <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
     <section class="card" id="tournoisCard" hidden>
@@ -467,6 +486,13 @@
       <label class="lbl" for="inCri">Mon cri de victoire</label>
       <select id="inCri"></select>
       <p class="hint">Dans une bulle quand tu gagnes un set, en grand avec des confettis quand tu gagnes le match. En duel, ton adversaire le voit.</p>
+      <label class="lbl" for="inGeste">Mon geste de victoire</label>
+      <select id="inGeste"></select>
+      <label class="lbl" for="inCelebration">Ma célébration de fin de match</label>
+      <select id="inCelebration"></select>
+      <label class="lbl" for="inCadre">Le cadre de ma carte de joueur</label>
+      <select id="inCadre"></select>
+      <p class="hint">D'autres cris, gestes, célébrations et cadres sont en vente à la <button class="linkbtn" data-aller="viewBoutique">boutique 🛍️</button>.</p>
     </section>
 
     <section class="card edit" id="cCompte">
@@ -512,6 +538,7 @@
       <span class="lbl">Poignet</span><div class="sw" id="swWrist"></div>
       <span class="lbl">Motif du fond</span><div class="sw" id="swMotif"></div>
       <span class="lbl">Motif du gant</span><div class="sw" id="swGantMotif"></div>
+      <p class="hint">🛍️ Plus de gants, de motifs, de fonds et de poignets à la <button class="linkbtn" data-aller="viewBoutique">boutique</button>.</p>
       <p class="locknote" id="lockNote"></p>
     </section>
 
