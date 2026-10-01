@@ -49,9 +49,15 @@
       <span id="jetonsHors" hidden>🪙 1 000 jetons offerts avec un compte · <button class="linkbtn" data-aller="viewProfile">le créer</button></span>
       <span class="jetons-msg" id="jetonsMsg" role="status"></span>
     </div>
+    <section class="card defis-carte" id="defisCarte" hidden>
+      <div class="defis-titre" id="defisTitre">🎯 Défis du jour</div>
+      <ul class="defis-liste" id="defisListe"></ul>
+      <p class="hint" id="defisMsg" role="status"></p>
+    </section>
     <button class="hub" data-aller="viewRapide"><span class="hub-i">⚡</span><span><b>Partie rapide</b><small>Un adversaire de ton niveau, en un clic</small></span></button>
     <button class="hub" data-aller="viewDuel"><span class="hub-i">🤝</span><span><b>Défier un ami</b><small>Un duel en direct, par pseudo ou par lien</small></span></button>
     <button class="hub" data-aller="viewSng"><span class="hub-i">🏁</span><span><b>Sit &amp; Go</b><small>Tournois express publics : départ dès que la salle est pleine</small></span></button>
+    <button class="hub" data-aller="viewFreeroll"><span class="hub-i">🌙</span><span><b>Freeroll de 20 h</b><small>Tournoi gratuit chaque soir, cagnotte offerte · classement du mois</small></span></button>
     <button class="hub" data-aller="viewTournois"><span class="hub-i">🏆</span><span><b>Tournois</b><small>Tes tournois en cours, tournois privés entre amis</small></span></button>
     <button class="hub" data-aller="viewMatch"><span class="hub-i">🎯</span><span><b>Entraînement</b><small>Contre les 15 bots, et le HandSlam Open (8 ou 16 joueurs)</small></span></button>
     <p class="hint" id="hubHors" hidden style="text-align:center;margin-top:14px">Les parties en ligne demandent un compte gratuit, sans mot de passe : <button class="linkbtn" data-aller="viewProfile">le créer</button>.</p>
@@ -302,6 +308,27 @@
       <p class="locknote" id="sngMsg" role="status"></p>
     </section>
     <section class="card" id="sngHors" hidden><p class="hint">Les Sit &amp; Go se jouent en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
+  </div>
+
+  <div class="view" id="viewFreeroll" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
+    <section class="card" id="freeCard" hidden>
+      <h2>🌙 Freeroll de 20 h</h2>
+      <p class="hint">Un tournoi gratuit chaque soir à 20 h, avec une cagnotte offerte : 1 000 jetons + 50 par joueur. Inscris-toi dans la journée ; à 20 h, sois dans l'appli : le tournoi démarre avec les inscrits présents (au moins 4). Sets de 11, 2 sets gagnants : il compte pour ton niveau officiel.</p>
+      <p class="sndnote" id="freeStatut" style="margin-top:10px"></p>
+      <p class="hint" id="freeInfo"></p>
+      <button class="btn" id="freeInscrire" hidden>M'inscrire pour ce soir</button>
+      <button class="btn alt" id="freeDesinscrire" hidden>Me désinscrire</button>
+      <button class="btn alt" id="freeVoir" hidden>Voir le tableau</button>
+      <p class="locknote" id="freeMsg" role="status"></p>
+    </section>
+    <section class="card" id="classementCard" hidden>
+      <h2 id="classementTitre">Classement des gains du mois</h2>
+      <p class="hint">Le bénéfice du mois dans les duels à mise, les Sit &amp; Go à mise et les freerolls (gains moins mises). Les bonus et les défis ne comptent pas. Remise à zéro le 1er du mois.</p>
+      <ol class="classement" id="classementListe"></ol>
+      <p class="hint" id="classementMoi"></p>
+    </section>
+    <section class="card" id="freeHors" hidden><p class="hint">Le freeroll se joue en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
   </div>
 
   <div class="view" id="viewTournois" hidden>

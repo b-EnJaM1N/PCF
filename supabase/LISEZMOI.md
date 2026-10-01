@@ -110,6 +110,12 @@ Supabase peut afficher « Potential issue detected » : c'est normal, confirmer.
 Elle ajoute les mises (50, 100, 200, 500 ou 1 000 jetons) aux défis, à la Partie rapide et aux Sit & Go à 8,
 avec 10 % de commission.
 
+## 1 quindecies. Freeroll, défis du jour, classement du mois (étape 15)
+
+Même manipulation avec [`etape-15-freeroll.sql`](etape-15-freeroll.sql), **après** l'étape 14
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-15-freeroll.sql).
+Supabase peut afficher « Potential issue detected » : c'est normal, confirmer.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
@@ -127,7 +133,9 @@ Le lien le ramène dans PCF, connecté. Il faut autoriser les adresses de retour
 Service d'envoi : **Brevo** (gratuit jusqu'à 300 e-mails par jour), compte contact.handslam@gmail.com.
 
 1. **Domaine** : dans Brevo, domaine handslam.fr authentifié (4 lignes dans la zone DNS d'OVH :
-   TXT « brevo-code » sur @, CNAME brevo1._domainkey et brevo2._domainkey, TXT _dmarc).
+   TXT « brevo-code » sur @, CNAME brevo1._domainkey et brevo2._domainkey, TXT _dmarc), et une seule ligne SPF :
+   `v=spf1 include:mx.ovh.com include:spf.brevo.com ~all`. Expéditeur `noreply@handslam.fr` vérifié dans Brevo
+   grâce à une redirection OVH (Emails → Redirections) : noreply@ et contact@handslam.fr → contact.handslam@gmail.com.
 2. **SMTP** : Brevo → https://app.brevo.com/settings/keys/smtp → clé SMTP « Supabase » (secrète : seulement dans Supabase).
    Supabase → **Authentication → Emails → SMTP Settings** : Enable Custom SMTP, Sender email `noreply@handslam.fr`,
    Sender name `HandSlam`, Host `smtp-relay.brevo.com`, Port `587`, Username = l'identifiant Brevo (`…@smtp-brevo.com`),
