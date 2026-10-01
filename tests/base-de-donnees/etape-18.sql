@@ -71,7 +71,7 @@ begin
   perform pg_temp.verifier(pg_temp.solde(6) = 900 and pg_temp.solde(1) = 900, 'l''absent n''est pas remboursé');
   perform pg_temp.verifier(_cagnotte_programme(t) = 540, 'cagnotte : 6 × 100 − 10 % = 540 (l''entrée de l''absent y reste)');
 
-  -- Fin simulée : 1 bat 2 en finale ; 3 et 4 perdent en demi-finale. 270 / 162 / 54 / 54.
+  -- Fin simulée : 1 bat 2 en finale ; 3 et 4 perdent en demi-finale. 5 joueurs : 2 payés (grille de l'étape 19), 351 / 189.
   delete from duels where tournoi_id = t.id;
   delete from matchs_tournoi where tournoi_id = t.id;
   insert into matchs_tournoi (tournoi_id, tour, position, j0, j1, vainqueur, fin) values
@@ -79,8 +79,8 @@ begin
     (t.id, 2, 2, pg_temp.u(2), pg_temp.u(3), pg_temp.u(2), 'score'),
     (t.id, 3, 1, pg_temp.u(1), pg_temp.u(2), pg_temp.u(1), 'score');
   update tournois set phase = 'termine', vainqueur = pg_temp.u(1), fini_le = now() where id = t.id;
-  perform pg_temp.verifier(pg_temp.solde(1) = 1170 and pg_temp.solde(2) = 1062 and pg_temp.solde(3) = 954 and pg_temp.solde(4) = 954 and pg_temp.solde(5) = 900,
-    'gains : 270, 162, 54, 54');
+  perform pg_temp.verifier(pg_temp.solde(1) = 1251 and pg_temp.solde(2) = 1089 and pg_temp.solde(3) = 900 and pg_temp.solde(4) = 900 and pg_temp.solde(5) = 900,
+    'gains : 351, 189');
 
   -- Moins de 4 présents : annulé, et tout le monde est remboursé (absents compris).
   t := _tournoi_programme('apero', _aujourdhui() - 1);
@@ -116,7 +116,7 @@ begin
   delete from duels where tournoi_id = t.id;
   update matchs_tournoi set vainqueur = j0, fin = 'score' where tournoi_id = t.id;
   update tournois set phase = 'termine', vainqueur = pg_temp.u(1), fini_le = now() where id = t.id;
-  perform pg_temp.verifier(pg_temp.solde(1) = 3500 and pg_temp.solde(2) = 2500, 'finale : 2 500 au vainqueur, 1 500 au finaliste');
+  perform pg_temp.verifier(pg_temp.solde(1) = 4250 and pg_temp.solde(2) = 2750, 'finale : 3 250 au vainqueur, 1 750 au finaliste');
   perform pg_temp.en_tant_que(pg_temp.u(5)::text);
   perform pg_temp.verifier((tournois_programmes()->'tenant'->>'id')::uuid = pg_temp.u(1), 'tenant du titre : le vainqueur du dernier Grand Chelem');
 

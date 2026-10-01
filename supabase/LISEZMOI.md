@@ -139,6 +139,11 @@ Même manipulation avec [`etape-17-boutique.sql`](etape-17-boutique.sql)
    qui prévient les inscrits 10 minutes avant le départ.
 2. **Mettre à jour la fonction « Notifier »** (même manipulation qu'à l'étape 16) : le message du rappel des tournois programmés.
 
+## 1 undevicies. Les dotations façon poker (étape 19)
+
+Même manipulation avec [`etape-19-dotations.sql`](etape-19-dotations.sql), **après** l'étape 18
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-19-dotations.sql).
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

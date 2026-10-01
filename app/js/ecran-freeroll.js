@@ -4,6 +4,7 @@ import * as social from "./social-serveur.js";
 import { avatarSVG } from "./avatar.js";
 import { texteJetons } from "./jetons-logique.js";
 import { resume } from "./tournoi-logique.js";
+import { texteDotations } from "./programmes-logique.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -49,9 +50,8 @@ export function installerFreeroll(ctx) {
   function render() {
     if (!etat) return;
     const t = etat, maintenant = Date.now() + decalage, depart = Date.parse(t.depart), cagnotte = t.cagnotte;
-    const gains = [0.5, 0.3, 0.1].map(p => Math.floor(cagnotte * p));
     let statut;
-    if (t.phase === "inscriptions") statut = `<b>Ce soir à 20 h</b> · départ dans ${dans(depart - maintenant)} · ${t.inscrits} inscrit${t.inscrits > 1 ? "s" : ""}<br>Cagnotte : <b>${texteJetons(cagnotte)}</b> (1er : ${gains[0]}, 2e : ${gains[1]}, 3e-4e : ${gains[2]})`;
+    if (t.phase === "inscriptions") statut = `<b>Ce soir à 20 h</b> · départ dans ${dans(depart - maintenant)} · ${t.inscrits} inscrit${t.inscrits > 1 ? "s" : ""}<br>Cagnotte : <b>${texteJetons(cagnotte)}</b> <br><small>${texteDotations(cagnotte, Math.max(t.inscrits, 4))}</small>`;
     else if (t.phase === "en_cours") statut = `<b>Le freeroll est en cours</b> · ${esc(resume(t))}`;
     else if (t.phase === "termine") statut = `<b>Freeroll terminé</b> · ${t.vainqueur ? `🏆 ${esc(t.vainqueur.pseudo)}#${t.vainqueur.numero}` : ""}. Rendez-vous demain à 20 h !`;
     else statut = "Pas assez de joueurs présents ce soir (il en faut 4). Rendez-vous demain à 20 h !";
