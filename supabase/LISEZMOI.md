@@ -122,28 +122,30 @@ Le lien le ramène dans PCF, connecté. Il faut autoriser les adresses de retour
    (Les deux étoiles couvrent aussi la version de test `/preview/`. On garde aussi l'ancienne adresse
    `https://b-enjam1n.github.io/PCF/**`, qui renvoie désormais vers handslam.fr.)
 
-## 3. Plus tard : code à 6 chiffres et e-mails en français
+## 3. E-mails en français, avec un code à 6 chiffres (Brevo)
 
-Une fois un service d'envoi branché (**Authentication → Emails → Set up SMTP**), on pourra modifier
-les modèles « Magic Link » et « Confirm signup » pour envoyer un code en français :
+Service d'envoi : **Brevo** (gratuit jusqu'à 300 e-mails par jour), compte contact.handslam@gmail.com.
 
-- **Subject** : `Ton code PCF : {{ .Token }}`
-- **Body** :
+1. **Domaine** : dans Brevo, domaine handslam.fr authentifié (4 lignes dans la zone DNS d'OVH :
+   TXT « brevo-code » sur @, CNAME brevo1._domainkey et brevo2._domainkey, TXT _dmarc).
+2. **SMTP** : Brevo → https://app.brevo.com/settings/keys/smtp → clé SMTP « Supabase » (secrète : seulement dans Supabase).
+   Supabase → **Authentication → Emails → SMTP Settings** : Enable Custom SMTP, Sender email `noreply@handslam.fr`,
+   Sender name `HandSlam`, Host `smtp-relay.brevo.com`, Port `587`, Username = l'identifiant Brevo (`…@smtp-brevo.com`),
+   Password = la clé SMTP.
+3. **Modèles** : Supabase → **Authentication → Emails → Templates**, « Magic Link » et « Confirm signup » :
+   - **Subject** : `Ton code HandSlam : {{ .Token }}`
+   - **Body** (en une ligne) :
 
 ```html
-<h2>Ton code de connexion à PCF</h2>
-<p style="font-size:32px;font-weight:bold;letter-spacing:6px">{{ .Token }}</p>
-<p>Tape-le dans l'application. Il est valable une heure.</p>
+<h2>Ton code de connexion à HandSlam</h2><p style="font-size:32px;font-weight:bold;letter-spacing:6px">{{ .Token }}</p><p>Tape ce code dans l'application. Il est valable une heure.</p><p>Tu peux aussi <a href="{{ .ConfirmationURL }}">te connecter avec ce lien</a>.</p><p>Si tu n'as rien demandé, ignore cet e-mail.</p>
 ```
 
-L'application accepte déjà les deux : le lien et le code.
+L'application accepte les deux : le code (conseillé, surtout pour l'appli installée sur l'écran d'accueil) et le lien.
 
 ## Bon à savoir
 
-- **Limite d'e-mails** : le service d'envoi inclus gratuitement est limité à quelques e-mails par heure,
-  et peut n'accepter que les adresses des membres du projet Supabase (utilise celle de ton compte Supabase).
-  Suffisant pour tester ; avant d'ouvrir l'application au public, il faudra brancher un service
-  d'envoi (plusieurs sont gratuits jusqu'à quelques milliers d'e-mails par mois).
+- **Limite d'e-mails** : Brevo gratuit envoie jusqu'à 300 e-mails par jour. Supabase limite aussi le nombre
+  d'e-mails de connexion par heure (Authentication → Rate Limits), réglable si besoin.
 - **Pause** : un projet gratuit sans aucune activité pendant une semaine est mis en pause ;
   on le relance d'un clic depuis le tableau de bord.
 - **Clés** : seule la clé publique (`sb_publishable_…`) figure dans le code (`app/js/config.js`).

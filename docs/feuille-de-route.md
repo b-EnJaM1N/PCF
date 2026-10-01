@@ -37,7 +37,7 @@
 
 - **Service en ligne** : ✅ décidé — Supabase (gratuit au démarrage).
 - **Connexion** : ✅ par e-mail, sans mot de passe : lien « Sign in » pour l'instant (Supabase gratuit ne permet pas de modifier l'e-mail), code à 6 chiffres ensuite. Compte facultatif ; la fiche du téléphone est transférée à la création du compte.
-- **Envoi d'e-mails** : à brancher avant l'ouverture au public (limite du service inclus).
+- **Envoi d'e-mails** : ✅ Brevo (gratuit, 300 e-mails par jour), e-mails en français avec un code à 6 chiffres.
 - **Pseudos** : ✅ décidé — **pseudo avec numéro** (ex. « Benji#4821 »). Plusieurs joueurs peuvent choisir le même pseudo ; le numéro les distingue.
 - **Nom du groupe privé** : ✅ décidé — **Cercle**.
 - **Niveau entre humains** : ✅ décidé — **niveau officiel** séparé du niveau d'entraînement contre les bots.
@@ -88,4 +88,4 @@ Fait : bouton « Passer » en haut de la présentation ; cris de victoire (bulle
    Décision : tester d'abord 2 ou 3 sons avec l'offre gratuite, puis un seul mois payant à la fin pour tout générer (sons + voix) avec la licence commerciale. Le guider pas à pas (création, téléchargement, dépôt sur GitHub depuis le téléphone).
 
 Ensuite : à décider avec le porteur du projet (tournois programmés, jetons fictifs…).
-Nom de domaine : **handslam.fr** (acheté chez OVH ; handslam.com était pris). Adresse de contact : contact.handslam@gmail.com. Mentions légales et confidentialité : `app/mentions.html`. Le domaine est relié (zone DNS OVH : 4 lignes A vers GitHub Pages + www en CNAME ; GitHub : Custom domain + HTTPS) : l'appli est sur https://handslam.fr/, la version de test sur https://handslam.fr/preview/. Reste : adresses de retour Supabase (voir `supabase/LISEZMOI.md`), service d'envoi d'e-mails en français, redéployer « Notifier » pour la nouvelle adresse (facultatif : l'ancienne redirige).
+Nom de domaine : **handslam.fr** (acheté chez OVH ; handslam.com était pris). Adresse de contact : contact.handslam@gmail.com. Mentions légales et confidentialité : `app/mentions.html`. Le domaine est relié (zone DNS OVH : 4 lignes A vers GitHub Pages + www en CNAME ; GitHub : Custom domain + HTTPS) : l'appli est sur https://handslam.fr/, la version de test sur https://handslam.fr/preview/. Adresses de retour Supabase : faites. E-mails de connexion : envoyés par Brevo depuis noreply@handslam.fr, en français, avec un code à 6 chiffres (voir `supabase/LISEZMOI.md`). Reste : redéployer « Notifier » pour la nouvelle adresse (facultatif : l'ancienne redirige).
