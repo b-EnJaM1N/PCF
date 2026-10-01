@@ -462,3 +462,10 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
   margin: 14px -16px 0; padding: 8px 0 6px; background: var(--court-deep); box-shadow: 0 8px 10px -8px rgba(0, 0, 0, .5); }
 .av-apercu svg { width: 84px; height: 84px; display: block; border-radius: 50%; }
 .av-apercu small { font-size: .72rem; color: var(--muted); }
+
+/* Surnoms à débloquer */
+.surnoms-verrou { margin-top: 10px; }
+.surnoms-verrou summary { cursor: pointer; font-weight: 600; font-size: .9rem; color: var(--me); }
+.surnoms-verrou ul { margin: 4px 0 8px; padding-left: 1.1em; }
+.surnoms-verrou li { font-size: .82rem; color: var(--muted); line-height: 1.35; margin: 3px 0; }
+.surnoms-verrou li b { color: var(--line); font-weight: 600; }
