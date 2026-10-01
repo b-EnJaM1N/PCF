@@ -17,3 +17,6 @@ export function texteSerie(e) {
   if (e.bonus_dispo) return e.serie > 0 ? `Série : ${e.serie} jour${e.serie > 1 ? "s" : ""} d'affilée. Ne la perds pas !` : "Reviens chaque jour : le bonus grimpe jusqu'à 200 jetons.";
   return `Série : ${e.serie} jour${e.serie > 1 ? "s" : ""} d'affilée · demain : +${e.bonus_montant}`;
 }
+
+// Version courte, à côté du solde : « 🔥 3 j » (jours d'affilée), rien sans série.
+export const serieCourte = e => (e && e.serie > 0 ? `🔥 ${e.serie} j` : "");
