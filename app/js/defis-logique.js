@@ -37,10 +37,11 @@ export function suivreMatch(e, r) {
 }
 export function suivrePoignee(e, style) { if (style === "franche") e.franches++; return e; }
 
-// Où en est un défi : { texte, fait (déjà encaissé), pret (réussi, à encaisser), progression : « 2/3 » }.
+// Où en est un défi : { texte, fait (déjà encaissé), reussi (réussi, encaissé ou non), pret (on peut tenter d'encaisser),
+// progression : « 2/3 » }. Un défi vérifié par le serveur est toujours « pret » : le serveur dira s'il est réussi.
 export function etatDefi(d, e) {
   const def = DEFIS[d.id];
-  if (!def) return { texte: d.id, fait: !!d.fait, pret: false, progression: "" };
+  if (!def) return { texte: d.id, fait: !!d.fait, reussi: !!d.fait, pret: false, progression: "" };
   const n = Math.min(def.but, def.mesure(e) || 0);
-  return { texte: def.texte, fait: !!d.fait, pret: !d.fait && (def.serveur || n >= def.but), progression: def.but > 1 ? `${n}/${def.but}` : "" };
+  return { texte: def.texte, fait: !!d.fait, reussi: !!d.fait || n >= def.but, pret: !d.fait && (def.serveur || n >= def.but), progression: def.but > 1 ? `${n}/${def.but}` : "" };
 }

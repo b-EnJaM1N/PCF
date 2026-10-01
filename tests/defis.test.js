@@ -32,9 +32,11 @@ test("suivi des matchs et des poignées de main", () => {
 
 test("état d'un défi : progression, prêt à encaisser, déjà fait", () => {
   const e = { ...journeeVide("j"), gagnes: 2 };
-  assert.deepEqual(etatDefi({ id: "gagner_3", fait: false }, e), { texte: "Gagne 3 matchs", fait: false, pret: false, progression: "2/3" });
+  assert.deepEqual(etatDefi({ id: "gagner_3", fait: false }, e), { texte: "Gagne 3 matchs", fait: false, reussi: false, pret: false, progression: "2/3" });
   e.gagnes = 4;
   assert.equal(etatDefi({ id: "gagner_3", fait: false }, e).pret, true);
+  assert.equal(etatDefi({ id: "gagner_3", fait: false }, e).reussi, true, "réussi même pas encore encaissé : il compte dans « 1/3 »");
   assert.equal(etatDefi({ id: "gagner_3", fait: true }, e).pret, false);
   assert.equal(etatDefi({ id: "duel_en_ligne", fait: false }, journeeVide("j")).pret, true, "vérifié par le serveur : on peut tenter d'encaisser");
+  assert.equal(etatDefi({ id: "duel_en_ligne", fait: false }, journeeVide("j")).reussi, false, "mais il n'est pas compté comme réussi");
 });
