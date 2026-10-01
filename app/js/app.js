@@ -31,6 +31,8 @@ import { installerDuels } from "./ecran-duel.js";
 import { installerCercles } from "./ecran-cercles.js";
 import { installerSng } from "./ecran-sng.js";
 import { installerJetons } from "./ecran-jetons.js";
+import { installerFreeroll } from "./ecran-freeroll.js";
+import { installerDefis } from "./ecran-defis.js";
 import { gainDuel } from "./jetons-logique.js";
 import { texteClassementFin, texteNiveau, provisoire } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
@@ -58,7 +60,7 @@ const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier
 const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
-let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null;
+let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, defisUI = null;
 let monClassement = null, mesDuelsOfficiels = 0;
 // « Niveau officiel : 1232 ? · provisoire, encore 9 duels de calibrage »
 const texteNiveauFiche = (points, joues) => `Niveau officiel : ${texteNiveau(points, joues)}` +
@@ -388,6 +390,9 @@ function finir() {
     $("news").textContent = `${gagne ? `🪙 +${gainDuel(D.duel.mise)} jetons` : `🪙 −${D.duel.mise} jetons`}. ${$("news").textContent}`.trim();
     setTimeout(() => jetonsUI?.rafraichir(), 1500);
   }
+  // Les défis du jour avancent.
+  defisUI?.match({ gagne, coups: n, ballesSauvees: S.stats.ballesSauvees, meilleureSerie: S.stats.meilleureSerie, scoresSets: m.scoresSets,
+    pointsParSet: m.format.pointsParSet, duel: !!S.duel, termineAuScore: !!S.duel && !special, eloBot: S.duel ? 0 : OPP.elo });
   // Une victoire contre un bot rapporte quelques jetons (avec un compte).
   if (n && gagne && !S.duel) jetonsUI?.gagnerEntrainement().then(g => { if (g) $("news").textContent = `🪙 +${g} jetons. ${$("news").textContent}`.trim(); });
   $("end").scrollIntoView({ behavior: reduitMouvement() ? "auto" : "smooth", block: "start" });
@@ -415,7 +420,7 @@ function poigneeDeMain(apres) {
     if (fait) return; fait = true; clearTimeout(minuterie);
     style = styleValide(style);
     choix.hidden = true; $("pmTemps").hidden = true;
-    compterPoignee(P, style, S.match.vainqueur === 1); sauverP();
+    compterPoignee(P, style, S.match.vainqueur === 1); sauverP(); defisUI?.poignee(style);
     let adv;
     if (S.duel && D) adv = await styleAdversaire(style);
     else adv = styleDuBot(OPP.id, style);
@@ -819,8 +824,8 @@ $("resetProfile").addEventListener("click", () => {
 // ---------------------------------------------------------------- navigation
 // Trois onglets (Jouer, Cercles, Ma fiche) et la roue des Options. L'onglet « Jouer » est un menu
 // qui mène aux pages Défier un ami, Sit & Go, Tournois et Entraînement (l'écran de match).
-const VUES = ["viewJouer", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
-const ONGLET_DE = { viewJouer: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
+const VUES = ["viewJouer", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
+const ONGLET_DE = { viewJouer: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
 let vueCourante = "viewJouer", avantOptions = "viewJouer";
 function aller(vue) {
   if (!VUES.includes(vue)) return;
@@ -836,7 +841,8 @@ function aller(vue) {
   if (vue === "viewDuel") duelsUI?.rafraichir();
   if (vue === "viewCercles" || vue === "viewTournois") cerclesUI?.rafraichir();
   if (vue === "viewSng") sngUI?.rafraichir();
-  if (vue === "viewJouer") jetonsUI?.rafraichir();
+  if (vue === "viewJouer") { jetonsUI?.rafraichir(); defisUI?.rafraichir(); }
+  if (vue === "viewFreeroll") freerollUI?.rafraichir();
   window.scrollTo(0, 0);
 }
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => aller({ jouer: "viewJouer", cercles: "viewCercles", profile: "viewProfile" }[b.dataset.v])));
@@ -845,7 +851,7 @@ $("btnOptions").addEventListener("click", () => aller(vueCourante === "viewOptio
 $("optionsRetour").addEventListener("click", () => aller(avantOptions));
 
 // Les alertes en haut du menu « Jouer » (et la pastille de l'onglet).
-const alertes = { duels: { recus: 0, enCours: 0 }, tournois: [], sng: null };
+const alertes = { duels: { recus: 0, enCours: 0 }, tournois: [], sng: null, freeroll: null };
 function signaler(cle, valeur) { alertes[cle] = valeur; renderAlertes(); }
 function renderAlertes() {
   const a = alertes, carte = (attr, icone, titre, texte) => `<button class="hub alerte" ${attr}><span class="hub-i">${icone}</span><span><b>${titre}</b><small>${texte}</small></span></button>`;
@@ -853,6 +859,7 @@ function renderAlertes() {
     a.duels.enCours ? carte('data-aller="viewDuel"', "▶️", "Duel en cours", "Touche pour le reprendre") : "",
     a.duels.recus ? carte('data-aller="viewDuel"', "📨", `${a.duels.recus} défi${a.duels.recus > 1 ? "s" : ""} reçu${a.duels.recus > 1 ? "s" : ""}`, "Accepte ou refuse") : "",
     ...a.tournois.map(t => carte(`data-tournoi="${t.id}"`, "🏆", "Ton match de tournoi t'attend", esc(t.nom))),
+    a.freeroll ? carte('data-aller="viewFreeroll"', "🌙", a.freeroll.phase === "en_cours" ? "Le freeroll est en cours" : "Le freeroll commence à 20 h", "Garde l'appli ouverte : ton match se lance tout seul") : "",
     a.sng ? carte('data-aller="viewSng"', "⚡", a.sng.phase === "inscriptions" ? "Tu es en salle de Sit & Go" : "Ton Sit & Go est en cours", "Garde l'appli ouverte") : "",
   ].join("");
   const n = a.duels.recus + a.tournois.length;
@@ -1011,7 +1018,7 @@ async function reperesTournoi(duel) {
     if (!D || D.id !== duel.id || !m) return;
     D.tourVoix = { 0: "finale", 1: "demis", 2: "quarts", 3: "huitiemes" }[t.nb_tours - m.tour] ?? null;
     D.sng = t.mode === "direct" && m.tour === 1;
-    D.direct = t.mode === "direct";
+    D.direct = t.mode === "direct" && !t.freeroll;   // (le trophée « Roi du Sit & Go » ne vaut pas pour le freeroll)
     S.annonces.finale = D.tourVoix === "finale";
     if (faceAFaceOuvert) presenterSpeaker();
   } catch { /* sans réseau : présentation simple */ }
@@ -1271,6 +1278,13 @@ rapideUI = installerRapide({
 });
 
 jetonsUI = installerJetons({ compte: compteUI });
+defisUI = installerDefis({ compte: compteUI, jetons: () => jetonsUI?.rafraichir() });
+freerollUI = installerFreeroll({
+  compte: compteUI, signaler,
+  ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
+  chercherMatch: () => { if (!D || D.fini) duelsUI.rafraichir(); },
+  jetons: () => jetonsUI?.rafraichir(),
+});
 sngUI = installerSng({
   jetons: () => jetonsUI?.rafraichir(),
   signaler,
