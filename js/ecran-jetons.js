@@ -1,6 +1,6 @@
-// La carte des jetons, en haut du menu « Jouer » : solde, bonus du jour, renflouement.
+// Les jetons, en petit en haut du menu « Jouer » : solde, série, bonus du jour, renflouement.
 import { clientSupabase as client, verifier, essayer } from "./compte.js";
-import { texteJetons, texteSerie } from "./jetons-logique.js";
+import { texteJetons, texteSerie, serieCourte } from "./jetons-logique.js";
 
 const $ = id => document.getElementById(id);
 const rpc = nom => essayer(async () => verifier(await client().rpc(nom)));
@@ -16,9 +16,10 @@ export function installerJetons(ctx) {
     $("jetonsDedans").hidden = !connecte;
     if (!connecte) return;
     $("jetonsSolde").textContent = etat ? texteJetons(etat.solde) : "…";
-    $("jetonsSerie").textContent = texteSerie(etat);
+    $("jetonsSerie").textContent = serieCourte(etat);
+    $("jetonsSerie").title = texteSerie(etat);
     $("jetonsBonus").hidden = !etat?.bonus_dispo;
-    if (etat?.bonus_dispo) $("jetonsBonus").textContent = `🎁 Bonus du jour : +${etat.bonus_montant} jetons`;
+    if (etat?.bonus_dispo) { $("jetonsBonus").textContent = `🎁 +${etat.bonus_montant}`; $("jetonsBonus").title = `Bonus du jour : +${etat.bonus_montant} jetons`; }
     $("jetonsRenfl").hidden = !etat?.renflouement_dispo;
   }
 
@@ -35,7 +36,7 @@ export function installerJetons(ctx) {
     catch (e) { dire(e.message, true); }
     bouton.disabled = false; render();
   }
-  $("jetonsBonus").addEventListener("click", () => reclamer($("jetonsBonus"), "prendre_bonus_quotidien", g => `+${g} jetons ! À demain pour la suite de ta série.`));
+  $("jetonsBonus").addEventListener("click", () => reclamer($("jetonsBonus"), "prendre_bonus_quotidien", g => `+${g} jetons ! ${texteSerie(etat)}`));
   $("jetonsRenfl").addEventListener("click", () => reclamer($("jetonsRenfl"), "renflouer", g => `+${g} jetons pour repartir.`));
 
   ctx.compte.surConnexion(session => { connecte = !!session?.user; etat = null; rafraichir(); });
