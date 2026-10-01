@@ -26,8 +26,32 @@ export function texteDepart(depart, maintenant = Date.now()) {
   return `${jour} à ${heure}`;
 }
 
-// Les gains d'après la cagnotte : 50 % au 1er, 30 % au 2e, 10 % aux deux demi-finalistes.
-export const gainsCagnotte = c => [0.5, 0.3, 0.1].map(p => Math.floor(c * p));
+// Les dotations, façon poker : on paie environ 10 à 15 % des joueurs (au moins les 2 finalistes), et le plus petit gain
+// vaut au moins 1,5 fois l'entrée. En élimination directe, les places payées vont par tour : 1er, 2e, 3e-4e (demi-finales),
+// 5e-8e (quarts)… Chaque palier : la part de la cagnotte (en dix-millièmes) pour CHAQUE joueur du palier.
+// La même grille est dans le serveur (supabase/etape-19-dotations.sql ; un test vérifie qu'elles sont identiques).
+export const GRILLES = {
+  2: [6500, 3500],
+  4: [5000, 2500, 1250],
+  8: [4000, 2200, 1100, 400],
+  16: [3200, 1800, 900, 450, 175],
+  32: [2612, 1500, 750, 375, 175, 93],
+  64: [2280, 1300, 650, 320, 160, 80, 40],
+};
+const PLACES = ["1er", "2e", "3e-4e", "5e-8e", "9e-16e", "17e-32e", "33e-64e"];
+// Combien de places payées pour n joueurs : la plus grande puissance de 2 qui ne dépasse pas 15 % des joueurs (de 2 à 64).
+export function placesPayees(n) {
+  let p = 2;
+  while (p < 64 && p * 2 <= 0.15 * n) p *= 2;
+  return p;
+}
+// [{ places: "1er", nb: 1, montant }, { places: "3e-4e", nb: 2, montant (chacun) }, …]
+export const dotations = (cagnotte, n) => GRILLES[placesPayees(n)].map((bp, k) => ({
+  places: PLACES[k], nb: k < 2 ? 1 : 2 ** (k - 1), montant: Math.floor((cagnotte * bp) / 10000),
+}));
+// « 8 premiers payés · 1er : 1 944, 2e : 1 069, 3e-4e : 534, 5e-8e : 194 »
+export const texteDotations = (cagnotte, n) => `${placesPayees(n)} premiers payés · `
+  + dotations(cagnotte, n).map(d => `${d.places} : ${d.montant.toLocaleString("fr-FR").replace(/\s/g, "\u00a0")}`).join(", ");
 
 // Faut-il surveiller ce tournoi de près (signe de vie fréquent) ? Inscrit, départ dans moins de 3 minutes, ou en lice.
 export const enJeu = (t, maintenant = Date.now()) => !!t?.inscrit && (t.phase === "en_cours" ? !t.elimine
