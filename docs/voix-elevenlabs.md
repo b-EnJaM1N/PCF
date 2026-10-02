@@ -10,7 +10,7 @@ Abonnement : Starter (1,11 € le premier mois, puis 6,67 €/mois) — **penser
 | Rôle | Voix | Voice ID | Réglages | Indication |
 |---|---|---|---|---|
 | Monique Latouffe (commentatrice) | **Camille Martin** ✅ | `hFgOzpmS0CMtL2to8sAl` | Stability haute (70-80 %), Style bas (≈ 0) | `[deadpan]` |
-| Roland Pignon (commentateur) | à choisir | | Stability basse, Style plus haut | `[excited]` |
+| Roland Pignon (commentateur) | ✅ (nom à préciser) | `pwONJQic3ZwHTFG8D6uM` | Stability basse, Style plus haut | `[excited]` |
 | Speaker | à choisir | | Stability moyenne, un peu lent | `[shouting]` ou rien |
 | Arbitre | à choisir | | Stability haute, Style 0 | aucune |
 | Journaliste | à choisir | | Stability moyenne | aucune |
