@@ -16,9 +16,9 @@ import { idPartie } from "./surnoms.js";
 
 const RESERVE_MAX = 2;
 
-export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false } = {}) {
+export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false, enjeu = null } = {}) {
   return {
-    humain, genre, finale,
+    humain, genre, finale, enjeu,
     reserve: 1,                   // un premier commentaire est possible
     dernierCom: -99,              // numéro du coup du dernier commentaire
     dits: new Set(),              // répliques déjà dites dans ce match (id de base)
@@ -36,7 +36,15 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
 const CONDITIONS = {
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
   balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, un_partout: c => c.unPartout, finale: c => c.finale,
+  // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
+  enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
 };
+
+// L'enjeu d'un match : "finale" (finale de tournoi), "tableau" (quart, demi-finale, ou tout match d'un Grand Chelem), sinon null.
+export function niveauEnjeu({ tour = null, grandChelem = false } = {}) {
+  if (tour === "finale") return "finale";
+  return tour === "quarts" || tour === "demis" || grandChelem ? "tableau" : null;
+}
 
 // Choisit une réplique d'un moment : jamais deux fois la même dans un match, les répliques
 // « spéciales » (condition remplie) d'abord, les clins d'œil plus rarement (cinéma : une fois par match).
@@ -44,7 +52,7 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
   const pool = POOLS[moment];
   if (!pool) return null;
   // Les jeux de mots sur un signe (« seul ») ne se disent que si le joueur vient de jouer ce signe.
-  const valides = pool.filter(e => !etat.dits.has(e.base) && (!e.si || CONDITIONS[e.si]?.(ctx)) && (e.seul === undefined || e.seul === ctx.signe) && (!e.quand || e.quand === ctx.quand) && (e.clin !== "cine" || !etat.cine));
+  const valides = pool.filter(e => !etat.dits.has(e.base) && (!e.si || CONDITIONS[e.si]?.(ctx, etat)) && (e.seul === undefined || e.seul === ctx.signe) && (!e.quand || e.quand === ctx.quand) && (e.clin !== "cine" || !etat.cine));
   if (!valides.length) return null;
   // Les répliques « spéciales » passent en priorité : une condition remplie (7 fois sur 10),
   // un jeu de mots sur le signe joué (4 fois sur 10, pour qu'il reste une surprise).
@@ -298,11 +306,13 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
 
   // Les commentateurs lancent le match (en évitant, eux aussi, ce qu'ils ont dit récemment).
   const etat = nouvelEtatAnnonces({ humain, genre });
-  recents.forEach(id => { const m = /^commentat(?:eur|rice)_dialogue_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
+  // (seulement les 3 derniers dialogues : sinon, au bout de quelques matchs, ils seraient tous écartés et plus rien ne serait dit)
+  const dialoguesRecents = recents.filter(id => /^commentateur_dialogue_avant_match_/.test(id)).slice(0, 3);
+  dialoguesRecents.forEach(id => { const m = /_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
   let com = null;
   if (domination) com = choisir(etat, "domination", {}, rng);
   else if (humain && rng() < 0.5) com = choisir(etat, "humain", {}, rng);
-  const commentaires = com ? [com] : rng() < 0.6 ? dialogue(etat, "avant_match", rng) || [] : [];
+  const commentaires = com ? [com] : rng() < 0.85 ? dialogue(etat, "avant_match", rng) || [] : [];
   return { speaker: sp.filter(Boolean), commentaires };
 }
 

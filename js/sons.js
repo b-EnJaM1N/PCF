@@ -10,9 +10,14 @@ function passeBande(fs, f, q) {
   return x => { const y = b0 * x + b2 * x2 - a1 * y1 - a2 * y2; x2 = x1; x1 = x; y2 = y1; y1 = y; return y; };
 }
 
-function normaliser(canaux, crete = 0.9) {
+// Le plus fort échantillon (0 : silence, 1 : le maximum).
+export function creteDe(canaux) {
   let m = 0;
   for (const c of canaux) for (let i = 0; i < c.length; i++) m = Math.max(m, Math.abs(c[i]));
+  return m;
+}
+export function normaliser(canaux, crete = 0.9) {
+  const m = creteDe(canaux);
   if (m > 0) for (const c of canaux) for (let i = 0; i < c.length; i++) c[i] = c[i] / m * crete;
   return canaux;
 }
