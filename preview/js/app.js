@@ -139,6 +139,8 @@ function renderVoixInfo() {
 
 // ---------------------------------------------------------------- annonces
 let fanerT = 0;
+// Balle de set ou de match, point décisif : le coup de raquette claque plus fort.
+const grandMoment = m => !!balle(m) || pointDecisif(m);
 // Pendant l'échange (enJeu), les commentateurs ne disent à voix haute que des répliques courtes, et pas deux points de suite :
 // une réplique longue déborderait sur les coups suivants. Elles s'affichent toutes par écrit ; les longues sont dites
 // dans les pauses (avant le match, fin de set, fin de match).
@@ -1384,7 +1386,7 @@ function jouerDuel(signe) {
   const d = D.duel;
   if (d.phase !== "jeu" || d.pause_depuis || D.mancheEnvoyee === d.manche) return;
   D.mancheEnvoyee = d.manche; boutons(false);
-  ambiance.raquette(signe);
+  ambiance.raquette(signe, grandMoment(S.match));
   $("hMe").textContent = EMOJI[signe]; $("hMe").className = "hand"; $("hBot").textContent = "⏳"; $("hBot").className = "hand";
   $("verdict").textContent = `En attente de ${OPP.nom}…`;
   serveur.jouer(D.id, d.manche, signe).then(majDuel).catch(e => {
