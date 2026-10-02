@@ -302,9 +302,9 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 }
 
 /* Classement PCF, amis et cercles */
-.cl-grand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 2px 0 6px; }
-.cl-grand b { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 2.6rem; line-height: 1; color: var(--me); font-variant-numeric: tabular-nums; }
-.cl-grand span { font-size: .9rem; color: var(--muted); }
+.niveau-aide { margin-top: 4px; font-size: .82rem; color: var(--muted); }
+.niveau-aide summary { cursor: pointer; }
+.niveau-aide p { margin: 6px 0 0; line-height: 1.35; }
 .joueur.cliquable { cursor: pointer; }
 .joueur .mini svg { width: 40px; height: 40px; display: block; }
 .blason-choix { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: start; }

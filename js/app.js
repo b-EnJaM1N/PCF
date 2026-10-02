@@ -952,6 +952,7 @@ function renderFiche() {
   afficherNomFiche();
   $("pTitle").textContent = dernierTitre(P);
   $("pElo").textContent = `Niveau d'entraînement : ${P.elo}`;
+  $("pNiveauAide").hidden = monClassement === null;
   $("pClassement").hidden = monClassement === null; $("pClassement").textContent = monClassement === null ? "" : texteNiveauFiche(monClassement, mesDuelsOfficiels);
   $("kM").textContent = P.matchs;
   $("kW").textContent = P.matchs ? Math.round(100 * P.victoires / P.matchs) + " %" : "–";
@@ -1466,7 +1467,7 @@ cerclesUI = installerCercles({
   surClassement: (points, joues = 0) => {
     monClassement = points; mesDuelsOfficiels = joues;
     retenirRang();
-    $("pClassement").hidden = points === null;
+    $("pClassement").hidden = points === null; $("pNiveauAide").hidden = points === null;
     $("pClassement").textContent = points === null ? "" : texteNiveauFiche(points, joues);
     renderCarte();
   },
