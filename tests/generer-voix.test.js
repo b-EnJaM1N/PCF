@@ -13,7 +13,13 @@ test("les voix : un identifiant ElevenLabs pour chaque rôle, et aucune clé sec
 
 test("le texte pour la voix : l'indication de jeu du personnage, puis la réplique", () => {
   const monique = [...CATALOGUE.values()].find(r => r.texte === "Muscle ton jeu, Robert. Muscle ton jeu.");
-  assert.equal(texteVoix(monique), "[deadpan] Muscle ton jeu, Robert. Muscle ton jeu.");
+  assert.equal(texteVoix(monique), "[sarcastic] Muscle ton jeu, Robert. Muscle ton jeu.", "Monique cassante sur une série de points perdus");
+  assert.match(texteVoix(CATALOGUE.get("commentatrice_dialogue_avant_match_01")), /^\[deadpan\] /, "sinon, son ton par défaut");
+  assert.match(texteVoix(CATALOGUE.get("commentateur_balle_match_convertie_03")), /^\[excited\] \[shouting\] /, "Roland enflammé sur la balle de match");
+  assert.match(texteVoix(CATALOGUE.get("commentateur_tension_01")), /^\[nervous\] \[whispers\] /, "Roland fébrile dans la tension");
+  assert.match(texteVoix(CATALOGUE.get("commentatrice_craquage_02")), /^\[sarcastic\] /, "Monique cassante quand un joueur craque");
+  assert.match(texteVoix(CATALOGUE.get("commentatrice_defaite_02")), /^\[sighs\] \[bored\] /, "Monique blasée sur une défaite");
+  assert.ok(!texteVoix(CATALOGUE.get("commentatrice_dialogue_set_decisif_01") ?? CATALOGUE.get("commentatrice_set_decisif_01")).includes("[bored]"), "« set_decisif » n'est pas pris pour « set_ecrasant »");
   const arbitre = CATALOGUE.get("arbitre_set_decisif_01");
   assert.equal(texteVoix(arbitre), "Set décisif.", "l'arbitre, sans indication");
   assert.equal(texteVoix(arbitre, { ...config, textes: { arbitre_set_decisif_01: "Set… décisif." } }), "Set… décisif.", "un texte spécial l'emporte");
@@ -27,6 +33,7 @@ test("ce qu'il reste à générer : les rôles choisis, sans refaire les fichier
   assert.equal(aFaire({ roles, existe: () => true }).length, 0, "tout est déjà enregistré");
   assert.equal(aFaire({ roles, limite: 10, existe: () => false }).length, 10);
   assert.equal(aFaire({ ids: ["arbitre_set_decisif_01"], refaire: true, existe: () => true }).length, 1, "refaire une réplique précise");
+  assert.ok(aFaire({ roles: ["commentatrice"], refaire: true, existe: () => true }).length > 100, "tout refaire pour un rôle");
   assert.equal(aFaire({ ids: ["speaker_bienvenue_01"], existe: () => false }).length, 0, "pas de voix choisie pour le speaker : rien");
 });
 
