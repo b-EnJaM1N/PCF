@@ -245,7 +245,7 @@ restent lus par la voix de synthèse.
 | `commentateur_balle_match_convertie_01_feuille.mp3` | Feuiiiiille ! Feuille ! Feuille ! |
 | `commentateur_balle_match_convertie_02.mp3` | Il franchit la ligne les bras levés ! |
 | `commentateur_balle_match_convertie_02_f.mp3` | Elle franchit la ligne les bras levés ! |
-| `commentateur_balle_match_convertie_03.mp3` | Après avoir vu ça, on peut aller se coucher tranquille ! |
+| `commentateur_balle_match_convertie_03.mp3` | Après avoir vu ça, on peut dormir tranquille ! |
 | `commentateur_balle_match_convertie_04.mp3` | Et un, et deux, et trois sets à zéro ! |
 | `commentateur_balle_match_convertie_05.mp3` | Une victoire gravée dans la Pierre ! |
 | `commentateur_balle_match_convertie_06.mp3` | Un coup de Pierre, un coup de maître ! |
