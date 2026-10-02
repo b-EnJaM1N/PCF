@@ -5,7 +5,7 @@ import { avatarSVG } from "./avatar.js";
 import { blasonSVG } from "./social-logique.js";
 import { texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { formatCourt } from "./duel-logique.js";
-import { nomTour, monTour, DUREES, texteDuree, texteReste, texteFin, monMatch, tableau, resume, lienTournoi, codeTournoiDepuisAdresse } from "./tournoi-logique.js";
+import { nomTour, monTour, DUREES, texteDuree, texteReste, texteFin, monMatch, attente, tableau, resume, lienTournoi, codeTournoiDepuisAdresse } from "./tournoi-logique.js";
 import { lire, ecrire } from "./stockage.js";
 
 const $ = id => document.getElementById(id);
@@ -103,8 +103,21 @@ export function installerTournois(ctx) {
       : t.phase === "termine" ? (t.vainqueur ? `🏆 Vainqueur : ${t.vainqueur.pseudo}#${t.vainqueur.numero}` : "Tournoi terminé") : "Tournoi annulé";
 
     // Mon match à jouer
-    const mm = monMatch(t, uid);
-    $("tMonMatch").hidden = !mm;
+    const mm = monMatch(t, uid), att = mm ? null : attente(t, uid);
+    $("tMonMatch").hidden = !mm && !att;
+    if (att) {
+      // En direct : j'ai gagné, j'attends le vainqueur du match voisin (avec son score en direct).
+      const v = att.voisin, d = v?.duel;
+      const joueurs = v && v.j0 && v.j1 ? `<b>${nomComplet(v.j0)}</b> contre <b>${nomComplet(v.j1)}</b>` : null;
+      const score = d && ["jeu", "entre_sets"].includes(d.phase)
+        ? `${(d.sets || [0, 0]).join("–")} en sets${d.phase === "jeu" ? ` · ${(d.points || [0, 0]).join("–")} dans le set` : ""}` : null;
+      $("tMonMatchTitre").textContent = `⏳ Bravo ! En attente de ${monTour(att.tour, t.nb_tours)}`;
+      $("tMonMatchCorps").innerHTML = joueurs
+        ? `<p class="hint">Ton prochain adversaire sortira du match ${joueurs}.</p>
+           <p class="sndnote">${score ? `En direct : ${score}.` : d ? "Le match commence." : "Le match va se lancer."} Attente estimée : environ ${att.minutes} min.</p>
+           <p class="hint">Reste dans l'appli : ton match se lance tout seul dès que le vainqueur est connu (60 secondes pour le rejoindre).</p>`
+        : `<p class="hint">Ton prochain adversaire sortira d'un match qui n'a pas encore commencé : le tableau avance. Reste dans l'appli, ton match se lancera tout seul.</p>`;
+    }
     if (mm) {
       const adv = mm.adversaire, duel = mm.match.duel;
       const enCours = duel && ["presentation", "jeu", "entre_sets"].includes(duel.phase);
@@ -114,13 +127,13 @@ export function installerTournois(ctx) {
       if (direct) {
         // Sit & Go : le serveur lance le match ; on le rejoint (60 secondes pour arriver).
         $("tMonMatchCorps").innerHTML = `<div class="joueur"><span class="mini">${avatarSVG(adv.avatar || {})}</span>
-          <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">Niveau ${adv.classement} · tête de série n° ${adv.tete}</div></div><span></span></div>
+          <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">Niveau ${adv.classement}${adv.tete ? ` · tête de série n° ${adv.tete}` : ""}</div></div><span></span></div>
           <p class="hint">${duel ? "Ton match est lancé : tu as 60 secondes pour le rejoindre, sinon c'est perdu par forfait." : "Ton match va se lancer tout seul. Reste dans l'appli."}</p>
           ${duel ? `<button class="btn" id="tJouer">Rejoindre le match</button>` : ""}`;
         $("tJouer")?.addEventListener("click", () => jouerMonMatch(mm));
       } else {
       $("tMonMatchCorps").innerHTML = `<div class="joueur"><span class="mini">${avatarSVG(adv.avatar || {})}</span>
-        <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">Niveau ${adv.classement} · tête de série n° ${adv.tete}</div></div><span></span></div>
+        <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">Niveau ${adv.classement}${adv.tete ? ` · tête de série n° ${adv.tete}` : ""}</div></div><span></span></div>
         <p class="hint">${enCours ? "Votre match est en cours." : attendMoi ? `${esc(adv.pseudo)} t'attend pour jouer !`
           : jattends ? `Invitation envoyée : le match démarre dès que ${esc(adv.pseudo)} touche « Jouer mon match ». Garde l'appli ouverte.`
           : `Retrouvez-vous pour jouer avant la date limite${reste ? ` (dans ${reste})` : ""}. Si un seul de vous deux essaie de jouer, la victoire lui revient par forfait.`}</p>
@@ -129,8 +142,9 @@ export function installerTournois(ctx) {
       }
     }
     $("tRegleAbsence").textContent = direct
-      ? "Chaque match se lance dès que les deux joueurs sont libres. Un joueur absent au bout de 60 secondes perd par forfait ; si aucun des deux ne vient, la meilleure tête de série passe."
-      : "Un match non joué à la date limite revient à la personne qui a essayé de le jouer ; si personne ne s'est manifesté, à la meilleure tête de série.";
+      ? "Chaque match se lance dès que les deux joueurs sont libres. Un joueur absent au bout de 60 secondes perd par forfait ; si aucun des deux ne vient, le mieux classé passe."
+      : "Un match non joué à la date limite revient à la personne qui a essayé de le jouer ; si personne ne s'est manifesté, au mieux classé.";
+    $("tRegleAbsence").textContent += " Le tableau est tiré au sort, comme au tennis : les meilleurs niveaux sont têtes de série (la moitié du tableau jusqu'à 8 joueurs, un quart au-delà) et ne peuvent pas se croiser trop tôt ; tous les autres joueurs sont placés au hasard.";
 
     // Inscriptions
     const insc = t.phase === "inscriptions";
