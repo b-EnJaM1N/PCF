@@ -231,7 +231,7 @@ export const MOMENTS = {
   balle_match_convertie: [
     { r: "c", t: ["Pieeeeerre ! Pierre ! Pierre !", "Ciseaaaaux ! Ciseaux ! Ciseaux !", "Feuiiiiille ! Feuille ! Feuille !"], clin: "sport" },
     { r: "c", t: "Il franchit la ligne les bras levés !", f: "Elle franchit la ligne les bras levés !", clin: "sport" },
-    { r: "c", t: "Après avoir vu ça, on peut aller se coucher tranquille !", clin: "sport" },
+    { r: "c", t: "Après avoir vu ça, on peut dormir tranquille !", clin: "sport" },
     { r: "d", t: "Échec et mat.", clin: "sport" },
     { r: "d", t: "Hasta la vista, baby.", clin: "cine" },
     { r: "d", t: "C'est tout." },
