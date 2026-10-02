@@ -2,7 +2,7 @@
 import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide } from "./surnoms.js";
 import { voirTournoi, mesAmis } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
@@ -737,7 +737,10 @@ function ouvrirFaceAFace() {
   $("foKey").innerHTML = `${esc(pr.cle)} Tu joues <b>côté jaune</b>.`;
   $("foSurMe").textContent = surnomDe(P).texte;
   $("foSurBot").textContent = OPP.humain && OPP.surnom ? OPP.surnom.texte : "";
-  if (!S.duel) S.annonces.finale = S.tour !== null && !!T && tourDe(T, S.tour).finale;
+  if (!S.duel) {
+    S.annonces.finale = S.tour !== null && !!T && tourDe(T, S.tour).finale;
+    S.annonces.enjeu = niveauEnjeu({ tour: S.tour !== null && T ? tourDe(T, S.tour).cle : null });
+  }
   presenterSpeaker();
 
   // Chorégraphie : bandeau, entrée des joueurs, VS (et le public applaudit), puis les stats une à une.
@@ -1270,6 +1273,7 @@ async function reperesTournoi(duel) {
     D.direct = t.mode === "direct" && !t.freeroll && !t.programme;   // (le trophée « Roi du Sit & Go » ne vaut ni pour le freeroll ni pour les tournois programmés)
     D.grandChelem = t.programme === "grand_chelem";
     S.annonces.finale = D.tourVoix === "finale";
+    S.annonces.enjeu = niveauEnjeu({ tour: D.tourVoix, grandChelem: D.grandChelem });
     if (faceAFaceOuvert) presenterSpeaker();
   } catch { /* sans réseau : présentation simple */ }
 }

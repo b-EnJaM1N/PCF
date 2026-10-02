@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (206 répliques)
+## Commentateur — vif, enthousiaste, plein de références (214 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -220,7 +220,10 @@ restent lus par la voix de synthèse.
 | `commentateur_tension_01.mp3` | Silence dans la salle… |
 | `commentateur_tension_02.mp3` | Tout un match… pour un seul signe. |
 | `commentateur_tension_03.mp3` | Le côté jaune a peur. |
+| `commentateur_tension_04.mp3` | Un point pour l'Éternité… |
+| `commentateur_tension_05.mp3` | Le titre est au bout de ce point… |
 | `commentateur_point_decisif_01.mp3` | Un point. Un seul. Pour tout ! |
+| `commentateur_point_decisif_02.mp3` | Un point pour entrer dans l'Histoire ! |
 | `commentateur_set_ecrasant_01.mp3` | Une leçon ! Une démonstration de force ! |
 | `commentateur_set_ecrasant_02.mp3` | Au tapis ! L'arbitre peut compter jusqu'à dix ! |
 | `commentateur_set_ecrasant_03.mp3` | Fanny ! Onze à zéro, il va falloir embrasser Fanny ! |
@@ -234,6 +237,7 @@ restent lus par la voix de synthèse.
 | `commentateur_resume_set_04.mp3` | Le public retient son souffle avant la suite ! |
 | `commentateur_set_decisif_01.mp3` | Set décisif ! Tout se joue maintenant ! |
 | `commentateur_set_decisif_02.mp3` | C'est la der des ders ! |
+| `commentateur_set_decisif_03.mp3` | Set décisif, et une place dans l'Histoire en jeu ! |
 | `commentateur_renversement_01.mp3` | Mené un set à zéro, il renverse tout ! |
 | `commentateur_renversement_01_f.mp3` | Menée un set à zéro, elle renverse tout ! |
 | `commentateur_renversement_02.mp3` | Le retour du siècle ! |
@@ -270,6 +274,10 @@ restent lus par la voix de synthèse.
 | `commentateur_balle_match_convertie_17_pierre.mp3` | La lumière est venue de la Pierre ! |
 | `commentateur_balle_match_convertie_17_ciseaux.mp3` | La lumière est venue des Ciseaux ! |
 | `commentateur_balle_match_convertie_17_feuille.mp3` | La lumière est venue de la Feuille ! |
+| `commentateur_balle_match_convertie_18.mp3` | Il entre dans la légende ! |
+| `commentateur_balle_match_convertie_18_f.mp3` | Elle entre dans la légende ! |
+| `commentateur_balle_match_convertie_19.mp3` | Qualifié ! Le tableau tremble ! |
+| `commentateur_balle_match_convertie_19_f.mp3` | Qualifiée ! Le tableau tremble ! |
 | `commentateur_victoire_01.mp3` | C'est fini ! Quel combat ! |
 | `commentateur_victoire_02.mp3` | Il l'a fait ! |
 | `commentateur_victoire_02_f.mp3` | Elle l'a fait ! |
@@ -322,7 +330,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_02.mp3` | Il a craqué son slip ! |
 | `commentateur_dialogue_cri_02_f.mp3` | Elle a craqué son slip ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (151 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (155 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -413,6 +421,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_tension_01.mp3` | C'est maintenant que les champions se révèlent. Et les autres aussi. |
 | `commentatrice_tension_02.mp3` | Pas de Pierre ici. Tout le monde attend la Pierre. |
 | `commentatrice_tension_03.mp3` | Pas d'enflammade, pas d'enflammade. |
+| `commentatrice_tension_04.mp3` | Toute une carrière pour ce point. Aucune pression. |
 | `commentatrice_point_decisif_01.mp3` | Ici, pas de deuxième chance. Comme dans la vie. |
 | `commentatrice_set_ecrasant_01.mp3` | Sèche correction. |
 | `commentatrice_set_ecrasant_02.mp3` | Il n'y a pas eu de match dans ce set. |
@@ -428,6 +437,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_resume_set_02.mp3` | Il faudra changer de plan. Ou en avoir un. |
 | `commentatrice_resume_set_03.mp3` | Le rapport de force est clair. Pour l'instant. |
 | `commentatrice_set_decisif_01.mp3` | Les statistiques ne servent plus à rien. C'est le caractère qui parle. Quand il y en a. |
+| `commentatrice_set_decisif_02.mp3` | Un set pour un titre. Je reste calme. Pour deux. |
 | `commentatrice_renversement_01.mp3` | Il a perdu une bataille. Il gagne la guerre. Classique. |
 | `commentatrice_renversement_01_f.mp3` | Elle a perdu une bataille. Elle gagne la guerre. Classique. |
 | `commentatrice_balle_match_convertie_01.mp3` | Échec et mat. |
@@ -443,6 +453,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_balle_match_convertie_09.mp3` | Une victoire taillée sur mesure. |
 | `commentatrice_balle_match_convertie_10.mp3` | Une victoire au scalpel. |
 | `commentatrice_balle_match_convertie_11.mp3` | Quelle violence… pour une Feuille. |
+| `commentatrice_balle_match_convertie_12.mp3` | Un tour de plus. Ne nous emballons pas. |
+| `commentatrice_balle_match_convertie_13.mp3` | Un titre. Enfin quelque chose à accrocher au frigo. |
 | `commentatrice_victoire_01.mp3` | Rideau. |
 | `commentatrice_victoire_02.mp3` | Mission accomplie. Sans éclat, mais accomplie. |
 | `commentatrice_victoire_03.mp3` | Rien à dire. Et je trouve toujours quelque chose à dire. |
