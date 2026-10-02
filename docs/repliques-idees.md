@@ -1,60 +1,26 @@
 # Idées de répliques, à ajouter toutes ensemble avant la séance des voix
 
 Le porteur du projet note ici ses idées au fil de l'eau. On les relit et on les branche dans l'appli en une seule fois
-(`app/js/voix/repliques.js`, puis `npm run script-voix`), avant d'enregistrer les voix avec ElevenLabs.
+(`app/js/voix/repliques.js`, puis `npm run script-voix`), puis on enregistre les voix avec le robot « Voix » (choix « tout » :
+seules les nouvelles répliques sont faites).
 
-## Au cri de victoire (dialogue Roland → Monique)
-- Roland : « Il éructe de joie ! » (« Elle éructe de joie ! » pour une joueuse). Hommage aux Inconnus.
-- Monique : « La prochaine fois, prévoyez les boules Quies. »
-  - À trancher : « boules Quies » est une marque. Variante possible : « La prochaine fois, prévoyez les bouchons d'oreilles. »
-
-## Références pour les 18-35 ans (télé-réalité, séries, films, mèmes)
-
-Constat : les 22 clins d'œil « cinéma / télé » actuels parlent surtout aux 35-60 ans (De Gaulle, Chirac, Mitterrand,
-Hollande, Le Maillon faible, Terminator, Les Bronzés…). On rééquilibre avec des références plus jeunes.
-
-### Quand un joueur perd plusieurs points d'affilée (série contre)
-- « Les calculs sont pas bons, Kevin. » (mème de télé-réalité) — idée du porteur du projet
-- « T'es pas venu ici pour souffrir, ok ? » (« venue » pour une joueuse) (mème) — idée du porteur du projet
-- « Bref. Il a perdu le set. » (la série *Bref*) — proposition
-- « Houston, on a un problème. » (*Apollo 13*) — proposition
-
-### Un joueur qui rejoue toujours le même signe (obstination) — hommage aux Tuches, idée du porteur du projet
-- Roland, en scandant : « Des pierres, des pierres, des pierres, des pierres, des pierres ! » · « Des feuilles, des feuilles, des feuilles, des feuilles, des feuilles ! » · « Ciseaux, ciseaux, ciseaux, ciseaux, ciseaux ! »
-  (« des » devant pour Pierre et Feuille, comme « des frites, des frites » ; sans « des » pour Ciseaux, qui sonne mieux ainsi ;
-  une version par signe, dite quand le joueur vient de rejouer ce signe)
-
-### Une erreur grossière, un signe rejoué qui perd encore (obstination)
-- « Allô ? Non mais allô, quoi ! » (Nabilla, télé-réalité) — proposition
-
-### Une balle de match sauvée
-- « Vous ne passerez pas ! » (*Le Seigneur des anneaux*) — proposition
-
-### Le set décisif
-- « Winter is coming. » (*Game of Thrones*) — proposition
-
-### Un joueur éliminé (tournoi, fin de match)
-- « La sentence est irrévocable. » (*Koh-Lanta*) — proposition
-
-### Monique et le langage des jeunes (elle le dit avec un ton glacial, c'est ce qui fait rire)
-- « C'est une dinguerie. Comme disent les jeunes. » — proposition
-- « Il a le seum. Comme disent les jeunes. » (« Elle a le seum… ») — proposition
-- « Il est en PLS. Comme disent les jeunes. » (« Elle est en PLS… ») — proposition
-- « C'est un vrai banger. Comme disent les jeunes. » — idée du porteur du projet. Après un point ou un set spectaculaire.
-  Monique le prononce mal, à la française : « ban-jé ». Pour la voix, on écrira le texte comme il doit être prononcé
-  (« C'est un vrai bangé ») ; à l'écran, on garde « banger ».
-
-### Sport, pour les 18-35 ans (les clins d'œil sport actuels viennent surtout de France 98 et des vieux commentaires)
-- Une remontée (gagner après avoir perdu le 1er set) : « C'est la remontada ! » (Barça-PSG, 2017) — proposition
-- Au cri de victoire : « Siuuuu ! » (la célébration de Cristiano Ronaldo) — proposition
-
-## Bilan de l'équilibre des références
-- Cinéma, télé, politique : environ 9 références surtout pour les plus de 35 ans (De Gaulle, Chirac, Mitterrand, Giscard,
-  Le Maillon faible, Les Bronzés…), 9 connues de tous (Star Wars, Terminator, Toy Story, Forrest Gump, La Haine, Hollande,
-  Macron…) et, avec les idées ci-dessus, une dizaine pour les 18-35 ans : à peu près un tiers chacune.
-- Sport : 31 clins d'œil, surtout du jargon de commentateur (connu de tous) et des souvenirs de France 98 (« Et un, et deux,
-  et trois zéro », « Muscle ton jeu, Robert »…), d'où les deux propositions ci-dessus.
+## À ajouter
+*(rien pour l'instant)*
 
 ## Déjà ajoutées
-- « Muscle ton jeu, Robert. Muscle ton jeu. » (Monique)
-- « Il a craqué son slip ! » / « Attention que ça ne vous arrive pas. » (au cri de victoire)
+- « Muscle ton jeu, Robert. Muscle ton jeu. » (Monique, série de points perdus)
+- Au cri de victoire (dialogues Roland → Monique) : « Il a craqué son slip ! » / « Attention que ça ne vous arrive pas. » ;
+  « Il éructe de joie ! » (hommage aux Inconnus) / « La prochaine fois, prévoyez les boules Quies. » ;
+  « Siuuuu ! » (Cristiano Ronaldo) / « Il se prend pour Ronaldo. Avec moins d'abdos. »
+- Série de points perdus : « Les calculs sont pas bons, Kevin. » (Monique), « T'es pas venu ici pour souffrir, ok ? » (Roland),
+  « Houston, on a un problème ! » (Roland), « Il est en PLS. Comme disent les jeunes. » (Monique)
+- Obstination : les Tuches, Roland scande « Des pierres, des pierres… » / « Ciseaux, ciseaux… » / « Des feuilles, des feuilles… »
+  (selon le signe rejoué) ; « Allô ? Non mais allô, quoi ! » (Monique)
+- Balle de match sauvée : « Vous ne passerez pas ! » (Roland)
+- Set écrasant : « Bref. Il a perdu le set. » (Monique)
+- Set décisif : « Winter is coming. » (Monique)
+- Remontée après le 1er set perdu : « C'est la remontada ! » (Roland)
+- Coup de génie : « C'est une dinguerie. Comme disent les jeunes. » et « C'est un vrai banger. Comme disent les jeunes. »
+  (Monique ; prononcé « bangé » à la française)
+- Défaite : « La sentence est irrévocable. » (Koh-Lanta) et « Il a le seum. Comme disent les jeunes. » (Monique)
+- Selon l'enjeu (quarts, demies, finales, Grand Chelem) : « Un point pour l'Éternité… », « Il entre dans la légende ! »…
