@@ -365,7 +365,11 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 .carte-pli[open] .carte-toucher { display: none; }
 .carte-toucher { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.25rem; line-height: 1.1; }
 .carte-toucher small { display: block; font-family: "Barlow", system-ui, sans-serif; font-weight: 400; font-size: .85rem; color: var(--muted); margin-top: 4px; }
-/* Les blocs repliables de « Ma fiche » : un titre (et un résumé) qu'on touche pour déplier. */
+/* Le règlement des tournois, replié sous « Comment ça marche ? ». */
+.regles { margin: 4px 0 10px; font-size: .9rem; }
+.regles summary { cursor: pointer; color: var(--muted); }
+.regles[open] summary { margin-bottom: 4px; }
+/* Les blocs repliables (« Ma fiche », Options, classement du mois) : un titre (et un résumé) qu'on touche pour déplier. */
 .pli { padding: 12px 16px; }
 .pli > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; column-gap: 10px; align-items: center; }
 .pli > summary::-webkit-details-marker { display: none; }
