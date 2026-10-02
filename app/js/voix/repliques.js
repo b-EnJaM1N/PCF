@@ -256,6 +256,7 @@ export const MOMENTS = {
     { r: "d", t: "Une victoire taillée sur mesure.", seul: 1 },
     { r: "d", t: "Une victoire au scalpel.", seul: 1 },
     { r: "d", t: "Quelle violence… pour une Feuille.", seul: 1 },
+    { r: "c", t: ["La lumière est venue de la Pierre !", "La lumière est venue des Ciseaux !", "La lumière est venue de la Feuille !"], clin: "sport" },
   ],
   victoire: [
     { r: "c", t: "C'est fini ! Quel combat !" },

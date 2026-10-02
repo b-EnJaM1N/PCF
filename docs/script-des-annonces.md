@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (203 répliques)
+## Commentateur — vif, enthousiaste, plein de références (206 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -267,6 +267,9 @@ restent lus par la voix de synthèse.
 | `commentateur_balle_match_convertie_15_f.mp3` | Elle vient de couper les ponts avec la défaite ! |
 | `commentateur_balle_match_convertie_16.mp3` | Il a pris les choses en main… et les Ciseaux aussi ! |
 | `commentateur_balle_match_convertie_16_f.mp3` | Elle a pris les choses en main… et les Ciseaux aussi ! |
+| `commentateur_balle_match_convertie_17_pierre.mp3` | La lumière est venue de la Pierre ! |
+| `commentateur_balle_match_convertie_17_ciseaux.mp3` | La lumière est venue des Ciseaux ! |
+| `commentateur_balle_match_convertie_17_feuille.mp3` | La lumière est venue de la Feuille ! |
 | `commentateur_victoire_01.mp3` | C'est fini ! Quel combat ! |
 | `commentateur_victoire_02.mp3` | Il l'a fait ! |
 | `commentateur_victoire_02_f.mp3` | Elle l'a fait ! |
