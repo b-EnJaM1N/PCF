@@ -8,6 +8,8 @@
 // Le volume de chaque voix (0 à 1), mesuré sur les enregistrements ElevenLabs : l'arbitre en retrait,
 // Roland (enregistré plus fort) ramené au niveau de Monique.
 export const VOLUMES = { arbitre: 0.55, commentateur: 0.5, commentatrice: 0.85, speaker: 0.8, journaliste: 0.8 };
+// La vitesse de lecture (1 = normale) : les commentaires doivent tenir entre deux coups. La hauteur de la voix ne change pas.
+export const VITESSES = { arbitre: 1, commentateur: 1.15, commentatrice: 1.3, speaker: 1, journaliste: 1 };
 
 const synth = typeof window !== "undefined" && "speechSynthesis" in window ? window.speechSynthesis : null;
 
@@ -65,7 +67,11 @@ export class LecteurVoix {
       const debut = () => { if (premiere) { premiere = false; auDebut?.(); } };
       const fin = () => suivante(i + 1);
       const audio = this.audio(r.id);
-      if (audio) audio.volume = VOLUMES[r.role] ?? 0.8;
+      if (audio) {
+        audio.volume = VOLUMES[r.role] ?? 0.8;
+        audio.preservesPitch = audio.mozPreservesPitch = audio.webkitPreservesPitch = true;
+        audio.defaultPlaybackRate = audio.playbackRate = VITESSES[r.role] ?? 1;
+      }
       if (audio) this.jouerFichier(audio, debut, fin, () => this.parler(r, debut, fin));
       else if (!this.synthese) fin();
       else this.parler(r, debut, fin);

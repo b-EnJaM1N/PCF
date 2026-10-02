@@ -139,12 +139,21 @@ function renderVoixInfo() {
 
 // ---------------------------------------------------------------- annonces
 let fanerT = 0;
-function annoncer(lignes, silencieux = false) {
+// Pendant l'échange (enJeu), les commentateurs ne disent à voix haute que des répliques courtes, et pas deux points de suite :
+// une réplique longue déborderait sur les coups suivants. Elles s'affichent toutes par écrit ; les longues sont dites
+// dans les pauses (avant le match, fin de set, fin de match).
+const REPLIQUE_COURTE = 32;   // caractères : environ 2 secondes
+function annoncer(lignes, silencieux = false, { enJeu = false, coup = 0 } = {}) {
   if (!lignes.length) return;
   const band = $("band"); band.textContent = ""; band.classList.remove("stale");
   lignes.forEach(l => { const d = document.createElement("div"); d.className = l.role; d.textContent = l.texte; band.append(d); });
   clearTimeout(fanerT); fanerT = setTimeout(() => band.classList.add("stale"), 4000);
-  if (!silencieux) voix.dire(lignes);
+  if (silencieux) return;
+  if (!enJeu) { voix.dire(lignes); return; }
+  const recent = S && coup - (S.commentaireAuCoup ?? -9) < 2;
+  const dites = lignes.filter(l => l.role === "arbitre" || (!recent && l.texte.length <= REPLIQUE_COURTE));
+  if (S && dites.some(l => l.role !== "arbitre")) S.commentaireAuCoup = coup;
+  voix.dire(dites);
 }
 // Des répliques affichées par écrit, chacune avec l'icône de qui parle.
 function afficherRepliques(el, lignes) {
@@ -260,7 +269,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
 
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
   if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
-  annoncer(a.lignes);
+  annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
   render(); renderHistorique(); renderLecture();
   if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);
 
