@@ -139,6 +139,7 @@ for (const [moment, liste] of Object.entries(DIALOGUES)) {
     return id;
   }));
 }
+export const nbDialogues = moment => DIALOGUES_IDS[moment].length;
 export function ligneDialogue(moment, k, genre = "m") {
   return DIALOGUES_IDS[moment][k].map(id => (genre === "f" && CATALOGUE.has(`${id}_f`) ? CATALOGUE.get(`${id}_f`) : CATALOGUE.get(id)));
 }
