@@ -3,7 +3,7 @@
 // La raquette et les applaudissements sont fabriqués par le code (sons.js), sauf si un vrai
 // enregistrement portant leur nom est déposé dans app/audio/ (ex. public_ovation_01.mp3).
 // Le murmure de fond, la tension et le « ooh » n'existent qu'en enregistrement : sans fichier, rien.
-import { applaudissements, coupDeRaquette, echoStade, FOULES } from "./sons.js";
+import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser } from "./sons.js";
 
 const AC = typeof window !== "undefined" ? window.AudioContext || window.webkitAudioContext : null;
 
@@ -94,7 +94,12 @@ export class Ambiance {
     for (const [k, ids] of FICHIERS_RAQUETTE_SIGNE.entries()) {
       for (const [f, id] of ids.entries()) {
         if (!this.fichiers.includes(id)) continue;
-        try { ((this.raquettesFichiers[k] ||= [])[f] = await charger(id)); } catch { /* son indisponible : le son fabriqué */ }
+        try {
+          // Tous les coups au même niveau (les enregistrements n'ont pas le même volume) : la version forte claque vraiment plus fort.
+          const b = await charger(id);
+          normaliser(Array.from({ length: b.numberOfChannels }, (_, c) => b.getChannelData(c)), 0.95);
+          (this.raquettesFichiers[k] ||= [])[f] = b;
+        } catch { /* son indisponible : le son fabriqué */ }
       }
     }
     if (this.fondVoulu) this.fond(true);   // le murmure arrive pendant le match : on le lance
@@ -121,7 +126,7 @@ export class Ambiance {
   raquette(signe = 2, fort = false) {
     const f = this.raquettesFichiers[signe] || [];
     const b = (fort && f[1]) || f[0];
-    if (b) this.jouer(b, fort && f[1] ? 0.8 : 0.7, false, { vitesse: 0.98 + Math.random() * 0.04 });
+    if (b) this.jouer(b, fort && f[1] ? 1 : 0.7, false, { vitesse: 0.98 + Math.random() * 0.04 });
     else this.jouer(this.raquettes[signe], fort ? 0.9 : 0.7, true);
   }
 
