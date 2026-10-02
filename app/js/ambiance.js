@@ -130,7 +130,7 @@ export class Ambiance {
   raquette(signe = 2, fort = false) {
     const f = this.raquettesFichiers[signe] || [];
     const b = (fort && f[1]) || f[0];
-    if (b) this.jouer(b, fort && f[1] ? 1 : 0.7, false, { vitesse: 0.98 + Math.random() * 0.04 });
+    if (b) this.jouer(b, fort ? 1 : 0.7, false, { vitesse: 0.98 + Math.random() * 0.04 });
     else this.jouer(this.raquettes[signe], fort ? 0.9 : 0.7, true);
   }
 
