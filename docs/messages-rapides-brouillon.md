@@ -11,7 +11,7 @@ Rien pendant les échanges, pour garder le rythme. Une option « Masquer les mes
 ## Les règles d'écriture
 
 1. **Court** : 35 caractères au plus, pour tenir dans une bulle sur un téléphone.
-2. **Pour tout le monde** : à un joueur comme à une joueuse, à un débutant comme à un champion. Pas de « il » ni de « elle », pas d'accord au féminin ou au masculin.
+2. **Pour tout le monde** : à un joueur comme à une joueuse, à un débutant comme à un champion. Les accords (« chaud » / « chaude ») peuvent se faire automatiquement, selon le « il » ou « elle » choisi dans « Ma fiche ».
 3. **Jamais blessant** : de la taquinerie, oui ; de la moquerie méchante, non. Un message doit faire sourire les deux joueurs.
 4. **Dans le ton HandSlam** : on prend très au sérieux un jeu de cour de récré.
 5. **Après le match, deux listes** : le gagnant et le perdant ne voient pas les mêmes messages. Le gagnant ne peut pas écrire « Tu m'as eu ».
