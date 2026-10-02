@@ -21,6 +21,10 @@ et la journaliste (8) attendront qu'il y ait du monde dans l'appli ; leurs répl
 
 ## La génération automatique (le robot « Voix »)
 - Les réglages sont dans `outils/voix.json` (Voice ID, indication de jeu par personnage, textes spéciaux pour une réplique).
+- **Tons selon la situation** (`tons` dans `outils/voix.json`), réglage « créatif » (stability 0) pour plus de variété :
+  - Roland : enflammé `[excited] [shouting]` (balle de match, victoire, remontée…), fébrile `[nervous] [whispers]` (tension, set décisif), amusé `[laughs]` (craquage, obstination), déçu `[sighs] [disappointed]` (défaite), sinon `[excited]` ;
+  - Monique : imperturbable `[calm] [deadpan]` (grands moments, tension), cassante `[sarcastic]` (craquage, série perdue…), blasée `[sighs] [bored]` (défaite, set écrasant), sinon `[deadpan]`.
+  - Robot : « essai » refait 10 répliques variées ; « tout-refaire » refait les rôles choisis en entier.
 - Le programme `outils/generer-voix.js` envoie chaque réplique à ElevenLabs et range le fichier dans `app/audio/` sous le bon nom.
   Il ne refait jamais un fichier déjà présent : on peut relancer sans repayer.
 - Le robot GitHub `.github/workflows/voix.yml` le lance : onglet **Actions → Voix → Run workflow**, choisir la branche,
@@ -29,6 +33,10 @@ et la journaliste (8) attendront qu'il y ait du monde dans l'appli ; leurs répl
   `ELEVENLABS_API_KEY`) : elle n'est jamais écrite dans le code.
 - Pour refaire une réplique ratée : dans « ids », mettre son identifiant (le nom du fichier sans `.mp3`).
 - Total pour les trois voix : 443 répliques, environ 19 800 caractères (indications de jeu comprises).
+
+## Les bruitages du court
+- Réglages : `outils/sons.json` (13 sons : un coup de raquette par signe, en version normale et forte pour les balles de set et de match, murmure du public en boucle, tension, « ooh », applaudissements, clameur, fin de set, ovation).
+- Robot « Voix » : choisir **sons-essai** (Pierre normal et fort, applaudissements) puis **sons** (tous). Pour refaire un son : **sons** + son nom dans « ids ».
 
 ## Phrases de test
 

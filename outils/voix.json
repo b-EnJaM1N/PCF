@@ -1,13 +1,124 @@
 {
-  "_explication": "Réglages des voix ElevenLabs (docs/voix-elevenlabs.md). Les Voice ID ne sont pas secrets ; la clé d'accès, si : elle reste dans le coffre-fort de GitHub (secret ELEVENLABS_API_KEY). stability : 0 (créatif), 0.5 (naturel) ou 1 (robuste) avec le modèle eleven_v3.",
+  "_explication": "Réglages des voix ElevenLabs (docs/voix-elevenlabs.md). Les Voice ID ne sont pas secrets ; la clé d'accès, si : elle reste dans le coffre-fort de GitHub (secret ELEVENLABS_API_KEY). stability : 0 (créatif), 0.5 (naturel) ou 1 (robuste) avec le modèle eleven_v3. indication : le ton par défaut ; tons : un autre ton selon la situation (début de l'identifiant de la réplique, sans le rôle).",
   "modele": "eleven_v3",
   "format": "mp3_44100_64",
   "roles": {
-    "commentatrice": { "nom": "Monique Latouffe", "voice_id": "hFgOzpmS0CMtL2to8sAl", "stability": 0.5, "indication": "[deadpan]" },
-    "commentateur": { "nom": "Roland Pignon", "voice_id": "pwONJQic3ZwHTFG8D6uM", "stability": 0.5, "indication": "[excited]" },
-    "arbitre": { "nom": "L'arbitre", "voice_id": "lm3gOYJiClKJc7YaR3r1", "stability": 1, "indication": "" }
+    "commentatrice": {
+      "nom": "Monique Latouffe",
+      "voice_id": "hFgOzpmS0CMtL2to8sAl",
+      "stability": 0,
+      "indication": "[deadpan]",
+      "tons": [
+        {
+          "nom": "imperturbable",
+          "indication": "[calm] [deadpan]",
+          "situations": [
+            "balle_match_convertie",
+            "victoire",
+            "main_legendaire",
+            "balle_sauvee",
+            "remontee",
+            "renversement",
+            "tension",
+            "point_decisif",
+            "set_decisif",
+            "set_couteau",
+            "dialogue_set_decisif",
+            "dialogue_titre"
+          ]
+        },
+        {
+          "nom": "cassante",
+          "indication": "[sarcastic]",
+          "situations": [
+            "craquage",
+            "obstination",
+            "temps_ecoule",
+            "serie_contre",
+            "lecture_subie",
+            "poignee_froide",
+            "poignee_contraste",
+            "duel_esprits",
+            "dialogue_cri"
+          ]
+        },
+        {
+          "nom": "blasée",
+          "indication": "[sighs] [bored]",
+          "situations": [
+            "defaite",
+            "resume_set",
+            "set_ecrasant",
+            "domination",
+            "serie_pour"
+          ]
+        }
+      ]
+    },
+    "commentateur": {
+      "nom": "Roland Pignon",
+      "voice_id": "pwONJQic3ZwHTFG8D6uM",
+      "stability": 0,
+      "indication": "[excited]",
+      "tons": [
+        {
+          "nom": "enflammé",
+          "indication": "[excited] [shouting]",
+          "situations": [
+            "balle_match_convertie",
+            "victoire",
+            "main_legendaire",
+            "balle_sauvee",
+            "remontee",
+            "renversement",
+            "serie_pour",
+            "lecture_reussie",
+            "dialogue_titre"
+          ]
+        },
+        {
+          "nom": "fébrile",
+          "indication": "[nervous] [whispers]",
+          "situations": [
+            "tension",
+            "point_decisif",
+            "set_decisif",
+            "set_couteau",
+            "dialogue_set_decisif"
+          ]
+        },
+        {
+          "nom": "amusé",
+          "indication": "[laughs]",
+          "situations": [
+            "craquage",
+            "obstination",
+            "temps_ecoule",
+            "changement",
+            "dialogue_cri"
+          ]
+        },
+        {
+          "nom": "déçu",
+          "indication": "[sighs] [disappointed]",
+          "situations": [
+            "defaite",
+            "serie_contre"
+          ]
+        }
+      ]
+    },
+    "arbitre": {
+      "nom": "L'arbitre",
+      "voice_id": "lm3gOYJiClKJc7YaR3r1",
+      "stability": 1,
+      "indication": ""
+    }
   },
   "textes": {
-    "_explication": "Texte pour la voix d'une réplique, quand il doit être différent du texte affiché (prononciation, autre indication de jeu). Clé : l'identifiant de la réplique."
+    "_explication": "Texte pour la voix d'une réplique, quand il doit être différent du texte affiché (prononciation, autre indication de jeu). Clé : l'identifiant de la réplique.",
+    "commentateur_lecture_reussie_03_pierre": "[shouting] [like a South American football commentator screaming GOAL] Second poteau, la Pièèèèèèèèèèèèèèèèèrre !!!",
+    "commentateur_lecture_reussie_03_ciseaux": "[shouting] [like a South American football commentator screaming GOAL] Second poteau, les Cisôôôôôôôôôôôôôôôôô !!!",
+    "commentateur_lecture_reussie_03_feuille": "[shouting] [like a South American football commentator screaming GOAL] Second poteau, la Feuuuuuuuuuuuuuuuuuuille !!!"
   }
 }

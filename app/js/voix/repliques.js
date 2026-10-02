@@ -156,9 +156,10 @@ export const MOMENTS = {
   // J'ai lu le réflexe de l'adversaire.
   lecture_reussie: [
     { r: "c", t: "Il l'attendait ! Il l'attendait !", f: "Elle l'attendait ! Elle l'attendait !" },
-    { r: "c", t: "Pleine lucarne ! Il l'avait lu depuis le vestiaire !", f: "Pleine lucarne ! Elle l'avait lu depuis le vestiaire !", clin: "sport" },
+    { r: "c", t: "Pleine lucarne !", clin: "sport" },
     { r: "c", t: ["Second poteau, la Pierre !", "Second poteau, les Ciseaux !", "Second poteau, la Feuille !"], clin: "sport" },
     { r: "c", t: "Il vous a compris !", f: "Elle vous a compris !", clin: "cine" },
+    { r: "c", t: "Il est entré dans son cerveau !", f: "Elle est entrée dans son cerveau !" },
     { r: "d", t: "Coup de maître.", clin: "sport" },
   ],
   temps_ecoule: [
@@ -179,10 +180,14 @@ export const MOMENTS = {
     { r: "d", t: "Pas de Pierre ici. Tout le monde attend la Pierre." },
     { r: "d", t: "Pas d'enflammade, pas d'enflammade.", clin: "sport" },
     { r: "c", t: "Le côté jaune a peur.", clin: "cine", si: "balle_contre" },
+    { r: "c", t: "Un point pour l'Éternité…", si: "enjeu" },
+    { r: "c", t: "Le titre est au bout de ce point…", si: "finale_tournoi" },
+    { r: "d", t: "Toute une carrière pour ce point. Aucune pression.", si: "enjeu" },
   ],
   point_decisif: [
     { r: "c", t: "Un point. Un seul. Pour tout !" },
     { r: "d", t: "Ici, pas de deuxième chance. Comme dans la vie." },
+    { r: "c", t: "Un point pour entrer dans l'Histoire !", si: "enjeu" },
   ],
   // Temps morts : fin de set, fin de match.
   set_ecrasant: [
@@ -191,7 +196,7 @@ export const MOMENTS = {
     { r: "c", t: "Fanny ! Onze à zéro, il va falloir embrasser Fanny !", clin: "sport", si: "onze_zero" },
     { r: "d", t: "Sèche correction." },
     { r: "d", t: "Il n'y a pas eu de match dans ce set." },
-    { r: "d", t: "L'adversaire est resté au vestiaire. Il aurait dû y rester." },
+    { r: "d", t: "Il aurait dû rester au vestiaire." },
     { r: "d", t: "Vous êtes le maillon faible. Au revoir !", clin: "cine" },
     { r: "d", t: "Un set à oublier. Je l'ai déjà oublié." },
     { r: "d", t: "Qu'on m'apporte un café. Et un autre match." },
@@ -219,6 +224,8 @@ export const MOMENTS = {
     { r: "c", t: "Set décisif ! Tout se joue maintenant !" },
     { r: "d", t: "Les statistiques ne servent plus à rien. C'est le caractère qui parle. Quand il y en a." },
     { r: "c", t: "C'est la der des ders !" },
+    { r: "c", t: "Set décisif, et une place dans l'Histoire en jeu !", si: "enjeu" },
+    { r: "d", t: "Un set pour un titre. Je reste calme. Pour deux.", si: "finale_tournoi" },
   ],
   renversement: [
     { r: "c", t: "Mené un set à zéro, il renverse tout !", f: "Menée un set à zéro, elle renverse tout !" },
@@ -230,7 +237,7 @@ export const MOMENTS = {
   balle_match_convertie: [
     { r: "c", t: ["Pieeeeerre ! Pierre ! Pierre !", "Ciseaaaaux ! Ciseaux ! Ciseaux !", "Feuiiiiille ! Feuille ! Feuille !"], clin: "sport" },
     { r: "c", t: "Il franchit la ligne les bras levés !", f: "Elle franchit la ligne les bras levés !", clin: "sport" },
-    { r: "c", t: "Après avoir vu ça, on peut aller se coucher tranquille !", clin: "sport" },
+    { r: "c", t: "Après avoir vu ça, on peut dormir tranquille !", clin: "sport" },
     { r: "d", t: "Échec et mat.", clin: "sport" },
     { r: "d", t: "Hasta la vista, baby.", clin: "cine" },
     { r: "d", t: "C'est tout." },
@@ -255,6 +262,11 @@ export const MOMENTS = {
     { r: "d", t: "Une victoire taillée sur mesure.", seul: 1 },
     { r: "d", t: "Une victoire au scalpel.", seul: 1 },
     { r: "d", t: "Quelle violence… pour une Feuille.", seul: 1 },
+    { r: "c", t: ["La lumière est venue de la Pierre !", "La lumière est venue des Ciseaux !", "La lumière est venue de la Feuille !"], clin: "sport" },
+    { r: "c", t: "Il entre dans la légende !", f: "Elle entre dans la légende !", si: "finale_tournoi" },
+    { r: "c", t: "Qualifié ! Le tableau tremble !", f: "Qualifiée ! Le tableau tremble !", si: "tableau" },
+    { r: "d", t: "Un tour de plus. Ne nous emballons pas.", si: "tableau" },
+    { r: "d", t: "Un titre. Enfin quelque chose à accrocher au frigo.", si: "finale_tournoi" },
   ],
   victoire: [
     { r: "c", t: "C'est fini ! Quel combat !" },

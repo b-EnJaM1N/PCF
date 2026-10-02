@@ -3,7 +3,7 @@
 // La raquette et les applaudissements sont fabriqués par le code (sons.js), sauf si un vrai
 // enregistrement portant leur nom est déposé dans app/audio/ (ex. public_ovation_01.mp3).
 // Le murmure de fond, la tension et le « ooh » n'existent qu'en enregistrement : sans fichier, rien.
-import { applaudissements, coupDeRaquette, echoStade, FOULES } from "./sons.js";
+import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe } from "./sons.js";
 
 const AC = typeof window !== "undefined" ? window.AudioContext || window.webkitAudioContext : null;
 
@@ -17,8 +17,14 @@ export const FICHIERS_AMBIANCE = {
   tension: "public_tension_01",     // balles de set et de match
   ooh: "public_ooh_01",             // point disputé
 };
-// Quatre variantes du coup de raquette, tirées au hasard (celles qui sont déposées).
-export const FICHIERS_RAQUETTE = ["raquette_01", "raquette_02", "raquette_03", "raquette_04"];
+// Le coup de raquette : un son par signe (0 Pierre, 1 Ciseaux, 2 Feuille), et une version forte pour les grands moments
+// (balle de set ou de match, point décisif) : [normal, fort].
+export const FICHIERS_RAQUETTE_SIGNE = [
+  ["raquette_pierre_01", "raquette_pierre_fort_01"],
+  ["raquette_ciseaux_01", "raquette_ciseaux_fort_01"],
+  ["raquette_feuille_01", "raquette_feuille_fort_01"],
+];
+export const FICHIERS_RAQUETTE = FICHIERS_RAQUETTE_SIGNE.flat();
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public se tait).
 export const FOND = { entrePoints: 0.22, echange: 0.06 };
@@ -38,8 +44,9 @@ export function egalitesAvantDernier(coups) {
   for (let i = coups.length - 2; i >= 0 && coups[i].gagnant === null; i--) n++;
   return n;
 }
-// Pierre plus grave, Ciseaux plus aigu : une nuance à peine perceptible.
-const HAUTEUR = [0.92, 1.08, 1];
+// Crête sous laquelle un enregistrement est jugé muet (environ −26 dB).
+export const SEUIL_MUET = 0.05;
+const HAUTEUR = [0.8, 1.4, 1];   // Pierre grave, Ciseaux aigu, Feuille entre les deux
 
 export class Ambiance {
   constructor() {
@@ -86,12 +93,19 @@ export class Ambiance {
       if (!this.fichiers.includes(id) || this.charges?.has(id)) continue;
       try { this.buf[type] = await charger(id); (this.charges ||= new Set()).add(id); } catch { /* on garde le son fabriqué (ou rien) */ }
     }
-    const raquettes = [];
-    for (const id of FICHIERS_RAQUETTE) {
-      if (!this.fichiers.includes(id)) continue;
-      try { raquettes.push(await charger(id)); } catch { /* variante indisponible */ }
+    for (const [k, ids] of FICHIERS_RAQUETTE_SIGNE.entries()) {
+      for (const [f, id] of ids.entries()) {
+        if (!this.fichiers.includes(id)) continue;
+        try {
+          // Tous les coups au même niveau (les enregistrements n'ont pas le même volume) : la version forte claque vraiment plus fort.
+          const b = await charger(id), canaux = Array.from({ length: b.numberOfChannels }, (_, c) => b.getChannelData(c));
+          // Un enregistrement presque muet (ça arrive avec ElevenLabs) : on garde le son fabriqué plutôt que d'amplifier du souffle.
+          if (creteDe(canaux) < SEUIL_MUET) continue;
+          normaliser(canaux, 0.95);
+          (this.raquettesFichiers[k] ||= [])[f] = b;
+        } catch { /* son indisponible : le son fabriqué */ }
+      }
     }
-    if (raquettes.length) this.raquettesFichiers = raquettes;
     if (this.fondVoulu) this.fond(true);   // le murmure arrive pendant le match : on le lance
   }
 
@@ -111,11 +125,13 @@ export class Ambiance {
     } catch { /* un son raté ne doit jamais bloquer le match */ }
   }
 
-  // Le coup de raquette, quand on choisit son signe : un enregistrement au hasard s'il y en a.
-  raquette(signe = 2) {
-    const f = this.raquettesFichiers;
-    if (f.length) this.jouer(f[Math.floor(Math.random() * f.length)], 0.7, false, { vitesse: 0.97 + Math.random() * 0.06 });
-    else this.jouer(this.raquettes[signe], 0.7, true);
+  // Le coup de raquette, quand on choisit son signe : l'enregistrement de ce signe (sa version forte dans les grands moments ;
+  // sans version forte, la normale, plus fort et avec l'écho du stade), sinon le son fabriqué (plus fort dans les grands moments).
+  raquette(signe = 2, fort = false) {
+    const f = this.raquettesFichiers[signe] || [];
+    const b = (fort && f[1]) || f[0];
+    if (b) this.jouer(b, fort ? 1 : 0.7, fort && !f[1], { vitesse: 0.98 + Math.random() * 0.04 });
+    else this.jouer(this.raquettes[signe], fort ? 0.9 : 0.7, true);
   }
 
   // Le murmure du public, en boucle pendant le match (seulement avec l'enregistrement).

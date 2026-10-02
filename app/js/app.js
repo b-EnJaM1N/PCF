@@ -2,7 +2,7 @@
 import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide } from "./surnoms.js";
 import { voirTournoi, mesAmis } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
@@ -100,7 +100,7 @@ $("testSnd").addEventListener("click", () => {
   ambiance.activer(true); ambiance.raquette(); setTimeout(() => ambiance.public("point", 0.5), 400);
   const test = CATALOGUE.get("arbitre_balle_de_match_jaune_01");
   if (!voix.peutDire(test)) {
-    note("Tu dois entendre un coup de raquette puis des applaudissements. Si ce n'est pas le cas, vérifie le volume et le mode silencieux. Les voix (arbitre, commentateurs, speaker) sont coupées en attendant les vrais enregistrements : leurs annonces s'affichent par écrit.");
+    note("Tu dois entendre un coup de raquette puis des applaudissements. Si ce n'est pas le cas, vérifie le volume et le mode silencieux. Ensuite, Roland et Monique doivent parler.");
     setTimeout(() => note(""), 8000); return;
   }
   let demarre = false;
@@ -112,33 +112,53 @@ $("testSnd").addEventListener("click", () => {
   setTimeout(() => { if (!demarre) note(`Aucune voix n'a démarré (${voix.nbVoix} voix trouvées sur l'appareil). Vérifie que le mode silencieux est désactivé, puis réessaie. Si tu as ouvert le lien depuis une autre application, ouvre-le dans Safari ou Chrome.`); }, 2500);
 });
 
+// Écouter Roland et Monique : un dialogue enregistré (commentateur puis commentatrice), sinon une réplique de chacun.
+function repliquesCommentateurs() {
+  const faits = [...voix.fichiers.keys()].filter(id => CATALOGUE.has(id));
+  const dialogues = faits.filter(id => id.startsWith("commentateur_dialogue_") && faits.includes(id.replace("commentateur_", "commentatrice_")));
+  if (dialogues.length) {
+    const id = dialogues[Math.floor(Math.random() * dialogues.length)];
+    return [CATALOGUE.get(id), CATALOGUE.get(id.replace("commentateur_", "commentatrice_"))];
+  }
+  const un = role => { const l = faits.filter(id => CATALOGUE.get(id).role === role); return l.length ? CATALOGUE.get(l[Math.floor(Math.random() * l.length)]) : null; };
+  return [un("commentateur"), un("commentatrice")].filter(Boolean);
+}
+$("testCommentateurs").addEventListener("click", () => {
+  const lignes = repliquesCommentateurs();
+  if (!lignes.length) return;
+  try { ambiance.initialiser(); } catch { /* rien */ }
+  note(lignes.map(l => `${l.role === "commentateur" ? "Roland" : "Monique"} : « ${l.texte} »`).join(" — "));
+  voix.dire(lignes);
+});
+
 function renderVoixInfo() {
   const total = CATALOGUE.size, faits = [...voix.fichiers.keys()].filter(id => CATALOGUE.has(id)).length;
+  $("testCommentateurs").hidden = !repliquesCommentateurs().length;
   $("voixInfo").innerHTML = `<b>${faits} réplique${faits > 1 ? "s" : ""} enregistrée${faits > 1 ? "s" : ""} sur ${total}.</b> ${voix.synthese ? "Les autres sont lues par la voix de synthèse du téléphone." : "Les autres ne sont pas lues à voix haute, en attendant les vrais enregistrements."} Tout ce qui est dit s'affiche aussi par écrit, et le bouton 🔊 en haut de l’écran coupe tout.`;
 }
 
 // ---------------------------------------------------------------- annonces
-let fanerT = 0;
-function annoncer(lignes, silencieux = false) {
-  if (!lignes.length) return;
-  const band = $("band"); band.textContent = ""; band.classList.remove("stale");
-  lignes.forEach(l => { const d = document.createElement("div"); d.className = l.role; d.textContent = l.texte; band.append(d); });
-  clearTimeout(fanerT); fanerT = setTimeout(() => band.classList.add("stale"), 4000);
-  if (!silencieux) voix.dire(lignes);
-}
-// Des répliques affichées par écrit, chacune avec l'icône de qui parle.
-function afficherRepliques(el, lignes) {
-  el.textContent = "";
-  lignes.forEach(l => { const d = document.createElement("div"); d.className = l.role; d.textContent = l.texte; el.append(d); });
-  el.hidden = !lignes.length;
+// Balle de set ou de match, point décisif : le coup de raquette claque plus fort.
+const grandMoment = m => !!balle(m) || pointDecisif(m);
+// Les annonces sont dites à voix haute seulement (pas d'écrit : le porteur du projet n'en veut pas).
+// Pendant l'échange (enJeu), les commentateurs ne disent que des répliques courtes, et pas deux points de suite :
+// une réplique longue déborderait sur les coups suivants. Les longues sont dites dans les pauses
+// (avant le match, fin de set, fin de match).
+const REPLIQUE_COURTE = 32;   // caractères : environ 2 secondes
+function annoncer(lignes, silencieux = false, { enJeu = false, coup = 0 } = {}) {
+  if (!lignes.length || silencieux) return;
+  if (!enJeu) { voix.dire(lignes); return; }
+  const recent = S && coup - (S.commentaireAuCoup ?? -9) < 2;
+  const dites = lignes.filter(l => l.role === "arbitre" || (!recent && l.texte.length <= REPLIQUE_COURTE));
+  if (S && dites.some(l => l.role !== "arbitre")) S.commentaireAuCoup = coup;
+  voix.dire(dites);
 }
 
 // ---------------------------------------------------------------- panneaux
 let panneauGo = null;
-function ouvrirPanneau({ kick = "", big = "", bigCls = "", sc = "", tally = "", com = "", next = "", go, onGo, resteOuvert = false }) {
+function ouvrirPanneau({ kick = "", big = "", bigCls = "", sc = "", tally = "", next = "", go, onGo, resteOuvert = false }) {
   $("iKick").textContent = kick; $("iBig").textContent = big; $("iBig").className = "big " + bigCls;
   $("iSc").textContent = sc; $("iTally").textContent = tally; $("iNext").textContent = next;
-  afficherRepliques($("iCom"), com || []);
   $("iGo").textContent = go;
   $("iGo").disabled = false;
   panneauGo = () => { if (!resteOuvert) fermerPanneau(); onGo && onGo(); };
@@ -240,11 +260,13 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
 
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
   if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
-  annoncer(a.lignes);
+  // Parfois, avant une balle de match, l'arbitre demande le silence.
+  if (evt.balleApres?.type === "match" && !m.termine && Math.random() < 0.5) a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));
+  annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
   render(); renderHistorique(); renderLecture();
   if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);
 
-  if (m.termine) { S.dialogueFin = a.dialogue; setTimeout(() => criEnGrand(cel, () => poigneeDeMain(finir)), 600); return evt; }
+  if (m.termine) { setTimeout(() => criEnGrand(cel, () => poigneeDeMain(finir)), 600); return evt; }
   if (cel) setTimeout(() => criEnBulle(cel), 250);
   if (evt.finSet) {
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
@@ -262,7 +284,6 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
       big: g === 0 ? "Set pour toi" : `Set pour ${OPP.nom}`, bigCls: g === 0 ? "me" : "bot",
       sc: `${pa}–${pb}`,
       tally: `Sets : toi ${m.sets[0]}, ${OPP.nom} ${m.sets[1]}`,
-      com: a.dialogue,
       next: suivant.texte.replace(/\.$/, ""),
       go: `Lancer le ${decisif ? "set décisif" : ORD[n].toLowerCase() + " set"}`,
       resteOuvert: !!S.duel,
@@ -388,7 +409,6 @@ function finir() {
     habitude = p >= 50 ? ` Après une victoire, tu rejoues le même signe ${p} % du temps : c'est exploitable.`
       : p <= 15 ? ` Après une victoire, tu changes presque toujours de signe (${100 - p} %) : c'est aussi un schéma.` : "";
   }
-  afficherRepliques($("endVoix"), S.dialogueFin || []);
   const lues = lecturesReussies(c);
   $("endRead").textContent = `Ton coup était prévisible ${Math.round(100 * (S.suivi.taux || 0))} % du temps.${habitude}${lues ? ` 🔎 Tu as lu ${OPP.nom} ${lues} fois : tu as joué la bonne piste et gagné le point.` : ""}`;
   $("end").hidden = false;
@@ -457,7 +477,7 @@ function poigneeDeMain(apres) {
   if (!S || (S.duel && (!D || D.finSpeciale))) { apres(); return; }
   const ov = $("poignee"), scene = $("pmScene"), choix = $("pmChoix");
   $("pmMoi").innerHTML = avatarSVG(P.av); $("pmAdv").innerHTML = avatarSVG(OPP.av);
-  $("pmStyleMoi").textContent = ""; $("pmStyleAdv").textContent = ""; $("pmCom").textContent = "";
+  $("pmStyleMoi").textContent = ""; $("pmStyleAdv").textContent = "";
   scene.className = "pm-scene"; choix.hidden = false; $("pmTemps").hidden = false;
   choix.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === P.poignee)));
   const barre = $("pmTemps"); barre.classList.remove("court"); void barre.offsetWidth; barre.classList.add("court");
@@ -481,7 +501,7 @@ function poigneeDeMain(apres) {
     $("pmStyleAdv").textContent = `${STYLES[adv].icone} ${STYLES[adv].nom}`;
     $("pmMain").textContent = "🤝";
     scene.classList.add("go", r.animation);
-    if (ligne) { $("pmCom").innerHTML = ""; afficherRepliques($("pmCom"), [ligne]); setTimeout(() => voix.dire([ligne]), 500); }
+    if (ligne) setTimeout(() => voix.dire([ligne]), 500);
     (S.citations ||= []).push(...(ligne && ligne.role !== "arbitre" ? [ligne] : []));
     ov.onclick = terminer;                                   // toucher l'écran : on passe
     setTimeout(terminer, reduitMouvement() ? 1200 : 2400);
@@ -662,7 +682,6 @@ function nouvelleSeance() {
 function preparerEcranMatch() {
   $("hMe").textContent = "❔"; $("hBot").textContent = "❔"; $("hMe").className = "hand"; $("hBot").className = "hand";
   $("verdict").textContent = "";
-  $("band").innerHTML = `<div class="idle">Les annonces de l'arbitre et des commentateurs s'afficheront ici.</div>`; $("band").classList.remove("stale");
   $("tape").innerHTML = `<p class="empty">Les coups apparaîtront ici. Observe-les : ton adversaire le fait.</p>`;
   $("read").textContent = "L'analyse de ton jeu démarre au premier coup.";
   $("end").hidden = true; $("bar").style.transform = "scaleX(1)"; $("timer").classList.remove("urgent"); $("criBulle").hidden = true;
@@ -718,7 +737,10 @@ function ouvrirFaceAFace() {
   $("foKey").innerHTML = `${esc(pr.cle)} Tu joues <b>côté jaune</b>.`;
   $("foSurMe").textContent = surnomDe(P).texte;
   $("foSurBot").textContent = OPP.humain && OPP.surnom ? OPP.surnom.texte : "";
-  if (!S.duel) S.annonces.finale = S.tour !== null && !!T && tourDe(T, S.tour).finale;
+  if (!S.duel) {
+    S.annonces.finale = S.tour !== null && !!T && tourDe(T, S.tour).finale;
+    S.annonces.enjeu = niveauEnjeu({ tour: S.tour !== null && T ? tourDe(T, S.tour).cle : null });
+  }
   presenterSpeaker();
 
   // Chorégraphie : bandeau, entrée des joueurs, VS (et le public applaudit), puis les stats une à une.
@@ -738,7 +760,7 @@ function ouvrirFaceAFace() {
   // Filet de sécurité : quoi qu'il arrive à l'animation, tout est affiché peu après.
   minuteriesIntro.push(setTimeout(() => ov.classList.add("vite"), (fin + 0.8) * 1000));
 }
-// Le speaker présente les joueurs (et les commentateurs lancent le match), par écrit et à voix haute.
+// Les commentateurs lancent le match, à voix haute (pas de speaker pour l'instant : sa présentation n'est ni dite ni affichée).
 function presenterSpeaker() {
   const f = P.faceAFace[OPP.id], humain = !!OPP.humain;
   const niveauMoi = humain ? monClassement ?? 1200 : P.elo, niveauAdv = humain ? OPP.classement ?? 1200 : OPP.elo;
@@ -756,12 +778,9 @@ function presenterSpeaker() {
     recents,
   });
   // On retient les phrases dites, pour ne pas les répéter aux prochains matchs.
-  ecrire("speakerRecents", [...av.speaker, ...av.commentaires].map(l => l.id).concat(recents).slice(0, 80));
-  const el = $("foSpeaker"); el.textContent = "";
-  const sp = document.createElement("div"); sp.className = "speaker"; sp.textContent = av.speaker.map(l => l.texte).join(" "); el.append(sp);
-  av.commentaires.forEach(l => { const d = document.createElement("div"); d.className = l.role; d.textContent = l.texte; el.append(d); });
+  ecrire("speakerRecents", av.commentaires.map(l => l.id).concat(recents).slice(0, 80));
   clearTimeout(voixIntro);
-  voixIntro = setTimeout(() => { if (faceAFaceOuvert && !S.passe) voix.dire([...av.speaker, ...av.commentaires]); }, reduitMouvement() ? 0 : 1300);
+  voixIntro = setTimeout(() => { if (faceAFaceOuvert && !S.passe) voix.dire(av.commentaires); }, reduitMouvement() ? 0 : 1300);
 }
 // Les nombres défilent jusqu'à leur valeur, comme au tableau d'affichage.
 function compter(el) {
@@ -1254,6 +1273,7 @@ async function reperesTournoi(duel) {
     D.direct = t.mode === "direct" && !t.freeroll && !t.programme;   // (le trophée « Roi du Sit & Go » ne vaut ni pour le freeroll ni pour les tournois programmés)
     D.grandChelem = t.programme === "grand_chelem";
     S.annonces.finale = D.tourVoix === "finale";
+    S.annonces.enjeu = niveauEnjeu({ tour: D.tourVoix, grandChelem: D.grandChelem });
     if (faceAFaceOuvert) presenterSpeaker();
   } catch { /* sans réseau : présentation simple */ }
 }
@@ -1355,7 +1375,7 @@ function jouerDuel(signe) {
   const d = D.duel;
   if (d.phase !== "jeu" || d.pause_depuis || D.mancheEnvoyee === d.manche) return;
   D.mancheEnvoyee = d.manche; boutons(false);
-  ambiance.raquette(signe);
+  ambiance.raquette(signe, grandMoment(S.match));
   $("hMe").textContent = EMOJI[signe]; $("hMe").className = "hand"; $("hBot").textContent = "⏳"; $("hBot").className = "hand";
   $("verdict").textContent = `En attente de ${OPP.nom}…`;
   serveur.jouer(D.id, d.manche, signe).then(majDuel).catch(e => {

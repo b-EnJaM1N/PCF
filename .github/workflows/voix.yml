@@ -9,15 +9,15 @@ on:
   workflow_dispatch:
     inputs:
       quoi:
-        description: "essai (10 répliques) ou tout (toutes les répliques pas encore enregistrées)"
+        description: "Voix : essai (10 répliques, refaites), tout (ce qui manque) ou tout-refaire (les rôles choisis, en entier). Bruitages du court : sons-essai (3 sons) ou sons (tous)."
         type: choice
-        options: [essai, tout]
+        options: [essai, tout, tout-refaire, sons-essai, sons]
         default: essai
       roles:
         description: "Les voix à générer (séparées par des virgules)"
         default: "commentateur,commentatrice,arbitre"
       ids:
-        description: "Facultatif : refaire seulement ces répliques (identifiants séparés par des virgules)"
+        description: "Facultatif : refaire seulement ces répliques ou ces sons (noms des fichiers sans .mp3, séparés par des virgules)"
         default: ""
 
 permissions:
@@ -44,9 +44,13 @@ jobs:
           ROLES: ${{ inputs.roles }}
           IDS: ${{ inputs.ids }}
         run: |
-          ESSAI="commentatrice_serie_contre_02,commentateur_dialogue_cri_02,commentatrice_dialogue_cri_02,arbitre_balle_de_match_jaune_01,arbitre_set_decisif_01,commentateur_main_legendaire_01,commentatrice_serie_pour_03,commentateur_dialogue_avant_match_06,commentatrice_dialogue_avant_match_06,commentateur_craquage_04"
-          if [ -n "$IDS" ]; then node outils/generer-voix.js --ids "$IDS" --refaire
-          elif [ "$QUOI" = "essai" ]; then node outils/generer-voix.js --ids "$ESSAI"
+          ESSAI="commentateur_balle_match_convertie_03,commentateur_tension_01,commentateur_craquage_02,commentateur_defaite_01,commentateur_obstination_02,commentatrice_craquage_02,commentatrice_victoire_02,commentatrice_defaite_02,commentatrice_set_ecrasant_02,commentatrice_serie_contre_03"
+          if [ "$QUOI" = "sons-essai" ]; then node outils/generer-sons.js --ids "raquette_pierre_01,raquette_pierre_fort_01,public_point_01"
+          elif [ "$QUOI" = "sons" ] && [ -n "$IDS" ]; then node outils/generer-sons.js --ids "$IDS" --refaire
+          elif [ "$QUOI" = "sons" ]; then node outils/generer-sons.js
+          elif [ -n "$IDS" ]; then node outils/generer-voix.js --ids "$IDS" --refaire
+          elif [ "$QUOI" = "essai" ]; then node outils/generer-voix.js --ids "$ESSAI" --refaire
+          elif [ "$QUOI" = "tout-refaire" ]; then node outils/generer-voix.js --roles "$ROLES" --refaire
           else node outils/generer-voix.js --roles "$ROLES"
           fi
 
@@ -58,6 +62,8 @@ jobs:
           git add app/audio
           if git diff --cached --quiet; then echo "Aucun nouveau fichier"; exit 0; fi
           git commit -qm "Voix : $(git diff --cached --name-only | wc -l) fichier(s) audio générés"
+          # La branche a pu bouger pendant la génération : on reprend ses nouveautés avant d'envoyer.
+          git pull --rebase -q origin "$GITHUB_REF_NAME"
           git push origin HEAD:"$GITHUB_REF_NAME"
           # Une modification faite par le robot ne relance pas la mise en ligne toute seule : on la demande.
           gh workflow run deploiement.yml --ref "$GITHUB_REF_NAME"

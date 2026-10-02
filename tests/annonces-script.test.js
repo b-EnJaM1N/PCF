@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { CATALOGUE, replique, repliqueScore, repliquePartout, POOLS, DIALOGUES_IDS } from "../app/js/voix/script.js";
-import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces, annoncesAvantMatch, interview, etiquetteDe } from "../app/js/annonces.js";
+import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces, annoncesAvantMatch, interview, etiquetteDe, niveauEnjeu } from "../app/js/annonces.js";
 import { surnomDe } from "../app/js/surnoms.js";
 import { profilParDefaut } from "../app/js/profil.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX, FEUILLE } from "../app/js/regles.js";
@@ -239,4 +239,39 @@ test("sur une balle de match, on ne parle pas de « set »", () => {
       if (a.commentaire) assert.ok(!/\bset\b/.test(a.commentaire.texte), a.commentaire.texte);
     }
   }
+});
+
+test("les grandes phrases (« Un point pour l'Éternité ») sont réservées aux matchs à enjeu", () => {
+  assert.equal(niveauEnjeu({ tour: "finale" }), "finale");
+  assert.equal(niveauEnjeu({ tour: "demis" }), "tableau");
+  assert.equal(niveauEnjeu({ tour: "huitiemes" }), null);
+  assert.equal(niveauEnjeu({ tour: "huitiemes", grandChelem: true }), "tableau");
+  assert.equal(niveauEnjeu(), null, "match amical ou contre un bot");
+  const enjeu = new Set([...Object.values(POOLS)].flat().filter(e => ["enjeu", "tableau", "finale_tournoi"].includes(e.si)).map(e => e.base));
+  const entendues = niveau => {
+    const rng = rngFixe(7), dites = new Set();
+    for (let k = 0; k < 150; k++) {
+      const m = nouveauMatch({ pointsParSet: 7, setsGagnants: 2 }), etat = nouvelEtatAnnonces({ enjeu: niveau });
+      while (!m.termine) {
+        const a = annoncerCoup(m, jouerCoup(m, Math.floor(rng() * 3), Math.floor(rng() * 3)), etat, {}, rng);
+        for (const l of a.lignes) if ([...enjeu].some(b => l.id.startsWith(b))) dites.add(l.id);
+      }
+    }
+    return dites;
+  };
+  assert.equal(entendues(null).size, 0, "jamais dans un match sans enjeu");
+  const finale = entendues("finale");
+  assert.ok([...finale].some(id => id.startsWith("commentateur_tension_04")), "« Un point pour l'Éternité » en finale");
+  assert.ok(![...finale].some(id => id.startsWith("commentateur_balle_match_convertie_19")), "pas de « Qualifié ! » en finale");
+});
+
+test("avant le match, Roland et Monique parlent encore après des dizaines de matchs", () => {
+  const P = profilParDefaut(), moi = { surnom: surnomDe(P) }, rng = rngFixe(3);
+  let recents = [], parles = 0;
+  for (let k = 0; k < 40; k++) {
+    const av = annoncesAvantMatch({ moi, adv: { bot: "rocky" }, recents }, rng);
+    if (av.commentaires.length) parles++;
+    recents = av.commentaires.map(l => l.id).concat(recents).slice(0, 80);   // comme l'appli
+  }
+  assert.ok(parles >= 25, `${parles} matchs sur 40 avec un dialogue`);
 });

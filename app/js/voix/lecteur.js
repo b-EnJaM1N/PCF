@@ -5,6 +5,18 @@
 // La liste des fichiers présents (audio/index.json) est créée automatiquement
 // à chaque mise en ligne, il suffit donc de déposer les fichiers dans app/audio/.
 
+// Le volume de chaque voix (0 à 1), mesuré sur les enregistrements ElevenLabs : l'arbitre en retrait,
+// Roland (enregistré plus fort) ramené au niveau de Monique.
+export const VOLUMES = { arbitre: 0.55, commentateur: 0.5, commentatrice: 0.85, speaker: 0.8, journaliste: 0.8 };
+// L'arbitre ne dit à voix haute que l'essentiel (décision du porteur du projet) : le début de chaque set, « Jeu, set et match »
+// (ou la victoire par forfait, l'abandon) et parfois « Silence, s'il vous plaît ». Ses autres annonces (balles de set et de match,
+// scores) restent seulement affichées par écrit.
+const ARBITRE_PARLE = /^arbitre_((premier|deuxieme|troisieme|quatrieme)_set|set_decisif|set_unique|troisieme_et_dernier_set|les_joueurs_sont_prets|silence|abandon|(jeu_set_et_match|forfait)_(jaune|rouge))_01$/;
+export const ditAVoixHaute = r => r.role !== "arbitre" || ARBITRE_PARLE.test(r.id);
+
+// La vitesse de lecture (1 = normale) : les commentaires doivent tenir entre deux coups. La hauteur de la voix ne change pas.
+export const VITESSES = { arbitre: 1, commentateur: 1.4, commentatrice: 1.65, speaker: 1, journaliste: 1 };
+
 const synth = typeof window !== "undefined" && "speechSynthesis" in window ? window.speechSynthesis : null;
 
 export class LecteurVoix {
@@ -51,6 +63,7 @@ export class LecteurVoix {
 
   // Dit une suite de répliques, l'une après l'autre. `auDebut` est appelé quand le son démarre.
   dire(repliques, auDebut) {
+    repliques = repliques.filter(ditAVoixHaute);
     if (!this.actif || !repliques.length) return;
     this.arreter();
     const jeton = this.jeton;
@@ -61,7 +74,12 @@ export class LecteurVoix {
       const debut = () => { if (premiere) { premiere = false; auDebut?.(); } };
       const fin = () => suivante(i + 1);
       const audio = this.audio(r.id);
-      if (audio) this.jouerFichier(audio, debut, fin, () => this.parler(r, debut, fin));
+      if (audio) {
+        audio.volume = VOLUMES[r.role] ?? 0.8;
+        audio.preservesPitch = audio.mozPreservesPitch = audio.webkitPreservesPitch = true;
+        audio.defaultPlaybackRate = audio.playbackRate = VITESSES[r.role] ?? 1;
+      }
+      if (audio) this.jouerFichier(audio, debut, fin, () => { if (jeton === this.jeton) this.parler(r, debut, fin); });
       else if (!this.synthese) fin();
       else this.parler(r, debut, fin);
     };
@@ -79,8 +97,11 @@ export class LecteurVoix {
   jouerFichier(audio, debut, fin, secours) {
     this.enCours = audio;
     audio.currentTime = 0;
-    audio.onended = () => { this.enCours = null; fin(); };
-    audio.play().then(debut).catch(() => { this.enCours = null; secours(); });
+    // On n'oublie la réplique en cours que si c'est bien celle-ci : une réplique interrompue pendant son chargement
+    // échoue après coup, et ne doit pas faire oublier la suivante (qu'on ne pourrait plus couper : deux voix en même temps).
+    const oublier = () => { if (this.enCours === audio) this.enCours = null; };
+    audio.onended = () => { oublier(); fin(); };
+    audio.play().then(debut).catch(() => { oublier(); secours(); });
   }
 
   parler(r, debut, fin) {
