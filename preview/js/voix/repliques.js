@@ -156,7 +156,7 @@ export const MOMENTS = {
   // J'ai lu le réflexe de l'adversaire.
   lecture_reussie: [
     { r: "c", t: "Il l'attendait ! Il l'attendait !", f: "Elle l'attendait ! Elle l'attendait !" },
-    { r: "c", t: "Pleine lucarne ! Il l'avait lu depuis le vestiaire !", f: "Pleine lucarne ! Elle l'avait lu depuis le vestiaire !", clin: "sport" },
+    { r: "c", t: "Pleine lucarne !", clin: "sport" },
     { r: "c", t: ["Second poteau, la Pierre !", "Second poteau, les Ciseaux !", "Second poteau, la Feuille !"], clin: "sport" },
     { r: "c", t: "Il vous a compris !", f: "Elle vous a compris !", clin: "cine" },
     { r: "d", t: "Coup de maître.", clin: "sport" },
