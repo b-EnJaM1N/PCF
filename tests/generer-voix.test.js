@@ -47,3 +47,10 @@ test("les bruitages : les noms attendus par l'appli, des durées permises, le fo
   assert.equal(sonsAFaire({ existe: () => true }).length, 0, "rien à refaire");
   assert.equal(sonsAFaire({ ids: ["raquette_pierre_01"], refaire: true, existe: () => true }).length, 1);
 });
+
+test("un coup de raquette enregistré presque muet n'est pas amplifié", async () => {
+  const { creteDe } = await import("../app/js/sons.js");
+  const { SEUIL_MUET } = await import("../app/js/ambiance.js");
+  assert.ok(creteDe([new Float32Array([0, 0.001, -0.002])]) < SEUIL_MUET, "un fichier muet (−54 dB) est écarté");
+  assert.ok(creteDe([new Float32Array([0, 0.3, -0.6])]) >= SEUIL_MUET, "un vrai coup est gardé");
+});
