@@ -40,6 +40,9 @@ Hollande, Le Maillon faible, Terminator, Les Bronzés…). On rééquilibre avec
 - « C'est une dinguerie. Comme disent les jeunes. » — proposition
 - « Il a le seum. Comme disent les jeunes. » (« Elle a le seum… ») — proposition
 - « Il est en PLS. Comme disent les jeunes. » (« Elle est en PLS… ») — proposition
+- « C'est un vrai banger. Comme disent les jeunes. » — idée du porteur du projet. Après un point ou un set spectaculaire.
+  Monique le prononce mal, à la française : « ban-jé ». Pour la voix, on écrira le texte comme il doit être prononcé
+  (« C'est un vrai bangé ») ; à l'écran, on garde « banger ».
 
 ### Sport, pour les 18-35 ans (les clins d'œil sport actuels viennent surtout de France 98 et des vieux commentaires)
 - Une remontée (gagner après avoir perdu le 1er set) : « C'est la remontada ! » (Barça-PSG, 2017) — proposition
