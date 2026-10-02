@@ -6,6 +6,9 @@ fichiers présents est recalculée automatiquement.
 
 ## Les voix
 
+Elles sont générées automatiquement avec ElevenLabs par le robot GitHub « Voix » (voir `docs/voix-elevenlabs.md`).
+On peut aussi déposer un fichier à la main : il remplace alors la version générée.
+
 Nommées comme l'identifiant de la réplique dans le script, par exemple :
 
     commentateur_craquage_02.mp3
