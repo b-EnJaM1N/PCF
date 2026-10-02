@@ -5,8 +5,8 @@
 -- Nécessite les étapes 2 à 22. Peut être relancé sans risque.
 --
 -- Principe (décidé avec le porteur du projet) :
---  * seuls les meilleurs joueurs sont têtes de série : la moitié du tableau jusqu'à 8 places (4 têtes de série sur 8),
---    un quart au-delà (8 sur 32, 16 sur 64, 32 sur 128) ; à niveau égal, le hasard départage ;
+--  * seuls les meilleurs joueurs sont têtes de série : la moitié du tableau, 32 au plus (4 sur 8, 8 sur 16, 16 sur 32,
+--    32 à partir de 64) ; à niveau égal, le hasard départage ;
 --  * les têtes de série sont placées comme au tennis : la 1 en haut, la 2 en bas, les 3 et 4 tirées au sort entre
 --    les deux autres quarts, les 5 à 8 entre les huitièmes…, de sorte que deux têtes de série ne se croisent pas trop tôt ;
 --  * les places vides (exempts) et les bots vont d'abord face aux meilleures têtes de série ;
@@ -16,7 +16,7 @@
 -- Le nombre de têtes de série pour un tableau de « p_taille » places et « p_humains » joueurs.
 create or replace function public._nb_tetes(p_taille int, p_humains int) returns int
 language sql immutable as $$
-  select greatest(0, least(p_humains, case when p_taille <= 8 then p_taille / 2 else p_taille / 4 end))
+  select greatest(0, least(p_humains, p_taille / 2, 32))
 $$;
 
 -- Le tirage : fixe les têtes de série (colonne « tete », vide pour les autres) et crée les matchs du premier tour.
