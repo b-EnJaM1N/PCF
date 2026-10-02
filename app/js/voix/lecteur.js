@@ -5,6 +5,10 @@
 // La liste des fichiers présents (audio/index.json) est créée automatiquement
 // à chaque mise en ligne, il suffit donc de déposer les fichiers dans app/audio/.
 
+// Le volume de chaque voix (0 à 1), mesuré sur les enregistrements ElevenLabs : l'arbitre en retrait,
+// Roland (enregistré plus fort) ramené au niveau de Monique.
+export const VOLUMES = { arbitre: 0.55, commentateur: 0.5, commentatrice: 0.85, speaker: 0.8, journaliste: 0.8 };
+
 const synth = typeof window !== "undefined" && "speechSynthesis" in window ? window.speechSynthesis : null;
 
 export class LecteurVoix {
@@ -61,6 +65,7 @@ export class LecteurVoix {
       const debut = () => { if (premiere) { premiere = false; auDebut?.(); } };
       const fin = () => suivante(i + 1);
       const audio = this.audio(r.id);
+      if (audio) audio.volume = VOLUMES[r.role] ?? 0.8;
       if (audio) this.jouerFichier(audio, debut, fin, () => this.parler(r, debut, fin));
       else if (!this.synthese) fin();
       else this.parler(r, debut, fin);
