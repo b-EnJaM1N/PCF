@@ -25,9 +25,11 @@ button { touch-action: manipulation; }
 .wrap { max-width: 460px; margin: 0 auto; padding: 16px 16px 28px; display: flex; flex-direction: column; gap: 16px; }
 header { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .marque { display: flex; align-items: center; gap: 10px; }
-.marque .logo { width: 46px; height: 46px; flex: none; border-radius: 50%; }
-h1 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.6rem; margin: 0; }
-.rule { color: var(--muted); font-size: .85rem; }
+.marque .logo { width: 62px; height: 62px; flex: none; border-radius: 50%; }
+h1 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 2.1rem; line-height: 1; margin: 0; }
+/* Le format du match en cours : seulement pendant un match (le format choisi est dans les Options). */
+.rule { color: var(--muted); font-size: .78rem; line-height: 1.25; margin-top: 2px; }
+body:not(.en-match) .rule { display: none; }
 .haut-droite { display: flex; align-items: center; gap: 8px; flex: none; }
 .sound { display: flex; align-items: center; gap: 8px; font-size: .9rem; cursor: pointer; user-select: none; }
 .sound input { width: 20px; height: 20px; accent-color: var(--me); margin: 0; cursor: pointer; }
@@ -627,3 +629,13 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .msg-fin .bulle-msg:not(.adv) { align-self: flex-end; }
 @keyframes bulle-msg { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .bulle-msg { animation: none; } }
+
+/* L'en-tête sur les petits téléphones (à la fin : ces réglages passent avant les autres). */
+@media (max-width: 380px) {   /* petits téléphones : tout tient sur une ligne avec les jetons, le son et les Options */
+  .marque { gap: 8px; }
+  .marque .logo { width: 50px; height: 50px; }
+  h1 { font-size: 1.75rem; }
+  .haut-droite { gap: 5px; }
+  .haut-droite .icone { padding: 5px 6px; font-size: 1.1rem; }
+  .jetons-haut { padding: 4px 8px; font-size: .82rem; }
+}
