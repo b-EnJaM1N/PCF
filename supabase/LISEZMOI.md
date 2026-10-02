@@ -157,6 +157,13 @@ Elle crée les comptes des bots (Rocky 🤖, Papyrus 🤖… : ils apparaissent 
 en `@bots.handslam.fr`, personne ne peut s'y connecter), allège le programme (freeroll chaque soir, Grand Chelem le dimanche)
 et ajoute un minuteur qui lance les tournois à l'heure, chaque minute.
 
+## 1 duovicies. Les messages rapides en duel (étape 22)
+
+Même manipulation avec [`etape-22-messages-rapides.sql`](etape-22-messages-rapides.sql), **après** l'étape 21
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-22-messages-rapides.sql).
+Elle permet d'envoyer un message tout fait à son adversaire, un avant le match et un après. Le serveur vérifie
+que le message existe, qu'il arrive au bon moment, et que le chambrage n'est envoyé qu'entre amis.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

@@ -241,7 +241,7 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .intro.show .fo-row span:first-child { animation: entreeG .4s calc(1.6s + var(--i) * .28s) cubic-bezier(.2, 1.1, .3, 1) both; }
 .intro.show .fo-row span:last-child { animation: entreeD .4s calc(1.6s + var(--i) * .28s) cubic-bezier(.2, 1.1, .3, 1) both; }
 .intro.show .fo-row .adv::after { animation: trait .35s calc(1.95s + var(--i) * .28s) ease-out both; }
-.intro.show :is(.fo-key, .fo-end) { animation: fade .45s var(--fin, 3.2s) both; }
+.intro.show :is(.fo-key, .fo-end, #foMsg) { animation: fade .45s var(--fin, 3.2s) both; }
 .intro.vite *, .intro.vite *::after { animation: none !important; }
 .intro.vite .fo-vs::after { display: none; }
 @keyframes tomber { from { transform: translateY(-30px); opacity: 0 } to { transform: none; opacity: 1 } }
@@ -609,3 +609,21 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .lecture-off { margin: 12px 0 0; text-align: center; }
 .lecture-piste { margin: 8px 0 0; padding: 8px 10px; border-radius: 6px; background: rgba(242, 193, 78, .14); border: 1px solid #F2C14E; font-size: .9rem; line-height: 1.35; }
 .lecture-piste[hidden] { display: none; }
+
+/* Les messages rapides en duel (messages-rapides.js) : des boutons à toucher, puis une bulle sous chaque joueur. */
+.msg-zone { margin: 0 0 10px; }
+.msg-zone[hidden], .msg-fin[hidden], .bulle-msg[hidden] { display: none; }
+.msg-titre { margin: 0 0 6px; font-size: .85rem; color: var(--muted); text-align: center; }
+.msg-puces { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.msg-puces button { font: inherit; font-size: .85rem; color: var(--line); background: var(--panel); border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; padding: 6px 11px; cursor: pointer; }
+.msg-puces button.amis { border-color: var(--me); }
+.msg-puces button:disabled { opacity: .5; }
+.bulle-msg { display: inline-block; margin: 6px auto 0; padding: 5px 10px; border-radius: 12px; background: var(--me); color: #1A1A1A; font-size: .85rem; font-weight: 600; max-width: 100%; animation: bulle-msg .3s ease-out; }
+.bulle-msg.adv { background: var(--line); }
+.bulle-msg::before { content: "💬 "; }
+.msg-fin { margin: 10px 0; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.msg-fin .bulle-msg { margin: 0; }
+.msg-fin .bulle-msg.adv { align-self: flex-start; }
+.msg-fin .bulle-msg:not(.adv) { align-self: flex-end; }
+@keyframes bulle-msg { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .bulle-msg { animation: none; } }
