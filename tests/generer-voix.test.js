@@ -22,7 +22,8 @@ test("le texte pour la voix : l'indication de jeu du personnage, puis la répliq
 test("ce qu'il reste à générer : les rôles choisis, sans refaire les fichiers déjà là", () => {
   const roles = ["commentateur", "commentatrice", "arbitre"];
   const tout = aFaire({ roles, existe: () => false });
-  assert.ok(tout.length > 400 && tout.every(r => roles.includes(r.role)));
+  assert.ok(tout.length > 350 && tout.every(r => roles.includes(r.role)));
+  assert.ok(!tout.some(r => r.id.startsWith("arbitre_balle_de_")), "l'arbitre n'annonce plus les balles de set et de match");
   assert.equal(aFaire({ roles, existe: () => true }).length, 0, "tout est déjà enregistré");
   assert.equal(aFaire({ roles, limite: 10, existe: () => false }).length, 10);
   assert.equal(aFaire({ ids: ["arbitre_set_decisif_01"], refaire: true, existe: () => true }).length, 1, "refaire une réplique précise");

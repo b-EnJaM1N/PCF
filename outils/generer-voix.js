@@ -5,6 +5,7 @@
 // - la clé n'est jamais écrite dans le code : elle vient de l'environnement (secret GitHub).
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { CATALOGUE } from "../app/js/voix/script.js";
+import { ditAVoixHaute } from "../app/js/voix/lecteur.js";
 
 const arg = (nom, defaut) => { const i = process.argv.indexOf(`--${nom}`); return i < 0 ? defaut : (process.argv[i + 1] ?? ""); };
 const config = JSON.parse(readFileSync(new URL("voix.json", import.meta.url), "utf8"));
@@ -20,7 +21,8 @@ export function texteVoix(r, cfg = config) {
 
 // Les répliques à générer, dans l'ordre du catalogue.
 export function aFaire({ roles, ids, refaire = false, limite = Infinity, existe = id => existsSync(new URL(`${id}.mp3`, dossier)) } = {}) {
-  const liste = [...CATALOGUE.values()].filter(r => (ids ? ids.includes(r.id) : roles.includes(r.role)) && config.roles[r.role]);
+  // (seulement ce qui est dit à voix haute : l'arbitre n'annonce que l'essentiel)
+  const liste = [...CATALOGUE.values()].filter(r => (ids ? ids.includes(r.id) : roles.includes(r.role) && ditAVoixHaute(r)) && config.roles[r.role]);
   return liste.filter(r => (refaire && ids) || !existe(r.id)).slice(0, limite);
 }
 

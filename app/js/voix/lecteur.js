@@ -8,6 +8,12 @@
 // Le volume de chaque voix (0 à 1), mesuré sur les enregistrements ElevenLabs : l'arbitre en retrait,
 // Roland (enregistré plus fort) ramené au niveau de Monique.
 export const VOLUMES = { arbitre: 0.55, commentateur: 0.5, commentatrice: 0.85, speaker: 0.8, journaliste: 0.8 };
+// L'arbitre ne dit à voix haute que l'essentiel (décision du porteur du projet) : le début de chaque set, « Jeu, set et match »
+// (ou la victoire par forfait, l'abandon) et parfois « Silence, s'il vous plaît ». Ses autres annonces (balles de set et de match,
+// scores) restent seulement affichées par écrit.
+const ARBITRE_PARLE = /^arbitre_((premier|deuxieme|troisieme|quatrieme)_set|set_decisif|set_unique|troisieme_et_dernier_set|les_joueurs_sont_prets|silence|abandon|(jeu_set_et_match|forfait)_(jaune|rouge))_01$/;
+export const ditAVoixHaute = r => r.role !== "arbitre" || ARBITRE_PARLE.test(r.id);
+
 // La vitesse de lecture (1 = normale) : les commentaires doivent tenir entre deux coups. La hauteur de la voix ne change pas.
 export const VITESSES = { arbitre: 1, commentateur: 1.15, commentatrice: 1.3, speaker: 1, journaliste: 1 };
 
@@ -57,6 +63,7 @@ export class LecteurVoix {
 
   // Dit une suite de répliques, l'une après l'autre. `auDebut` est appelé quand le son démarre.
   dire(repliques, auDebut) {
+    repliques = repliques.filter(ditAVoixHaute);
     if (!this.actif || !repliques.length) return;
     this.arreter();
     const jeton = this.jeton;
