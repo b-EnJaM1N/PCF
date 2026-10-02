@@ -19,6 +19,10 @@ Hollande, Le Maillon faible, Terminator, Les Bronzés…). On rééquilibre avec
 - « Bref. Il a perdu le set. » (la série *Bref*) — proposition
 - « Houston, on a un problème. » (*Apollo 13*) — proposition
 
+### Un joueur qui rejoue toujours le même signe (obstination) — hommage aux Tuches, idée du porteur du projet
+- Roland, en scandant : « Pierre, Pierre, Pierre, Pierre, Pierre ! » · « Ciseaux, ciseaux, ciseaux, ciseaux, ciseaux ! » · « Feuille, feuille, feuille, feuille, feuille ! »
+  (sans « des » devant : ça sonne mieux ; une version par signe, dite quand le joueur vient de rejouer ce signe)
+
 ### Une erreur grossière, un signe rejoué qui perd encore (obstination)
 - « Allô ? Non mais allô, quoi ! » (Nabilla, télé-réalité) — proposition
 
