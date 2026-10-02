@@ -4,7 +4,7 @@ import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch } from "./annonces.js";
 import { surnomDe, NOMS, COMPLEMENTS, debloques, aDebloquer } from "./surnoms.js";
-import { voirTournoi } from "./social-serveur.js";
+import { voirTournoi, mesAmis } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
 import { carteDe, notesDe, texteRang } from "./carte-logique.js";
@@ -25,6 +25,7 @@ import { CATALOGUE, ligneDialogue } from "./voix/script.js";
 import { Ambiance, reactionsPublic, egalitesAvantDernier } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
+import { messagesPossibles, momentApres, texteMessage } from "./messages-rapides.js";
 import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
 import { installerDuels } from "./ecran-duel.js";
@@ -387,6 +388,7 @@ function finir() {
   const lues = lecturesReussies(c);
   $("endRead").textContent = `Ton coup était prévisible ${Math.round(100 * (S.suivi.taux || 0))} % du temps.${habitude}${lues ? ` 🔎 Tu as lu ${OPP.nom} ${lues} fois : tu as joué la bonne piste et gagné le point.` : ""}`;
   $("end").hidden = false;
+  if (S.duel && D) { afficherMessages(D.duel); guetterMessageFin(); }   // le mot de la fin (messages rapides)
   $("bar").style.transform = "scaleX(0)";
 
   const enTournoi = !!(S.tour !== null && T && !S.duel);
@@ -489,6 +491,65 @@ async function styleAdversaire(moi) {
     for (let k = 0; !d?.[sa] && k < 3; k++) { await new Promise(ok => setTimeout(ok, 700)); d = await serveur.lireDuel(id); }
     return d?.[sa] ? styleValide(d[sa]) : habituel;
   } catch { return habituel; }
+}
+
+// ---------------------------------------------------------------- les messages rapides (duel)
+// Un message tout fait avant le match (pendant la présentation) et un après (écran de fin).
+// Le chambrage n'est proposé qu'entre amis ; le serveur le vérifie aussi (étape 22).
+const masquerMessages = () => !!lire("masquerMessages");
+$("masquerMessages").checked = masquerMessages();
+$("masquerMessages").addEventListener("change", e => { ecrire("masquerMessages", e.target.checked); if (D?.duel) afficherMessages(D.duel); });
+
+// Mon ami ? (une demande d'ami acceptée) — cherché une fois par duel.
+async function verifierAmi() {
+  const d = D;
+  if (!d) return;
+  try { const amis = await mesAmis(); if (D === d) { d.ami = amis.some(a => a.id === OPP.uid && a.statut === "amis"); afficherMessages(d.duel); } }
+  catch { /* sans la liste, pas de chambrage */ }
+}
+const momentAvecMoi = duel => (duel.phase === "presentation" ? "avant" : duel.phase === "termine" && duel.vainqueur !== null && duel.vainqueur !== undefined ? momentApres(duel.vainqueur === D.moi) : null);
+function puces(zone, moment) {
+  zone.innerHTML = messagesPossibles(moment, !!D.ami).map(m => `<button class="${m.amis ? "amis" : ""}" data-msg="${m.id}">${esc(m.texte)}</button>`).join("");
+}
+function bulle(el, texte) { el.hidden = !texte; el.textContent = texte || ""; }
+function afficherMessages(duel) {
+  if (!D || !duel || duel.id !== D.id) return;
+  const moi = D.moi, adv = 1 - moi, cache = masquerMessages();
+  const advGagne = duel.vainqueur === adv;
+  // Avant le match (présentation)
+  const avMoi = duel[`message_avant${moi}`], avAdv = duel[`message_avant${adv}`];
+  bulle($("foBulleMoi"), texteMessage("avant", avMoi));
+  bulle($("foBulleAdv"), cache ? null : texteMessage("avant", avAdv));
+  const avant = duel.phase === "presentation" && !avMoi;
+  $("foMsg").hidden = !avant;
+  if (avant && D.pucesAvant !== !!D.ami) { puces($("foMsgPuces"), "avant"); D.pucesAvant = !!D.ami; }
+  // Après le match (écran de fin)
+  if (duel.phase !== "termine" || duel.vainqueur === null || duel.vainqueur === undefined) return;
+  const apMoi = duel[`message_apres${moi}`], apAdv = duel[`message_apres${adv}`];
+  $("finMsg").hidden = false;
+  bulle($("finBulleMoi"), texteMessage(momentApres(!advGagne), apMoi));
+  bulle($("finBulleAdv"), cache ? null : apAdv && `${OPP.nom} : ${texteMessage(momentApres(advGagne), apAdv) || "…"}`);
+  $("finMsgZone").hidden = !!apMoi;
+  if (!apMoi && D.pucesApres !== !!D.ami) { puces($("finMsgPuces"), momentApres(!advGagne)); D.pucesApres = !!D.ami; }
+}
+async function envoyerMessage(zone, bouton) {
+  if (!D) return;
+  const d = D;
+  zone.querySelectorAll("button").forEach(b => { b.disabled = true; });
+  try { const duel = await serveur.envoyerMessage(d.id, bouton.dataset.msg); if (D === d) { d.duel = { ...d.duel, ...duel }; afficherMessages(d.duel); } }
+  catch { zone.querySelectorAll("button").forEach(b => { b.disabled = false; }); }
+}
+$("foMsgPuces").addEventListener("click", e => { const b = e.target.closest("button[data-msg]"); if (b) envoyerMessage($("foMsgPuces"), b); });
+$("finMsgPuces").addEventListener("click", e => { const b = e.target.closest("button[data-msg]"); if (b) envoyerMessage($("finMsgPuces"), b); });
+// Après le match, l'écoute en direct est arrêtée : on regarde de temps en temps si l'adversaire a écrit (une minute au plus).
+function guetterMessageFin() {
+  const d = D;
+  if (!d || d.guetteFin) return;
+  d.guetteFin = setInterval(async () => {
+    if (D !== d || ++d.toursGuet > 20 || d.duel?.[`message_apres${1 - d.moi}`]) { clearInterval(d.guetteFin); return; }
+    try { const duel = await serveur.lireDuel(d.id); if (D === d) { d.duel = duel; afficherMessages(duel); } } catch { /* on réessaiera */ }
+  }, 3000);
+  d.toursGuet = 0;
 }
 
 // ---------------------------------------------------------------- images à partager (La Une, la carte)
@@ -603,6 +664,7 @@ function preparerEcranMatch() {
   boutons(false); afficherBilan(); window.scrollTo(0, 0);
   $("revanche").hidden = true; $("retourDuels").hidden = true; $("encoreRapide").hidden = true; $("abandonDuelZone").hidden = true; $("signalerZone").hidden = true;
   $("coach").hidden = true; $("mdjPartagerFin").hidden = true;
+  $("finMsg").hidden = true; $("foMsg").hidden = true; $("foBulleMoi").hidden = true; $("foBulleAdv").hidden = true;
   if (S?.match) renderLectureAdversaire();
 }
 
@@ -1151,6 +1213,7 @@ function lancerDuel(duel, ligneAdv) {
   if (duel.tournoi_id) reperesTournoi(duel);
   D.arret = serveur.ecouter("duel", `id=eq.${duel.id}`, majDuel);
   D.boucle = setInterval(battement, 1000);
+  verifierAmi();
   majDuel(duel); battement();
 }
 
@@ -1186,6 +1249,7 @@ function majDuel(duel) {
   if (!D || !duel || duel.id !== D.id || D.fini) return;
   if (D.duel && Date.parse(duel.maj_le) < Date.parse(D.duel.maj_le)) return;   // information périmée
   D.duel = duel;
+  afficherMessages(duel);
   const m = S.match, n = (duel.coups || []).length;
 
   // 1. Les coups révélés depuis la dernière fois (rattrapage si plusieurs).
@@ -1333,7 +1397,7 @@ function terminerDuel(duel) {
 
 function quitterDuel({ solo = true } = {}) {
   if (!D) return;
-  D.arret?.(); clearInterval(D.boucle); clearTimeout(D.decompte); arreterMinuteur();
+  D.arret?.(); clearInterval(D.boucle); clearInterval(D.guetteFin); clearTimeout(D.decompte); arreterMinuteur();
   if (faceAFaceOuvert) fermerFaceAFace();
   if (panneauOuvert) fermerPanneau();
   D = null;

@@ -21,6 +21,7 @@ export const jouer = (id, manche, signe) => rpc("jouer", { p_id: id, p_manche: m
 export const reclamer = id => rpc("reclamer", { p_id: id });      // → { maintenant, duel }
 export const abandonner = id => rpc("abandonner", { p_id: id });
 export const serrerLaMain = (id, style) => rpc("serrer_la_main", { p_id: id, p_style: style });   // → le duel (avec poignee0, poignee1)
+export const envoyerMessage = (id, message) => rpc("envoyer_message", { p_id: id, p_message: message });   // → le duel (messages rapides, étape 22)
 
 // Mes duels en cours ou en attente (la base ne renvoie que ceux qui me concernent).
 export const mesDuels = () => essayer(async () => verifier(await client().from("duels")
