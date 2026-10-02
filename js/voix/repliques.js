@@ -43,6 +43,8 @@ export const MOMENTS = {
     { r: "c", t: "Mesdames et messieurs… quelle main !" },
     { r: "c", t: "Dans cinquante ans, on racontera encore cette main !" },
     { r: "d", t: "Je note l'heure. Pour les archives." },
+    { r: "d", t: "C'est une dinguerie. Comme disent les jeunes." },
+    { r: "d", t: "C'est un vrai banger. Comme disent les jeunes." },
   ],
   balle_sauvee: [
     { r: "c", t: "Sauvée ! Quel sang-froid !" },
@@ -57,6 +59,7 @@ export const MOMENTS = {
     { r: "d", t: "Tout le monde la voyait perdue. Sauf lui. C'est touchant.", f: "Tout le monde la voyait perdue. Sauf elle. C'est touchant." },
     { r: "d", t: "Des nerfs d'acier. Ou aucune conscience du danger. On ne saura jamais." },
     { r: "c", t: "Madame, vous n'auriez pas fait mieux ! Enfin… sauf en 1997 !" },
+    { r: "c", t: "Vous ne passerez pas !", clin: "cine" },
   ],
   remontee: [
     { r: "c", t: "Quelle remontée extraordinaire !" },
@@ -104,6 +107,10 @@ export const MOMENTS = {
     { r: "d", t: "Une série noire. Absolument magnifique." },
     { r: "d", t: "Il faudrait peut-être essayer… autre chose." },
     { r: "d", t: "Fidèle à lui-même : toujours du mauvais côté.", f: "Fidèle à elle-même : toujours du mauvais côté." },
+    { r: "d", t: "Les calculs sont pas bons, Kevin.", clin: "cine" },
+    { r: "c", t: "T'es pas venu ici pour souffrir, ok ?", f: "T'es pas venue ici pour souffrir, ok ?", clin: "cine" },
+    { r: "c", t: "Houston, on a un problème !", clin: "cine" },
+    { r: "d", t: "Il est en PLS. Comme disent les jeunes.", f: "Elle est en PLS. Comme disent les jeunes." },
   ],
   obstination: [
     { r: "c", t: ["Troisième Pierre d'affilée ! C'est audacieux !", "Troisièmes Ciseaux d'affilée ! C'est audacieux !", "Troisième Feuille d'affilée ! C'est audacieux !"] },
@@ -120,6 +127,8 @@ export const MOMENTS = {
     { r: "c", t: "Tous les chemins mènent à la Pierre !", seul: 0 },
     { r: "d", t: "Quand on veut, on peut. Quand on peut, on choisit Pierre, apparemment.", seul: 0 },
     { r: "d", t: "Mieux vaut une Feuille en main que deux Ciseaux dans le pot. C'est sa philosophie.", seul: 2 },
+    { r: "c", t: ["Des pierres, des pierres, des pierres, des pierres, des pierres !", "Ciseaux, ciseaux, ciseaux, ciseaux, ciseaux !", "Des feuilles, des feuilles, des feuilles, des feuilles, des feuilles !"], clin: "cine" },
+    { r: "d", t: "Allô ? Non mais allô, quoi !", clin: "cine" },
   ],
   // Il change enfin de signe après une obstination.
   changement: [
@@ -200,6 +209,7 @@ export const MOMENTS = {
     { r: "d", t: "Vous êtes le maillon faible. Au revoir !", clin: "cine" },
     { r: "d", t: "Un set à oublier. Je l'ai déjà oublié." },
     { r: "d", t: "Qu'on m'apporte un café. Et un autre match." },
+    { r: "d", t: "Bref. Il a perdu le set.", f: "Bref. Elle a perdu le set.", clin: "cine" },
   ],
   set_couteau: [
     { r: "c", t: "Irrespirable !" },
@@ -226,6 +236,7 @@ export const MOMENTS = {
     { r: "c", t: "C'est la der des ders !" },
     { r: "c", t: "Set décisif, et une place dans l'Histoire en jeu !", si: "enjeu" },
     { r: "d", t: "Un set pour un titre. Je reste calme. Pour deux.", si: "finale_tournoi" },
+    { r: "d", t: "Winter is coming.", clin: "cine" },
   ],
   renversement: [
     { r: "c", t: "Mené un set à zéro, il renverse tout !", f: "Menée un set à zéro, elle renverse tout !" },
@@ -233,6 +244,7 @@ export const MOMENTS = {
     { r: "c", t: "Il était dans les cordes, c'est l'autre qui finit au tapis !", f: "Elle était dans les cordes, c'est l'autre qui finit au tapis !", clin: "sport" },
     { r: "c", t: "Tête-à-queue complet dans ce match !", clin: "sport" },
     { r: "d", t: "Il a perdu une bataille. Il gagne la guerre. Classique.", f: "Elle a perdu une bataille. Elle gagne la guerre. Classique." },
+    { r: "c", t: "C'est la remontada !", clin: "sport" },
   ],
   balle_match_convertie: [
     { r: "c", t: ["Pieeeeerre ! Pierre ! Pierre !", "Ciseaaaaux ! Ciseaux ! Ciseaux !", "Feuiiiiille ! Feuille ! Feuille !"], clin: "sport" },
@@ -303,6 +315,8 @@ export const MOMENTS = {
     { r: "d", t: "C'est officiel : la stratégie n'était pas au rendez-vous." },
     { r: "d", t: "Il va falloir se remettre en question. Ou changer de main." },
     { r: "c", t: "Il cherche encore où il a perdu la Feuille !", f: "Elle cherche encore où elle a perdu la Feuille !", seul: 2 },
+    { r: "d", t: "La sentence est irrévocable.", clin: "cine" },
+    { r: "d", t: "Il a le seum. Comme disent les jeunes.", f: "Elle a le seum. Comme disent les jeunes." },
   ],
   // L'adversaire domine nettement nos face-à-face (dit avant le match).
   domination: [
@@ -354,6 +368,8 @@ export const DIALOGUES = {
   cri: [
     ["Ah, il y a de la voix !", "On l'avait entendu."],
     [{ t: "Il a craqué son slip !", f: "Elle a craqué son slip !" }, "Attention que ça ne vous arrive pas."],
+    [{ t: "Il éructe de joie !", f: "Elle éructe de joie !" }, "La prochaine fois, prévoyez les boules Quies."],
+    ["Siuuuu !", { t: "Il se prend pour Ronaldo. Avec moins d'abdos.", f: "Elle se prend pour Ronaldo. Avec moins d'abdos." }],
   ],
 };
 
