@@ -5,15 +5,19 @@ ElevenLabs › Text to Speech. Modèle : **Eleven v3**. Les indications entre cr
 
 Abonnement : Starter (1,11 € le premier mois, puis 6,67 €/mois) — **penser à résilier le renouvellement**.
 
+## Décision
+On commence par **les deux commentateurs** : 353 répliques, environ 14 200 caractères. Le speaker (171 répliques, dont les surnoms)
+et la journaliste (8) attendront qu'il y ait du monde dans l'appli ; leurs répliques restent affichées par écrit.
+
 ## Les voix choisies
 
 | Rôle | Voix | Voice ID | Réglages | Indication |
 |---|---|---|---|---|
 | Monique Latouffe (commentatrice) | **Camille Martin** ✅ | `hFgOzpmS0CMtL2to8sAl` | Stability haute (70-80 %), Style bas (≈ 0) | `[deadpan]` |
 | Roland Pignon (commentateur) | ✅ (nom à préciser) | `pwONJQic3ZwHTFG8D6uM` | Stability basse, Style plus haut | `[excited]` |
-| Speaker | à choisir | | Stability moyenne, un peu lent | `[shouting]` ou rien |
-| Arbitre | à choisir | | Stability haute, Style 0 | aucune |
-| Journaliste | à choisir | | Stability moyenne | aucune |
+| Speaker | ⏸ plus tard (quand il y aura du monde et des finales) | | Stability moyenne, un peu lent | `[shouting]` ou rien |
+| Arbitre | à décider | | Stability haute, Style 0 | aucune |
+| Journaliste | ⏸ plus tard | | Stability moyenne | aucune |
 
 ## Phrases de test
 
