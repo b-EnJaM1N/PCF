@@ -125,12 +125,12 @@ export class Ambiance {
     } catch { /* un son raté ne doit jamais bloquer le match */ }
   }
 
-  // Le coup de raquette, quand on choisit son signe : l'enregistrement de ce signe (sa version forte dans les grands moments),
-  // sinon le son fabriqué (plus fort dans les grands moments).
+  // Le coup de raquette, quand on choisit son signe : l'enregistrement de ce signe (sa version forte dans les grands moments ;
+  // sans version forte, la normale, plus fort et avec l'écho du stade), sinon le son fabriqué (plus fort dans les grands moments).
   raquette(signe = 2, fort = false) {
     const f = this.raquettesFichiers[signe] || [];
     const b = (fort && f[1]) || f[0];
-    if (b) this.jouer(b, fort ? 1 : 0.7, false, { vitesse: 0.98 + Math.random() * 0.04 });
+    if (b) this.jouer(b, fort ? 1 : 0.7, fort && !f[1], { vitesse: 0.98 + Math.random() * 0.04 });
     else this.jouer(this.raquettes[signe], fort ? 0.9 : 0.7, true);
   }
 
