@@ -264,3 +264,14 @@ test("les grandes phrases (« Un point pour l'Éternité ») sont réservées au
   assert.ok([...finale].some(id => id.startsWith("commentateur_tension_04")), "« Un point pour l'Éternité » en finale");
   assert.ok(![...finale].some(id => id.startsWith("commentateur_balle_match_convertie_19")), "pas de « Qualifié ! » en finale");
 });
+
+test("avant le match, Roland et Monique parlent encore après des dizaines de matchs", () => {
+  const P = profilParDefaut(), moi = { surnom: surnomDe(P) }, rng = rngFixe(3);
+  let recents = [], parles = 0;
+  for (let k = 0; k < 40; k++) {
+    const av = annoncesAvantMatch({ moi, adv: { bot: "rocky" }, recents }, rng);
+    if (av.commentaires.length) parles++;
+    recents = av.commentaires.map(l => l.id).concat(recents).slice(0, 80);   // comme l'appli
+  }
+  assert.ok(parles >= 25, `${parles} matchs sur 40 avec un dialogue`);
+});

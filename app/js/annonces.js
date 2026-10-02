@@ -306,11 +306,13 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
 
   // Les commentateurs lancent le match (en évitant, eux aussi, ce qu'ils ont dit récemment).
   const etat = nouvelEtatAnnonces({ humain, genre });
-  recents.forEach(id => { const m = /^commentat(?:eur|rice)_dialogue_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
+  // (seulement les 3 derniers dialogues : sinon, au bout de quelques matchs, ils seraient tous écartés et plus rien ne serait dit)
+  const dialoguesRecents = recents.filter(id => /^commentateur_dialogue_avant_match_/.test(id)).slice(0, 3);
+  dialoguesRecents.forEach(id => { const m = /_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
   let com = null;
   if (domination) com = choisir(etat, "domination", {}, rng);
   else if (humain && rng() < 0.5) com = choisir(etat, "humain", {}, rng);
-  const commentaires = com ? [com] : rng() < 0.6 ? dialogue(etat, "avant_match", rng) || [] : [];
+  const commentaires = com ? [com] : rng() < 0.85 ? dialogue(etat, "avant_match", rng) || [] : [];
   return { speaker: sp.filter(Boolean), commentaires };
 }
 
