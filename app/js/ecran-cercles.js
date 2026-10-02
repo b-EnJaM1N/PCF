@@ -91,7 +91,6 @@ export function installerCercles(ctx) {
     }
     if (cl) {
       const c = cl.get(uid);
-      $("clPoints").textContent = texteNiveau(c ? c.points : CLASSEMENT_DEPART, c?.joues);
       $("clDetail").textContent = c && c.joues
         ? `${pluriel(c.joues, "duel officiel")} · ${c.gagnes} V – ${c.joues - c.gagnes} D · meilleur : ${c.meilleur}`
         : `Aucun duel officiel pour l'instant : tout le monde démarre à ${CLASSEMENT_DEPART}.`;
