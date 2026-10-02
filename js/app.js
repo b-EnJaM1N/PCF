@@ -110,7 +110,7 @@ $("testSnd").addEventListener("click", () => {
 
 function renderVoixInfo() {
   const total = CATALOGUE.size, faits = [...voix.fichiers.keys()].filter(id => CATALOGUE.has(id)).length;
-  $("voixInfo").innerHTML = `<b>${faits} réplique${faits > 1 ? "s" : ""} enregistrée${faits > 1 ? "s" : ""} sur ${total}.</b> ${voix.synthese ? "Les autres sont lues par la voix de synthèse du téléphone." : "Les autres ne sont pas lues à voix haute, en attendant les vrais enregistrements."} Tout ce qui est dit s'affiche aussi par écrit, et la case « Son » coupe tout.`;
+  $("voixInfo").innerHTML = `<b>${faits} réplique${faits > 1 ? "s" : ""} enregistrée${faits > 1 ? "s" : ""} sur ${total}.</b> ${voix.synthese ? "Les autres sont lues par la voix de synthèse du téléphone." : "Les autres ne sont pas lues à voix haute, en attendant les vrais enregistrements."} Tout ce qui est dit s'affiche aussi par écrit, et le bouton 🔊 en haut de l’écran coupe tout.`;
 }
 
 // ---------------------------------------------------------------- annonces
@@ -981,7 +981,8 @@ function aller(vue) {
   if (vue === "viewDuel") duelsUI?.rafraichir();
   if (vue === "viewCercles" || vue === "viewTournois") cerclesUI?.rafraichir();
   if (vue === "viewSng") sngUI?.rafraichir();
-  if (vue === "viewJouer") { jetonsUI?.rafraichir(); defisUI?.rafraichir(); renderMatchDuJour(); }
+  if (vue !== "viewMatch") jetonsUI?.rafraichir();   // le solde, en haut de l'écran, reste à jour (achats, gains)
+  if (vue === "viewJouer") { defisUI?.rafraichir(); renderMatchDuJour(); }
   if (vue === "viewFreeroll") { freerollUI?.rafraichir(); programmesUI?.rafraichir(); }
   if (vue === "viewBoutique") boutiqueUI?.rafraichir();
   window.scrollTo(0, 0);

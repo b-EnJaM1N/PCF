@@ -1,6 +1,7 @@
-// Les jetons, en petit en haut du menu « Jouer » : solde, série, bonus du jour, renflouement.
+// Les jetons : le solde en haut à droite de l'écran (il mène à la boutique) ; en haut du menu « Jouer »,
+// seulement ce qu'il y a à prendre (bonus du jour, renflouement) ou l'invitation à créer un compte.
 import { clientSupabase as client, verifier, essayer } from "./compte.js";
-import { texteJetons, texteSerie, serieCourte } from "./jetons-logique.js";
+import { texteSerie } from "./jetons-logique.js";
 
 const $ = id => document.getElementById(id);
 const rpc = nom => essayer(async () => verifier(await client().rpc(nom)));
@@ -11,16 +12,17 @@ export function installerJetons(ctx) {
   const dire = (t, erreur = false) => { $("jetonsMsg").textContent = t; $("jetonsMsg").classList.toggle("erreur", erreur); };
 
   function render() {
-    $("jetonsCarte").hidden = false;
+    const msg = !!$("jetonsMsg").textContent;
+    $("jetonsHaut").hidden = !connecte;
     $("jetonsHors").hidden = connecte;
     $("jetonsDedans").hidden = !connecte;
-    if (!connecte) return;
-    $("jetonsSolde").textContent = etat ? texteJetons(etat.solde) : "…";
-    $("jetonsSerie").textContent = serieCourte(etat);
-    $("jetonsSerie").title = texteSerie(etat);
     $("jetonsBonus").hidden = !etat?.bonus_dispo;
-    if (etat?.bonus_dispo) { $("jetonsBonus").textContent = `🎁 +${etat.bonus_montant}`; $("jetonsBonus").title = `Bonus du jour : +${etat.bonus_montant} jetons`; }
     $("jetonsRenfl").hidden = !etat?.renflouement_dispo;
+    $("jetonsCarte").hidden = connecte && !etat?.bonus_dispo && !etat?.renflouement_dispo && !msg;
+    if (!connecte) return;
+    $("jetonsSolde").textContent = etat ? Math.max(0, Math.round(Number(etat.solde) || 0)).toLocaleString("fr-FR").replace(/\s/g, " ") : "…";
+    $("jetonsHaut").title = `Tes jetons (fictifs : ils ne s'achètent pas et ne s'échangent pas)${etat?.serie > 0 ? ` · ${texteSerie(etat)}` : ""} · touche pour la boutique`;
+    if (etat?.bonus_dispo) { $("jetonsBonus").textContent = `🎁 Bonus du jour : +${etat.bonus_montant} jetons`; $("jetonsBonus").title = texteSerie(etat); }
   }
 
   async function rafraichir() {

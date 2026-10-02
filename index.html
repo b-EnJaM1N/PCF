@@ -33,8 +33,9 @@
 <div class="wrap">
   <header>
     <div class="marque"><img class="logo" src="icons/icon.svg" alt="" width="46" height="46"><div><h1>HandSlam</h1><div class="rule" id="ruleTxt">Sets de 11, 2 sets gagnants</div></div></div>
-    <div style="display:flex;align-items:center;gap:12px">
-      <label class="sound"><input type="checkbox" id="snd" checked> Son</label>
+    <div class="haut-droite">
+      <button class="jetons-haut" id="jetonsHaut" data-palier="3" data-aller="viewBoutique" hidden title="Tes jetons (fictifs : ils ne s'achètent pas et ne s'échangent pas) · touche pour la boutique">🪙 <span id="jetonsSolde">…</span></button>
+      <label class="son-haut icone" title="Son"><input type="checkbox" id="snd" checked aria-label="Son"><span class="snd-on" aria-hidden="true">🔊</span><span class="snd-off" aria-hidden="true">🔇</span></label>
       <button class="icone" id="btnOptions" aria-label="Options" title="Options">⚙️</button>
     </div>
   </header>
@@ -65,9 +66,7 @@
       </details>
     </section>
     <div class="jetons-barre" id="jetonsCarte" data-palier="3" hidden>
-      <span id="jetonsDedans"><span class="jetons-solde" id="jetonsSolde" title="Tes jetons (fictifs : ils ne s'achètent pas et ne s'échangent pas)">…</span><span class="jetons-serie" id="jetonsSerie"></span>
-        <button class="jetons-puce" id="jetonsBonus" hidden></button><button class="jetons-puce" id="jetonsRenfl" hidden title="Renflouement : moins de 100 jetons, une fois par jour">🛟 +200</button>
-        <button class="jetons-puce alt" data-aller="viewBoutique" title="La boutique">🛍️</button></span>
+      <span id="jetonsDedans"><button class="jetons-puce" id="jetonsBonus" hidden></button><button class="jetons-puce" id="jetonsRenfl" hidden title="Renflouement : moins de 100 jetons, une fois par jour">🛟 +200 jetons</button></span>
       <span id="jetonsHors" hidden>🪙 1 000 jetons offerts avec un compte · <button class="linkbtn" data-aller="viewProfile">le créer</button></span>
       <span class="jetons-msg" id="jetonsMsg" role="status"></span>
     </div>
@@ -494,8 +493,8 @@
     </section>
 
     <section class="card" id="cCarte">
-      <h2>Ma carte de joueur</h2>
-      <img id="carteImg" class="carte-img" alt="">
+      <details class="carte-pli" id="cartePli">
+      <summary><img id="carteImg" class="carte-img" alt="Ma carte de joueur"><span class="carte-toucher">🃏 Ma carte de joueur<small>Touche pour l'agrandir et la partager</small></span></summary>
       <p class="hint" id="carteRarete"></p>
       <details class="carte-aide"><summary>Comment sont calculées les notes ?</summary>
         <p class="hint">Chaque note est sur 99. 50, c'est le niveau du hasard ; il faut des preuves pour s'en éloigner : avec peu de matchs, les notes restent proches de 50.</p>
@@ -504,12 +503,12 @@
       <p class="hint" id="carteMsg" role="status"></p>
       <button class="btn" id="cartePartager">Partager ma carte</button>
       <a class="btn alt" id="carteEnregistrer" download="ma-carte.png" href="#">Enregistrer l'image</a>
+      </details>
     </section>
 
-    <section class="card edit" id="cSurnom">
-      <h2>Mon surnom</h2>
+    <details class="card edit pli" id="cSurnom">
+      <summary><h2>🎙️ Mon surnom</h2><span class="pli-resume surnom-resume" id="surnomApercu"></span></summary>
       <p class="hint">Avant chaque match, le speaker te présente avec ton surnom. Une douzaine de noms et de compléments sont libres dès le départ ; tu en débloques d'autres en jouant : ton signe favori, tes exploits, tes trophées, tes heures de jeu…</p>
-      <p class="surnom" id="surnomApercu"></p>
       <label class="lbl" for="inSurnomNom">Nom</label>
       <select id="inSurnomNom"></select>
       <label class="lbl" for="inSurnomComp">Complément</label>
@@ -518,6 +517,10 @@
       <details class="surnoms-verrou"><summary id="surnomVerrouTitre">Surnoms à débloquer</summary><div id="surnomVerrou"></div></details>
       <p class="lbl" id="genreLbl">Les commentateurs parlent de toi en disant</p>
       <div class="seg" id="segGenre" role="group" aria-labelledby="genreLbl"><button data-v="m">« il »</button><button data-v="f">« elle »</button></div>
+    </details>
+
+    <details class="card edit pli" id="cCelebrations">
+      <summary><h2>🎉 Mes célébrations</h2><span class="pli-resume">Poignée de main, cri, geste, célébration, cadre</span></summary>
       <p class="lbl" id="poigneeLbl">Ma poignée de main habituelle</p>
       <div class="seg seg4" id="segPoignee" role="group" aria-labelledby="poigneeLbl"><button data-v="franche">💪 Franche</button><button data-v="normale">🤝 Normale</button><button data-v="legere">🤏 Légère</button><button data-v="froide">🧊 Froide</button></div>
       <p class="hint" id="poigneeInfo">À la fin de chaque match, tu as 3 secondes pour choisir ta poignée de main. Sinon, c'est celle-ci.</p>
@@ -531,10 +534,10 @@
       <label class="lbl" for="inCadre">Le cadre de ma carte de joueur</label>
       <select id="inCadre"></select>
       <p class="hint">D'autres cris, gestes, célébrations et cadres sont en vente à la <button class="linkbtn" data-aller="viewBoutique">boutique 🛍️</button>.</p>
-    </section>
+    </details>
 
-    <section class="card edit" id="cCompte">
-      <h2>Mon compte</h2>
+    <details class="card edit pli" id="cCompte">
+      <summary><h2>🔑 Mon compte</h2><span class="pli-resume" id="compteResume"></span></summary>
       <div id="compteHors">
         <p class="hint">Crée ton compte gratuit pour <b>sauvegarder ta fiche en ligne</b> et la retrouver sur n'importe quel téléphone. Pas de mot de passe : tu reçois un code de connexion par e-mail.</p>
         <label class="lbl" for="inEmail">Ton adresse e-mail</label>
@@ -561,31 +564,33 @@
         <button class="btn alt" id="btnDeco" style="margin-top:12px">Se déconnecter</button>
       </div>
       <p class="locknote" id="compteMsg" role="status"></p>
-    </section>
+    </details>
 
-    <section class="card edit">
-      <h2>Mon avatar</h2>
-      <label class="lbl" for="inPseudo">Pseudo</label>
-      <input type="text" id="inPseudo" maxlength="16" placeholder="Ex. Benji-Pierre" autocomplete="nickname">
-      <label class="lbl" for="inFlag">Pays</label>
-      <select id="inFlag"></select>
+    <details class="card edit pli" id="cAvatar">
+      <summary><h2>🧤 Mon avatar</h2><span class="pli-resume">Pseudo, pays, symbole, couleurs et motifs</span></summary>
       <div class="av-apercu"><div id="avApercu" aria-hidden="true"></div><small>Aperçu</small></div>
-      <span class="lbl">Symbole</span><div class="sw" id="swSymbole"></div>
-      <span class="lbl">Fond</span><div class="sw" id="swBg"></div>
-      <span class="lbl">Gant</span><div class="sw" id="swGlove"></div>
-      <span class="lbl">Poignet</span><div class="sw" id="swWrist"></div>
-      <span class="lbl">Motif du fond</span><div class="sw" id="swMotif"></div>
-      <span class="lbl">Motif du gant</span><div class="sw" id="swGantMotif"></div>
+      <details class="sous-pli" name="avatar"><summary>Mon pseudo et mon pays</summary>
+        <label class="lbl" for="inPseudo">Pseudo</label>
+        <input type="text" id="inPseudo" maxlength="16" placeholder="Ex. Benji-Pierre" autocomplete="nickname">
+        <label class="lbl" for="inFlag">Pays</label>
+        <select id="inFlag"></select>
+      </details>
+      <details class="sous-pli" name="avatar"><summary>Mon symbole</summary><div class="sw" id="swSymbole"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le fond</summary><div class="sw" id="swBg"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le gant</summary><div class="sw" id="swGlove"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le poignet</summary><div class="sw" id="swWrist"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le motif du fond</summary><div class="sw" id="swMotif"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le motif du gant</summary><div class="sw" id="swGantMotif"></div></details>
       <p class="hint">🛍️ Plus de gants, de motifs, de fonds et de poignets à la <button class="linkbtn" data-aller="viewBoutique">boutique</button>.</p>
       <p class="locknote" id="lockNote"></p>
-    </section>
+    </details>
 
-    <section class="card" id="cGame"><h2>Mon jeu</h2><div id="gameBody"></div></section>
-    <section class="card" id="cMental"><h2>Mon mental</h2><div class="lines" id="mentalBody"></div></section>
-    <section class="card" id="cRecords"><h2>Mes records</h2><div class="lines" id="recBody"></div></section>
-    <section class="card" id="cElo"><h2>Niveau d'entraînement</h2><div class="spark" id="spark"></div><p class="hint">Calculé comme un ELO, sur tes matchs contre les bots. Ton niveau officiel, contre les autres joueurs, est affiché en haut de ta fiche.</p></section>
-    <section class="card"><h2>Palmarès</h2><p class="hint" id="palmaresCompte"></p><div class="badges" id="badges"></div></section>
-    <section class="card" id="cLast"><h2>Derniers matchs</h2><div class="lines hist-list" id="lastBody"></div></section>
+    <details class="card pli" id="cGame"><summary><h2>📊 Mon jeu</h2></summary><div id="gameBody"></div></details>
+    <details class="card pli" id="cMental"><summary><h2>🧠 Mon mental</h2></summary><div class="lines" id="mentalBody"></div></details>
+    <details class="card pli" id="cRecords"><summary><h2>🏅 Mes records</h2></summary><div class="lines" id="recBody"></div></details>
+    <details class="card pli" id="cElo"><summary><h2>📈 Niveau d'entraînement</h2></summary><div class="spark" id="spark"></div><p class="hint">Calculé comme un ELO, sur tes matchs contre les bots. Ton niveau officiel, contre les autres joueurs, est affiché en haut de ta fiche.</p></details>
+    <details class="card pli" id="cPalmares"><summary><h2>🏆 Palmarès</h2><span class="pli-resume" id="palmaresCompte"></span></summary><div class="badges" id="badges"></div></details>
+    <details class="card pli" id="cLast"><summary><h2>🕘 Derniers matchs</h2></summary><div class="lines hist-list" id="lastBody"></div></details>
     <p class="hint" style="text-align:center" id="infoConnexion">Sans compte, ta fiche est gardée seulement sur ce téléphone.</p>
     <p style="text-align:center;margin:0"><button class="linkbtn" id="resetProfile">Remettre ma fiche à zéro</button></p>
   </div>
