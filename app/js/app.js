@@ -1436,6 +1436,8 @@ function abandonnerDuel() {
 }
 $("abandonDuel").addEventListener("click", abandonnerDuel);
 $("retourDuels").addEventListener("click", () => { quitterDuel(); ouvrirOnglet("duel"); });
+// Après n'importe quel match : retour au menu « Jouer » (le match est déjà enregistré).
+$("finAccueil").addEventListener("click", () => { if (D) quitterDuel(); else nouvelleSeance(); aller("viewJouer"); });
 $("encoreRapide").addEventListener("click", () => { quitterDuel(); if (!D) nouvelleSeance(); aller("viewRapide"); });
 $("voirTournoi").addEventListener("click", () => { const id = D?.duel?.tournoi_id; quitterDuel(); if (id) cerclesUI.ouvrirTournoi(id); });
 $("revanche").addEventListener("click", async () => {
