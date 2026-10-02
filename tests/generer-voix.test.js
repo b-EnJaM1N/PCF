@@ -1,0 +1,30 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { texteVoix, aFaire } from "../outils/generer-voix.js";
+import { CATALOGUE } from "../app/js/voix/script.js";
+
+const config = JSON.parse(readFileSync(new URL("../outils/voix.json", import.meta.url), "utf8"));
+
+test("les voix : un identifiant ElevenLabs pour chaque rôle, et aucune clé secrète dans le projet", () => {
+  for (const [role, r] of Object.entries(config.roles)) assert.match(r.voice_id, /^[A-Za-z0-9]{20}$/, role);
+  assert.ok(!/sk_[A-Za-z0-9]{20,}/.test(readFileSync(new URL("../outils/voix.json", import.meta.url), "utf8")), "pas de clé API dans voix.json");
+});
+
+test("le texte pour la voix : l'indication de jeu du personnage, puis la réplique", () => {
+  const monique = [...CATALOGUE.values()].find(r => r.texte === "Muscle ton jeu, Robert. Muscle ton jeu.");
+  assert.equal(texteVoix(monique), "[deadpan] Muscle ton jeu, Robert. Muscle ton jeu.");
+  const arbitre = CATALOGUE.get("arbitre_set_decisif_01");
+  assert.equal(texteVoix(arbitre), "Set décisif.", "l'arbitre, sans indication");
+  assert.equal(texteVoix(arbitre, { ...config, textes: { arbitre_set_decisif_01: "Set… décisif." } }), "Set… décisif.", "un texte spécial l'emporte");
+});
+
+test("ce qu'il reste à générer : les rôles choisis, sans refaire les fichiers déjà là", () => {
+  const roles = ["commentateur", "commentatrice", "arbitre"];
+  const tout = aFaire({ roles, existe: () => false });
+  assert.ok(tout.length > 400 && tout.every(r => roles.includes(r.role)));
+  assert.equal(aFaire({ roles, existe: () => true }).length, 0, "tout est déjà enregistré");
+  assert.equal(aFaire({ roles, limite: 10, existe: () => false }).length, 10);
+  assert.equal(aFaire({ ids: ["arbitre_set_decisif_01"], refaire: true, existe: () => true }).length, 1, "refaire une réplique précise");
+  assert.equal(aFaire({ ids: ["speaker_bienvenue_01"], existe: () => false }).length, 0, "pas de voix choisie pour le speaker : rien");
+});

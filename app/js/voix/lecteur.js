@@ -10,7 +10,7 @@ const synth = typeof window !== "undefined" && "speechSynthesis" in window ? win
 export class LecteurVoix {
   constructor({ dossier = "audio/" } = {}) {
     this.dossier = dossier;
-    this.fichiers = new Map();   // id → élément <audio> préchargé
+    this.fichiers = new Map();   // id → élément <audio>, créé la première fois qu'on en a besoin (null avant)
     this.actif = true;
     this.synthese = false;       // voix de synthèse (robotique), désactivée par défaut
     this.voix = null;
@@ -30,10 +30,8 @@ export class LecteurVoix {
       const r = await fetch(this.dossier + "index.json", { cache: "no-cache" });
       if (!r.ok) return 0;
       const ids = await r.json();
-      for (const id of ids) {
-        const a = new Audio(); a.preload = "auto"; a.src = `${this.dossier}${id}.mp3`;
-        this.fichiers.set(id, a);
-      }
+      // Rien n'est téléchargé d'avance (des centaines de fichiers) : chaque réplique se charge quand elle est dite.
+      for (const id of ids) this.fichiers.set(id, null);
     } catch { /* hors ligne ou pas encore de fichiers */ }
     return this.fichiers.size;
   }
@@ -62,12 +60,20 @@ export class LecteurVoix {
       const r = repliques[i];
       const debut = () => { if (premiere) { premiere = false; auDebut?.(); } };
       const fin = () => suivante(i + 1);
-      const audio = this.fichiers.get(r.id);
+      const audio = this.audio(r.id);
       if (audio) this.jouerFichier(audio, debut, fin, () => this.parler(r, debut, fin));
       else if (!this.synthese) fin();
       else this.parler(r, debut, fin);
     };
     suivante(0);
+  }
+
+  // L'élément <audio> d'une réplique enregistrée (créé à la première utilisation), ou null.
+  audio(id) {
+    if (!this.fichiers.has(id)) return null;
+    let a = this.fichiers.get(id);
+    if (!a) { a = new Audio(); a.preload = "auto"; a.src = `${this.dossier}${id}.mp3`; this.fichiers.set(id, a); }
+    return a;
   }
 
   jouerFichier(audio, debut, fin, secours) {

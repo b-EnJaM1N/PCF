@@ -16,8 +16,19 @@ et la journaliste (8) attendront qu'il y ait du monde dans l'appli ; leurs répl
 | Monique Latouffe (commentatrice) | **Camille Martin** ✅ | `hFgOzpmS0CMtL2to8sAl` | Stability haute (70-80 %), Style bas (≈ 0) | `[deadpan]` |
 | Roland Pignon (commentateur) | ✅ (nom à préciser) | `pwONJQic3ZwHTFG8D6uM` | Stability basse, Style plus haut | `[excited]` |
 | Speaker | ⏸ plus tard (quand il y aura du monde et des finales) | | Stability moyenne, un peu lent | `[shouting]` ou rien |
-| Arbitre | à décider | | Stability haute, Style 0 | aucune |
+| Arbitre | ✅ | `lm3gOYJiClKJc7YaR3r1` | Stability haute, Style 0 | aucune |
 | Journaliste | ⏸ plus tard | | Stability moyenne | aucune |
+
+## La génération automatique (le robot « Voix »)
+- Les réglages sont dans `outils/voix.json` (Voice ID, indication de jeu par personnage, textes spéciaux pour une réplique).
+- Le programme `outils/generer-voix.js` envoie chaque réplique à ElevenLabs et range le fichier dans `app/audio/` sous le bon nom.
+  Il ne refait jamais un fichier déjà présent : on peut relancer sans repayer.
+- Le robot GitHub `.github/workflows/voix.yml` le lance : onglet **Actions → Voix → Run workflow**, choisir la branche,
+  puis « essai » (10 répliques) ou « tout ». Il enregistre les fichiers et relance la mise en ligne.
+- La clé ElevenLabs est rangée dans le coffre-fort de GitHub (**Settings → Secrets and variables → Actions**, nom
+  `ELEVENLABS_API_KEY`) : elle n'est jamais écrite dans le code.
+- Pour refaire une réplique ratée : dans « ids », mettre son identifiant (le nom du fichier sans `.mp3`).
+- Total pour les trois voix : 443 répliques, environ 19 800 caractères (indications de jeu comprises).
 
 ## Phrases de test
 
