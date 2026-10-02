@@ -79,7 +79,7 @@ export class LecteurVoix {
         audio.preservesPitch = audio.mozPreservesPitch = audio.webkitPreservesPitch = true;
         audio.defaultPlaybackRate = audio.playbackRate = VITESSES[r.role] ?? 1;
       }
-      if (audio) this.jouerFichier(audio, debut, fin, () => this.parler(r, debut, fin));
+      if (audio) this.jouerFichier(audio, debut, fin, () => { if (jeton === this.jeton) this.parler(r, debut, fin); });
       else if (!this.synthese) fin();
       else this.parler(r, debut, fin);
     };
@@ -97,8 +97,11 @@ export class LecteurVoix {
   jouerFichier(audio, debut, fin, secours) {
     this.enCours = audio;
     audio.currentTime = 0;
-    audio.onended = () => { this.enCours = null; fin(); };
-    audio.play().then(debut).catch(() => { this.enCours = null; secours(); });
+    // On n'oublie la réplique en cours que si c'est bien celle-ci : une réplique interrompue pendant son chargement
+    // échoue après coup, et ne doit pas faire oublier la suivante (qu'on ne pourrait plus couper : deux voix en même temps).
+    const oublier = () => { if (this.enCours === audio) this.enCours = null; };
+    audio.onended = () => { oublier(); fin(); };
+    audio.play().then(debut).catch(() => { oublier(); secours(); });
   }
 
   parler(r, debut, fin) {
