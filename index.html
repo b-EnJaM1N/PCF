@@ -145,6 +145,11 @@
       <div class="bars" id="bars"></div>
       <p class="readout" id="endRead"></p>
       <p class="news" id="endClassement" hidden></p>
+      <div class="msg-fin" id="finMsg" hidden>
+        <p class="bulle-msg adv" id="finBulleAdv" hidden></p>
+        <p class="bulle-msg" id="finBulleMoi" hidden></p>
+        <div class="msg-zone" id="finMsgZone"><p class="msg-titre">💬 Un mot pour ton adversaire</p><div class="msg-puces" id="finMsgPuces"></div></div>
+      </div>
       <p class="news" id="news"></p>
       <button class="btn une-btn" id="btnUne" hidden>📰 Voir la Une du journal</button>
       <button class="btn" id="mdjPartagerFin" hidden>📤 Partager mon résultat du jour</button>
@@ -466,6 +471,11 @@
       <button class="test" id="testSnd" style="margin-top:12px">Tester le son</button>
       <label class="sound" style="margin-top:12px;align-items:flex-start"><input type="checkbox" id="synthese"> <span>Lire aussi les répliques avec la voix de synthèse du téléphone (voix robotique)</span></label>
     </details>
+    <details class="card pli">
+      <summary><h2>💬 Messages rapides</h2><span class="pli-resume">Les mots échangés avant et après un duel</span></summary>
+      <p class="hint">En duel contre un joueur, tu peux envoyer un message tout fait avant le match et un après. Le chambrage n'est proposé qu'avec tes amis.</p>
+      <label class="sound" style="margin-top:12px;align-items:flex-start"><input type="checkbox" id="masquerMessages"> <span>Masquer les messages de mes adversaires</span></label>
+    </details>
     <details class="card pli" id="installCard">
       <summary><h2>📲 Installer HandSlam</h2><span class="pli-resume">L'avoir sur l'écran d'accueil, comme une appli</span></summary>
       <p class="hint"><b>iPhone (Safari)</b> :</p>
@@ -606,12 +616,13 @@
     <div class="fo-banner"><div class="fo-stage" id="foStage"></div><div class="fo-fmt" id="foFmt"></div></div>
     <p class="fo-speaker" id="foSpeaker"></p>
     <div class="fo-top">
-      <div class="fo-p left"><div class="fo-av" id="foAvMe"></div><div class="fo-name" id="foNameMe"></div><div class="fo-sub" id="foSubMe"></div><div class="fo-rec" id="foRecMe"></div><div class="fo-surnom" id="foSurMe"></div></div>
+      <div class="fo-p left"><div class="fo-av" id="foAvMe"></div><div class="fo-name" id="foNameMe"></div><div class="fo-sub" id="foSubMe"></div><div class="fo-rec" id="foRecMe"></div><div class="fo-surnom" id="foSurMe"></div><div class="bulle-msg" id="foBulleMoi" hidden></div></div>
       <div class="fo-vs" aria-hidden="true">VS</div>
-      <div class="fo-p right"><div class="fo-av" id="foAvBot"></div><div class="fo-name" id="foNameBot"></div><div class="fo-sub" id="foSubBot"></div><div class="fo-rec" id="foRecBot"></div><div class="fo-surnom" id="foSurBot"></div></div>
+      <div class="fo-p right"><div class="fo-av" id="foAvBot"></div><div class="fo-name" id="foNameBot"></div><div class="fo-sub" id="foSubBot"></div><div class="fo-rec" id="foRecBot"></div><div class="fo-surnom" id="foSurBot"></div><div class="bulle-msg adv" id="foBulleAdv" hidden></div></div>
     </div>
     <div class="fo-rows" id="foRows"></div>
     <p class="fo-key" id="foKey"></p>
+    <div class="msg-zone" id="foMsg" hidden><p class="msg-titre">💬 Un mot pour ton adversaire</p><div class="msg-puces" id="foMsgPuces"></div></div>
     <div class="fo-end">
       <p class="fo-attente" id="foAttente" role="status" hidden></p>
       <button class="btn" id="foGo">Commencer</button>
