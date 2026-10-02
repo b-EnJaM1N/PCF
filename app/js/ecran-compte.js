@@ -19,6 +19,9 @@ export function installerCompte(ctx) {
     for (const [id, e] of [["compteHors", "hors"], ["compteCode", "code"], ["comptePseudo", "pseudo"], ["compteOn", "on"]]) $(id).hidden = etat !== e;
     $("supprimerCompte").hidden = etat !== "on";
     $("infoConnexion").hidden = etat === "on";
+    // Dans « Ma fiche », le bloc reste ouvert tant qu'on n'est pas connecté (créer son compte), replié ensuite.
+    $("cCompte").open = etat !== "on";
+    $("compteResume").textContent = etat === "on" ? "" : "Pas encore de compte : sauvegarde ta fiche, c'est gratuit";
   };
   const dire = (t, erreur = false) => { $("compteMsg").textContent = t; $("compteMsg").classList.toggle("erreur", erreur); };
   const attendre = async (bouton, f) => {
@@ -31,6 +34,7 @@ export function installerCompte(ctx) {
     $("compteNom").textContent = `✅ Connecté : ${pseudoComplet(P)}`;
     $("compteEmailAff").textContent = session?.user?.email || "";
     montrer("on");
+    $("compteResume").textContent = `✅ ${pseudoComplet(P)}`;
   }
 
   // Envoie la fiche du téléphone en ligne.
