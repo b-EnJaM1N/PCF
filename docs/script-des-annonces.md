@@ -471,7 +471,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_fin_match_01.mp3` | Si. Un peu quand même. |
 | `commentatrice_dialogue_cri_01.mp3` | On l'avait entendu. |
 
-## Speaker — voix de salle, voyelles étirées (213 répliques)
+## Speaker — voix de salle, voyelles étirées (171 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -554,140 +554,98 @@ restent lus par la voix de synthèse.
 | `speaker_bot_chaos_01.mp3` | Chaos ! |
 | `speaker_bot_stratege_01.mp3` | Stratège ! |
 | `speaker_bot_professeur_01.mp3` | Le Professeur ! |
-| `speaker_surnom_le_renard_01.mp3` | Le Renard… |
-| `speaker_surnom_le_chat_01.mp3` | Le Chat… |
-| `speaker_surnom_le_requin_01.mp3` | Le Requin… |
 | `speaker_surnom_le_cobra_01.mp3` | Le Cobra… |
-| `speaker_surnom_la_fusee_01.mp3` | La Fusée… |
-| `speaker_surnom_la_tornade_01.mp3` | La Tornade… |
-| `speaker_surnom_la_comete_01.mp3` | La Comète… |
-| `speaker_surnom_l_artiste_01.mp3` | L'Artiste… |
-| `speaker_surnom_le_magicien_01.mp3` | Le Magicien… |
-| `speaker_surnom_le_funambule_01.mp3` | Le Funambule… |
-| `speaker_surnom_le_gladiateur_01.mp3` | Le Gladiateur… |
-| `speaker_surnom_le_phenomene_01.mp3` | Le Phénomène… |
-| `speaker_surnom_le_bleu_01.mp3` | Le Bleu… |
-| `speaker_surnom_la_recrue_01.mp3` | La Recrue… |
-| `speaker_surnom_la_jeune_pousse_01.mp3` | La Jeune Pousse… |
-| `speaker_surnom_le_roc_01.mp3` | Le Roc… |
-| `speaker_surnom_le_bloc_01.mp3` | Le Bloc… |
-| `speaker_surnom_le_granit_01.mp3` | Le Granit… |
-| `speaker_surnom_le_menhir_01.mp3` | Le Menhir… |
-| `speaker_surnom_le_belier_01.mp3` | Le Bélier… |
-| `speaker_surnom_la_lame_01.mp3` | La Lame… |
-| `speaker_surnom_le_secateur_01.mp3` | Le Sécateur… |
-| `speaker_surnom_le_barbier_01.mp3` | Le Barbier… |
-| `speaker_surnom_le_tailleur_01.mp3` | Le Tailleur… |
-| `speaker_surnom_la_guillotine_01.mp3` | La Guillotine… |
-| `speaker_surnom_le_papetier_01.mp3` | Le Papetier… |
-| `speaker_surnom_le_buvard_01.mp3` | Le Buvard… |
-| `speaker_surnom_l_enveloppe_01.mp3` | L'Enveloppe… |
-| `speaker_surnom_le_parchemin_01.mp3` | Le Parchemin… |
-| `speaker_surnom_l_origami_01.mp3` | L'Origami… |
-| `speaker_surnom_le_duelliste_01.mp3` | Le Duelliste… |
-| `speaker_surnom_le_diplomate_01.mp3` | Le Diplomate… |
-| `speaker_surnom_l_iceberg_01.mp3` | L'Iceberg… |
-| `speaker_surnom_le_metronome_01.mp3` | Le Métronome… |
-| `speaker_surnom_l_horloger_01.mp3` | L'Horloger… |
-| `speaker_surnom_le_comptable_01.mp3` | Le Comptable… |
-| `speaker_surnom_le_taureau_01.mp3` | Le Taureau… |
-| `speaker_surnom_la_mule_01.mp3` | La Mule… |
+| `speaker_surnom_le_scorpion_01.mp3` | Le Scorpion… |
+| `speaker_surnom_le_requin_01.mp3` | Le Requin… |
+| `speaker_surnom_le_faucon_01.mp3` | Le Faucon… |
+| `speaker_surnom_le_tigre_01.mp3` | Le Tigre… |
+| `speaker_surnom_la_panthere_01.mp3` | La Panthère… |
+| `speaker_surnom_le_bison_01.mp3` | Le Bison… |
+| `speaker_surnom_le_pitbull_01.mp3` | Le Pitbull… |
+| `speaker_surnom_le_poing_01.mp3` | Le Poing… |
+| `speaker_surnom_la_main_01.mp3` | La Main… |
+| `speaker_surnom_le_marteau_01.mp3` | Le Marteau… |
 | `speaker_surnom_le_bulldozer_01.mp3` | Le Bulldozer… |
-| `speaker_surnom_la_machine_01.mp3` | La Machine… |
-| `speaker_surnom_le_jumeau_01.mp3` | Le Jumeau… |
-| `speaker_surnom_le_cameleon_01.mp3` | Le Caméléon… |
-| `speaker_surnom_le_joker_01.mp3` | Le Joker… |
-| `speaker_surnom_le_fantome_01.mp3` | Le Fantôme… |
-| `speaker_surnom_l_enigme_01.mp3` | L'Énigme… |
-| `speaker_surnom_le_sphinx_01.mp3` | Le Sphinx… |
-| `speaker_surnom_le_mentaliste_01.mp3` | Le Mentaliste… |
-| `speaker_surnom_le_phenix_01.mp3` | Le Phénix… |
-| `speaker_surnom_l_evade_01.mp3` | L'Évadé… |
-| `speaker_surnom_l_insubmersible_01.mp3` | L'Insubmersible… |
-| `speaker_surnom_le_bourreau_01.mp3` | Le Bourreau… |
-| `speaker_surnom_le_tacticien_01.mp3` | Le Tacticien… |
-| `speaker_surnom_le_grand_maitre_01.mp3` | Le Grand Maître… |
-| `speaker_surnom_le_mousquetaire_01.mp3` | Le Mousquetaire… |
-| `speaker_surnom_le_fondateur_01.mp3` | Le Fondateur… |
-| `speaker_surnom_le_parrain_01.mp3` | Le Parrain… |
-| `speaker_surnom_le_croupier_01.mp3` | Le Croupier… |
+| `speaker_surnom_le_tank_01.mp3` | Le Tank… |
+| `speaker_surnom_la_foudre_01.mp3` | La Foudre… |
+| `speaker_surnom_la_tornade_01.mp3` | La Tornade… |
+| `speaker_surnom_l_ouragan_01.mp3` | L'Ouragan… |
+| `speaker_surnom_le_gladiateur_01.mp3` | Le Gladiateur… |
+| `speaker_surnom_le_cogneur_01.mp3` | Le Cogneur… |
+| `speaker_surnom_le_barbare_01.mp3` | Le Barbare… |
+| `speaker_surnom_le_viking_01.mp3` | Le Viking… |
+| `speaker_surnom_le_samourai_01.mp3` | Le Samouraï… |
+| `speaker_surnom_le_ninja_01.mp3` | Le Ninja… |
+| `speaker_surnom_le_menhir_01.mp3` | Le Menhir… |
+| `speaker_surnom_le_secateur_01.mp3` | Le Sécateur… |
+| `speaker_surnom_l_origami_01.mp3` | L'Origami… |
+| `speaker_surnom_le_boss_01.mp3` | Le Boss… |
+| `speaker_surnom_le_taulier_01.mp3` | Le Taulier… |
+| `speaker_surnom_le_maitre_01.mp3` | Le Maître… |
 | `speaker_surnom_le_champion_01.mp3` | Le Champion… |
-| `speaker_surnom_le_maitre_du_circuit_01.mp3` | Le Maître du circuit… |
-| `speaker_surnom_le_collectionneur_01.mp3` | Le Collectionneur… |
-| `speaker_surnom_le_musee_01.mp3` | Le Musée… |
-| `speaker_surnom_le_conquerant_01.mp3` | Le Conquérant… |
-| `speaker_surnom_l_ancien_01.mp3` | L'Ancien… |
-| `speaker_surnom_l_empereur_01.mp3` | L'Empereur… |
-| `speaker_surnom_le_veteran_01.mp3` | Le Vétéran… |
-| `speaker_surnom_le_monument_01.mp3` | Le Monument… |
-| `speaker_surnom_l_immortel_01.mp3` | L'Immortel… |
-| `speaker_surnom_du_quartier_01.mp3` | du quartier… |
-| `speaker_surnom_du_vestiaire_01.mp3` | du vestiaire… |
-| `speaker_surnom_du_club_01.mp3` | du club… |
-| `speaker_surnom_du_fond_du_court_01.mp3` | du fond du court… |
-| `speaker_surnom_de_la_tribune_01.mp3` | de la tribune… |
-| `speaker_surnom_du_coin_de_la_rue_01.mp3` | du coin de la rue… |
-| `speaker_surnom_au_grand_coeur_01.mp3` | au grand cœur… |
-| `speaker_surnom_aux_doigts_agiles_01.mp3` | aux doigts agiles… |
-| `speaker_surnom_a_la_main_leste_01.mp3` | à la main leste… |
-| `speaker_surnom_aux_mille_signes_01.mp3` | aux mille signes… |
-| `speaker_surnom_aux_semelles_de_vent_01.mp3` | aux semelles de vent… |
-| `speaker_surnom_sans_peur_01.mp3` | sans peur… |
-| `speaker_surnom_de_l_ombre_01.mp3` | de l'ombre… |
-| `speaker_surnom_en_devenir_01.mp3` | en devenir… |
-| `speaker_surnom_qui_monte_01.mp3` | qui monte… |
-| `speaker_surnom_au_poing_ferme_01.mp3` | au poing fermé… |
-| `speaker_surnom_aux_deux_doigts_01.mp3` | aux deux doigts… |
-| `speaker_surnom_a_la_main_ouverte_01.mp3` | à la main ouverte… |
-| `speaker_surnom_du_grand_nord_01.mp3` | du Grand Nord… |
-| `speaker_surnom_du_sud_01.mp3` | du Sud… |
-| `speaker_surnom_de_l_etranger_01.mp3` | de l'étranger… |
-| `speaker_surnom_du_dimanche_01.mp3` | du dimanche… |
-| `speaker_surnom_du_petit_matin_01.mp3` | du petit matin… |
-| `speaker_surnom_de_minuit_01.mp3` | de minuit… |
-| `speaker_surnom_des_nuits_blanches_01.mp3` | des nuits blanches… |
-| `speaker_surnom_du_chronometre_01.mp3` | du chronomètre… |
-| `speaker_surnom_des_mains_qui_hesitent_01.mp3` | des mains qui hésitent… |
-| `speaker_surnom_des_egalites_01.mp3` | des égalités… |
-| `speaker_surnom_du_miroir_01.mp3` | du miroir… |
-| `speaker_surnom_du_fair_play_01.mp3` | du fair-play… |
-| `speaker_surnom_au_gant_de_velours_01.mp3` | au gant de velours… |
-| `speaker_surnom_a_la_poignee_glaciale_01.mp3` | à la poignée glaciale… |
-| `speaker_surnom_des_duels_01.mp3` | des duels… |
-| `speaker_surnom_de_la_revanche_01.mp3` | de la revanche… |
-| `speaker_surnom_du_cercle_01.mp3` | du cercle… |
-| `speaker_surnom_des_marathons_01.mp3` | des marathons… |
-| `speaker_surnom_de_l_endurance_01.mp3` | de l'endurance… |
-| `speaker_surnom_sans_defaite_01.mp3` | sans défaite… |
-| `speaker_surnom_des_series_01.mp3` | des séries… |
-| `speaker_surnom_au_sommet_01.mp3` | au sommet… |
-| `speaker_surnom_qui_ne_lache_rien_01.mp3` | qui ne lâche rien… |
-| `speaker_surnom_du_set_decisif_01.mp3` | du set décisif… |
-| `speaker_surnom_du_grand_soir_01.mp3` | du grand soir… |
-| `speaker_surnom_des_balles_de_match_01.mp3` | des balles de match… |
-| `speaker_surnom_de_la_derniere_chance_01.mp3` | de la dernière chance… |
-| `speaker_surnom_de_la_remontada_01.mp3` | de la remontada… |
-| `speaker_surnom_qui_ne_meurt_jamais_01.mp3` | qui ne meurt jamais… |
-| `speaker_surnom_des_miracles_01.mp3` | des miracles… |
-| `speaker_surnom_a_la_main_de_fer_01.mp3` | à la main de fer… |
-| `speaker_surnom_sans_pitie_01.mp3` | sans pitié… |
-| `speaker_surnom_aux_nerfs_d_acier_01.mp3` | aux nerfs d'acier… |
-| `speaker_surnom_au_sang_froid_01.mp3` | au sang-froid… |
-| `speaker_surnom_au_regard_de_glace_01.mp3` | au regard de glace… |
-| `speaker_surnom_qui_lit_dans_les_pensees_01.mp3` | qui lit dans les pensées… |
-| `speaker_surnom_au_troisieme_oeil_01.mp3` | au troisième œil… |
-| `speaker_surnom_de_la_fanny_01.mp3` | de la Fanny… |
-| `speaker_surnom_du_onze_a_zero_01.mp3` | du onze à zéro… |
-| `speaker_surnom_qui_fait_tomber_les_geants_01.mp3` | qui fait tomber les géants… |
-| `speaker_surnom_du_haut_du_classement_01.mp3` | du haut du classement… |
-| `speaker_surnom_des_grandes_finales_01.mp3` | des grandes finales… |
-| `speaker_surnom_des_sit_and_go_01.mp3` | des Sit & Go… |
-| `speaker_surnom_des_tournois_01.mp3` | des tournois… |
-| `speaker_surnom_au_trophee_01.mp3` | au trophée… |
-| `speaker_surnom_au_palmares_01.mp3` | au palmarès… |
-| `speaker_surnom_a_la_vitrine_pleine_01.mp3` | à la vitrine pleine… |
-| `speaker_surnom_aux_cent_victoires_01.mp3` | aux cent victoires… |
-| `speaker_surnom_aux_cinq_cents_matchs_01.mp3` | aux cinq cents matchs… |
+| `speaker_surnom_le_crack_01.mp3` | Le Crack… |
+| `speaker_surnom_la_machine_01.mp3` | La Machine… |
+| `speaker_surnom_du_dimanche_01.mp3` | du Dimanche… |
+| `speaker_surnom_de_l_apero_01.mp3` | de l'Apéro… |
+| `speaker_surnom_du_comptoir_01.mp3` | du Comptoir… |
+| `speaker_surnom_du_pmu_01.mp3` | du PMU… |
+| `speaker_surnom_de_la_cantine_01.mp3` | de la Cantine… |
+| `speaker_surnom_du_bureau_01.mp3` | du Bureau… |
+| `speaker_surnom_du_parking_01.mp3` | du Parking… |
+| `speaker_surnom_du_supermarche_01.mp3` | du Supermarché… |
+| `speaker_surnom_du_camping_01.mp3` | du Camping… |
+| `speaker_surnom_de_la_sieste_01.mp3` | de la Sieste… |
+| `speaker_surnom_du_canape_01.mp3` | du Canapé… |
+| `speaker_surnom_du_barbecue_01.mp3` | du Barbecue… |
+| `speaker_surnom_du_rond_point_01.mp3` | du Rond-Point… |
+| `speaker_surnom_de_la_plage_01.mp3` | de la Plage… |
+| `speaker_surnom_du_quartier_01.mp3` | du Quartier… |
+| `speaker_surnom_de_la_rue_01.mp3` | de la Rue… |
+| `speaker_surnom_de_la_street_01.mp3` | de la Street… |
+| `speaker_surnom_du_bitume_01.mp3` | du Bitume… |
+| `speaker_surnom_de_la_cite_01.mp3` | de la Cité… |
+| `speaker_surnom_du_ring_01.mp3` | du Ring… |
+| `speaker_surnom_de_l_arene_01.mp3` | de l'Arène… |
+| `speaker_surnom_de_la_jungle_01.mp3` | de la Jungle… |
+| `speaker_surnom_du_desert_01.mp3` | du Désert… |
+| `speaker_surnom_des_iles_01.mp3` | des Îles… |
+| `speaker_surnom_du_village_01.mp3` | du Village… |
+| `speaker_surnom_d_acier_01.mp3` | d'Acier… |
+| `speaker_surnom_de_titane_01.mp3` | de Titane… |
+| `speaker_surnom_de_beton_01.mp3` | de Béton… |
+| `speaker_surnom_de_marbre_01.mp3` | de Marbre… |
+| `speaker_surnom_de_plomb_01.mp3` | de Plomb… |
+| `speaker_surnom_de_cristal_01.mp3` | de Cristal… |
+| `speaker_surnom_de_velours_01.mp3` | de Velours… |
+| `speaker_surnom_de_soie_01.mp3` | de Soie… |
+| `speaker_surnom_d_or_01.mp3` | d'Or… |
+| `speaker_surnom_de_feu_01.mp3` | de Feu… |
+| `speaker_surnom_de_glace_01.mp3` | de Glace… |
+| `speaker_surnom_de_lave_01.mp3` | de Lave… |
+| `speaker_surnom_de_braise_01.mp3` | de Braise… |
+| `speaker_surnom_de_givre_01.mp3` | de Givre… |
+| `speaker_surnom_de_tempete_01.mp3` | de Tempête… |
+| `speaker_surnom_de_brume_01.mp3` | de Brume… |
+| `speaker_surnom_de_lune_01.mp3` | de Lune… |
+| `speaker_surnom_redoutable_01.mp3` | Redoutable… |
+| `speaker_surnom_implacable_01.mp3` | Implacable… |
+| `speaker_surnom_impitoyable_01.mp3` | Impitoyable… |
+| `speaker_surnom_invincible_01.mp3` | Invincible… |
+| `speaker_surnom_inarretable_01.mp3` | Inarrêtable… |
+| `speaker_surnom_intraitable_01.mp3` | Intraitable… |
+| `speaker_surnom_terrible_01.mp3` | Terrible… |
+| `speaker_surnom_sauvage_01.mp3` | Sauvage… |
+| `speaker_surnom_de_la_nuit_01.mp3` | de la Nuit… |
+| `speaker_surnom_de_l_ombre_01.mp3` | de l'Ombre… |
+| `speaker_surnom_du_chaos_01.mp3` | du Chaos… |
+| `speaker_surnom_des_titans_01.mp3` | des Titans… |
+| `speaker_surnom_des_legendes_01.mp3` | des Légendes… |
+| `speaker_surnom_des_immortels_01.mp3` | des Immortels… |
+| `speaker_surnom_des_champions_01.mp3` | des Champions… |
+| `speaker_surnom_de_l_eternite_01.mp3` | de l'Éternité… |
+| `speaker_surnom_de_la_gloire_01.mp3` | de la Gloire… |
+| `speaker_surnom_du_destin_01.mp3` | du Destin… |
+| `speaker_surnom_de_l_empire_01.mp3` | de l'Empire… |
 
 ## Journaliste — après une finale seulement (8 répliques)
 
