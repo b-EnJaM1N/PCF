@@ -10,7 +10,7 @@ function passeBande(fs, f, q) {
   return x => { const y = b0 * x + b2 * x2 - a1 * y1 - a2 * y2; x2 = x1; x1 = x; y2 = y1; y1 = y; return y; };
 }
 
-function normaliser(canaux, crete = 0.9) {
+export function normaliser(canaux, crete = 0.9) {
   let m = 0;
   for (const c of canaux) for (let i = 0; i < c.length; i++) m = Math.max(m, Math.abs(c[i]));
   if (m > 0) for (const c of canaux) for (let i = 0; i < c.length; i++) c[i] = c[i] / m * crete;
