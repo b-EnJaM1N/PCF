@@ -28,3 +28,14 @@ test("ce qu'il reste à générer : les rôles choisis, sans refaire les fichier
   assert.equal(aFaire({ ids: ["arbitre_set_decisif_01"], refaire: true, existe: () => true }).length, 1, "refaire une réplique précise");
   assert.equal(aFaire({ ids: ["speaker_bienvenue_01"], existe: () => false }).length, 0, "pas de voix choisie pour le speaker : rien");
 });
+
+test("les bruitages : les noms attendus par l'appli, des durées permises, le fond en boucle", async () => {
+  const { SONS, sonsAFaire } = await import("../outils/generer-sons.js");
+  const { FICHIERS_AMBIANCE: FICHIERS_PUBLIC, FICHIERS_RAQUETTE } = await import("../app/js/ambiance.js");
+  const attendus = [...Object.values(FICHIERS_PUBLIC), ...FICHIERS_RAQUETTE].sort();
+  assert.deepEqual(Object.keys(SONS).sort(), attendus);
+  for (const [id, s] of Object.entries(SONS)) assert.ok(s.texte && s.duree >= 0.5 && s.duree <= 30, id);
+  assert.equal(SONS.public_fond_01.boucle, true);
+  assert.equal(sonsAFaire({ existe: () => true }).length, 0, "rien à refaire");
+  assert.equal(sonsAFaire({ ids: ["raquette_01"], refaire: true, existe: () => true }).length, 1);
+});

@@ -30,6 +30,10 @@ et la journaliste (8) attendront qu'il y ait du monde dans l'appli ; leurs répl
 - Pour refaire une réplique ratée : dans « ids », mettre son identifiant (le nom du fichier sans `.mp3`).
 - Total pour les trois voix : 443 répliques, environ 19 800 caractères (indications de jeu comprises).
 
+## Les bruitages du court
+- Réglages : `outils/sons.json` (11 sons : 4 coups de raquette, murmure du public en boucle, tension, « ooh », applaudissements, clameur, fin de set, ovation).
+- Robot « Voix » : choisir **sons-essai** (raquette, applaudissements, « ooh ») puis **sons** (tous). Pour refaire un son : **sons** + son nom dans « ids ».
+
 ## Phrases de test
 
 ### Monique (validée)
