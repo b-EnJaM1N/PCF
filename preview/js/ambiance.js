@@ -44,8 +44,7 @@ export function egalitesAvantDernier(coups) {
   for (let i = coups.length - 2; i >= 0 && coups[i].gagnant === null; i--) n++;
   return n;
 }
-// Pierre plus grave, Ciseaux plus aigu : une nuance à peine perceptible.
-const HAUTEUR = [0.92, 1.08, 1];
+const HAUTEUR = [0.8, 1.4, 1];   // Pierre grave, Ciseaux aigu, Feuille entre les deux
 
 export class Ambiance {
   constructor() {

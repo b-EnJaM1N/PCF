@@ -60,22 +60,8 @@ body:not(.en-match) .rule { display: none; }
 .status.hot { color: var(--line); font-weight: 600; }
 .done-sets { grid-column: 1 / -1; text-align: center; font-size: .85rem; color: var(--muted); position: relative; z-index: 1; min-height: 1.2em; }
 
-/* Bandeau des annonces : arbitre + commentateur */
-.band { min-height: 3.6em; padding: 10px 14px; border-left: 4px solid var(--line); background: var(--panel); border-radius: 0 8px 8px 0; transition: opacity .6s; }
-.band.stale { opacity: .45; }
-.band .arbitre { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.35rem; line-height: 1.2; }
-/* Une icône par voix : 🧑‍⚖️ arbitre (sans icône, en gros), 🎙️ commentateur, 👠 commentatrice, 📣 speaker, 🎤 journaliste. */
-.band :is(.commentateur, .commentatrice, .speaker, .journaliste), .voix-fin > div, .panel .com > div, .fo-speaker > div { font-style: italic; color: var(--muted); line-height: 1.35; margin-top: 2px; }
-:is(.band, .voix-fin, .panel .com, .fo-speaker) .commentateur::before { content: "🎙️ "; font-style: normal; }
-:is(.band, .voix-fin, .panel .com, .fo-speaker) .commentatrice::before { content: "👠 "; font-style: normal; }
-:is(.band, .voix-fin, .panel .com, .fo-speaker) .speaker::before { content: "📣 "; font-style: normal; }
-:is(.band, .voix-fin, .panel .com, .fo-speaker) .journaliste::before { content: "🎤 "; font-style: normal; }
-.fo-speaker > .speaker { color: var(--line); }
-.fo-speaker { text-align: center; font-size: .9rem; margin: -6px 0 12px; min-height: 1.3em; }
-.fo-speaker:empty { display: none; }
 .fo-surnom { font-size: .8rem; color: var(--me); font-style: italic; margin-top: 4px; line-height: 1.25; }
 .fo-p.right .fo-surnom { color: var(--bot); }
-.voix-fin { margin: 0 0 10px; }
 .surnom { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--me); margin: 4px 0 8px; }
 .iv-champ { font-weight: 600; color: var(--me); margin: 10px 0 0; }
 .iv-champ:empty { display: none; }
@@ -85,7 +71,6 @@ body:not(.en-match) .rule { display: none; }
 .iv-rep button { font: inherit; text-align: left; padding: 10px 12px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: var(--line); cursor: pointer; }
 .iv-moi { font-weight: 600; margin: 0 0 8px; }
 .iv-moi::before { content: "« "; } .iv-moi::after { content: " »"; }
-.band .idle { color: var(--muted); font-size: .9rem; }
 
 /* L'échange : révélation immédiate, sans animation */
 .arena { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 96px; }
@@ -290,15 +275,12 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .panel .big.me { color: var(--me); } .panel .big.bot { color: var(--bot); }
 .panel .sc { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.8rem; }
 .panel .tally { color: var(--muted); font-size: .95rem; margin-top: 4px; }
-.panel .com { font-style: italic; color: var(--muted); margin: 12px 0 0; line-height: 1.4; }
-.panel .com:empty { display: none; }
 .panel .next { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.4rem; margin: 20px 0 14px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, .18); }
 .panel .next:empty { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .panel, .intro.show *, .intro.show *::after { animation: none !important; }
   .fo-vs::after { display: none; }
-  .band { transition: none; }
 }
 
 /* Classement PCF, amis et cercles */
