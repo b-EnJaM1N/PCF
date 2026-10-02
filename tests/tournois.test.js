@@ -61,3 +61,24 @@ test("Sit & Go : tailles et durées annoncées", async () => {
   assert.deepEqual(TAILLES_SNG, [8, 16, 32, 64]);
   assert.equal(dureeSng(8), "15 à 20 min"); assert.equal(dureeSng(64), "30 à 40 min");
 });
+
+test("en direct : l'attente du prochain adversaire, avec le match voisin et une estimation", async () => {
+  const { attente, minutesRestantes, monMatch } = await import("../app/js/tournoi-logique.js");
+  const j = id => ({ id, pseudo: id, numero: 1 });
+  const t = { phase: "en_cours", mode: "direct", nb_tours: 3, tour: 2, points_par_set: 11, sets_gagnants: 2, matchs: [
+    { tour: 1, position: 1, j0: j("moi"), j1: j("b"), vainqueur: "moi", fin: "score" },
+    { tour: 1, position: 2, j0: j("c"), j1: j("d"), fin: null, duel: { phase: "jeu", sets: [1, 0], points: [5, 3] } },
+    { tour: 1, position: 3, j0: j("e"), j1: j("f"), vainqueur: "e", fin: "score" },
+    { tour: 1, position: 4, j0: j("g"), j1: j("h"), vainqueur: "g", fin: "score" },
+    { tour: 2, position: 2, j0: j("e"), j1: j("g"), fin: null },
+  ] };
+  assert.equal(monMatch(t, "moi"), null, "pas de match à jouer pour l'instant");
+  const a = attente(t, "moi");
+  assert.equal(a.tour, 2);
+  assert.equal(a.voisin.position, 2, "mon adversaire sortira du match C contre D");
+  assert.ok(a.minutes >= 1 && a.minutes <= 3, `environ 2 min (${a.minutes})`);
+  assert.equal(attente(t, "b"), null, "un joueur éliminé n'attend rien");
+  assert.ok(monMatch(t, "e"), "le match de tour 2 d'un autre joueur est bien trouvé");
+  assert.equal(attente({ ...t, mode: "libre" }, "moi"), null, "seulement en direct");
+  assert.ok(minutesRestantes({ duel: null }, t) >= minutesRestantes(t.matchs[1], t), "un match pas commencé dure plus longtemps");
+});
