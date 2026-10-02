@@ -26,10 +26,11 @@ export function texteReste(echeance, maintenant = Date.now()) {
 // Comment un match a été décidé.
 export const texteFin = fin => ({ score: "", forfait: "forfait", abandon: "abandon", exempt: "exempt", tete_de_serie: "non joué : tête de série" }[fin] ?? "");
 
-// Mon match du tour en cours (ou null), avec mon côté et mon adversaire.
+// Mon match à jouer (ou null), avec mon côté et mon adversaire. En direct, les tours ne sont pas synchronisés :
+// mon match peut être d'un tour plus ancien que le tour le plus avancé du tableau.
 export function monMatch(t, uid) {
   if (!t || t.phase !== "en_cours") return null;
-  const m = (t.matchs || []).find(x => x.tour === t.tour && !x.fin && [x.j0?.id, x.j1?.id].includes(uid));
+  const m = (t.matchs || []).filter(x => !x.fin && [x.j0?.id, x.j1?.id].includes(uid)).sort((a, b) => a.tour - b.tour)[0];
   if (!m) return null;
   const moi = m.j0?.id === uid ? 0 : 1;
   return { match: m, moi, adversaire: moi === 0 ? m.j1 : m.j0, essai: moi === 0 ? m.essai0 : m.essai1, essaiAdv: moi === 0 ? m.essai1 : m.essai0 };
@@ -61,3 +62,26 @@ export const codeTournoiDepuisAdresse = recherche => {
 // Sit & Go : durée approximative (matchs en sets de 11, 2 sets gagnants, environ 5 min chacun).
 export const TAILLES_SNG = [8, 16, 32, 64];
 export const dureeSng = taille => ({ 8: "15 à 20 min", 16: "20 à 25 min", 32: "25 à 35 min", 64: "30 à 40 min" }[taille] || "");
+
+// En direct : j'ai gagné mon match et j'attends mon prochain adversaire. Renvoie null sinon, ou
+// { tour (le tour de mon prochain match), voisin (le match d'où sortira mon adversaire, s'il existe), minutes (estimation) }.
+export function attente(t, uid) {
+  if (!t || t.phase !== "en_cours" || t.mode !== "direct" || monMatch(t, uid)) return null;
+  const miens = (t.matchs || []).filter(m => [m.j0?.id, m.j1?.id].includes(uid)).sort((a, b) => b.tour - a.tour);
+  const der = miens[0];
+  if (!der || der.vainqueur !== uid || der.tour >= t.nb_tours) return null;
+  if ((t.matchs || []).some(m => m.tour === der.tour + 1 && m.position === Math.ceil(der.position / 2))) return null;
+  const pos = der.position % 2 ? der.position + 1 : der.position - 1;
+  const voisin = (t.matchs || []).find(m => m.tour === der.tour && m.position === pos) || null;
+  return { tour: der.tour + 1, voisin, minutes: voisin ? minutesRestantes(voisin, t) : null };
+}
+
+// Estimation grossière du temps qu'il reste à un match (en minutes, au moins 1) : environ 2 min 30 par set de 11 points.
+export function minutesRestantes(m, t) {
+  const parSet = 2.5 * (t.points_par_set || 11) / 11, sg = t.sets_gagnants || 2;
+  const d = m.duel;
+  if (!d || d.phase === "attente" || d.phase === "presentation") return Math.max(1, Math.round((sg + 0.5) * parSet + 0.5));
+  const sets = d.sets || [0, 0], pts = d.points || [0, 0];
+  const restants = sg - Math.max(...sets), fait = Math.min(0.9, Math.max(...pts) / (t.points_par_set || 11));
+  return Math.max(1, Math.round((restants - fait) * parSet));
+}

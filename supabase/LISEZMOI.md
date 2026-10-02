@@ -164,6 +164,14 @@ Même manipulation avec [`etape-22-messages-rapides.sql`](etape-22-messages-rapi
 Elle permet d'envoyer un message tout fait à son adversaire, un avant le match et un après. Le serveur vérifie
 que le message existe, qu'il arrive au bon moment, et que le chambrage n'est envoyé qu'entre amis.
 
+## 1 tervicies. Le tirage au sort des tableaux (étape 23)
+
+Même manipulation avec [`etape-23-tirage-au-sort.sql`](etape-23-tirage-au-sort.sql), **après** l'étape 22
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-23-tirage-au-sort.sql).
+Elle tire les tableaux au sort, comme au tennis : seuls les meilleurs niveaux sont têtes de série (la moitié du tableau
+jusqu'à 8 joueurs, un quart au-delà : 32 têtes de série pour 128 joueurs), les autres joueurs sont placés au hasard,
+et le hasard départage les joueurs de même niveau. Elle envoie aussi le score en direct du match voisin, pour l'écran d'attente.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

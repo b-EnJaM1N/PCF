@@ -1,5 +1,7 @@
 -- Tests de supabase/etape-5-tournois.sql : un tournoi de cercle complet, dates limites, sécurité.
 \set QUIET on
+-- Tirage sans hasard (étape 23) : ces tests vérifient des affiches précises.
+select set_config('pcf.tirage_fixe', '1', false) \g /dev/null
 \echo Tests de la base de données (étape 5 : tournois)
 
 insert into auth.users values
