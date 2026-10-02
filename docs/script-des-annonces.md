@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (214 répliques)
+## Commentateur — vif, enthousiaste, plein de références (225 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -157,6 +157,7 @@ restent lus par la voix de synthèse.
 | `commentateur_balle_sauvee_06_feuille.mp3` | Parade réflexe ! Il a vu la Feuille arriver ! |
 | `commentateur_balle_sauvee_06_feuille_f.mp3` | Parade réflexe ! Elle a vu la Feuille arriver ! |
 | `commentateur_balle_sauvee_07.mp3` | Madame, vous n'auriez pas fait mieux ! Enfin… sauf en 1997 ! |
+| `commentateur_balle_sauvee_08.mp3` | Vous ne passerez pas ! |
 | `commentateur_remontee_01.mp3` | Quelle remontée extraordinaire ! |
 | `commentateur_remontee_02.mp3` | On l'avait enterré un peu trop vite ! |
 | `commentateur_remontee_02_f.mp3` | On l'avait enterrée un peu trop vite ! |
@@ -184,6 +185,9 @@ restent lus par la voix de synthèse.
 | `commentateur_serie_contre_03.mp3` | Allez, petit bonhomme ! |
 | `commentateur_serie_contre_03_f.mp3` | Allez, petite bonne femme ! |
 | `commentateur_serie_contre_04.mp3` | Oublie que t'as aucune chance, vas-y, fonce ! |
+| `commentateur_serie_contre_05.mp3` | T'es pas venu ici pour souffrir, ok ? |
+| `commentateur_serie_contre_05_f.mp3` | T'es pas venue ici pour souffrir, ok ? |
+| `commentateur_serie_contre_06.mp3` | Houston, on a un problème ! |
 | `commentateur_obstination_01_pierre.mp3` | Troisième Pierre d'affilée ! C'est audacieux ! |
 | `commentateur_obstination_01_ciseaux.mp3` | Troisièmes Ciseaux d'affilée ! C'est audacieux ! |
 | `commentateur_obstination_01_feuille.mp3` | Troisième Feuille d'affilée ! C'est audacieux ! |
@@ -192,6 +196,9 @@ restent lus par la voix de synthèse.
 | `commentateur_obstination_03_ciseaux.mp3` | Ses Ciseaux… son précieux… |
 | `commentateur_obstination_03_feuille.mp3` | Sa Feuille… son précieux… |
 | `commentateur_obstination_04.mp3` | Tous les chemins mènent à la Pierre ! |
+| `commentateur_obstination_05_pierre.mp3` | Des pierres, des pierres, des pierres, des pierres, des pierres ! |
+| `commentateur_obstination_05_ciseaux.mp3` | Ciseaux, ciseaux, ciseaux, ciseaux, ciseaux ! |
+| `commentateur_obstination_05_feuille.mp3` | Des feuilles, des feuilles, des feuilles, des feuilles, des feuilles ! |
 | `commentateur_changement_01.mp3` | Le changement, c'est maintenant ! |
 | `commentateur_duel_esprits_01.mp3` | Ils se lisent dans les pensées ! |
 | `commentateur_duel_esprits_02.mp3` | Télépathie sur le court ! |
@@ -244,6 +251,7 @@ restent lus par la voix de synthèse.
 | `commentateur_renversement_03.mp3` | Il était dans les cordes, c'est l'autre qui finit au tapis ! |
 | `commentateur_renversement_03_f.mp3` | Elle était dans les cordes, c'est l'autre qui finit au tapis ! |
 | `commentateur_renversement_04.mp3` | Tête-à-queue complet dans ce match ! |
+| `commentateur_renversement_05.mp3` | C'est la remontada ! |
 | `commentateur_balle_match_convertie_01_pierre.mp3` | Pieeeeerre ! Pierre ! Pierre ! |
 | `commentateur_balle_match_convertie_01_ciseaux.mp3` | Ciseaaaaux ! Ciseaux ! Ciseaux ! |
 | `commentateur_balle_match_convertie_01_feuille.mp3` | Feuiiiiille ! Feuille ! Feuille ! |
@@ -329,8 +337,11 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_01.mp3` | Ah, il y a de la voix ! |
 | `commentateur_dialogue_cri_02.mp3` | Il a craqué son slip ! |
 | `commentateur_dialogue_cri_02_f.mp3` | Elle a craqué son slip ! |
+| `commentateur_dialogue_cri_03.mp3` | Il éructe de joie ! |
+| `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
+| `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (155 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (170 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -343,6 +354,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_craquage_06_f.mp3` | Elle a vu la ligne d'arrivée. Et elle a freiné. Fascinant. |
 | `commentatrice_craquage_07.mp3` | Il ne faut jamais vendre la Feuille avant de l'avoir jouée. |
 | `commentatrice_main_legendaire_01.mp3` | Je note l'heure. Pour les archives. |
+| `commentatrice_main_legendaire_02.mp3` | C'est une dinguerie. Comme disent les jeunes. |
+| `commentatrice_main_legendaire_03.mp3` | C'est un vrai banger. Comme disent les jeunes. |
 | `commentatrice_balle_sauvee_01.mp3` | Glacial. Absolument glacial. J'approuve. |
 | `commentatrice_balle_sauvee_02.mp3` | Tout le monde la voyait perdue. Sauf lui. C'est touchant. |
 | `commentatrice_balle_sauvee_02_f.mp3` | Tout le monde la voyait perdue. Sauf elle. C'est touchant. |
@@ -374,6 +387,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_serie_contre_09.mp3` | Il faudrait peut-être essayer… autre chose. |
 | `commentatrice_serie_contre_10.mp3` | Fidèle à lui-même : toujours du mauvais côté. |
 | `commentatrice_serie_contre_10_f.mp3` | Fidèle à elle-même : toujours du mauvais côté. |
+| `commentatrice_serie_contre_11.mp3` | Les calculs sont pas bons, Kevin. |
+| `commentatrice_serie_contre_12.mp3` | Il est en PLS. Comme disent les jeunes. |
+| `commentatrice_serie_contre_12_f.mp3` | Elle est en PLS. Comme disent les jeunes. |
 | `commentatrice_obstination_01_pierre.mp3` | Encore Pierre. C'est de la provocation. |
 | `commentatrice_obstination_01_ciseaux.mp3` | Encore Ciseaux. C'est de la provocation. |
 | `commentatrice_obstination_01_feuille.mp3` | Encore Feuille. C'est de la provocation. |
@@ -394,6 +410,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_obstination_07.mp3` | C'est de la poudre de perlimpinpin. |
 | `commentatrice_obstination_08.mp3` | Quand on veut, on peut. Quand on peut, on choisit Pierre, apparemment. |
 | `commentatrice_obstination_09.mp3` | Mieux vaut une Feuille en main que deux Ciseaux dans le pot. C'est sa philosophie. |
+| `commentatrice_obstination_10.mp3` | Allô ? Non mais allô, quoi ! |
 | `commentatrice_duel_esprits_01.mp3` | Deux esprits. Une seule idée. Jamais la bonne. |
 | `commentatrice_duel_esprits_02.mp3` | On pourrait rester là toute la nuit. Je préférerais éviter. |
 | `commentatrice_duel_esprits_03.mp3` | Une partie d'échecs à trois pièces. Sans les échecs. |
@@ -429,6 +446,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_set_ecrasant_04.mp3` | Vous êtes le maillon faible. Au revoir ! |
 | `commentatrice_set_ecrasant_05.mp3` | Un set à oublier. Je l'ai déjà oublié. |
 | `commentatrice_set_ecrasant_06.mp3` | Qu'on m'apporte un café. Et un autre match. |
+| `commentatrice_set_ecrasant_07.mp3` | Bref. Il a perdu le set. |
+| `commentatrice_set_ecrasant_07_f.mp3` | Bref. Elle a perdu le set. |
 | `commentatrice_set_couteau_01.mp3` | Arraché. Mérité, on en reparlera. |
 | `commentatrice_set_couteau_02.mp3` | Il fallait des nerfs solides pour conclure celui-là. Il y en avait. Juste assez. |
 | `commentatrice_set_couteau_03.mp3` | Personne ne méritait de le perdre. L'un des deux l'a quand même perdu. |
@@ -438,6 +457,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_resume_set_03.mp3` | Le rapport de force est clair. Pour l'instant. |
 | `commentatrice_set_decisif_01.mp3` | Les statistiques ne servent plus à rien. C'est le caractère qui parle. Quand il y en a. |
 | `commentatrice_set_decisif_02.mp3` | Un set pour un titre. Je reste calme. Pour deux. |
+| `commentatrice_set_decisif_03.mp3` | Winter is coming. |
 | `commentatrice_renversement_01.mp3` | Il a perdu une bataille. Il gagne la guerre. Classique. |
 | `commentatrice_renversement_01_f.mp3` | Elle a perdu une bataille. Elle gagne la guerre. Classique. |
 | `commentatrice_balle_match_convertie_01.mp3` | Échec et mat. |
@@ -467,6 +487,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_defaite_04.mp3` | Quelqu'un peut lui expliquer les règles ? |
 | `commentatrice_defaite_05.mp3` | C'est officiel : la stratégie n'était pas au rendez-vous. |
 | `commentatrice_defaite_06.mp3` | Il va falloir se remettre en question. Ou changer de main. |
+| `commentatrice_defaite_07.mp3` | La sentence est irrévocable. |
+| `commentatrice_defaite_08.mp3` | Il a le seum. Comme disent les jeunes. |
+| `commentatrice_defaite_08_f.mp3` | Elle a le seum. Comme disent les jeunes. |
 | `commentatrice_domination_01.mp3` | Je suis ton père. |
 | `commentatrice_poignee_froide_01.mp3` | Glacial. J'approuve. |
 | `commentatrice_poignee_contraste_01.mp3` | L'un tend la main. L'autre tend un glaçon. |
@@ -489,6 +512,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_fin_match_01.mp3` | Si. Un peu quand même. |
 | `commentatrice_dialogue_cri_01.mp3` | On l'avait entendu. |
 | `commentatrice_dialogue_cri_02.mp3` | Attention que ça ne vous arrive pas. |
+| `commentatrice_dialogue_cri_03.mp3` | La prochaine fois, prévoyez les boules Quies. |
+| `commentatrice_dialogue_cri_04.mp3` | Il se prend pour Ronaldo. Avec moins d'abdos. |
+| `commentatrice_dialogue_cri_04_f.mp3` | Elle se prend pour Ronaldo. Avec moins d'abdos. |
 
 ## Speaker — voix de salle, voyelles étirées (171 répliques)
 
