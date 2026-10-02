@@ -3,11 +3,11 @@ import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDe
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch } from "./annonces.js";
-import { surnomDe, NOMS, COMPLEMENTS, debloques, aDebloquer } from "./surnoms.js";
+import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide } from "./surnoms.js";
 import { voirTournoi, mesAmis } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
-import { carteDe, notesDe, texteRang } from "./carte-logique.js";
+import { carteDe, notesDe, texteRang, rangDe } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
 import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee } from "./poignee.js";
 import { installerRapide } from "./ecran-rapide.js";
@@ -61,6 +61,9 @@ let OPP = botParId(amicalId);
 let P = normaliserProfil(lire("profil"));
 let T = lire("tournoi");
 const sauverLocal = () => ecrire("profil", P);
+// Pas encore de surnom (ou un surnom de l'ancienne liste) : un surnom de départ tiré au hasard, à changer dans « Ma fiche ».
+function assurerSurnom() { if (surnomValide(P)) return false; P.surnom = surnomAuHasard(P, { depart: true }); return true; }
+if (assurerSurnom()) sauverLocal();
 let compteUI = null;
 // Chaque changement de la fiche est gardé sur le téléphone, puis envoyé en ligne si on est connecté.
 const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier(); };
@@ -427,6 +430,8 @@ function finir() {
   $("abandonDuelZone").hidden = true;
   if (enTournoi) $("tNext").textContent = gagne ? (tourDe(T, S.tour).finale ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
   $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (t.debloque ? ` (débloque ${t.debloque})` : "")).join(", ") + " !" : "";
+  const paliers = retenirRang();
+  if (paliers.length) $("news").textContent = `${$("news").textContent} ${paliers.join(" ")}`.trim();
   if (ouvert.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${ouvert.join(" ")} ${$("news").textContent}`.trim();
   // Duel à mise : ce qu'on gagne ou perd (le serveur a déjà réglé les jetons).
   if (S.duel && D?.duel?.mise) {
@@ -892,18 +897,35 @@ $("premierMatch").addEventListener("click", () => {
   ouvrirFaceAFace();
 });
 
-// Mon surnom : un nom et un complément, parmi ceux débloqués ; « il » ou « elle ».
+// Le rang de la carte ouvre des familles de surnoms : on retient le plus haut atteint (renvoie les annonces des paliers ouverts).
+function retenirRang() {
+  const annonces = monterRang(P, rangDe(P, monClassement).numero);
+  if (annonces.length) sauverP();
+  return annonces;
+}
+// Mon surnom : un nom et un qualificatif, parmi ceux débloqués (rangés par famille) ; « il » ou « elle ».
 function renderSurnom() {
-  const sn = surnomDe(P), noms = debloques(NOMS, P), comps = debloques(COMPLEMENTS, P);
+  retenirRang();
+  const sn = surnomDe(P), noms = debloques(NOMS, P), quals = debloques(QUALIFICATIFS, P);
   $("surnomApercu").textContent = sn.texte;
-  $("inSurnomNom").innerHTML = noms.map(x => `<option value="${x.id}"${x.id === sn.nom.id ? " selected" : ""}>${esc(x.t)}</option>`).join("");
-  $("inSurnomComp").innerHTML = comps.map(x => `<option value="${x.id}"${x.id === sn.complement.id ? " selected" : ""}>${esc(x.t)}</option>`).join("");
-  $("surnomCompte").textContent = `${noms.length} nom${noms.length > 1 ? "s" : ""} sur ${NOMS.length} et ${comps.length} complément${comps.length > 1 ? "s" : ""} sur ${COMPLEMENTS.length} débloqués.`;
-  // Ce qu'il reste à débloquer, et comment.
-  const restants = [...aDebloquer(NOMS, P), ...aDebloquer(COMPLEMENTS, P)];
+  const optionsSurnom = (liste, actuel) => Object.keys(FAMILLES_SURNOM).map(f => {
+    const l = liste.filter(x => x.famille === f);
+    return l.length ? `<optgroup label="${esc(FAMILLES_SURNOM[f].titre)}">${l.map(x => `<option value="${x.id}"${x.id === actuel ? " selected" : ""}>${esc(x.t)}</option>`).join("")}</optgroup>` : "";
+  }).join("");
+  $("inSurnomNom").innerHTML = optionsSurnom(noms, sn.nom.id);
+  $("inSurnomComp").innerHTML = optionsSurnom(quals, sn.complement.id);
+  $("surnomCompte").textContent = `${noms.length} nom${noms.length > 1 ? "s" : ""} sur ${NOMS.length} et ${quals.length} qualificatif${quals.length > 1 ? "s" : ""} sur ${QUALIFICATIFS.length} débloqués : ${noms.length * quals.length} combinaisons.`;
+  // Ce qu'il reste à débloquer, famille par famille, et comment.
+  const restants = [...aDebloquer(NOMS, P), ...aDebloquer(QUALIFICATIFS, P)];
   $("surnomVerrouTitre").textContent = `Surnoms à débloquer (${restants.length})`;
-  const bloc = (titre, liste) => liste.length ? `<p class="lbl">${titre}</p><ul>${liste.map(x => `<li><b>${esc(x.t)}</b> · ${esc(x.aide)}</li>`).join("")}</ul>` : "";
-  $("surnomVerrou").innerHTML = bloc("Noms", aDebloquer(NOMS, P)) + bloc("Compléments", aDebloquer(COMPLEMENTS, P));
+  $("surnomVerrou").innerHTML = Object.keys(FAMILLES_SURNOM).map(f => {
+    const l = restants.filter(x => x.famille === f);
+    if (!l.length) return "";
+    const aide = FAMILLES_SURNOM[f].palier ? `<br><small>${esc(l[0].aide)}</small>` : "";
+    const mots = FAMILLES_SURNOM[f].palier ? `<p class="hint">${l.map(x => esc(x.t)).join(" · ")}</p>`
+      : `<ul>${l.map(x => `<li><b>${esc(x.t)}</b> · ${esc(x.aide)}</li>`).join("")}</ul>`;
+    return `<p class="lbl">${esc(FAMILLES_SURNOM[f].titre)}${aide}</p>${mots}`;
+  }).join("");
   document.querySelectorAll("#segGenre button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === P.genre)));
   document.querySelectorAll("#segPoignee button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === P.poignee)));
   // Les cris gratuits, et ceux achetés à la boutique ; de même pour le geste, la célébration et le cadre.
@@ -914,6 +936,7 @@ function renderSurnom() {
   $("inCadre").innerHTML = options("cadre", CADRES, P.cadre);
 }
 const choisirSurnom = () => { P.surnom = { nom: $("inSurnomNom").value, complement: $("inSurnomComp").value }; sauverP(); renderSurnom(); };
+$("surnomHasard").addEventListener("click", () => { P.surnom = surnomAuHasard(P); sauverP(); renderSurnom(); });
 $("inSurnomNom").addEventListener("change", choisirSurnom);
 $("inSurnomComp").addEventListener("change", choisirSurnom);
 document.querySelectorAll("#segGenre button").forEach(b => b.addEventListener("click", () => { P.genre = b.dataset.v; sauverP(); renderSurnom(); }));
@@ -1180,6 +1203,7 @@ compteUI = installerCompte({
   ouvrirFiche: () => aller("viewProfile"),
   remplacerP: fiche => {
     P = normaliserProfil(fiche); sauverLocal();
+    if (assurerSurnom()) sauverP();
     $("inPseudo").value = P.pseudo; $("inFlag").value = P.drapeau;
     renderFiche(); rafraichirAvatars(); afficherBilan();
   },
@@ -1441,6 +1465,7 @@ cerclesUI = installerCercles({
   trophees: donnees => gagnerTrophees(accorderTitres(P, titresEnLigne(donnees))),
   surClassement: (points, joues = 0) => {
     monClassement = points; mesDuelsOfficiels = joues;
+    retenirRang();
     $("pClassement").hidden = points === null;
     $("pClassement").textContent = points === null ? "" : texteNiveauFiche(points, joues);
     renderCarte();

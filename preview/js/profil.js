@@ -103,7 +103,8 @@ export function profilParDefaut() {
     derniers: [], titres: {},
     // Pour les surnoms et les commentaires (voir surnoms.js)
     genre: "m",                               // « il » ou « elle » dans la bouche des commentateurs
-    surnom: null,                             // { nom, complement } choisis, sinon les plus rares
+    surnom: null,                             // { nom, complement } : le nom et le qualificatif choisis (sinon un surnom de départ)
+    rangMax: 1,                               // le plus haut rang de carte atteint (il ouvre des familles de surnoms)
     egalites: 0, autos: 0, fannys: 0, ballesDeMatchSauvees: 0, lecturesReussies: 0,
     heures: { nuit: 0, matin: 0, dimanche: 0 },
     poignee: "normale",                       // ma poignée de main habituelle (si je ne choisis pas à temps)
