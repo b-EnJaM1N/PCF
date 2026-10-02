@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (202 répliques)
+## Commentateur — vif, enthousiaste, plein de références (201 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -204,8 +204,7 @@ restent lus par la voix de synthèse.
 | `commentateur_duel_esprits_09.mp3` | Égalité parfaite ! La tension monte ! |
 | `commentateur_lecture_reussie_01.mp3` | Il l'attendait ! Il l'attendait ! |
 | `commentateur_lecture_reussie_01_f.mp3` | Elle l'attendait ! Elle l'attendait ! |
-| `commentateur_lecture_reussie_02.mp3` | Pleine lucarne ! Il l'avait lu depuis le vestiaire ! |
-| `commentateur_lecture_reussie_02_f.mp3` | Pleine lucarne ! Elle l'avait lu depuis le vestiaire ! |
+| `commentateur_lecture_reussie_02.mp3` | Pleine lucarne ! |
 | `commentateur_lecture_reussie_03_pierre.mp3` | Second poteau, la Pierre ! |
 | `commentateur_lecture_reussie_03_ciseaux.mp3` | Second poteau, les Ciseaux ! |
 | `commentateur_lecture_reussie_03_feuille.mp3` | Second poteau, la Feuille ! |
