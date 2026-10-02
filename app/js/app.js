@@ -100,7 +100,7 @@ $("testSnd").addEventListener("click", () => {
   ambiance.activer(true); ambiance.raquette(); setTimeout(() => ambiance.public("point", 0.5), 400);
   const test = CATALOGUE.get("arbitre_balle_de_match_jaune_01");
   if (!voix.peutDire(test)) {
-    note("Tu dois entendre un coup de raquette puis des applaudissements. Si ce n'est pas le cas, vérifie le volume et le mode silencieux. Les voix (arbitre, commentateurs, speaker) sont coupées en attendant les vrais enregistrements : leurs annonces s'affichent par écrit.");
+    note("Tu dois entendre un coup de raquette puis des applaudissements. Si ce n'est pas le cas, vérifie le volume et le mode silencieux. Ensuite, Roland et Monique doivent parler.");
     setTimeout(() => note(""), 8000); return;
   }
   let demarre = false;
@@ -138,38 +138,27 @@ function renderVoixInfo() {
 }
 
 // ---------------------------------------------------------------- annonces
-let fanerT = 0;
 // Balle de set ou de match, point décisif : le coup de raquette claque plus fort.
 const grandMoment = m => !!balle(m) || pointDecisif(m);
-// Pendant l'échange (enJeu), les commentateurs ne disent à voix haute que des répliques courtes, et pas deux points de suite :
-// une réplique longue déborderait sur les coups suivants. Elles s'affichent toutes par écrit ; les longues sont dites
-// dans les pauses (avant le match, fin de set, fin de match).
+// Les annonces sont dites à voix haute seulement (pas d'écrit : le porteur du projet n'en veut pas).
+// Pendant l'échange (enJeu), les commentateurs ne disent que des répliques courtes, et pas deux points de suite :
+// une réplique longue déborderait sur les coups suivants. Les longues sont dites dans les pauses
+// (avant le match, fin de set, fin de match).
 const REPLIQUE_COURTE = 32;   // caractères : environ 2 secondes
 function annoncer(lignes, silencieux = false, { enJeu = false, coup = 0 } = {}) {
-  if (!lignes.length) return;
-  const band = $("band"); band.textContent = ""; band.classList.remove("stale");
-  lignes.forEach(l => { const d = document.createElement("div"); d.className = l.role; d.textContent = l.texte; band.append(d); });
-  clearTimeout(fanerT); fanerT = setTimeout(() => band.classList.add("stale"), 4000);
-  if (silencieux) return;
+  if (!lignes.length || silencieux) return;
   if (!enJeu) { voix.dire(lignes); return; }
   const recent = S && coup - (S.commentaireAuCoup ?? -9) < 2;
   const dites = lignes.filter(l => l.role === "arbitre" || (!recent && l.texte.length <= REPLIQUE_COURTE));
   if (S && dites.some(l => l.role !== "arbitre")) S.commentaireAuCoup = coup;
   voix.dire(dites);
 }
-// Des répliques affichées par écrit, chacune avec l'icône de qui parle.
-function afficherRepliques(el, lignes) {
-  el.textContent = "";
-  lignes.forEach(l => { const d = document.createElement("div"); d.className = l.role; d.textContent = l.texte; el.append(d); });
-  el.hidden = !lignes.length;
-}
 
 // ---------------------------------------------------------------- panneaux
 let panneauGo = null;
-function ouvrirPanneau({ kick = "", big = "", bigCls = "", sc = "", tally = "", com = "", next = "", go, onGo, resteOuvert = false }) {
+function ouvrirPanneau({ kick = "", big = "", bigCls = "", sc = "", tally = "", next = "", go, onGo, resteOuvert = false }) {
   $("iKick").textContent = kick; $("iBig").textContent = big; $("iBig").className = "big " + bigCls;
   $("iSc").textContent = sc; $("iTally").textContent = tally; $("iNext").textContent = next;
-  afficherRepliques($("iCom"), com || []);
   $("iGo").textContent = go;
   $("iGo").disabled = false;
   panneauGo = () => { if (!resteOuvert) fermerPanneau(); onGo && onGo(); };
@@ -277,7 +266,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   render(); renderHistorique(); renderLecture();
   if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);
 
-  if (m.termine) { S.dialogueFin = a.dialogue; setTimeout(() => criEnGrand(cel, () => poigneeDeMain(finir)), 600); return evt; }
+  if (m.termine) { setTimeout(() => criEnGrand(cel, () => poigneeDeMain(finir)), 600); return evt; }
   if (cel) setTimeout(() => criEnBulle(cel), 250);
   if (evt.finSet) {
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
@@ -295,7 +284,6 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
       big: g === 0 ? "Set pour toi" : `Set pour ${OPP.nom}`, bigCls: g === 0 ? "me" : "bot",
       sc: `${pa}–${pb}`,
       tally: `Sets : toi ${m.sets[0]}, ${OPP.nom} ${m.sets[1]}`,
-      com: a.dialogue,
       next: suivant.texte.replace(/\.$/, ""),
       go: `Lancer le ${decisif ? "set décisif" : ORD[n].toLowerCase() + " set"}`,
       resteOuvert: !!S.duel,
@@ -421,7 +409,6 @@ function finir() {
     habitude = p >= 50 ? ` Après une victoire, tu rejoues le même signe ${p} % du temps : c'est exploitable.`
       : p <= 15 ? ` Après une victoire, tu changes presque toujours de signe (${100 - p} %) : c'est aussi un schéma.` : "";
   }
-  afficherRepliques($("endVoix"), S.dialogueFin || []);
   const lues = lecturesReussies(c);
   $("endRead").textContent = `Ton coup était prévisible ${Math.round(100 * (S.suivi.taux || 0))} % du temps.${habitude}${lues ? ` 🔎 Tu as lu ${OPP.nom} ${lues} fois : tu as joué la bonne piste et gagné le point.` : ""}`;
   $("end").hidden = false;
@@ -490,7 +477,7 @@ function poigneeDeMain(apres) {
   if (!S || (S.duel && (!D || D.finSpeciale))) { apres(); return; }
   const ov = $("poignee"), scene = $("pmScene"), choix = $("pmChoix");
   $("pmMoi").innerHTML = avatarSVG(P.av); $("pmAdv").innerHTML = avatarSVG(OPP.av);
-  $("pmStyleMoi").textContent = ""; $("pmStyleAdv").textContent = ""; $("pmCom").textContent = "";
+  $("pmStyleMoi").textContent = ""; $("pmStyleAdv").textContent = "";
   scene.className = "pm-scene"; choix.hidden = false; $("pmTemps").hidden = false;
   choix.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === P.poignee)));
   const barre = $("pmTemps"); barre.classList.remove("court"); void barre.offsetWidth; barre.classList.add("court");
@@ -514,7 +501,7 @@ function poigneeDeMain(apres) {
     $("pmStyleAdv").textContent = `${STYLES[adv].icone} ${STYLES[adv].nom}`;
     $("pmMain").textContent = "🤝";
     scene.classList.add("go", r.animation);
-    if (ligne) { $("pmCom").innerHTML = ""; afficherRepliques($("pmCom"), [ligne]); setTimeout(() => voix.dire([ligne]), 500); }
+    if (ligne) setTimeout(() => voix.dire([ligne]), 500);
     (S.citations ||= []).push(...(ligne && ligne.role !== "arbitre" ? [ligne] : []));
     ov.onclick = terminer;                                   // toucher l'écran : on passe
     setTimeout(terminer, reduitMouvement() ? 1200 : 2400);
@@ -695,7 +682,6 @@ function nouvelleSeance() {
 function preparerEcranMatch() {
   $("hMe").textContent = "❔"; $("hBot").textContent = "❔"; $("hMe").className = "hand"; $("hBot").className = "hand";
   $("verdict").textContent = "";
-  $("band").innerHTML = `<div class="idle">Les annonces de l'arbitre et des commentateurs s'afficheront ici.</div>`; $("band").classList.remove("stale");
   $("tape").innerHTML = `<p class="empty">Les coups apparaîtront ici. Observe-les : ton adversaire le fait.</p>`;
   $("read").textContent = "L'analyse de ton jeu démarre au premier coup.";
   $("end").hidden = true; $("bar").style.transform = "scaleX(1)"; $("timer").classList.remove("urgent"); $("criBulle").hidden = true;
@@ -771,7 +757,7 @@ function ouvrirFaceAFace() {
   // Filet de sécurité : quoi qu'il arrive à l'animation, tout est affiché peu après.
   minuteriesIntro.push(setTimeout(() => ov.classList.add("vite"), (fin + 0.8) * 1000));
 }
-// Le speaker présente les joueurs (et les commentateurs lancent le match), par écrit et à voix haute.
+// Les commentateurs lancent le match, à voix haute (pas de speaker pour l'instant : sa présentation n'est ni dite ni affichée).
 function presenterSpeaker() {
   const f = P.faceAFace[OPP.id], humain = !!OPP.humain;
   const niveauMoi = humain ? monClassement ?? 1200 : P.elo, niveauAdv = humain ? OPP.classement ?? 1200 : OPP.elo;
@@ -789,12 +775,9 @@ function presenterSpeaker() {
     recents,
   });
   // On retient les phrases dites, pour ne pas les répéter aux prochains matchs.
-  ecrire("speakerRecents", [...av.speaker, ...av.commentaires].map(l => l.id).concat(recents).slice(0, 80));
-  const el = $("foSpeaker"); el.textContent = "";
-  const sp = document.createElement("div"); sp.className = "speaker"; sp.textContent = av.speaker.map(l => l.texte).join(" "); el.append(sp);
-  av.commentaires.forEach(l => { const d = document.createElement("div"); d.className = l.role; d.textContent = l.texte; el.append(d); });
+  ecrire("speakerRecents", av.commentaires.map(l => l.id).concat(recents).slice(0, 80));
   clearTimeout(voixIntro);
-  voixIntro = setTimeout(() => { if (faceAFaceOuvert && !S.passe) voix.dire([...av.speaker, ...av.commentaires]); }, reduitMouvement() ? 0 : 1300);
+  voixIntro = setTimeout(() => { if (faceAFaceOuvert && !S.passe) voix.dire(av.commentaires); }, reduitMouvement() ? 0 : 1300);
 }
 // Les nombres défilent jusqu'à leur valeur, comme au tableau d'affichage.
 function compter(el) {

@@ -15,7 +15,7 @@ const ARBITRE_PARLE = /^arbitre_((premier|deuxieme|troisieme|quatrieme)_set|set_
 export const ditAVoixHaute = r => r.role !== "arbitre" || ARBITRE_PARLE.test(r.id);
 
 // La vitesse de lecture (1 = normale) : les commentaires doivent tenir entre deux coups. La hauteur de la voix ne change pas.
-export const VITESSES = { arbitre: 1, commentateur: 1.15, commentatrice: 1.3, speaker: 1, journaliste: 1 };
+export const VITESSES = { arbitre: 1, commentateur: 1.25, commentatrice: 1.45, speaker: 1, journaliste: 1 };
 
 const synth = typeof window !== "undefined" && "speechSynthesis" in window ? window.speechSynthesis : null;
 
