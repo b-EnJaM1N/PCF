@@ -1,0 +1,13 @@
+{
+  "_explication": "Réglages des voix ElevenLabs (docs/voix-elevenlabs.md). Les Voice ID ne sont pas secrets ; la clé d'accès, si : elle reste dans le coffre-fort de GitHub (secret ELEVENLABS_API_KEY). stability : 0 (créatif), 0.5 (naturel) ou 1 (robuste) avec le modèle eleven_v3.",
+  "modele": "eleven_v3",
+  "format": "mp3_44100_64",
+  "roles": {
+    "commentatrice": { "nom": "Monique Latouffe", "voice_id": "hFgOzpmS0CMtL2to8sAl", "stability": 0.5, "indication": "[deadpan]" },
+    "commentateur": { "nom": "Roland Pignon", "voice_id": "pwONJQic3ZwHTFG8D6uM", "stability": 0.5, "indication": "[excited]" },
+    "arbitre": { "nom": "L'arbitre", "voice_id": "lm3gOYJiClKJc7YaR3r1", "stability": 1, "indication": "" }
+  },
+  "textes": {
+    "_explication": "Texte pour la voix d'une réplique, quand il doit être différent du texte affiché (prononciation, autre indication de jeu). Clé : l'identifiant de la réplique."
+  }
+}

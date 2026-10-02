@@ -1,0 +1,65 @@
+# Le robot « Voix » : génère les fichiers audio des répliques avec ElevenLabs, les range dans app/audio/,
+# les enregistre sur la branche choisie, puis relance la mise en ligne (version de test pour une branche, officielle pour main).
+# À lancer à la main : onglet « Actions » → « Voix » → « Run workflow ».
+# La clé ElevenLabs est rangée dans le coffre-fort de GitHub (Settings → Secrets and variables → Actions → ELEVENLABS_API_KEY) :
+# elle n'apparaît jamais dans le code ni dans les journaux.
+name: Voix
+
+on:
+  workflow_dispatch:
+    inputs:
+      quoi:
+        description: "essai (10 répliques) ou tout (toutes les répliques pas encore enregistrées)"
+        type: choice
+        options: [essai, tout]
+        default: essai
+      roles:
+        description: "Les voix à générer (séparées par des virgules)"
+        default: "commentateur,commentatrice,arbitre"
+      ids:
+        description: "Facultatif : refaire seulement ces répliques (identifiants séparés par des virgules)"
+        default: ""
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: voix
+  cancel-in-progress: false
+
+jobs:
+  voix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Générer les voix
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          QUOI: ${{ inputs.quoi }}
+          ROLES: ${{ inputs.roles }}
+          IDS: ${{ inputs.ids }}
+        run: |
+          ESSAI="commentatrice_serie_contre_02,commentateur_dialogue_cri_02,commentatrice_dialogue_cri_02,arbitre_balle_de_match_jaune_01,arbitre_set_decisif_01,commentateur_main_legendaire_01,commentatrice_serie_pour_03,commentateur_dialogue_avant_match_06,commentatrice_dialogue_avant_match_06,commentateur_craquage_04"
+          if [ -n "$IDS" ]; then node outils/generer-voix.js --ids "$IDS" --refaire
+          elif [ "$QUOI" = "essai" ]; then node outils/generer-voix.js --ids "$ESSAI"
+          else node outils/generer-voix.js --roles "$ROLES"
+          fi
+
+      - name: Enregistrer les fichiers
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/audio
+          if git diff --cached --quiet; then echo "Aucun nouveau fichier"; exit 0; fi
+          git commit -qm "Voix : $(git diff --cached --name-only | wc -l) fichier(s) audio générés"
+          git push origin HEAD:"$GITHUB_REF_NAME"
+          # Une modification faite par le robot ne relance pas la mise en ligne toute seule : on la demande.
+          gh workflow run deploiement.yml --ref "$GITHUB_REF_NAME"
+        env:
+          GH_TOKEN: ${{ github.token }}
