@@ -19,6 +19,26 @@ Rien pendant les échanges, pour garder le rythme. Une option « Masquer les mes
 
 ---
 
+## Version 2 : sélection proposée (6 messages par liste)
+
+🙂 = tout public, avec n'importe quel joueur · 😈 = entre amis seulement (demande d'ami acceptée).
+
+### 🥊 Avant le duel
+🙂 Bonne chance ! · Bon match ! · Que le meilleur gagne ! · À toi de jouer ! · Je te souhaite un bon duel ! · On y va ?
+😈 Bonne chance… tu en auras besoin. · Je te connais par cœur. · Je vais te fumer. · Tu vas finir en slip. · Prépare-toi à souffrir.
+
+### 🏆 Après le duel : le vainqueur
+🙂 Merci pour le match ! · Beau duel ! · Bien joué à toi aussi ! · C'était serré ! · Revanche quand tu veux ! · GG !
+😈 Et oui !!! · C'est qui le boss ? · Je suis ton père ! · Bien joué jeune padawan. · Tu connais les règles ? · Déculottée ! (à confirmer)
+
+### 😭 Après le duel : le vaincu
+🙂 Bien joué ! · Bravo ! · Beau duel ! · Bravo pour ta victoire ! · Merci pour le duel ! · Victoire méritée !
+😈 (clin d'œil à Benoît Paire : à choisir) · Je t'ai laissé gagner. · Je jouais d'une main. · J'ai eu un bug. · Il y avait un faux rebond ! · Mon tactile déconne.
+
+Non retenus pour l'instant (gardés pour la boutique ou plus tard) : Bon duel !, Bonne partie !, Bonne chance à toi !, À toi de jouer, bonne chance !, Cry baby, cry !, C'est largement mérité., Tu es trop tendre., J'étais pas chaud., C'est pas ma vraie forme., J'étais déconcentré., J'avais pas vu venir ça., Ça compte pas !
+
+---
+
 ## Les listes du porteur du projet (version 1)
 
 Deux registres :
