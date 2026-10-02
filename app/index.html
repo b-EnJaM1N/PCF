@@ -219,11 +219,6 @@
     </section>
     <div id="socOn" hidden>
       <div id="socListe">
-        <section class="card">
-          <h2>Mon niveau officiel</h2>
-          <div class="cl-grand"><b id="clPoints">–</b><span id="clDetail"></span></div>
-          <p class="hint">Calculé par le serveur, uniquement avec les duels officiels contre d'autres joueurs. Ton niveau contre les bots est un niveau d'entraînement, à part.</p>
-        </section>
         <section class="card" id="socInvitCard" hidden>
           <h2>Invitations</h2>
           <div id="socInvit" class="resultats"></div>
@@ -496,7 +491,8 @@
   <div class="view" id="viewProfile" hidden>
     <section class="card">
       <div class="id"><div class="av" id="pAv"></div>
-        <div><div class="pseudo" id="pName"></div><div class="title" id="pTitle"></div><div class="elo" id="pElo"></div><div class="elo" id="pClassement" hidden></div></div>
+        <div><div class="pseudo" id="pName"></div><div class="title" id="pTitle"></div><div class="elo" id="pElo"></div><div class="elo" id="pClassement" hidden></div>
+          <details class="niveau-aide" id="pNiveauAide" hidden><summary>D'où vient ce niveau ?</summary><p id="clDetail"></p><p>Calculé par le serveur, uniquement avec les duels officiels contre d'autres joueurs. Ton niveau contre les bots est un niveau d'entraînement, à part.</p></details></div>
       </div>
       <div class="kpis">
         <div><b id="kM">0</b><span>matchs</span></div>
