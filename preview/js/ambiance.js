@@ -3,7 +3,7 @@
 // La raquette et les applaudissements sont fabriqués par le code (sons.js), sauf si un vrai
 // enregistrement portant leur nom est déposé dans app/audio/ (ex. public_ovation_01.mp3).
 // Le murmure de fond, la tension et le « ooh » n'existent qu'en enregistrement : sans fichier, rien.
-import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser } from "./sons.js";
+import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe } from "./sons.js";
 
 const AC = typeof window !== "undefined" ? window.AudioContext || window.webkitAudioContext : null;
 
@@ -44,6 +44,8 @@ export function egalitesAvantDernier(coups) {
   for (let i = coups.length - 2; i >= 0 && coups[i].gagnant === null; i--) n++;
   return n;
 }
+// Crête sous laquelle un enregistrement est jugé muet (environ −26 dB).
+export const SEUIL_MUET = 0.05;
 const HAUTEUR = [0.8, 1.4, 1];   // Pierre grave, Ciseaux aigu, Feuille entre les deux
 
 export class Ambiance {
@@ -96,8 +98,10 @@ export class Ambiance {
         if (!this.fichiers.includes(id)) continue;
         try {
           // Tous les coups au même niveau (les enregistrements n'ont pas le même volume) : la version forte claque vraiment plus fort.
-          const b = await charger(id);
-          normaliser(Array.from({ length: b.numberOfChannels }, (_, c) => b.getChannelData(c)), 0.95);
+          const b = await charger(id), canaux = Array.from({ length: b.numberOfChannels }, (_, c) => b.getChannelData(c));
+          // Un enregistrement presque muet (ça arrive avec ElevenLabs) : on garde le son fabriqué plutôt que d'amplifier du souffle.
+          if (creteDe(canaux) < SEUIL_MUET) continue;
+          normaliser(canaux, 0.95);
           (this.raquettesFichiers[k] ||= [])[f] = b;
         } catch { /* son indisponible : le son fabriqué */ }
       }
