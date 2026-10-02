@@ -95,7 +95,7 @@ export const MOMENTS = {
     { r: "c", t: "Allez, petit bonhomme !", f: "Allez, petite bonne femme !" },
     { r: "c", t: "Oublie que t'as aucune chance, vas-y, fonce !", clin: "cine" },
     { r: "d", t: "Ça commence à ressembler à une correction." },
-    { r: "d", t: "Muscle ton jeu, Robert.", clin: "sport" },
+    { r: "d", t: "Muscle ton jeu, Robert. Muscle ton jeu.", clin: "sport" },
     { r: "d", t: "Jusqu'ici, tout va bien… jusqu'ici.", clin: "cine" },
     { r: "d", t: "Sur un malentendu, ça peut marcher.", clin: "cine" },
     { r: "d", t: "Sa maison brûle, et il regarde ailleurs.", f: "Sa maison brûle, et elle regarde ailleurs.", clin: "cine" },
@@ -341,6 +341,7 @@ export const DIALOGUES = {
   // Un joueur vient de pousser son cri de victoire (voir celebrations.js).
   cri: [
     ["Ah, il y a de la voix !", "On l'avait entendu."],
+    [{ t: "Il a craqué son slip !", f: "Elle a craqué son slip !" }, "Attention que ça ne vous arrive pas."],
   ],
 };
 

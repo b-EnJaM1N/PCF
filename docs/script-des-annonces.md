@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (200 répliques)
+## Commentateur — vif, enthousiaste, plein de références (202 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -315,8 +315,10 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_fin_match_01.mp3` | Il n'a pas démérité ! |
 | `commentateur_dialogue_fin_match_01_f.mp3` | Elle n'a pas démérité ! |
 | `commentateur_dialogue_cri_01.mp3` | Ah, il y a de la voix ! |
+| `commentateur_dialogue_cri_02.mp3` | Il a craqué son slip ! |
+| `commentateur_dialogue_cri_02_f.mp3` | Elle a craqué son slip ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (150 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (151 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -349,7 +351,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_serie_pour_04_f.mp3` | Elle ne joue plus. Elle distribue des corrections. |
 | `commentatrice_serie_pour_05.mp3` | Six points d'affilée. Ça devient indécent. |
 | `commentatrice_serie_contre_01.mp3` | Ça commence à ressembler à une correction. |
-| `commentatrice_serie_contre_02.mp3` | Muscle ton jeu, Robert. |
+| `commentatrice_serie_contre_02.mp3` | Muscle ton jeu, Robert. Muscle ton jeu. |
 | `commentatrice_serie_contre_03.mp3` | Jusqu'ici, tout va bien… jusqu'ici. |
 | `commentatrice_serie_contre_04.mp3` | Sur un malentendu, ça peut marcher. |
 | `commentatrice_serie_contre_05.mp3` | Sa maison brûle, et il regarde ailleurs. |
@@ -470,6 +472,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_titre_01.mp3` | Pas d'enflammade. Pas d'enflammade. |
 | `commentatrice_dialogue_fin_match_01.mp3` | Si. Un peu quand même. |
 | `commentatrice_dialogue_cri_01.mp3` | On l'avait entendu. |
+| `commentatrice_dialogue_cri_02.mp3` | Attention que ça ne vous arrive pas. |
 
 ## Speaker — voix de salle, voyelles étirées (171 répliques)
 

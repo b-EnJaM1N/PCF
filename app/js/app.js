@@ -21,7 +21,7 @@ import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } f
 import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
-import { CATALOGUE, ligneDialogue } from "./voix/script.js";
+import { CATALOGUE, ligneDialogue, nbDialogues } from "./voix/script.js";
 import { Ambiance, reactionsPublic, egalitesAvantDernier } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
@@ -224,7 +224,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   const cel = evt.finSet ? { ...celebration(criDe(evt.gagnant), { finMatch: m.termine, sauvee }), joueur: evt.gagnant } : null;
   if (cel && commenterCri(S.criCommente, cel)) {
     S.criCommente = true;
-    const reaction = ligneDialogue("cri", 0), i = a.lignes.findIndex(l => l.role !== "arbitre");
+    const genre = evt.gagnant === 0 ? P.genre : OPP.genre || "m";   // on parle de celui qui a crié
+    const reaction = ligneDialogue("cri", Math.floor(Math.random() * nbDialogues("cri")), genre), i = a.lignes.findIndex(l => l.role !== "arbitre");
     a.lignes.splice(i < 0 ? a.lignes.length : i, 0, ...reaction);
     a.dialogue.unshift(...reaction);
   }
