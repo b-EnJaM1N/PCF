@@ -41,6 +41,17 @@ Hollande, Le Maillon faible, Terminator, Les Bronzés…). On rééquilibre avec
 - « Il a le seum. Comme disent les jeunes. » (« Elle a le seum… ») — proposition
 - « Il est en PLS. Comme disent les jeunes. » (« Elle est en PLS… ») — proposition
 
+### Sport, pour les 18-35 ans (les clins d'œil sport actuels viennent surtout de France 98 et des vieux commentaires)
+- Une remontée (gagner après avoir perdu le 1er set) : « C'est la remontada ! » (Barça-PSG, 2017) — proposition
+- Au cri de victoire : « Siuuuu ! » (la célébration de Cristiano Ronaldo) — proposition
+
+## Bilan de l'équilibre des références
+- Cinéma, télé, politique : environ 9 références surtout pour les plus de 35 ans (De Gaulle, Chirac, Mitterrand, Giscard,
+  Le Maillon faible, Les Bronzés…), 9 connues de tous (Star Wars, Terminator, Toy Story, Forrest Gump, La Haine, Hollande,
+  Macron…) et, avec les idées ci-dessus, une dizaine pour les 18-35 ans : à peu près un tiers chacune.
+- Sport : 31 clins d'œil, surtout du jargon de commentateur (connu de tous) et des souvenirs de France 98 (« Et un, et deux,
+  et trois zéro », « Muscle ton jeu, Robert »…), d'où les deux propositions ci-dessus.
+
 ## Déjà ajoutées
 - « Muscle ton jeu, Robert. Muscle ton jeu. » (Monique)
 - « Il a craqué son slip ! » / « Attention que ça ne vous arrive pas. » (au cri de victoire)
