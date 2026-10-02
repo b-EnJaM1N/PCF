@@ -20,7 +20,7 @@ const maj = t => t.charAt(0).toUpperCase() + t.slice(1);
 export const ORDINAUX = ["premier", "deuxième", "troisième", "quatrième", "cinquième"];
 
 import { MOMENTS, DIALOGUES, SPEAKER, NOMS_BOTS, JOURNALISTE } from "./repliques.js";
-import { NOMS, COMPLEMENTS, idPartie } from "../surnoms.js";
+import { NOMS, QUALIFICATIFS, idPartie } from "../surnoms.js";
 
 // ---------------------------------------------------------------- arbitre
 // Répliques fixes, écrites à la main.
@@ -151,7 +151,7 @@ export function ligneSpeaker(cle, k = 0, genre = "m") {
 }
 export const nbSpeaker = cle => SPEAKER[cle].length;
 for (const [id, t] of Object.entries(NOMS_BOTS)) ajouter(`speaker_bot_${id}_01`, "speaker", t);
-for (const p of [...NOMS, ...COMPLEMENTS]) ajouter(idPartie(p), "speaker", `${p.t}…`);
+for (const p of [...NOMS, ...QUALIFICATIFS]) ajouter(idPartie(p), "speaker", `${p.t}…`);
 for (const [cle, liste] of Object.entries(JOURNALISTE)) liste.forEach((t, k) => ajouter(`journaliste_${cle}_${num2(k)}`, "journaliste", t));
 export const ligneJournaliste = (cle, k) => CATALOGUE.get(`journaliste_${cle}_${num2(k)}`);
 

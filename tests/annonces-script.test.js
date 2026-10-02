@@ -162,10 +162,11 @@ test("fin de set et fin de match : un temps mort avec commentaire ou dialogue", 
 
 test("le speaker présente les joueurs par leur côté et leur surnom", () => {
   const P = profilParDefaut();
+  P.surnom = { nom: "le_cobra", complement: "du_pmu" };
   const moi = { surnom: surnomDe(P), genre: "f", etiquette: etiquetteDe(P) };
   const { speaker, commentaires } = annoncesAvantMatch({ moi, adv: { bot: "rocky" }, tour: "finale" }, () => 0);
   assert.deepEqual(speaker.map(l => l.id), ["speaker_finale_01", "speaker_coin_jaune_01", "speaker_debutant_01",
-    "speaker_surnom_le_bleu_01", "speaker_surnom_de_l_ombre_01", "speaker_coin_rouge_01", "speaker_bot_rocky_01", "speaker_cloture_01"]);
+    "speaker_surnom_le_cobra_01", "speaker_surnom_du_pmu_01", "speaker_coin_rouge_01", "speaker_bot_rocky_01", "speaker_cloture_01"]);
   assert.ok(speaker.every(l => l.role === "speaker"));
   assert.ok(commentaires.every(l => CATALOGUE.has(l.id)));
   // deux joueurs au même surnom : le speaker le remarque

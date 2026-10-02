@@ -1,3 +1,5 @@
+> **Remplacé par la version 3** : [`surnoms-v3-tri.md`](surnoms-v3-tri.md), branchée dans l'appli.
+
 # Surnoms, version 2 (brouillon à valider)
 
 Le speaker annonce un **nom** puis un **complément** : « Le Photocopieur… du dimanche ! »
