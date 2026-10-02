@@ -412,7 +412,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_point_decisif_01.mp3` | Ici, pas de deuxième chance. Comme dans la vie. |
 | `commentatrice_set_ecrasant_01.mp3` | Sèche correction. |
 | `commentatrice_set_ecrasant_02.mp3` | Il n'y a pas eu de match dans ce set. |
-| `commentatrice_set_ecrasant_03.mp3` | L'adversaire est resté au vestiaire. Il aurait dû y rester. |
+| `commentatrice_set_ecrasant_03.mp3` | Il aurait dû rester au vestiaire. |
 | `commentatrice_set_ecrasant_04.mp3` | Vous êtes le maillon faible. Au revoir ! |
 | `commentatrice_set_ecrasant_05.mp3` | Un set à oublier. Je l'ai déjà oublié. |
 | `commentatrice_set_ecrasant_06.mp3` | Qu'on m'apporte un café. Et un autre match. |

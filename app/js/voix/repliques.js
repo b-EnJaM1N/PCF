@@ -191,7 +191,7 @@ export const MOMENTS = {
     { r: "c", t: "Fanny ! Onze à zéro, il va falloir embrasser Fanny !", clin: "sport", si: "onze_zero" },
     { r: "d", t: "Sèche correction." },
     { r: "d", t: "Il n'y a pas eu de match dans ce set." },
-    { r: "d", t: "L'adversaire est resté au vestiaire. Il aurait dû y rester." },
+    { r: "d", t: "Il aurait dû rester au vestiaire." },
     { r: "d", t: "Vous êtes le maillon faible. Au revoir !", clin: "cine" },
     { r: "d", t: "Un set à oublier. Je l'ai déjà oublié." },
     { r: "d", t: "Qu'on m'apporte un café. Et un autre match." },
