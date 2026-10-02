@@ -144,7 +144,7 @@ export function installerTournois(ctx) {
     $("tRegleAbsence").textContent = direct
       ? "Chaque match se lance dès que les deux joueurs sont libres. Un joueur absent au bout de 60 secondes perd par forfait ; si aucun des deux ne vient, le mieux classé passe."
       : "Un match non joué à la date limite revient à la personne qui a essayé de le jouer ; si personne ne s'est manifesté, au mieux classé.";
-    $("tRegleAbsence").textContent += " Le tableau est tiré au sort, comme au tennis : les meilleurs niveaux sont têtes de série (la moitié du tableau jusqu'à 8 joueurs, un quart au-delà) et ne peuvent pas se croiser trop tôt ; tous les autres joueurs sont placés au hasard.";
+    $("tRegleAbsence").textContent += " Le tableau est tiré au sort, comme au tennis : les meilleurs niveaux sont têtes de série (la moitié du tableau, 32 au plus) et ne peuvent pas se croiser trop tôt ; tous les autres joueurs sont placés au hasard.";
 
     // Inscriptions
     const insc = t.phase === "inscriptions";

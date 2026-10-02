@@ -168,8 +168,8 @@ que le message existe, qu'il arrive au bon moment, et que le chambrage n'est env
 
 Même manipulation avec [`etape-23-tirage-au-sort.sql`](etape-23-tirage-au-sort.sql), **après** l'étape 22
 (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-23-tirage-au-sort.sql).
-Elle tire les tableaux au sort, comme au tennis : seuls les meilleurs niveaux sont têtes de série (la moitié du tableau
-jusqu'à 8 joueurs, un quart au-delà : 32 têtes de série pour 128 joueurs), les autres joueurs sont placés au hasard,
+Elle tire les tableaux au sort, comme au tennis : seuls les meilleurs niveaux sont têtes de série (la moitié du tableau,
+32 au plus : 4 sur 8, 8 sur 16, 16 sur 32, 32 à partir de 64), les autres joueurs sont placés au hasard,
 et le hasard départage les joueurs de même niveau. Elle envoie aussi le score en direct du match voisin, pour l'écran d'attente.
 
 ## 2. Adresses du site (connexion par lien)

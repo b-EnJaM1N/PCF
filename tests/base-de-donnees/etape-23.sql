@@ -69,6 +69,15 @@ begin
   perform pg_temp.verifier((select bool_and(substr(x::text, 25)::int between 5 and 8) from unnest(adv) x), 'la n° 1 affronte un joueur non tête de série');
   perform pg_temp.verifier((select count(distinct x) > 1 from unnest(adv) x), 'et pas toujours le même');
 
+  -- 3 bis. La moitié du tableau, 32 au plus
+  perform pg_temp.verifier(_nb_tetes(4, 4) = 2 and _nb_tetes(16, 16) = 8 and _nb_tetes(32, 32) = 16 and _nb_tetes(64, 64) = 32
+    and _nb_tetes(128, 128) = 32 and _nb_tetes(256, 256) = 32, 'têtes de série : 2 sur 4, 8 sur 16, 16 sur 32, 32 à partir de 64');
+  perform pg_temp.verifier(_nb_tetes(32, 5) = 5, 'jamais plus de têtes de série que de joueurs');
+  t := pg_temp.tirer(16, 16);
+  perform pg_temp.verifier((select count(*) from matchs_tournoi m where m.tournoi_id = t and m.tour = 1
+    and ((select tete from inscrits_tournoi where tournoi_id = t and joueur = m.j0) is null) = ((select tete from inscrits_tournoi where tournoi_id = t and joueur = m.j1) is null)) = 0,
+    '16 joueurs : 8 têtes de série, chacune contre un joueur tiré au sort');
+
   -- 4. Beaucoup de places vides (tournoi entre amis de 17 joueurs, tableau de 32) : jamais deux places vides face à face
   t := pg_temp.tirer(17, 32);
   perform pg_temp.verifier((select count(*) from matchs_tournoi where tournoi_id = t and tour = 1 and j0 is null and j1 is null) = 0, 'jamais deux places vides face à face');
