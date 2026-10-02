@@ -608,6 +608,7 @@ function preparerEcranMatch() {
 
 function renderFormat() {
   document.querySelectorAll("#segLen button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === fmt.len)));
+  $("lenResume").textContent = `Sets de ${fmt.len} point${fmt.len > 1 ? "s" : ""}${fmt.len === 11 ? " (format officiel)" : ""}`;
   document.querySelectorAll("#segWin button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === fmt.win)));
   // Durée : coups par set (égalités comprises), du plus court au plus long match possible.
   const parSet = { 11: 20, 7: 12, 3: 5, 1: 1.5 }[fmt.len], w = fmt.win;

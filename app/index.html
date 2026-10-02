@@ -330,11 +330,13 @@
     <p class="retour-hub"><button class="linkbtn" data-aller="viewCompet">← Tournois</button></p>
     <section class="card" id="sngCard" hidden>
       <h2>Tournois express (Sit &amp; Go)</h2>
-      <p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours. 🤖 Deux minutes après l'arrivée du premier joueur, s'il y a au moins 2 joueurs (et au moins un quart de la salle), des bots complètent la salle (matchs contre un bot amicaux, les bots ne gagnent jamais de jetons).</p>
+      <p class="hint">Départ dès que la salle est pleine · compte pour ton niveau officiel.</p>
+      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours. 🤖 Deux minutes après l'arrivée du premier joueur, s'il y a au moins 2 joueurs (et au moins un quart de la salle), des bots complètent la salle (matchs contre un bot amicaux, les bots ne gagnent jamais de jetons).</p></details>
       <p class="sndnote" id="sngMien" hidden style="margin-top:10px"></p>
       <div id="sngSalles" class="resultats"></div>
       <h2 style="margin-top:18px">🪙 Sit &amp; Go à mise</h2>
-      <p class="hint">Salles de 8 joueurs. L'entrée est payée en jetons (rendue si tu quittes la salle avant le départ). La cagnotte, moins 10 %, est partagée comme au poker : 65 % au 1er, 35 % au 2e.</p>
+      <p class="hint">Salles de 8 · entrée en jetons · 65 % de la cagnotte au 1er, 35 % au 2e.</p>
+      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Salles de 8 joueurs. L'entrée est payée en jetons (rendue si tu quittes la salle avant le départ). La cagnotte, moins 10 %, est partagée comme au poker : 65 % au 1er, 35 % au 2e.</p></details>
       <div id="sngMises" class="resultats"></div>
       <p class="locknote" id="sngMsg" role="status"></p>
     </section>
@@ -346,7 +348,8 @@
     <p class="sndnote tenant" id="progTenant" hidden></p>
     <section class="card" id="freeCard" hidden>
       <h2>🌙 Freeroll de 20 h</h2>
-      <p class="hint">Un tournoi gratuit chaque soir à 20 h, avec une cagnotte offerte : 1 000 jetons + 50 par joueur, partagée comme au poker (environ 10 à 15 % des joueurs payés). Inscris-toi dans la journée ; à 20 h, sois dans l'appli : le tournoi démarre avec les inscrits présents (au moins 2). 🤖 S'il manque du monde, des bots complètent le tableau : ils ne gagnent jamais de jetons, les gains vont aux joueurs selon leur parcours. Sets de 11, 2 sets gagnants (les matchs contre un bot sont amicaux).</p>
+      <p class="hint">Gratuit, chaque soir à 20 h, avec une cagnotte offerte. Inscris-toi, puis sois dans l'appli à 20 h.</p>
+      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Un tournoi gratuit chaque soir à 20 h, avec une cagnotte offerte : 1 000 jetons + 50 par joueur, partagée comme au poker (environ 10 à 15 % des joueurs payés). Inscris-toi dans la journée ; à 20 h, sois dans l'appli : le tournoi démarre avec les inscrits présents (au moins 2). 🤖 S'il manque du monde, des bots complètent le tableau : ils ne gagnent jamais de jetons, les gains vont aux joueurs selon leur parcours. Sets de 11, 2 sets gagnants (les matchs contre un bot sont amicaux).</p></details>
       <p class="sndnote" id="freeStatut" style="margin-top:10px"></p>
       <p class="hint" id="freeInfo"></p>
       <button class="btn" id="freeInscrire" hidden>M'inscrire pour ce soir</button>
@@ -356,16 +359,17 @@
     </section>
     <section class="card" id="progCard" hidden>
       <h2>🗓️ Tournois à jetons</h2>
-      <p class="hint">Le grand rendez-vous de la semaine : le Grand Chelem, chaque dimanche à 21 h. Payant en jetons. L'entrée est payée à l'inscription et rendue si tu te désinscris avant le départ (ou si le tournoi est annulé faute de joueurs). Au départ, sois dans l'appli : le tournoi démarre avec les inscrits présents (au moins 2). Un inscrit absent n'est pas remboursé. 🤖 S'il manque du monde, des bots complètent le tableau : ils ne gagnent jamais de jetons, les gains vont aux joueurs selon leur parcours. La cagnotte (les entrées moins 10 %) est partagée comme au poker : environ 10 à 15 % des joueurs sont payés, au moins 1,5 fois l'entrée pour le plus petit gain. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel (sauf les matchs contre un bot, amicaux).</p>
+      <p class="hint">Le Grand Chelem, chaque dimanche à 21 h · entrée en jetons.</p>
+      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Le grand rendez-vous de la semaine : le Grand Chelem, chaque dimanche à 21 h. Payant en jetons. L'entrée est payée à l'inscription et rendue si tu te désinscris avant le départ (ou si le tournoi est annulé faute de joueurs). Au départ, sois dans l'appli : le tournoi démarre avec les inscrits présents (au moins 2). Un inscrit absent n'est pas remboursé. 🤖 S'il manque du monde, des bots complètent le tableau : ils ne gagnent jamais de jetons, les gains vont aux joueurs selon leur parcours. La cagnotte (les entrées moins 10 %) est partagée comme au poker : environ 10 à 15 % des joueurs sont payés, au moins 1,5 fois l'entrée pour le plus petit gain. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel (sauf les matchs contre un bot, amicaux).</p></details>
       <div id="progListe" class="resultats"></div>
       <p class="locknote" id="progMsg" role="status"></p>
     </section>
-    <section class="card" id="classementCard" hidden>
-      <h2 id="classementTitre">Classement des gains du mois</h2>
+    <details class="card pli" id="classementCard" hidden>
+      <summary><h2>🏅 <span id="classementTitre">Classement des gains du mois</span></h2><span class="pli-resume">Qui a gagné le plus de jetons ce mois-ci</span></summary>
       <p class="hint">Le bénéfice du mois dans les duels à mise, les Sit &amp; Go à mise, les tournois programmés et les freerolls (gains moins mises). Les bonus et les défis ne comptent pas. Remise à zéro le 1er du mois.</p>
       <ol class="classement" id="classementListe"></ol>
       <p class="hint" id="classementMoi"></p>
-    </section>
+    </details>
     <section class="card" id="freeHors" hidden><p class="hint">Les tournois programmés et le freeroll se jouent en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
   </div>
 
@@ -442,40 +446,40 @@
 
   <div class="view" id="viewOptions" hidden>
     <p class="retour-hub"><button class="linkbtn" id="optionsRetour">← Retour</button></p>
-    <section class="card">
-      <h2>Points par set</h2>
+    <details class="card pli">
+      <summary><h2>🎾 Points par set</h2><span class="pli-resume" id="lenResume"></span></summary>
       <div class="seg" id="segLen"><button data-v="11">11 (officiel)</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
       <p class="hint">Le format officiel du HandSlam est le set de 11 points, avec 2 points d'écart. Le set de 7 points (2 points d'écart aussi) donne des matchs plus courts. Les sets de 3 et de 1 point se jouent sans écart : le premier à 3 gagne (même 3–2), et à 1 point, le premier point gagne le set.</p>
       <p class="hint">Le tournoi se joue en sets de 11 ou de 7 points. En duel, les sets de 3 et 1 point sont toujours des matchs amicaux.</p>
       <p class="hint" id="lenLock" hidden>Le format ne peut pas changer pendant un match ou un tournoi.</p>
-    </section>
-    <section class="card" id="cNotifs">
-      <h2>Notifications</h2>
+    </details>
+    <details class="card pli" id="cNotifs">
+      <summary><h2>🔔 Notifications</h2><span class="pli-resume">Être prévenu d'un défi ou d'un match de tournoi, appli fermée</span></summary>
       <p class="hint">Reçois une notification quand un joueur te défie, quand il accepte ton défi, ou quand ton match de tournoi est prêt, même quand l'appli est fermée.</p>
       <button class="btn" id="btnNotifs" style="margin-top:12px">Activer les notifications</button>
       <button class="btn alt" id="btnTestNotif" hidden>Envoyer une notification de test</button>
       <p class="locknote" id="notifsMsg" role="status"></p>
-    </section>
-    <section class="card">
-      <h2>Les voix du match</h2>
+    </details>
+    <details class="card pli">
+      <summary><h2>🎙️ Les voix du match</h2><span class="pli-resume">Tester le son, voix de synthèse</span></summary>
       <p class="hint" id="voixInfo"></p>
       <button class="test" id="testSnd" style="margin-top:12px">Tester le son</button>
       <label class="sound" style="margin-top:12px;align-items:flex-start"><input type="checkbox" id="synthese"> <span>Lire aussi les répliques avec la voix de synthèse du téléphone (voix robotique)</span></label>
-    </section>
-    <section class="card" id="installCard">
-      <h2>Installer HandSlam sur l'écran d'accueil</h2>
+    </details>
+    <details class="card pli" id="installCard">
+      <summary><h2>📲 Installer HandSlam</h2><span class="pli-resume">L'avoir sur l'écran d'accueil, comme une appli</span></summary>
       <p class="hint"><b>iPhone (Safari)</b> :</p>
       <ol class="steps"><li>touche le bouton Partager (le carré avec une flèche) ;</li><li>choisis « Sur l'écran d'accueil » ;</li><li>touche « Ajouter ».</li></ol>
       <p class="hint" style="margin-top:10px"><b>Android (Chrome)</b> :</p>
       <ol class="steps"><li>touche le menu ⋮ en haut à droite ;</li><li>choisis « Installer l'application » ou « Ajouter à l'écran d'accueil ».</li></ol>
       <button class="btn" id="installBtn" style="margin-top:12px" hidden>Installer maintenant</button>
-    </section>
-    <section class="card">
-      <h2>Confidentialité</h2>
+    </details>
+    <details class="card pli">
+      <summary><h2>🔒 Confidentialité</h2><span class="pli-resume">Tes données, mentions légales, supprimer mon compte</span></summary>
       <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, HandSlam enregistre ton adresse e-mail (jamais visible par les autres joueurs), ton pseudo, ton pays, ton avatar, tes statistiques, ton niveau officiel, tes amis et tes cercles, chez l'hébergeur Supabase, en Europe (Paris). Les autres joueurs connectés peuvent voir ton pseudo, ton avatar, tes statistiques et ton niveau officiel ; seuls les membres d'un cercle en voient la liste des membres. Tu peux supprimer ton compte et toutes ses données à tout moment.</p>
       <p class="hint"><a href="mentions.html#confidentialite" style="color:var(--me)">Tout savoir sur tes données</a> · <a href="mentions.html#mentions" style="color:var(--me)">Mentions légales</a> · Contact : contact.handslam@gmail.com</p>
       <button class="btn alt danger" id="supprimerCompte" style="margin-top:12px" hidden>Supprimer mon compte</button>
-    </section>
+    </details>
     <p class="record" id="version"></p>
   </div>
 
