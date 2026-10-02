@@ -112,8 +112,28 @@ $("testSnd").addEventListener("click", () => {
   setTimeout(() => { if (!demarre) note(`Aucune voix n'a démarré (${voix.nbVoix} voix trouvées sur l'appareil). Vérifie que le mode silencieux est désactivé, puis réessaie. Si tu as ouvert le lien depuis une autre application, ouvre-le dans Safari ou Chrome.`); }, 2500);
 });
 
+// Écouter Roland et Monique : un dialogue enregistré (commentateur puis commentatrice), sinon une réplique de chacun.
+function repliquesCommentateurs() {
+  const faits = [...voix.fichiers.keys()].filter(id => CATALOGUE.has(id));
+  const dialogues = faits.filter(id => id.startsWith("commentateur_dialogue_") && faits.includes(id.replace("commentateur_", "commentatrice_")));
+  if (dialogues.length) {
+    const id = dialogues[Math.floor(Math.random() * dialogues.length)];
+    return [CATALOGUE.get(id), CATALOGUE.get(id.replace("commentateur_", "commentatrice_"))];
+  }
+  const un = role => { const l = faits.filter(id => CATALOGUE.get(id).role === role); return l.length ? CATALOGUE.get(l[Math.floor(Math.random() * l.length)]) : null; };
+  return [un("commentateur"), un("commentatrice")].filter(Boolean);
+}
+$("testCommentateurs").addEventListener("click", () => {
+  const lignes = repliquesCommentateurs();
+  if (!lignes.length) return;
+  try { ambiance.initialiser(); } catch { /* rien */ }
+  note(lignes.map(l => `${l.role === "commentateur" ? "Roland" : "Monique"} : « ${l.texte} »`).join(" — "));
+  voix.dire(lignes);
+});
+
 function renderVoixInfo() {
   const total = CATALOGUE.size, faits = [...voix.fichiers.keys()].filter(id => CATALOGUE.has(id)).length;
+  $("testCommentateurs").hidden = !repliquesCommentateurs().length;
   $("voixInfo").innerHTML = `<b>${faits} réplique${faits > 1 ? "s" : ""} enregistrée${faits > 1 ? "s" : ""} sur ${total}.</b> ${voix.synthese ? "Les autres sont lues par la voix de synthèse du téléphone." : "Les autres ne sont pas lues à voix haute, en attendant les vrais enregistrements."} Tout ce qui est dit s'affiche aussi par écrit, et le bouton 🔊 en haut de l’écran coupe tout.`;
 }
 
