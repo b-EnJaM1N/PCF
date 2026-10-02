@@ -31,8 +31,8 @@ et la journaliste (8) attendront qu'il y ait du monde dans l'appli ; leurs répl
 - Total pour les trois voix : 443 répliques, environ 19 800 caractères (indications de jeu comprises).
 
 ## Les bruitages du court
-- Réglages : `outils/sons.json` (11 sons : 4 coups de raquette, murmure du public en boucle, tension, « ooh », applaudissements, clameur, fin de set, ovation).
-- Robot « Voix » : choisir **sons-essai** (raquette, applaudissements, « ooh ») puis **sons** (tous). Pour refaire un son : **sons** + son nom dans « ids ».
+- Réglages : `outils/sons.json` (13 sons : un coup de raquette par signe, en version normale et forte pour les balles de set et de match, murmure du public en boucle, tension, « ooh », applaudissements, clameur, fin de set, ovation).
+- Robot « Voix » : choisir **sons-essai** (Pierre normal et fort, applaudissements) puis **sons** (tous). Pour refaire un son : **sons** + son nom dans « ids ».
 
 ## Phrases de test
 

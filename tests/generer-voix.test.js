@@ -37,5 +37,5 @@ test("les bruitages : les noms attendus par l'appli, des durées permises, le fo
   for (const [id, s] of Object.entries(SONS)) assert.ok(s.texte && s.duree >= 0.5 && s.duree <= 30, id);
   assert.equal(SONS.public_fond_01.boucle, true);
   assert.equal(sonsAFaire({ existe: () => true }).length, 0, "rien à refaire");
-  assert.equal(sonsAFaire({ ids: ["raquette_01"], refaire: true, existe: () => true }).length, 1);
+  assert.equal(sonsAFaire({ ids: ["raquette_pierre_01"], refaire: true, existe: () => true }).length, 1);
 });

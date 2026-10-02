@@ -45,7 +45,7 @@ jobs:
           IDS: ${{ inputs.ids }}
         run: |
           ESSAI="commentatrice_serie_contre_02,commentateur_dialogue_cri_02,commentatrice_dialogue_cri_02,arbitre_balle_de_match_jaune_01,arbitre_set_decisif_01,commentateur_main_legendaire_01,commentatrice_serie_pour_03,commentateur_dialogue_avant_match_06,commentatrice_dialogue_avant_match_06,commentateur_craquage_04"
-          if [ "$QUOI" = "sons-essai" ]; then node outils/generer-sons.js --ids "raquette_01,public_point_01,public_ooh_01"
+          if [ "$QUOI" = "sons-essai" ]; then node outils/generer-sons.js --ids "raquette_pierre_01,raquette_pierre_fort_01,public_point_01"
           elif [ "$QUOI" = "sons" ] && [ -n "$IDS" ]; then node outils/generer-sons.js --ids "$IDS" --refaire
           elif [ "$QUOI" = "sons" ]; then node outils/generer-sons.js
           elif [ -n "$IDS" ]; then node outils/generer-voix.js --ids "$IDS" --refaire

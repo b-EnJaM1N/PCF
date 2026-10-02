@@ -1,16 +1,58 @@
 {
   "_explication": "Les bruitages du court, générés par ElevenLabs Sound Effects (robot GitHub « Voix », choix « sons »). Description en anglais, durée en secondes (0,5 à 30), boucle pour le fond. Pour refaire un son : le supprimer de app/audio/ (ou le donner dans « ids ») et relancer.",
   "sons": {
-    "raquette_01": { "texte": "Single tennis ball hit with a racket, crisp pop, close-up, no crowd", "duree": 1 },
-    "raquette_02": { "texte": "Single tennis ball hit with a racket, crisp pop, close-up, no crowd", "duree": 1 },
-    "raquette_03": { "texte": "Single tennis ball hit with a racket, crisp pop, close-up, no crowd", "duree": 1 },
-    "raquette_04": { "texte": "Single tennis ball hit with a racket, crisp pop, close-up, no crowd", "duree": 1 },
-    "public_fond_01": { "texte": "Tennis stadium crowd ambience, quiet murmurs, soft whispers, calm, seamless loop", "duree": 30, "boucle": true },
-    "public_tension_01": { "texte": "Tennis crowd murmuring nervously, rising tension, buzzing anticipation", "duree": 6 },
-    "public_ooh_01": { "texte": "Tennis crowd \"ooh\" reaction to a near miss", "duree": 2 },
-    "public_point_01": { "texte": "Polite tennis applause, short", "duree": 3 },
-    "public_clameur_01": { "texte": "Tennis crowd cheering burst after a great point", "duree": 3 },
-    "public_set_01": { "texte": "Warm tennis crowd applause with a few cheers", "duree": 5 },
-    "public_ovation_01": { "texte": "Standing ovation in a tennis stadium, loud cheers and whistles", "duree": 8 }
+    "raquette_pierre_01": {
+      "texte": "Heavy tennis ball hit, deep powerful thud, low pitch, close-up, no crowd",
+      "duree": 1
+    },
+    "raquette_pierre_fort_01": {
+      "texte": "Massive tennis smash, very powerful deep thud with stadium reverb, no crowd",
+      "duree": 1.5
+    },
+    "raquette_ciseaux_01": {
+      "texte": "Crisp sharp tennis ball hit, high-pitched snappy crack, close-up, no crowd",
+      "duree": 1
+    },
+    "raquette_ciseaux_fort_01": {
+      "texte": "Explosive sharp tennis smash, loud snappy crack with stadium reverb, no crowd",
+      "duree": 1.5
+    },
+    "raquette_feuille_01": {
+      "texte": "Light soft tennis ball hit, gentle airy pop with a slight swish, close-up, no crowd",
+      "duree": 1
+    },
+    "raquette_feuille_fort_01": {
+      "texte": "Fast slicing tennis shot, sharp whoosh and pop with stadium reverb, no crowd",
+      "duree": 1.5
+    },
+    "public_fond_01": {
+      "texte": "Tennis stadium crowd ambience, quiet murmurs, soft whispers, calm, seamless loop",
+      "duree": 30,
+      "boucle": true
+    },
+    "public_tension_01": {
+      "texte": "Tennis crowd murmuring nervously, rising tension, buzzing anticipation",
+      "duree": 6
+    },
+    "public_ooh_01": {
+      "texte": "Tennis crowd \"ooh\" reaction to a near miss",
+      "duree": 2
+    },
+    "public_point_01": {
+      "texte": "Polite tennis applause, short",
+      "duree": 3
+    },
+    "public_clameur_01": {
+      "texte": "Tennis crowd cheering burst after a great point",
+      "duree": 3
+    },
+    "public_set_01": {
+      "texte": "Warm tennis crowd applause with a few cheers",
+      "duree": 5
+    },
+    "public_ovation_01": {
+      "texte": "Standing ovation in a tennis stadium, loud cheers and whistles",
+      "duree": 8
+    }
   }
 }
