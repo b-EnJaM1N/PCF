@@ -117,18 +117,19 @@ function main(symbole, gant, ink) {
   // Les ciseaux vus de dos : le V, l'annulaire et l'auriculaire repliés (leurs jointures), le pouce rangé sur le côté.
   if (symbole === "ciseaux-dos") return `
     <rect x="22" y="44" width="13" height="20" rx="6.5" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
-    ${doigt(31, 10, 40, gant, ink, "-14 36 50")}${doigt(44, 10, 40, gant, ink, "12 49 50")}
+    ${doigt(31, 19, 31, gant, ink, "-12 36 50")}${doigt(44, 18, 32, gant, ink, "10 49 50")}
     ${doigt(50, 33, 14, gant, ink)}${doigt(60.5, 35, 12, gant, ink)}
     <rect x="29" y="40" width="42" height="36" rx="11" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
     ${[0, 1].map(i => `<path d="M${52.5 + i * 10.5} 42 q2.75 -2.6 5.5 0" fill="none" stroke="${ink}" stroke-width="1.3" stroke-linecap="round" opacity=".6"/>`).join("")}
-    ${ongle(29.5, 14.5, ink, "-14 36 50")}${ongle(42.5, 14.5, ink, "12 49 50")}
+    ${ongle(31, 20.5, ink, "-12 36 50")}${ongle(44, 19.5, ink, "10 49 50")}
     ${dosDeMain(ink)}`;
   // La feuille vue de dos : les quatre doigts tendus (avec leurs ongles), le pouce écarté, le dos de la main.
+  // (Proportions d'une vraie main : les doigts un peu plus courts que le dos de la main, le majeur le plus long.)
   if (symbole === "feuille-dos") return `
     <rect x="12" y="44" width="26" height="11" rx="5.5" fill="${gant}" stroke="${ink}" stroke-width="1.5" transform="rotate(-35 34 50)"/>
-    ${doigt(29.5, 20, 34, gant, ink)}${doigt(40, 12, 40, gant, ink)}${doigt(50.5, 14, 38, gant, ink)}${doigt(61, 22, 32, gant, ink)}
+    ${doigt(29.5, 28, 26, gant, ink)}${doigt(40, 21, 33, gant, ink)}${doigt(50.5, 23, 31, gant, ink)}${doigt(61, 30, 24, gant, ink)}
     ${paume(44, gant, ink)}
-    ${ongle(29.5, 21.5, ink)}${ongle(40, 13.5, ink)}${ongle(50.5, 15.5, ink)}${ongle(61, 23.5, ink)}
+    ${ongle(29.5, 29.5, ink)}${ongle(40, 22.5, ink)}${ongle(50.5, 24.5, ink)}${ongle(61, 31.5, ink)}
     ${dosDeMain(ink)}`;
   if (symbole === "ciseaux") return `
     ${doigt(31, 10, 40, gant, ink, "-14 36 50")}${doigt(44, 10, 40, gant, ink, "12 49 50")}
