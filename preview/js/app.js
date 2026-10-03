@@ -234,12 +234,12 @@ function jouer(signe, auto = false) {
 // « Pierre… feuille… ciseaux… » : les deux poings se secouent trois fois avant de s'ouvrir. En duel, ils continuent
 // tant que la réponse du serveur n'est pas arrivée (elle arrive presque toujours pendant la secousse).
 const SECOUSSE_MS = 540;
-// Chaque poing a les couleurs du gant de son joueur (avatar : gant, poignet, motif).
+// Chaque main a les couleurs du gant de son joueur (avatar : gant, poignet, motif) : le poing se secoue,
+// puis s'ouvre en feuille, fait le V des ciseaux ou reste fermé (pierre).
+const SYMBOLE_SIGNE = ["pierre", "ciseaux", "feuille"];   // même ordre que regles.js
+const mainGantee = (g, signe, nom) => `<span class="poing-av" role="img" aria-label="${nom}">${avatarSVG({ ...avDe(g), symbole: SYMBOLE_SIGNE[signe], sansFond: true })}</span>`;
 function secouerLesPoings() {
-  [["hMe", 0], ["hBot", 1]].forEach(([id, g]) => {
-    $(id).innerHTML = `<span class="poing-av" role="img" aria-label="Poing serré">${avatarSVG({ ...avDe(g), symbole: "pierre", sansFond: true })}</span>`;
-    $(id).className = "hand secoue";
-  });
+  [["hMe", 0], ["hBot", 1]].forEach(([id, g]) => { $(id).innerHTML = mainGantee(g, 0, "Poing serré"); $(id).className = "hand secoue"; });
 }
 
 // Révèle un coup (solo ou duel) et enchaîne : annonces, score, fin de set ou de match.
@@ -275,10 +275,10 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
 
   // Révélation immédiate des deux signes : aucun effet pendant l'échange.
   const hMe = $("hMe"), hBot = $("hBot");
-  hMe.textContent = EMOJI[signe]; hBot.textContent = EMOJI[signeAdv];
+  hMe.innerHTML = mainGantee(0, signe, NOM[signe]); hBot.innerHTML = mainGantee(1, signeAdv, NOM[signeAdv]);
   document.querySelectorAll("#moves button.choisi").forEach(b => b.classList.remove("choisi"));
-  hMe.className = "hand" + (evt.gagnant === 0 ? " win" : evt.gagnant === 1 ? " lose" : "");
-  hBot.className = "hand" + (evt.gagnant === 1 ? " win" : evt.gagnant === 0 ? " lose" : "");
+  hMe.className = "hand ouvre" + (evt.gagnant === 0 ? " win" : evt.gagnant === 1 ? " lose" : "");
+  hBot.className = "hand ouvre" + (evt.gagnant === 1 ? " win" : evt.gagnant === 0 ? " lose" : "");
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
 
