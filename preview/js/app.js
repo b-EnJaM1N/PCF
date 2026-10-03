@@ -270,6 +270,14 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   ambiance.calmer(false);
   const rp = reactionsPublic(evt, egalitesAvantDernier(m.coups));
   if (rp.ooh) ambiance.ooh();
+  // Après le « ooh » du public, Monique le rappelle à l'ordre (une fois par match au plus, une fois sur trois) :
+  // elle parle à la fin du « ooh », et c'est le seul commentaire de ce point.
+  if (rp.ooh && !S.hueesCommentees && Math.random() < 0.35 && CATALOGUE.has("commentatrice_huees_01")) {
+    S.hueesCommentees = true;
+    for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
+    const seance = S, huees = CATALOGUE.get("commentatrice_huees_01");
+    setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, 1300);
+  }
   if (rp.tension) setTimeout(() => ambiance.tension(), 500);
   // Le cri du vainqueur du set (ou du match) ; les commentateurs réagissent parfois.
   const cel = evt.finSet ? { ...celebration(criDe(evt.gagnant), { finMatch: m.termine, sauvee }), joueur: evt.gagnant } : null;

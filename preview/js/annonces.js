@@ -194,7 +194,6 @@ function finDeSet(match, evt, etat, ctx, rng) {
   if (!court) {
     if (haut - bas >= 6) ajoute(choisir(etat, "set_ecrasant", { ...ctx, onzeZero: haut === 11 && bas === 0 }, rng));
     else if (bas >= len - 1) ajoute(choisir(etat, "set_couteau", ctx, rng));
-    else if (etat.serieMaxSet[0] >= 6 && !etat.dialoguesDits.has("serie_0")) ajoute(dialogue(etat, "serie", rng));
     else if (rng() < 0.5) ajoute(dialogue(etat, "fin_set", rng) || choisir(etat, "resume_set", ctx, rng));
     else ajoute(choisir(etat, "resume_set", { ...ctx, unPartout: match.sets[0] === 1 && match.sets[1] === 1 }, rng));
   }
