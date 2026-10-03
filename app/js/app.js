@@ -628,7 +628,7 @@ function guetterMessageFin() {
   const d = D;
   if (!d || d.guetteFin) return;
   d.guetteFin = setInterval(async () => {
-    if (D !== d || ++d.toursGuet > 20 || d.duel?.[`message_apres${1 - d.moi}`]) { clearInterval(d.guetteFin); return; }
+    if (D !== d || (d.toursGuet = (d.toursGuet || 0) + 1) > 20 || d.duel?.[`message_apres${1 - d.moi}`]) { clearInterval(d.guetteFin); return; }
     try { const duel = await serveur.lireDuel(d.id); if (D === d) { d.duel = duel; afficherMessages(duel); } } catch { /* on réessaiera */ }
   }, 3000);
   d.toursGuet = 0;
