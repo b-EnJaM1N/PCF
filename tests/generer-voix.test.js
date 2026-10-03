@@ -66,3 +66,11 @@ test("un ton peut viser des répliques précises (Roland enflammé pour ses enco
   assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_05_f")), /^\[excited\] \[shouting\] /);
   assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_01")), /^\[sighs\] /, "les autres séries perdues restent déçues");
 });
+
+test("page d'écoute : chaque réplique a un numéro fixe, unique", () => {
+  const ecoute = JSON.parse(readFileSync(new URL("../app/audio/ecoute.json", import.meta.url), "utf8"));
+  const numeros = JSON.parse(readFileSync(new URL("../app/audio/numeros.json", import.meta.url), "utf8"));
+  for (const r of ecoute) assert.equal(r.n, numeros[r.id], r.id);
+  assert.equal(new Set(Object.values(numeros)).size, Object.keys(numeros).length, "pas deux répliques avec le même numéro");
+  assert.equal(numeros.commentateur_dialogue_avant_match_01, 15, "les numéros donnés au porteur du projet ne bougent pas");
+});

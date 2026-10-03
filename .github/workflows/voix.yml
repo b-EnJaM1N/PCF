@@ -60,6 +60,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          node outils/liste-audio.js   # la liste des répliques et leurs numéros fixes (page d'écoute)
           git add app/audio
           if git diff --cached --quiet; then echo "Aucun nouveau fichier"; exit 0; fi
           git commit -qm "Voix : $(git diff --cached --name-only | wc -l) fichier(s) audio générés"

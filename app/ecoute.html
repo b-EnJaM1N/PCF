@@ -124,11 +124,12 @@
 
   try {
     const donnees = await (await fetch("audio/ecoute.json", { cache: "no-cache" })).json();
-    // Numéros dans l'ordre des moments du match (les répliques d'une même situation regroupées).
+    // Les répliques regroupées par moment du match, dans l'ordre d'un match.
     const ordre = Object.keys(MOMENTS).filter(s => donnees.some(r => situation(r) === s));
     for (const r of donnees) { const s = situation(r); if (!ordre.includes(s)) ordre.push(s); }   // (une situation nouvelle, à la fin)
     const parSituation = s => donnees.filter(r => situation(r) === s);
-    lignes = ordre.flatMap(parSituation).map((r, i) => ({ ...r, situation: situation(r), n: i + 1 }));
+    // (chaque réplique a son numéro fixe, donné par le serveur ; à défaut, sa place dans la liste)
+    lignes = ordre.flatMap(parSituation).map((r, i) => ({ ...r, situation: situation(r), n: r.n ?? i + 1 }));
     afficher();
   } catch { $("liste").innerHTML = '<p class="vide">Impossible de charger la liste des répliques.</p>'; }
 </script>
