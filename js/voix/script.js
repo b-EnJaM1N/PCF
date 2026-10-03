@@ -117,9 +117,10 @@ for (const [moment, entrees] of Object.entries(MOMENTS)) {
   const compte = { c: 0, d: 0 };
   POOLS[moment] = entrees.map(e => {
     const role = ROLE[e.r], base = `${role}_${moment}_${num2(compte[e.r]++)}`;
+    if (e.retiree) return null;   // réplique retirée : elle garde son numéro, pour ne pas décaler les enregistrements des suivantes
     declinaisons(base, role, e);
     return { ...e, role, base, parSigne: Array.isArray(e.t), fem: !!e.f };
-  });
+  }).filter(Boolean);
 }
 // La réplique à dire, selon le signe et le genre du joueur dont on parle.
 export function ligneMoment(item, { genre = "m", signe = 0, signeAdv = 0 } = {}) {
