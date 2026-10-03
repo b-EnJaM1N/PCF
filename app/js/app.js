@@ -791,7 +791,7 @@ function ouvrirFaceAFace() {
   $("foStage").textContent = pr.bandeau; $("foFmt").textContent = pr.format;
   if (D?.duel?.mise) $("foFmt").textContent += ` · 🪙 mise de ${D.duel.mise} jetons, le gagnant en remporte ${gainDuel(D.duel.mise)}`;
   if (S.contreBotRapide) $("foStage").textContent = "Partie rapide · 🤖 contre un bot";
-  else if (D?.duel?.rapide) $("foStage").textContent = `Partie rapide ${D.duel.classe ? "officielle" : "éclair"}`;
+  else if (D?.duel?.rapide) $("foStage").textContent = /🤖$/.test(OPP.nom || "") ? "Partie rapide · 🤖 contre un bot" : `Partie rapide ${D.duel.classe ? "officielle" : "éclair"}`;
   $("foAvMe").innerHTML = avatarSVG(P.av); $("foAvBot").innerHTML = avatarSVG(OPP.av);
   $("foNameMe").textContent = pr.joueur.nom; $("foSubMe").textContent = pr.joueur.sous; $("foRecMe").textContent = pr.joueur.bilan;
   $("foNameBot").textContent = pr.adversaire.nom; $("foSubBot").textContent = pr.adversaire.sous; $("foRecBot").textContent = pr.adversaire.bilan;

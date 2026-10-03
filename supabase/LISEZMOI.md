@@ -182,6 +182,15 @@ pour lancer le freeroll, un tournoi programmé ou un Sit & Go (après 2 minutes 
 comme s'ils avaient payé (sauf au freeroll), et chaque humain est payé selon sa vraie place dans le tableau.
 Si on relance un jour l'étape 21, il faut relancer celle-ci ensuite.
 
+## 1 quinquies vicies. Partie rapide à mise contre un bot (étape 25)
+
+Même manipulation avec [`etape-25-mise-contre-bot.sql`](etape-25-mise-contre-bot.sql), **après** l'étape 24
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-25-mise-contre-bot.sql).
+En partie rapide à mise, quand personne n'arrive, le match contre un bot se joue pour de vrai sur le serveur : la mise est
+prélevée au début, le joueur qui gagne remporte 1,8 fois la mise, et si le bot gagne, la mise est perdue. Le bot est choisi
+selon la mise (faibles à 50, moyens à 100 et 200, forts à 500 et 1 000). Les bots ne paient rien et ne gagnent rien.
+Si on relance un jour l'étape 14 ou 21, il faut relancer celle-ci ensuite.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
