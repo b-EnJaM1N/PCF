@@ -41,7 +41,7 @@ export function presentation(P, bot, { tour = null, pointsParSet = 11, setsGagna
     format: texteFormat({ pointsParSet, setsGagnants }),
     joueur: {
       nom: nomAffiche(P), sous: `${P.drapeau} ${dernierTitre(P)}`,
-      bilan: P.matchs ? `${P.victoires} V – ${P.matchs - P.victoires} D · ${pct} % de victoires` : "Premier match officiel",
+      bilan: P.matchs ? `${P.victoires} V – ${P.matchs - P.victoires} D · ${pct} % de victoires` : "Premier match",
     },
     adversaire: { nom: bot.nom, sous: bot.style, bilan: bot.humain ? bot.desc : `« ${bot.desc.charAt(0).toUpperCase() + bot.desc.slice(1)} »` },
     lignes,
