@@ -234,8 +234,12 @@ function jouer(signe, auto = false) {
 // « Pierre… feuille… ciseaux… » : les deux poings se secouent trois fois avant de s'ouvrir. En duel, ils continuent
 // tant que la réponse du serveur n'est pas arrivée (elle arrive presque toujours pendant la secousse).
 const SECOUSSE_MS = 540;
+// Chaque poing a les couleurs du gant de son joueur (avatar : gant, poignet, motif).
 function secouerLesPoings() {
-  for (const id of ["hMe", "hBot"]) { $(id).textContent = "✊"; $(id).className = "hand secoue"; }
+  [["hMe", 0], ["hBot", 1]].forEach(([id, g]) => {
+    $(id).innerHTML = `<span class="poing-av" role="img" aria-label="Poing serré">${avatarSVG({ ...avDe(g), symbole: "pierre", sansFond: true })}</span>`;
+    $(id).className = "hand secoue";
+  });
 }
 
 // Révèle un coup (solo ou duel) et enchaîne : annonces, score, fin de set ou de match.
