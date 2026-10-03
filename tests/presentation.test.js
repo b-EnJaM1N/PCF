@@ -7,7 +7,7 @@ import { botParId } from "../app/js/bots.js";
 test("présentation d'un nouveau joueur contre Rocky", () => {
   const p = presentation(profilParDefaut(), botParId("rocky"));
   assert.equal(p.bandeau, "Match amical");
-  assert.equal(p.joueur.bilan, "Premier match officiel");
+  assert.equal(p.joueur.bilan, "Premier match");
   assert.equal(p.cle, "Premier face-à-face.");
   const niveau = p.lignes[0];
   assert.deepEqual([niveau.g, niveau.d, niveau.avantage], ["1200", "850", "g"]);

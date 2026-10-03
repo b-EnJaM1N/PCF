@@ -424,6 +424,7 @@ function finir() {
   const lues = lecturesReussies(c);
   $("endRead").textContent = `Ton coup était prévisible ${Math.round(100 * (S.suivi.taux || 0))} % du temps.${habitude}${lues ? ` 🔎 Tu as lu ${OPP.nom} ${lues} fois : tu as joué la bonne piste et gagné le point.` : ""}`;
   $("end").hidden = false;
+  $("nomFin").hidden = !!P.pseudo; $("inNomFin").value = "";   // pas encore de pseudo : on le propose ici
   if (S.duel && D) { afficherMessages(D.duel); guetterMessageFin(); }   // le mot de la fin (messages rapides)
   $("bar").style.transform = "scaleX(0)";
 
@@ -1075,6 +1076,15 @@ $("inPseudo").addEventListener("input", e => {
   P.pseudo = propre.slice(0, 16).trim(); sauverP();
   afficherNomFiche(); rafraichirAvatars();
 });
+// Le pseudo, proposé sur l'écran de fin tant que le joueur n'en a pas.
+$("okNomFin").addEventListener("click", () => {
+  const nom = $("inNomFin").value.replace(/[#\u0000-\u001f]/g, "").slice(0, 16).trim();
+  if (nom.length < 2) { $("inNomFin").focus(); return; }
+  P.pseudo = nom; sauverP(); $("inPseudo").value = nom;
+  afficherNomFiche(); rafraichirAvatars();
+  $("nomFin").hidden = true;
+});
+$("inNomFin").addEventListener("keydown", e => { if (e.key === "Enter") $("okNomFin").click(); });
 $("resetProfile").addEventListener("click", () => {
   if (!confirm("Remettre ta fiche à zéro ? Tes statistiques et titres seront effacés.")) return;
   P = remettreAZero(P); sauverP(); renderFiche(); rafraichirAvatars(); afficherBilan();
