@@ -62,12 +62,18 @@
       "indication": "[excited] [shouting] [like a French radio sports commentator]",
       "tons": [
         {
+          "nom": "hystérique",
+          "indication": "[hysterical] [screaming] [ecstatic]",
+          "situations": [
+            "main_legendaire"
+          ]
+        },
+        {
           "nom": "enflammé",
           "indication": "[excited] [shouting]",
           "situations": [
             "balle_match_convertie",
             "victoire",
-            "main_legendaire",
             "balle_sauvee",
             "remontee",
             "renversement",
