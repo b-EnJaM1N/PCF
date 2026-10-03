@@ -82,9 +82,10 @@ body:not(.en-match) .rule { display: none; }
 .hand.secoue { animation: secouer-poing .18s ease-in-out infinite; }   /* « pierre… feuille… ciseaux… » */
 .hand .poing-av { display: inline-block; width: 2.1em; height: 2.1em; margin: -.45em 0; vertical-align: middle; }
 .hand .poing-av svg { width: 100%; height: 100%; }
-/* Face à face : chaque main pointe vers l'adversaire (la mienne vers la droite, la sienne vers la gauche, poignets à l'extérieur). */
+/* Face à face : chaque main pointe vers l'adversaire (la mienne vers la droite, la sienne vers la gauche, poignets à l'extérieur).
+   La sienne est le reflet de la mienne (pouce en haut des deux côtés). */
 #hMe .poing-av svg { transform: rotate(90deg); }
-#hBot .poing-av svg { transform: rotate(-90deg); }
+#hBot .poing-av svg { transform: rotate(-90deg) scaleX(-1); }
 /* Pendant la secousse, les poings restent debout (jointures vers le haut) : on ne les confond pas avec la pierre jouée. */
 #hMe.secoue .poing-av svg, #hBot.secoue .poing-av svg { transform: none; }
 .hand.ouvre .poing-av { animation: ouvrir-main .22s ease-out; }   /* la main s'ouvre */
