@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { CATALOGUE, replique, repliqueScore, repliquePartout, POOLS, DIALOGUES_IDS, nbDialogues } from "../app/js/voix/script.js";
-import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces, annoncesAvantMatch, interview, etiquetteDe, niveauEnjeu, baseDe } from "../app/js/annonces.js";
+import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces, annoncesAvantMatch, interview, etiquetteDe, niveauEnjeu, baseDe, silenceAvantBalle } from "../app/js/annonces.js";
 import { surnomDe } from "../app/js/surnoms.js";
 import { profilParDefaut } from "../app/js/profil.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX, FEUILLE } from "../app/js/regles.js";
@@ -321,4 +321,21 @@ test("avant le match : un dialogue selon la situation (finale, revanche, nuit, c
     && [...Array(30).keys()].every(k => !ids({ situations: ["contre_bot"], recents: ["commentateur_dialogue_avant_bot_01"] }, k).includes("commentateur_dialogue_avant_bot_01")),
     "pas deux fois de suite (entendu aux derniers matchs)");
   assert.equal(nbDialogues("avant_match"), 15);
+});
+
+test("« Silence » avant les balles de match : souvent, mais au plus 3 par match, 2 par set, et une pause après 2 d'affilée", () => {
+  // Toujours oui au tirage : 2 d'affilée, puis une pause de 2 ou 3 balles, puis encore une (la 3e), puis plus rien.
+  const etat = { total: 0, parSet: {}, suite: 0, pause: 0 };
+  const dits = Array.from({ length: 10 }, () => silenceAvantBalle(etat, 2, () => 0));
+  assert.deepEqual(dits.slice(0, 2), [true, true]);
+  assert.deepEqual(dits.slice(2, 4), [false, false]);
+  assert.equal(dits.filter(Boolean).length, 2, "2 par set au plus");
+  const e2 = { total: 0, parSet: {}, suite: 0, pause: 0 }, d2 = [];
+  for (let k = 0; k < 12; k++) d2.push(silenceAvantBalle(e2, k < 4 ? 1 : 2, () => 0));
+  assert.equal(d2.filter(Boolean).length, 3, "3 par match au plus");
+  // Au hasard, sur un match très serré (10 balles de match) : jamais plus de 2 d'affilée.
+  for (let n = 0; n < 200; n++) {
+    const e = { total: 0, parSet: {}, suite: 0, pause: 0 }, d = Array.from({ length: 10 }, (_, k) => silenceAvantBalle(e, k < 5 ? 1 : 2));
+    assert.ok(!d.join().includes("true,true,true"));
+  }
 });

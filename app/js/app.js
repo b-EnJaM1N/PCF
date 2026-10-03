@@ -2,7 +2,7 @@
 import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, baseDe } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, baseDe, silenceAvantBalle } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide } from "./surnoms.js";
 import { voirTournoi, mesAmis } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
@@ -155,6 +155,9 @@ function dialogueCriAuChoix(hasard = Math.random) {
 }
 // Les commentaires entendus aux derniers matchs (environ huit), pour ne pas recommencer chaque match par les mêmes.
 function commentairesRecents() { try { return lire("commentairesRecents", []) || []; } catch { return []; } }
+// « Je vous demande de vous arrêter » : jamais deux fois en moins de 30 minutes, même d'un match à l'autre.
+const HUEES_ECART_MS = 30 * 60 * 1000;
+function hueesPermises() { try { return Date.now() - (Number(lire("hueesLe", 0)) || 0) > HUEES_ECART_MS; } catch { return true; } }
 function retenirCommentaires(lignes) {
   const ids = lignes.filter(l => l.role === "commentateur" || l.role === "commentatrice").map(l => baseDe(l.id));
   if (ids.length) try { ecrire("commentairesRecents", [...new Set([...ids, ...commentairesRecents()])].slice(0, 120)); } catch { /* rien */ }
@@ -270,10 +273,10 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   ambiance.calmer(false);
   const rp = reactionsPublic(evt, egalitesAvantDernier(m.coups));
   if (rp.ooh) ambiance.ooh();
-  // Après le « ooh » du public, Monique le rappelle à l'ordre (une fois par match au plus, une fois sur trois) :
+  // Après le « ooh » du public, Monique le rappelle à l'ordre (une fois sur quatre, et pas plus d'une fois en 30 minutes) :
   // elle parle à la fin du « ooh », et c'est le seul commentaire de ce point.
-  if (rp.ooh && !S.hueesCommentees && Math.random() < 0.35 && CATALOGUE.has("commentatrice_huees_01")) {
-    S.hueesCommentees = true;
+  if (rp.ooh && hueesPermises() && Math.random() < 0.25 && CATALOGUE.has("commentatrice_huees_01")) {
+    try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
     for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
     const seance = S, huees = CATALOGUE.get("commentatrice_huees_01");
     setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, 1300);
@@ -306,8 +309,9 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
 
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
   if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
-  // Parfois, avant une balle de match, l'arbitre demande le silence.
-  if (evt.balleApres?.type === "match" && !m.termine && Math.random() < 0.5) a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));
+  // Parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
+  if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length))
+    a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));
   annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
   render(); renderHistorique(); renderLecture();
   if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);
