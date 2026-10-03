@@ -21,7 +21,7 @@ import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } f
 import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
-import { CATALOGUE, ligneDialogue, nbDialogues } from "./voix/script.js";
+import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS } from "./voix/script.js";
 import { Ambiance, reactionsPublic, egalitesAvantDernier } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
@@ -145,6 +145,14 @@ const grandMoment = m => !!balle(m) || pointDecisif(m);
 // une réplique longue déborderait sur les coups suivants. Les longues sont dites dans les pauses
 // (avant le match, fin de set, fin de match).
 const REPLIQUE_COURTE = 32;   // caractères : environ 2 secondes
+// Le dialogue après un cri de victoire : un qu'on n'a pas entendu récemment (au hasard), sinon le plus ancien.
+function dialogueCriAuChoix(hasard = Math.random) {
+  const recents = commentairesRecents(), n = nbDialogues("cri");
+  const age = k => { const i = recents.indexOf(baseDe(DIALOGUES_IDS.cri[k][0])); return i < 0 ? Infinity : i; };
+  const frais = [...Array(n).keys()].filter(k => age(k) === Infinity);
+  if (frais.length) return frais[Math.floor(hasard() * frais.length)];
+  return [...Array(n).keys()].reduce((a, b) => (age(b) > age(a) ? b : a), 0);
+}
 // Les commentaires entendus aux derniers matchs (environ huit), pour ne pas recommencer chaque match par les mêmes.
 function commentairesRecents() { try { return lire("commentairesRecents", []) || []; } catch { return []; } }
 function retenirCommentaires(lignes) {
@@ -268,7 +276,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   if (cel && commenterCri(S.criCommente, cel)) {
     S.criCommente = true;
     const genre = evt.gagnant === 0 ? P.genre : OPP.genre || "m";   // on parle de celui qui a crié
-    const reaction = ligneDialogue("cri", Math.floor(Math.random() * nbDialogues("cri")), genre), i = a.lignes.findIndex(l => l.role !== "arbitre");
+    const reaction = ligneDialogue("cri", dialogueCriAuChoix(), genre), i = a.lignes.findIndex(l => l.role !== "arbitre");
     a.lignes.splice(i < 0 ? a.lignes.length : i, 0, ...reaction);
     a.dialogue.unshift(...reaction);
   }
