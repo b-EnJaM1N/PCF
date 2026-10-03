@@ -273,7 +273,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   render(); renderHistorique(); renderLecture();
   if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);
 
-  if (m.termine) { setTimeout(() => criEnGrand(cel, () => poigneeDeMain(finir)), 600); return evt; }
+  // Dernier point : on laisse le temps de voir les deux signes avant la célébration et le score final.
+  if (m.termine) { setTimeout(() => criEnGrand(cel, () => poigneeDeMain(finir)), reduitMouvement() ? 900 : 1800); return evt; }
   if (cel) setTimeout(() => criEnBulle(cel), 250);
   if (evt.finSet) {
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
@@ -1383,7 +1384,7 @@ function jouerDuel(signe) {
   if (d.phase !== "jeu" || d.pause_depuis || D.mancheEnvoyee === d.manche) return;
   D.mancheEnvoyee = d.manche; boutons(false);
   ambiance.raquette(signe, grandMoment(S.match));
-  $("hMe").textContent = EMOJI[signe]; $("hMe").className = "hand"; $("hBot").textContent = "⏳"; $("hBot").className = "hand";
+  $("hMe").textContent = EMOJI[signe]; $("hMe").className = "hand"; $("hBot").textContent = "❔"; $("hBot").className = "hand attend";   // le coup adverse arrive (pas de sablier qui clignote)
   $("verdict").textContent = `En attente de ${OPP.nom}…`;
   serveur.jouer(D.id, d.manche, signe).then(majDuel).catch(e => {
     if (!D) return;
