@@ -89,10 +89,16 @@ self.addEventListener("activate", e => { e.waitUntil(self.clients.claim()); });
 self.addEventListener("push", e => {
   let m = {};
   try { m = e.data ? e.data.json() : {}; } catch { m = { texte: e.data ? e.data.text() : "" }; }
-  e.waitUntil(self.registration.showNotification(m.titre || "HandSlam", {
-    body: m.texte || "", icon: "icons/icon-192.png", badge: "icons/icon-192.png",
-    tag: m.tag, renotify: !!m.tag, data: { url: m.url || "./" },
-  }));
+  e.waitUntil((async () => {
+    // L'appli est ouverte à l'écran : pas de notification sur le téléphone, l'appli se met à jour (défis reçus, match à jouer).
+    const fenetres = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    const visibles = fenetres.filter(c => c.visibilityState === "visible" && c.url.startsWith(self.registration.scope));
+    if (visibles.length) { visibles.forEach(c => c.postMessage({ rafraichir: true })); return; }
+    await self.registration.showNotification(m.titre || "HandSlam", {
+      body: m.texte || "", icon: "icons/icon-192.png", badge: "icons/icon-192.png",
+      tag: m.tag, renotify: !!m.tag, data: { url: m.url || "./" },
+    });
+  })());
 });
 // Toucher la notification : on ouvre l'appli (ou on revient dessus) au bon écran.
 self.addEventListener("notificationclick", e => {
