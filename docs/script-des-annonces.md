@@ -137,7 +137,7 @@ restent lus par la voix de synthèse.
 | `commentateur_main_legendaire_04.mp3` | Une main qui entre dans la légende ! |
 | `commentateur_main_legendaire_05.mp3` | Arrêtez tout ! Nous venons d'assister à un moment d'histoire ! |
 | `commentateur_main_legendaire_06.mp3` | On pourra parler de cette main pendant des années ! |
-| `commentateur_main_legendaire_07.mp3` | Mesdames et messieurs… quelle main ! |
+| `commentateur_main_legendaire_07.mp3` | Mesdames et mesdames… quelle main ! |
 | `commentateur_main_legendaire_08.mp3` | Dans cinquante ans, on racontera encore cette main ! |
 | `commentateur_balle_sauvee_01.mp3` | Sauvée ! Quel sang-froid ! |
 | `commentateur_balle_sauvee_03.mp3` | Il refuse de mourir ! Encore en vie ! Toujours en vie ! |
@@ -309,8 +309,8 @@ restent lus par la voix de synthèse.
 | `commentateur_victoire_18_f.mp3` | Elle vient peut-être de changer l'histoire du Pierre-Feuille-Ciseaux ! |
 | `commentateur_defaite_01.mp3` | Battu, mais pas abattu ! |
 | `commentateur_defaite_01_f.mp3` | Battue, mais pas abattue ! |
-| `commentateur_defaite_02.mp3` | Je reviendrai ! Il reviendra ! |
-| `commentateur_defaite_02_f.mp3` | Je reviendrai ! Elle reviendra ! |
+| `commentateur_defaite_02.mp3` | Il reviendra ! |
+| `commentateur_defaite_02_f.mp3` | Elle reviendra ! |
 | `commentateur_defaite_03.mp3` | Il cherche encore où il a perdu la Feuille ! |
 | `commentateur_defaite_03_f.mp3` | Elle cherche encore où elle a perdu la Feuille ! |
 | `commentateur_humain_01.mp3` | C'est un duel ! Un vrai ! Les yeux dans les yeux ! |
@@ -318,7 +318,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_avant_match_02.mp3` | Deux styles, deux écoles ! |
 | `commentateur_dialogue_avant_match_03.mp3` | Un pronostic, Madame ? |
 | `commentateur_dialogue_avant_match_04.mp3` | Vous le sentez comment, ce match ? |
-| `commentateur_dialogue_avant_match_05.mp3` | Le Pierre, c'est la base, Madame ! |
+| `commentateur_dialogue_avant_match_05.mp3` | La Pierre, c'est la base, Madame ! |
 | `commentateur_dialogue_avant_match_06.mp3` | Bonsoir à tous ! Roland Pignon, en direct du court central, aux côtés de la légendaire Monique Latouffe ! |
 | `commentateur_dialogue_avant_match_07.mp3` | Monique Latouffe, la finale de 1997, les trois Ciseaux… |
 | `commentateur_dialogue_fin_set_01.mp3` | Madame, un mot sur ce set ? |
@@ -340,7 +340,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (168 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (171 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -413,9 +413,12 @@ restent lus par la voix de synthèse.
 | `commentatrice_duel_esprits_01.mp3` | Deux esprits. Une seule idée. Jamais la bonne. |
 | `commentatrice_duel_esprits_02.mp3` | On pourrait rester là toute la nuit. Je préférerais éviter. |
 | `commentatrice_duel_esprits_03.mp3` | Une partie d'échecs à trois pièces. Sans les échecs. |
-| `commentatrice_duel_esprits_05_pierre.mp3` | Vous n'avez pas le monopole de la Pierre. |
-| `commentatrice_duel_esprits_05_ciseaux.mp3` | Vous n'avez pas le monopole des Ciseaux. |
-| `commentatrice_duel_esprits_05_feuille.mp3` | Vous n'avez pas le monopole de la Feuille. |
+| `commentatrice_duel_esprits_05_pierre.mp3` | Il n'a pas le monopole de la Pierre. |
+| `commentatrice_duel_esprits_05_pierre_f.mp3` | Elle n'a pas le monopole de la Pierre. |
+| `commentatrice_duel_esprits_05_ciseaux.mp3` | Il n'a pas le monopole des Ciseaux. |
+| `commentatrice_duel_esprits_05_ciseaux_f.mp3` | Elle n'a pas le monopole des Ciseaux. |
+| `commentatrice_duel_esprits_05_feuille.mp3` | Il n'a pas le monopole de la Feuille. |
+| `commentatrice_duel_esprits_05_feuille_f.mp3` | Elle n'a pas le monopole de la Feuille. |
 | `commentatrice_duel_esprits_06.mp3` | Laissez du temps au temps. |
 | `commentatrice_duel_esprits_07.mp3` | Ennuyeux. |
 | `commentatrice_duel_esprits_08.mp3` | Ils ont exactement la même idée. Inquiétant. |
