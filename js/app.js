@@ -277,8 +277,14 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   const hMe = $("hMe"), hBot = $("hBot");
   hMe.innerHTML = mainGantee(0, signe, NOM[signe]); hBot.innerHTML = mainGantee(1, signeAdv, NOM[signeAdv]);
   document.querySelectorAll("#moves button.choisi").forEach(b => b.classList.remove("choisi"));
-  hMe.className = "hand ouvre" + (evt.gagnant === 0 ? " win" : evt.gagnant === 1 ? " lose" : "");
-  hBot.className = "hand ouvre" + (evt.gagnant === 1 ? " win" : evt.gagnant === 0 ? " lose" : "");
+  // Les deux mains s'ouvrent à la même taille ; une demi-seconde plus tard, le gagnant grossit et le perdant s'efface.
+  hMe.className = "hand ouvre"; hBot.className = "hand ouvre";
+  const coupVu = m.coups.length;
+  setTimeout(() => {
+    if (S?.match !== m || m.coups.length !== coupVu) return;   // un autre coup (ou un autre match) a pris la place
+    if (evt.gagnant === 0) { hMe.classList.add("win"); hBot.classList.add("lose"); }
+    if (evt.gagnant === 1) { hBot.classList.add("win"); hMe.classList.add("lose"); }
+  }, silencieux || reduitMouvement() ? 0 : 500);
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
 
