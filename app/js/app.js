@@ -2,7 +2,7 @@
 import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, baseDe } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, baseDe, silenceAvantBalle } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide } from "./surnoms.js";
 import { voirTournoi, mesAmis } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
@@ -309,11 +309,9 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
 
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
   if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
-  // Parfois, avant une balle de match, l'arbitre demande le silence (une fois par match au plus).
-  if (evt.balleApres?.type === "match" && !m.termine && !S.silenceDemande && Math.random() < 0.4) {
-    S.silenceDemande = true;
+  // Parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
+  if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length))
     a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));
-  }
   annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
   render(); renderHistorique(); renderLecture();
   if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);

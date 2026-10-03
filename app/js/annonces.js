@@ -220,6 +220,18 @@ function finDeMatch(match, evt, etat, ctx, rng) {
   return out;
 }
 
+// « Silence, s'il vous plaît » avant une balle de match : souvent, mais sans le rabâcher.
+// Au plus 3 fois par match et 2 fois par set ; après 2 fois d'affilée, il se tait pendant 2 ou 3 balles de match.
+// etat : { total, parSet: {}, suite, pause } (gardé pendant le match) ; set : le numéro du set en cours.
+export function silenceAvantBalle(etat, set, rng = Math.random) {
+  if (etat.pause > 0) { etat.pause--; etat.suite = 0; return false; }
+  const ok = etat.total < 3 && (etat.parSet[set] || 0) < 2 && rng() < 0.5;
+  if (!ok) { etat.suite = 0; return false; }
+  etat.total++; etat.parSet[set] = (etat.parSet[set] || 0) + 1; etat.suite++;
+  if (etat.suite >= 2) { etat.suite = 0; etat.pause = rng() < 0.5 ? 2 : 3; }
+  return true;
+}
+
 // Annonce du début d'un set : « Premier set. », « Set décisif. »…
 export function annonceDebutSet(match) {
   if (match.format.setsGagnants === 1) return replique("arbitre_set_unique_01");
