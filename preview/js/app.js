@@ -318,7 +318,12 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
 
   // Dernier point : on laisse le temps de voir les deux signes avant la célébration et le score final.
   // (l'écran de match reste en place pendant cette pause : S.pauseFin)
-  if (m.termine) { S.pauseFin = true; render(); setTimeout(() => criEnGrand(cel, () => poigneeDeMain(finir)), reduitMouvement() ? 900 : 1800); return evt; }
+  if (m.termine) {
+    const seance = S;
+    S.pauseFin = true; render();
+    setTimeout(() => { if (S === seance) criEnGrand(cel, () => poigneeDeMain(finir)); }, reduitMouvement() ? 900 : 1800);
+    return evt;
+  }
   if (cel) setTimeout(() => criEnBulle(cel), 250);
   if (evt.finSet) {
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
@@ -446,6 +451,8 @@ function renderLecture() {
 
 function finir() {
   S.pauseFin = false; render();   // fin de la pause : le score des sets et le menu reviennent
+  // Duel : le match suivant (tournoi) ne s'ouvre qu'après la célébration, la poignée de main et un coup d'œil à l'écran de fin.
+  if (S.duel && D) { D.finVue = true; const d = D; setTimeout(() => { if (D === d) duelsUI?.rafraichir(); }, 2500); }
   const m = S.match, gagne = m.vainqueur === 0, c = m.coups, n = c.length;
   const special = S.duel && D ? D.finSpeciale : null;   // duel gagné ou perdu par forfait ou abandon
   $("endTitle").textContent = special === "forfait" ? (gagne ? `Victoire par forfait : ${OPP.nom} a quitté le duel` : "Défaite par forfait")
@@ -861,8 +868,10 @@ $("foGo").addEventListener("click", () => {
   if (S.duel) { try { ambiance.initialiser(); } catch { /* sans son */ } duelPret(); return; }   // on attend que l'adversaire soit prêt
   commencerSolo();
 });
+// Le match commence : les boutons des signes doivent être à l'écran (la page a pu rester descendue sur l'écran de fin).
+function montrerSignes() { window.scrollTo(0, 0); $("moves").scrollIntoView({ block: "nearest" }); }
 function commencerSolo() {
-  $("faceoff").classList.remove("show"); faceAFaceOuvert = false;
+  $("faceoff").classList.remove("show"); faceAFaceOuvert = false; montrerSignes();
   if (S.matchJour) noterMatchDuJour({ abandon: true });   // un seul essai : quitter en route compte comme un abandon
   S.enJeu = true; majModeMatch();
   $("status").textContent = "Set 1, coup 1";
@@ -1386,7 +1395,7 @@ function majDuel(duel) {
   if (duel.phase === "presentation") {
     if (!D.presente) { D.presente = true; ouvrirFaceAFace(); }
   } else if (duel.phase === "jeu") {
-    if (faceAFaceOuvert) { fermerFaceAFace(); annoncer([annonceDebutSet(S.match)]); }
+    if (faceAFaceOuvert) { fermerFaceAFace(); montrerSignes(); annoncer([annonceDebutSet(S.match)]); }
     // Set suivant lancé par le serveur : on ferme le panneau et on reprend la main tout de suite
     // (sinon le premier coup du set pouvait partir au hasard).
     const reprise = !!panneauOuvert;
@@ -1556,7 +1565,7 @@ duelsUI = installerDuels({
   compte: compteUI,
   signaler,
   lancerDuel,
-  duelEnCours: () => !!D && !D.fini,
+  duelEnCours: () => !!D && !D.finVue,
   ouvrirOnglet,
 });
 
@@ -1612,7 +1621,7 @@ $("signalerAdv").addEventListener("click", () => { if (OPP?.humain) ouvrirSignal
 rapideUI = installerRapide({
   compte: compteUI,
   lancerDuel,
-  duelEnCours: () => !!D && !D.fini,
+  duelEnCours: () => !!D && !D.finVue,
   jouerBot: jouerBotRapide,
 });
 
@@ -1623,13 +1632,13 @@ boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, jeto
 freerollUI = installerFreeroll({
   compte: compteUI, signaler,
   ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
-  chercherMatch: () => { if (!D || D.fini) duelsUI.rafraichir(); },
+  chercherMatch: () => { if (!D || D.finVue) duelsUI.rafraichir(); },
   jetons: () => jetonsUI?.rafraichir(),
 });
 programmesUI = installerProgrammes({
   compte: compteUI, signaler,
   ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
-  chercherMatch: () => { if (!D || D.fini) duelsUI.rafraichir(); },
+  chercherMatch: () => { if (!D || D.finVue) duelsUI.rafraichir(); },
   jetons: () => jetonsUI?.rafraichir(),
 });
 sngUI = installerSng({
@@ -1637,7 +1646,7 @@ sngUI = installerSng({
   signaler,
   compte: compteUI,
   ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
-  chercherMatch: () => { if (!D || D.fini) duelsUI.rafraichir(); },   // mon match suivant est-il lancé ?
+  chercherMatch: () => { if (!D || D.finVue) duelsUI.rafraichir(); },   // mon match suivant est-il lancé ?
 });
 
 // ---------------------------------------------------------------- démarrage
