@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Écouter les répliques · HandSlam</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0F2C52">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .ecoute { max-width: 680px; margin: 0 auto; padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px calc(env(safe-area-inset-bottom, 0px) + 40px); display: flex; flex-direction: column; gap: 14px; }
+  .ecoute a { color: var(--me); }
+  .ecoute h1 { font-family: "Barlow Condensed", sans-serif; font-size: 1.6rem; margin: 0; }
+  .ecoute .intro { font-size: .92rem; line-height: 1.5; color: var(--muted); margin: 0; }
+  .filtres { position: sticky; top: 0; z-index: 2; background: var(--court-deep); padding: 10px 0; display: flex; flex-direction: column; gap: 8px; }
+  .puces { display: flex; gap: 6px; flex-wrap: wrap; }
+  .puces button { font: inherit; font-size: .85rem; padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .25); background: var(--panel); color: var(--line); cursor: pointer; }
+  .puces button[aria-pressed="true"] { background: var(--me); color: #1b1b1b; border-color: var(--me); }
+  .filtres input { font: inherit; padding: 9px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .25); background: var(--panel); color: inherit; }
+  .groupe h2 { font-family: "Barlow Condensed", sans-serif; font-size: 1.15rem; margin: 10px 0 6px; }
+  .ligne { display: grid; grid-template-columns: 44px 1fr; gap: 10px; align-items: start; padding: 10px; border-radius: 10px; background: var(--panel); margin-bottom: 6px; }
+  .ligne.joue { outline: 2px solid var(--me); }
+  .ligne button { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--line); color: var(--court-deep); font-size: 1.05rem; cursor: pointer; }
+  .ligne .texte { font-size: .98rem; line-height: 1.4; }
+  .ligne .meta { font-size: .78rem; color: var(--muted); margin-top: 3px; }
+  .ligne .num { font-weight: 700; color: var(--me); }
+  .vide { color: var(--muted); }
+</style>
+</head>
+<body>
+<main class="ecoute">
+  <p><a href="./">← Retour à HandSlam</a></p>
+  <h1>🎧 Écouter les répliques</h1>
+  <p class="intro">Toutes les répliques enregistrées, classées par moment du match, à la vitesse et au volume de l'appli.
+    Touche ▶ pour écouter. Pour proposer un changement, donne simplement le <b>numéro</b> (par exemple « n° 57 : plus court »).</p>
+  <div class="filtres">
+    <div class="puces" id="roles">
+      <button data-role="" aria-pressed="true">Tous</button>
+      <button data-role="commentateur" aria-pressed="false">🎙️ Roland</button>
+      <button data-role="commentatrice" aria-pressed="false">👠 Monique</button>
+      <button data-role="arbitre" aria-pressed="false">🧑‍⚖️ Arbitre</button>
+    </div>
+    <input id="cherche" type="search" placeholder="Chercher un mot ou un numéro…" aria-label="Chercher une réplique">
+  </div>
+  <div id="liste"><p class="vide">Chargement…</p></div>
+</main>
+<script type="module">
+  import { VITESSES, VOLUMES } from "./js/voix/lecteur.js";
+
+  const PERSONNAGES = { commentateur: "🎙️ Roland", commentatrice: "👠 Monique", arbitre: "🧑‍⚖️ Arbitre" };
+  // Le moment du match de chaque situation (l'identifiant d'une réplique, sans le personnage ni le numéro).
+  const MOMENTS = {
+    arbitre: "L'arbitre (début des sets, fin du match, silence)",
+    dialogue_avant_match: "Avant le match : dialogue Roland → Monique",
+    humain: "Avant le match, contre un humain", domination: "Avant le match, contre un adversaire qui vous domine",
+    duel_esprits: "Égalités à répétition", lecture_reussie: "Le joueur devine le coup de l'adversaire",
+    lecture_subie: "Le joueur se fait lire par l'adversaire", obstination: "Le même signe rejoué encore et encore",
+    changement: "Il change enfin de signe", serie_pour: "Série de points gagnés", serie_contre: "Série de points perdus",
+    remontee: "Remontée dans le set", main_legendaire: "Un coup de génie", temps_ecoule: "Temps écoulé : coup joué au hasard",
+    tension: "Juste avant une balle de match", craquage: "Une balle de set ou de match manquée",
+    balle_sauvee: "Une balle de set ou de match sauvée", point_decisif: "Le dernier point du set décisif",
+    set_ecrasant: "Fin de set : un set écrasant", set_couteau: "Fin de set : un set serré", resume_set: "Fin de set",
+    dialogue_fin_set: "Fin de set : dialogue Roland → Monique", set_decisif: "Début du set décisif",
+    dialogue_set_decisif: "Début du set décisif : dialogue", dialogue_serie: "Une longue série : dialogue",
+    renversement: "Match retourné après avoir perdu le 1er set", balle_match_convertie: "Balle de match gagnée",
+    victoire: "Victoire", defaite: "Défaite", dialogue_titre: "Titre remporté : dialogue", dialogue_fin_match: "Après une défaite : dialogue",
+    dialogue_cri: "Le cri de victoire : dialogue Roland → Monique",
+    poignee_froide: "Poignée de main froide", poignee_contraste: "Poignées de main opposées",
+  };
+  const situation = r => (r.role === "arbitre" ? "arbitre" : r.id.slice(r.role.length + 1).replace(/_\d\d(_.*)?$/, ""));
+
+  const $ = id => document.getElementById(id);
+  let lignes = [], role = "", audio = null, enCours = null;
+
+  function jouer(r, ligne) {
+    if (audio) audio.pause();
+    enCours?.classList.remove("joue");
+    if (enCours === ligne) { enCours = null; return; }   // retoucher : stop
+    audio = new Audio(`audio/${r.id}.mp3`);
+    audio.volume = VOLUMES[r.role] ?? 0.8;
+    audio.preservesPitch = audio.webkitPreservesPitch = true;
+    audio.defaultPlaybackRate = audio.playbackRate = VITESSES[r.role] ?? 1;
+    enCours = ligne; ligne.classList.add("joue");
+    audio.onended = () => { ligne.classList.remove("joue"); if (enCours === ligne) enCours = null; };
+    audio.play().catch(() => { ligne.classList.remove("joue"); enCours = null; });
+  }
+
+  function afficher() {
+    const q = $("cherche").value.trim().toLowerCase().replace(/^n°\s*/, "");
+    const groupes = new Map();
+    for (const r of lignes) {
+      if (role && r.role !== role) continue;
+      if (q && !(String(r.n) === q || r.texte.toLowerCase().includes(q))) continue;
+      if (!groupes.has(r.situation)) groupes.set(r.situation, []);
+      groupes.get(r.situation).push(r);
+    }
+    const liste = $("liste"); liste.textContent = "";
+    if (!groupes.size) { liste.innerHTML = '<p class="vide">Aucune réplique.</p>'; return; }
+    for (const [s, rs] of groupes) {
+      const g = document.createElement("section"); g.className = "groupe";
+      const h = document.createElement("h2"); h.textContent = MOMENTS[s] || s.replace(/_/g, " "); g.append(h);
+      for (const r of rs) {
+        const d = document.createElement("div"); d.className = "ligne";
+        const b = document.createElement("button"); b.textContent = "▶"; b.setAttribute("aria-label", `Écouter la réplique n° ${r.n}`);
+        b.addEventListener("click", () => jouer(r, d));
+        const t = document.createElement("div");
+        const texte = document.createElement("div"); texte.className = "texte"; texte.textContent = r.texte;
+        const meta = document.createElement("div"); meta.className = "meta";
+        meta.innerHTML = `<span class="num">n° ${r.n}</span> · ${PERSONNAGES[r.role] || r.role}${r.ton ? ` · ton ${r.ton}` : ""}${/_f$/.test(r.id) ? " · version joueuse" : ""}`;
+        t.append(texte, meta); d.append(b, t); g.append(d);
+      }
+      liste.append(g);
+    }
+  }
+
+  $("roles").addEventListener("click", e => {
+    const b = e.target.closest("button[data-role]"); if (!b) return;
+    role = b.dataset.role;
+    $("roles").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    afficher();
+  });
+  $("cherche").addEventListener("input", afficher);
+
+  try {
+    const donnees = await (await fetch("audio/ecoute.json", { cache: "no-cache" })).json();
+    // Numéros dans l'ordre des moments du match (les répliques d'une même situation regroupées).
+    const ordre = Object.keys(MOMENTS).filter(s => donnees.some(r => situation(r) === s));
+    for (const r of donnees) { const s = situation(r); if (!ordre.includes(s)) ordre.push(s); }   // (une situation nouvelle, à la fin)
+    const parSituation = s => donnees.filter(r => situation(r) === s);
+    lignes = ordre.flatMap(parSituation).map((r, i) => ({ ...r, situation: situation(r), n: i + 1 }));
+    afficher();
+  } catch { $("liste").innerHTML = '<p class="vide">Impossible de charger la liste des répliques.</p>'; }
+</script>
+</body>
+</html>
