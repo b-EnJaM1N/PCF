@@ -316,11 +316,16 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
 
   // Les commentateurs lancent le match (en évitant, eux aussi, ce qu'ils ont dit récemment).
   const etat = nouvelEtatAnnonces({ humain, genre });
-  // (seulement les 3 derniers dialogues : sinon, au bout de quelques matchs, ils seraient tous écartés et plus rien ne serait dit)
-  const dialoguesRecents = recents.filter(id => /^commentateur_dialogue_avant_match_/.test(id)).slice(0, 3);
+  // (seulement les 6 derniers dialogues : sinon, au bout de quelques matchs, ils seraient tous écartés et plus rien ne serait dit)
+  const dialoguesRecents = recents.filter(id => /^commentateur_dialogue_avant_match_/.test(id)).slice(0, 6);
   dialoguesRecents.forEach(id => { const m = /_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
+  // Un dialogue selon la situation (une fois sur deux), s'il n'a pas été entendu aux derniers matchs.
+  const contexte = tour === "finale" ? "avant_finale" : situations.includes("revanche") ? "avant_revanche"
+    : situations.includes("nuit") ? "avant_nuit" : situations.includes("contre_bot") ? "avant_bot" : null;
+  const contexteRecent = contexte && recents.slice(0, 20).includes(`commentateur_dialogue_${contexte}_01`);
   let com = null;
   if (domination) com = choisir(etat, "domination", {}, rng);
+  else if (contexte && !contexteRecent && rng() < 0.5) return { speaker: sp.filter(Boolean), commentaires: dialogue(etat, contexte, rng) || [] };
   else if (humain && rng() < 0.5) com = choisir(etat, "humain", {}, rng);
   const commentaires = com ? [com] : rng() < 0.85 ? dialogue(etat, "avant_match", rng) || [] : [];
   return { speaker: sp.filter(Boolean), commentaires };
