@@ -19,6 +19,15 @@ export function indicationDe(r, cfg = config) {
   const ton = (role.tons || []).find(t => t.situations.some(s => situation === s || situation.startsWith(`${s}_`)));
   return ton ? ton.indication : role.indication || "";
 }
+// Le nom du ton d'une réplique (pour la page d'écoute) : celui de sa situation, sinon le ton habituel du personnage.
+const TON_HABITUEL = { commentateur: "excité", commentatrice: "pince-sans-rire", arbitre: "solennel" };
+export function tonDe(r, cfg = config) {
+  const role = cfg.roles[r.role];
+  if (!role) return "";
+  const situation = r.id.slice(r.role.length + 1);
+  const ton = (role.tons || []).find(t => t.situations.some(s => situation === s || situation.startsWith(`${s}_`)));
+  return ton ? ton.nom : TON_HABITUEL[r.role] || "";
+}
 // Le texte envoyé à la voix : l'indication de jeu, puis la réplique (ou son texte spécial).
 export function texteVoix(r, cfg = config) {
   const special = cfg.textes?.[r.id];
