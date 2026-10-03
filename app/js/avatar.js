@@ -87,7 +87,6 @@ const pouce = (gant, ink) => `<rect x="25" y="50" width="28" height="12" rx="6" 
 function main(symbole, gant, ink) {
   if (symbole === "feuille") return `
     ${doigt(29.5, 20, 34, gant, ink)}${doigt(40, 12, 40, gant, ink)}${doigt(50.5, 14, 38, gant, ink)}${doigt(61, 22, 32, gant, ink)}
-    <rect x="12" y="44" width="26" height="11" rx="5.5" fill="${gant}" stroke="${ink}" stroke-width="1.5" transform="rotate(-35 34 50)"/>
     ${paume(44, gant, ink)}
     <path d="M40 60 q10 4 20 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
   // Doigt levé (l'index, « numéro 1 ») et pouce levé : les gestes de victoire de la boutique.
