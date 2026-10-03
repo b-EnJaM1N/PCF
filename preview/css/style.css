@@ -80,6 +80,9 @@ body:not(.en-match) .rule { display: none; }
 .hand.secoue { animation: secouer-poing .18s ease-in-out infinite; }   /* « pierre… feuille… ciseaux… » */
 .hand .poing-av { display: inline-block; width: 2.1em; height: 2.1em; margin: -.45em 0; vertical-align: middle; }
 .hand .poing-av svg { width: 100%; height: 100%; }
+/* Face à face : chaque main pointe vers l'adversaire (la mienne vers la droite, la sienne vers la gauche, poignets à l'extérieur). */
+#hMe .poing-av svg { transform: rotate(90deg); }
+#hBot .poing-av svg { transform: rotate(-90deg); }
 .hand.ouvre .poing-av { animation: ouvrir-main .22s ease-out; }   /* la main s'ouvre */
 @keyframes ouvrir-main { from { transform: scale(.82); } to { transform: scale(1); } }
 @keyframes secouer-poing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px) rotate(-8deg); } }
