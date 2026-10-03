@@ -76,6 +76,8 @@ body:not(.en-match) .rule { display: none; }
 .arena { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 96px; }
 .hand { font-size: 3.4rem; text-align: center; }
 .hand.win { transform: scale(1.18); } .hand.lose { opacity: .4; }
+/* Au dévoilement, les deux mains restent un instant de la même taille, puis le gagnant grossit et le perdant s'efface (app.js). */
+.hand.ouvre { transition: transform .25s ease-out, opacity .25s ease-out; }
 .hand.attend { animation: attendre-coup .7s ease-in-out infinite alternate; }   /* le coup adverse arrive */
 .hand.secoue { animation: secouer-poing .18s ease-in-out infinite; }   /* « pierre… feuille… ciseaux… » */
 .hand .poing-av { display: inline-block; width: 2.1em; height: 2.1em; margin: -.45em 0; vertical-align: middle; }
@@ -89,7 +91,7 @@ body:not(.en-match) .rule { display: none; }
 @keyframes ouvrir-main { from { transform: scale(.82); } to { transform: scale(1); } }
 @keyframes secouer-poing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px) rotate(-8deg); } }
 @keyframes attendre-coup { from { opacity: .35; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .hand.attend { animation: none; opacity: .6; } .hand.secoue, .hand.ouvre .poing-av { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .hand.attend { animation: none; opacity: .6; } .hand.secoue, .hand.ouvre .poing-av { animation: none; } .hand.ouvre { transition: none; } }
 .vs { font-family: "Barlow Condensed", sans-serif; font-weight: 700; color: var(--muted); }
 .verdict { text-align: center; font-weight: 600; min-height: 1.4em; }
 .timer { height: 6px; background: var(--panel); border-radius: 3px; overflow: hidden; }
