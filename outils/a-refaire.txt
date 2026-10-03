@@ -1,15 +1,2 @@
 # Les répliques à refaire avec le robot « Voix » (choix « liste ») : un identifiant par ligne. Les lignes en # sont ignorées.
-# (Dernier lot fait le 3 octobre : 91 répliques revues sur la page d'écoute, Roland « très excité, style radio ».)
-# Lot du 3 octobre (2) : Roland hystérique sur les coups de génie.
-commentateur_main_legendaire_01
-commentateur_main_legendaire_02
-commentateur_main_legendaire_03
-commentateur_main_legendaire_04
-commentateur_main_legendaire_05
-commentateur_main_legendaire_06
-commentateur_main_legendaire_07
-commentateur_main_legendaire_08
-commentateur_lecture_reussie_03_pierre
-commentateur_lecture_reussie_03_ciseaux
-commentateur_lecture_reussie_03_feuille
-commentateur_serie_contre_04
+# (Derniers lots faits le 3 octobre : page d'écoute, Roland très excité, puis hystérique sur 12 répliques.)
