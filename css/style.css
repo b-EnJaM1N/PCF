@@ -77,8 +77,10 @@ body:not(.en-match) .rule { display: none; }
 .hand { font-size: 3.4rem; text-align: center; }
 .hand.win { transform: scale(1.18); } .hand.lose { opacity: .4; }
 .hand.attend { animation: attendre-coup .7s ease-in-out infinite alternate; }   /* le coup adverse arrive */
+.hand.secoue { animation: secouer-poing .18s ease-in-out infinite; }   /* « pierre… feuille… ciseaux… » */
+@keyframes secouer-poing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px) rotate(-8deg); } }
 @keyframes attendre-coup { from { opacity: .35; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .hand.attend { animation: none; opacity: .6; } }
+@media (prefers-reduced-motion: reduce) { .hand.attend { animation: none; opacity: .6; } .hand.secoue { animation: none; } }
 .vs { font-family: "Barlow Condensed", sans-serif; font-weight: 700; color: var(--muted); }
 .verdict { text-align: center; font-weight: 600; min-height: 1.4em; }
 .timer { height: 6px; background: var(--panel); border-radius: 3px; overflow: hidden; }
@@ -91,6 +93,7 @@ body:not(.en-match) .rule { display: none; }
 .moves button .l { font-size: .85rem; color: var(--muted); }
 @media (hover: hover) { .moves button:hover:not(:disabled) { border-color: var(--me); } }
 .moves button:disabled { opacity: .45; cursor: default; }
+.moves button.choisi:disabled { opacity: 1; border-color: var(--me); }   /* duel : le signe envoyé, en attendant la réponse */
 
 h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.15rem; margin: 0 0 8px; }
 .tape { overflow-x: auto; padding-bottom: 6px; }
