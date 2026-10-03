@@ -212,7 +212,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 // ---------------------------------------------------------------- un coup
-const boutons = on => document.querySelectorAll("#moves button").forEach(b => { b.disabled = !on; });
+const boutons = on => document.querySelectorAll("#moves button").forEach(b => { b.disabled = !on; if (on) b.classList.remove("choisi"); });
 
 function jouer(signe, auto = false) {
   if (S && S.duel) return jouerDuel(signe);
@@ -260,6 +260,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   // Révélation immédiate des deux signes : aucun effet pendant l'échange.
   const hMe = $("hMe"), hBot = $("hBot");
   hMe.textContent = EMOJI[signe]; hBot.textContent = EMOJI[signeAdv];
+  document.querySelectorAll("#moves button.choisi").forEach(b => b.classList.remove("choisi"));
   hMe.className = "hand" + (evt.gagnant === 0 ? " win" : evt.gagnant === 1 ? " lose" : "");
   hBot.className = "hand" + (evt.gagnant === 1 ? " win" : evt.gagnant === 0 ? " lose" : "");
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
@@ -1325,6 +1326,7 @@ function majDuel(duel) {
     while (m.coups.length < n - 1) { const c = coupVuDe(duel.coups[m.coups.length], D.moi); afficherCoup(c.a, c.b, c.auto, { silencieux: true }); }
     const c = coupVuDe(duel.coups[n - 1], D.moi);
     S.occupe = true; arreterMinuteur(); boutons(false);
+    ambiance.raquette(c.a, grandMoment(m));   // le coup de raquette au moment où les deux signes se dévoilent
     afficherCoup(c.a, c.b, c.auto);
     if (!coherent(m, duel, D.moi)) {   // ne devrait jamais arriver : on se recale sur le serveur
       const r = rejouer(duel, D.moi); S.match = r.match; render(); renderHistorique();
@@ -1397,8 +1399,10 @@ function jouerDuel(signe) {
   const d = D.duel;
   if (d.phase !== "jeu" || d.pause_depuis || D.mancheEnvoyee === d.manche) return;
   D.mancheEnvoyee = d.manche; boutons(false);
-  ambiance.raquette(signe, grandMoment(S.match));
-  $("hMe").textContent = EMOJI[signe]; $("hMe").className = "hand"; $("hBot").textContent = "❔"; $("hBot").className = "hand attend";   // le coup adverse arrive (pas de sablier qui clignote)
+  // Les deux signes se dévoilent ensemble, comme contre un bot d'entraînement : en attendant la réponse du serveur,
+  // les deux mains restent en ❔ et seul le bouton choisi reste en surbrillance.
+  $("hMe").textContent = "❔"; $("hMe").className = "hand attend"; $("hBot").textContent = "❔"; $("hBot").className = "hand attend";
+  document.querySelector(`#moves button[data-m="${signe}"]`)?.classList.add("choisi");
   $("verdict").textContent = `En attente de ${OPP.nom}…`;
   serveur.jouer(D.id, d.manche, signe).then(majDuel).catch(e => {
     if (!D) return;
