@@ -79,7 +79,12 @@ export function installerRapide(ctx) {
     horloge = setInterval(() => {
       const s = (Date.now() - debut) / 1000;
       $("rapideChrono").textContent = chrono(s);
-      if (s >= ATTENTE_AVANT_BOT_S) $("rapideBot").hidden = false;
+      if (s >= ATTENTE_AVANT_BOT_S && $("rapideBot").hidden) {
+        $("rapideBotTexte").textContent = mise
+          ? `Personne n'est disponible pour l'instant. Tu peux jouer contre un bot à ta mise de ${mise} jetons : si tu gagnes, tu remportes ${gainDuel(mise)} jetons ; si le bot gagne, tu perds ta mise. Ce sera un bot, pas un humain, et le match ne comptera pas pour ton niveau officiel.`
+          : "Personne n'est disponible pour l'instant. Tu peux jouer contre un bot en attendant : ce sera un bot, pas un humain, sans mise, et le match ne comptera pas pour ton niveau officiel.";
+        $("rapideBot").hidden = false;
+      }
     }, 250);
   }
 
@@ -94,7 +99,21 @@ export function installerRapide(ctx) {
 
   document.querySelectorAll("#rapideChoix [data-format]").forEach(b => b.addEventListener("click", () => lancer(b.dataset.format)));
   $("rapideAnnuler").addEventListener("click", () => { arreter({ quitter: true }); dire("Recherche annulée."); });
-  $("rapideBotGo").addEventListener("click", () => { const f = format; arreter({ quitter: true }); ctx.jouerBot(f); });
+  $("rapideBotGo").addEventListener("click", async () => {
+    const f = format;
+    if (!mise) { arreter({ quitter: true }); ctx.jouerBot(f); return; }
+    // Avec une mise : un vrai duel contre un bot, joué sur le serveur (la mise est prélevée, le gagnant remporte 1,8 fois la mise).
+    $("rapideBotGo").disabled = true;
+    try {
+      const duel = await social.jouerBotRapide(f, mise);
+      arreter();
+      const [p] = await serveur.profils([duel.j1]).catch(() => []);
+      if (p && !ctx.duelEnCours()) ctx.lancerDuel(duel, p);
+    } catch (e) {
+      const m = String(e?.message || e);
+      dire(/jetons|adversaire|duel en cours/.test(m) ? m : "Impossible de lancer le match contre un bot. Vérifie ta connexion et réessaie.", true);
+    } finally { $("rapideBotGo").disabled = false; }
+  });
 
   return {
     // On quitte l'écran : on arrête de chercher.
