@@ -325,6 +325,8 @@ export const MOMENTS = {
     { r: "d", t: "Je suis ton père.", clin: "cine" },
   ],
   // La poignée de main de fin de match (voir poignee.js)
+  // Le public fait « ooh » sur un point disputé : Monique, une fois par match au plus, parfois.
+  huees: [{ r: "d", t: "Je vous demande de vous arrêter." }],
   poignee_froide: [{ r: "d", t: "Glacial. J'approuve." }],
   poignee_contraste: [{ r: "d", t: "L'un tend la main. L'autre tend un glaçon." }],
   humain: [
@@ -355,9 +357,6 @@ export const DIALOGUES = {
   ],
   set_decisif: [
     ["Un set pour l'éternité, Madame !", "Un set pour ce soir. Ce sera déjà bien."],
-  ],
-  serie: [
-    [{ t: "Il est injouable ! Il est…", f: "Elle est injouable ! Elle est…" }, "Je vous demande de vous arrêter."],
   ],
   titre: [
     ["Madame, c'est historique !", "Pas d'enflammade. Pas d'enflammade."],

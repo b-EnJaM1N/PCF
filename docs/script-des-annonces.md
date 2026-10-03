@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (224 répliques)
+## Commentateur — vif, enthousiaste, plein de références (222 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -328,8 +328,6 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_fin_set_04.mp3` | Il doit tout changer, Madame ! |
 | `commentateur_dialogue_fin_set_04_f.mp3` | Elle doit tout changer, Madame ! |
 | `commentateur_dialogue_set_decisif_01.mp3` | Un set pour l'éternité, Madame ! |
-| `commentateur_dialogue_serie_01.mp3` | Il est injouable ! Il est… |
-| `commentateur_dialogue_serie_01_f.mp3` | Elle est injouable ! Elle est… |
 | `commentateur_dialogue_titre_01.mp3` | Madame, c'est historique ! |
 | `commentateur_dialogue_fin_match_01.mp3` | Il n'a pas démérité ! |
 | `commentateur_dialogue_fin_match_01_f.mp3` | Elle n'a pas démérité ! |
@@ -492,6 +490,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_defaite_08.mp3` | Il a le seum. Comme disent les jeunes. |
 | `commentatrice_defaite_08_f.mp3` | Elle a le seum. Comme disent les jeunes. |
 | `commentatrice_domination_01.mp3` | Je suis ton père. |
+| `commentatrice_huees_01.mp3` | Je vous demande de vous arrêter. |
 | `commentatrice_poignee_froide_01.mp3` | Glacial. J'approuve. |
 | `commentatrice_poignee_contraste_01.mp3` | L'un tend la main. L'autre tend un glaçon. |
 | `commentatrice_humain_01.mp3` | Ils se connaissent. Et ça se voit. |
@@ -508,7 +507,6 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_fin_set_03.mp3` | Tout. Ou rien. C'est ça, le HandSlam. |
 | `commentatrice_dialogue_fin_set_04.mp3` | Vaste programme. |
 | `commentatrice_dialogue_set_decisif_01.mp3` | Un set pour ce soir. Ce sera déjà bien. |
-| `commentatrice_dialogue_serie_01.mp3` | Je vous demande de vous arrêter. |
 | `commentatrice_dialogue_titre_01.mp3` | Pas d'enflammade. Pas d'enflammade. |
 | `commentatrice_dialogue_fin_match_01.mp3` | Si. Un peu quand même. |
 | `commentatrice_dialogue_cri_01.mp3` | On l'avait entendu. |
