@@ -26,7 +26,7 @@ export function indicationDe(r, cfg = config) {
   return ton ? ton.indication : role.indication || "";
 }
 // Le nom du ton d'une réplique (pour la page d'écoute) : celui de sa situation, sinon le ton habituel du personnage.
-const TON_HABITUEL = { commentateur: "excité", commentatrice: "pince-sans-rire", arbitre: "solennel" };
+const TON_HABITUEL = { commentateur: "très excité (radio)", commentatrice: "pince-sans-rire", arbitre: "solennel" };
 export function tonDe(r, cfg = config) {
   const role = cfg.roles[r.role];
   if (!role) return "";

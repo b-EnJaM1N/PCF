@@ -59,7 +59,7 @@
       "nom": "Roland Pignon",
       "voice_id": "pwONJQic3ZwHTFG8D6uM",
       "stability": 0,
-      "indication": "[excited]",
+      "indication": "[excited] [shouting] [like a French radio sports commentator]",
       "tons": [
         {
           "nom": "enflammé",
@@ -118,6 +118,7 @@
     "commentateur_obstination_05_pierre": "[chanting] [excited] Des pierres ! Des pierres ! Des pierres ! Des pierres ! Des pierres !",
     "commentateur_obstination_05_ciseaux": "[chanting] [excited] Ciseaux ! Ciseaux ! Ciseaux ! Ciseaux ! Ciseaux !",
     "commentateur_obstination_05_feuille": "[chanting] [excited] Des feuilles ! Des feuilles ! Des feuilles ! Des feuilles ! Des feuilles !",
-    "commentateur_dialogue_cri_04": "[shouting] [excited] Siiiuuuuuuu !"
+    "commentateur_dialogue_cri_04": "[shouting] [excited] Siiiuuuuuuu !",
+    "commentatrice_dialogue_avant_match_04": "[deadpan] Ce sera long. Très long…"
   }
 }
