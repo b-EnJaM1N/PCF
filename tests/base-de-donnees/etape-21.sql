@@ -84,7 +84,8 @@ begin
   perform pg_temp.verifier(not exists (select 1 from mouvements_jetons m join bots_en_ligne b on b.joueur = m.joueur), 'les bots ne paient pas d''entrée');
 
   -- Fin simulée : un bot bat le joueur 3 en finale ; le joueur 4 perd en demi-finale contre un bot.
-  -- Cagnotte : 2 × 100 − 10 % = 180 ; 2 humains : 2 places payées, données aux humains selon leur parcours (117 et 63).
+  -- Cagnotte (étape 24) : 8 × 100 − 10 % = 720, bots compris ; 2 places payées selon la vraie place : le bot vainqueur
+  -- (1er) ne touche rien, le joueur 3 finaliste a la part du 2e (252), le joueur 4 demi-finaliste n'est pas payé.
   select i.joueur into b from inscrits_tournoi i join bots_en_ligne x on x.joueur = i.joueur where i.tournoi_id = t.id limit 1;
   select i.joueur into b2 from inscrits_tournoi i join bots_en_ligne x on x.joueur = i.joueur where i.tournoi_id = t.id and i.joueur <> b limit 1;
   delete from duels where tournoi_id = t.id;
@@ -94,10 +95,10 @@ begin
     (t.id, 2, 2, pg_temp.u(4), b, b, 'forfait'),
     (t.id, 3, 1, pg_temp.u(3), b, b, 'score');
   update tournois set phase = 'termine', vainqueur = b, fini_le = now() where id = t.id;
-  perform pg_temp.verifier(pg_temp.solde(3) = 1017 and pg_temp.solde(4) = 963, 'gains aux humains : 117 et 63');
+  perform pg_temp.verifier(pg_temp.solde(3) = 1152 and pg_temp.solde(4) = 900, 'gains selon la vraie place : 252 au finaliste, rien au demi-finaliste');
   perform pg_temp.verifier(not exists (select 1 from mouvements_jetons m join bots_en_ligne x on x.joueur = m.joueur), 'les bots ne gagnent jamais de jetons');
 
-  -- Un salon de 16 : il faut au moins 4 joueurs (un quart) pour que les bots complètent.
+  -- Un salon de 16 avec 2 joueurs : les bots complètent aussi (depuis l'étape 24, un seul joueur suffit).
   perform pg_temp.en_tant_que(pg_temp.u(5)::text);
   perform rejoindre_sit_and_go(16, 0);
   perform pg_temp.en_tant_que(pg_temp.u(6)::text);
@@ -106,5 +107,5 @@ begin
   select t2.* into t from tournois t2 join inscrits_tournoi i on i.tournoi_id = t2.id where i.joueur = pg_temp.u(5) and t2.taille = 16;
   update inscrits_tournoi set inscrit_le = now() - interval '3 minutes' where tournoi_id = t.id;
   perform _veille_tournois();
-  perform pg_temp.verifier((select phase from tournois where id = t.id) = 'inscriptions', 'salle de 16 avec 2 joueurs : pas de bots (il en faut 4)');
+  perform pg_temp.verifier((select phase from tournois where id = t.id) = 'en_cours' and (select count(*) from inscrits_tournoi where tournoi_id = t.id) = 16, 'salle de 16 avec 2 joueurs : 14 bots complètent');
 end $$;

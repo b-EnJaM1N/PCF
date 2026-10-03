@@ -61,11 +61,15 @@ begin
   update tournois set phase = 'termine', vainqueur = pg_temp.u(1) where id = t.id;
   perform pg_temp.verifier(pg_temp.solde(1) = 1780 and pg_temp.solde(2) = 1420 and pg_temp.solde(3) = 1000 and pg_temp.solde(4) = 1000, 'gains (4 joueurs : 2 payés) : 780, 420');
 
-  -- Un seul présent : annulé (il en faut 2 depuis l'étape 21).
+  -- Un seul présent : le freeroll démarre, complété par des bots (depuis l'étape 24) ; personne de présent : annulé.
   insert into tournois (nom, points_par_set, sets_gagnants, duree_tour, mode, taille, freeroll) values ('Freeroll', 11, 2, '1 hour', 'direct', 64, _aujourdhui() - 2) returning * into t;
   insert into inscrits_tournoi (tournoi_id, joueur, vu) select t.id, pg_temp.u(k), _heure_freeroll(_aujourdhui() - 2) from generate_series(1, 1) k;
   perform _lancer_freeroll(t.id);
-  perform pg_temp.verifier((select phase from tournois where id = t.id) = 'annule', 'un seul joueur : freeroll annulé');
+  perform pg_temp.verifier((select phase from tournois where id = t.id) = 'en_cours' and (select count(*) from inscrits_tournoi where tournoi_id = t.id) = 8,
+    'un seul joueur : le freeroll démarre avec 7 bots (étape 24)');
+  insert into tournois (nom, points_par_set, sets_gagnants, duree_tour, mode, taille, freeroll) values ('Freeroll', 11, 2, '1 hour', 'direct', 64, _aujourdhui() - 3) returning * into t;
+  perform _lancer_freeroll(t.id);
+  perform pg_temp.verifier((select phase from tournois where id = t.id) = 'annule', 'personne : freeroll annulé');
 
   -- Défis du jour : 3, les mêmes pour tous.
   perform pg_temp.en_tant_que(pg_temp.u(6)::text);

@@ -7,6 +7,9 @@ seules les nouvelles répliques sont faites).
 ## À ajouter
 *(rien pour l'instant)*
 
+## Modifications à faire (notées au fil des tests, à faire toutes ensemble)
+- Roland, « Il a craqué son slip ! » (`commentateur_dialogue_cri_02` et `_f`) : ton **excité** `[excited]` au lieu d'amusé `[laughs]`.
+
 ## Déjà ajoutées
 - « Muscle ton jeu, Robert. Muscle ton jeu. » (Monique, série de points perdus)
 - Au cri de victoire (dialogues Roland → Monique) : « Il a craqué son slip ! » / « Attention que ça ne vous arrive pas. » ;

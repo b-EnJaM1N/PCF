@@ -329,7 +329,7 @@
     <section class="card" id="sngCard" hidden>
       <h2>Tournois express (Sit &amp; Go)</h2>
       <p class="hint">Départ dès que la salle est pleine · compte pour ton niveau officiel.</p>
-      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours. 🤖 Deux minutes après l'arrivée du premier joueur, s'il y a au moins 2 joueurs (et au moins un quart de la salle), des bots complètent la salle (matchs contre un bot amicaux, les bots ne gagnent jamais de jetons).</p></details>
+      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours. 🤖 Deux minutes après l'arrivée du premier joueur, même s'il est seul, des bots complètent la salle. Plus la mise est haute, plus ils sont forts : sans mise, n'importe lesquels ; à 50, des faibles ; à 100 et 200, des moyens ; à 500 et 1 000, des forts. Les bots comptent dans la cagnotte comme s'ils avaient payé, mais ne gagnent jamais de jetons : chacun est payé selon sa vraie place (matchs contre un bot amicaux).</p></details>
       <p class="sndnote" id="sngMien" hidden style="margin-top:10px"></p>
       <div id="sngSalles" class="resultats"></div>
       <h2 style="margin-top:18px">🪙 Sit &amp; Go à mise</h2>
@@ -347,7 +347,7 @@
     <section class="card" id="freeCard" hidden>
       <h2>🌙 Freeroll de 20 h</h2>
       <p class="hint">Gratuit, chaque soir à 20 h, avec une cagnotte offerte. Inscris-toi, puis sois dans l'appli à 20 h.</p>
-      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Un tournoi gratuit chaque soir à 20 h, avec une cagnotte offerte : 1 000 jetons + 50 par joueur, partagée comme au poker (environ 10 à 15 % des joueurs payés). Inscris-toi dans la journée ; à 20 h, sois dans l'appli : le tournoi démarre avec les inscrits présents (au moins 2). 🤖 S'il manque du monde, des bots complètent le tableau : ils ne gagnent jamais de jetons, les gains vont aux joueurs selon leur parcours. Sets de 11, 2 sets gagnants (les matchs contre un bot sont amicaux).</p></details>
+      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Un tournoi gratuit chaque soir à 20 h, avec une cagnotte offerte : 1 000 jetons + 50 par joueur, partagée comme au poker (environ 10 à 15 % des joueurs payés). Inscris-toi dans la journée ; à 20 h, sois dans l'appli : le tournoi démarre avec les inscrits présents, même un seul. 🤖 S'il manque du monde, des bots complètent le tableau : ils ne gagnent jamais de jetons, chacun est payé selon sa vraie place. Sets de 11, 2 sets gagnants (les matchs contre un bot sont amicaux).</p></details>
       <p class="sndnote" id="freeStatut" style="margin-top:10px"></p>
       <p class="hint" id="freeInfo"></p>
       <button class="btn" id="freeInscrire" hidden>M'inscrire pour ce soir</button>
@@ -358,7 +358,7 @@
     <section class="card" id="progCard" hidden>
       <h2>🗓️ Tournois à jetons</h2>
       <p class="hint">Le Grand Chelem, chaque dimanche à 21 h · entrée en jetons.</p>
-      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Le grand rendez-vous de la semaine : le Grand Chelem, chaque dimanche à 21 h. Payant en jetons. L'entrée est payée à l'inscription et rendue si tu te désinscris avant le départ (ou si le tournoi est annulé faute de joueurs). Au départ, sois dans l'appli : le tournoi démarre avec les inscrits présents (au moins 2). Un inscrit absent n'est pas remboursé. 🤖 S'il manque du monde, des bots complètent le tableau : ils ne gagnent jamais de jetons, les gains vont aux joueurs selon leur parcours. La cagnotte (les entrées moins 10 %) est partagée comme au poker : environ 10 à 15 % des joueurs sont payés, au moins 1,5 fois l'entrée pour le plus petit gain. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel (sauf les matchs contre un bot, amicaux).</p></details>
+      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Le grand rendez-vous de la semaine : le Grand Chelem, chaque dimanche à 21 h. Payant en jetons. L'entrée est payée à l'inscription et rendue si tu te désinscris avant le départ (ou si le tournoi est annulé faute de joueurs). Au départ, sois dans l'appli : le tournoi démarre avec les inscrits présents, même un seul. Un inscrit absent n'est pas remboursé. 🤖 S'il manque du monde, des bots forts complètent le tableau : ils comptent dans la cagnotte comme s'ils avaient payé, mais ne gagnent jamais de jetons, chacun est payé selon sa vraie place. La cagnotte (les entrées moins 10 %) est partagée comme au poker : environ 10 à 15 % des joueurs sont payés, au moins 1,5 fois l'entrée pour le plus petit gain. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel (sauf les matchs contre un bot, amicaux).</p></details>
       <div id="progListe" class="resultats"></div>
       <p class="locknote" id="progMsg" role="status"></p>
     </section>
