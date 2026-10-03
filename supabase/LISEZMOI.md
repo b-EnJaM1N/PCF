@@ -172,6 +172,16 @@ Elle tire les tableaux au sort, comme au tennis : seuls les meilleurs niveaux so
 32 au plus : 4 sur 8, 8 sur 16, 16 sur 32, 32 à partir de 64), les autres joueurs sont placés au hasard,
 et le hasard départage les joueurs de même niveau. Elle envoie aussi le score en direct du match voisin, pour l'écran d'attente.
 
+## 1 quater vicies. 32 bots, choisis selon la mise (étape 24)
+
+Même manipulation avec [`etape-24-bots-par-niveau.sql`](etape-24-bots-par-niveau.sql), **après** l'étape 23
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-24-bots-par-niveau.sql).
+Elle crée 17 nouveaux bots (32 en tout, tous différents) et les rend plus ou moins forts contre les humains ; les bots
+sont choisis selon la mise (faibles à 50, moyens à 100 et 200, forts à 500, 1 000 et au Grand Chelem). Un seul humain suffit
+pour lancer le freeroll, un tournoi programmé ou un Sit & Go (après 2 minutes d'attente). Les bots comptent dans la cagnotte
+comme s'ils avaient payé (sauf au freeroll), et chaque humain est payé selon sa vraie place dans le tableau.
+Si on relance un jour l'étape 21, il faut relancer celle-ci ensuite.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
