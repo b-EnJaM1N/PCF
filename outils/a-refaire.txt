@@ -1,10 +1,1 @@
 # Les répliques à refaire avec le robot « Voix » (choix « liste ») : un identifiant par ligne. Les lignes en # sont ignorées.
-# Lot du 3 octobre (4) : Roland exalté (« qui craque ») sur les nouveaux dialogues d'avant-match (n° 415 à 430).
-commentateur_dialogue_avant_match_08
-commentateur_dialogue_avant_match_09
-commentateur_dialogue_avant_match_10
-commentateur_dialogue_avant_match_11
-commentateur_dialogue_avant_match_12
-commentateur_dialogue_avant_match_13
-commentateur_dialogue_avant_match_14
-commentateur_dialogue_avant_match_15
