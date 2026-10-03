@@ -123,13 +123,13 @@ function main(symbole, gant, ink) {
     ${[0, 1].map(i => `<path d="M${52.5 + i * 10.5} 42 q2.75 -2.6 5.5 0" fill="none" stroke="${ink}" stroke-width="1.3" stroke-linecap="round" opacity=".6"/>`).join("")}
     ${ongle(31, 20.5, ink, "-12 36 50")}${ongle(44, 19.5, ink, "10 49 50")}
     ${dosDeMain(ink)}`;
-  // La feuille vue de dos : les quatre doigts tendus (avec leurs ongles) et le dos de la main ; le pouce, replié
-  // contre la paume, ne se voit pas. (Proportions d'une vraie main : les doigts un peu plus courts que le dos de la main ; le majeur le plus long,
-  // l'index presque comme l'annulaire, l'auriculaire le plus court.)
+  // La feuille vue de dos : la main grande ouverte, doigts écartés en éventail (avec leurs ongles), pouce sorti, pour qu'on
+  // ne la confonde pas avec le poing. (Proportions d'une vraie main : le majeur le plus long, l'auriculaire le plus court.)
   if (symbole === "feuille-dos") return `
-    ${doigt(29.5, 24, 30, gant, ink)}${doigt(40, 21, 33, gant, ink)}${doigt(50.5, 23, 31, gant, ink)}${doigt(61, 29, 25, gant, ink)}
+    <rect x="9" y="47" width="27" height="11" rx="5.5" fill="${gant}" stroke="${ink}" stroke-width="1.5" transform="rotate(-38 33 52)"/>
+    ${doigt(30, 22, 32, gant, ink, "-20 35 54")}${doigt(40.5, 17, 37, gant, ink, "-7 45 54")}${doigt(50.5, 18, 36, gant, ink, "7 55 54")}${doigt(60, 25, 29, gant, ink, "20 65 54")}
     ${paume(44, gant, ink)}
-    ${ongle(29.5, 25.5, ink)}${ongle(40, 22.5, ink)}${ongle(50.5, 24.5, ink)}${ongle(61, 30.5, ink)}
+    ${ongle(30, 23.5, ink, "-20 35 54")}${ongle(40.5, 18.5, ink, "-7 45 54")}${ongle(50.5, 19.5, ink, "7 55 54")}${ongle(60, 26.5, ink, "20 65 54")}
     ${dosDeMain(ink)}`;
   if (symbole === "ciseaux") return `
     ${doigt(31, 10, 40, gant, ink, "-14 36 50")}${doigt(44, 10, 40, gant, ink, "12 49 50")}
