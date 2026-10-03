@@ -54,6 +54,7 @@
 
 ## Idées notées en chemin
 
+- **Mode carrière contre les bots** (idée du 3 octobre, à étudier plus tard, pas tout de suite) : le joueur commence en bas de l'échelle et monte en battant des bots de plus en plus forts (les 32 bots de l'étape 24). Pistes : une saison de tournois, un classement, des bots à débloquer, les commentateurs qui suivent sa progression. Peut reprendre l'idée « débloquer les bots à l'entraînement selon son niveau ».
 - Remplacer les sons fabriqués et la voix par de vrais enregistrements (noms des fichiers dans `script-des-annonces.md`).
 - Applaudissements à l'entrée des joueurs : à garder ou à retirer.
 - Notifications sur le téléphone quand on reçoit un défi (appli fermée).
