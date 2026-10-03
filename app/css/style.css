@@ -78,11 +78,18 @@ body:not(.en-match) .rule { display: none; }
 .hand.win { transform: scale(1.18); } .hand.lose { opacity: .4; }
 .hand.attend { animation: attendre-coup .7s ease-in-out infinite alternate; }   /* le coup adverse arrive */
 .hand.secoue { animation: secouer-poing .18s ease-in-out infinite; }   /* « pierre… feuille… ciseaux… » */
-.hand .poing-av { display: inline-block; width: 1.9em; height: 1.9em; margin: -.35em 0; vertical-align: middle; }
+.hand .poing-av { display: inline-block; width: 2.1em; height: 2.1em; margin: -.45em 0; vertical-align: middle; }
 .hand .poing-av svg { width: 100%; height: 100%; }
+/* Face à face : chaque main pointe vers l'adversaire (la mienne vers la droite, la sienne vers la gauche, poignets à l'extérieur). */
+#hMe .poing-av svg { transform: rotate(90deg); }
+#hBot .poing-av svg { transform: rotate(-90deg); }
+/* Pendant la secousse, les poings restent debout (jointures vers le haut) : on ne les confond pas avec la pierre jouée. */
+#hMe.secoue .poing-av svg, #hBot.secoue .poing-av svg { transform: none; }
+.hand.ouvre .poing-av { animation: ouvrir-main .22s ease-out; }   /* la main s'ouvre */
+@keyframes ouvrir-main { from { transform: scale(.82); } to { transform: scale(1); } }
 @keyframes secouer-poing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px) rotate(-8deg); } }
 @keyframes attendre-coup { from { opacity: .35; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .hand.attend { animation: none; opacity: .6; } .hand.secoue { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .hand.attend { animation: none; opacity: .6; } .hand.secoue, .hand.ouvre .poing-av { animation: none; } }
 .vs { font-family: "Barlow Condensed", sans-serif; font-weight: 700; color: var(--muted); }
 .verdict { text-align: center; font-weight: 600; min-height: 1.4em; }
 .timer { height: 6px; background: var(--panel); border-radius: 3px; overflow: hidden; }

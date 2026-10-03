@@ -79,6 +79,9 @@ export function avatarSVG(a) {
 
 const doigt = (x, y, h, gant, ink, rot = "") => `<rect x="${x}" y="${y}" width="10.5" height="${h}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"${rot ? ` transform="rotate(${rot})"` : ""}/>`;
 const paume = (y, gant, ink) => `<rect x="29" y="${y}" width="42" height="${76 - y}" rx="11" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`;
+// Vu de dos : l'ongle au bout d'un doigt, et les tendons sur le dos de la main.
+const ongle = (x, y, ink, rot = "") => `<rect x="${x + 2.6}" y="${y}" width="5.3" height="5.5" rx="2.4" fill="none" stroke="${ink}" stroke-width="1.1" opacity=".5"${rot ? ` transform="rotate(${rot})"` : ""}/>`;
+const dosDeMain = ink => [0, 1, 2].map(i => `<path d="M${39.5 + i * 10.5} 50 l-${1 + i} 15" fill="none" stroke="${ink}" stroke-width="1.1" stroke-linecap="round" opacity=".28"/>`).join("");
 const pouce = (gant, ink) => `<rect x="25" y="50" width="28" height="12" rx="6" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`;
 
 function main(symbole, gant, ink) {
@@ -104,6 +107,30 @@ function main(symbole, gant, ink) {
     <path d="M30 48 C28.5 38 30.5 26 34.5 16.5 C37 11 45.5 11.5 46.5 17.5 C47.5 25 48.5 35 49 43 C49 47 46 48.5 41 48.5 Z" fill="${gant}" stroke="${ink}" stroke-width="1.5" stroke-linejoin="round"/>
     <path d="M36.5 18.5 q4 -2.5 7.5 0.5 l0 5.5 q-3.5 1.5 -7.5 0 z" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linejoin="round" opacity=".55"/>
     <path d="M33 34 q6.5 2 13.5 0" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>`;
+  // Le poing vu de dos (la pierre pendant un match) : les jointures en haut, le dos de la main, le pouce sur le côté.
+  if (symbole === "dos") return `
+    <rect x="22" y="42" width="13" height="22" rx="6.5" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
+    ${[0, 1, 2, 3].map(i => `<rect x="${29 + i * 10.5}" y="${30 + (i === 0 || i === 3 ? 3 : 0)}" width="10.5" height="16" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`).join("")}
+    <rect x="29" y="39" width="42" height="37" rx="11" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
+    ${[0, 1, 2, 3].map(i => `<path d="M${31.5 + i * 10.5} 41 q2.75 -2.6 5.5 0" fill="none" stroke="${ink}" stroke-width="1.3" stroke-linecap="round" opacity=".6"/>`).join("")}
+    ${[0, 1, 2].map(i => `<path d="M${39.5 + i * 10.5} 48 l-${1 + i} 16" fill="none" stroke="${ink}" stroke-width="1.1" stroke-linecap="round" opacity=".28"/>`).join("")}`;
+  // Les ciseaux vus de dos : le V, l'annulaire et l'auriculaire repliés (leurs jointures), le pouce rangé sur le côté.
+  if (symbole === "ciseaux-dos") return `
+    <rect x="22" y="44" width="13" height="20" rx="6.5" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
+    ${doigt(31, 19, 31, gant, ink, "-12 36 50")}${doigt(44, 18, 32, gant, ink, "10 49 50")}
+    ${doigt(50, 33, 14, gant, ink)}${doigt(60.5, 35, 12, gant, ink)}
+    <rect x="29" y="40" width="42" height="36" rx="11" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
+    ${[0, 1].map(i => `<path d="M${52.5 + i * 10.5} 42 q2.75 -2.6 5.5 0" fill="none" stroke="${ink}" stroke-width="1.3" stroke-linecap="round" opacity=".6"/>`).join("")}
+    ${ongle(31, 20.5, ink, "-12 36 50")}${ongle(44, 19.5, ink, "10 49 50")}
+    ${dosDeMain(ink)}`;
+  // La feuille vue de dos : les quatre doigts tendus (avec leurs ongles) et le dos de la main ; le pouce, replié
+  // contre la paume, ne se voit pas. (Proportions d'une vraie main : les doigts un peu plus courts que le dos de la main ; le majeur le plus long,
+  // l'index presque comme l'annulaire, l'auriculaire le plus court.)
+  if (symbole === "feuille-dos") return `
+    ${doigt(29.5, 24, 30, gant, ink)}${doigt(40, 21, 33, gant, ink)}${doigt(50.5, 23, 31, gant, ink)}${doigt(61, 29, 25, gant, ink)}
+    ${paume(44, gant, ink)}
+    ${ongle(29.5, 25.5, ink)}${ongle(40, 22.5, ink)}${ongle(50.5, 24.5, ink)}${ongle(61, 30.5, ink)}
+    ${dosDeMain(ink)}`;
   if (symbole === "ciseaux") return `
     ${doigt(31, 10, 40, gant, ink, "-14 36 50")}${doigt(44, 10, 40, gant, ink, "12 49 50")}
     ${paume(40, gant, ink)}
