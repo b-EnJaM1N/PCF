@@ -60,3 +60,9 @@ test("la liste à refaire (robot, choix « liste ») ne contient que des répliq
   for (const id of ids) assert.ok(CATALOGUE.has(id), id);
   assert.ok(!texteVoix(CATALOGUE.get("commentateur_dialogue_cri_02")).includes("[laughs]"), "Roland n'est plus amusé : excité");
 });
+
+test("un ton peut viser des répliques précises (Roland enflammé pour ses encouragements)", () => {
+  assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_03")), /^\[excited\] \[shouting\] /);
+  assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_05_f")), /^\[excited\] \[shouting\] /);
+  assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_01")), /^\[sighs\] /, "les autres séries perdues restent déçues");
+});

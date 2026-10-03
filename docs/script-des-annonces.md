@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (225 répliques)
+## Commentateur — vif, enthousiaste, plein de références (224 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -130,6 +130,7 @@ restent lus par la voix de synthèse.
 | `commentateur_craquage_07_f.mp3` | Elle avait le match au bout des doigts… et elle l'a laissé filer ! |
 | `commentateur_craquage_08.mp3` | Chute à l'avant ! Il avait le match en poche ! |
 | `commentateur_craquage_08_f.mp3` | Chute à l'avant ! Elle avait le match en poche ! |
+| `commentateur_craquage_09.mp3` | Oh non, pas ça ! Pas aujourd'hui ! Pas comme ça ! Pas après tout ce que tu as fait… |
 | `commentateur_main_legendaire_01.mp3` | La main du siècle ! |
 | `commentateur_main_legendaire_02.mp3` | Une main pour l'histoire ! |
 | `commentateur_main_legendaire_03.mp3` | La main du destin ! |
@@ -139,7 +140,6 @@ restent lus par la voix de synthèse.
 | `commentateur_main_legendaire_07.mp3` | Mesdames et messieurs… quelle main ! |
 | `commentateur_main_legendaire_08.mp3` | Dans cinquante ans, on racontera encore cette main ! |
 | `commentateur_balle_sauvee_01.mp3` | Sauvée ! Quel sang-froid ! |
-| `commentateur_balle_sauvee_02.mp3` | Pas aujourd'hui ! Pas comme ça ! Pas après tout ce que tu as fait… |
 | `commentateur_balle_sauvee_03.mp3` | Il refuse de mourir ! Encore en vie ! Toujours en vie ! |
 | `commentateur_balle_sauvee_03_f.mp3` | Elle refuse de mourir ! Encore en vie ! Toujours en vie ! |
 | `commentateur_balle_sauvee_04_pierre.mp3` | Sauvé par le gong ! Enfin… par la Pierre ! |
@@ -201,7 +201,6 @@ restent lus par la voix de synthèse.
 | `commentateur_obstination_05_feuille.mp3` | Des feuilles, des feuilles, des feuilles, des feuilles, des feuilles ! |
 | `commentateur_changement_01.mp3` | Le changement, c'est maintenant ! |
 | `commentateur_duel_esprits_01.mp3` | Ils se lisent dans les pensées ! |
-| `commentateur_duel_esprits_02.mp3` | Télépathie sur le court ! |
 | `commentateur_duel_esprits_03.mp3` | Surplace sur la piste ! Personne ne veut lancer le sprint ! |
 | `commentateur_duel_esprits_04.mp3` | Coude à coude ! Impossible de les séparer ! |
 | `commentateur_duel_esprits_05.mp3` | Cinq égalités ! On n'avait pas vu ça depuis le schisme de la Feuille ! |
@@ -315,12 +314,12 @@ restent lus par la voix de synthèse.
 | `commentateur_defaite_03.mp3` | Il cherche encore où il a perdu la Feuille ! |
 | `commentateur_defaite_03_f.mp3` | Elle cherche encore où elle a perdu la Feuille ! |
 | `commentateur_humain_01.mp3` | C'est un duel ! Un vrai ! Les yeux dans les yeux ! |
-| `commentateur_dialogue_avant_match_01.mp3` | Madame, on sent une tension palpable. |
+| `commentateur_dialogue_avant_match_01.mp3` | Madame, la tension est palpable. |
 | `commentateur_dialogue_avant_match_02.mp3` | Deux styles, deux écoles ! |
 | `commentateur_dialogue_avant_match_03.mp3` | Un pronostic, Madame ? |
 | `commentateur_dialogue_avant_match_04.mp3` | Vous le sentez comment, ce match ? |
 | `commentateur_dialogue_avant_match_05.mp3` | Le Pierre, c'est la base, Madame ! |
-| `commentateur_dialogue_avant_match_06.mp3` | Bonsoir à tous ! Roland Pignon, en direct du court central, aux côtés de Monique Latouffe ! |
+| `commentateur_dialogue_avant_match_06.mp3` | Bonsoir à tous ! Roland Pignon, en direct du court central, aux côtés de la légendaire Monique Latouffe ! |
 | `commentateur_dialogue_avant_match_07.mp3` | Monique Latouffe, la finale de 1997, les trois Ciseaux… |
 | `commentateur_dialogue_fin_set_01.mp3` | Madame, un mot sur ce set ? |
 | `commentateur_dialogue_fin_set_02.mp3` | Un set parfait ! Comme vous en 1997, Madame ! |
@@ -341,7 +340,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (170 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (168 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -349,12 +348,12 @@ restent lus par la voix de synthèse.
 | `commentatrice_craquage_02.mp3` | Elle était là, cette balle. Juste là. |
 | `commentatrice_craquage_03.mp3` | La tête a dit Pierre. Le cœur a dit Feuille. Le cœur a tort, en général. |
 | `commentatrice_craquage_04.mp3` | Quand l'enjeu monte, la lucidité s'en va. Chez certains. |
-| `commentatrice_craquage_05.mp3` | Un mental de chips. |
+| `commentatrice_craquage_05.mp3` | Quel mental de chips. |
 | `commentatrice_craquage_06.mp3` | Il a vu la ligne d'arrivée. Et il a freiné. Fascinant. |
 | `commentatrice_craquage_06_f.mp3` | Elle a vu la ligne d'arrivée. Et elle a freiné. Fascinant. |
 | `commentatrice_craquage_07.mp3` | Il ne faut jamais vendre la Feuille avant de l'avoir jouée. |
 | `commentatrice_main_legendaire_01.mp3` | Je note l'heure. Pour les archives. |
-| `commentatrice_main_legendaire_02.mp3` | C'est une dinguerie. Comme disent les jeunes. |
+| `commentatrice_main_legendaire_02.mp3` | Dinguerie ! Comme disent les jeunes. |
 | `commentatrice_main_legendaire_03.mp3` | C'est un vrai banger. Comme disent les jeunes. |
 | `commentatrice_balle_sauvee_01.mp3` | Glacial. Absolument glacial. J'approuve. |
 | `commentatrice_balle_sauvee_02.mp3` | Tout le monde la voyait perdue. Sauf lui. C'est touchant. |
@@ -414,7 +413,6 @@ restent lus par la voix de synthèse.
 | `commentatrice_duel_esprits_01.mp3` | Deux esprits. Une seule idée. Jamais la bonne. |
 | `commentatrice_duel_esprits_02.mp3` | On pourrait rester là toute la nuit. Je préférerais éviter. |
 | `commentatrice_duel_esprits_03.mp3` | Une partie d'échecs à trois pièces. Sans les échecs. |
-| `commentatrice_duel_esprits_04.mp3` | À ce niveau, l'égalité, c'est de la politesse. |
 | `commentatrice_duel_esprits_05_pierre.mp3` | Vous n'avez pas le monopole de la Pierre. |
 | `commentatrice_duel_esprits_05_ciseaux.mp3` | Vous n'avez pas le monopole des Ciseaux. |
 | `commentatrice_duel_esprits_05_feuille.mp3` | Vous n'avez pas le monopole de la Feuille. |
@@ -423,8 +421,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_duel_esprits_08.mp3` | Ils ont exactement la même idée. Inquiétant. |
 | `commentatrice_duel_esprits_09.mp3` | Personne ne veut prendre de risque aujourd'hui. |
 | `commentatrice_duel_esprits_10.mp3` | Encore la même chose. Ça sent le duel interminable. |
-| `commentatrice_lecture_subie_01.mp3` | Lu comme un livre ouvert. Un livre court. |
-| `commentatrice_lecture_subie_02.mp3` | Trop prévisible. L'adversaire a pris des notes. Moi aussi. |
+| `commentatrice_lecture_subie_01.mp3` | Lu comme un livre ouvert. |
+| `commentatrice_lecture_subie_02.mp3` | Trop prévisible. |
 | `commentatrice_lecture_subie_03.mp3` | Ses tics sont en train de le trahir. |
 | `commentatrice_lecture_subie_03_f.mp3` | Ses tics sont en train de la trahir. |
 | `commentatrice_lecture_subie_04.mp3` | C'était écrit. En gros caractères. |
@@ -494,16 +492,16 @@ restent lus par la voix de synthèse.
 | `commentatrice_poignee_froide_01.mp3` | Glacial. J'approuve. |
 | `commentatrice_poignee_contraste_01.mp3` | L'un tend la main. L'autre tend un glaçon. |
 | `commentatrice_humain_01.mp3` | Ils se connaissent. Et ça se voit. |
-| `commentatrice_humain_02.mp3` | Entre amis, il n'y a pas de pitié. Il n'y a que des signes. |
+| `commentatrice_humain_02.mp3` | Entre amis, il n'y a pas de pitié. |
 | `commentatrice_dialogue_avant_match_01.mp3` | On sent surtout deux personnes devant leur téléphone. Mais oui. |
 | `commentatrice_dialogue_avant_match_02.mp3` | Trois signes. Il n'y en a jamais eu que trois. |
-| `commentatrice_dialogue_avant_match_03.mp3` | Je ne fais pas de pronostic. Je constate. Après. |
-| `commentatrice_dialogue_avant_match_04.mp3` | Long. |
+| `commentatrice_dialogue_avant_match_03.mp3` | Je ne fais pas de pronostic. Je constate… après. |
+| `commentatrice_dialogue_avant_match_04.mp3` | Long. Très long… |
 | `commentatrice_dialogue_avant_match_05.mp3` | C'est pas faux. |
 | `commentatrice_dialogue_avant_match_06.mp3` | Bonsoir. Commençons, Roland. |
 | `commentatrice_dialogue_avant_match_07.mp3` | Roland. Le match. |
 | `commentatrice_dialogue_fin_set_01.mp3` | Solide. Sans génie. Mais solide. |
-| `commentatrice_dialogue_fin_set_02.mp3` | Nous n'en parlerons pas. |
+| `commentatrice_dialogue_fin_set_02.mp3` | N'en parlons pas. |
 | `commentatrice_dialogue_fin_set_03.mp3` | Tout. Ou rien. C'est ça, le HandSlam. |
 | `commentatrice_dialogue_fin_set_04.mp3` | Vaste programme. |
 | `commentatrice_dialogue_set_decisif_01.mp3` | Un set pour ce soir. Ce sera déjà bien. |
@@ -513,8 +511,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_cri_01.mp3` | On l'avait entendu. |
 | `commentatrice_dialogue_cri_02.mp3` | Attention que ça ne vous arrive pas. |
 | `commentatrice_dialogue_cri_03.mp3` | La prochaine fois, prévoyez les boules Quies. |
-| `commentatrice_dialogue_cri_04.mp3` | Il se prend pour Ronaldo. Avec moins d'abdos. |
-| `commentatrice_dialogue_cri_04_f.mp3` | Elle se prend pour Ronaldo. Avec moins d'abdos. |
+| `commentatrice_dialogue_cri_04.mp3` | C'est Ronaldo sans les abdos. |
 
 ## Speaker — voix de salle, voyelles étirées (171 répliques)
 

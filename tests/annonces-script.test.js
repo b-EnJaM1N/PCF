@@ -36,7 +36,7 @@ test("chaque moment du match a au moins une réplique, et les dialogues ont deux
   assert.equal(replique("commentateur_craquage_01").texte, "Il est en train de craquer sous la pression !");
   assert.equal(replique("commentateur_craquage_01_f").texte, "Elle est en train de craquer sous la pression !");
   assert.equal(replique("commentatrice_obstination_01_ciseaux").texte, "Encore Ciseaux. C'est de la provocation.");
-  assert.equal(replique("commentatrice_dialogue_fin_set_02").texte, "Nous n'en parlerons pas.");
+  assert.equal(replique("commentatrice_dialogue_fin_set_02").texte, "N'en parlons pas.");
 });
 
 test("la commentatrice n'évoque jamais 1997", () => {
@@ -298,4 +298,11 @@ test("d'un match à l'autre, les commentateurs évitent ce qu'ils viennent de di
   };
   const sans = repetitions(false), avec = repetitions(true);
   assert.ok(avec < 0.15 && avec < sans / 1.5, `début de match déjà entendu aux 3 matchs précédents : ${Math.round(100 * avec)} % (sans mémoire : ${Math.round(100 * sans)} %)`);
+});
+
+test("une réplique retirée ne se dit plus, sans décaler les numéros (donc les enregistrements) des suivantes", () => {
+  assert.ok(!CATALOGUE.has("commentateur_duel_esprits_02"), "« Télépathie sur le court ! » retirée");
+  assert.equal(CATALOGUE.get("commentateur_duel_esprits_03").texte, "Surplace sur la piste ! Personne ne veut lancer le sprint !", "la suivante garde son numéro");
+  assert.ok(!POOLS.duel_esprits.some(e => e.base === "commentateur_duel_esprits_02"));
+  assert.match(CATALOGUE.get("commentateur_craquage_09").texte, /^Oh non, pas ça !/, "déplacée en balle de match ratée");
 });

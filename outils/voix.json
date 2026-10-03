@@ -1,5 +1,5 @@
 {
-  "_explication": "Réglages des voix ElevenLabs (docs/voix-elevenlabs.md). Les Voice ID ne sont pas secrets ; la clé d'accès, si : elle reste dans le coffre-fort de GitHub (secret ELEVENLABS_API_KEY). stability : 0 (créatif), 0.5 (naturel) ou 1 (robuste) avec le modèle eleven_v3. indication : le ton par défaut ; tons : un autre ton selon la situation (début de l'identifiant de la réplique, sans le rôle).",
+  "_explication": "Réglages des voix ElevenLabs (docs/voix-elevenlabs.md). Les Voice ID ne sont pas secrets ; la clé d'accès, si : elle reste dans le coffre-fort de GitHub (secret ELEVENLABS_API_KEY). stability : 0 (créatif), 0.5 (naturel) ou 1 (robuste) avec le modèle eleven_v3. indication : le ton par défaut ; tons : un autre ton selon la situation (début de l'identifiant de la réplique, sans le rôle). Un ton peut aussi viser des répliques précises (ids, prioritaires sur les situations).",
   "modele": "eleven_v3",
   "format": "mp3_44100_64",
   "roles": {
@@ -74,6 +74,11 @@
             "serie_pour",
             "lecture_reussie",
             "dialogue_titre"
+          ],
+          "ids": [
+            "commentateur_serie_contre_03",
+            "commentateur_serie_contre_04",
+            "commentateur_serie_contre_05"
           ]
         },
         {

@@ -26,11 +26,12 @@ export const MOMENTS = {
     { r: "d", t: "Elle était là, cette balle. Juste là." },
     { r: "d", t: "La tête a dit Pierre. Le cœur a dit Feuille. Le cœur a tort, en général." },
     { r: "d", t: "Quand l'enjeu monte, la lucidité s'en va. Chez certains." },
-    { r: "d", t: "Un mental de chips.", clin: "sport" },
+    { r: "d", t: "Quel mental de chips.", clin: "sport" },
     { r: "d", t: "Il a vu la ligne d'arrivée. Et il a freiné. Fascinant.", f: "Elle a vu la ligne d'arrivée. Et elle a freiné. Fascinant." },
     { r: "d", t: "Il ne faut jamais vendre la Feuille avant de l'avoir jouée." },
     { r: "c", t: "Il avait le match au bout des doigts… et il l'a laissé filer !", f: "Elle avait le match au bout des doigts… et elle l'a laissé filer !", quand: "match" },
     { r: "c", t: "Chute à l'avant ! Il avait le match en poche !", f: "Chute à l'avant ! Elle avait le match en poche !", clin: "sport", quand: "match" },
+    { r: "c", t: "Oh non, pas ça ! Pas aujourd'hui ! Pas comme ça ! Pas après tout ce que tu as fait…", quand: "match" },
   ],
   // Une balle de match sauvée, ou le point qui donne le titre : la main entre dans la légende.
   main_legendaire: [
@@ -43,12 +44,12 @@ export const MOMENTS = {
     { r: "c", t: "Mesdames et messieurs… quelle main !" },
     { r: "c", t: "Dans cinquante ans, on racontera encore cette main !" },
     { r: "d", t: "Je note l'heure. Pour les archives." },
-    { r: "d", t: "C'est une dinguerie. Comme disent les jeunes." },
+    { r: "d", t: "Dinguerie ! Comme disent les jeunes." },
     { r: "d", t: "C'est un vrai banger. Comme disent les jeunes." },
   ],
   balle_sauvee: [
     { r: "c", t: "Sauvée ! Quel sang-froid !" },
-    { r: "c", t: "Pas aujourd'hui ! Pas comme ça ! Pas après tout ce que tu as fait…" },
+    { r: "c", t: "Pas aujourd'hui ! Pas comme ça ! Pas après tout ce que tu as fait…", retiree: true },   // déplacée : balle de match ratée (craquage)
     { r: "c", t: "Il refuse de mourir ! Encore en vie ! Toujours en vie !", f: "Elle refuse de mourir ! Encore en vie ! Toujours en vie !" },
     { r: "c", t: ["Sauvé par le gong ! Enfin… par la Pierre !", "Sauvé par le gong ! Enfin… par les Ciseaux !", "Sauvé par le gong ! Enfin… par la Feuille !"],
       f: ["Sauvée par le gong ! Enfin… par la Pierre !", "Sauvée par le gong ! Enfin… par les Ciseaux !", "Sauvée par le gong ! Enfin… par la Feuille !"], clin: "sport" },
@@ -136,14 +137,14 @@ export const MOMENTS = {
   ],
   duel_esprits: [
     { r: "c", t: "Ils se lisent dans les pensées !" },
-    { r: "c", t: "Télépathie sur le court !" },
+    { r: "c", t: "Télépathie sur le court !", retiree: true },
     { r: "c", t: "Surplace sur la piste ! Personne ne veut lancer le sprint !", clin: "sport" },
     { r: "c", t: "Coude à coude ! Impossible de les séparer !", clin: "sport" },
     { r: "c", t: "Cinq égalités ! On n'avait pas vu ça depuis le schisme de la Feuille !", si: "cinq_egalites" },
     { r: "d", t: "Deux esprits. Une seule idée. Jamais la bonne." },
     { r: "d", t: "On pourrait rester là toute la nuit. Je préférerais éviter." },
     { r: "d", t: "Une partie d'échecs à trois pièces. Sans les échecs." },
-    { r: "d", t: "À ce niveau, l'égalité, c'est de la politesse." },
+    { r: "d", t: "À ce niveau, l'égalité, c'est de la politesse.", retiree: true },
     { r: "d", t: ["Vous n'avez pas le monopole de la Pierre.", "Vous n'avez pas le monopole des Ciseaux.", "Vous n'avez pas le monopole de la Feuille."], clin: "cine" },
     { r: "d", t: "Laissez du temps au temps.", clin: "cine" },
     { r: "d", t: "Ennuyeux." },
@@ -157,8 +158,8 @@ export const MOMENTS = {
   ],
   // L'adversaire a lu mon réflexe.
   lecture_subie: [
-    { r: "d", t: "Lu comme un livre ouvert. Un livre court." },
-    { r: "d", t: "Trop prévisible. L'adversaire a pris des notes. Moi aussi." },
+    { r: "d", t: "Lu comme un livre ouvert." },
+    { r: "d", t: "Trop prévisible." },
     { r: "d", t: "Ses tics sont en train de le trahir.", f: "Ses tics sont en train de la trahir." },
     { r: "d", t: "C'était écrit. En gros caractères." },
   ],
@@ -328,7 +329,7 @@ export const MOMENTS = {
   humain: [
     { r: "c", t: "C'est un duel ! Un vrai ! Les yeux dans les yeux !" },
     { r: "d", t: "Ils se connaissent. Et ça se voit." },
-    { r: "d", t: "Entre amis, il n'y a pas de pitié. Il n'y a que des signes." },
+    { r: "d", t: "Entre amis, il n'y a pas de pitié." },
   ],
 };
 
@@ -337,17 +338,17 @@ export const MOMENTS = {
 // (texte, ou { t, f } quand la version au féminin diffère).
 export const DIALOGUES = {
   avant_match: [
-    ["Madame, on sent une tension palpable.", "On sent surtout deux personnes devant leur téléphone. Mais oui."],
+    ["Madame, la tension est palpable.", "On sent surtout deux personnes devant leur téléphone. Mais oui."],
     ["Deux styles, deux écoles !", "Trois signes. Il n'y en a jamais eu que trois."],
-    ["Un pronostic, Madame ?", "Je ne fais pas de pronostic. Je constate. Après."],
-    ["Vous le sentez comment, ce match ?", "Long."],
+    ["Un pronostic, Madame ?", "Je ne fais pas de pronostic. Je constate… après."],
+    ["Vous le sentez comment, ce match ?", "Long. Très long…"],
     ["Le Pierre, c'est la base, Madame !", "C'est pas faux."],
-    ["Bonsoir à tous ! Roland Pignon, en direct du court central, aux côtés de Monique Latouffe !", "Bonsoir. Commençons, Roland."],
+    ["Bonsoir à tous ! Roland Pignon, en direct du court central, aux côtés de la légendaire Monique Latouffe !", "Bonsoir. Commençons, Roland."],
     ["Monique Latouffe, la finale de 1997, les trois Ciseaux…", "Roland. Le match."],
   ],
   fin_set: [
     ["Madame, un mot sur ce set ?", "Solide. Sans génie. Mais solide."],
-    ["Un set parfait ! Comme vous en 1997, Madame !", "Nous n'en parlerons pas."],
+    ["Un set parfait ! Comme vous en 1997, Madame !", "N'en parlons pas."],
     [{ t: "Qu'est-ce qu'il doit changer ?", f: "Qu'est-ce qu'elle doit changer ?" }, "Tout. Ou rien. C'est ça, le HandSlam."],
     [{ t: "Il doit tout changer, Madame !", f: "Elle doit tout changer, Madame !" }, "Vaste programme."],
   ],
@@ -369,7 +370,7 @@ export const DIALOGUES = {
     ["Ah, il y a de la voix !", "On l'avait entendu."],
     [{ t: "Il a craqué son slip !", f: "Elle a craqué son slip !" }, "Attention que ça ne vous arrive pas."],
     [{ t: "Il éructe de joie !", f: "Elle éructe de joie !" }, "La prochaine fois, prévoyez les boules Quies."],
-    ["Siuuuu !", { t: "Il se prend pour Ronaldo. Avec moins d'abdos.", f: "Elle se prend pour Ronaldo. Avec moins d'abdos." }],
+    ["Siuuuu !", "C'est Ronaldo sans les abdos."],
   ],
 };
 
