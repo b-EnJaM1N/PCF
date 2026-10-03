@@ -91,6 +91,7 @@ body:not(.en-match) .rule { display: none; }
 .moves button .l { font-size: .85rem; color: var(--muted); }
 @media (hover: hover) { .moves button:hover:not(:disabled) { border-color: var(--me); } }
 .moves button:disabled { opacity: .45; cursor: default; }
+.moves button.choisi:disabled { opacity: 1; border-color: var(--me); }   /* duel : le signe envoyé, en attendant la réponse */
 
 h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.15rem; margin: 0 0 8px; }
 .tape { overflow-x: auto; padding-bottom: 6px; }
