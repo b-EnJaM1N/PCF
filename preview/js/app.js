@@ -222,8 +222,20 @@ function jouer(signe, auto = false) {
   // Le bot choisit sans connaître le coup du joueur.
   const histBot = m.coups.map(c => ({ moi: c.b, adv: c.a, res: c.gagnant === null ? "e" : c.gagnant === 1 ? "g" : "p" }));
   const signeBot = choisirCoup(OPP, histBot, S.hasard || Math.random, contexteBot(m));   // (match du jour : le même tirage pour tout le monde)
-  ambiance.raquette(signe);
-  afficherCoup(signe, signeBot, [auto, false]);
+  const reveler = () => { ambiance.raquette(signe, grandMoment(m)); afficherCoup(signe, signeBot, [auto, false]); };
+  if (reduitMouvement()) { reveler(); return; }
+  // Comme au chifoumi : les deux poings se secouent, puis les deux signes s'ouvrent ensemble (pareil en duel).
+  const seance = S;
+  document.querySelector(`#moves button[data-m="${signe}"]`)?.classList.add("choisi");
+  secouerLesPoings();
+  setTimeout(() => { if (S === seance) reveler(); }, SECOUSSE_MS);
+}
+
+// « Pierre… feuille… ciseaux… » : les deux poings se secouent trois fois avant de s'ouvrir. En duel, ils continuent
+// tant que la réponse du serveur n'est pas arrivée (elle arrive presque toujours pendant la secousse).
+const SECOUSSE_MS = 540;
+function secouerLesPoings() {
+  for (const id of ["hMe", "hBot"]) { $(id).textContent = "✊"; $(id).className = "hand secoue"; }
 }
 
 // Révèle un coup (solo ou duel) et enchaîne : annonces, score, fin de set ou de match.
@@ -1317,6 +1329,13 @@ async function battement() {
 function majDuel(duel) {
   if (!D || !duel || duel.id !== D.id || D.fini) return;
   if (D.duel && Date.parse(duel.maj_le) < Date.parse(D.duel.maj_le)) return;   // information périmée
+  // La réponse est arrivée pendant la secousse des poings : on la dévoile à la fin de la secousse.
+  const resteSecousse = (D.secoueFin || 0) - performance.now();
+  if (resteSecousse > 0 && (duel.coups || []).length > S.match.coups.length) {
+    D.enAttente = duel; clearTimeout(D.secoueT);
+    D.secoueT = setTimeout(() => { D && (D.secoueFin = 0, majDuel(D.enAttente)); }, resteSecousse);
+    return;
+  }
   D.duel = duel;
   afficherMessages(duel);
   const m = S.match, n = (duel.coups || []).length;
@@ -1400,14 +1419,17 @@ function jouerDuel(signe) {
   if (d.phase !== "jeu" || d.pause_depuis || D.mancheEnvoyee === d.manche) return;
   D.mancheEnvoyee = d.manche; boutons(false);
   // Les deux signes se dévoilent ensemble, comme contre un bot d'entraînement : en attendant la réponse du serveur,
-  // les deux mains restent en ❔ et seul le bouton choisi reste en surbrillance.
-  $("hMe").textContent = "❔"; $("hMe").className = "hand attend"; $("hBot").textContent = "❔"; $("hBot").className = "hand attend";
+  // les poings se secouent (au moins le temps d'une secousse complète) et le bouton choisi reste en surbrillance.
+  if (reduitMouvement()) { $("hMe").textContent = "❔"; $("hMe").className = "hand attend"; $("hBot").textContent = "❔"; $("hBot").className = "hand attend"; }
+  else { secouerLesPoings(); D.secoueFin = performance.now() + SECOUSSE_MS; }
   document.querySelector(`#moves button[data-m="${signe}"]`)?.classList.add("choisi");
   $("verdict").textContent = `En attente de ${OPP.nom}…`;
   serveur.jouer(D.id, d.manche, signe).then(majDuel).catch(e => {
     if (!D) return;
     if (/déjà terminé|déjà joué|Temps écoulé/.test(e.message)) { battement(); return; }
-    D.mancheEnvoyee = null; $("verdict").textContent = e.message; duelReprendre();
+    D.mancheEnvoyee = null; D.secoueFin = 0; $("verdict").textContent = e.message;
+    for (const id of ["hMe", "hBot"]) { $(id).textContent = "❔"; $(id).className = "hand"; }   // le coup n'est pas parti : on arrête les poings
+    duelReprendre();
   });
 }
 
