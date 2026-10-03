@@ -126,7 +126,7 @@ function main(symbole, gant, ink) {
   // La feuille vue de dos : la main grande ouverte, doigts écartés en éventail (avec leurs ongles), pouce sorti, pour qu'on
   // ne la confonde pas avec le poing. (Proportions d'une vraie main : le majeur le plus long, l'auriculaire le plus court.)
   if (symbole === "feuille-dos") return `
-    <rect x="9" y="47" width="27" height="11" rx="5.5" fill="${gant}" stroke="${ink}" stroke-width="1.5" transform="rotate(-38 33 52)"/>
+    <rect x="8" y="50" width="28" height="11" rx="5.5" fill="${gant}" stroke="${ink}" stroke-width="1.5" transform="rotate(30 34 56)"/>
     ${doigt(30, 22, 32, gant, ink, "-20 35 54")}${doigt(40.5, 17, 37, gant, ink, "-7 45 54")}${doigt(50.5, 18, 36, gant, ink, "7 55 54")}${doigt(60, 25, 29, gant, ink, "20 65 54")}
     ${paume(44, gant, ink)}
     ${ongle(30, 23.5, ink, "-20 35 54")}${ongle(40.5, 18.5, ink, "-7 45 54")}${ongle(50.5, 19.5, ink, "7 55 54")}${ongle(60, 26.5, ink, "20 65 54")}
