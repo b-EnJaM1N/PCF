@@ -184,7 +184,7 @@ restent lus par la voix de synthèse.
 | `commentateur_serie_contre_02_f.mp3` | Elle est dans les cordes ! Il faut réagir ! |
 | `commentateur_serie_contre_03.mp3` | Allez, petit bonhomme ! |
 | `commentateur_serie_contre_03_f.mp3` | Allez, petite bonne femme ! |
-| `commentateur_serie_contre_04.mp3` | Oublie que t'as aucune chance, vas-y, fonce ! |
+| `commentateur_serie_contre_04.mp3` | Oublie que t'as aucune chance, vas-y, fonce !! |
 | `commentateur_serie_contre_05.mp3` | T'es pas venu ici pour souffrir, ok ? |
 | `commentateur_serie_contre_05_f.mp3` | T'es pas venue ici pour souffrir, ok ? |
 | `commentateur_serie_contre_06.mp3` | Houston, on a un problème ! |

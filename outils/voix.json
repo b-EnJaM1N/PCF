@@ -66,6 +66,9 @@
           "indication": "[hysterical] [screaming] [ecstatic]",
           "situations": [
             "main_legendaire"
+          ],
+          "ids": [
+            "commentateur_serie_contre_04"
           ]
         },
         {
@@ -83,7 +86,6 @@
           ],
           "ids": [
             "commentateur_serie_contre_03",
-            "commentateur_serie_contre_04",
             "commentateur_serie_contre_05"
           ]
         },
@@ -117,9 +119,9 @@
   },
   "textes": {
     "_explication": "Texte pour la voix d'une réplique, quand il doit être différent du texte affiché (prononciation, autre indication de jeu). Clé : l'identifiant de la réplique.",
-    "commentateur_lecture_reussie_03_pierre": "[shouting] [like a South American football commentator screaming GOAL] Second poteau, la Pièèèèèèèèèèèèèèèèèrre !!!",
-    "commentateur_lecture_reussie_03_ciseaux": "[shouting] [like a South American football commentator screaming GOAL] Second poteau, les Cisôôôôôôôôôôôôôôôôô !!!",
-    "commentateur_lecture_reussie_03_feuille": "[shouting] [like a South American football commentator screaming GOAL] Second poteau, la Feuiiiiiiiiiiiiiiille !!!",
+    "commentateur_lecture_reussie_03_pierre": "[hysterical] [screaming] [like a South American football commentator screaming GOAL] Second poteau, la Pièèèèèèèèèèèèèèèèèrre !!!",
+    "commentateur_lecture_reussie_03_ciseaux": "[hysterical] [screaming] [like a South American football commentator screaming GOAL] Second poteau, les Cisôôôôôôôôôôôôôôôôô !!!",
+    "commentateur_lecture_reussie_03_feuille": "[hysterical] [screaming] [like a South American football commentator screaming GOAL] Second poteau, la Feuiiiiiiiiiiiiiiille !!!",
     "commentatrice_main_legendaire_03": "[calm] [deadpan] C'est un vrai bangé. Comme disent les jeunes.",
     "commentateur_obstination_05_pierre": "[chanting] [excited] Des pierres ! Des pierres ! Des pierres ! Des pierres ! Des pierres !",
     "commentateur_obstination_05_ciseaux": "[chanting] [excited] Ciseaux ! Ciseaux ! Ciseaux ! Ciseaux ! Ciseaux !",

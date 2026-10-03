@@ -97,7 +97,7 @@ export const MOMENTS = {
     { r: "c", t: "Quelqu'un peut arrêter ça ?!" },
     { r: "c", t: "Il est dans les cordes ! Il faut réagir !", f: "Elle est dans les cordes ! Il faut réagir !", clin: "sport" },
     { r: "c", t: "Allez, petit bonhomme !", f: "Allez, petite bonne femme !" },
-    { r: "c", t: "Oublie que t'as aucune chance, vas-y, fonce !", clin: "cine" },
+    { r: "c", t: "Oublie que t'as aucune chance, vas-y, fonce !!", clin: "cine" },
     { r: "d", t: "Ça commence à ressembler à une correction." },
     { r: "d", t: "Muscle ton jeu, Robert. Muscle ton jeu.", clin: "sport" },
     { r: "d", t: "Jusqu'ici, tout va bien… jusqu'ici.", clin: "cine" },
