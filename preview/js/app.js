@@ -1423,7 +1423,10 @@ function jouerDuel(signe) {
   if (reduitMouvement()) { $("hMe").textContent = "❔"; $("hMe").className = "hand attend"; $("hBot").textContent = "❔"; $("hBot").className = "hand attend"; }
   else { secouerLesPoings(); D.secoueFin = performance.now() + SECOUSSE_MS; }
   document.querySelector(`#moves button[data-m="${signe}"]`)?.classList.add("choisi");
-  $("verdict").textContent = `En attente de ${OPP.nom}…`;
+  // Pas de texte pendant la secousse : seulement les poings. Si l'adversaire (un humain) réfléchit encore au bout
+  // de 2,5 s, on l'indique, pour qu'on ne croie pas l'appli bloquée.
+  const mancheJouee = d.manche;
+  setTimeout(() => { if (D && !D.fini && D.mancheEnvoyee === mancheJouee && S.match.coups.length < mancheJouee) $("verdict").textContent = `En attente de ${OPP.nom}…`; }, 2500);
   serveur.jouer(D.id, d.manche, signe).then(majDuel).catch(e => {
     if (!D) return;
     if (/déjà terminé|déjà joué|Temps écoulé/.test(e.message)) { battement(); return; }
