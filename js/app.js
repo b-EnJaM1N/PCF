@@ -274,7 +274,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);
 
   // Dernier point : on laisse le temps de voir les deux signes avant la célébration et le score final.
-  if (m.termine) { setTimeout(() => criEnGrand(cel, () => poigneeDeMain(finir)), reduitMouvement() ? 900 : 1800); return evt; }
+  // (l'écran de match reste en place pendant cette pause : S.pauseFin)
+  if (m.termine) { S.pauseFin = true; render(); setTimeout(() => criEnGrand(cel, () => poigneeDeMain(finir)), reduitMouvement() ? 900 : 1800); return evt; }
   if (cel) setTimeout(() => criEnBulle(cel), 250);
   if (evt.finSet) {
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
@@ -347,8 +348,10 @@ function criEnGrand(cel, apres) {
 function render() {
   const m = S.match;
   majModeMatch();
-  $("sMe").textContent = m.termine ? m.sets[0] : m.points[0];
-  $("sBot").textContent = m.termine ? m.sets[1] : m.points[1];
+  // Pendant la pause après le dernier point, on montre encore le score du dernier set (11–9), pas déjà les sets (2–1).
+  const dernierSet = S.pauseFin ? m.scoresSets[m.scoresSets.length - 1] : null;
+  $("sMe").textContent = dernierSet ? dernierSet[0] : m.termine ? m.sets[0] : m.points[0];
+  $("sBot").textContent = dernierSet ? dernierSet[1] : m.termine ? m.sets[1] : m.points[1];
   const points = k => Array.from({ length: WIN }, (_, i) => `<i class="${m.sets[k] > i ? "on" : ""}"></i>`).join("");
   $("setsMe").innerHTML = points(0); $("setsBot").innerHTML = points(1);
   $("doneSets").textContent = m.scoresSets.length ? "Sets : " + m.scoresSets.map(([a, b]) => `${a}–${b}`).join("  ") : "";
@@ -399,6 +402,7 @@ function renderLecture() {
 }
 
 function finir() {
+  S.pauseFin = false; render();   // fin de la pause : le score des sets et le menu reviennent
   const m = S.match, gagne = m.vainqueur === 0, c = m.coups, n = c.length;
   const special = S.duel && D ? D.finSpeciale : null;   // duel gagné ou perdu par forfait ou abandon
   $("endTitle").textContent = special === "forfait" ? (gagne ? `Victoire par forfait : ${OPP.nom} a quitté le duel` : "Défaite par forfait")
@@ -1127,7 +1131,7 @@ $("hubAlertes").addEventListener("click", e => { const b = e.target.closest("[da
 
 // Pendant un match, l'écran de jeu prend toute la place (pas d'onglets).
 function majModeMatch() {
-  const enMatch = !!(S && S.enJeu && !S.match.termine);
+  const enMatch = !!(S && S.enJeu && (!S.match.termine || S.pauseFin));
   document.body.classList.toggle("en-match", enMatch);
   ambiance.fond(enMatch);                                  // le murmure du public, pendant tout le match
   $("quitterSoloZone").hidden = !enMatch || !!S.duel;
@@ -1608,7 +1612,10 @@ const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDu
 {
   const cible = new URLSearchParams(location.search).get("ouvrir");
   if (cible) { ouvrirDepuisNotification(cible); history.replaceState(null, "", location.pathname + location.hash); }
-  navigator.serviceWorker?.addEventListener?.("message", e => ouvrirDepuisNotification(e.data?.ouvrir));
+  navigator.serviceWorker?.addEventListener?.("message", e => {
+    if (e.data?.rafraichir) { duelsUI?.rafraichir(); cerclesUI?.rafraichir(); return; }   // une notification arrivée pendant qu'on est dans l'appli
+    ouvrirDepuisNotification(e.data?.ouvrir);
+  });
 }
 renderNotifs();
 $("hubHors").hidden = !!compteUI.session()?.user;
