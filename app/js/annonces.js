@@ -16,9 +16,14 @@ import { idPartie } from "./surnoms.js";
 
 const RESERVE_MAX = 2;
 
-export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false, enjeu = null } = {}) {
+// L'identifiant de base d'une réplique, sans sa variante (« _f », signe) : commentateur_craquage_02_f → commentateur_craquage_02.
+export const baseDe = id => /^(.*?_\d\d)(?:_|$)/.exec(id)?.[1] ?? id;
+
+// anciens : les répliques entendues aux derniers matchs (gardées sur le téléphone), évitées tant qu'il en reste d'autres.
+export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false, enjeu = null, anciens = [] } = {}) {
   return {
     humain, genre, finale, enjeu,
+    anciens: new Set(anciens.map(baseDe)),
     reserve: 1,                   // un premier commentaire est possible
     dernierCom: -99,              // numéro du coup du dernier commentaire
     dits: new Set(),              // répliques déjà dites dans ce match (id de base)
@@ -52,8 +57,11 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
   const pool = POOLS[moment];
   if (!pool) return null;
   // Les jeux de mots sur un signe (« seul ») ne se disent que si le joueur vient de jouer ce signe.
-  const valides = pool.filter(e => !etat.dits.has(e.base) && (!e.si || CONDITIONS[e.si]?.(ctx, etat)) && (e.seul === undefined || e.seul === ctx.signe) && (!e.quand || e.quand === ctx.quand) && (e.clin !== "cine" || !etat.cine));
+  let valides = pool.filter(e => !etat.dits.has(e.base) && (!e.si || CONDITIONS[e.si]?.(ctx, etat)) && (e.seul === undefined || e.seul === ctx.signe) && (!e.quand || e.quand === ctx.quand) && (e.clin !== "cine" || !etat.cine));
   if (!valides.length) return null;
+  // Ce qui n'a pas été entendu aux derniers matchs d'abord (sinon, on reprend tout).
+  const frais = valides.filter(e => !etat.anciens?.has(e.base));
+  if (frais.length) valides = frais;
   // Les répliques « spéciales » passent en priorité : une condition remplie (7 fois sur 10),
   // un jeu de mots sur le signe joué (4 fois sur 10, pour qu'il reste une surprise).
   const conditions = valides.filter(e => e.si), jeux = valides.filter(e => !e.si && e.seul !== undefined);
@@ -62,13 +70,14 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
   if (conditions.length && rng() < 0.7) item = conditions[Math.floor(rng() * conditions.length)];
   else if (jeux.length && rng() < 0.4) item = jeux[Math.floor(rng() * jeux.length)];
   else {
-    const groupes = { cine: [], sport: [], normal: [] };
-    valides.filter(e => !e.si && e.seul === undefined).forEach(e => groupes[e.clin || "normal"].push(e));
-    const r = rng();
-    const ordre = r < 0.2 ? ["cine", "sport", "normal"] : r < 0.5 ? ["sport", "normal", "cine"] : ["normal", "sport", "cine"];
-    const g = ordre.map(k => groupes[k]).find(x => x.length) || speciales;
+    // Tirage pondéré : chaque réplique a sa chance, les clins d'œil de cinéma un peu moins (ils marquent plus).
+    // (Avant, on tirait d'abord un groupe : les rares clins d'œil d'un moment revenaient alors bien plus souvent que les autres.)
+    const ordinaires = valides.filter(e => !e.si && e.seul === undefined);
+    const g = ordinaires.length ? ordinaires : speciales;
     if (!g.length) return null;
-    item = g[Math.floor(rng() * g.length)];
+    const poids = e => (e.clin === "cine" ? 0.6 : 1);
+    let r = rng() * g.reduce((t, e) => t + poids(e), 0);
+    item = g.find(e => (r -= poids(e)) < 0) ?? g[g.length - 1];
   }
   etat.dits.add(item.base);
   if (item.clin === "cine") etat.cine = true;
@@ -77,8 +86,10 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
 
 // Un dialogue pas encore joué dans ce match (liste de deux répliques), ou null.
 function dialogue(etat, moment, rng) {
-  const dispo = DIALOGUES_IDS[moment].map((_, k) => k).filter(k => !etat.dialoguesDits.has(`${moment}_${k}`));
+  let dispo = DIALOGUES_IDS[moment].map((_, k) => k).filter(k => !etat.dialoguesDits.has(`${moment}_${k}`));
   if (!dispo.length) return null;
+  const frais = dispo.filter(k => !etat.anciens?.has(baseDe(DIALOGUES_IDS[moment][k][0])));
+  if (frais.length) dispo = frais;
   const k = dispo[Math.floor(rng() * dispo.length)];
   etat.dialoguesDits.add(`${moment}_${k}`);
   return ligneDialogue(moment, k, etat.genre);
