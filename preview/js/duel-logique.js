@@ -40,7 +40,7 @@ export function adversaireHumain(ligne) {
     id: `h:${ligne.id}`, uid: ligne.id, humain: true,
     nom: ligne.pseudo, numero: ligne.numero,
     style: `${ligne.drapeau || "🌍"} ${dernierTitre(P)}`,
-    desc: P.matchs ? `${P.victoires} V – ${P.matchs - P.victoires} D · ${Math.round(100 * P.victoires / P.matchs)} % de victoires` : "Premier match officiel",
+    desc: P.matchs ? `${P.victoires} V – ${P.matchs - P.victoires} D · ${Math.round(100 * P.victoires / P.matchs)} % de victoires` : "Premier match",
     elo: P.elo,
     classement: ligne.classement ?? null,          // niveau officiel (duels entre humains)
     specialite: fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`,
