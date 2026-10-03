@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { CATALOGUE, replique, repliqueScore, repliquePartout, POOLS, DIALOGUES_IDS } from "../app/js/voix/script.js";
-import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces, annoncesAvantMatch, interview, etiquetteDe, niveauEnjeu } from "../app/js/annonces.js";
+import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces, annoncesAvantMatch, interview, etiquetteDe, niveauEnjeu, baseDe } from "../app/js/annonces.js";
 import { surnomDe } from "../app/js/surnoms.js";
 import { profilParDefaut } from "../app/js/profil.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX, FEUILLE } from "../app/js/regles.js";
@@ -274,4 +274,28 @@ test("avant le match, Roland et Monique parlent encore après des dizaines de ma
     recents = av.commentaires.map(l => l.id).concat(recents).slice(0, 80);   // comme l'appli
   }
   assert.ok(parles >= 25, `${parles} matchs sur 40 avec un dialogue`);
+});
+
+test("d'un match à l'autre, les commentateurs évitent ce qu'ils viennent de dire", () => {
+  assert.equal(baseDe("commentateur_lecture_reussie_03_feuille"), "commentateur_lecture_reussie_03");
+  assert.equal(baseDe("commentatrice_serie_contre_12_f"), "commentatrice_serie_contre_12");
+  assert.equal(baseDe("commentateur_dialogue_fin_set_02"), "commentateur_dialogue_fin_set_02");
+  // Comme l'appli : on retient les 120 dernières répliques entendues et on les donne au match suivant.
+  const repetitions = memoire => {
+    const rng = rngFixe(5), hist = [];
+    let recents = [], rep = 0, tot = 0;
+    for (let k = 0; k < 300; k++) {
+      const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces({ anciens: memoire ? recents : [] }), dits = [];
+      while (!m.termine) {
+        const ids = annoncerCoup(m, jouerCoup(m, Math.floor(rng() * 3), Math.floor(rng() * 3)), etat, {}, rng).lignes.filter(l => l.role !== "arbitre").map(l => baseDe(l.id));
+        dits.push(...ids); recents = [...new Set([...ids, ...recents])].slice(0, 120);
+      }
+      const avant = new Set(hist.slice(-3).flat());
+      for (const id of dits.slice(0, 3)) { tot++; if (avant.has(id)) rep++; }
+      hist.push(dits);
+    }
+    return rep / tot;
+  };
+  const sans = repetitions(false), avec = repetitions(true);
+  assert.ok(avec < 0.15 && avec < sans / 1.5, `début de match déjà entendu aux 3 matchs précédents : ${Math.round(100 * avec)} % (sans mémoire : ${Math.round(100 * sans)} %)`);
 });

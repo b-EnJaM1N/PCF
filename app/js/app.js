@@ -2,7 +2,7 @@
 import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, baseDe } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide } from "./surnoms.js";
 import { voirTournoi, mesAmis } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
@@ -145,8 +145,15 @@ const grandMoment = m => !!balle(m) || pointDecisif(m);
 // une réplique longue déborderait sur les coups suivants. Les longues sont dites dans les pauses
 // (avant le match, fin de set, fin de match).
 const REPLIQUE_COURTE = 32;   // caractères : environ 2 secondes
+// Les commentaires entendus aux derniers matchs (environ huit), pour ne pas recommencer chaque match par les mêmes.
+function commentairesRecents() { try { return lire("commentairesRecents", []) || []; } catch { return []; } }
+function retenirCommentaires(lignes) {
+  const ids = lignes.filter(l => l.role === "commentateur" || l.role === "commentatrice").map(l => baseDe(l.id));
+  if (ids.length) try { ecrire("commentairesRecents", [...new Set([...ids, ...commentairesRecents()])].slice(0, 120)); } catch { /* rien */ }
+}
 function annoncer(lignes, silencieux = false, { enJeu = false, coup = 0 } = {}) {
   if (!lignes.length || silencieux) return;
+  retenirCommentaires(lignes);
   if (!enJeu) { voix.dire(lignes); return; }
   const recent = S && coup - (S.commentaireAuCoup ?? -9) < 2;
   const dites = lignes.filter(l => l.role === "arbitre" || (!recent && l.texte.length <= REPLIQUE_COURTE));
@@ -670,7 +677,7 @@ function nouvelleSeance() {
   else if (!T) { WIN = fmt.win; OPP = botParId(amicalId); }
   S = {
     match: nouveauMatch({ pointsParSet: T ? lenTournoi() : fmt.len, setsGagnants: WIN }),
-    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ genre: P.genre }), suivi: new Suivi(),
+    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre }), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false,
   };
   preparerEcranMatch();
@@ -867,7 +874,7 @@ $("mdjJouer").addEventListener("click", () => {
   OPP = botParId(mj.bot); WIN = FORMAT_DU_JOUR.setsGagnants;
   S = {
     match: nouveauMatch({ ...FORMAT_DU_JOUR }),
-    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ genre: P.genre }), suivi: new Suivi(),
+    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre }), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false, matchJour: mj, hasard: hasardGraine(mj.graine),
   };
   preparerEcranMatch();
@@ -905,7 +912,7 @@ $("premierMatch").addEventListener("click", () => {
   OPP = botParId(PREMIER_MATCH.bot); WIN = PREMIER_MATCH.setsGagnants;
   S = {
     match: nouveauMatch({ pointsParSet: PREMIER_MATCH.pointsParSet, setsGagnants: PREMIER_MATCH.setsGagnants }),
-    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ genre: P.genre }), suivi: new Suivi(),
+    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre }), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false, premier: true,
   };
   preparerEcranMatch();
@@ -1246,7 +1253,7 @@ function lancerDuel(duel, ligneAdv) {
   OPP = adversaireHumain(ligneAdv); WIN = duel.sets_gagnants;
   S = {
     match: nouveauMatch(formatDuel(duel)),
-    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ humain: true, genre: P.genre }), suivi: new Suivi(),
+    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ anciens: commentairesRecents(), humain: true, genre: P.genre }), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false, duel: true,
   };
   D = { id: duel.id, moi, duel, decalage: 0, mancheEnvoyee: null, presente: false, fini: false, apresPanneau: null, finSpeciale: null };
@@ -1516,7 +1523,7 @@ function jouerBotRapide(format) {
   OPP = botProche(P.elo, BOTS); WIN = f.setsGagnants;
   S = {
     match: nouveauMatch({ pointsParSet: f.pointsParSet, setsGagnants: f.setsGagnants }),
-    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ genre: P.genre }), suivi: new Suivi(),
+    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre }), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false, contreBotRapide: true,
   };
   preparerEcranMatch();
