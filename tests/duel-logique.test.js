@@ -48,7 +48,7 @@ test("un adversaire humain décrit pour la présentation", () => {
   assert.equal(presentation(profilParDefaut(), h).lignes[0].g, "–", "classement inconnu : un tiret");
   assert.equal(pr.lignes[4].d, "2");
   const nouveau = adversaireHumain({ id: "x", pseudo: "Neuf", numero: 1000, fiche: {} });
-  assert.equal(nouveau.desc, "Premier match officiel"); assert.equal(nouveau.imprevisibilite, null); assert.equal(nouveau.specialite, "–");
+  assert.equal(nouveau.desc, "Premier match"); assert.equal(nouveau.imprevisibilite, null); assert.equal(nouveau.specialite, "–");
 });
 
 test("un duel ne change pas le niveau, mais remplit la fiche", () => {

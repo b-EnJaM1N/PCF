@@ -73,7 +73,7 @@
     <button class="hub" data-aller="viewRapide" data-palier="1"><span class="hub-i">⚡</span><span><b>Partie rapide</b><small>Un adversaire de ton niveau, en un clic</small></span></button>
     <button class="hub" data-aller="viewDuel"><span class="hub-i">🤝</span><span><b>Défier un ami</b><small>Un duel en direct, par pseudo ou par lien</small></span></button>
     <button class="hub" data-aller="viewCompet" data-palier="5"><span class="hub-i">🏆</span><span><b>Tournois</b><small>Sit &amp; Go, freeroll du soir, Grand Chelem du dimanche, tournois entre amis</small></span></button>
-    <button class="hub" data-aller="viewMatch"><span class="hub-i">🎯</span><span><b>Entraînement</b><small>Contre les 15 bots, et le HandSlam Open (8 ou 16 joueurs)</small></span></button>
+    <button class="hub" data-aller="viewMatch"><span class="hub-i">🎯</span><span><b>Entraînement</b><small>Contre les bots d'entraînement, et le HandSlam Open (8 ou 16 joueurs)</small></span></button>
     <p class="hint" id="menuSuite" hidden style="text-align:center;margin-top:14px">Le reste du menu s'ouvre au fil de tes matchs. <button class="linkbtn" id="toutLeMenu2">Tout afficher</button></p>
     <p class="hint" id="hubHors" hidden style="text-align:center;margin-top:14px">Les parties en ligne demandent un compte gratuit, sans mot de passe : <button class="linkbtn" data-aller="viewProfile">le créer</button>.</p>
   </div>
@@ -147,6 +147,10 @@
         <p class="bulle-msg adv" id="finBulleAdv" hidden></p>
         <p class="bulle-msg" id="finBulleMoi" hidden></p>
         <div class="msg-zone" id="finMsgZone"><p class="msg-titre">💬 Un mot pour ton adversaire</p><div class="msg-puces" id="finMsgPuces"></div></div>
+      </div>
+      <div class="nom-fin" id="nomFin" hidden>
+        <label class="lbl" for="inNomFin">✏️ Comment t'appelles-tu ? Ce nom sera affiché à tes adversaires.</label>
+        <div class="nom-fin-ligne"><input id="inNomFin" maxlength="16" autocomplete="nickname" placeholder="Ton pseudo"><button class="btn" id="okNomFin">OK</button></div>
       </div>
       <p class="news" id="news"></p>
       <button class="btn une-btn" id="btnUne" hidden>📰 Voir la Une du journal</button>
