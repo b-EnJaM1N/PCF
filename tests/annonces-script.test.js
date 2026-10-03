@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { CATALOGUE, replique, repliqueScore, repliquePartout, POOLS, DIALOGUES_IDS } from "../app/js/voix/script.js";
+import { CATALOGUE, replique, repliqueScore, repliquePartout, POOLS, DIALOGUES_IDS, nbDialogues } from "../app/js/voix/script.js";
 import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces, annoncesAvantMatch, interview, etiquetteDe, niveauEnjeu, baseDe } from "../app/js/annonces.js";
 import { surnomDe } from "../app/js/surnoms.js";
 import { profilParDefaut } from "../app/js/profil.js";
@@ -305,4 +305,20 @@ test("une réplique retirée ne se dit plus, sans décaler les numéros (donc le
   assert.equal(CATALOGUE.get("commentateur_duel_esprits_03").texte, "Surplace sur la piste ! Personne ne veut lancer le sprint !", "la suivante garde son numéro");
   assert.ok(!POOLS.duel_esprits.some(e => e.base === "commentateur_duel_esprits_02"));
   assert.match(CATALOGUE.get("commentateur_craquage_09").texte, /^Oh non, pas ça !/, "déplacée en balle de match ratée");
+});
+
+test("avant le match : un dialogue selon la situation (finale, revanche, nuit, contre un bot), pas à chaque fois", () => {
+  const P = profilParDefaut(), moi = { surnom: surnomDe(P) };
+  const ids = (opts, graine) => annoncesAvantMatch({ moi, adv: { bot: "rocky" }, ...opts }, rngFixe(graine)).commentaires.map(l => l.id);
+  let finale = 0, bot = 0;
+  for (let k = 0; k < 40; k++) {
+    if (ids({ tour: "finale", situations: ["contre_bot"] }, k).includes("commentateur_dialogue_avant_finale_01")) finale++;
+    if (ids({ situations: ["contre_bot"] }, k).includes("commentateur_dialogue_avant_bot_01")) bot++;
+  }
+  assert.ok(finale > 8 && finale < 32, `finale : ${finale} sur 40`);
+  assert.ok(bot > 8 && bot < 32, `contre un bot : ${bot} sur 40`);
+  assert.ok(!ids({ situations: ["contre_bot"], recents: ["commentatrice_dialogue_avant_bot_01", "commentateur_dialogue_avant_bot_01"] }, 1).includes("commentateur_dialogue_avant_bot_01")
+    && [...Array(30).keys()].every(k => !ids({ situations: ["contre_bot"], recents: ["commentateur_dialogue_avant_bot_01"] }, k).includes("commentateur_dialogue_avant_bot_01")),
+    "pas deux fois de suite (entendu aux derniers matchs)");
+  assert.equal(nbDialogues("avant_match"), 15);
 });

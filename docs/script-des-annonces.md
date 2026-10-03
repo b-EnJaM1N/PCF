@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (222 répliques)
+## Commentateur — vif, enthousiaste, plein de références (234 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -321,6 +321,18 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_avant_match_05.mp3` | La Pierre, c'est la base, Madame ! |
 | `commentateur_dialogue_avant_match_06.mp3` | Bonsoir à tous ! Roland Pignon, en direct du court central, aux côtés de la légendaire Monique Latouffe ! |
 | `commentateur_dialogue_avant_match_07.mp3` | Monique Latouffe, la finale de 1997, les trois Ciseaux… |
+| `commentateur_dialogue_avant_match_08.mp3` | Monique, votre pronostic pour ce soir ? |
+| `commentateur_dialogue_avant_match_09.mp3` | Quelle ambiance, Madame ! Le public est chaud bouillant ! |
+| `commentateur_dialogue_avant_match_10.mp3` | On m'annonce un match historique ! |
+| `commentateur_dialogue_avant_match_11.mp3` | Trois signes, Madame ! Seulement trois ! Et pourtant, quelle richesse ! |
+| `commentateur_dialogue_avant_match_12.mp3` | Vous avez un signe fétiche, Monique ? |
+| `commentateur_dialogue_avant_match_13.mp3` | Les deux joueurs se regardent droit dans les yeux… |
+| `commentateur_dialogue_avant_match_14.mp3` | Échauffement terminé, les mains sont prêtes ! |
+| `commentateur_dialogue_avant_match_15.mp3` | Un conseil pour nos joueurs, Madame ? |
+| `commentateur_dialogue_avant_bot_01.mp3` | Un humain contre une machine, Madame ! |
+| `commentateur_dialogue_avant_finale_01.mp3` | Une finale, Madame ! Une FINALE ! |
+| `commentateur_dialogue_avant_revanche_01.mp3` | Ils se connaissent, ces deux-là ! |
+| `commentateur_dialogue_avant_nuit_01.mp3` | Il est tard, Madame, mais le HandSlam ne dort jamais ! |
 | `commentateur_dialogue_fin_set_01.mp3` | Madame, un mot sur ce set ? |
 | `commentateur_dialogue_fin_set_02.mp3` | Un set parfait ! Comme vous en 1997, Madame ! |
 | `commentateur_dialogue_fin_set_03.mp3` | Qu'est-ce qu'il doit changer ? |
@@ -338,7 +350,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (171 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (183 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -502,6 +514,18 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_avant_match_05.mp3` | C'est pas faux. |
 | `commentatrice_dialogue_avant_match_06.mp3` | Bonsoir. Commençons, Roland. |
 | `commentatrice_dialogue_avant_match_07.mp3` | Roland. Le match. |
+| `commentatrice_dialogue_avant_match_08.mp3` | Je pronostique un vainqueur. Et un perdant. |
+| `commentatrice_dialogue_avant_match_09.mp3` | Le public, c'est vous et moi, Roland. |
+| `commentatrice_dialogue_avant_match_10.mp3` | On vous l'annonce à chaque match. |
+| `commentatrice_dialogue_avant_match_11.mp3` | Trois. Je les ai comptés. |
+| `commentatrice_dialogue_avant_match_12.mp3` | Oui. Je ne le dirai jamais. |
+| `commentatrice_dialogue_avant_match_13.mp3` | Ils regardent leur téléphone, Roland. |
+| `commentatrice_dialogue_avant_match_14.mp3` | On s'échauffe les mains, maintenant. On aura tout vu. |
+| `commentatrice_dialogue_avant_match_15.mp3` | Ne jouez pas Pierre. Ou jouez Pierre. Je ne sais plus. |
+| `commentatrice_dialogue_avant_bot_01.mp3` | La machine a l'air plus détendue. |
+| `commentatrice_dialogue_avant_finale_01.mp3` | J'avais entendu la première fois. |
+| `commentatrice_dialogue_avant_revanche_01.mp3` | Oui. Et ils ne s'aiment pas beaucoup. |
+| `commentatrice_dialogue_avant_nuit_01.mp3` | Moi si. Normalement. |
 | `commentatrice_dialogue_fin_set_01.mp3` | Solide. Sans génie. Mais solide. |
 | `commentatrice_dialogue_fin_set_02.mp3` | N'en parlons pas. |
 | `commentatrice_dialogue_fin_set_03.mp3` | Tout. Ou rien. C'est ça, le HandSlam. |
