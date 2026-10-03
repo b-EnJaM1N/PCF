@@ -236,7 +236,7 @@ function jouer(signe, auto = false) {
 const SECOUSSE_MS = 540;
 // Chaque main a les couleurs du gant de son joueur (avatar : gant, poignet, motif) : le poing se secoue,
 // puis s'ouvre en feuille, fait le V des ciseaux ou reste fermé (pierre).
-const SYMBOLE_SIGNE = ["pierre", "ciseaux", "feuille"];   // même ordre que regles.js
+const SYMBOLE_SIGNE = ["dos", "ciseaux", "feuille"];   // même ordre que regles.js (la pierre : le poing vu de dos)
 const mainGantee = (g, signe, nom) => `<span class="poing-av" role="img" aria-label="${nom}">${avatarSVG({ ...avDe(g), symbole: SYMBOLE_SIGNE[signe], sansFond: true })}</span>`;
 function secouerLesPoings() {
   [["hMe", 0], ["hBot", 1]].forEach(([id, g]) => { $(id).innerHTML = mainGantee(g, 0, "Poing serré"); $(id).className = "hand secoue"; });
