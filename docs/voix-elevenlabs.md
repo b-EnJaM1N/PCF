@@ -90,3 +90,17 @@ Monique :
 ```
 [deadpan] Attention que ça ne vous arrive pas.
 ```
+
+## Recette « Roland qui craque » (validée le 3 octobre)
+
+Pour un commentaire hystérique, qui hurle et perd le contrôle (coups de génie, « Second poteau… », « FONCE !!! »), une simple
+consigne ne suffit pas : on réécrit la réplique pour la voix dans `textes` (`outils/voix.json`), le texte affiché ne change pas.
+- Consigne : `[frantic] [screaming at the top of his lungs, completely losing control]`
+  (pour un cri de but : `[frantic] [screaming at the top of his lungs like a South American football commentator, completely losing control]`).
+- Les mots hurlés en MAJUSCULES, plusieurs points d'exclamation (`!!!`).
+- Des répétitions, comme un commentateur qui ne s'arrête plus : « QUELLE MAAAAIN !!! QUELLE MAIN !!! ».
+- Des voyelles étirées (« DESTIIIIIN », « FOOONCE ») ou des syllabes détachées (« LÉ-GEN-DE »).
+- Exemple : `[frantic] [screaming at the top of his lungs, completely losing control] MESDAMES ET MESDAMES !!! QUELLE MAAAAIN !!! QUELLE MAIN !!!`
+
+Autres astuces de prononciation : un mot qui sonne anglais se corrige en l'entourant d'une phrase française
+(« Long. » → « Ce sera long. Très long… ») ; « banger » s'écrit « bangé » pour la voix.
