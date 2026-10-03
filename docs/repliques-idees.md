@@ -8,7 +8,7 @@ seules les nouvelles répliques sont faites).
 *(rien pour l'instant)*
 
 ## Modifications à faire (notées au fil des tests, à faire toutes ensemble)
-- Roland, « Il a craqué son slip ! » (`commentateur_dialogue_cri_02` et `_f`) : ton **excité** `[excited]` au lieu d'amusé `[laughs]`.
+*(rien pour l'instant ; fait le 3 octobre : Roland excité au lieu d'amusé partout, « Second poteau, la Feuille » refait)*
 
 ## Déjà ajoutées
 - « Muscle ton jeu, Robert. Muscle ton jeu. » (Monique, série de points perdus)
