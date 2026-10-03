@@ -83,6 +83,8 @@ body:not(.en-match) .rule { display: none; }
 /* Face à face : chaque main pointe vers l'adversaire (la mienne vers la droite, la sienne vers la gauche, poignets à l'extérieur). */
 #hMe .poing-av svg { transform: rotate(90deg); }
 #hBot .poing-av svg { transform: rotate(-90deg); }
+/* Pendant la secousse, les poings restent debout (jointures vers le haut) : on ne les confond pas avec la pierre jouée. */
+#hMe.secoue .poing-av svg, #hBot.secoue .poing-av svg { transform: none; }
 .hand.ouvre .poing-av { animation: ouvrir-main .22s ease-out; }   /* la main s'ouvre */
 @keyframes ouvrir-main { from { transform: scale(.82); } to { transform: scale(1); } }
 @keyframes secouer-poing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px) rotate(-8deg); } }
