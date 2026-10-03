@@ -8,6 +8,7 @@ const FICHIERS = [
   "./",
   "index.html",
   "mentions.html",
+  "ecoute.html",
   "manifest.webmanifest",
   "css/style.css",
   "js/app.js",

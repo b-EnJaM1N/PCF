@@ -12,12 +12,26 @@ const config = JSON.parse(readFileSync(new URL("voix.json", import.meta.url), "u
 const dossier = new URL("../app/audio/", import.meta.url);
 
 // Le ton d'une réplique : celui de sa situation (« craquage », « victoire »…), sinon le ton par défaut du personnage.
+// Le ton d'une réplique : d'abord un ton qui la vise précisément (ids), sinon celui de sa situation.
+function tonObjet(r, cfg) {
+  const tons = cfg.roles[r.role]?.tons || [];
+  const situation = r.id.slice(r.role.length + 1);
+  return tons.find(t => (t.ids || []).some(i => r.id === i || r.id.startsWith(`${i}_`)))
+    || tons.find(t => t.situations.some(s => situation === s || situation.startsWith(`${s}_`)));
+}
 export function indicationDe(r, cfg = config) {
   const role = cfg.roles[r.role];
   if (!role) return "";
-  const situation = r.id.slice(r.role.length + 1);
-  const ton = (role.tons || []).find(t => t.situations.some(s => situation === s || situation.startsWith(`${s}_`)));
+  const ton = tonObjet(r, cfg);
   return ton ? ton.indication : role.indication || "";
+}
+// Le nom du ton d'une réplique (pour la page d'écoute) : celui de sa situation, sinon le ton habituel du personnage.
+const TON_HABITUEL = { commentateur: "très excité (radio)", commentatrice: "pince-sans-rire", arbitre: "solennel" };
+export function tonDe(r, cfg = config) {
+  const role = cfg.roles[r.role];
+  if (!role) return "";
+  const ton = tonObjet(r, cfg);
+  return ton ? ton.nom : TON_HABITUEL[r.role] || "";
 }
 // Le texte envoyé à la voix : l'indication de jeu, puis la réplique (ou son texte spécial).
 export function texteVoix(r, cfg = config) {

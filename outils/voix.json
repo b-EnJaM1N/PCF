@@ -1,5 +1,5 @@
 {
-  "_explication": "Réglages des voix ElevenLabs (docs/voix-elevenlabs.md). Les Voice ID ne sont pas secrets ; la clé d'accès, si : elle reste dans le coffre-fort de GitHub (secret ELEVENLABS_API_KEY). stability : 0 (créatif), 0.5 (naturel) ou 1 (robuste) avec le modèle eleven_v3. indication : le ton par défaut ; tons : un autre ton selon la situation (début de l'identifiant de la réplique, sans le rôle).",
+  "_explication": "Réglages des voix ElevenLabs (docs/voix-elevenlabs.md). Les Voice ID ne sont pas secrets ; la clé d'accès, si : elle reste dans le coffre-fort de GitHub (secret ELEVENLABS_API_KEY). stability : 0 (créatif), 0.5 (naturel) ou 1 (robuste) avec le modèle eleven_v3. indication : le ton par défaut ; tons : un autre ton selon la situation (début de l'identifiant de la réplique, sans le rôle). Un ton peut aussi viser des répliques précises (ids, prioritaires sur les situations).",
   "modele": "eleven_v3",
   "format": "mp3_44100_64",
   "roles": {
@@ -59,21 +59,34 @@
       "nom": "Roland Pignon",
       "voice_id": "pwONJQic3ZwHTFG8D6uM",
       "stability": 0,
-      "indication": "[excited]",
+      "indication": "[excited] [shouting] [like a French radio sports commentator]",
       "tons": [
+        {
+          "nom": "hystérique",
+          "indication": "[hysterical] [screaming] [ecstatic]",
+          "situations": [
+            "main_legendaire"
+          ],
+          "ids": [
+            "commentateur_serie_contre_04"
+          ]
+        },
         {
           "nom": "enflammé",
           "indication": "[excited] [shouting]",
           "situations": [
             "balle_match_convertie",
             "victoire",
-            "main_legendaire",
             "balle_sauvee",
             "remontee",
             "renversement",
             "serie_pour",
             "lecture_reussie",
             "dialogue_titre"
+          ],
+          "ids": [
+            "commentateur_serie_contre_03",
+            "commentateur_serie_contre_05"
           ]
         },
         {
@@ -106,13 +119,23 @@
   },
   "textes": {
     "_explication": "Texte pour la voix d'une réplique, quand il doit être différent du texte affiché (prononciation, autre indication de jeu). Clé : l'identifiant de la réplique.",
-    "commentateur_lecture_reussie_03_pierre": "[shouting] [like a South American football commentator screaming GOAL] Second poteau, la Pièèèèèèèèèèèèèèèèèrre !!!",
-    "commentateur_lecture_reussie_03_ciseaux": "[shouting] [like a South American football commentator screaming GOAL] Second poteau, les Cisôôôôôôôôôôôôôôôôô !!!",
-    "commentateur_lecture_reussie_03_feuille": "[shouting] [like a South American football commentator screaming GOAL] Second poteau, la Feuiiiiiiiiiiiiiiille !!!",
+    "commentateur_lecture_reussie_03_pierre": "[frantic] [screaming at the top of his lungs like a South American football commentator, completely losing control] SECOND POTEAU !!! LA PIÈÈÈÈÈÈÈRRE !!! LA PIERRE !!!",
+    "commentateur_lecture_reussie_03_ciseaux": "[frantic] [screaming at the top of his lungs like a South American football commentator, completely losing control] SECOND POTEAU !!! LES CISÔÔÔÔÔÔÔ !!! LES CISEAUX !!!",
+    "commentateur_lecture_reussie_03_feuille": "[frantic] [screaming at the top of his lungs like a South American football commentator, completely losing control] SECOND POTEAU !!! LA FEUIIIIIIIILLE !!! LA FEUILLE !!!",
     "commentatrice_main_legendaire_03": "[calm] [deadpan] C'est un vrai bangé. Comme disent les jeunes.",
     "commentateur_obstination_05_pierre": "[chanting] [excited] Des pierres ! Des pierres ! Des pierres ! Des pierres ! Des pierres !",
     "commentateur_obstination_05_ciseaux": "[chanting] [excited] Ciseaux ! Ciseaux ! Ciseaux ! Ciseaux ! Ciseaux !",
     "commentateur_obstination_05_feuille": "[chanting] [excited] Des feuilles ! Des feuilles ! Des feuilles ! Des feuilles ! Des feuilles !",
-    "commentateur_dialogue_cri_04": "[shouting] [excited] Siiiuuuuuuu !"
+    "commentateur_dialogue_cri_04": "[shouting] [excited] Siiiuuuuuuu !",
+    "commentatrice_dialogue_avant_match_04": "[deadpan] Ce sera long. Très long…",
+    "commentateur_main_legendaire_01": "[frantic] [screaming at the top of his lungs, completely losing control] LA MAIN DU SIÈCLE !!! LA MAIN DU SIÈCLE !!! C'EST PAS POSSIBLE !!!",
+    "commentateur_main_legendaire_02": "[frantic] [screaming at the top of his lungs, completely losing control] UNE MAIN POUR L'HISTOIRE !!! POUR L'HIS-TOI-RE !!!",
+    "commentateur_main_legendaire_03": "[frantic] [screaming at the top of his lungs, completely losing control] LA MAIN DU DESTIIIIIN !!! DU DESTIN !!!",
+    "commentateur_main_legendaire_04": "[frantic] [screaming at the top of his lungs, completely losing control] UNE MAIN QUI ENTRE DANS LA LÉGENDE !!! DANS LA LÉ-GEN-DE !!!",
+    "commentateur_main_legendaire_05": "[frantic] [screaming at the top of his lungs, completely losing control] ARRÊTEZ TOUT !!! ARRÊTEZ TOUT !!! Nous venons d'assister à un MOMENT D'HISTOIRE !!!",
+    "commentateur_main_legendaire_06": "[frantic] [screaming at the top of his lungs, completely losing control] On pourra parler de cette main pendant des ANNÉES !!! DES ANNÉES !!!",
+    "commentateur_main_legendaire_07": "[frantic] [screaming at the top of his lungs, completely losing control] MESDAMES ET MESDAMES !!! QUELLE MAAAAIN !!! QUELLE MAIN !!!",
+    "commentateur_main_legendaire_08": "[frantic] [screaming at the top of his lungs, completely losing control] Dans CINQUANTE ANS… on racontera encore CETTE MAIN !!! CETTE MAIN !!!",
+    "commentateur_serie_contre_04": "[frantic] [screaming at the top of his lungs, completely losing control] OUBLIE QUE T'AS AUCUNE CHANCE !!! VAS-Y !!! FONCE !!! FOOONCE !!!"
   }
 }
