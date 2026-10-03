@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       quoi:
-        description: "Voix : essai (10 répliques, refaites), tout (ce qui manque) ou tout-refaire (les rôles choisis, en entier). Bruitages du court : sons-essai (3 sons) ou sons (tous)."
+        description: "Voix : essai (10 répliques, refaites), tout (ce qui manque), tout-refaire (les rôles choisis, en entier) ou liste (les répliques de outils/a-refaire.txt). Bruitages du court : sons-essai (3 sons) ou sons (tous)."
         type: choice
-        options: [essai, tout, tout-refaire, sons-essai, sons]
+        options: [essai, tout, tout-refaire, liste, sons-essai, sons]
         default: essai
       roles:
         description: "Les voix à générer (séparées par des virgules)"
@@ -51,6 +51,7 @@ jobs:
           elif [ -n "$IDS" ]; then node outils/generer-voix.js --ids "$IDS" --refaire
           elif [ "$QUOI" = "essai" ]; then node outils/generer-voix.js --ids "$ESSAI" --refaire
           elif [ "$QUOI" = "tout-refaire" ]; then node outils/generer-voix.js --roles "$ROLES" --refaire
+          elif [ "$QUOI" = "liste" ]; then node outils/generer-voix.js --ids "$(grep -v '^#' outils/a-refaire.txt | grep . | paste -sd, -)" --refaire
           else node outils/generer-voix.js --roles "$ROLES"
           fi
 

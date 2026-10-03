@@ -54,3 +54,9 @@ test("un coup de raquette enregistré presque muet n'est pas amplifié", async (
   assert.ok(creteDe([new Float32Array([0, 0.001, -0.002])]) < SEUIL_MUET, "un fichier muet (−54 dB) est écarté");
   assert.ok(creteDe([new Float32Array([0, 0.3, -0.6])]) >= SEUIL_MUET, "un vrai coup est gardé");
 });
+
+test("la liste à refaire (robot, choix « liste ») ne contient que des répliques qui existent", () => {
+  const ids = readFileSync(new URL("../outils/a-refaire.txt", import.meta.url), "utf8").split("\n").map(l => l.trim()).filter(l => l && !l.startsWith("#"));
+  for (const id of ids) assert.ok(CATALOGUE.has(id), id);
+  assert.ok(!texteVoix(CATALOGUE.get("commentateur_dialogue_cri_02")).includes("[laughs]"), "Roland n'est plus amusé : excité");
+});
