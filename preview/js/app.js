@@ -1513,6 +1513,9 @@ function afficherEtatDuel() {
   else if (st.textContent.startsWith("⚠️")) render();
 }
 
+// Un duel est-il encore en cours ? Un duel fini compte encore tant que sa fin (célébration, poignée de main, écran de fin)
+// se déroule sur l'écran de match ; si on a quitté cet écran, il ne bloque plus rien.
+const duelOccupe = () => !!D && (!D.fini || (!D.finVue && vueCourante === "viewMatch"));
 function terminerDuel(duel) {
   if (D.fini) return;
   D.fini = true;
@@ -1565,7 +1568,7 @@ duelsUI = installerDuels({
   compte: compteUI,
   signaler,
   lancerDuel,
-  duelEnCours: () => !!D && !D.finVue,
+  duelEnCours: duelOccupe,
   ouvrirOnglet,
 });
 
@@ -1621,7 +1624,7 @@ $("signalerAdv").addEventListener("click", () => { if (OPP?.humain) ouvrirSignal
 rapideUI = installerRapide({
   compte: compteUI,
   lancerDuel,
-  duelEnCours: () => !!D && !D.finVue,
+  duelEnCours: duelOccupe,
   jouerBot: jouerBotRapide,
 });
 
@@ -1632,13 +1635,13 @@ boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, jeto
 freerollUI = installerFreeroll({
   compte: compteUI, signaler,
   ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
-  chercherMatch: () => { if (!D || D.finVue) duelsUI.rafraichir(); },
+  chercherMatch: () => { if (!duelOccupe()) duelsUI.rafraichir(); },
   jetons: () => jetonsUI?.rafraichir(),
 });
 programmesUI = installerProgrammes({
   compte: compteUI, signaler,
   ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
-  chercherMatch: () => { if (!D || D.finVue) duelsUI.rafraichir(); },
+  chercherMatch: () => { if (!duelOccupe()) duelsUI.rafraichir(); },
   jetons: () => jetonsUI?.rafraichir(),
 });
 sngUI = installerSng({
@@ -1646,7 +1649,7 @@ sngUI = installerSng({
   signaler,
   compte: compteUI,
   ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
-  chercherMatch: () => { if (!D || D.finVue) duelsUI.rafraichir(); },   // mon match suivant est-il lancé ?
+  chercherMatch: () => { if (!duelOccupe()) duelsUI.rafraichir(); },   // mon match suivant est-il lancé ?
 });
 
 // ---------------------------------------------------------------- démarrage
