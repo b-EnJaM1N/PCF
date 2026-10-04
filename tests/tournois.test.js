@@ -58,7 +58,8 @@ test("liens d'invitation à un tournoi", () => {
 
 test("Sit & Go : tailles et durées annoncées", async () => {
   const { TAILLES_SNG, dureeSng } = await import("../app/js/tournoi-logique.js");
-  assert.deepEqual(TAILLES_SNG, [8, 16, 32, 64]);
+  assert.deepEqual(TAILLES_SNG, [2, 8, 16, 32, 64]);
+  assert.equal(dureeSng(2), "5 à 10 min");
   assert.equal(dureeSng(8), "15 à 20 min"); assert.equal(dureeSng(64), "30 à 40 min");
 });
 
