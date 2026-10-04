@@ -151,10 +151,8 @@ export function installerCercles(ctx) {
     // La part de chaque signe joué, de chaque côté.
     const part = (t, k) => { const tot = t[0] + t[1] + t[2]; return tot ? `${Math.round(100 * t[k] / tot)} %` : "–"; };
     const signes = [0, 1, 2].map(k => ligne(part(r.mesSignes, k), `${EMOJI[k]} ${NOM[k]}`, part(r.sesSignes, k))).join("");
-    const change = x => (x.total ? `${Math.round(100 * x.change / x.total)} %` : "–");
+    const taux = (x, k) => (x.total ? `${Math.round(100 * x[k] / x.total)} %` : "–");
     const serie = r.serie.n >= 2 ? `<p class="hint">🔥 ${r.serie.n} ${r.serie.gagne ? "victoires" : "défaites"} de suite ${r.serie.gagne ? "pour toi" : `face à ${n}`}.</p>` : "";
-    const ap = r.apresSonPoint;
-    const reflexe = ap.total >= 5 ? `<p class="hint">🔎 Après avoir gagné un point, ${n} rejoue le même signe ${Math.round(100 * ap.meme / ap.total)} % du temps${ap.meme / ap.total >= 0.45 ? " : c'est exploitable !" : "."}</p>` : "";
     const date = d => new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
     const duelLigne = m => `<li>${m.gagne ? "✅ Victoire" : "❌ Défaite"}${m.scores.length ? ` · ${m.scores.map(([x, y]) => `${x}–${y}`).join(", ")}` : ""}${m.fin === "forfait" ? " · forfait" : m.fin === "abandon" ? " · abandon" : ""} · ${m.type} · ${date(m.date)}</li>`;
     // Les 3 derniers affrontements ; les autres en touchant « Voir tous ».
@@ -167,8 +165,9 @@ export function installerCercles(ctx) {
       ${ligne(r.points[0], "Points gagnés", r.points[1])}
       <h3 class="ff-titre">Signes joués</h3>
       ${signes}
-      ${ligne(change(r.changeApresDefaite[0]), "Change de signe après un point perdu", change(r.changeApresDefaite[1]))}
-      <p class="hint">${pluriel(r.egalites, "égalité")} au total.</p>${serie}${reflexe}
+      ${ligne(taux(r.rejoueApresVictoire[0], "meme"), "Rejoue le même signe après un point gagné", taux(r.rejoueApresVictoire[1], "meme"))}
+      ${ligne(taux(r.changeApresDefaite[0], "change"), "Change de signe après un point perdu", taux(r.changeApresDefaite[1], "change"))}
+      ${serie}
       <h3 class="ff-titre">Derniers affrontements</h3><ul class="ff-derniers">${derniers}</ul>${autres}`;
   }
   $("amiRetour").addEventListener("click", () => { amiOuvert = null; montrer("socListe"); rafraichir(); });

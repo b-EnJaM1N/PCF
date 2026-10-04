@@ -94,7 +94,8 @@ test("face-à-face : bilan, sets, points, signes favoris, réflexes et série, v
   assert.deepEqual(r.points, [1, 2]); assert.equal(r.egalites, 2);
   assert.deepEqual(r.mesSignes, [3, 1, 1]); assert.deepEqual(r.sesSignes, [2, 1, 2]);
   assert.deepEqual(r.monFavori, { signe: 0, pct: 60 }); assert.deepEqual(r.sonFavori, { signe: 0, pct: 40 });
-  assert.deepEqual(r.apresSonPoint, { meme: 1, total: 1 });   // après son point (Pierre), il rejoue Pierre
+  // Après mon point (Pierre), je rejoue Feuille ; après son point (Pierre), il rejoue Pierre.
+  assert.deepEqual(r.rejoueApresVictoire, [{ meme: 0, total: 1 }, { meme: 1, total: 1 }]);
   // Après mon point (duel 1, coup 1), il passe de Ciseaux à Feuille : il change ; après son point (coup 3), je passe de Ciseaux à Pierre : je change.
   assert.deepEqual(r.changeApresDefaite, [{ change: 1, total: 1 }, { change: 1, total: 1 }]);
   assert.equal(r.derniers.length, 3, "tous les duels terminés");
