@@ -650,3 +650,14 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .nom-fin-ligne .btn { width: auto; padding: 10px 16px; margin: 0; }
 /* Entraînement : le bouton « Commencer un match » reste visible en bas de l'écran pendant qu'on choisit l'adversaire et le format. */
 #startBtn { position: sticky; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); z-index: 3; box-shadow: 0 6px 18px rgba(0, 0, 0, .45); }
+/* Face-à-face avec un ami (onglet Cercles). */
+#socAmis .joueur { cursor: pointer; }
+.ff-tete { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin: 4px 0 6px; font-weight: 600; }
+.ff-tete span:first-child { text-align: right; color: var(--me); }
+.ff-tete span:last-child { color: var(--line); }
+.ff-tete b { font-family: "Barlow Condensed", sans-serif; font-size: 2.2rem; line-height: 1; }
+.ff-ligne { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; padding: 7px 0; border-top: 1px solid rgba(255, 255, 255, .1); align-items: center; }
+.ff-ligne b:first-child { text-align: right; color: var(--me); }
+.ff-ligne span { font-size: .85rem; color: var(--muted); text-align: center; }
+.ff-titre { font-size: 1rem; margin: 14px 0 6px; }
+.ff-derniers { margin: 0; padding-left: 18px; font-size: .88rem; line-height: 1.6; }

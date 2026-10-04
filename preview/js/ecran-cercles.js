@@ -1,7 +1,9 @@
 // Onglet « Cercles » : mon niveau officiel, mes amis, et mes cercles
 // (groupes privés avec leur propre classement).
 import * as social from "./social-serveur.js";
-import { chercher } from "./duel-serveur.js";
+import { chercher, duelsAvec } from "./duel-serveur.js";
+import { statsFaceAFace } from "./duel-logique.js";
+import { EMOJI } from "./regles.js";
 import { avatarSVG, FONDS } from "./avatar.js";
 import { EMBLEMES, blasonSVG, normaliserBlason, blasonParDefaut, erreurNomCercle, lienCercle, codeCercleDepuisAdresse, rang, CLASSEMENT_DEPART, texteNiveau, texteCalibrage, provisoire } from "./social-logique.js";
 import { lire, ecrire } from "./stockage.js";
@@ -47,7 +49,7 @@ export function installerCercles(ctx) {
       ctx.aller(vue); return;
     }
     ctx.aller("viewCercles");
-    ["socListe", "socCercle"].forEach(v => { $(v).hidden = v !== vue; });
+    ["socListe", "socCercle", "socAmi"].forEach(v => { $(v).hidden = v !== vue; });
     window.scrollTo(0, 0);
   };
   const retour = () => {
@@ -127,6 +129,47 @@ export function installerCercles(ctx) {
       : ligneJoueur(a, "Demande envoyée", `<button class="petit alt" data-a="annuler">Annuler</button>`)).join("");
   }
 
+  // ---------------------------------------------------------------- face-à-face avec un ami
+  let amiOuvert = null;
+  async function ouvrirAmi(id) {
+    const a = amis.find(x => x.id === id); if (!a) return;
+    amiOuvert = id;
+    montrer("socAmi");
+    $("aAvatar").innerHTML = avatarSVG(a.avatar || {});
+    $("aNom").innerHTML = `${esc(a.drapeau || "")} ${nomComplet(a)}`;
+    $("aInfo").textContent = `Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`;
+    $("aStats").innerHTML = `<p class="hint">Chargement…</p>`; dire("aMsg", "");
+    try {
+      const r = statsFaceAFace(await duelsAvec(id), uid);
+      if (amiOuvert === id) $("aStats").innerHTML = renderFaceAFace(r, a.pseudo);
+    } catch { if (amiOuvert === id) $("aStats").innerHTML = `<p class="hint">Impossible de charger vos duels. Vérifie ta connexion.</p>`; }
+  }
+  function renderFaceAFace(r, nom) {
+    if (!r.matchs) return `<p class="hint">Vous ne vous êtes encore jamais affrontés. Lance-lui un défi !</p>`;
+    const n = esc(nom), pct = (x, y) => (x + y ? `${Math.round(100 * x / (x + y))} %` : "–");
+    const ligne = (moi, label, lui) => `<div class="ff-ligne"><b>${moi}</b><span>${label}</span><b>${lui}</b></div>`;
+    const signe = f => (f ? `${EMOJI[f.signe]} ${f.pct} %` : "–");
+    const serie = r.serie.n >= 2 ? `<p class="hint">🔥 ${r.serie.n} ${r.serie.gagne ? "victoires" : "défaites"} de suite ${r.serie.gagne ? "pour toi" : `face à ${n}`}.</p>` : "";
+    const ap = r.apresSonPoint;
+    const reflexe = ap.total >= 5 ? `<p class="hint">🔎 Après avoir gagné un point, ${n} rejoue le même signe ${Math.round(100 * ap.meme / ap.total)} % du temps${ap.meme / ap.total >= 0.45 ? " : c'est exploitable !" : "."}</p>` : "";
+    const date = d => new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
+    const derniers = r.derniers.map(m => `<li>${m.gagne ? "✅ Victoire" : "❌ Défaite"}${m.scores.length ? ` · ${m.scores.map(([x, y]) => `${x}–${y}`).join(", ")}` : ""}${m.fin === "forfait" ? " · forfait" : m.fin === "abandon" ? " · abandon" : ""} · ${m.type} · ${date(m.date)}</li>`).join("");
+    return `<div class="ff-tete"><span>Toi</span><b>${r.v} – ${r.d}</b><span>${n}</span></div>
+      <p class="hint" style="text-align:center;margin-top:0">${pluriel(r.matchs, "duel")}${r.officiels ? `, dont ${r.officiels} officiel${r.officiels > 1 ? "s" : ""}` : ""} · ${pct(r.v, r.d)} de victoires pour toi</p>
+      ${ligne(r.sets[0], "Sets gagnés", r.sets[1])}
+      ${ligne(r.points[0], "Points gagnés", r.points[1])}
+      ${ligne(signe(r.monFavori), "Signe préféré", signe(r.sonFavori))}
+      <p class="hint">${pluriel(r.egalites, "égalité")} au total.</p>${serie}${reflexe}
+      <h3 class="ff-titre">Derniers duels</h3><ul class="ff-derniers">${derniers}</ul>`;
+  }
+  $("amiRetour").addEventListener("click", () => { amiOuvert = null; montrer("socListe"); rafraichir(); });
+  $("aDefier").addEventListener("click", async () => {
+    const a = amis.find(x => x.id === amiOuvert); if (!a) return;
+    $("aDefier").disabled = true;
+    try { dire("aMsg", await ctx.defier(a)); } catch (err) { dire("aMsg", err.message, true); }
+    $("aDefier").disabled = false;
+  });
+
   function renderCercles({ cercles }) {
     $("socCerclesVide").hidden = cercles.length > 0;
     $("socCercles").innerHTML = cercles.map(c => `<div class="joueur cliquable" data-cercle="${c.id}" role="button" tabindex="0">
@@ -139,6 +182,8 @@ export function installerCercles(ctx) {
   const actionsListe = async e => {
     const b = e.target.closest("button"), ligne = e.target.closest(".joueur");
     if (!ligne) return;
+    // Toucher un ami (ailleurs que sur ses boutons) : notre face-à-face.
+    if (!b && ligne.closest("#socAmis") && amis.find(x => x.id === ligne.dataset.id)?.statut === "amis") return ouvrirAmi(ligne.dataset.id);
     if (ligne.dataset.cercle && (!b || b.dataset.a === "voir")) return ouvrirCercle(ligne.dataset.cercle);
     if (!b) return;
     const id = ligne.dataset.id, cercle = ligne.dataset.cercle, a = b.dataset.a;
@@ -215,7 +260,7 @@ export function installerCercles(ctx) {
   }
   function fermerCercle() {
     cercleOuvert = null; detail = null;
-    ["socListe", "socCercle"].forEach(v => { $(v).hidden = v !== "socListe"; });
+    ["socListe", "socCercle", "socAmi"].forEach(v => { $(v).hidden = v !== "socListe"; });
   }
   $("cercleRetour").addEventListener("click", () => { fermerCercle(); rafraichir(); });
 
