@@ -71,3 +71,51 @@ export const formatCourt = (points, sets) => sets === 1 || points < 7;
 // Le format d'un duel (colonnes du serveur) pour les règles de l'application.
 export const formatDuel = d => ({ pointsParSet: d.points_par_set, setsGagnants: d.sets_gagnants });
 export const FORMAT = d => `${texteFormat(formatDuel(d))}${d.classe === false ? " · amical" : " · officiel"}${d.mise ? ` · 🪙 mise de ${d.mise} jetons` : ""}`;
+
+// Face-à-face avec un joueur : le bilan de tous nos duels terminés (vus de mon côté ; derniers : tous, du plus récent au plus ancien).
+// duels : lignes de la table « duels » (j0, j1, vainqueur, fin, scores_sets, coups, classe, tournoi_id, maj_le).
+export function statsFaceAFace(duels, uid) {
+  const r = { matchs: 0, v: 0, d: 0, officiels: 0, sets: [0, 0], points: [0, 0], egalites: 0,
+    mesSignes: [0, 0, 0], sesSignes: [0, 0, 0],
+    // Après un point gagné, combien de fois chacun rejoue le même signe (moi, lui).
+    rejoueApresVictoire: [{ meme: 0, total: 0 }, { meme: 0, total: 0 }],
+    // Après un point perdu, combien de fois chacun change de signe (moi, lui).
+    changeApresDefaite: [{ change: 0, total: 0 }, { change: 0, total: 0 }], serie: null, derniers: [] };
+  const tries = [...duels].filter(x => maPlace(x, uid) !== null && x.vainqueur !== null && x.vainqueur !== undefined)
+    .sort((x, y) => Date.parse(y.maj_le) - Date.parse(x.maj_le));
+  for (const duel of tries) {
+    const moi = maPlace(duel, uid), gagne = duel.vainqueur === moi;
+    r.matchs++; gagne ? r.v++ : r.d++;
+    if (duel.classe) r.officiels++;
+    const scores = (duel.scores_sets || []).map(s => vuDe(s, moi));
+    for (const [a, b] of scores) r.sets[a > b ? 0 : 1]++;
+    const coups = (duel.coups || []).map(c => ({ ...coupVuDe(c, moi), g: c.g === null || c.g === undefined ? null : c.g === moi ? 0 : 1 }));
+    coups.forEach((c, i) => {
+      r.mesSignes[c.a]++; r.sesSignes[c.b]++;
+      if (c.g === null) r.egalites++; else r.points[c.g]++;
+      // Les réflexes : après un point gagné, le gagnant rejoue-t-il le même signe ?
+      const prec = coups[i - 1];
+      if (prec && prec.g !== null) {
+        const x = r.rejoueApresVictoire[prec.g];
+        x.total++; if ((prec.g === 0 ? c.a === prec.a : c.b === prec.b)) x.meme++;
+      }
+      // Après un point perdu (par moi : g = 1 ; par lui : g = 0), le perdant change-t-il de signe ?
+      if (prec && prec.g !== null) {
+        const perdant = 1 - prec.g, x = r.changeApresDefaite[perdant];
+        x.total++; if ((perdant === 0 ? c.a !== prec.a : c.b !== prec.b)) x.change++;
+      }
+    });
+    {
+      r.derniers.push({ gagne, scores, date: duel.maj_le, fin: duel.fin,
+        type: duel.tournoi_id ? "tournoi" : duel.rapide ? "partie rapide" : duel.classe ? "officiel" : "amical" });
+    }
+  }
+  // La série en cours (les duels sont du plus récent au plus ancien).
+  for (const duel of tries) {
+    const gagne = duel.vainqueur === maPlace(duel, uid);
+    if (!r.serie) r.serie = { gagne, n: 1 }; else if (r.serie.gagne === gagne) r.serie.n++; else break;
+  }
+  const favori = t => { const n = t[0] + t[1] + t[2]; if (!n) return null; const s = t.indexOf(Math.max(...t)); return { signe: s, pct: Math.round(100 * t[s] / n) }; };
+  r.monFavori = favori(r.mesSignes); r.sonFavori = favori(r.sesSignes);
+  return r;
+}
