@@ -464,27 +464,23 @@
     <details class="card pli">
       <summary><h2>🎾 Points par set</h2><span class="pli-resume" id="lenResume"></span></summary>
       <div class="seg" id="segLen"><button data-v="11">11 (officiel)</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
-      <p class="hint">Le format officiel du HandSlam est le set de 11 points, avec 2 points d'écart ; à 14 partout, point décisif : le premier à 15 gagne le set. Le set de 7 points (2 points d'écart aussi, point décisif à 9 partout) donne des matchs plus courts. Les sets de 3 et de 1 point se jouent sans écart : le premier à 3 gagne (même 3–2), et à 1 point, le premier point gagne le set.</p>
-      <p class="hint">Le tournoi se joue en sets de 11 ou de 7 points. En duel, les sets de 3 et 1 point sont toujours des matchs amicaux.</p>
+      <p class="hint">11 points, c'est le format officiel (2 points d'écart, point décisif à 14 partout). 7, 3 ou 1 : des matchs plus courts.</p>
       <p class="hint" id="lenLock" hidden>Le format ne peut pas changer pendant un match ou un tournoi.</p>
     </details>
     <details class="card pli" id="cNotifs">
-      <summary><h2>🔔 Notifications</h2><span class="pli-resume">Être prévenu d'un défi ou d'un match de tournoi, appli fermée</span></summary>
-      <p class="hint">Reçois une notification quand un joueur te défie, quand il accepte ton défi, ou quand ton match de tournoi est prêt, même quand l'appli est fermée.</p>
+      <summary><h2>🔔 Notifications</h2><span class="pli-resume">Défis et matchs de tournoi, appli fermée</span></summary>
       <button class="btn" id="btnNotifs" style="margin-top:12px">Activer les notifications</button>
       <button class="btn alt" id="btnTestNotif" hidden>Envoyer une notification de test</button>
       <p class="locknote" id="notifsMsg" role="status"></p>
     </details>
     <details class="card pli">
-      <summary><h2>🎙️ Les voix du match</h2><span class="pli-resume">Tester le son, voix de synthèse</span></summary>
-      <p class="hint" id="voixInfo"></p>
+      <summary><h2>🔊 Le son</h2><span class="pli-resume">Tester le son et les commentateurs</span></summary>
       <button class="test" id="testSnd" style="margin-top:12px">Tester le son</button>
       <button class="test" id="testCommentateurs" style="margin-top:8px" hidden>🎙️ Écouter les commentateurs</button>
-      <label class="sound" style="margin-top:12px;align-items:flex-start"><input type="checkbox" id="synthese"> <span>Lire aussi les répliques avec la voix de synthèse du téléphone (voix robotique)</span></label>
+      <p class="hint" style="margin-top:10px">Le bouton 🔊 en haut de l'écran coupe tout.</p>
     </details>
     <details class="card pli">
       <summary><h2>💬 Messages rapides</h2><span class="pli-resume">Les mots échangés avant et après un duel</span></summary>
-      <p class="hint">En duel contre un joueur, tu peux envoyer un message tout fait avant le match et un après. Le chambrage n'est proposé qu'avec tes amis.</p>
       <label class="sound" style="margin-top:12px;align-items:flex-start"><input type="checkbox" id="masquerMessages"> <span>Masquer les messages de mes adversaires</span></label>
     </details>
     <details class="card pli" id="installCard">
@@ -497,7 +493,7 @@
     </details>
     <details class="card pli">
       <summary><h2>🔒 Confidentialité</h2><span class="pli-resume">Tes données, mentions légales, supprimer mon compte</span></summary>
-      <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, HandSlam enregistre ton adresse e-mail (jamais visible par les autres joueurs), ton pseudo, ton pays, ton avatar, tes statistiques, ton niveau officiel, tes amis et tes cercles, chez l'hébergeur Supabase, en Europe (Paris). Les autres joueurs connectés peuvent voir ton pseudo, ton avatar, tes statistiques et ton niveau officiel ; seuls les membres d'un cercle en voient la liste des membres. Tu peux supprimer ton compte et toutes ses données à tout moment.</p>
+      <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, ta fiche est gardée en Europe ; ton adresse e-mail n'est jamais montrée aux autres joueurs.</p>
       <p class="hint"><a href="mentions.html#confidentialite" style="color:var(--me)">Tout savoir sur tes données</a> · <a href="mentions.html#mentions" style="color:var(--me)">Mentions légales</a> · Contact : contact.handslam@gmail.com</p>
       <button class="btn alt danger" id="supprimerCompte" style="margin-top:12px" hidden>Supprimer mon compte</button>
     </details>
