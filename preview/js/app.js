@@ -475,6 +475,7 @@ function finir() {
   $("endRead").textContent = `Ton coup était prévisible ${Math.round(100 * (S.suivi.taux || 0))} % du temps.${habitude}${lues ? ` 🔎 Tu as lu ${OPP.nom} ${lues} fois : tu as joué la bonne piste et gagné le point.` : ""}`;
   $("end").hidden = false;
   $("nomFin").hidden = !!P.pseudo; $("inNomFin").value = "";   // pas encore de pseudo : on le propose ici
+  $("compteFin").hidden = !!compteUI.session()?.user;          // pas encore de compte : on le propose aussi
   if (S.duel && D) { afficherMessages(D.duel); guetterMessageFin(); }   // le mot de la fin (messages rapides)
   $("bar").style.transform = "scaleX(0)";
 
@@ -899,6 +900,25 @@ function rafraichirAvatars() {
   $("miniAv").innerHTML = avatarSVG(P.av); $("pseudoMe").textContent = nomAffiche(P);
   majDecouverte();   // (la fiche a pu changer : le menu s'ouvre au fil des matchs)
 }
+
+// ---------------------------------------------------------------- créer son compte, facilement
+// Sans compte : un bouton bien visible dans le menu Jouer, un encadré à la fin des matchs, et « Mon compte » en haut de Ma fiche.
+const placeCompte = document.createComment("place de Mon compte");
+$("cCompte").before(placeCompte);
+function placerCompte(connecte) {
+  $("hubHors").hidden = connecte;
+  if (connecte) $("compteFin").hidden = true;
+  if (connecte) placeCompte.after($("cCompte"));
+  else $("viewProfile").querySelector("section.card").after($("cCompte"));   // juste sous l'en-tête de la fiche
+}
+function versCompte() {
+  aller("viewProfile");
+  $("cCompte").open = true;
+  $("cCompte").scrollIntoView({ block: "start" });
+  setTimeout(() => $("inEmail")?.focus(), 300);
+}
+$("hubHors").addEventListener("click", versCompte);
+$("compteFinBtn").addEventListener("click", versCompte);
 
 // ---------------------------------------------------------------- la première visite
 // Le menu « Jouer » s'ouvre au fil des matchs ; au tout début, un écran de bienvenue propose un premier match contre Bambi.
@@ -1656,7 +1676,7 @@ sngUI = installerSng({
 renderAdversaires();
 renderVoixInfo();
 nouvelleSeance();
-compteUI.surConnexion(session => { $("hubHors").hidden = !!session?.user; if (session?.user) rattacherAbonnement(); renderNotifs(); });
+compteUI.surConnexion(session => { placerCompte(!!session?.user); if (session?.user) rattacherAbonnement(); renderNotifs(); });
 
 // ---------------------------------------------------------------- notifications
 async function renderNotifs(message = "") {
@@ -1699,4 +1719,4 @@ const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDu
   });
 }
 renderNotifs();
-$("hubHors").hidden = !!compteUI.session()?.user;
+placerCompte(!!compteUI.session()?.user);

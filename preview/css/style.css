@@ -664,3 +664,6 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .ff-tous summary { cursor: pointer; font-size: .88rem; color: var(--me); margin-top: 6px; }
 .ff-ligne small { display: block; color: var(--muted); font-weight: 400; font-size: .75rem; }
 .ff-ligne b { white-space: nowrap; }
+/* Créer son compte : l'encadré de fin de match. */
+.compte-fin { margin: 12px 0; padding: 12px; border: 1px solid var(--me); border-radius: 12px; background: rgba(244, 197, 66, .08); }
+.compte-fin p { margin: 0 0 10px; font-size: .92rem; line-height: 1.45; }
