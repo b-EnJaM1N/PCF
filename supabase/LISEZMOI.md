@@ -214,6 +214,14 @@ Même manipulation avec [`etape-28-mises-toutes-tailles.sql`](etape-28-mises-tou
 On peut miser dans toutes les salles (2, 8, 16, 32, 64) ; la cagnotte se partage comme au poker selon la taille.
 Si on relance un jour l'étape 27, il faut relancer celle-ci ensuite.
 
+## 1 undetricies. Une vraie échelle de bots (étape 29)
+
+Même manipulation avec [`etape-29-echelle-des-bots.sql`](etape-29-echelle-des-bots.sql), **après** l'étape 28
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-29-echelle-des-bots.sql).
+Les bots qui complètent les salles et les tournois sont plus forts à chaque mise : 50 (850 à 1 050), 100 (1 000 à 1 200),
+200 (1 150 à 1 350), 500 (1 300 à 1 500), 1 000 et Grand Chelem (1 450 et plus). Sans mise et freeroll : n'importe lesquels.
+Si on relance un jour l'étape 24 ou 25, il faut relancer celle-ci ensuite.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
