@@ -493,7 +493,7 @@ function finir() {
   const ouvert = lire("menuComplet") ? [] : nouveautes(matchsAvant, P.matchs);
   // « La Une » : on garde de quoi raconter ce match.
   S.pourUne = n && !special ? {
-    etape: S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
+    etape: S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.direct ? (D.tourVoix === "finale" && D.nbTours > 1 ? "Finale de Sit & Go" : "Sit & Go") : D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
       : enTournoi ? `${tourDe(T, S.tour).singulier} du HandSlam Open` : "Match d'entraînement",
     finale: !!S.annonces.finale, numero: P.matchs,
   } : null;
@@ -829,7 +829,7 @@ function presenterSpeaker() {
   const av = annoncesAvantMatch({
     moi: { surnom: surnomDe(P), genre: P.genre, etiquette: etiquetteDe(P, { advId: OPP.id, niveauMoi, niveauAdv }) },
     adv: humain ? { surnom: OPP.surnom, genre: OPP.genre, etiquette: etiquetteDe(OPP.fiche, { advId: monId, niveauMoi: niveauAdv, niveauAdv: niveauMoi }) } : { bot: OPP.id },
-    tour: S.duel ? D?.tourVoix ?? null : S.tour !== null && T ? tourDe(T, S.tour).cle : null, sng: !!(S.duel && D?.sng),
+    tour: S.duel ? D?.tourCommente ?? null : S.tour !== null && T ? tourDe(T, S.tour).cle : null, sng: !!(S.duel && D?.sng),
     humain, domination: !!(f && f.d >= f.v + 3), genre: P.genre,
     situations: situationsDuMatch({
       humain, dejaJoues: !!(f && f.v + f.d > 0), niveauMoi, niveauAdv, memePays: humain && OPP.drapeau === P.drapeau,
@@ -1359,12 +1359,16 @@ async function reperesTournoi(duel) {
     const m = (t?.matchs || []).find(x => x.id === duel.tournoi_match);
     if (!D || D.id !== duel.id || !m) return;
     D.tourVoix = { 0: "finale", 1: "demis", 2: "quarts", 3: "huitiemes" }[t.nb_tours - m.tour] ?? null;
+    D.nbTours = t.nb_tours;
     D.sng = t.mode === "direct" && m.tour === 1;
     D.direct = t.mode === "direct" && !t.freeroll && !t.programme;   // (le trophée « Roi du Sit & Go » ne vaut ni pour le freeroll ni pour les tournois programmés)
     D.grandChelem = t.programme === "grand_chelem";
     D.programme = !!(t.programme || t.freeroll);   // tournoi à heure fixe (le Midi, l'Apéro, le Nocturne, le Grand Chelem, le freeroll)
-    S.annonces.finale = D.tourVoix === "finale";
-    S.annonces.enjeu = niveauEnjeu({ tour: D.tourVoix, grandChelem: D.grandChelem });
+    // Les commentaires de grand enjeu (« finale », « entrer dans l'Histoire »…) sont réservés aux tournois programmés :
+    // en Sit & Go (heads-up compris), les commentateurs traitent chaque match comme un match normal.
+    D.tourCommente = D.direct ? null : D.tourVoix;
+    S.annonces.finale = D.tourCommente === "finale";
+    S.annonces.enjeu = niveauEnjeu({ tour: D.tourCommente, grandChelem: D.grandChelem });
     if (faceAFaceOuvert) presenterSpeaker();
   } catch { /* sans réseau : présentation simple */ }
 }
