@@ -27,6 +27,11 @@ export const envoyerMessage = (id, message) => rpc("envoyer_message", { p_id: id
 export const mesDuels = () => essayer(async () => verifier(await client().from("duels")
   .select("*").in("phase", ["attente", "presentation", "jeu", "entre_sets"]).order("cree_le", { ascending: false }).limit(30)));
 
+// Tous mes duels terminés contre un joueur (la base ne renvoie que ceux qui me concernent).
+export const duelsAvec = adv => essayer(async () => verifier(await client().from("duels")
+  .select("j0, j1, vainqueur, fin, scores_sets, coups, classe, rapide, tournoi_id, maj_le")
+  .eq("phase", "termine").or(`j0.eq.${adv},j1.eq.${adv}`).order("maj_le", { ascending: false }).limit(300)));
+
 export const lireDuel = id => essayer(async () => verifier(await client().from("duels").select("*").eq("id", id).single()));
 
 // Fiches des joueurs, avec leur niveau officiel (champ « classement »).

@@ -76,3 +76,31 @@ test("le format d'un duel indique la mise en jetons", async () => {
   assert.match(FORMAT({ points_par_set: 11, sets_gagnants: 2, classe: true, mise: 200 }), /mise de 200 jetons/);
   assert.doesNotMatch(FORMAT({ points_par_set: 11, sets_gagnants: 2, classe: false, mise: 0 }), /jetons/);
 });
+
+test("face-à-face : bilan, sets, points, signes favoris, réflexes et série, vus de mon côté", async () => {
+  const { statsFaceAFace } = await import("../app/js/duel-logique.js");
+  const moi = "m", lui = "l";
+  // Duel 1 (le plus ancien) : je suis j0, je gagne 2 sets à 0. Duel 2 : je suis j1, il gagne. Duel 3 (récent) : je suis j1, il gagne.
+  const duels = [
+    { j0: moi, j1: lui, vainqueur: 0, fin: "score", classe: true, scores_sets: [[11, 8], [11, 9]], maj_le: "2026-10-01T10:00:00Z",
+      coups: [{ a: 0, b: 1, g: 0 }, { a: 2, b: 2, g: null }, { a: 1, b: 0, g: 1 }, { a: 0, b: 0, g: null }] },
+    { j0: lui, j1: moi, vainqueur: 0, fin: "score", classe: false, scores_sets: [[7, 5]], maj_le: "2026-10-02T10:00:00Z", coups: [{ a: 2, b: 0, g: 0 }] },
+    { j0: lui, j1: moi, vainqueur: 0, fin: "abandon", classe: false, rapide: true, scores_sets: [], maj_le: "2026-10-03T10:00:00Z", coups: [] },
+    { j0: lui, j1: moi, vainqueur: null, fin: null, scores_sets: [], maj_le: "2026-10-04T10:00:00Z", coups: [] },   // pas terminé : ignoré
+  ];
+  const r = statsFaceAFace(duels, moi);
+  assert.equal(r.matchs, 3); assert.equal(r.v, 1); assert.equal(r.d, 2); assert.equal(r.officiels, 1);
+  assert.deepEqual(r.sets, [2, 1]);
+  assert.deepEqual(r.points, [1, 2]); assert.equal(r.egalites, 2);
+  assert.deepEqual(r.mesSignes, [3, 1, 1]); assert.deepEqual(r.sesSignes, [2, 1, 2]);
+  assert.deepEqual(r.monFavori, { signe: 0, pct: 60 }); assert.deepEqual(r.sonFavori, { signe: 0, pct: 40 });
+  // Après mon point (Pierre), je rejoue Feuille ; après son point (Pierre), il rejoue Pierre.
+  assert.deepEqual(r.rejoueApresVictoire, [{ meme: 0, total: 1 }, { meme: 1, total: 1 }]);
+  // Après mon point (duel 1, coup 1), il passe de Ciseaux à Feuille : il change ; après son point (coup 3), je passe de Ciseaux à Pierre : je change.
+  assert.deepEqual(r.changeApresDefaite, [{ change: 1, total: 1 }, { change: 1, total: 1 }]);
+  assert.equal(r.derniers.length, 3, "tous les duels terminés");
+  assert.deepEqual(r.serie, { gagne: false, n: 2 });
+  assert.equal(r.derniers[0].type, "partie rapide"); assert.equal(r.derniers[0].fin, "abandon");
+  assert.deepEqual(r.derniers[1].scores, [[5, 7]]);
+  assert.deepEqual(r.derniers[2].scores, [[11, 8], [11, 9]]); assert.equal(r.derniers[2].gagne, true);
+});
