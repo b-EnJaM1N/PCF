@@ -5,8 +5,6 @@ import { TAILLES_SNG, dureeSng, resume } from "./tournoi-logique.js";
 import { gainsSng, gainDuel, MISES } from "./jetons-logique.js";
 import { lire, ecrire } from "./stockage.js";
 
-const TAILLES_MISE = [2, 8];   // les Sit & Go à mise se jouent à 2 (heads-up) ou à 8
-
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -42,18 +40,22 @@ export function installerSng(ctx) {
     render();
   }
 
-  // La salle d'une taille et d'une mise (le heads-up a sa propre liste côté serveur, étape 27).
-  const salle = (taille, mise) => taille === 2 ? (etat?.heads_up || []).find(x => x.mise === mise)
-    : mise ? (etat?.salles_mise || []).find(x => x.mise === mise) : (etat?.salles || []).find(x => x.taille === taille);
+  // La salle d'une taille et d'une mise (à mise : la liste de l'étape 28 ; sans mise à 2 : celle du heads-up, étape 27).
+  const salle = (taille, mise) => mise ? (etat?.salles_mises || []).find(x => x.taille === taille && x.mise === mise)
+    : taille === 2 ? (etat?.heads_up || []).find(x => x.mise === 0) : (etat?.salles || []).find(x => x.taille === taille);
+  // Ce qu'on gagne dans une salle à mise : tout au gagnant à 2 ; sinon les places payées, comme au poker.
+  const NOMS = ["1er", "2e", "3e-4e", "5e-8e"];
+  const gainsSalle = (taille, mise) => (taille === 2 ? `le gagnant remporte ${gainDuel(mise)}`
+    : gainsSng(mise, taille).map((g, i) => `${NOMS[i]} : ${g}`).join(", "));
 
   function render() {
     const mien = etat?.mien;
-    // Les salles de la mise choisie : sans mise, de 2 à 64 joueurs ; à mise, à 2 (heads-up) ou à 8.
+    // Les salles de la mise choisie, de 2 (heads-up) à 64 joueurs.
     document.querySelectorAll("#sngMise button").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.v === mise)));
-    $("sngSalles").innerHTML = (mise ? TAILLES_MISE : TAILLES_SNG).map(n => {
-      const s = salle(n, mise) || { inscrits: 0 }, g = gainsSng(mise);
+    $("sngSalles").innerHTML = TAILLES_SNG.map(n => {
+      const s = salle(n, mise) || { inscrits: 0 };
       const ici = mien?.phase === "inscriptions" && mien.taille === n && (mien.mise || 0) === mise;
-      const gains = !mise ? `environ ${dureeSng(n)}` : n === 2 ? `le gagnant remporte ${gainDuel(mise)}` : `1er : ${g[0]}, 2e : ${g[1]}`;
+      const gains = mise ? gainsSalle(n, mise) : `environ ${dureeSng(n)}`;
       return `<div class="joueur${ici ? " a-jouer" : ""}" data-taille="${n}" data-mise="${mise}">
         <span class="mini"><span class="trophee">${n}</span></span>
         <div style="min-width:0"><div class="jn">${n === 2 ? "Heads-up · 2 joueurs" : `${n} joueurs`}</div><div class="jd">${s.inscrits}/${n} en salle · ${gains}</div></div>

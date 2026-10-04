@@ -77,7 +77,7 @@ begin
 
   -- Sit & Go à mise : entrée payée à l'inscription, rendue si on quitte avant le départ.
   perform pg_temp.en_tant_que(pg_temp.u(1)::text);
-  perform pg_temp.interdit('select rejoindre_sit_and_go(16, 50)', 'les Sit & Go à mise se jouent à 8');
+  -- (depuis l'étape 28, les Sit & Go à mise se jouent dans toutes les tailles : voir etape-28.sql)
   r := rejoindre_sit_and_go(8, 50);
   execute 'reset role';
   perform pg_temp.verifier(pg_temp.solde(1) = 850, 'entrée de 50 payée à l''inscription');
