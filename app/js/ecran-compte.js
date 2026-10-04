@@ -63,9 +63,9 @@ export function installerCompte(ctx) {
     const choix = choisirFiche(ctx.lireP(), ligne);
     ctx.remplacerP(choix.fiche);
     afficherConnecte();
+    prevenir();   // les écrans en ligne (partie rapide, duels…) n'attendent pas l'envoi de la fiche
     if (choix.envoyer) await envoyer();
     else $("compteEtat").textContent = "☁️ Fiche en ligne retrouvée et chargée sur ce téléphone.";
-    prevenir();
   }
 
   $("btnCode").addEventListener("click", () => attendre($("btnCode"), async () => {
@@ -114,10 +114,10 @@ export function installerCompte(ctx) {
   if (retour && !retour.ok) dire(retour.message, true);
   compte.sessionActuelle().then(async s => {
     if (typeof history !== "undefined" && location.hash) history.replaceState(null, "", location.pathname + location.search);
-    if (!s) { if (retour?.ok) dire("La connexion n'a pas abouti. Redemande un e-mail de connexion.", true); return; }
+    if (!s) { if (retour?.ok) dire("La connexion n'a pas abouti. Redemande un e-mail de connexion.", true); prevenir(); return; }
     if (retour?.ok) dire("Connexion réussie !");
-    try { await apresConnexion(s); } catch (e) { session = s; afficherConnecte(); $("compteEtat").textContent = `⏳ ${e.message}`; }
-  });
+    try { await apresConnexion(s); } catch (e) { session = s; afficherConnecte(); $("compteEtat").textContent = `⏳ ${e.message}`; prevenir(); }
+  }).catch(() => prevenir());   // (sans réseau : les écrans en ligne proposent de se connecter)
   compte.surChangement(s => { if (!s && session) { session = null; montrer("hors"); prevenir(); } });
 
   return { planifier, connecte: () => !!session, session: () => session, surConnexion: f => auditeurs.push(f) };
