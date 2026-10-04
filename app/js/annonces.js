@@ -203,21 +203,23 @@ function finDeSet(match, evt, etat, ctx, rng) {
   return out;
 }
 
-// Temps mort de fin de match.
+// Temps mort de fin de match : UN seul commentaire (une réplique ou un dialogue), pour ne pas enchaîner
+// les phrases pendant qu'on regarde l'écran de fin (décision du porteur du projet).
 function finDeMatch(match, evt, etat, ctx, rng) {
-  const out = [], ajoute = x => { if (x) Array.isArray(x) ? out.push(...x) : out.push(x); };
+  const un = x => (x ? (Array.isArray(x) ? x : [x]) : []);
   if (evt.gagnant === 0) {
     const premierPerdu = match.scoresSets.length > 1 && match.scoresSets[0][0] < match.scoresSets[0][1];
     const troisZero = match.sets[0] === 3 && match.sets[1] === 0;
-    if (premierPerdu) ajoute(choisir(etat, "renversement", ctx, rng));
-    else if (troisZero || rng() < 0.5) ajoute(choisir(etat, "balle_match_convertie", { ...ctx, troisZero }, rng));
     if (etat.finale) {
-      if (!out.length) ajoute(choisir(etat, "main_legendaire", ctx, rng));
-      ajoute(rng() < 0.5 ? dialogue(etat, "titre", rng) : choisir(etat, "victoire", { ...ctx, finale: true }, rng));
-    } else if (!out.length || rng() < 0.4) ajoute(choisir(etat, "victoire", ctx, rng));
-  } else if (rng() < 0.3) ajoute(dialogue(etat, "fin_match", rng));
-  else ajoute(choisir(etat, "defaite", ctx, rng));
-  return out;
+      const titre = rng() < 0.5 ? un(dialogue(etat, "titre", rng)) : [];
+      return titre.length ? titre : un(choisir(etat, "victoire", { ...ctx, finale: true }, rng));
+    }
+    if (premierPerdu) return un(choisir(etat, "renversement", ctx, rng));
+    if (troisZero || rng() < 0.5) return un(choisir(etat, "balle_match_convertie", { ...ctx, troisZero }, rng));
+    return un(choisir(etat, "victoire", ctx, rng));
+  }
+  if (rng() < 0.3) return un(dialogue(etat, "fin_match", rng));
+  return un(choisir(etat, "defaite", ctx, rng));
 }
 
 // « Silence, s'il vous plaît » avant une balle de match : souvent, mais sans le rabâcher.

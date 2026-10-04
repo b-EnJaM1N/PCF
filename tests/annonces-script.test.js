@@ -339,3 +339,19 @@ test("« Silence » avant les balles de match : souvent, mais au plus 3 par matc
     assert.ok(!d.join().includes("true,true,true"));
   }
 });
+
+test("fin de match : un seul commentaire (une réplique ou un dialogue), pas d'enchaînement", () => {
+  const rng = rngFixe(77);
+  for (let k = 0; k < 300; k++) {
+    const m = nouveauMatch({ pointsParSet: 3, setsGagnants: 2 }), etat = nouvelEtatAnnonces({ finale: k % 3 === 0 });
+    let a;
+    while (!m.termine) {
+      const [x, y] = rng() < 0.5 ? [PIERRE, CISEAUX] : [CISEAUX, PIERRE];
+      a = annoncerCoup(m, jouerCoup(m, x, y), etat, {}, rng);
+    }
+    const coms = a.lignes.filter(l => l.role === "commentateur" || l.role === "commentatrice");
+    assert.ok(coms.length >= 1, "un commentaire de fin de match");
+    if (coms.length > 1) assert.ok(coms.every(l => /_dialogue_/.test(l.id)), `un seul dialogue, pas une suite de phrases : ${coms.map(l => l.id)}`);
+    if (coms.length > 1) assert.equal(new Set(coms.map(l => l.id.replace(/^(commentateur|commentatrice)_/, "").replace(/_f$/, ""))).size, 1, "un seul dialogue");
+  }
+});

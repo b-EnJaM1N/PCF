@@ -284,7 +284,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   if (rp.tension) setTimeout(() => ambiance.tension(), 500);
   // Le cri du vainqueur du set (ou du match) ; les commentateurs réagissent parfois.
   const cel = evt.finSet ? { ...celebration(criDe(evt.gagnant), { finMatch: m.termine, sauvee }), joueur: evt.gagnant } : null;
-  if (cel && commenterCri(S.criCommente, cel)) {
+  if (cel && !m.termine && commenterCri(S.criCommente, cel)) {   // (pas en fin de match : un seul commentaire, celui de la fin)
     S.criCommente = true;
     const genre = evt.gagnant === 0 ? P.genre : OPP.genre || "m";   // on parle de celui qui a crié
     const reaction = ligneDialogue("cri", dialogueCriAuChoix(), genre), i = a.lignes.findIndex(l => l.role !== "arbitre");
