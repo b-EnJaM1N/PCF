@@ -82,10 +82,8 @@ const voix = new LecteurVoix();
 const ambiance = new Ambiance();
 let sonActif = lire("son", true) !== false;
 voix.actif = ambiance.actif = sonActif;
-// La voix de synthèse sonne robotique : elle reste coupée tant qu'on ne l'active pas dans les Options.
-voix.synthese = lire("voixSynthese", false) === true;
-$("synthese").checked = voix.synthese;
-$("synthese").addEventListener("change", e => { voix.synthese = e.target.checked; ecrire("voixSynthese", voix.synthese); if (!voix.synthese) voix.arreter(); renderVoixInfo(); });
+// (La voix de synthèse du téléphone, robotique, n'est plus proposée : les répliques sont enregistrées.)
+voix.synthese = false;
 $("snd").checked = sonActif;
 voix.charger().then(() => { ambiance.utiliserFichiers([...voix.fichiers.keys()]); renderVoixInfo(); });
 
@@ -132,9 +130,7 @@ $("testCommentateurs").addEventListener("click", () => {
 });
 
 function renderVoixInfo() {
-  const total = CATALOGUE.size, faits = [...voix.fichiers.keys()].filter(id => CATALOGUE.has(id)).length;
   $("testCommentateurs").hidden = !repliquesCommentateurs().length;
-  $("voixInfo").innerHTML = `<b>${faits} réplique${faits > 1 ? "s" : ""} enregistrée${faits > 1 ? "s" : ""} sur ${total}.</b> ${voix.synthese ? "Les autres sont lues par la voix de synthèse du téléphone." : "Les autres ne sont pas lues à voix haute, en attendant les vrais enregistrements."} Tout ce qui est dit s'affiche aussi par écrit, et le bouton 🔊 en haut de l’écran coupe tout.`;
 }
 
 // ---------------------------------------------------------------- annonces
