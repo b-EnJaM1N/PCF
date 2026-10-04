@@ -2,8 +2,8 @@
 // Aucune connexion réseau ici : testé automatiquement.
 
 export const FORMATS_RAPIDES = {
-  officiel: { nom: "Officielle", pointsParSet: 11, setsGagnants: 2, detail: "Sets de 11, 2 sets gagnants · compte pour ton niveau officiel" },
-  eclair: { nom: "Éclair", pointsParSet: 7, setsGagnants: 1, detail: "Un set de 7 · amicale, sans effet sur le niveau" },
+  officiel: { nom: "Classique", pointsParSet: 11, setsGagnants: 2, detail: "Sets de 11, 2 sets gagnants · amicale" },   // (la clé « officiel » est celle du serveur)
+  eclair: { nom: "Éclair", pointsParSet: 7, setsGagnants: 1, detail: "Un set de 7 · amicale" },
 };
 
 // Au bout de ce temps sans adversaire, on propose un bot (en continuant de chercher un humain).
