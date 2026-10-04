@@ -2,7 +2,10 @@
 // départ dès que c'est plein, matchs lancés automatiquement.
 import * as social from "./social-serveur.js";
 import { TAILLES_SNG, dureeSng, resume } from "./tournoi-logique.js";
-import { gainsSng, gainDuel } from "./jetons-logique.js";
+import { gainsSng, gainDuel, MISES } from "./jetons-logique.js";
+import { lire, ecrire } from "./stockage.js";
+
+const TAILLES_MISE = [2, 8];   // les Sit & Go à mise se jouent à 2 (heads-up) ou à 8
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -10,6 +13,7 @@ const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 // ctx : { compte, ouvrirTournoi(id), chercherMatch() (lance le duel s'il y en a un qui m'attend), signaler(cle, valeur) }
 export function installerSng(ctx) {
   let uid = null, minuterie = 0, etat = null, dernierePhase = null;
+  let mise = [0, ...MISES].includes(lire("sngMise", 0)) ? lire("sngMise", 0) : 0;
   const dire = (t, erreur = false) => { $("sngMsg").textContent = t; $("sngMsg").classList.toggle("erreur", erreur); };
 
   function surSession(session) {
@@ -44,24 +48,16 @@ export function installerSng(ctx) {
 
   function render() {
     const mien = etat?.mien;
-    $("sngSalles").innerHTML = TAILLES_SNG.map(n => {
-      const s = salle(n, 0) || { inscrits: 0 };
-      const ici = mien?.phase === "inscriptions" && mien.taille === n && !mien.mise;
-      return `<div class="joueur${ici ? " a-jouer" : ""}" data-taille="${n}">
+    // Les salles de la mise choisie : sans mise, de 2 à 64 joueurs ; à mise, à 2 (heads-up) ou à 8.
+    document.querySelectorAll("#sngMise button").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.v === mise)));
+    $("sngSalles").innerHTML = (mise ? TAILLES_MISE : TAILLES_SNG).map(n => {
+      const s = salle(n, mise) || { inscrits: 0 }, g = gainsSng(mise);
+      const ici = mien?.phase === "inscriptions" && mien.taille === n && (mien.mise || 0) === mise;
+      const gains = !mise ? `environ ${dureeSng(n)}` : n === 2 ? `le gagnant remporte ${gainDuel(mise)}` : `1er : ${g[0]}, 2e : ${g[1]}`;
+      return `<div class="joueur${ici ? " a-jouer" : ""}" data-taille="${n}" data-mise="${mise}">
         <span class="mini"><span class="trophee">${n}</span></span>
-        <div style="min-width:0"><div class="jn">${n === 2 ? "Heads-up · 2 joueurs" : `${n} joueurs`}</div><div class="jd">${s.inscrits}/${n} en salle · environ ${dureeSng(n)}</div></div>
+        <div style="min-width:0"><div class="jn">${n === 2 ? "Heads-up · 2 joueurs" : `${n} joueurs`}</div><div class="jd">${s.inscrits}/${n} en salle · ${gains}</div></div>
         <div class="actions">${ici ? `<button class="petit alt" data-a="quitter">Quitter</button>` : mien ? "" : `<button class="petit" data-a="entrer">Entrer</button>`}</div></div>`;
-    }).join("");
-    // À mise : pour chaque montant, une salle à 2 (heads-up) et une salle à 8.
-    $("sngMises").innerHTML = (etat?.salles_mise || []).map(({ mise }) => {
-      const a2 = salle(2, mise) || { inscrits: 0 }, a8 = salle(8, mise) || { inscrits: 0 }, g = gainsSng(mise);
-      const ici = mien?.phase === "inscriptions" && mien.mise === mise ? mien.taille : null;
-      const bouton = n => (ici === n ? `<button class="petit alt" data-a="quitter" data-taille="${n}">Quitter</button>`
-        : mien ? "" : `<button class="petit" data-a="entrer" data-taille="${n}">À ${n}</button>`);
-      return `<div class="joueur${ici ? " a-jouer" : ""}" data-mise="${mise}">
-        <span class="mini"><span class="trophee">🪙</span></span>
-        <div style="min-width:0"><div class="jn">Entrée ${mise} jetons</div><div class="jd">À 2 (${a2.inscrits}/2) : le gagnant remporte ${gainDuel(mise)} · À 8 (${a8.inscrits}/8) : 1er ${g[0]}, 2e ${g[1]}</div></div>
-        <div class="actions">${bouton(2)}${bouton(8)}</div></div>`;
     }).join("");
     const dernier = etat?.dernier;
     $("sngMien").hidden = !mien && !dernier;
@@ -82,7 +78,7 @@ export function installerSng(ctx) {
 
   const entrer = async e => {
     const b = e.target.closest("button"); if (!b) return;
-    const ligne = b.closest("[data-mise], [data-taille]"), taille = +(b.dataset.taille || ligne.dataset.taille), mise = +(ligne.dataset.mise || 0);
+    const ligne = b.closest("[data-taille]"), taille = +ligne.dataset.taille, mise = +(ligne.dataset.mise || 0);
     b.disabled = true;
     try {
       if (b.dataset.a === "entrer") {
@@ -94,7 +90,11 @@ export function installerSng(ctx) {
     rafraichir(); ctx.jetons?.();
   };
   $("sngSalles").addEventListener("click", entrer);
-  $("sngMises").addEventListener("click", entrer);
+  // Le choix de la mise (gardé sur le téléphone).
+  $("sngMise").addEventListener("click", e => {
+    const b = e.target.closest("button[data-v]"); if (!b) return;
+    mise = +b.dataset.v; ecrire("sngMise", mise); render();
+  });
 
   surSession(ctx.compte.session());
   return { rafraichir };
