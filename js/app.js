@@ -525,8 +525,8 @@ function finir() {
   // Une victoire contre un bot rapporte quelques jetons (avec un compte).
   if (n && gagne && !S.duel) jetonsUI?.gagnerEntrainement().then(g => { if (g) $("news").textContent = `🪙 +${g} jetons. ${$("news").textContent}`.trim(); });
   $("end").scrollIntoView({ behavior: reduitMouvement() ? "auto" : "smooth", block: "start" });
-  // Après une finale (tournoi solo ou en ligne) : l'interview du journaliste.
-  if (n && !special && S.annonces.finale) setTimeout(() => ouvrirInterview(gagne), 2500);
+  // L'interview d'après-finale : seulement pour les tournois programmés (pas les Sit & Go, ni les tournois d'entraînement ou entre amis).
+  if (n && !special && S.annonces.finale && S.duel && D?.programme) setTimeout(() => ouvrirInterview(gagne), 2500);
 }
 
 // ---------------------------------------------------------------- la poignée de main
@@ -1362,6 +1362,7 @@ async function reperesTournoi(duel) {
     D.sng = t.mode === "direct" && m.tour === 1;
     D.direct = t.mode === "direct" && !t.freeroll && !t.programme;   // (le trophée « Roi du Sit & Go » ne vaut ni pour le freeroll ni pour les tournois programmés)
     D.grandChelem = t.programme === "grand_chelem";
+    D.programme = !!(t.programme || t.freeroll);   // tournoi à heure fixe (le Midi, l'Apéro, le Nocturne, le Grand Chelem, le freeroll)
     S.annonces.finale = D.tourVoix === "finale";
     S.annonces.enjeu = niveauEnjeu({ tour: D.tourVoix, grandChelem: D.grandChelem });
     if (faceAFaceOuvert) presenterSpeaker();
