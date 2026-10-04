@@ -76,7 +76,9 @@ export const FORMAT = d => `${texteFormat(formatDuel(d))}${d.classe === false ? 
 // duels : lignes de la table « duels » (j0, j1, vainqueur, fin, scores_sets, coups, classe, tournoi_id, maj_le).
 export function statsFaceAFace(duels, uid) {
   const r = { matchs: 0, v: 0, d: 0, officiels: 0, sets: [0, 0], points: [0, 0], egalites: 0,
-    mesSignes: [0, 0, 0], sesSignes: [0, 0, 0], apresSonPoint: { meme: 0, total: 0 },
+    mesSignes: [0, 0, 0], sesSignes: [0, 0, 0],
+    // Après un point gagné, combien de fois chacun rejoue le même signe (moi, lui).
+    rejoueApresVictoire: [{ meme: 0, total: 0 }, { meme: 0, total: 0 }],
     // Après un point perdu, combien de fois chacun change de signe (moi, lui).
     changeApresDefaite: [{ change: 0, total: 0 }, { change: 0, total: 0 }], serie: null, derniers: [] };
   const tries = [...duels].filter(x => maPlace(x, uid) !== null && x.vainqueur !== null && x.vainqueur !== undefined)
@@ -91,9 +93,12 @@ export function statsFaceAFace(duels, uid) {
     coups.forEach((c, i) => {
       r.mesSignes[c.a]++; r.sesSignes[c.b]++;
       if (c.g === null) r.egalites++; else r.points[c.g]++;
-      // Ses réflexes : après avoir gagné un point, rejoue-t-il le même signe ?
+      // Les réflexes : après un point gagné, le gagnant rejoue-t-il le même signe ?
       const prec = coups[i - 1];
-      if (prec && prec.g === 1) { r.apresSonPoint.total++; if (c.b === prec.b) r.apresSonPoint.meme++; }
+      if (prec && prec.g !== null) {
+        const x = r.rejoueApresVictoire[prec.g];
+        x.total++; if ((prec.g === 0 ? c.a === prec.a : c.b === prec.b)) x.meme++;
+      }
       // Après un point perdu (par moi : g = 1 ; par lui : g = 0), le perdant change-t-il de signe ?
       if (prec && prec.g !== null) {
         const perdant = 1 - prec.g, x = r.changeApresDefaite[perdant];
