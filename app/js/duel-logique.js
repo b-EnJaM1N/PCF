@@ -72,11 +72,13 @@ export const formatCourt = (points, sets) => sets === 1 || points < 7;
 export const formatDuel = d => ({ pointsParSet: d.points_par_set, setsGagnants: d.sets_gagnants });
 export const FORMAT = d => `${texteFormat(formatDuel(d))}${d.classe === false ? " · amical" : " · officiel"}${d.mise ? ` · 🪙 mise de ${d.mise} jetons` : ""}`;
 
-// Face-à-face avec un joueur : le bilan de tous nos duels terminés (vus de mon côté, du plus récent au plus ancien).
+// Face-à-face avec un joueur : le bilan de tous nos duels terminés (vus de mon côté ; derniers : tous, du plus récent au plus ancien).
 // duels : lignes de la table « duels » (j0, j1, vainqueur, fin, scores_sets, coups, classe, tournoi_id, maj_le).
 export function statsFaceAFace(duels, uid) {
   const r = { matchs: 0, v: 0, d: 0, officiels: 0, sets: [0, 0], points: [0, 0], egalites: 0,
-    mesSignes: [0, 0, 0], sesSignes: [0, 0, 0], apresSonPoint: { meme: 0, total: 0 }, serie: null, derniers: [] };
+    mesSignes: [0, 0, 0], sesSignes: [0, 0, 0], apresSonPoint: { meme: 0, total: 0 },
+    // Après un point perdu, combien de fois chacun change de signe (moi, lui).
+    changeApresDefaite: [{ change: 0, total: 0 }, { change: 0, total: 0 }], serie: null, derniers: [] };
   const tries = [...duels].filter(x => maPlace(x, uid) !== null && x.vainqueur !== null && x.vainqueur !== undefined)
     .sort((x, y) => Date.parse(y.maj_le) - Date.parse(x.maj_le));
   for (const duel of tries) {
@@ -92,8 +94,13 @@ export function statsFaceAFace(duels, uid) {
       // Ses réflexes : après avoir gagné un point, rejoue-t-il le même signe ?
       const prec = coups[i - 1];
       if (prec && prec.g === 1) { r.apresSonPoint.total++; if (c.b === prec.b) r.apresSonPoint.meme++; }
+      // Après un point perdu (par moi : g = 1 ; par lui : g = 0), le perdant change-t-il de signe ?
+      if (prec && prec.g !== null) {
+        const perdant = 1 - prec.g, x = r.changeApresDefaite[perdant];
+        x.total++; if ((perdant === 0 ? c.a !== prec.a : c.b !== prec.b)) x.change++;
+      }
     });
-    if (r.derniers.length < 5) {
+    {
       r.derniers.push({ gagne, scores, date: duel.maj_le, fin: duel.fin,
         type: duel.tournoi_id ? "tournoi" : duel.rapide ? "partie rapide" : duel.classe ? "officiel" : "amical" });
     }

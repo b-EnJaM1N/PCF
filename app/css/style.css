@@ -661,3 +661,5 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .ff-ligne span { font-size: .85rem; color: var(--muted); text-align: center; }
 .ff-titre { font-size: 1rem; margin: 14px 0 6px; }
 .ff-derniers { margin: 0; padding-left: 18px; font-size: .88rem; line-height: 1.6; }
+.ff-tous summary { cursor: pointer; font-size: .88rem; color: var(--me); margin-top: 6px; }
+.ff-ligne small { display: block; color: var(--muted); font-weight: 400; font-size: .75rem; }
