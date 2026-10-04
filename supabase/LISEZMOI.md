@@ -198,6 +198,15 @@ Même manipulation avec [`etape-26-plafond-des-sets.sql`](etape-26-plafond-des-s
 Il faut toujours 2 points d'écart en sets de 11 et de 7, mais à 14 partout (sets de 11) ou 9 partout (sets de 7),
 point décisif : le premier à 15 (ou 10) gagne le set. Si on relance un jour l'étape 3 ou 4b, il faut relancer celle-ci ensuite.
 
+## 1 septies vicies. Partie rapide amicale et heads-up (étape 27)
+
+Même manipulation avec [`etape-27-heads-up.sql`](etape-27-heads-up.sql), **après** l'étape 26
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-27-heads-up.sql).
+La partie rapide devient toujours amicale (sans effet sur le niveau officiel). Les Sit & Go gagnent des salles à deux
+(heads-up), sans mise ou à 50, 100, 200, 500 ou 1 000 jetons : le gagnant prend toute la cagnotte (1,8 fois la mise) ;
+seul depuis 2 minutes, un bot choisi selon la mise complète la salle.
+Si on relance un jour l'étape 14, 18 ou 24, il faut relancer celle-ci ensuite.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

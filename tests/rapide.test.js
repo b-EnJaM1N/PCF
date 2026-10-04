@@ -15,7 +15,7 @@ test("chrono et file d'attente", () => {
   assert.match(texteFile(0), /Personne/); assert.match(texteFile(1), /^1 joueur attend/); assert.match(texteFile(3), /^3 joueurs/);
 });
 
-test("formats : l'officielle compte pour le niveau, l'éclair est un set de 7", () => {
+test("formats : la classique en sets de 11, l'éclair en un set de 7", () => {
   assert.deepEqual([FORMATS_RAPIDES.officiel.pointsParSet, FORMATS_RAPIDES.officiel.setsGagnants], [11, 2]);
   assert.deepEqual([FORMATS_RAPIDES.eclair.pointsParSet, FORMATS_RAPIDES.eclair.setsGagnants], [7, 1]);
 });

@@ -40,8 +40,8 @@ begin
   perform pg_temp.verifier(r ? 'duel', 'le joueur 3 trouve un adversaire');
   id1 := (r->'duel'->>'id')::uuid;
   execute 'reset role'; select * into d from duels where id = id1;
-  perform pg_temp.verifier(d.j0 = pg_temp.j(1)::uuid and d.j1 = pg_temp.j(3)::uuid and d.rapide and d.classe
-    and d.points_par_set = 11 and d.sets_gagnants = 2 and d.phase = 'presentation', 'duel rapide officiel, 11 points, 2 sets, en présentation');
+  perform pg_temp.verifier(d.j0 = pg_temp.j(1)::uuid and d.j1 = pg_temp.j(3)::uuid and d.rapide and not d.classe   -- (amicale depuis l'étape 27)
+    and d.points_par_set = 11 and d.sets_gagnants = 2 and d.phase = 'presentation', 'duel rapide en sets de 11, 2 sets, amical, en présentation');
   r := pg_temp.cherche(1, 'officiel');
   perform pg_temp.verifier((r->'duel'->>'id')::uuid = id1, 'le joueur 1 reçoit le même duel');
   execute 'reset role';
