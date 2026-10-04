@@ -22,6 +22,7 @@ export function installerRapide(ctx) {
     if (uid) compter();
   }
   ctx.compte.surConnexion(surSession);
+  surSession(ctx.compte.session());   // tout de suite, sans attendre le serveur : l'écran n'est jamais vide
 
   // Combien de joueurs attendent dans chaque file.
   async function compter() {
