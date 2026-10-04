@@ -151,7 +151,7 @@ export function installerCercles(ctx) {
     // La part de chaque signe joué, de chaque côté.
     const part = (t, k) => { const tot = t[0] + t[1] + t[2]; return tot ? `${Math.round(100 * t[k] / tot)} %` : "–"; };
     const signes = [0, 1, 2].map(k => ligne(part(r.mesSignes, k), `${EMOJI[k]} ${NOM[k]}`, part(r.sesSignes, k))).join("");
-    const change = x => (x.total ? `${Math.round(100 * x.change / x.total)} %<small>${x.change} fois sur ${x.total}</small>` : "–");
+    const change = x => (x.total ? `${Math.round(100 * x.change / x.total)} %` : "–");
     const serie = r.serie.n >= 2 ? `<p class="hint">🔥 ${r.serie.n} ${r.serie.gagne ? "victoires" : "défaites"} de suite ${r.serie.gagne ? "pour toi" : `face à ${n}`}.</p>` : "";
     const ap = r.apresSonPoint;
     const reflexe = ap.total >= 5 ? `<p class="hint">🔎 Après avoir gagné un point, ${n} rejoue le même signe ${Math.round(100 * ap.meme / ap.total)} % du temps${ap.meme / ap.total >= 0.45 ? " : c'est exploitable !" : "."}</p>` : "";
