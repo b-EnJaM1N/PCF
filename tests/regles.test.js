@@ -40,12 +40,16 @@ test("un set de 11 se gagne à 11 points avec 2 points d'écart", () => {
   assert.equal(vainqueurSet(12, 10, 11), 0);
   assert.equal(vainqueurSet(13, 15, 11), 1);
   assert.equal(vainqueurSet(14, 13, 11), null);
+  assert.equal(vainqueurSet(15, 14, 11), 0, "à 14 partout, point décisif : 15–14 gagne");
+  assert.equal(vainqueurSet(14, 15, 11), 1);
 });
 
 test("un set de 7 (option) se gagne à 7 points avec 2 points d'écart", () => {
   assert.equal(vainqueurSet(7, 5, 7), 0);
   assert.equal(vainqueurSet(7, 6, 7), null);
   assert.equal(vainqueurSet(9, 7, 7), 0);
+  assert.equal(vainqueurSet(9, 8, 7), null);
+  assert.equal(vainqueurSet(10, 9, 7), 0, "à 9 partout, point décisif : 10–9 gagne");
 });
 
 test("à 10–10, il faut deux points d'écart pour gagner le set", () => {

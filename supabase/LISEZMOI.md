@@ -191,6 +191,13 @@ prélevée au début, le joueur qui gagne remporte 1,8 fois la mise, et si le bo
 selon la mise (faibles à 50, moyens à 100 et 200, forts à 500 et 1 000). Les bots ne paient rien et ne gagnent rien.
 Si on relance un jour l'étape 14 ou 21, il faut relancer celle-ci ensuite.
 
+## 1 sexies vicies. Plus de sets à rallonge (étape 26)
+
+Même manipulation avec [`etape-26-plafond-des-sets.sql`](etape-26-plafond-des-sets.sql), **après** l'étape 25
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-26-plafond-des-sets.sql).
+Il faut toujours 2 points d'écart en sets de 11 et de 7, mais à 14 partout (sets de 11) ou 9 partout (sets de 7),
+point décisif : le premier à 15 (ou 10) gagne le set. Si on relance un jour l'étape 3 ou 4b, il faut relancer celle-ci ensuite.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

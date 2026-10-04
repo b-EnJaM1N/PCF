@@ -73,3 +73,26 @@ test("le format en toutes lettres", () => {
   assert.equal(texteFormat({ pointsParSet: 1, setsGagnants: 1 }), "Sets de 1 point · match en 1 set");
   assert.equal(texteFormat({ pointsParSet: 3, setsGagnants: 3 }), "Sets de 3 points · 3 sets gagnants");
 });
+
+test("sets de 11 : à 14 partout, point décisif, le premier à 15 gagne le set (même 15–14)", () => {
+  const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 });
+  gagneJaune(m, 10); gagneRouge(m, 10);
+  for (let k = 0; k < 3; k++) { gagneJaune(m, 1); gagneRouge(m, 1); }   // 13 partout : toujours 2 points d'écart
+  assert.deepEqual(m.points, [13, 13]); assert.ok(egaliteFinDeSet(m)); assert.ok(!pointDecisif(m));
+  gagneRouge(m, 1);
+  assert.deepEqual(balle(m), { joueur: 1, type: "set" });
+  gagneJaune(m, 1);
+  assert.deepEqual(m.points, [14, 14]); assert.ok(pointDecisif(m)); assert.ok(!egaliteFinDeSet(m)); assert.equal(balle(m), null);
+  jouerCoup(m, PIERRE, PIERRE);   // une égalité ne compte pas
+  const e = gagneJaune(m, 1);
+  assert.ok(e.finSet); assert.deepEqual(e.scoreSet, [15, 14]); assert.deepEqual(m.sets, [1, 0]);
+});
+
+test("sets de 7 : à 9 partout, point décisif, le premier à 10 gagne le set", () => {
+  const m = nouveauMatch({ pointsParSet: 7, setsGagnants: 1 });
+  gagneJaune(m, 6); gagneRouge(m, 6);
+  for (let k = 0; k < 3; k++) { gagneJaune(m, 1); gagneRouge(m, 1); }
+  assert.deepEqual(m.points, [9, 9]); assert.ok(pointDecisif(m)); assert.ok(!egaliteFinDeSet(m));
+  const e = gagneRouge(m, 1);
+  assert.ok(e.finSet); assert.deepEqual(e.scoreSet, [9, 10]); assert.ok(m.termine); assert.equal(m.vainqueur, 1);
+});
