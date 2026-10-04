@@ -2,11 +2,11 @@
   "_explication": "Les bruitages du court, générés par ElevenLabs Sound Effects (robot GitHub « Voix », choix « sons »). Description en anglais, durée en secondes (0,5 à 30), boucle pour le fond. Pour refaire un son : le supprimer de app/audio/ (ou le donner dans « ids ») et relancer.",
   "sons": {
     "raquette_pierre_01": {
-      "texte": "Heavy tennis ball hit, deep powerful thud, low pitch, close-up, no crowd",
+      "texte": "Clear tennis racket hitting a tennis ball, soft round pop with a short whoosh of the racket, single hit, close-up, no crowd",
       "duree": 1
     },
     "raquette_pierre_fort_01": {
-      "texte": "Massive tennis smash, very powerful deep thud with stadium reverb, no crowd",
+      "texte": "Fast slicing tennis shot, sharp whoosh and pop with stadium reverb, no crowd",
       "duree": 1.5
     },
     "raquette_ciseaux_01": {
@@ -18,11 +18,11 @@
       "duree": 1.5
     },
     "raquette_feuille_01": {
-      "texte": "Clear tennis racket hitting a tennis ball, soft round pop with a short whoosh of the racket, single hit, close-up, no crowd",
+      "texte": "Heavy tennis ball hit, deep powerful thud, low pitch, close-up, no crowd",
       "duree": 1
     },
     "raquette_feuille_fort_01": {
-      "texte": "Fast slicing tennis shot, sharp whoosh and pop with stadium reverb, no crowd",
+      "texte": "Massive tennis smash, very powerful deep thud with stadium reverb, no crowd",
       "duree": 1.5
     },
     "public_fond_01": {
