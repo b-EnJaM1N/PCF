@@ -207,6 +207,13 @@ La partie rapide devient toujours amicale (sans effet sur le niveau officiel). L
 seul depuis 2 minutes, un bot choisi selon la mise complète la salle.
 Si on relance un jour l'étape 14, 18 ou 24, il faut relancer celle-ci ensuite.
 
+## 1 duodetricies. Mises dans toutes les salles de Sit & Go (étape 28)
+
+Même manipulation avec [`etape-28-mises-toutes-tailles.sql`](etape-28-mises-toutes-tailles.sql), **après** l'étape 27
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-28-mises-toutes-tailles.sql).
+On peut miser dans toutes les salles (2, 8, 16, 32, 64) ; la cagnotte se partage comme au poker selon la taille.
+Si on relance un jour l'étape 27, il faut relancer celle-ci ensuite.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

@@ -37,7 +37,6 @@ begin
   -- 2. Heads-up à 100 jetons entre deux humains : le tournoi part dès le 2e inscrit, un seul match.
   perform pg_temp.en_tant_que(pg_temp.u(3)::text);
   perform pg_temp.interdit('select rejoindre_sit_and_go(4, 100)', 'salle de 4 refusée');
-  perform pg_temp.interdit('select rejoindre_sit_and_go(16, 100)', 'mise en salle de 16 refusée');
   perform rejoindre_sit_and_go(2, 100);
   s := salles_sit_and_go();
   perform pg_temp.verifier((select (x ->> 'inscrits')::int from jsonb_array_elements(s -> 'heads_up') x where (x ->> 'mise')::int = 100) = 1
