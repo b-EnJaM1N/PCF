@@ -48,8 +48,6 @@ export const quitterSng = () => rpc("quitter_sit_and_go");
 
 // Partie rapide (supabase/etape-7-partie-rapide.sql)
 export const chercherPartie = (format, mise = 0) => rpc("chercher_partie", { p_format: format, p_mise: mise });   // → { duel } ou { attente, depuis, en_attente, maintenant }
-// Partie rapide à mise contre un bot (étape 25) : un vrai duel sur le serveur, la mise est prélevée tout de suite. → le duel
-export const jouerBotRapide = (format, mise) => rpc("jouer_bot_rapide", { p_format: format, p_mise: mise });
 export const quitterPartie = () => rpc("quitter_partie");
 export const fileRapide = () => rpc("file_partie_rapide");                            // → { officiel, eclair } : joueurs en attente
 

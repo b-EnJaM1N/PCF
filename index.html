@@ -295,13 +295,10 @@
     <section class="card" id="rapideCard" hidden>
       <h2>⚡ Partie rapide</h2>
       <div id="rapideChoix">
-        <p class="hint">Choisis ta mise et ton format : on te trouve un adversaire humain, du niveau le plus proche du tien, qui a choisi la même mise. Reste sur cet écran pendant la recherche.</p>
-        <span class="fmt-lbl">Mise en jetons</span>
-        <div class="seg seg-mise" id="rapideMise"><button data-v="0">Sans mise</button><button data-v="50">50</button><button data-v="100">100</button><button data-v="200">200</button><button data-v="500">500</button><button data-v="1000">1 000</button></div>
-        <p class="hint" id="rapideMiseTexte" style="margin-bottom:10px"></p>
+        <p class="hint">Choisis ton format : on te trouve un adversaire humain, du niveau le plus proche du tien. Sans mise et amicale : pour le plaisir, sans effet sur ton niveau. Reste sur cet écran pendant la recherche. (Pour jouer des jetons : Sit &amp; Go, dont le heads-up à deux.)</p>
         <div class="resultats">
-          <button class="joueur rapide-choix" data-format="officiel"><span><span class="jn">Officielle</span><span class="jd">Sets de 11, 2 sets gagnants · compte pour ton niveau officiel</span></span><span class="rapide-nb" id="rapideNb_officiel"></span></button>
-          <button class="joueur rapide-choix" data-format="eclair"><span><span class="jn">Éclair</span><span class="jd">Un set de 7 · amicale, sans effet sur le niveau</span></span><span class="rapide-nb" id="rapideNb_eclair"></span></button>
+          <button class="joueur rapide-choix" data-format="officiel"><span><span class="jn">Classique</span><span class="jd">Sets de 11, 2 sets gagnants · amicale</span></span><span class="rapide-nb" id="rapideNb_officiel"></span></button>
+          <button class="joueur rapide-choix" data-format="eclair"><span><span class="jn">Éclair</span><span class="jd">Un set de 7 · amicale</span></span><span class="rapide-nb" id="rapideNb_eclair"></span></button>
         </div>
         <p class="hint" id="rapideFile"></p>
       </div>
@@ -311,7 +308,7 @@
         <p class="hint" id="rapideFormat"></p>
         <p class="hint" id="rapideEtat" role="status"></p>
         <div id="rapideBot" hidden>
-          <p class="sndnote" id="rapideBotTexte">Personne n'est disponible pour l'instant. Tu peux jouer contre un bot en attendant : ce sera un bot, pas un humain, sans mise, et le match ne comptera pas pour ton niveau officiel.</p>
+          <p class="sndnote">Personne n'est disponible pour l'instant. Tu peux jouer contre un bot en attendant : ce sera un bot, pas un humain, sans mise, et le match ne comptera pas pour ton niveau officiel.</p>
           <button class="btn" id="rapideBotGo">Jouer contre un bot</button>
         </div>
         <button class="btn alt" id="rapideAnnuler" style="margin-top:8px">Annuler la recherche</button>
@@ -340,6 +337,9 @@
       <p class="hint">Salles de 8 · entrée en jetons · 65 % de la cagnotte au 1er, 35 % au 2e.</p>
       <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Salles de 8 joueurs. L'entrée est payée en jetons (rendue si tu quittes la salle avant le départ). La cagnotte, moins 10 %, est partagée comme au poker : 65 % au 1er, 35 % au 2e.</p></details>
       <div id="sngMises" class="resultats"></div>
+      <h2 style="margin-top:18px">🥊 Heads-up (à deux)</h2>
+      <p class="hint">Un contre un · sets de 11, 2 sets gagnants · avec ou sans mise : le gagnant remporte toute la cagnotte (1,8 fois la mise). Personne au bout de 2 minutes : un bot de ton niveau de mise te défie.</p>
+      <div id="sngHeadsUp" class="resultats"></div>
       <p class="locknote" id="sngMsg" role="status"></p>
     </section>
     <section class="card" id="sngHors" hidden><p class="hint">Les Sit &amp; Go se jouent en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
