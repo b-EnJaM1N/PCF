@@ -542,7 +542,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (371 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (369 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -695,8 +695,6 @@ restent lus par la voix de synthèse.
 | `commentatrice_defaite_08_f.mp3` | Elle a le seum. Comme disent les jeunes. |
 | `commentatrice_domination_01.mp3` | Je suis ton père. |
 | `commentatrice_huees_01.mp3` | Je vous demande de vous arrêter. |
-| `commentatrice_poignee_froide_01.mp3` | Glacial. J'approuve. |
-| `commentatrice_poignee_contraste_01.mp3` | L'un tend la main. L'autre tend un glaçon. |
 | `commentatrice_humain_01.mp3` | Ils se connaissent. Et ça se voit. |
 | `commentatrice_humain_02.mp3` | Entre amis, il n'y a pas de pitié. |
 | `commentatrice_dialogue_avant_match_01.mp3` | On sent surtout deux personnes devant leur téléphone. Mais oui. |

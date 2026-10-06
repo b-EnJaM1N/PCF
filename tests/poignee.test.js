@@ -16,8 +16,8 @@ test("la rencontre de deux styles : l'animation du plus froid, et la bonne répl
   assert.deepEqual(rencontre("franche", "franche"), { animation: "franche", ligne: "arbitre_poignee_franche_01" });
   assert.deepEqual(rencontre("normale", "franche"), { animation: "normale", ligne: "arbitre_poignee_de_main_01" });
   assert.deepEqual(rencontre("franche", "legere"), { animation: "legere", ligne: "arbitre_poignee_legere_01" });
-  assert.deepEqual(rencontre("froide", "legere"), { animation: "froide", ligne: "commentatrice_poignee_froide_01" });
-  assert.deepEqual(rencontre("franche", "froide"), { animation: "froide", ligne: "commentatrice_poignee_contraste_01" });
+  assert.deepEqual(rencontre("froide", "legere"), { animation: "froide", ligne: "arbitre_poignee_legere_01" }, "plus de commentaire de Monique");
+  assert.deepEqual(rencontre("franche", "froide"), { animation: "froide", ligne: "arbitre_poignee_legere_01" });
   for (const a of Object.keys(STYLES)) for (const b of Object.keys(STYLES)) assert.ok(CATALOGUE.has(rencontre(a, b).ligne), `${a}/${b}`);
 });
 

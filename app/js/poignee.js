@@ -27,9 +27,8 @@ export function rencontre(moi, lui) {
   const a = STYLES[styleValide(moi)], b = STYLES[styleValide(lui)];
   const froid = a.chaleur <= b.chaleur ? styleValide(moi) : styleValide(lui);
   let ligne;
-  if (froid === "froide" && Math.max(a.chaleur, b.chaleur) >= 2) ligne = "commentatrice_poignee_contraste_01";
-  else if (froid === "froide") ligne = "commentatrice_poignee_froide_01";
-  else if (froid === "legere") ligne = "arbitre_poignee_legere_01";
+  // (plus de commentaire de Monique sur la poignée de main : décision du porteur du projet ; l'arbitre l'annonce par écrit)
+  if (froid === "legere" || froid === "froide") ligne = "arbitre_poignee_legere_01";
   else if (froid === "franche") ligne = "arbitre_poignee_franche_01";
   else ligne = "arbitre_poignee_de_main_01";
   return { animation: froid, ligne };
