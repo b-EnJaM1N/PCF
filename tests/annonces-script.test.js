@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { CATALOGUE, replique, repliqueScore, repliquePartout, POOLS, DIALOGUES_IDS, nbDialogues } from "../app/js/voix/script.js";
-import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces, annoncesAvantMatch, interview, etiquetteDe, niveauEnjeu, baseDe, silenceAvantBalle, contexteJeu } from "../app/js/annonces.js";
+import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces, annoncesAvantMatch, interview, etiquetteDe, niveauEnjeu, baseDe, silenceAvantBalle, contexteJeu, figureDe } from "../app/js/annonces.js";
 import { surnomDe } from "../app/js/surnoms.js";
 import { profilParDefaut } from "../app/js/profil.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX, FEUILLE } from "../app/js/regles.js";
@@ -380,4 +380,20 @@ test("commentaires selon l'enjeu : le contexte, l'avant-match et l'après-match 
     if (com.some(l => /_f$/.test(l.id))) vus++;
   }
   assert.ok(vus > 0, "des versions au féminin");
+});
+
+test("figures techniques : chaque enchaînement gagnant a son nom", () => {
+  // a : mon signe (Pierre 0, Ciseaux 1, Feuille 2) ; g : gagnant du point (0 moi, 1 lui, null égalité).
+  const coups = l => l.map(([a, g, b = 0]) => ({ a, b, gagnant: g }));
+  assert.equal(figureDe(coups([[2, 1], [2, 1], [2, 0]])), "triple_loop");
+  assert.equal(figureDe(coups([[0, 1], [0, 1], [0, 1], [0, 0]])), "marteau");
+  assert.equal(figureDe(coups([[2, 1], [2, 1], [2, 1], [1, 1], [1, 0]])), "valse", "trois Feuilles puis deux Ciseaux");
+  assert.equal(figureDe(coups([[0, 1], [2, 1], [1, 0]])), "tour", "Pierre, Feuille, Ciseaux");
+  assert.equal(figureDe(coups([[1, 1], [2, 1], [0, 0]])), "retro", "Ciseaux, Feuille, Pierre");
+  assert.equal(figureDe(coups([[0, 1], [0, 1], [2, 0]])), "double_boucle");
+  assert.equal(figureDe(coups([[0, 1], [1, 1], [0, 0]])), "ascenseur");
+  assert.equal(figureDe(coups([[1, 0], [0, 1], [0, 0]])), "boomerang");
+  assert.equal(figureDe(coups([[1, 0], [0, 0, 2], [2, 0]])), "miroir", "je joue la Feuille qu'il vient de jouer");
+  assert.equal(figureDe(coups([[1, 0], [0, null], [2, null], [1, null], [0, 0]])), "parapluie");
+  assert.equal(figureDe(coups([[2, 1], [2, 1], [2, 1]])), null, "un point perdu : pas de figure");
 });

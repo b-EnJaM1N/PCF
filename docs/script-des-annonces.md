@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (404 répliques)
+## Commentateur — vif, enthousiaste, plein de références (426 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -333,6 +333,28 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_avant_finale_01.mp3` | Une finale, Madame ! Une FINALE ! |
 | `commentateur_dialogue_avant_revanche_01.mp3` | Ils se connaissent, ces deux-là ! |
 | `commentateur_dialogue_avant_nuit_01.mp3` | Il est tard, Madame, mais le HandSlam ne dort jamais ! |
+| `commentateur_dialogue_figure_triple_loop_01.mp3` | UN TRIPLE LOOP ! Trois fois le même signe ! |
+| `commentateur_dialogue_figure_triple_loop_02.mp3` | Le triple loop, Madame ! Et réceptionné ! |
+| `commentateur_dialogue_figure_double_boucle_01.mp3` | DOUBLE BOUCLE PIQUÉ ! |
+| `commentateur_dialogue_figure_double_boucle_02.mp3` | Un double boucle piqué d'une pureté rare ! |
+| `commentateur_dialogue_figure_valse_01.mp3` | LA VALSE À TROIS TEMPS ! |
+| `commentateur_dialogue_figure_valse_02.mp3` | Trois, puis deux ! La valse, Madame ! |
+| `commentateur_dialogue_figure_tour_01.mp3` | LE TOUR DU PROPRIÉTAIRE ! Pierre, Feuille, Ciseaux ! |
+| `commentateur_dialogue_figure_tour_02.mp3` | Le tour du propriétaire, exécuté à la perfection ! |
+| `commentateur_dialogue_figure_retro_01.mp3` | LE RÉTRO INVERSÉ ! |
+| `commentateur_dialogue_figure_retro_02.mp3` | Ciseaux, Feuille, Pierre ! Le rétro inversé ! |
+| `commentateur_dialogue_figure_ascenseur_01.mp3` | L'ASCENSEUR ÉMOTIONNEL ! |
+| `commentateur_dialogue_figure_ascenseur_02.mp3` | Un aller-retour d'une audace folle ! |
+| `commentateur_dialogue_figure_boomerang_01.mp3` | LE BOOMERANG ! Le signe revient ! |
+| `commentateur_dialogue_figure_boomerang_02.mp3` | Le boomerang, Madame ! Le signe perdant revient gagner ! |
+| `commentateur_dialogue_figure_miroir_01.mp3` | LE MIROIR TOXIQUE ! |
+| `commentateur_dialogue_figure_miroir_02.mp3` | Le miroir toxique ! Quelle insolence ! |
+| `commentateur_dialogue_figure_marteau_01.mp3` | LE MARTEAU-PIQUEUR ! Encore et encore ! |
+| `commentateur_dialogue_figure_marteau_02.mp3` | Quatre fois le même signe ! Le marteau-piqueur ! |
+| `commentateur_dialogue_figure_parapluie_01.mp3` | LE COUP DU PARAPLUIE ! |
+| `commentateur_dialogue_figure_parapluie_02.mp3` | Trois égalités, puis le coup du parapluie ! |
+| `commentateur_dialogue_buse_01.mp3` | Une triple buse inversée ! C'est osé à ce moment-là de la partie ! |
+| `commentateur_dialogue_buse_02.mp3` | Attention… une triple buse inversée ! On n'en voit pas tous les jours ! |
 | `commentateur_dialogue_avant_entrainement_01.mp3` | Et c'est parti pour un petit entraînement ! |
 | `commentateur_dialogue_avant_entrainement_02.mp3` | Pas de pression aujourd'hui… enfin, normalement ! |
 | `commentateur_dialogue_avant_entrainement_03.mp3` | Une rencontre qui pourrait déjà révéler de grands talents ! |
@@ -520,7 +542,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (349 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (371 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -696,6 +718,28 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_avant_finale_01.mp3` | J'avais entendu la première fois. |
 | `commentatrice_dialogue_avant_revanche_01.mp3` | Oui. Et ils ne s'aiment pas beaucoup. |
 | `commentatrice_dialogue_avant_nuit_01.mp3` | Moi si. Normalement. |
+| `commentatrice_dialogue_figure_triple_loop_01.mp3` | Trois fois la même idée. On appelle ça de l'entêtement. |
+| `commentatrice_dialogue_figure_triple_loop_02.mp3` | Oui. Un geste typique de l'école lyonnaise. |
+| `commentatrice_dialogue_figure_double_boucle_01.mp3` | Un changement d'avis. Rien de plus. |
+| `commentatrice_dialogue_figure_double_boucle_02.mp3` | Un pur produit de l'école hongroise. Très propre. |
+| `commentatrice_dialogue_figure_valse_01.mp3` | La fin était à deux temps. Il faudra revoir le solfège. |
+| `commentatrice_dialogue_figure_valse_02.mp3` | Un classique de l'école viennoise. Évidemment. |
+| `commentatrice_dialogue_figure_tour_01.mp3` | Les trois signes, dans l'ordre. Ça s'appelle compter. |
+| `commentatrice_dialogue_figure_tour_02.mp3` | Une marque de fabrique de l'école suisse. Ponctuelle. |
+| `commentatrice_dialogue_figure_retro_01.mp3` | Ça existe, ça ? |
+| `commentatrice_dialogue_figure_retro_02.mp3` | Très prisé à l'école finlandaise. Ils jouent tout à l'envers, là-bas. |
+| `commentatrice_dialogue_figure_ascenseur_01.mp3` | Aller, retour. Rez-de-chaussée. |
+| `commentatrice_dialogue_figure_ascenseur_02.mp3` | Typique de l'école de Tourcoing. On y revient toujours. |
+| `commentatrice_dialogue_figure_boomerang_01.mp3` | Comme les mauvaises idées. Sauf que celle-là marche. |
+| `commentatrice_dialogue_figure_boomerang_02.mp3` | Un héritage de l'école australienne. Forcément. |
+| `commentatrice_dialogue_figure_miroir_01.mp3` | Copier son adversaire. À l'école, on appelle ça tricher. |
+| `commentatrice_dialogue_figure_miroir_02.mp3` | Une spécialité de l'école vénitienne. Les miroirs, c'est leur affaire. |
+| `commentatrice_dialogue_figure_marteau_01.mp3` | Les voisins vont se plaindre. |
+| `commentatrice_dialogue_figure_marteau_02.mp3` | Un pur produit de l'école soviétique des années 80. Rien ne bouge, tout cogne. |
+| `commentatrice_dialogue_figure_parapluie_01.mp3` | Après l'orage, forcément. |
+| `commentatrice_dialogue_figure_parapluie_02.mp3` | Très britannique. L'école de Cambridge, sans aucun doute. |
+| `commentatrice_dialogue_buse_01.mp3` | C'est surtout inconscient. |
+| `commentatrice_dialogue_buse_02.mp3` | Heureusement. |
 | `commentatrice_dialogue_avant_entrainement_01.mp3` | Exactement. Un entraînement. Vous pouvez respirer, Roland. |
 | `commentatrice_dialogue_avant_entrainement_02.mp3` | Voilà. Essayez de vous en souvenir. |
 | `commentatrice_dialogue_avant_entrainement_03.mp3` | Ou simplement deux joueurs qui s'entraînent. |

@@ -40,6 +40,19 @@
             "poignee_contraste",
             "duel_esprits",
             "dialogue_cri"
+          ],
+          "ids": [
+            "commentatrice_dialogue_figure_triple_loop_01",
+            "commentatrice_dialogue_figure_double_boucle_01",
+            "commentatrice_dialogue_figure_valse_01",
+            "commentatrice_dialogue_figure_tour_01",
+            "commentatrice_dialogue_figure_retro_01",
+            "commentatrice_dialogue_figure_ascenseur_01",
+            "commentatrice_dialogue_figure_boomerang_01",
+            "commentatrice_dialogue_figure_miroir_01",
+            "commentatrice_dialogue_figure_marteau_01",
+            "commentatrice_dialogue_figure_parapluie_01",
+            "commentatrice_dialogue_buse_01"
           ]
         },
         {
@@ -51,6 +64,23 @@
             "set_ecrasant",
             "domination",
             "serie_pour"
+          ]
+        },
+        {
+          "nom": "sérieuse",
+          "indication": "[calm] [serious] [matter-of-fact, like an expert]",
+          "situations": [],
+          "ids": [
+            "commentatrice_dialogue_figure_triple_loop_02",
+            "commentatrice_dialogue_figure_double_boucle_02",
+            "commentatrice_dialogue_figure_valse_02",
+            "commentatrice_dialogue_figure_tour_02",
+            "commentatrice_dialogue_figure_retro_02",
+            "commentatrice_dialogue_figure_ascenseur_02",
+            "commentatrice_dialogue_figure_boomerang_02",
+            "commentatrice_dialogue_figure_miroir_02",
+            "commentatrice_dialogue_figure_marteau_02",
+            "commentatrice_dialogue_figure_parapluie_02"
           ]
         }
       ]

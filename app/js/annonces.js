@@ -29,6 +29,8 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
     dits: new Set(),              // répliques déjà dites dans ce match (id de base)
     dialoguesDits: new Set(),
     cine: false,                  // un seul clin d'œil de cinéma par match
+    figures: 0,                   // figures techniques annoncées dans ce match (2 au plus)
+    buse: false,                  // la triple buse inversée : une fois par match au plus
     serie: { joueur: null, n: 0 },
     serieMaxSet: [0, 0],
     egalitesDeSuite: 0,
@@ -188,6 +190,14 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
   // Sur une égalité, il peut aussi avoir changé de signe : on n'attend plus.
   if (evt.egalite && etat.obstine && n >= 2 && c[n - 1].a !== c[n - 2].a) etat.obstine = false;
 
+  // Les figures techniques (inventées, façon patinage) : un enchaînement de mes signes qui gagne le point.
+  // Parfois seulement (3 fois sur 10), au plus 2 par match, jamais sur une fin de set.
+  if (!moment && !evt.egalite && !evt.finSet && evt.gagnant === 0 && etat.figures < 2 && peutCommenter(3)) {
+    // (une figure dont les deux dialogues ont été entendus aux derniers matchs attend son tour)
+    const f = figureDe(c), neuve = f && DIALOGUES_IDS[`figure_${f}`]?.some(d => !etat.anciens?.has(baseDe(d[0])));
+    const d = neuve && rng() < 0.3 && dialogue(etat, `figure_${f}`, rng);
+    if (d) { dialogueFin = d; etat.figures++; etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
+  }
   if (moment) {
     commentaire = choisir(etat, moment, ctx, rng);
     if (commentaire) { lignes.push(commentaire); etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
@@ -198,8 +208,35 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
   return { lignes, commentaire, dialogue: dialogueFin, public: pub, ambiance };
 }
 
+// La figure technique (inventée) que dessinent mes derniers signes, si le dernier gagne le point ; sinon null.
+// c : les coups du match (a : mon signe, b : le sien, gagnant : 0 moi, 1 lui, null égalité). Pierre 0, Ciseaux 1, Feuille 2.
+export function figureDe(c) {
+  const n = c.length, s = c.map(x => x.a), der = k => s.slice(n - k);
+  if (!n || c[n - 1].gagnant !== 0) return null;
+  const pareils = k => n >= k && der(k).every(x => x === s[n - 1]);
+  if (n >= 4 && c.slice(n - 4, n - 1).every(x => x.gagnant === null)) return "parapluie";        // gagné juste après 3 égalités
+  if (pareils(4)) return "marteau";                                                                 // 4 fois le même signe (ou plus)
+  if (n >= 5) {                                                                                      // 3 fois un signe, puis 2 fois un autre
+    const [x1, x2, x3, y1, y2] = der(5);
+    if (x1 === x2 && x2 === x3 && y1 === y2 && y1 !== x1) return "valse";
+  }
+  if (pareils(3)) return "triple_loop";                                                             // 3 fois le même signe
+  if (n >= 3 && der(3).join() === "0,2,1") return "tour";                                          // Pierre, Feuille, Ciseaux
+  if (n >= 3 && der(3).join() === "1,2,0") return "retro";                                         // Ciseaux, Feuille, Pierre
+  if (n >= 3 && s[n - 3] === s[n - 2] && s[n - 1] !== s[n - 2]) return "double_boucle";           // 2 fois un signe, puis un autre
+  if (n >= 3 && s[n - 3] === s[n - 1] && s[n - 2] !== s[n - 1]) return "ascenseur";                // un aller-retour
+  if (n >= 2 && c[n - 2].gagnant === 1 && s[n - 2] === s[n - 1]) return "boomerang";              // le signe qui vient de perdre, rejoué
+  if (n >= 2 && s[n - 1] === c[n - 2].b) return "miroir";                                            // le signe que l'adversaire vient de jouer
+  return null;
+}
+
 // Temps mort de fin de set : une réplique ou un dialogue, et un mot si le set suivant est décisif.
 function finDeSet(match, evt, etat, ctx, rng) {
+  // La triple buse inversée : n'importe quand en fin de set, rarement, sans explication.
+  if (!etat.buse && rng() < 0.12) {
+    const d = dialogue(etat, "buse", rng);
+    if (d) { etat.buse = true; return d; }
+  }
   const out = [], { haut, bas, court } = ctx, len = match.format.pointsParSet;
   const decisifEnSuite = match.sets[0] === match.format.setsGagnants - 1 && match.sets[1] === match.format.setsGagnants - 1;
   const ajoute = x => { if (x) Array.isArray(x) ? out.push(...x) : out.push(x); };
