@@ -30,6 +30,7 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
     dialoguesDits: new Set(),
     cine: false,                  // un seul clin d'œil de cinéma par match
     figures: 0,                   // figures techniques annoncées dans ce match (2 au plus)
+    dejaSet: new Set(),           // les moments limités à une fois par set (obstination, duel d'esprits)
     buse: false,                  // la triple buse inversée : une fois par match au plus
     serie: { joueur: null, n: 0 },
     serieMaxSet: [0, 0],
@@ -97,14 +98,22 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
   return ligneMoment(item, { genre: etat.genre, signe: ctx.signe ?? 0, signeAdv: ctx.signeAdv ?? 0 });
 }
 
+// Les « écoles » que Monique cite régulièrement (lyonnaise, hongroise, soviétique) ; les autres restent rares.
+const ECOLES_REGULIERES = ["figure_triple_loop", "figure_double_boucle", "figure_marteau"];
+
 // Un dialogue pas encore joué dans ce match (liste de deux répliques), ou null.
 function dialogue(etat, moment, rng) {
   // (etat.audible : seulement les dialogues déjà enregistrés, pour ne jamais remplacer une voix par un silence)
   let dispo = DIALOGUES_IDS[moment].map((_, k) => k).filter(k => !etat.dialoguesDits.has(`${moment}_${k}`) && (!etat.audible || DIALOGUES_IDS[moment][k].every(id => etat.audible(id) && (etat.genre !== "f" || !CATALOGUE.has(`${id}_f`) || etat.audible(`${id}_f`)))));
   if (!dispo.length) return null;
   const frais = dispo.filter(k => !etat.anciens?.has(baseDe(DIALOGUES_IDS[moment][k][0])));
-  if (frais.length) dispo = frais;
-  const k = dispo[Math.floor(rng() * dispo.length)];
+  // (une école rare ne passe pas devant parce que la version cassante a déjà été entendue)
+  if (frais.length && !(moment.startsWith("figure_") && !ECOLES_REGULIERES.includes(moment))) dispo = frais;
+  // Tirage pondéré : pour les figures, Monique cassante (1er dialogue) d'abord ; Monique sérieuse (2e, une « école »)
+  // de temps en temps pour les écoles lyonnaise, hongroise et soviétique, très rarement pour les autres.
+  const poids = k => (!moment.startsWith("figure_") || k === 0 ? 1 : ECOLES_REGULIERES.includes(moment) ? 0.5 : 0.08);
+  let r = rng() * dispo.reduce((t, k) => t + poids(k), 0);
+  const k = dispo.find(x => (r -= poids(x)) < 0) ?? dispo[dispo.length - 1];
   etat.dialoguesDits.add(`${moment}_${k}`);
   return ligneDialogue(moment, k, etat.genre);
 }
@@ -129,8 +138,9 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
 
   if (evt.egalite) {
     etat.egalitesDeSuite++;
-    if ((etat.egalitesDeSuite === 3 || etat.egalitesDeSuite === 5) && peutCommenter(3)) {
-      moment = "duel_esprits"; ctx.cinqEgalites = etat.egalitesDeSuite === 5;
+    // (une fois par set au plus : sinon c'est le commentaire qu'on entend le plus)
+    if ((etat.egalitesDeSuite === 3 || etat.egalitesDeSuite === 5) && !etat.dejaSet.has("duel_esprits") && peutCommenter(3)) {
+      moment = "duel_esprits"; ctx.cinqEgalites = etat.egalitesDeSuite === 5; etat.dejaSet.add("duel_esprits");
     }
   } else {
     etat.egalitesDeSuite = 0;
@@ -171,8 +181,8 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
         moment = "temps_ecoule"; ctx.balleMatch = evt.balleAvant?.type === "match";
       } else if (etat.obstine && c[n - 1].a !== c[n - 2].a && peutCommenter(2) && rng() < 0.5) {
         moment = "changement"; etat.obstine = false;
-      } else if (obstination && peutCommenter(4) && rng() < 0.6) {
-        moment = "obstination"; etat.obstine = true;
+      } else if (obstination && !etat.dejaSet.has("obstination") && peutCommenter(4) && rng() < 0.4) {   // (une fois par set au plus)
+        moment = "obstination"; etat.obstine = true; etat.dejaSet.add("obstination");
       } else if (g === 1 && recents.length >= 8 && recents.filter(Boolean).length >= 6 && peutCommenter(6) && rng() < 0.5) {
         moment = "lecture_subie";
       } else if (lectureReussie(c) && peutCommenter(5) && rng() < 0.5) {
@@ -185,17 +195,19 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
     }
     // Le public applaudit une série de 4 points d'affilée (puis 8, 12…), mais se tait avant une balle de match.
     if (!evt.finSet && etat.serie.n % 4 === 0 && !(evt.balleApres && evt.balleApres.type === "match")) pub = "serie";
-    if (evt.finSet) { etat.ecartMin = 0; etat.serieMaxSet = [0, 0]; }
+    if (evt.finSet) { etat.ecartMin = 0; etat.serieMaxSet = [0, 0]; etat.dejaSet.clear(); }
   }
   // Sur une égalité, il peut aussi avoir changé de signe : on n'attend plus.
   if (evt.egalite && etat.obstine && n >= 2 && c[n - 1].a !== c[n - 2].a) etat.obstine = false;
 
   // Les figures techniques (inventées, façon patinage) : un enchaînement de mes signes qui gagne le point.
-  // Parfois seulement (3 fois sur 10), au plus 2 par match, jamais sur une fin de set.
+  // Parfois seulement (1 fois sur 4), au plus 2 par match, jamais sur une fin de set.
   if (!moment && !evt.egalite && !evt.finSet && evt.gagnant === 0 && etat.figures < 2 && peutCommenter(3)) {
     // (une figure dont les deux dialogues ont été entendus aux derniers matchs attend son tour)
-    const f = figureDe(c), neuve = f && DIALOGUES_IDS[`figure_${f}`]?.some(d => !etat.anciens?.has(baseDe(d[0])));
-    const d = neuve && rng() < 0.3 && dialogue(etat, `figure_${f}`, rng);
+    // (pour les écoles rares, seule la version cassante compte : sinon l'école reviendrait dès que la cassante a été entendue)
+    const f = figureDe(c), ds = f && DIALOGUES_IDS[`figure_${f}`];
+    const neuve = ds && (ECOLES_REGULIERES.includes(`figure_${f}`) ? ds : ds.slice(0, 1)).some(d => !etat.anciens?.has(baseDe(d[0])));
+    const d = neuve && rng() < 0.25 && dialogue(etat, `figure_${f}`, rng);
     if (d) { dialogueFin = d; etat.figures++; etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
   }
   if (moment) {
@@ -247,7 +259,9 @@ function finDeSet(match, evt, etat, ctx, rng) {
     else ajoute(choisir(etat, "resume_set", { ...ctx, unPartout: match.sets[0] === 1 && match.sets[1] === 1 }, rng));
   }
   if (decisifEnSuite && match.format.setsGagnants > 1) {
-    ajoute(rng() < 0.4 ? dialogue(etat, "set_decisif", rng) : choisir(etat, "set_decisif", ctx, rng));
+    // (un seul dialogue : seulement s'il n'a pas été entendu aux derniers matchs, sinon une réplique)
+    const dialogueNeuf = !DIALOGUES_IDS.set_decisif.every(d => etat.anciens?.has(baseDe(d[0])));
+    ajoute((dialogueNeuf && rng() < 0.4 && dialogue(etat, "set_decisif", rng)) || choisir(etat, "set_decisif", ctx, rng));
   }
   return out;
 }
