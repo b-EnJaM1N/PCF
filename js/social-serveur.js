@@ -6,7 +6,7 @@ const rpc = (nom, args = {}) => essayer(async () => verifier(await client().rpc(
 
 // Niveau officiel d'un ou plusieurs joueurs : Map id → { points, joues, gagnes, meilleur }.
 export const classements = ids => essayer(async () => new Map(ids.length
-  ? verifier(await client().from("classements").select("joueur,points,joues,gagnes,meilleur").in("joueur", ids)).map(c => [c.joueur, c])
+  ? verifier(await client().from("classements").select("joueur,points,joues,gagnes,meilleur,division").in("joueur", ids)).map(c => [c.joueur, c])
   : []));
 
 export const mesAmis = () => rpc("mes_amis");
@@ -61,6 +61,8 @@ export const desinscrireFreeroll = () => rpc("desinscrire_freeroll");
 export const defisDuJour = () => rpc("defis_du_jour");
 export const validerDefi = id => rpc("valider_defi", { p_defi: id });
 export const classementMois = () => rpc("classement_mois");
+// Le classement d'une division (0 Bronze … 4 Diamant), avec ma place (supabase/etape-31-divisions.sql).
+export const classementDivision = d => rpc("classement_division", { p_division: d });
 
 // Les tournois programmés (supabase/etape-18-tournois-programmes.sql) : { maintenant, tournois, tenant }.
 export const programmes = () => rpc("tournois_programmes");

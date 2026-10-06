@@ -4,6 +4,21 @@ import { FONDS } from "./avatar.js";
 import { K_ELO } from "./profil.js";
 
 export const CLASSEMENT_DEPART = 1200;
+
+// Les divisions du niveau officiel (les mêmes que sur le serveur, supabase/etape-31-divisions.sql).
+// On monte dès le seuil ; on ne redescend que 20 points sous le seuil de sa division.
+export const DIVISIONS = [
+  { nom: "Bronze", emoji: "🥉", seuil: 0 }, { nom: "Argent", emoji: "🥈", seuil: 1100 }, { nom: "Or", emoji: "🥇", seuil: 1250 },
+  { nom: "Platine", emoji: "💎", seuil: 1400 }, { nom: "Diamant", emoji: "👑", seuil: 1550 },
+];
+export const MARGE_DIVISION = 20;
+export function divisionDe(points, avant = null) {
+  let d = avant ?? DIVISIONS.reduce((k, x, i) => (points >= x.seuil ? i : k), 0);
+  while (d < 4 && points >= DIVISIONS[d + 1].seuil) d++;
+  while (d > 0 && points < DIVISIONS[d].seuil - MARGE_DIVISION) d--;
+  return d;
+}
+export const texteDivision = d => `${DIVISIONS[d].emoji} ${DIVISIONS[d].nom}`;
 export const LIMITE_PAIRE = 5;   // duels officiels par jour entre les deux mêmes joueurs (voir supabase/etape-4-classement.sql)
 
 // Points gagnés par le vainqueur et perdus par le perdant (même calcul que le serveur).
