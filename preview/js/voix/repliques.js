@@ -362,6 +362,53 @@ export const DIALOGUES = {
   avant_finale: [["Une finale, Madame ! Une FINALE !", "J'avais entendu la première fois."]],
   avant_revanche: [["Ils se connaissent, ces deux-là !", "Oui. Et ils ne s'aiment pas beaucoup."]],
   avant_nuit: [["Il est tard, Madame, mais le HandSlam ne dort jamais !", "Moi si. Normalement."]],
+  // Les figures techniques (inventées) : Roland les nomme, Monique répond, une fois cassante (1er dialogue),
+  // une fois sérieuse comme une experte (2e dialogue, une « école » imaginaire). Voir figureDe dans annonces.js.
+  figure_triple_loop: [
+    ["UN TRIPLE LOOP ! Trois fois le même signe !", "Trois fois la même idée. On appelle ça de l'entêtement."],
+    ["Le triple loop, Madame ! Et réceptionné !", "Oui. Un geste typique de l'école lyonnaise."],
+  ],
+  figure_double_boucle: [
+    ["DOUBLE BOUCLE PIQUÉ !", "Un changement d'avis. Rien de plus."],
+    ["Un double boucle piqué d'une pureté rare !", "Un pur produit de l'école hongroise. Très propre."],
+  ],
+  figure_valse: [
+    ["LA VALSE À TROIS TEMPS !", "La fin était à deux temps. Il faudra revoir le solfège."],
+    ["Trois, puis deux ! La valse, Madame !", "Un classique de l'école viennoise. Évidemment."],
+  ],
+  figure_tour: [
+    ["LE TOUR DU PROPRIÉTAIRE ! Pierre, Feuille, Ciseaux !", "Les trois signes, dans l'ordre. Ça s'appelle compter."],
+    ["Le tour du propriétaire, exécuté à la perfection !", "Une marque de fabrique de l'école suisse. Ponctuelle."],
+  ],
+  figure_retro: [
+    ["LE RÉTRO INVERSÉ !", "Ça existe, ça ?"],
+    ["Ciseaux, Feuille, Pierre ! Le rétro inversé !", "Très prisé à l'école finlandaise. Ils jouent tout à l'envers, là-bas."],
+  ],
+  figure_ascenseur: [
+    ["L'ASCENSEUR ÉMOTIONNEL !", "Aller, retour. Rez-de-chaussée."],
+    ["Un aller-retour d'une audace folle !", "Typique de l'école de Tourcoing. On y revient toujours."],
+  ],
+  figure_boomerang: [
+    ["LE BOOMERANG ! Le signe revient !", "Comme les mauvaises idées. Sauf que celle-là marche."],
+    ["Le boomerang, Madame ! Le signe perdant revient gagner !", "Un héritage de l'école australienne. Forcément."],
+  ],
+  figure_miroir: [
+    ["LE MIROIR TOXIQUE !", "Copier son adversaire. À l'école, on appelle ça tricher."],
+    ["Le miroir toxique ! Quelle insolence !", "Une spécialité de l'école vénitienne. Les miroirs, c'est leur affaire."],
+  ],
+  figure_marteau: [
+    ["LE MARTEAU-PIQUEUR ! Encore et encore !", "Les voisins vont se plaindre."],
+    ["Quatre fois le même signe ! Le marteau-piqueur !", "Un pur produit de l'école soviétique des années 80. Rien ne bouge, tout cogne."],
+  ],
+  figure_parapluie: [
+    ["LE COUP DU PARAPLUIE !", "Après l'orage, forcément."],
+    ["Trois égalités, puis le coup du parapluie !", "Très britannique. L'école de Cambridge, sans aucun doute."],
+  ],
+  // N'importe quand en fin de set, sans explication : personne ne sait ce que c'est.
+  buse: [
+    ["Une triple buse inversée ! C'est osé à ce moment-là de la partie !", "C'est surtout inconscient."],
+    ["Attention… une triple buse inversée ! On n'en voit pas tous les jours !", "Heureusement."],
+  ],
   // Avant et après le match, selon l'enjeu (proposition du porteur du projet) : l'entraînement, un petit tournoi
   // (HandSlam Open, tournois entre amis, Midi, Apéro, Nocturne, freeroll) ou un gros tournoi (« majeur » : le Grand Chelem),
   // et le tour (premiers tours, quarts, demi-finales, finale). Voir contexteJeu dans annonces.js.
