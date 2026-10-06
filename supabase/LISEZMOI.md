@@ -227,6 +227,14 @@ Si on relance un jour l'étape 24 ou 25, il faut relancer celle-ci ensuite.
 Une seule ligne, dans [`etape-30-patience-en-salle.sql`](etape-30-patience-en-salle.sql) : en salle, un joueur sans signe de vie
 (téléphone en veille, autre appli ouverte) reste inscrit 3 minutes au lieu de 45 secondes, le temps que les bots arrivent (2 minutes).
 
+## 1 untricies. Les divisions (étape 31)
+
+Même manipulation avec [`etape-31-divisions.sql`](etape-31-divisions.sql), **après** l'étape 30
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-31-divisions.sql).
+Divisions selon le niveau officiel : Bronze, Argent (1 100), Or (1 250), Platine (1 400), Diamant (1 550) ; on monte dès le seuil,
+on ne redescend que 20 points sous le seuil. Classement dans chaque division : 10 duels officiels minimum, actif depuis 30 jours.
+**À coller avant de valider la demande de fusion** (l'appli lit la nouvelle colonne « division »).
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
