@@ -287,7 +287,7 @@ export function installerCercles(ctx) {
     cercleOuvert = id; detail = null;
     montrer("socCercle");
     $("cNom").textContent = "…"; $("cInfo").textContent = ""; $("cClassement").innerHTML = ""; $("cAmis").innerHTML = ""; $("cGestion").hidden = true;
-    dire("cMsg", message);
+    dire("cMsg", message); dire("cInvMsg", "");
     window.scrollTo(0, 0);
     chargerCercle();
   }
@@ -328,8 +328,11 @@ export function installerCercles(ctx) {
     </li>`).join("");
     const dedans = new Set(membres.map(m => m.id));
     const aInviter = amis.filter(a => a.statut === "amis" && !dedans.has(a.id));
+    // (les amis déjà invités, retenus sur le téléphone : le rafraîchissement de la page ne remet pas « Inviter »)
+    const deja = new Set(lire(`invitesCercle:${c.id}`, []) || []);
     $("cAmis").innerHTML = aInviter.length
-      ? `<p class="hint" style="margin:0">Ou invite directement un ami :</p>` + aInviter.map(a => ligneJoueur(a, `Niveau ${a.classement}`, `<button class="petit alt" data-a="inviter">Inviter</button>`)).join("")
+      ? `<p class="hint" style="margin:0">Ou invite directement un ami :</p>` + aInviter.map(a => ligneJoueur(a, `Niveau ${a.classement}`,
+        deja.has(a.id) ? `<span class="jd">Invité ✓</span>` : `<button class="petit alt" data-a="inviter">Inviter</button>`)).join("")
       : "";
     const admin = c.role === "admin";
     $("cGestion").hidden = !admin;
@@ -352,8 +355,12 @@ export function installerCercles(ctx) {
     const b = e.target.closest("button[data-a=inviter]"); if (!b) return;
     const a = amis.find(x => x.id === b.closest(".joueur").dataset.id);
     b.disabled = true;
-    try { await social.inviterCercle(cercleOuvert, a.id); b.textContent = "Invité ✓"; dire("cMsg", `Invitation envoyée à ${a.pseudo} : elle apparaîtra dans son onglet Cercles.`); }
-    catch (err) { dire("cMsg", err.message, true); b.disabled = false; }
+    try {
+      await social.inviterCercle(cercleOuvert, a.id);
+      const cle = `invitesCercle:${cercleOuvert}`; ecrire(cle, [...new Set([...(lire(cle, []) || []), a.id])]);
+      b.replaceWith(Object.assign(document.createElement("span"), { className: "jd", textContent: "Invité ✓" }));
+      dire("cInvMsg", `✉️ Invitation envoyée à ${a.pseudo} : elle apparaît dans son onglet Cercles, où il peut l'accepter.`);
+    } catch (err) { dire("cInvMsg", err.message, true); b.disabled = false; }
   });
   $("cMembresGestion").addEventListener("click", async e => {
     const b = e.target.closest("button"); if (!b || !detail) return;
