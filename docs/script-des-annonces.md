@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (234 répliques)
+## Commentateur — vif, enthousiaste, plein de références (404 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -333,6 +333,176 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_avant_finale_01.mp3` | Une finale, Madame ! Une FINALE ! |
 | `commentateur_dialogue_avant_revanche_01.mp3` | Ils se connaissent, ces deux-là ! |
 | `commentateur_dialogue_avant_nuit_01.mp3` | Il est tard, Madame, mais le HandSlam ne dort jamais ! |
+| `commentateur_dialogue_avant_entrainement_01.mp3` | Et c'est parti pour un petit entraînement ! |
+| `commentateur_dialogue_avant_entrainement_02.mp3` | Pas de pression aujourd'hui… enfin, normalement ! |
+| `commentateur_dialogue_avant_entrainement_03.mp3` | Une rencontre qui pourrait déjà révéler de grands talents ! |
+| `commentateur_dialogue_avant_entrainement_04.mp3` | Pas de trophée à la clé, mais une belle occasion de progresser ! |
+| `commentateur_dialogue_avant_entrainement_05.mp3` | Peut-être le début d'une incroyable carrière ! |
+| `commentateur_dialogue_avant_entrainement_06.mp3` | Une rencontre qui pourrait entrer dans l'Histoire ! |
+| `commentateur_dialogue_avant_entrainement_07.mp3` | Le public attend beaucoup de cette rencontre ! |
+| `commentateur_dialogue_avant_entrainement_08.mp3` | Chaque main compte ! |
+| `commentateur_dialogue_avant_entrainement_09.mp3` | L'heure est venue de montrer ce qu'ils ont dans le ventre ! |
+| `commentateur_dialogue_avant_entrainement_10.mp3` | Que le spectacle commence ! |
+| `commentateur_dialogue_avant_tournoi_premiers_01.mp3` | Le tournoi commence ! |
+| `commentateur_dialogue_avant_tournoi_premiers_02.mp3` | Première étape vers la gloire ! |
+| `commentateur_dialogue_avant_tournoi_premiers_03.mp3` | Première bataille ! |
+| `commentateur_dialogue_avant_tournoi_premiers_04.mp3` | Ils veulent marquer les esprits dès le premier tour ! |
+| `commentateur_dialogue_avant_tournoi_premiers_05.mp3` | Aujourd'hui peut naître une légende ! |
+| `commentateur_dialogue_avant_tournoi_premiers_06.mp3` | Il faut entrer dans ce tournoi avec panache ! |
+| `commentateur_dialogue_avant_tournoi_premiers_07.mp3` | Chaque victoire nous rapproche du titre ! |
+| `commentateur_dialogue_avant_tournoi_premiers_08.mp3` | Le public veut du spectacle ! |
+| `commentateur_dialogue_avant_tournoi_quarts_01.mp3` | ET NOUS Y VOILÀ ! Les quarts de finale ! |
+| `commentateur_dialogue_avant_tournoi_quarts_02.mp3` | Une victoire et les demi-finales sont à portée de main ! |
+| `commentateur_dialogue_avant_tournoi_quarts_03.mp3` | Le moindre geste peut tout changer ! |
+| `commentateur_dialogue_avant_tournoi_quarts_04.mp3` | La tension monte ! |
+| `commentateur_dialogue_avant_tournoi_quarts_05.mp3` | Ils ne sont plus qu'à deux victoires du titre ! |
+| `commentateur_dialogue_avant_tournoi_quarts_06.mp3` | Nous entrons dans une nouvelle dimension ! |
+| `commentateur_dialogue_avant_tournoi_quarts_07.mp3` | Le tournoi prend une toute autre dimension ! |
+| `commentateur_dialogue_avant_tournoi_quarts_08.mp3` | Le moment est venu de sortir les grandes armes ! |
+| `commentateur_dialogue_avant_tournoi_demis_01.mp3` | UNE SEULE VICTOIRE LES SÉPARE DE LA FINALE ! |
+| `commentateur_dialogue_avant_tournoi_demis_02.mp3` | Ils touchent au but ! |
+| `commentateur_dialogue_avant_tournoi_demis_03.mp3` | Le titre commence à se rapprocher ! |
+| `commentateur_dialogue_avant_tournoi_demis_04.mp3` | La tension est absolument incroyable ! |
+| `commentateur_dialogue_avant_tournoi_demis_05.mp3` | Ce match pourrait entrer dans les mémoires ! |
+| `commentateur_dialogue_avant_tournoi_demis_06.mp3` | Ils jouent pour une place en finale ! |
+| `commentateur_dialogue_avant_tournoi_demis_07.mp3` | Le rêve est à portée de main ! |
+| `commentateur_dialogue_avant_tournoi_demis_08.mp3` | Nous sommes à deux doigts de vivre un moment exceptionnel ! |
+| `commentateur_dialogue_avant_tournoi_finale_01.mp3` | MESDAMES ET MESSIEURS… LA FINALE ! |
+| `commentateur_dialogue_avant_tournoi_finale_02.mp3` | Deux joueurs ! Une victoire ! Un champion ! |
+| `commentateur_dialogue_avant_tournoi_finale_03.mp3` | La gloire est à portée de main ! |
+| `commentateur_dialogue_avant_tournoi_finale_04.mp3` | Il n'en restera qu'un ! |
+| `commentateur_dialogue_avant_tournoi_finale_05.mp3` | Le destin se joue maintenant ! |
+| `commentateur_dialogue_avant_tournoi_finale_06.mp3` | Ils vont entrer dans la légende ! |
+| `commentateur_dialogue_avant_majeur_quarts_01.mp3` | MESDAMES ET MESSIEURS, LE MONDE DU HANDSLAM RETIENT SON SOUFFLE ! |
+| `commentateur_dialogue_avant_majeur_quarts_02.mp3` | NOUS ENTRONS DANS UNE AUTRE DIMENSION ! |
+| `commentateur_dialogue_avant_majeur_quarts_03.mp3` | CHAQUE MAIN PEUT CHANGER LE DESTIN DE CE TOURNOI ! |
+| `commentateur_dialogue_avant_majeur_quarts_04.mp3` | LE NIVEAU EST EXCEPTIONNEL ! |
+| `commentateur_dialogue_avant_majeur_quarts_05.mp3` | NOUS ASSISTONS À UN MOMENT HISTORIQUE ! |
+| `commentateur_dialogue_avant_majeur_quarts_06.mp3` | LA PRESSION EST MONUMENTALE ! |
+| `commentateur_dialogue_avant_majeur_quarts_07.mp3` | LE MOINDRE FAUX PAS SERA FATAL ! |
+| `commentateur_dialogue_avant_majeur_quarts_08.mp3` | LES QUARTS DE FINALE D'UN TOURNOI LÉGENDAIRE ! |
+| `commentateur_dialogue_avant_majeur_demis_01.mp3` | C'EST HISTORIQUE ! |
+| `commentateur_dialogue_avant_majeur_demis_02.mp3` | LE DESTIN EST EN TRAIN DE S'ÉCRIRE SOUS NOS YEUX ! |
+| `commentateur_dialogue_avant_majeur_demis_03.mp3` | UNE SEULE VICTOIRE AVANT LA FINALE ! |
+| `commentateur_dialogue_avant_majeur_demis_04.mp3` | L'HISTOIRE ATTEND SON HÉROS ! |
+| `commentateur_dialogue_avant_majeur_demis_05.mp3` | LA PRESSION EST INSOUTENABLE ! |
+| `commentateur_dialogue_avant_majeur_demis_06.mp3` | NOUS SOMMES À UNE MAIN DU SOMMET ! |
+| `commentateur_dialogue_avant_majeur_finale_01.mp3` | MESDAMES ET MESSIEURS… LE MOMENT QUE L'HUMANITÉ ATTENDAIT ! |
+| `commentateur_dialogue_avant_majeur_finale_02.mp3` | L'ULTIME COMBAT ! |
+| `commentateur_dialogue_avant_majeur_finale_03.mp3` | DEUX CHAMPIONS ! UNE COURONNE ! UNE DESTINÉE ! |
+| `commentateur_dialogue_avant_majeur_finale_04.mp3` | LE MONDE DU HANDSLAM EST SUSPENDU À CETTE MAIN ! |
+| `commentateur_dialogue_avant_majeur_finale_05.mp3` | CE SOIR, UN JOUEUR DEVIENDRA UNE LÉGENDE ! |
+| `commentateur_dialogue_avant_majeur_finale_06.mp3` | ILS NE JOUENT PLUS POUR LA GLOIRE… ILS JOUENT POUR L'ÉTERNITÉ ! |
+| `commentateur_dialogue_avant_majeur_finale_07.mp3` | LA MAIN DU DESTIN VA S'ABATTRE ! |
+| `commentateur_dialogue_avant_majeur_finale_08.mp3` | NOUS Y SOMMES ! LE SOMMET ABSOLU DU HANDSLAM ! |
+| `commentateur_dialogue_avant_majeur_finale_09.mp3` | QUE LE PLUS GRAND GAGNE ! |
+| `commentateur_dialogue_avant_majeur_finale_10.mp3` | L'HISTOIRE VA S'ÉCRIRE ! |
+| `commentateur_dialogue_apres_entrainement_victoire_01.mp3` | Et voilà ! Une victoire pour commencer ! |
+| `commentateur_dialogue_apres_entrainement_victoire_02.mp3` | Quelle démonstration ! |
+| `commentateur_dialogue_apres_entrainement_victoire_03.mp3` | Une victoire qui va donner énormément de confiance ! |
+| `commentateur_dialogue_apres_entrainement_victoire_04.mp3` | Magnifique prestation ! |
+| `commentateur_dialogue_apres_entrainement_victoire_05.mp3` | Quel talent ! |
+| `commentateur_dialogue_apres_entrainement_victoire_06.mp3` | Ils ont envoyé un message ! |
+| `commentateur_dialogue_apres_entrainement_victoire_07.mp3` | Une victoire qui restera dans les mémoires ! |
+| `commentateur_dialogue_apres_entrainement_victoire_08.mp3` | Quelle entrée en matière ! |
+| `commentateur_dialogue_apres_entrainement_defaite_01.mp3` | Et quelle défaite ! |
+| `commentateur_dialogue_apres_entrainement_defaite_02.mp3` | Il va falloir travailler après cette contre-performance ! |
+| `commentateur_dialogue_apres_tournoi_premiers_victoire_01.mp3` | ET C'EST UNE VICTOIRE ! |
+| `commentateur_dialogue_apres_tournoi_premiers_victoire_02.mp3` | Quelle entrée fracassante dans ce tournoi ! |
+| `commentateur_dialogue_apres_tournoi_premiers_victoire_03.mp3` | Le message est envoyé à toute la concurrence ! |
+| `commentateur_dialogue_apres_tournoi_premiers_victoire_04.mp3` | Une victoire parfaitement maîtrisée ! |
+| `commentateur_dialogue_apres_tournoi_premiers_victoire_05.mp3` | Le voilà lancé vers le titre ! |
+| `commentateur_dialogue_apres_tournoi_premiers_victoire_05_f.mp3` | La voilà lancée vers le titre ! |
+| `commentateur_dialogue_apres_tournoi_premiers_victoire_06.mp3` | Quelle démonstration ! |
+| `commentateur_dialogue_apres_tournoi_premiers_defaite_01.mp3` | Une défaite dès le premier tour ! Quel coup de tonnerre ! |
+| `commentateur_dialogue_apres_tournoi_premiers_defaite_02.mp3` | C'est déjà terminé ! |
+| `commentateur_dialogue_apres_tournoi_premiers_defaite_03.mp3` | Quel dommage ! |
+| `commentateur_dialogue_apres_tournoi_premiers_defaite_04.mp3` | Une élimination terrible ! |
+| `commentateur_dialogue_apres_tournoi_quarts_victoire_01.mp3` | IL EST EN DEMI-FINALE ! |
+| `commentateur_dialogue_apres_tournoi_quarts_victoire_01_f.mp3` | ELLE EST EN DEMI-FINALE ! |
+| `commentateur_dialogue_apres_tournoi_quarts_victoire_02.mp3` | Quelle bataille incroyable ! |
+| `commentateur_dialogue_apres_tournoi_quarts_victoire_03.mp3` | Il n'est plus qu'à une victoire de la finale ! |
+| `commentateur_dialogue_apres_tournoi_quarts_victoire_03_f.mp3` | Elle n'est plus qu'à une victoire de la finale ! |
+| `commentateur_dialogue_apres_tournoi_quarts_victoire_04.mp3` | Quel sang-froid exceptionnel ! |
+| `commentateur_dialogue_apres_tournoi_quarts_victoire_05.mp3` | Une victoire qui pourrait tout changer ! |
+| `commentateur_dialogue_apres_tournoi_quarts_victoire_06.mp3` | Il vient de franchir un obstacle monumental ! |
+| `commentateur_dialogue_apres_tournoi_quarts_victoire_06_f.mp3` | Elle vient de franchir un obstacle monumental ! |
+| `commentateur_dialogue_apres_tournoi_quarts_defaite_01.mp3` | Quelle terrible élimination en quarts ! |
+| `commentateur_dialogue_apres_tournoi_quarts_defaite_02.mp3` | Le rêve s'arrête ici ! |
+| `commentateur_dialogue_apres_tournoi_quarts_defaite_03.mp3` | Il était si proche ! |
+| `commentateur_dialogue_apres_tournoi_quarts_defaite_03_f.mp3` | Elle était si proche ! |
+| `commentateur_dialogue_apres_tournoi_quarts_defaite_04.mp3` | Une énorme désillusion ! |
+| `commentateur_dialogue_apres_tournoi_demis_victoire_01.mp3` | IL EST EN FINALE ! |
+| `commentateur_dialogue_apres_tournoi_demis_victoire_01_f.mp3` | ELLE EST EN FINALE ! |
+| `commentateur_dialogue_apres_tournoi_demis_victoire_02.mp3` | QUEL EXPLOIT ! |
+| `commentateur_dialogue_apres_tournoi_demis_victoire_03.mp3` | Il touche le titre du bout des doigts ! |
+| `commentateur_dialogue_apres_tournoi_demis_victoire_03_f.mp3` | Elle touche le titre du bout des doigts ! |
+| `commentateur_dialogue_apres_tournoi_demis_victoire_04.mp3` | Quelle maîtrise dans ce moment décisif ! |
+| `commentateur_dialogue_apres_tournoi_demis_victoire_05.mp3` | Il vient de renverser le tournoi ! |
+| `commentateur_dialogue_apres_tournoi_demis_victoire_05_f.mp3` | Elle vient de renverser le tournoi ! |
+| `commentateur_dialogue_apres_tournoi_demis_victoire_06.mp3` | LE RÊVE CONTINUE ! |
+| `commentateur_dialogue_apres_tournoi_demis_defaite_01.mp3` | Quelle terrible défaite ! |
+| `commentateur_dialogue_apres_tournoi_demis_defaite_02.mp3` | Le rêve s'effondre ! |
+| `commentateur_dialogue_apres_tournoi_demis_defaite_03.mp3` | Si près du but ! |
+| `commentateur_dialogue_apres_tournoi_demis_defaite_04.mp3` | Une élimination cruelle ! |
+| `commentateur_dialogue_apres_tournoi_finale_victoire_01.mp3` | IL EST CHAMPION ! |
+| `commentateur_dialogue_apres_tournoi_finale_victoire_01_f.mp3` | ELLE EST CHAMPIONNE ! |
+| `commentateur_dialogue_apres_tournoi_finale_victoire_02.mp3` | QUEL TRIOMPHE ! |
+| `commentateur_dialogue_apres_tournoi_finale_victoire_03.mp3` | IL ENTRE DANS LA LÉGENDE ! |
+| `commentateur_dialogue_apres_tournoi_finale_victoire_03_f.mp3` | ELLE ENTRE DANS LA LÉGENDE ! |
+| `commentateur_dialogue_apres_tournoi_finale_victoire_04.mp3` | UNE VICTOIRE POUR L'ÉTERNITÉ ! |
+| `commentateur_dialogue_apres_tournoi_finale_victoire_05.mp3` | QUELLE FINALE ! QUEL CHAMPION ! |
+| `commentateur_dialogue_apres_tournoi_finale_victoire_05_f.mp3` | QUELLE FINALE ! QUELLE CHAMPIONNE ! |
+| `commentateur_dialogue_apres_tournoi_finale_victoire_06.mp3` | LE TROPHÉE EST À LUI ! |
+| `commentateur_dialogue_apres_tournoi_finale_victoire_06_f.mp3` | LE TROPHÉE EST À ELLE ! |
+| `commentateur_dialogue_apres_tournoi_finale_defaite_01.mp3` | Quel terrible dénouement ! |
+| `commentateur_dialogue_apres_tournoi_finale_defaite_02.mp3` | Il était si proche de la gloire ! |
+| `commentateur_dialogue_apres_tournoi_finale_defaite_02_f.mp3` | Elle était si proche de la gloire ! |
+| `commentateur_dialogue_apres_tournoi_finale_defaite_03.mp3` | Le rêve s'écroule au dernier moment ! |
+| `commentateur_dialogue_apres_tournoi_finale_defaite_04.mp3` | Quelle désillusion ! |
+| `commentateur_dialogue_apres_majeur_quarts_victoire_01.mp3` | IL VIENT DE RÉALISER UN EXPLOIT MAJEUR ! |
+| `commentateur_dialogue_apres_majeur_quarts_victoire_01_f.mp3` | ELLE VIENT DE RÉALISER UN EXPLOIT MAJEUR ! |
+| `commentateur_dialogue_apres_majeur_quarts_victoire_02.mp3` | QUELLE PERFORMANCE EXCEPTIONNELLE ! |
+| `commentateur_dialogue_apres_majeur_quarts_victoire_03.mp3` | IL EST DÉSORMAIS À DEUX MATCHS DE L'IMMORTALITÉ ! |
+| `commentateur_dialogue_apres_majeur_quarts_victoire_03_f.mp3` | ELLE EST DÉSORMAIS À DEUX MATCHS DE L'IMMORTALITÉ ! |
+| `commentateur_dialogue_apres_majeur_quarts_victoire_04.mp3` | LE PUBLIC EST EN DÉLIRE ! |
+| `commentateur_dialogue_apres_majeur_quarts_victoire_05.mp3` | CETTE VICTOIRE VA RESTER DANS L'HISTOIRE ! |
+| `commentateur_dialogue_apres_majeur_quarts_defaite_01.mp3` | QUELLE ÉLIMINATION ! LE TOURNOI EST TERMINÉ ! |
+| `commentateur_dialogue_apres_majeur_quarts_defaite_02.mp3` | LE RÊVE S'ARRÊTE BRUTALEMENT ! |
+| `commentateur_dialogue_apres_majeur_quarts_defaite_03.mp3` | QUELLE TERRIBLE DÉSILLUSION ! |
+| `commentateur_dialogue_apres_majeur_demis_victoire_01.mp3` | IL EST EN FINALE D'UN TOURNOI MAJEUR ! |
+| `commentateur_dialogue_apres_majeur_demis_victoire_01_f.mp3` | ELLE EST EN FINALE D'UN TOURNOI MAJEUR ! |
+| `commentateur_dialogue_apres_majeur_demis_victoire_02.mp3` | IL VIENT D'ÉCRIRE UNE PAGE DE L'HISTOIRE DU HANDSLAM ! |
+| `commentateur_dialogue_apres_majeur_demis_victoire_02_f.mp3` | ELLE VIENT D'ÉCRIRE UNE PAGE DE L'HISTOIRE DU HANDSLAM ! |
+| `commentateur_dialogue_apres_majeur_demis_victoire_03.mp3` | QUEL EXPLOIT ABSOLUMENT EXTRAORDINAIRE ! |
+| `commentateur_dialogue_apres_majeur_demis_victoire_04.mp3` | IL N'EST PLUS QU'À UNE VICTOIRE DE LA GLOIRE ÉTERNELLE ! |
+| `commentateur_dialogue_apres_majeur_demis_victoire_04_f.mp3` | ELLE N'EST PLUS QU'À UNE VICTOIRE DE LA GLOIRE ÉTERNELLE ! |
+| `commentateur_dialogue_apres_majeur_demis_victoire_05.mp3` | IL A SURVÉCU À UNE DEMI-FINALE DANTESQUE ! |
+| `commentateur_dialogue_apres_majeur_demis_victoire_05_f.mp3` | ELLE A SURVÉCU À UNE DEMI-FINALE DANTESQUE ! |
+| `commentateur_dialogue_apres_majeur_demis_defaite_01.mp3` | QUELLE DÉFAITE ! LE RÊVE EST BRISÉ ! |
+| `commentateur_dialogue_apres_majeur_demis_defaite_02.mp3` | IL ÉTAIT À UNE SEULE VICTOIRE DE LA FINALE ! |
+| `commentateur_dialogue_apres_majeur_demis_defaite_02_f.mp3` | ELLE ÉTAIT À UNE SEULE VICTOIRE DE LA FINALE ! |
+| `commentateur_dialogue_apres_majeur_demis_defaite_03.mp3` | UNE ÉLIMINATION TERRIBLEMENT CRUELLE ! |
+| `commentateur_dialogue_apres_majeur_finale_victoire_01.mp3` | IL EST CHAMPION ! CHAMPION DU MONDE DU HANDSLAM ! |
+| `commentateur_dialogue_apres_majeur_finale_victoire_01_f.mp3` | ELLE EST CHAMPIONNE ! CHAMPIONNE DU MONDE DU HANDSLAM ! |
+| `commentateur_dialogue_apres_majeur_finale_victoire_02.mp3` | IL VIENT D'ENTRER DANS LA LÉGENDE ! |
+| `commentateur_dialogue_apres_majeur_finale_victoire_02_f.mp3` | ELLE VIENT D'ENTRER DANS LA LÉGENDE ! |
+| `commentateur_dialogue_apres_majeur_finale_victoire_03.mp3` | QUEL TRIOMPHE ! QUELLE PERFORMANCE ! QUEL CHAMPION ! |
+| `commentateur_dialogue_apres_majeur_finale_victoire_03_f.mp3` | QUEL TRIOMPHE ! QUELLE PERFORMANCE ! QUELLE CHAMPIONNE ! |
+| `commentateur_dialogue_apres_majeur_finale_victoire_04.mp3` | LA MAIN DU DESTIN A PARLÉ ! |
+| `commentateur_dialogue_apres_majeur_finale_victoire_05.mp3` | IL A ÉCRIT L'HISTOIRE SOUS NOS YEUX ! |
+| `commentateur_dialogue_apres_majeur_finale_victoire_05_f.mp3` | ELLE A ÉCRIT L'HISTOIRE SOUS NOS YEUX ! |
+| `commentateur_dialogue_apres_majeur_finale_victoire_06.mp3` | UNE VICTOIRE POUR L'ÉTERNITÉ ! |
+| `commentateur_dialogue_apres_majeur_finale_victoire_07.mp3` | LE PUBLIC EST EN FUSION ! LE HANDSLAM EST EN FÊTE ! |
+| `commentateur_dialogue_apres_majeur_finale_victoire_08.mp3` | QUELLE SOIRÉE HISTORIQUE ! |
+| `commentateur_dialogue_apres_majeur_finale_defaite_01.mp3` | QUELLE DÉFAITE ! QUELLE DÉSILLUSION ! |
+| `commentateur_dialogue_apres_majeur_finale_defaite_02.mp3` | IL ÉTAIT À UNE MAIN DU SACRE ! |
+| `commentateur_dialogue_apres_majeur_finale_defaite_02_f.mp3` | ELLE ÉTAIT À UNE MAIN DU SACRE ! |
+| `commentateur_dialogue_apres_majeur_finale_defaite_03.mp3` | LE TROPHÉE LUI ÉCHAPPE AU DERNIER MOMENT ! |
+| `commentateur_dialogue_apres_majeur_finale_defaite_04.mp3` | UNE FIN TERRIBLE POUR UN PARCOURS EXCEPTIONNEL ! |
+| `commentateur_dialogue_apres_majeur_finale_defaite_05.mp3` | LE MONDE DU HANDSLAM EST EN DEUIL ! |
+| `commentateur_dialogue_apres_majeur_finale_defaite_06.mp3` | IL TOUCHAIT DU DOIGT L'IMMORTALITÉ ! |
+| `commentateur_dialogue_apres_majeur_finale_defaite_06_f.mp3` | ELLE TOUCHAIT DU DOIGT L'IMMORTALITÉ ! |
 | `commentateur_dialogue_fin_set_01.mp3` | Madame, un mot sur ce set ? |
 | `commentateur_dialogue_fin_set_02.mp3` | Un set parfait ! Comme vous en 1997, Madame ! |
 | `commentateur_dialogue_fin_set_03.mp3` | Qu'est-ce qu'il doit changer ? |
@@ -350,7 +520,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (183 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (349 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -526,6 +696,172 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_avant_finale_01.mp3` | J'avais entendu la première fois. |
 | `commentatrice_dialogue_avant_revanche_01.mp3` | Oui. Et ils ne s'aiment pas beaucoup. |
 | `commentatrice_dialogue_avant_nuit_01.mp3` | Moi si. Normalement. |
+| `commentatrice_dialogue_avant_entrainement_01.mp3` | Exactement. Un entraînement. Vous pouvez respirer, Roland. |
+| `commentatrice_dialogue_avant_entrainement_02.mp3` | Voilà. Essayez de vous en souvenir. |
+| `commentatrice_dialogue_avant_entrainement_03.mp3` | Ou simplement deux joueurs qui s'entraînent. |
+| `commentatrice_dialogue_avant_entrainement_04.mp3` | C'est à ça que servent les entraînements. |
+| `commentatrice_dialogue_avant_entrainement_05.mp3` | Ou la fin d'un très mauvais échauffement. |
+| `commentatrice_dialogue_avant_entrainement_06.mp3` | Roland… c'est un entraînement. |
+| `commentatrice_dialogue_avant_entrainement_07.mp3` | Le public attend surtout que ça commence. |
+| `commentatrice_dialogue_avant_entrainement_08.mp3` | Pas vraiment. Il n'y a rien à gagner. |
+| `commentatrice_dialogue_avant_entrainement_09.mp3` | Pour l'instant, qu'ils montrent déjà ce qu'ils ont dans la main. |
+| `commentatrice_dialogue_avant_entrainement_10.mp3` | Doucement. C'est un entraînement. |
+| `commentatrice_dialogue_avant_tournoi_premiers_01.mp3` | Oui. Et il va falloir commencer par gagner ce match. |
+| `commentatrice_dialogue_avant_tournoi_premiers_02.mp3` | Première étape vers le tour suivant, surtout. |
+| `commentatrice_dialogue_avant_tournoi_premiers_03.mp3` | C'est un premier tour, Roland. |
+| `commentatrice_dialogue_avant_tournoi_premiers_04.mp3` | Ils pourraient déjà commencer par marquer un point. |
+| `commentatrice_dialogue_avant_tournoi_premiers_05.mp3` | Aujourd'hui peut surtout commencer un tournoi. |
+| `commentatrice_dialogue_avant_tournoi_premiers_06.mp3` | Avec efficacité, ce serait déjà pas mal. |
+| `commentatrice_dialogue_avant_tournoi_premiers_07.mp3` | C'est généralement comme ça que fonctionnent les tournois. |
+| `commentatrice_dialogue_avant_tournoi_premiers_08.mp3` | Les joueurs veulent surtout éviter l'élimination. |
+| `commentatrice_dialogue_avant_tournoi_quarts_01.mp3` | Voilà surtout les choses sérieuses. |
+| `commentatrice_dialogue_avant_tournoi_quarts_02.mp3` | Une défaite et ils sont à portée de sortie. |
+| `commentatrice_dialogue_avant_tournoi_quarts_03.mp3` | C'est généralement le principe du Pierre-Feuille-Ciseaux. |
+| `commentatrice_dialogue_avant_tournoi_quarts_04.mp3` | Chez vous surtout. |
+| `commentatrice_dialogue_avant_tournoi_quarts_05.mp3` | Et à une défaite de rentrer chez eux. |
+| `commentatrice_dialogue_avant_tournoi_quarts_06.mp3` | Nous entrons surtout en quart de finale. |
+| `commentatrice_dialogue_avant_tournoi_quarts_07.mp3` | Oui. Maintenant, il faut vraiment savoir jouer. |
+| `commentatrice_dialogue_avant_tournoi_quarts_08.mp3` | Trois signes suffiront largement. |
+| `commentatrice_dialogue_avant_tournoi_demis_01.mp3` | Et une seule défaite les en sépare aussi. |
+| `commentatrice_dialogue_avant_tournoi_demis_02.mp3` | Pas encore. Ils sont en demi-finale. |
+| `commentatrice_dialogue_avant_tournoi_demis_03.mp3` | Il faudra encore le gagner. |
+| `commentatrice_dialogue_avant_tournoi_demis_04.mp3` | Vous êtes absolument incroyable, surtout. |
+| `commentatrice_dialogue_avant_tournoi_demis_05.mp3` | Ou être oublié demain matin. |
+| `commentatrice_dialogue_avant_tournoi_demis_06.mp3` | Enfin une information intéressante. |
+| `commentatrice_dialogue_avant_tournoi_demis_07.mp3` | La victoire aussi. Il faut juste choisir la bonne. |
+| `commentatrice_dialogue_avant_tournoi_demis_08.mp3` | À condition qu'ils jouent exceptionnellement bien. |
+| `commentatrice_dialogue_avant_tournoi_finale_01.mp3` | Oui Roland. Enfin. |
+| `commentatrice_dialogue_avant_tournoi_finale_02.mp3` | Pour une fois, vous avez réussi à compter correctement. |
+| `commentatrice_dialogue_avant_tournoi_finale_03.mp3` | Encore faut-il avoir la bonne main. |
+| `commentatrice_dialogue_avant_tournoi_finale_04.mp3` | C'est effectivement le principe d'une finale. |
+| `commentatrice_dialogue_avant_tournoi_finale_05.mp3` | Non. La partie se joue maintenant. |
+| `commentatrice_dialogue_avant_tournoi_finale_06.mp3` | Ils vont surtout essayer de gagner. |
+| `commentatrice_dialogue_avant_majeur_quarts_01.mp3` | Vous pourriez déjà retenir le vôtre. |
+| `commentatrice_dialogue_avant_majeur_quarts_02.mp3` | C'est toujours la même table, Roland. |
+| `commentatrice_dialogue_avant_majeur_quarts_03.mp3` | Oui. C'est justement pour ça qu'il faut bien la jouer. |
+| `commentatrice_dialogue_avant_majeur_quarts_04.mp3` | Il est surtout meilleur que celui des premiers tours. |
+| `commentatrice_dialogue_avant_majeur_quarts_05.mp3` | Vous dites ça depuis le début du tournoi. |
+| `commentatrice_dialogue_avant_majeur_quarts_06.mp3` | Pour les joueurs, peut-être. |
+| `commentatrice_dialogue_avant_majeur_quarts_07.mp3` | Ça, au moins, c'est vrai. |
+| `commentatrice_dialogue_avant_majeur_quarts_08.mp3` | Pour l'instant, c'est surtout un quart de finale. |
+| `commentatrice_dialogue_avant_majeur_demis_01.mp3` | Vous l'avez déjà dit. |
+| `commentatrice_dialogue_avant_majeur_demis_02.mp3` | Avec une pierre, une feuille et des ciseaux. Restons mesurés. |
+| `commentatrice_dialogue_avant_majeur_demis_03.mp3` | Et c'est celle qui compte maintenant. |
+| `commentatrice_dialogue_avant_majeur_demis_04.mp3` | L'histoire attend surtout le vainqueur. |
+| `commentatrice_dialogue_avant_majeur_demis_05.mp3` | Alors arrêtez de la supporter à leur place. |
+| `commentatrice_dialogue_avant_majeur_demis_06.mp3` | Une mauvaise main, et ils en seront à une victoire de moins. |
+| `commentatrice_dialogue_avant_majeur_finale_01.mp3` | Je ne savais pas que l'humanité avait été consultée. |
+| `commentatrice_dialogue_avant_majeur_finale_02.mp3` | C'est une finale, Roland. Pas une guerre. |
+| `commentatrice_dialogue_avant_majeur_finale_03.mp3` | Et trois signes possibles. N'oubliez pas l'essentiel. |
+| `commentatrice_dialogue_avant_majeur_finale_04.mp3` | Le monde du HandSlam, peut-être. Moi, j'attends surtout de voir le choix. |
+| `commentatrice_dialogue_avant_majeur_finale_05.mp3` | Il peut déjà commencer par devenir champion. |
+| `commentatrice_dialogue_avant_majeur_finale_06.mp3` | Ils jouent surtout pour gagner cette finale. |
+| `commentatrice_dialogue_avant_majeur_finale_07.mp3` | C'est généralement comme ça qu'on appelle une main quand on veut faire peur aux gens. |
+| `commentatrice_dialogue_avant_majeur_finale_08.mp3` | Oui. Et maintenant, taisez-vous deux secondes. |
+| `commentatrice_dialogue_avant_majeur_finale_09.mp3` | Non. Que le meilleur gagne. La taille n'a rien à voir là-dedans. |
+| `commentatrice_dialogue_avant_majeur_finale_10.mp3` | Elle s'écrira surtout dans le classement. |
+| `commentatrice_dialogue_apres_entrainement_victoire_01.mp3` | Un entraînement réussi, surtout. |
+| `commentatrice_dialogue_apres_entrainement_victoire_02.mp3` | C'était un entraînement, Roland. |
+| `commentatrice_dialogue_apres_entrainement_victoire_03.mp3` | Ou pas. Il n'y avait rien à perdre. |
+| `commentatrice_dialogue_apres_entrainement_victoire_04.mp3` | Correcte. |
+| `commentatrice_dialogue_apres_entrainement_victoire_05.mp3` | Il faudra confirmer quand il y aura quelque chose à gagner. |
+| `commentatrice_dialogue_apres_entrainement_victoire_06.mp3` | À leur adversaire d'entraînement, surtout. |
+| `commentatrice_dialogue_apres_entrainement_victoire_07.mp3` | Pas longtemps. |
+| `commentatrice_dialogue_apres_entrainement_victoire_08.mp3` | C'était une sortie d'entraînement, surtout. |
+| `commentatrice_dialogue_apres_entrainement_defaite_01.mp3` | Justement. C'est à ça que servent les entraînements. |
+| `commentatrice_dialogue_apres_entrainement_defaite_02.mp3` | Voilà enfin quelque chose de sensé. |
+| `commentatrice_dialogue_apres_tournoi_premiers_victoire_01.mp3` | Premier tour validé. |
+| `commentatrice_dialogue_apres_tournoi_premiers_victoire_02.mp3` | Il a gagné son premier match. |
+| `commentatrice_dialogue_apres_tournoi_premiers_victoire_02_f.mp3` | Elle a gagné son premier match. |
+| `commentatrice_dialogue_apres_tournoi_premiers_victoire_03.mp3` | La concurrence n'a probablement pas tremblé. |
+| `commentatrice_dialogue_apres_tournoi_premiers_victoire_04.mp3` | Suffisamment maîtrisée pour passer au tour suivant. |
+| `commentatrice_dialogue_apres_tournoi_premiers_victoire_05.mp3` | Il lui reste quelques matchs avant ça. |
+| `commentatrice_dialogue_apres_tournoi_premiers_victoire_06.mp3` | Démonstration est un grand mot. |
+| `commentatrice_dialogue_apres_tournoi_premiers_defaite_01.mp3` | Pas vraiment. Il a perdu. Ça arrive. |
+| `commentatrice_dialogue_apres_tournoi_premiers_defaite_01_f.mp3` | Pas vraiment. Elle a perdu. Ça arrive. |
+| `commentatrice_dialogue_apres_tournoi_premiers_defaite_02.mp3` | Pour lui, oui. Pour le tournoi, non. |
+| `commentatrice_dialogue_apres_tournoi_premiers_defaite_02_f.mp3` | Pour elle, oui. Pour le tournoi, non. |
+| `commentatrice_dialogue_apres_tournoi_premiers_defaite_03.mp3` | Il faudra faire mieux au prochain tournoi. |
+| `commentatrice_dialogue_apres_tournoi_premiers_defaite_04.mp3` | Terrible, non. Décevante, oui. |
+| `commentatrice_dialogue_apres_tournoi_quarts_victoire_01.mp3` | Oui. Il a gagné son quart. |
+| `commentatrice_dialogue_apres_tournoi_quarts_victoire_01_f.mp3` | Oui. Elle a gagné son quart. |
+| `commentatrice_dialogue_apres_tournoi_quarts_victoire_02.mp3` | Serrée, surtout. |
+| `commentatrice_dialogue_apres_tournoi_quarts_victoire_03.mp3` | Et c'est la prochaine qu'il doit gagner. |
+| `commentatrice_dialogue_apres_tournoi_quarts_victoire_03_f.mp3` | Et c'est la prochaine qu'elle doit gagner. |
+| `commentatrice_dialogue_apres_tournoi_quarts_victoire_04.mp3` | Il a fait ce qu'il fallait. |
+| `commentatrice_dialogue_apres_tournoi_quarts_victoire_04_f.mp3` | Elle a fait ce qu'il fallait. |
+| `commentatrice_dialogue_apres_tournoi_quarts_victoire_05.mp3` | Elle change surtout le prochain adversaire. |
+| `commentatrice_dialogue_apres_tournoi_quarts_victoire_06.mp3` | Un quart de finale, Roland. |
+| `commentatrice_dialogue_apres_tournoi_quarts_defaite_01.mp3` | Il était à une victoire de la demi-finale. Il n'a pas réussi. |
+| `commentatrice_dialogue_apres_tournoi_quarts_defaite_01_f.mp3` | Elle était à une victoire de la demi-finale. Elle n'a pas réussi. |
+| `commentatrice_dialogue_apres_tournoi_quarts_defaite_02.mp3` | Pour aujourd'hui, oui. |
+| `commentatrice_dialogue_apres_tournoi_quarts_defaite_03.mp3` | Pas assez proche pour gagner. |
+| `commentatrice_dialogue_apres_tournoi_quarts_defaite_04.mp3` | Une défaite en quart. Ça fait partie du sport. |
+| `commentatrice_dialogue_apres_tournoi_demis_victoire_01.mp3` | Et maintenant, il va falloir la gagner. |
+| `commentatrice_dialogue_apres_tournoi_demis_victoire_02.mp3` | Une très bonne victoire, oui. |
+| `commentatrice_dialogue_apres_tournoi_demis_victoire_03.mp3` | Attention à ne pas le toucher trop tôt. |
+| `commentatrice_dialogue_apres_tournoi_demis_victoire_04.mp3` | C'est exactement ce qu'on attend d'un joueur à ce niveau. |
+| `commentatrice_dialogue_apres_tournoi_demis_victoire_05.mp3` | Il vient surtout de gagner sa demi-finale. |
+| `commentatrice_dialogue_apres_tournoi_demis_victoire_05_f.mp3` | Elle vient surtout de gagner sa demi-finale. |
+| `commentatrice_dialogue_apres_tournoi_demis_victoire_06.mp3` | Pour encore un match. |
+| `commentatrice_dialogue_apres_tournoi_demis_defaite_01.mp3` | Il était à une victoire de la finale. C'est forcément décevant. |
+| `commentatrice_dialogue_apres_tournoi_demis_defaite_01_f.mp3` | Elle était à une victoire de la finale. C'est forcément décevant. |
+| `commentatrice_dialogue_apres_tournoi_demis_defaite_02.mp3` | Il faudra se relever. |
+| `commentatrice_dialogue_apres_tournoi_demis_defaite_03.mp3` | Et pourtant si loin. |
+| `commentatrice_dialogue_apres_tournoi_demis_defaite_04.mp3` | Les demi-finales ne pardonnent pas. |
+| `commentatrice_dialogue_apres_tournoi_finale_victoire_01.mp3` | Oui. Cette fois, vous pouvez vous emballer. |
+| `commentatrice_dialogue_apres_tournoi_finale_victoire_02.mp3` | Une victoire méritée. |
+| `commentatrice_dialogue_apres_tournoi_finale_victoire_03.mp3` | Il vient surtout de gagner le tournoi. |
+| `commentatrice_dialogue_apres_tournoi_finale_victoire_03_f.mp3` | Elle vient surtout de gagner le tournoi. |
+| `commentatrice_dialogue_apres_tournoi_finale_victoire_04.mp3` | Pour le classement, déjà. |
+| `commentatrice_dialogue_apres_tournoi_finale_victoire_05.mp3` | Il a fait ce qu'il fallait au bon moment. |
+| `commentatrice_dialogue_apres_tournoi_finale_victoire_05_f.mp3` | Elle a fait ce qu'il fallait au bon moment. |
+| `commentatrice_dialogue_apres_tournoi_finale_victoire_06.mp3` | Et personne ne pourra le lui enlever. |
+| `commentatrice_dialogue_apres_tournoi_finale_defaite_01.mp3` | Une finale perdue, ça fait toujours mal. |
+| `commentatrice_dialogue_apres_tournoi_finale_defaite_02.mp3` | Et son adversaire était plus proche encore. |
+| `commentatrice_dialogue_apres_tournoi_finale_defaite_03.mp3` | C'est précisément pour ça qu'on joue les finales. |
+| `commentatrice_dialogue_apres_tournoi_finale_defaite_04.mp3` | Oui. Mais deuxième d'un tournoi, ce n'est pas exactement une catastrophe. |
+| `commentatrice_dialogue_apres_majeur_quarts_victoire_01.mp3` | Une victoire en quart. C'est important, oui. |
+| `commentatrice_dialogue_apres_majeur_quarts_victoire_02.mp3` | Il a été solide. |
+| `commentatrice_dialogue_apres_majeur_quarts_victoire_02_f.mp3` | Elle a été solide. |
+| `commentatrice_dialogue_apres_majeur_quarts_victoire_03.mp3` | À deux victoires du titre, surtout. |
+| `commentatrice_dialogue_apres_majeur_quarts_victoire_04.mp3` | Et lui peut commencer à respirer. |
+| `commentatrice_dialogue_apres_majeur_quarts_victoire_04_f.mp3` | Et elle peut commencer à respirer. |
+| `commentatrice_dialogue_apres_majeur_quarts_victoire_05.mp3` | Peut-être. Gagnons déjà le prochain. |
+| `commentatrice_dialogue_apres_majeur_quarts_defaite_01.mp3` | Oui. Mais il atteint quand même les quarts d'un gros tournoi. |
+| `commentatrice_dialogue_apres_majeur_quarts_defaite_01_f.mp3` | Oui. Mais elle atteint quand même les quarts d'un gros tournoi. |
+| `commentatrice_dialogue_apres_majeur_quarts_defaite_02.mp3` | Il s'arrête en quart. Ce n'est pas rien. |
+| `commentatrice_dialogue_apres_majeur_quarts_defaite_02_f.mp3` | Elle s'arrête en quart. Ce n'est pas rien. |
+| `commentatrice_dialogue_apres_majeur_quarts_defaite_03.mp3` | Il a perdu contre un meilleur joueur aujourd'hui. |
+| `commentatrice_dialogue_apres_majeur_quarts_defaite_03_f.mp3` | Elle a perdu contre un meilleur joueur aujourd'hui. |
+| `commentatrice_dialogue_apres_majeur_demis_victoire_01.mp3` | Et là, oui, c'est une vraie performance. |
+| `commentatrice_dialogue_apres_majeur_demis_victoire_02.mp3` | Une belle page. Mais le livre n'est pas terminé. |
+| `commentatrice_dialogue_apres_majeur_demis_victoire_03.mp3` | C'était très solide. |
+| `commentatrice_dialogue_apres_majeur_demis_victoire_04.mp3` | Une victoire, oui. Éternelle, on verra. |
+| `commentatrice_dialogue_apres_majeur_demis_victoire_05.mp3` | Il a gagné. C'est le principal. |
+| `commentatrice_dialogue_apres_majeur_demis_victoire_05_f.mp3` | Elle a gagné. C'est le principal. |
+| `commentatrice_dialogue_apres_majeur_demis_defaite_01.mp3` | Il perd en demi-finale d'un gros tournoi. Ça reste une très belle performance. |
+| `commentatrice_dialogue_apres_majeur_demis_defaite_01_f.mp3` | Elle perd en demi-finale d'un gros tournoi. Ça reste une très belle performance. |
+| `commentatrice_dialogue_apres_majeur_demis_defaite_02.mp3` | Et son adversaire aussi. |
+| `commentatrice_dialogue_apres_majeur_demis_defaite_03.mp3` | Cruelle, oui. Mais pas injuste. |
+| `commentatrice_dialogue_apres_majeur_finale_victoire_01.mp3` | Là, Roland… vous pouvez crier. |
+| `commentatrice_dialogue_apres_majeur_finale_victoire_02.mp3` | Aujourd'hui, oui. Il l'a mérité. |
+| `commentatrice_dialogue_apres_majeur_finale_victoire_02_f.mp3` | Aujourd'hui, oui. Elle l'a mérité. |
+| `commentatrice_dialogue_apres_majeur_finale_victoire_03.mp3` | Une finale parfaitement maîtrisée. |
+| `commentatrice_dialogue_apres_majeur_finale_victoire_04.mp3` | Non. Sa main a simplement été meilleure. |
+| `commentatrice_dialogue_apres_majeur_finale_victoire_05.mp3` | Et cette fois, je suis d'accord avec vous. |
+| `commentatrice_dialogue_apres_majeur_finale_victoire_06.mp3` | Une victoire qui restera longtemps, oui. |
+| `commentatrice_dialogue_apres_majeur_finale_victoire_07.mp3` | Et il peut profiter. Ce genre de victoire ne se présente pas tous les jours. |
+| `commentatrice_dialogue_apres_majeur_finale_victoire_07_f.mp3` | Et elle peut profiter. Ce genre de victoire ne se présente pas tous les jours. |
+| `commentatrice_dialogue_apres_majeur_finale_victoire_08.mp3` | Oui. Et pour une fois, je vous laisse le dire. |
+| `commentatrice_dialogue_apres_majeur_finale_defaite_01.mp3` | Perdre une grande finale fait mal. Mais arriver jusqu'ici reste remarquable. |
+| `commentatrice_dialogue_apres_majeur_finale_defaite_02.mp3` | Et son adversaire avait exactement la même main. |
+| `commentatrice_dialogue_apres_majeur_finale_defaite_03.mp3` | C'est le principe d'une finale. Un seul repart avec. |
+| `commentatrice_dialogue_apres_majeur_finale_defaite_04.mp3` | Deuxième d'un grand tournoi. Il y a pire comme fin. |
+| `commentatrice_dialogue_apres_majeur_finale_defaite_05.mp3` | Roland… il a perdu une finale, pas son bras. |
+| `commentatrice_dialogue_apres_majeur_finale_defaite_05_f.mp3` | Roland… elle a perdu une finale, pas son bras. |
+| `commentatrice_dialogue_apres_majeur_finale_defaite_06.mp3` | Et maintenant il touchera probablement son réveil demain matin. |
+| `commentatrice_dialogue_apres_majeur_finale_defaite_06_f.mp3` | Et maintenant elle touchera probablement son réveil demain matin. |
 | `commentatrice_dialogue_fin_set_01.mp3` | Solide. Sans génie. Mais solide. |
 | `commentatrice_dialogue_fin_set_02.mp3` | N'en parlons pas. |
 | `commentatrice_dialogue_fin_set_03.mp3` | Tout. Ou rien. C'est ça, le HandSlam. |

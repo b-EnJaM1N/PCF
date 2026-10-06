@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { CATALOGUE, replique, repliqueScore, repliquePartout, POOLS, DIALOGUES_IDS, nbDialogues } from "../app/js/voix/script.js";
-import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces, annoncesAvantMatch, interview, etiquetteDe, niveauEnjeu, baseDe, silenceAvantBalle } from "../app/js/annonces.js";
+import { annoncerCoup, annonceDebutSet, nouvelEtatAnnonces, annoncesAvantMatch, interview, etiquetteDe, niveauEnjeu, baseDe, silenceAvantBalle, contexteJeu } from "../app/js/annonces.js";
 import { surnomDe } from "../app/js/surnoms.js";
 import { profilParDefaut } from "../app/js/profil.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX, FEUILLE } from "../app/js/regles.js";
@@ -354,4 +354,30 @@ test("fin de match : un seul commentaire (une réplique ou un dialogue), pas d'e
     if (coms.length > 1) assert.ok(coms.every(l => /_dialogue_/.test(l.id)), `un seul dialogue, pas une suite de phrases : ${coms.map(l => l.id)}`);
     if (coms.length > 1) assert.equal(new Set(coms.map(l => l.id.replace(/^(commentateur|commentatrice)_/, "").replace(/_f$/, ""))).size, 1, "un seul dialogue");
   }
+});
+
+test("commentaires selon l'enjeu : le contexte, l'avant-match et l'après-match adaptés", () => {
+  assert.equal(contexteJeu({ entrainement: true }), "entrainement");
+  assert.equal(contexteJeu({ tournoi: "petit", tour: "huitiemes" }), "tournoi_premiers");
+  assert.equal(contexteJeu({ tournoi: "petit", tour: "demis" }), "tournoi_demis");
+  assert.equal(contexteJeu({ tournoi: "gros", tour: null }), "tournoi_premiers", "les premiers tours du Grand Chelem : ceux d'un petit tournoi");
+  assert.equal(contexteJeu({ tournoi: "gros", tour: "finale" }), "majeur_finale");
+  assert.equal(contexteJeu({}), null, "Sit & Go, duels : rien de spécial");
+  // Avant une grande finale : toujours un dialogue de grande finale.
+  for (let k = 0; k < 20; k++) {
+    const { commentaires } = annoncesAvantMatch({ jeu: "majeur_finale", recents: [] }, rngFixe(k));
+    assert.match(commentaires[0].id, /^commentateur_dialogue_avant_majeur_finale_\d\d$/);
+  }
+  // Après une finale de petit tournoi perdue (joueuse) : un dialogue de finale perdue, au féminin quand il le faut.
+  const rng = rngFixe(9);
+  let vus = 0;
+  for (let k = 0; k < 40; k++) {
+    const m = nouveauMatch({ pointsParSet: 1, setsGagnants: 1 }), etat = nouvelEtatAnnonces({ genre: "f" });
+    etat.jeu = "tournoi_finale";
+    const a = annoncerCoup(m, jouerCoup(m, CISEAUX, PIERRE), etat, {}, rng);
+    const com = a.lignes.filter(l => l.role === "commentateur" || l.role === "commentatrice");
+    assert.ok(com.every(l => /_dialogue_apres_tournoi_finale_defaite_\d\d(_f)?$/.test(l.id)), com.map(l => l.id).join());
+    if (com.some(l => /_f$/.test(l.id))) vus++;
+  }
+  assert.ok(vus > 0, "des versions au féminin");
 });
