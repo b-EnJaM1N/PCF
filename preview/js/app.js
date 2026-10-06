@@ -41,7 +41,7 @@ import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
 import { GESTES, CELEBRATIONS, CADRES, gesteValide, celebrationValide, articleDe, possede } from "./catalogue.js";
 import { gainDuel } from "./jetons-logique.js";
-import { texteClassementFin, texteNiveau, provisoire } from "./social-logique.js";
+import { texteClassementFin, texteNiveau, provisoire, divisionDe, texteDivision } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
 import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel } from "./duel-logique.js";
 
@@ -94,9 +94,9 @@ const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
 let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, programmesUI = null, defisUI = null, boutiqueUI = null;
-let monClassement = null, mesDuelsOfficiels = 0;
+let monClassement = null, mesDuelsOfficiels = 0, maDivision = null;
 // « Niveau officiel : 1232 ? · provisoire, encore 9 duels de calibrage »
-const texteNiveauFiche = (points, joues) => `Niveau officiel : ${texteNiveau(points, joues)}` +
+const texteNiveauFiche = (points, joues, division = null) => `Niveau officiel : ${texteNiveau(points, joues)} · ${texteDivision(division ?? divisionDe(points))}` +
   (provisoire(joues) ? ` · provisoire, encore ${10 - joues} duel${10 - joues > 1 ? "s" : ""} de calibrage` : "");   // niveau officiel (duels entre humains), connu une fois connecté
 let panneauOuvert = null, faceAFaceOuvert = false;
 
@@ -1077,7 +1077,7 @@ function renderFiche() {
   $("pTitle").textContent = dernierTitre(P);
   $("pElo").textContent = `Niveau d'entraînement : ${P.elo}`;
   $("pNiveauAide").hidden = monClassement === null;
-  $("pClassement").hidden = monClassement === null; $("pClassement").textContent = monClassement === null ? "" : texteNiveauFiche(monClassement, mesDuelsOfficiels);
+  $("pClassement").hidden = monClassement === null; $("pClassement").textContent = monClassement === null ? "" : texteNiveauFiche(monClassement, mesDuelsOfficiels, maDivision);
   $("kM").textContent = P.matchs;
   $("kW").textContent = P.matchs ? Math.round(100 * P.victoires / P.matchs) + " %" : "–";
   $("kS").textContent = P.serieEnCours;
@@ -1624,11 +1624,11 @@ cerclesUI = installerCercles({
   defier: p => duelsUI.defier(p),
   lancerDuel,
   trophees: donnees => gagnerTrophees(accorderTitres(P, titresEnLigne(donnees))),
-  surClassement: (points, joues = 0) => {
-    monClassement = points; mesDuelsOfficiels = joues;
+  surClassement: (points, joues = 0, division = null) => {
+    monClassement = points; mesDuelsOfficiels = joues; maDivision = division;
     retenirRang();
     $("pClassement").hidden = points === null; $("pNiveauAide").hidden = points === null;
-    $("pClassement").textContent = points === null ? "" : texteNiveauFiche(points, joues);
+    $("pClassement").textContent = points === null ? "" : texteNiveauFiche(points, joues, division);
     renderCarte();
   },
 });
