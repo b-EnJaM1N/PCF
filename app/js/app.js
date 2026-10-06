@@ -45,6 +45,29 @@ import { texteClassementFin, texteNiveau, provisoire } from "./social-logique.js
 import * as serveur from "./duel-serveur.js";
 import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel } from "./duel-logique.js";
 
+// Le caillou 🪨 est un emoji récent : certains ordinateurs (anciens Windows) l'affichent comme un point d'interrogation.
+// Si l'appareil ne sait pas le dessiner en couleur, on le remplace partout par le poing ✊.
+(function remplacerCaillouSiBesoin() {
+  let ok = true;
+  try {
+    const c = document.createElement("canvas"); c.width = c.height = 24;
+    const x = c.getContext("2d"); x.textBaseline = "top"; x.font = "20px sans-serif"; x.fillText("🪨", 0, 0);
+    const d = x.getImageData(0, 0, 24, 24).data;
+    ok = false;
+    for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 0 && (Math.abs(d[i] - d[i + 1]) > 18 || Math.abs(d[i + 1] - d[i + 2]) > 18)) { ok = true; break; }
+  } catch { ok = true; }
+  if (ok) return;
+  EMOJI[0] = "✊"; EMOJIS[0] = "✊";
+  const remplacer = n => {
+    if (n.nodeType === 3) { if (n.data.includes("🪨")) n.data = n.data.replaceAll("🪨", "✊"); return; }
+    const w = document.createTreeWalker(n, NodeFilter.SHOW_TEXT);
+    while (w.nextNode()) if (w.currentNode.data.includes("🪨")) w.currentNode.data = w.currentNode.data.replaceAll("🪨", "✊");
+  };
+  remplacer(document.body);
+  new MutationObserver(ms => ms.forEach(m => (m.type === "characterData" ? remplacer(m.target) : m.addedNodes.forEach(remplacer))))
+    .observe(document.body, { childList: true, subtree: true, characterData: true });
+})();
+
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const ORD = ["Premier", "Deuxième", "Troisième", "Quatrième", "Cinquième"];

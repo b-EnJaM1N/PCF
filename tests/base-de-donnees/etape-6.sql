@@ -62,7 +62,7 @@ select pg_temp.interdit('select * from tournois', 'la table des tournois reste i
 do $$ begin for i in 2 .. 7 loop perform pg_temp.en_tant_que(pg_temp.j(i)); perform rejoindre_sit_and_go(8); end loop; end $$;
 select pg_temp.verifier((select (salles_sit_and_go()->'salles'->0->>'inscrits')::int = 7), '7 inscrits sur 8');
 -- Le joueur 7 ferme l'application : il est retiré de la salle
-reset role; update inscrits_tournoi set vu = now() - interval '1 minute' where joueur = pg_temp.j(7)::uuid;
+reset role; update inscrits_tournoi set vu = now() - interval '4 minutes' where joueur = pg_temp.j(7)::uuid;
 select pg_temp.en_tant_que(pg_temp.j(1)); select presence_sit_and_go();
 select pg_temp.verifier((select (salles_sit_and_go()->'salles'->0->>'inscrits')::int = 6), 'un inscrit sans signe de vie est retiré de la salle');
 select pg_temp.en_tant_que(pg_temp.j(9)); select rejoindre_sit_and_go(8); select quitter_sit_and_go();
