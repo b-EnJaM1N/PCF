@@ -48,4 +48,18 @@ begin
   perform pg_temp.verifier((select bool_and(lower(_niveaux_bots_mise(x)) < lower(_niveaux_bots_mise(y)))
     from (values (50, 100), (100, 200), (200, 500), (500, 1000)) v(x, y)), 'chaque mise a des bots plus forts que la précédente');
   perform pg_temp.verifier(_niveaux_bots_mise(0) is null, 'sans mise : n''importe lesquels');
+
+  -- Sans le minuteur du serveur : c'est l'écran Sit & Go du joueur (toutes les 4 s) qui fait venir les bots.
+  perform pg_temp.en_tant_que(pg_temp.u(5)::text);
+  perform rejoindre_sit_and_go(8, 0);
+  execute 'reset role';
+  select t2.* into t from tournois t2 join inscrits_tournoi i on i.tournoi_id = t2.id where i.joueur = pg_temp.u(5) and t2.phase = 'inscriptions';
+  update inscrits_tournoi set inscrit_le = now() - interval '3 minutes' where tournoi_id = t.id;
+  perform pg_temp.en_tant_que(pg_temp.u(5)::text);
+  perform presence_sit_and_go();
+  perform salles_sit_and_go();
+  execute 'reset role';
+  select * into t from tournois where id = t.id;
+  perform pg_temp.verifier(t.phase = 'en_cours' and (select count(*) from inscrits_tournoi where tournoi_id = t.id) = 8,
+    'seul en salle de 8 depuis 3 minutes : l''écran Sit & Go fait venir 7 bots et la salle démarre');
 end $$;

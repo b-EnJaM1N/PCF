@@ -222,6 +222,11 @@ Les bots qui complètent les salles et les tournois sont plus forts à chaque mi
 200 (1 150 à 1 350), 500 (1 300 à 1 500), 1 000 et Grand Chelem (1 450 et plus). Sans mise et freeroll : n'importe lesquels.
 Si on relance un jour l'étape 24 ou 25, il faut relancer celle-ci ensuite.
 
+## 1 tricies. Patience en salle de Sit & Go (étape 30)
+
+Une seule ligne, dans [`etape-30-patience-en-salle.sql`](etape-30-patience-en-salle.sql) : en salle, un joueur sans signe de vie
+(téléphone en veille, autre appli ouverte) reste inscrit 3 minutes au lieu de 45 secondes, le temps que les bots arrivent (2 minutes).
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
