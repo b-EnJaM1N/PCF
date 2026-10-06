@@ -1,1 +1,3 @@
 # Les répliques à refaire avec le robot « Voix » (choix « liste ») : un identifiant par ligne. Les lignes en # sont ignorées.
+# Prononciation : « inversée » (Roland disait « initiée »).
+commentateur_dialogue_buse_02
