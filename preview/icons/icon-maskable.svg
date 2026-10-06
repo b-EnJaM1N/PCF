@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" fill="#0F3D2B"/>
+<g transform="translate(256 256) scale(0.8) translate(-256 -256)">
+<circle cx="256" cy="256" r="196" fill="none" stroke="#C9A24A" stroke-width="4"/>
+<circle cx="256" cy="256" r="170" fill="#F5EFE0" stroke="#C9A24A" stroke-width="8"/>
+<circle cx="256" cy="256" r="156" fill="none" stroke="#C9A24A" stroke-width="2.5"/>
+<g transform="translate(166 125) scale(1.75)"><g stroke="#0F3D2B" stroke-width="3.2" stroke-linejoin="round" fill="#FFFFFF"><rect x="27" y="4" width="16" height="64" rx="8" transform="rotate(-11 35 64)"/><rect x="45" y="0" width="16" height="66" rx="8" transform="rotate(7 53 64)"/><rect x="22" y="50" width="62" height="54" rx="17"/><rect x="59" y="47" width="13" height="24" rx="6.5"/><rect x="71" y="52" width="12" height="20" rx="6"/><rect x="12" y="66" width="44" height="15" rx="7.5" transform="rotate(-18 34 74)"/><path d="M28 100h50v26H28z"/><path d="M28 106h50v5H28zM28 115h50v5H28z" fill="#0F3D2B" stroke="none"/><path d="M28 115h50v5H28z" fill="#C9A24A" stroke="none"/><path d="M28 100h50v26H28z" fill="none"/></g></g>
+</g>
+</svg>
