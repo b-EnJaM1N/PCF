@@ -98,7 +98,7 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
 // Un dialogue pas encore joué dans ce match (liste de deux répliques), ou null.
 function dialogue(etat, moment, rng) {
   // (etat.audible : seulement les dialogues déjà enregistrés, pour ne jamais remplacer une voix par un silence)
-  let dispo = DIALOGUES_IDS[moment].map((_, k) => k).filter(k => !etat.dialoguesDits.has(`${moment}_${k}`) && (!etat.audible || etat.audible(DIALOGUES_IDS[moment][k][0])));
+  let dispo = DIALOGUES_IDS[moment].map((_, k) => k).filter(k => !etat.dialoguesDits.has(`${moment}_${k}`) && (!etat.audible || DIALOGUES_IDS[moment][k].every(id => etat.audible(id) && (etat.genre !== "f" || !CATALOGUE.has(`${id}_f`) || etat.audible(`${id}_f`)))));
   if (!dispo.length) return null;
   const frais = dispo.filter(k => !etat.anciens?.has(baseDe(DIALOGUES_IDS[moment][k][0])));
   if (frais.length) dispo = frais;
