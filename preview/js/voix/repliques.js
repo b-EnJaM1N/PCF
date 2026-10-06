@@ -324,11 +324,8 @@ export const MOMENTS = {
   domination: [
     { r: "d", t: "Je suis ton père.", clin: "cine" },
   ],
-  // La poignée de main de fin de match (voir poignee.js)
   // Le public fait « ooh » sur un point disputé : Monique, une fois par match au plus, parfois.
   huees: [{ r: "d", t: "Je vous demande de vous arrêter." }],
-  poignee_froide: [{ r: "d", t: "Glacial. J'approuve." }],
-  poignee_contraste: [{ r: "d", t: "L'un tend la main. L'autre tend un glaçon." }],
   humain: [
     { r: "c", t: "C'est un duel ! Un vrai ! Les yeux dans les yeux !" },
     { r: "d", t: "Ils se connaissent. Et ça se voit." },
