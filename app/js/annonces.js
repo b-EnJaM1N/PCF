@@ -45,6 +45,17 @@ const CONDITIONS = {
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
 };
 
+// Le contexte des commentaires d'avant et d'après match (les dialogues « avant_… » et « apres_… ») :
+// "entrainement" (contre un bot, hors tournoi), "tournoi_premiers|quarts|demis|finale" (petit tournoi),
+// "majeur_quarts|demis|finale" (gros tournoi : le Grand Chelem ; ses premiers tours prennent ceux d'un petit tournoi), sinon null.
+// (Les Sit & Go et les duels gardent les commentaires habituels.)
+export function contexteJeu({ entrainement = false, tournoi = null, tour = null } = {}) {
+  if (entrainement) return "entrainement";
+  if (!tournoi) return null;
+  const phase = ["finale", "demis", "quarts"].includes(tour) ? tour : "premiers";
+  return tournoi === "gros" && phase !== "premiers" ? `majeur_${phase}` : `tournoi_${phase}`;
+}
+
 // L'enjeu d'un match : "finale" (finale de tournoi), "tableau" (quart, demi-finale, ou tout match d'un Grand Chelem), sinon null.
 export function niveauEnjeu({ tour = null, grandChelem = false } = {}) {
   if (tour === "finale") return "finale";
@@ -75,7 +86,7 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
     const ordinaires = valides.filter(e => !e.si && e.seul === undefined);
     const g = ordinaires.length ? ordinaires : speciales;
     if (!g.length) return null;
-    const poids = e => (e.clin === "cine" ? 0.6 : 1);
+    const poids = e => (e.rare ? 0.25 : e.clin === "cine" ? 0.6 : 1);   // (« rare » : une réplique qui marque trop pour revenir souvent)
     let r = rng() * g.reduce((t, e) => t + poids(e), 0);
     item = g.find(e => (r -= poids(e)) < 0) ?? g[g.length - 1];
   }
@@ -86,7 +97,8 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
 
 // Un dialogue pas encore joué dans ce match (liste de deux répliques), ou null.
 function dialogue(etat, moment, rng) {
-  let dispo = DIALOGUES_IDS[moment].map((_, k) => k).filter(k => !etat.dialoguesDits.has(`${moment}_${k}`));
+  // (etat.audible : seulement les dialogues déjà enregistrés, pour ne jamais remplacer une voix par un silence)
+  let dispo = DIALOGUES_IDS[moment].map((_, k) => k).filter(k => !etat.dialoguesDits.has(`${moment}_${k}`) && (!etat.audible || etat.audible(DIALOGUES_IDS[moment][k][0])));
   if (!dispo.length) return null;
   const frais = dispo.filter(k => !etat.anciens?.has(baseDe(DIALOGUES_IDS[moment][k][0])));
   if (frais.length) dispo = frais;
@@ -207,6 +219,12 @@ function finDeSet(match, evt, etat, ctx, rng) {
 // les phrases pendant qu'on regarde l'écran de fin (décision du porteur du projet).
 function finDeMatch(match, evt, etat, ctx, rng) {
   const un = x => (x ? (Array.isArray(x) ? x : [x]) : []);
+  // Selon l'enjeu (entraînement, tour d'un tournoi) : un dialogue adapté, 8 fois sur 10 (toujours en finale).
+  const jeu = etat.jeu && `apres_${etat.jeu}_${evt.gagnant === 0 ? "victoire" : "defaite"}`;
+  if (jeu && DIALOGUES_IDS[jeu] && (/finale/.test(jeu) || rng() < 0.8)) {
+    const d = dialogue(etat, jeu, rng);
+    if (d) return d;
+  }
   if (evt.gagnant === 0) {
     const premierPerdu = match.scoresSets.length > 1 && match.scoresSets[0][0] < match.scoresSets[0][1];
     const troisZero = match.sets[0] === 3 && match.sets[1] === 0;
@@ -298,7 +316,7 @@ const partiesSurnom = s => (s ? [CATALOGUE.get(idPartie(s.nom)), CATALOGUE.get(i
 // situations : situationsDuMatch() ; recents : les phrases dites aux derniers matchs (on évite de les répéter).
 // Renvoie { speaker, commentaires } : les deux listes de répliques, dans l'ordre.
 export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = false, humain = false, domination = false, genre = "m",
-  situations = [], recents = [] } = {}, rng = Math.random) {
+  situations = [], recents = [], jeu = null, audible = null } = {}, rng = Math.random) {
   const deja = new Set(recents);
   // Une version de la phrase, en évitant celles déjà entendues récemment.
   const dire = (cle, g = "m") => {
@@ -330,10 +348,18 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
 
   // Les commentateurs lancent le match (en évitant, eux aussi, ce qu'ils ont dit récemment).
   const etat = nouvelEtatAnnonces({ humain, genre });
+  etat.audible = audible;
   // (seulement les 6 derniers dialogues : sinon, au bout de quelques matchs, ils seraient tous écartés et plus rien ne serait dit)
   const dialoguesRecents = recents.filter(id => /^commentateur_dialogue_avant_match_/.test(id)).slice(0, 6);
   dialoguesRecents.forEach(id => { const m = /_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
   // Un dialogue selon la situation (une fois sur deux), s'il n'a pas été entendu aux derniers matchs.
+  // Selon l'enjeu (entraînement, tour d'un tournoi) : un dialogue adapté, 8 fois sur 10 (toujours en finale).
+  if (jeu && DIALOGUES_IDS[`avant_${jeu}`] && (/finale/.test(jeu) || rng() < 0.8)) {
+    const recentsJeu = recents.filter(id => id.startsWith(`commentateur_dialogue_avant_${jeu}_`)).slice(0, 4);
+    recentsJeu.forEach(id => { const m = /_(\d\d)(_f)?$/.exec(id); if (m) etat.dialoguesDits.add(`avant_${jeu}_${+m[1] - 1}`); });
+    const d = dialogue(etat, `avant_${jeu}`, rng);
+    if (d) return { speaker: sp.filter(Boolean), commentaires: d };
+  }
   const contexte = tour === "finale" ? "avant_finale" : situations.includes("revanche") ? "avant_revanche"
     : situations.includes("nuit") ? "avant_nuit" : situations.includes("contre_bot") ? "avant_bot" : null;
   const contexteRecent = contexte && recents.slice(0, 20).includes(`commentateur_dialogue_${contexte}_01`);

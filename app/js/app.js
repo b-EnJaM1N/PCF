@@ -2,7 +2,7 @@
 import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, baseDe, silenceAvantBalle } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide } from "./surnoms.js";
 import { voirTournoi, mesAmis } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
@@ -101,6 +101,8 @@ const texteNiveauFiche = (points, joues, division = null) => `Niveau officiel : 
 let panneauOuvert = null, faceAFaceOuvert = false;
 
 // ---------------------------------------------------------------- son
+// Les commentaires ne choisissent que des dialogues déjà enregistrés (voir dialogue() dans annonces.js).
+const avecAudible = etat => Object.assign(etat, { audible: id => !voix.fichiers.size || voix.fichiers.has(id) });
 const voix = new LecteurVoix();
 const ambiance = new Ambiance();
 let sonActif = lire("son", true) !== false;
@@ -753,7 +755,7 @@ function nouvelleSeance() {
   else if (!T) { WIN = fmt.win; OPP = botParId(amicalId); }
   S = {
     match: nouveauMatch({ pointsParSet: T ? lenTournoi() : fmt.len, setsGagnants: WIN }),
-    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre }), suivi: new Suivi(),
+    stats: nouvellesStats(), annonces: avecAudible(nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre })), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false,
   };
   preparerEcranMatch();
@@ -823,6 +825,8 @@ function ouvrirFaceAFace() {
   if (!S.duel) {
     S.annonces.finale = S.tour !== null && !!T && tourDe(T, S.tour).finale;
     S.annonces.enjeu = niveauEnjeu({ tour: S.tour !== null && T ? tourDe(T, S.tour).cle : null });
+    // Les dialogues d'avant et d'après match : l'entraînement contre un bot, ou un tour du HandSlam Open (petit tournoi).
+    S.annonces.jeu = S.tour !== null && T ? contexteJeu({ tournoi: "petit", tour: tourDe(T, S.tour).cle }) : contexteJeu({ entrainement: true });
   }
   presenterSpeaker();
 
@@ -853,7 +857,7 @@ function presenterSpeaker() {
     moi: { surnom: surnomDe(P), genre: P.genre, etiquette: etiquetteDe(P, { advId: OPP.id, niveauMoi, niveauAdv }) },
     adv: humain ? { surnom: OPP.surnom, genre: OPP.genre, etiquette: etiquetteDe(OPP.fiche, { advId: monId, niveauMoi: niveauAdv, niveauAdv: niveauMoi }) } : { bot: OPP.id },
     tour: S.duel ? D?.tourCommente ?? null : S.tour !== null && T ? tourDe(T, S.tour).cle : null, sng: !!(S.duel && D?.sng),
-    humain, domination: !!(f && f.d >= f.v + 3), genre: P.genre,
+    humain, domination: !!(f && f.d >= f.v + 3), genre: P.genre, jeu: S.annonces?.jeu ?? null, audible: id => !voix.fichiers.size || voix.fichiers.has(id),
     situations: situationsDuMatch({
       humain, dejaJoues: !!(f && f.v + f.d > 0), niveauMoi, niveauAdv, memePays: humain && OPP.drapeau === P.drapeau,
       rapide: !!(D?.duel?.rapide || S.contreBotRapide), officiel: !!(S.duel && D?.duel?.classe), setsGagnants: S.match.format.setsGagnants,
@@ -971,7 +975,7 @@ $("mdjJouer").addEventListener("click", () => {
   OPP = botParId(mj.bot); WIN = FORMAT_DU_JOUR.setsGagnants;
   S = {
     match: nouveauMatch({ ...FORMAT_DU_JOUR }),
-    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre }), suivi: new Suivi(),
+    stats: nouvellesStats(), annonces: avecAudible(nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre })), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false, matchJour: mj, hasard: hasardGraine(mj.graine),
   };
   preparerEcranMatch();
@@ -1009,7 +1013,7 @@ $("premierMatch").addEventListener("click", () => {
   OPP = botParId(PREMIER_MATCH.bot); WIN = PREMIER_MATCH.setsGagnants;
   S = {
     match: nouveauMatch({ pointsParSet: PREMIER_MATCH.pointsParSet, setsGagnants: PREMIER_MATCH.setsGagnants }),
-    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre }), suivi: new Suivi(),
+    stats: nouvellesStats(), annonces: avecAudible(nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre })), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false, premier: true,
   };
   preparerEcranMatch();
@@ -1359,7 +1363,7 @@ function lancerDuel(duel, ligneAdv) {
   OPP = adversaireHumain(ligneAdv); WIN = duel.sets_gagnants;
   S = {
     match: nouveauMatch(formatDuel(duel)),
-    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ anciens: commentairesRecents(), humain: true, genre: P.genre }), suivi: new Suivi(),
+    stats: nouvellesStats(), annonces: avecAudible(nouvelEtatAnnonces({ anciens: commentairesRecents(), humain: true, genre: P.genre })), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false, duel: true,
   };
   D = { id: duel.id, moi, duel, decalage: 0, mancheEnvoyee: null, presente: false, fini: false, apresPanneau: null, finSpeciale: null };
@@ -1392,6 +1396,8 @@ async function reperesTournoi(duel) {
     D.tourCommente = D.direct ? null : D.tourVoix;
     S.annonces.finale = D.tourCommente === "finale";
     S.annonces.enjeu = niveauEnjeu({ tour: D.tourCommente, grandChelem: D.grandChelem });
+    // Les dialogues d'avant et d'après match : gros tournoi (Grand Chelem) ou petit (les autres) ; rien de spécial en Sit & Go.
+    S.annonces.jeu = D.direct ? null : contexteJeu({ tournoi: D.grandChelem ? "gros" : "petit", tour: D.tourVoix });
     if (faceAFaceOuvert) presenterSpeaker();
   } catch { /* sans réseau : présentation simple */ }
 }
@@ -1653,7 +1659,7 @@ function jouerBotRapide(format) {
   OPP = botProche(P.elo, BOTS); WIN = f.setsGagnants;
   S = {
     match: nouveauMatch({ pointsParSet: f.pointsParSet, setsGagnants: f.setsGagnants }),
-    stats: nouvellesStats(), annonces: nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre }), suivi: new Suivi(),
+    stats: nouvellesStats(), annonces: avecAudible(nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre })), suivi: new Suivi(),
     tour: null, occupe: false, enJeu: false, contreBotRapide: true,
   };
   preparerEcranMatch();
