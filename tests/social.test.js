@@ -59,3 +59,12 @@ test("calibrage : le niveau est provisoire pendant les 10 premiers duels officie
   assert.ok(provisoire(undefined)); assert.ok(!provisoire(12));
   assert.match(texteCalibrage(9), /encore 1 duel officiel de calibrage/); assert.equal(texteCalibrage(10), "");
 });
+
+test("divisions : seuils, montée dès le seuil, descente seulement 20 points sous le seuil", async () => {
+  const { divisionDe, texteDivision } = await import("../app/js/social-logique.js");
+  assert.deepEqual([1099, 1100, 1200, 1250, 1400, 1550].map(p => divisionDe(p)), [0, 1, 1, 2, 3, 4]);
+  assert.equal(divisionDe(1250, 1), 2, "Argent à 1 250 : promu en Or");
+  assert.equal(divisionDe(1230, 2), 2, "Or à 1 230 : reste en Or");
+  assert.equal(divisionDe(1229, 2), 1, "Or à 1 229 : redescend");
+  assert.equal(texteDivision(2), "🥇 Or");
+});

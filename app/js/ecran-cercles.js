@@ -5,6 +5,7 @@ import { chercher, duelsAvec } from "./duel-serveur.js";
 import { statsFaceAFace } from "./duel-logique.js";
 import { EMOJI, NOM } from "./regles.js";
 import { avatarSVG, FONDS } from "./avatar.js";
+import { DIVISIONS, texteDivision, divisionDe } from "./social-logique.js";
 import { EMBLEMES, blasonSVG, normaliserBlason, blasonParDefaut, erreurNomCercle, lienCercle, codeCercleDepuisAdresse, rang, CLASSEMENT_DEPART, texteNiveau, texteCalibrage, provisoire } from "./social-logique.js";
 import { lire, ecrire } from "./stockage.js";
 import { installerTournois } from "./ecran-tournois.js";
@@ -97,7 +98,9 @@ export function installerCercles(ctx) {
         ? `${pluriel(c.joues, "duel officiel")} · ${c.gagnes} V – ${c.joues - c.gagnes} D · meilleur : ${c.meilleur}`
         : `Aucun duel officiel pour l'instant : tout le monde démarre à ${CLASSEMENT_DEPART}.`;
       if (provisoire(c?.joues)) $("clDetail").textContent += ` ${texteCalibrage(c?.joues)}`;
-      ctx.surClassement(c ? c.points : CLASSEMENT_DEPART, c?.joues ?? 0);
+      ctx.surClassement(c ? c.points : CLASSEMENT_DEPART, c?.joues ?? 0, c?.division ?? null);
+      const maDiv = c?.division ?? divisionDe(c ? c.points : CLASSEMENT_DEPART);
+      if (divVue === null) chargerDivision(maDiv);
     }
     if (listeAmis) { amis = listeAmis; renderAmis(); }
     if (cercles) renderCercles(cercles);
@@ -128,6 +131,28 @@ export function installerCercles(ctx) {
         `<button class="petit" data-a="defier">Défier</button><button class="petit alt" data-a="retirer" aria-label="Retirer de mes amis">✕</button>`)
       : ligneJoueur(a, "Demande envoyée", `<button class="petit alt" data-a="annuler">Annuler</button>`)).join("");
   }
+
+  // ---------------------------------------------------------------- le classement par division
+  let divVue = null;
+  async function chargerDivision(d) {
+    divVue = d;
+    document.querySelectorAll("#divSeg button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.d === d)));
+    $("divListe").innerHTML = ""; $("divMoi").textContent = "Chargement…";
+    let r;
+    try { r = await social.classementDivision(d); } catch { if (divVue === d) $("divMoi").textContent = "Classement indisponible pour l'instant."; return; }
+    if (divVue !== d) return;
+    const moi = r.moi, ici = moi && moi.division === d, ligne = r.joueurs.find(j => j.moi);
+    $("divMoi").innerHTML = `<b>${texteDivision(d)}</b> · ${pluriel(r.joueurs.length, "joueur classé")}` + (!moi ? "" : ici
+      ? (ligne ? ` · tu es <b>${ligne.rang}e</b>` : moi.manque ? ` · encore ${pluriel(moi.manque, "duel officiel")} pour y figurer` : moi.inactif ? " · joue un duel officiel pour y réapparaître" : "")
+      : ` · ta division : ${texteDivision(moi.division)}`);
+    $("divListe").innerHTML = r.joueurs.length ? r.joueurs.map(j => `<li class="${j.moi ? "moi" : ""}" data-id="${j.id}">
+      <span class="cl-rang">${j.rang}</span>
+      <span class="mini">${avatarSVG(j.avatar || {})}</span>
+      <div style="min-width:0"><div class="jn">${esc(j.drapeau || "")} ${nomComplet(j)}${j.moi ? " <small>(toi)</small>" : ""}</div><div class="jd">${pluriel(j.joues, "duel officiel")}</div></div>
+      <b class="cl-points">${j.points}</b><span></span></li>`).join("")
+      : `<li class="vide"><span></span><span></span><div class="jd">Personne n'est encore classé dans cette division.</div><span></span><span></span></li>`;
+  }
+  $("divSeg").addEventListener("click", e => { const b = e.target.closest("button[data-d]"); if (b) chargerDivision(+b.dataset.d); });
 
   // ---------------------------------------------------------------- face-à-face avec un ami
   let amiOuvert = null;
