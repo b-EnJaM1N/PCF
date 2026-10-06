@@ -65,7 +65,9 @@
           "nom": "hystérique",
           "indication": "[hysterical] [screaming] [ecstatic]",
           "situations": [
-            "main_legendaire"
+            "main_legendaire",
+            "dialogue_apres_tournoi_finale_victoire",
+            "dialogue_apres_majeur_finale_victoire"
           ],
           "ids": [
             "commentateur_serie_contre_04"
@@ -105,7 +107,15 @@
           "indication": "[sighs] [disappointed]",
           "situations": [
             "defaite",
-            "serie_contre"
+            "serie_contre",
+            "dialogue_apres_entrainement_defaite",
+            "dialogue_apres_tournoi_premiers_defaite",
+            "dialogue_apres_tournoi_quarts_defaite",
+            "dialogue_apres_tournoi_demis_defaite",
+            "dialogue_apres_tournoi_finale_defaite",
+            "dialogue_apres_majeur_quarts_defaite",
+            "dialogue_apres_majeur_demis_defaite",
+            "dialogue_apres_majeur_finale_defaite"
           ]
         }
       ]
