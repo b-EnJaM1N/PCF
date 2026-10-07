@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "fr.handslam.app",
+    "sha256_cert_fingerprints": ["2C:47:F7:B9:31:EA:8B:2A:D1:7B:F9:59:EC:35:9F:BD:8E:5B:E4:84:9F:26:9A:7C:C9:B8:D7:75:E9:59:25:71"]
+  }
+}]
