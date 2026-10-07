@@ -21,11 +21,14 @@
 > Lis ton adversaire. Cache ton jeu. Gagne le match. 🏆
 > 👉 handslam.fr
 
-## Slogan principal (choisi le 4 octobre)
-**Tu crois au hasard ? Ton adversaire compte dessus.**
-(version courte, pour une petite place : « Le hasard ? Ton adversaire compte dessus. »)
+## Slogan principal (choisi le 7 octobre)
+**Pierre, Feuille, Ciseaux. Jeu, set et match.**
+(sur la bannière du Play Store ; l'ancien slogan principal, « Tu crois au hasard ? Ton adversaire compte dessus. », passe en réserve : il marche bien dans un message aux amis)
 
 ## Slogans en réserve
+- Tu crois au hasard ? Ton adversaire compte dessus. (version courte : « Le hasard ? Ton adversaire compte dessus. »)
+- Lis-le avant qu'il te lise.
+- Le chifoumi a enfin son Grand Chelem.
 - Pas un coup de chance. Un coup de maître.
 - Pas de bol. Que du Slam.
 - Le hasard ne gagne pas de tournoi.
