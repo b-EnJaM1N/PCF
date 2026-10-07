@@ -8,6 +8,7 @@ const FICHIERS = [
   "./",
   "index.html",
   "mentions.html",
+  "suppression-compte.html",
   "ecoute.html",
   "manifest.webmanifest",
   "css/style.css",
