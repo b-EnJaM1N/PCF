@@ -23,7 +23,7 @@
 
 ## Slogan principal (choisi le 7 octobre)
 **Pierre, Feuille, Ciseaux. Jeu, set et match.**
-(sur la bannière du Play Store ; l'ancien slogan principal, « Tu crois au hasard ? Ton adversaire compte dessus. », passe en réserve : il marche bien dans un message aux amis)
+(sur la bannière du Play Store, avec en dessous « Sauras-tu lire ton adversaire ? » ; l'ancien slogan principal, « Tu crois au hasard ? Ton adversaire compte dessus. », passe en réserve : il marche bien dans un message aux amis)
 
 ## Slogans en réserve
 - Tu crois au hasard ? Ton adversaire compte dessus. (version courte : « Le hasard ? Ton adversaire compte dessus. »)
