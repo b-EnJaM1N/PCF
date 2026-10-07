@@ -37,3 +37,18 @@
 - Lis. Anticipe. Frappe.
 - Trois signes. Un seul gagnant. Zéro hasard.
 - Ton cerveau contre le sien.
+
+## Invitation des testeurs Android (préparée le 7 octobre)
+À envoyer par SMS ou WhatsApp, à chaque personne séparément (c'est plus engageant qu'un message de groupe). Il faut au moins 12 testeurs sur Android, qui gardent l'appli 14 jours : en viser 15 à 20.
+
+> Salut ! 👋 J'ai créé un jeu sur téléphone : HandSlam, du pierre-feuille-ciseaux joué comme un match de tennis (sets, arbitre, commentateurs, tournois). Je veux le mettre sur le Google Play Store, et Google demande d'abord un test avec 12 personnes pendant 14 jours.
+> Tu serais partant(e) ? Il faut :
+> 1️⃣ un téléphone Android ;
+> 2️⃣ m'envoyer l'adresse Gmail de ton téléphone (celle du Play Store) ;
+> 3️⃣ installer l'appli avec le lien que je t'enverrai, et la garder installée 14 jours ;
+> 4️⃣ jouer de temps en temps et me dire ce qui ne va pas.
+> C'est gratuit, sans pub, et aucun argent en jeu. Merci, ça m'aide énormément ! 🙏
+
+Pour les amis sur iPhone (ils ne comptent pas pour Google, mais leurs avis sont utiles) :
+
+> Salut ! 👋 J'ai créé un jeu : HandSlam, du pierre-feuille-ciseaux joué comme un match de tennis. Tu peux y jouer directement sur https://handslam.fr (sur iPhone : bouton Partager → « Sur l'écran d'accueil » pour l'avoir comme une appli). Dis-moi ce que tu en penses, même les petits défauts ! 🙏
