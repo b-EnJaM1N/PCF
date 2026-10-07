@@ -32,7 +32,7 @@ Règle d'or : **répondre ce qui est vrai**. Une fausse réponse peut faire reti
 Effet attendu : à cause des jeux d'argent simulés, l'âge minimum affiché sera plus élevé (au moins 12 ans, peut-être plus selon les pays). C'est calculé automatiquement par le questionnaire.
 
 ## 5. Public cible et contenu
-- Tranches d'âge visées : **16-17 ans** et **18 ans et plus** (*à confirmer par le porteur du projet*). Ne pas cocher les moins de 13 ans : les applis pour enfants ont des règles très strictes (et les mises de jetons y sont interdites).
+- Tranches d'âge visées : **13-15 ans**, **16-17 ans** et **18 ans et plus** (choix du porteur du projet, 7 octobre). Ne pas cocher les moins de 13 ans : les applis pour enfants ont des règles très strictes (et les mises de jetons y sont interdites). Entre 13 et 15 ans, les mentions légales demandent l'accord d'un parent pour créer un compte.
 - L'appli pourrait-elle attirer involontairement des enfants : **Non** (pas de personnage enfantin ni de contenu pour enfants ; le jeu tourne autour des classements, tournois et mises).
 
 ## 6. Sécurité des données (« Data safety »)
