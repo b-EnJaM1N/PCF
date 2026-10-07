@@ -1,6 +1,6 @@
 # Textes de promotion de HandSlam
 
-## Fiche du Google Play Store (choisie le 3 octobre)
+## Fiche du Google Play Store (choisie le 3 octobre ; fiche complète dans `docs/play-store/fiche.md`)
 
 **Description courte (80 caractères au plus)** : Le hasard n'existe pas : lis ton adversaire et deviens champion de Chifoumi.
 
