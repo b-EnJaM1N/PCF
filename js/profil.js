@@ -2,6 +2,7 @@
 // Pour l'instant elle est gardée sur le téléphone (voir stockage.js).
 import { CRI_DEFAUT, criValide } from "./celebrations.js";
 import { possede, gesteValide, celebrationValide, cadreValide } from "./catalogue.js";
+import { additionner, compterMatch } from "./lecture-adversaire.js";
 
 export const ELO_DEPART = 1200;
 export const K_ELO = 32;
@@ -158,6 +159,7 @@ export function enregistrerMatch(P, r) {
   c.forEach(x => { P.signes[x.a]++; P.signesAdv[x.b]++; });
   const f = (P.faceAFace[r.adversaire.id] ||= { v: 0, d: 0, signes: [0, 0, 0] });
   gagne ? f.v++ : f.d++; c.forEach(x => f.signes[x.b]++);
+  f.lect = additionner(f.lect, compterMatch(c));   // ses habitudes, pour son dossier d'avant-match
   const tournoi = !!(r.finaleTournoi && gagne); if (tournoi) P.tournoisGagnes++;
   for (let i = 1; i < n; i++) {
     const p = c[i - 1];
