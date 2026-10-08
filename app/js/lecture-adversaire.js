@@ -75,3 +75,65 @@ export function lecturesReussies(coups) {
   }
   return k;
 }
+
+// ---------------------------------------------------------------- le dossier de l'adversaire (avant le match)
+// On résume ses matchs passés en compteurs (petits, faciles à additionner et à garder dans la fiche),
+// puis on en tire ses habitudes. Les coups sont vus de son côté comme ci-dessus : b = son signe, a = celui d'en face,
+// gagnant = 1 quand c'est lui qui gagne le point.
+export const compteVide = () => ({ matchs: 0, coups: 0, signes: [0, 0, 0], premiers: [0, 0, 0],
+  apresVictoire: 0, rejoueVictoire: 0, apresDefaite: 0, changeDefaite: 0, transitions: 0, repete: 0, boucle: 0, copie: 0, contre: 0 });
+
+// Les compteurs d'un match.
+export function compterMatch(coups) {
+  const k = compteVide();
+  if (!coups || !coups.length) return k;
+  k.matchs = 1; k.coups = coups.length; k.premiers[coups[0].b]++;
+  coups.forEach((c, i) => {
+    k.signes[c.b]++;
+    const p = coups[i - 1];
+    if (!p) return;
+    k.transitions++;
+    if (p.gagnant === 1) { k.apresVictoire++; if (c.b === p.b) k.rejoueVictoire++; }
+    if (p.gagnant === 0) { k.apresDefaite++; if (c.b !== p.b) k.changeDefaite++; }
+    if (c.b === p.b) k.repete++;
+    if (c.b === quiBat(p.b)) k.boucle++;
+    if (c.b === p.a) k.copie++;
+    if (c.b === quiBat(p.a)) k.contre++;
+  });
+  return k;
+}
+
+// La somme de deux résumés (un résumé abîmé ou absent compte pour zéro).
+export function additionner(x, y) {
+  const r = compteVide(), ok = v => (Number.isFinite(v) && v > 0 ? v : 0);
+  for (const cle of Object.keys(r)) {
+    if (Array.isArray(r[cle])) r[cle] = r[cle].map((_, i) => ok(x?.[cle]?.[i]) + ok(y?.[cle]?.[i]));
+    else r[cle] = ok(x?.[cle]) + ok(y?.[cle]);
+  }
+  return r;
+}
+
+// Le dossier : la répartition de ses signes (en %), et ses habitudes les plus nettes, de la plus forte à la plus faible.
+// null s'il n'y a pas encore assez de coups pour dire quoi que ce soit. elle : on parle d'une joueuse (ou d'une bot).
+export function dossier(k, { max = 4, elle = false } = {}) {
+  if (!k || k.coups < 10) return null;
+  const n = k.coups, liste = [];
+  const ajouter = (texte, vus, oui, seuil) => {
+    if (vus >= 6 && oui / vus >= seuil) liste.push({ texte: `${texte} (${oui} fois sur ${vus})`, force: (oui / vus) * Math.min(1, vus / 12) });
+  };
+  const fav = k.signes.indexOf(Math.max(...k.signes));
+  if (k.signes[fav] / n >= 0.4) liste.push({ texte: `Son signe préféré : ${NOMS_LE[fav]} (${pct(k.signes[fav], n)} % de ses coups)`, force: k.signes[fav] / n });
+  const p1 = k.premiers.indexOf(Math.max(...k.premiers));
+  if (k.matchs >= 3 && k.premiers[p1] / k.matchs >= 0.6) liste.push({ texte: `Pour son premier coup, il joue souvent ${NOMS_LE[p1]} (${k.premiers[p1]} matchs sur ${k.matchs})`, force: k.premiers[p1] / k.matchs });
+  ajouter("Après un point gagné, il rejoue le même signe", k.apresVictoire, k.rejoueVictoire, 0.55);
+  ajouter("Après un point perdu, il change de signe", k.apresDefaite, k.changeDefaite, 0.75);
+  ajouter("Il rejoue rarement deux fois de suite le même signe", k.transitions, k.transitions - k.repete, 0.85);
+  ajouter("Il tourne souvent en boucle : Pierre, Feuille, Ciseaux…", k.transitions, k.boucle, 0.55);
+  ajouter("Il rejoue souvent le dernier signe de son adversaire", k.transitions, k.copie, 0.5);
+  ajouter("Il joue souvent ce qui battait le dernier signe de son adversaire", k.transitions, k.contre, 0.5);
+  return {
+    matchs: k.matchs, coups: n,
+    repartition: k.signes.map(s => pct(s, n)),
+    habitudes: liste.sort((x, y) => y.force - x.force).slice(0, max).map(h => (elle ? h.texte.replace(/\bil\b/g, "elle") : h.texte)),
+  };
+}

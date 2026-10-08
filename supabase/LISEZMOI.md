@@ -235,6 +235,14 @@ Divisions selon le niveau officiel : Bronze, Argent (1 100), Or (1 250), Platine
 on ne redescend que 20 points sous le seuil. Classement dans chaque division : 10 duels officiels minimum, actif depuis 30 jours.
 **À coller avant de valider la demande de fusion** (l'appli lit la nouvelle colonne « division »).
 
+## 1 duotricies. Le dossier de l'adversaire (étape 32)
+
+Même manipulation avec [`etape-32-dossier.sql`](etape-32-dossier.sql), **après** l'étape 31
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-32-dossier.sql).
+Avant un match en ligne, l'appli demande au serveur les coups des 50 derniers matchs en ligne de l'adversaire
+(vus de son côté, sans le nom de ses adversaires) et en tire ses habitudes. Sans cette étape, le dossier affiche
+simplement « Dossier indisponible » : on peut la coller avant ou après la fusion.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

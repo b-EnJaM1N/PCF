@@ -14,6 +14,9 @@ export const demanderAmi = id => rpc("demander_ami", { p_joueur: id });         
 export const repondreAmi = (id, accepte) => rpc("repondre_ami", { p_joueur: id, p_accepte: accepte });
 export const retirerAmi = id => rpc("retirer_ami", { p_joueur: id });
 
+// Le dossier d'un joueur (supabase/etape-32-dossier.sql) : les coups de ses 50 derniers matchs en ligne, vus de son côté.
+export const dossierJoueur = id => rpc("dossier_joueur", { p_joueur: id });
+
 export const mesCercles = () => rpc("mes_cercles");                                  // → { cercles, invitations }
 export const voirCercle = id => rpc("voir_cercle", { p_id: id });
 export const creerCercle = (nom, blason) => rpc("creer_cercle", { p_nom: nom, p_blason: blason });
