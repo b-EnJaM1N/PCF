@@ -243,6 +243,14 @@ Avant un match en ligne, l'appli demande au serveur les coups des 50 derniers ma
 (vus de son côté, sans le nom de ses adversaires) et en tire ses habitudes. Sans cette étape, le dossier affiche
 simplement « Dossier indisponible » : on peut la coller avant ou après la fusion.
 
+## 1 tritricies. 64 bots en ligne (étape 33)
+
+Même manipulation avec [`etape-33-64-bots.sql`](etape-33-64-bots.sql), **après** l'étape 32
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-33-64-bots.sql).
+32 bots de plus (Chamalou, Petit Scarabée, La Sorcière, Big Bang…), répartis sur toute l'échelle des niveaux : une salle de 64
+joueurs peut maintenant être complétée par des bots tous différents. L'entraînement garde ses 15 bots.
+Si on relance un jour l'étape 21 ou 24, il faut relancer celle-ci ensuite.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

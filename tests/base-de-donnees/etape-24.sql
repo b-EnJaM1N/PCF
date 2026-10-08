@@ -33,11 +33,11 @@ end $$;
 do $$
 declare t public.tournois; k int; coups jsonb := '[]'; n int;
 begin
-  -- 1. Les 32 bots : un par modèle, tous différents.
+  -- 1. Un bot par modèle, tous différents (32 à l'étape 24, 64 depuis l'étape 33).
   perform _assurer_bots(0);
-  perform pg_temp.verifier((select count(*) from bots_en_ligne where actif) = 32, '32 bots en service');
-  perform pg_temp.verifier((select count(distinct modele) from bots_en_ligne where actif) = 32
-    and (select count(distinct p.pseudo) from bots_en_ligne b join profils p on p.id = b.joueur where b.actif) = 32, 'aucun doublon (ni modèle, ni nom)');
+  perform pg_temp.verifier((select count(*) from bots_en_ligne where actif) = (select count(*) from _modeles_bots()), 'un bot en service par modèle');
+  perform pg_temp.verifier((select count(distinct modele) from bots_en_ligne where actif) = (select count(*) from _modeles_bots())
+    and (select count(distinct p.pseudo) from bots_en_ligne b join profils p on p.id = b.joueur where b.actif) = (select count(*) from _modeles_bots()), 'aucun doublon (ni modèle, ni nom)');
   perform pg_temp.verifier(exists (select 1 from bots_en_ligne b join profils p on p.id = b.joueur where b.actif and p.pseudo = 'Glaçon 97 🤖' and b.elo = 1510 and b.favori = 1),
     'Glaçon 97 : Ciseaux, niveau 1 510 (les trois Ciseaux de 1997)');
   perform pg_temp.verifier(exists (select 1 from bots_en_ligne b join profils p on p.id = b.joueur where b.actif and p.pseudo = 'Flanby 🤖'), 'Flanby est là');
@@ -46,7 +46,7 @@ begin
   insert into profils (id, pseudo, numero, visible_recherche) values ('b0700000-0000-4000-8000-000000000999', 'Rocky 🤖', 1000, false);
   insert into bots_en_ligne (joueur, modele, favori, elo) values ('b0700000-0000-4000-8000-000000000999', 'rocky', 0, 850);
   perform _assurer_bots(0);
-  perform pg_temp.verifier((select count(*) from bots_en_ligne where actif) = 32 and (select count(*) from bots_en_ligne where modele = 'rocky' and actif) = 1,
+  perform pg_temp.verifier((select count(*) from bots_en_ligne where actif) = (select count(*) from _modeles_bots()) and (select count(*) from bots_en_ligne where modele = 'rocky' and actif) = 1,
     'un ancien doublon n''est plus choisi');
 
   -- 2. Un joueur seul dans un Sit & Go sans mise : au bout de 2 minutes, 7 bots complètent la salle.
