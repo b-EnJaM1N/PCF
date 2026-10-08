@@ -48,3 +48,42 @@ test("les lectures réussies se comptent à la fin du match", () => {
   assert.ok(lecturesReussies(c) >= 1);
   assert.equal(lecturesReussies(match([[0, 1], [1, 2], [2, 0]])), 0);
 });
+
+// ---------------------------------------------------------------- le dossier de l'adversaire
+import { compterMatch, additionner, dossier, compteVide } from "../app/js/lecture-adversaire.js";
+
+test("le dossier : rien tant qu'on n'a pas assez de coups", () => {
+  assert.equal(dossier(compteVide()), null);
+  assert.equal(dossier(compterMatch(match([[0, 0], [1, 0], [2, 0]]))), null);
+  assert.equal(dossier(null), null);
+});
+
+test("le dossier : additionner plusieurs matchs, sans compter le passage d'un match à l'autre", () => {
+  const m = match([[1, 0], [1, 0], [2, 0], [1, 2], [1, 0], [0, 0]]);
+  const k = additionner(compterMatch(m), compterMatch(m));
+  assert.equal(k.matchs, 2);
+  assert.equal(k.coups, 12);
+  assert.equal(k.transitions, 10, "5 passages par match, pas de passage entre les deux matchs");
+  assert.deepEqual(k.premiers, [2, 0, 0]);
+  assert.deepEqual(additionner(k, { coups: "abîmé", signes: [1] }).signes, [11, 0, 2]);
+});
+
+test("le dossier d'un adversaire qui adore la Pierre et ouvre toujours par elle", () => {
+  const m = match([[1, 0], [1, 0], [2, 0], [1, 2], [1, 0], [0, 0], [2, 0], [1, 1]]);
+  let k = compteVide();
+  for (let i = 0; i < 4; i++) k = additionner(k, compterMatch(m));
+  const d = dossier(k);
+  assert.equal(d.matchs, 4);
+  assert.equal(d.repartition.reduce((a, b) => a + b, 0) >= 99, true);
+  assert.match(d.habitudes.join(" | "), /Son signe préféré : la Pierre/);
+  assert.match(d.habitudes.join(" | "), /premier coup, il joue souvent la Pierre \(4 matchs sur 4\)/);
+  assert.ok(d.habitudes.length <= 4);
+});
+
+test("le dossier d'une joueuse parle d'elle", () => {
+  const m = match([[0, 0], [0, 2], [0, 1], [0, 2], [0, 0], [0, 1], [0, 0], [0, 2], [0, 1], [0, 0], [0, 2]]);
+  const d = dossier(additionner(compterMatch(m), compterMatch(m)), { elle: true });
+  assert.ok(d.habitudes.length > 0);
+  assert.ok(d.habitudes.every(h => !/\bil\b/.test(h)));
+  assert.match(d.habitudes.join(" "), /\belle\b/);
+});

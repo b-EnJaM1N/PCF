@@ -4,7 +4,7 @@ import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide } from "./surnoms.js";
-import { voirTournoi, mesAmis } from "./social-serveur.js";
+import { voirTournoi, mesAmis, dossierJoueur } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
 import { carteDe, notesDe, texteRang, rangDe } from "./carte-logique.js";
@@ -35,7 +35,7 @@ import { installerJetons } from "./ecran-jetons.js";
 import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerProgrammes } from "./ecran-programmes.js";
 import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
-import { repartition, habitudes, piste, lecturesReussies, EMOJIS } from "./lecture-adversaire.js";
+import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
@@ -176,9 +176,11 @@ function dialogueCriAuChoix(hasard = Math.random) {
 }
 // Les commentaires entendus aux derniers matchs (environ huit), pour ne pas recommencer chaque match par les mêmes.
 function commentairesRecents() { try { return lire("commentairesRecents", []) || []; } catch { return []; } }
-// « Je vous demande de vous arrêter » : jamais deux fois en moins de 30 minutes, même d'un match à l'autre.
-const HUEES_ECART_MS = 30 * 60 * 1000;
-function hueesPermises() { try { return Date.now() - (Number(lire("hueesLe", 0)) || 0) > HUEES_ECART_MS; } catch { return true; } }
+// « Je vous demande de vous arrêter » : rare. Jamais deux fois en moins de 12 heures (même d'un match à l'autre),
+// et jamais pendant le premier match après l'ouverture de l'appli (sinon on l'entendait à chaque reprise).
+const HUEES_ECART_MS = 12 * 60 * 60 * 1000;
+let matchsDepuisOuverture = 0;
+function hueesPermises() { if (matchsDepuisOuverture < 1) return false; try { return Date.now() - (Number(lire("hueesLe", 0)) || 0) > HUEES_ECART_MS; } catch { return true; } }
 function retenirCommentaires(lignes) {
   const ids = lignes.filter(l => l.role === "commentateur" || l.role === "commentatrice").map(l => baseDe(l.id));
   if (ids.length) try { ecrire("commentairesRecents", [...new Set([...ids, ...commentairesRecents()])].slice(0, 120)); } catch { /* rien */ }
@@ -296,7 +298,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   if (rp.ooh) ambiance.ooh();
   // Après le « ooh » du public, Monique le rappelle à l'ordre (une fois sur quatre, et pas plus d'une fois en 30 minutes) :
   // elle parle à la fin du « ooh », et c'est le seul commentaire de ce point.
-  if (rp.ooh && hueesPermises() && Math.random() < 0.25 && CATALOGUE.has("commentatrice_huees_01")) {
+  if (rp.ooh && hueesPermises() && Math.random() < 0.12 && CATALOGUE.has("commentatrice_huees_01")) {
     try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
     for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
     const seance = S, huees = CATALOGUE.get("commentatrice_huees_01");
@@ -504,6 +506,7 @@ function finir() {
   if (enTournoi) { enregistrerMonMatch(T, gagne, m.sets); sauverT(); }
   // Un duel compte dans la fiche (statistiques, historique, titres) mais pas dans le niveau.
   const matchsAvant = P.matchs;
+  matchsDepuisOuverture++;
   const nouveaux = n ? enregistrerMatch(P, {
     match: m, stats: S.stats, devines: S.suivi.devines, lisibles: S.suivi.lisibles,
     adversaire: { id: OPP.id, elo: OPP.elo, nom: S.duel ? `${OPP.nom}#${OPP.numero}` : OPP.nom },
@@ -821,6 +824,7 @@ function ouvrirFaceAFace() {
   $("foRows").innerHTML = pr.lignes.map((l, i) => `<div class="fo-row" style="--i:${i}">${cellule(l.g, l.gn, l.avantage === "g")}<span>${l.label}</span>${cellule(l.d, l.dn, l.avantage === "d")}</div>`).join("");
   $("foKey").innerHTML = `${esc(pr.cle)} Tu joues <b>côté jaune</b>.`;
   $("foSurMe").textContent = surnomDe(P).texte;
+  afficherDossier();
   $("foSurBot").textContent = OPP.humain && OPP.surnom ? OPP.surnom.texte : "";
   if (!S.duel) {
     S.annonces.finale = S.tour !== null && !!T && tourDe(T, S.tour).finale;
@@ -846,6 +850,38 @@ function ouvrirFaceAFace() {
   else $("foGo").focus();
   // Filet de sécurité : quoi qu'il arrive à l'animation, tout est affiché peu après.
   minuteriesIntro.push(setTimeout(() => ov.classList.add("vite"), (fin + 0.8) * 1000));
+}
+// Le dossier de l'adversaire, avant le match : ses habitudes de jeu.
+// Joueur en ligne (humain ou bot du serveur) : ses 50 derniers matchs en ligne (supabase/etape-32-dossier.sql) ;
+// bot d'entraînement : mes matchs contre lui (compteurs gardés dans la fiche).
+let dossierDemande = 0;
+async function afficherDossier() {
+  const bloc = $("foDossier"), corps = $("foDossierCorps"), demande = ++dossierDemande, adv = OPP;
+  const elle = adv.humain ? adv.genre === "f" : /^La |^L'adaptative$/.test(adv.style || "");
+  const montrer = (d, source, vide) => {
+    if (demande !== dossierDemande) return;
+    bloc.hidden = false;
+    corps.innerHTML = d
+      ? `<p class="dossier-source">${esc(source(d))}</p>`
+        + `<p class="dossier-signes">${d.repartition.map((p, s) => `<span>${EMOJIS[s]} ${p} %</span>`).join("")}</p>`
+        + (d.habitudes.length ? `<ul>${d.habitudes.map(h => `<li>${esc(h)}</li>`).join("")}</ul>` : `<p class="hint">Aucune habitude nette : son jeu est bien varié.</p>`)
+      : `<p class="hint">${esc(vide)}</p>`;
+  };
+  bloc.hidden = true;
+  if (!adv.humain) {
+    montrer(dossier(P.faceAFace[adv.id]?.lect, { elle }), d => `D'après tes ${d.matchs} match${d.matchs > 1 ? "s" : ""} contre ${adv.nom} (${d.coups} coups).`,
+      `Pas encore assez de matchs contre ${adv.nom} pour établir son dossier : joue-le pour le découvrir.`);
+    return;
+  }
+  if (!adv.uid || !compteUI?.session()) return;
+  corps.innerHTML = `<p class="hint">Ouverture du dossier…</p>`; bloc.hidden = false;
+  try {
+    const matchs = await dossierJoueur(adv.uid);
+    let k = compteVide();
+    for (const m of matchs || []) k = additionner(k, compterMatch(m.map(c => ({ a: c.a, b: c.b, gagnant: c.g ?? null }))));
+    montrer(dossier(k, { elle }), d => `D'après ses ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).`,
+      "Pas encore assez de matchs en ligne pour établir son dossier.");
+  } catch { montrer(null, null, "Dossier indisponible pour l'instant."); }
 }
 // Les commentateurs lancent le match, à voix haute (pas de speaker pour l'instant : sa présentation n'est ni dite ni affichée).
 function presenterSpeaker() {
