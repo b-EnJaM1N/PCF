@@ -851,28 +851,34 @@ function ouvrirFaceAFace() {
   // Filet de sécurité : quoi qu'il arrive à l'animation, tout est affiché peu après.
   minuteriesIntro.push(setTimeout(() => ov.classList.add("vite"), (fin + 0.8) * 1000));
 }
+// Le contenu d'un dossier : d'où il vient, la répartition de ses signes, ses habitudes (ou un message s'il est vide).
+function corpsDossier(d, source, vide) {
+  return d
+    ? `<p class="dossier-source">${esc(source(d))}</p>`
+      + `<p class="dossier-signes">${d.repartition.map((p, s) => `<span>${EMOJIS[s]} ${p} %</span>`).join("")}</p>`
+      + (d.habitudes.length ? `<ul>${d.habitudes.map(h => `<li>${esc(h)}</li>`).join("")}</ul>` : `<p class="hint">Aucune habitude nette : son jeu est bien varié.</p>`)
+    : `<p class="hint">${esc(vide)}</p>`;
+}
+const botAuFeminin = b => /^La |^L'adaptative$/.test(b.style || "");
+// Le dossier d'un bot d'entraînement : d'après mes matchs contre lui (compteurs gardés dans la fiche).
+function corpsDossierBot(b) {
+  return corpsDossier(dossier(P.faceAFace[b.id]?.lect, { elle: botAuFeminin(b) }),
+    d => `D'après tes ${d.matchs} match${d.matchs > 1 ? "s" : ""} contre ${b.nom} (${d.coups} coups).`,
+    `Pas encore assez de matchs contre ${b.nom} pour établir son dossier : joue-le pour le découvrir.`);
+}
 // Le dossier de l'adversaire, avant le match : ses habitudes de jeu.
 // Joueur en ligne (humain ou bot du serveur) : ses 50 derniers matchs en ligne (supabase/etape-32-dossier.sql) ;
 // bot d'entraînement : mes matchs contre lui (compteurs gardés dans la fiche).
 let dossierDemande = 0;
 async function afficherDossier() {
   const bloc = $("foDossier"), corps = $("foDossierCorps"), demande = ++dossierDemande, adv = OPP;
-  const elle = adv.humain ? adv.genre === "f" : /^La |^L'adaptative$/.test(adv.style || "");
+  const elle = adv.humain ? adv.genre === "f" : botAuFeminin(adv);
   const montrer = (d, source, vide) => {
     if (demande !== dossierDemande) return;
-    bloc.hidden = false;
-    corps.innerHTML = d
-      ? `<p class="dossier-source">${esc(source(d))}</p>`
-        + `<p class="dossier-signes">${d.repartition.map((p, s) => `<span>${EMOJIS[s]} ${p} %</span>`).join("")}</p>`
-        + (d.habitudes.length ? `<ul>${d.habitudes.map(h => `<li>${esc(h)}</li>`).join("")}</ul>` : `<p class="hint">Aucune habitude nette : son jeu est bien varié.</p>`)
-      : `<p class="hint">${esc(vide)}</p>`;
+    bloc.hidden = false; corps.innerHTML = corpsDossier(d, source, vide);
   };
   bloc.hidden = true;
-  if (!adv.humain) {
-    montrer(dossier(P.faceAFace[adv.id]?.lect, { elle }), d => `D'après tes ${d.matchs} match${d.matchs > 1 ? "s" : ""} contre ${adv.nom} (${d.coups} coups).`,
-      `Pas encore assez de matchs contre ${adv.nom} pour établir son dossier : joue-le pour le découvrir.`);
-    return;
-  }
+  if (!adv.humain) { bloc.hidden = false; corps.innerHTML = corpsDossierBot(adv); return; }
   if (!adv.uid || !compteUI?.session()) return;
   corps.innerHTML = `<p class="hint">Ouverture du dossier…</p>`; bloc.hidden = false;
   try {
@@ -1291,7 +1297,15 @@ function renderAdversaires() {
     if (!matchEnCours()) renderHistoriqueVide();
   }));
   const b = botParId(amicalId); $("oppDesc").textContent = `${b.nom}, ${b.style.toLowerCase()} : ${b.desc}`;
+  majDossierBot();
 }
+// Toucher un bot montre aussi notre bilan contre lui et son dossier (remis à jour quand on l'ouvre, après un match).
+function majDossierBot() {
+  const b = botParId(amicalId), f = P.faceAFace[b.id], v = f?.v || 0, d = f?.d || 0;
+  $("oppBilan").textContent = v + d ? `Ton bilan contre ${b.nom} : ${v} victoire${v > 1 ? "s" : ""}, ${d} défaite${d > 1 ? "s" : ""}.` : `Tu n'as encore jamais affronté ${b.nom}.`;
+  $("oppDossierCorps").innerHTML = corpsDossierBot(b);
+}
+$("oppDossier").addEventListener("toggle", () => { if ($("oppDossier").open) majDossierBot(); });
 const renderHistoriqueVide = () => { if (!S.match.coups.length) $("tape").innerHTML = `<p class="empty">Les coups apparaîtront ici. Observe-les : ton adversaire le fait.</p>`; };
 document.querySelectorAll("#segMode button").forEach(b => b.addEventListener("click", () => {
   const v = b.dataset.v;
