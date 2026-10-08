@@ -11,8 +11,10 @@ export const chercher = texte => rpc("chercher_joueurs", { p_texte: texte });
 // classe = false : duel amical, sans effet sur le niveau officiel.
 // Les formats courts (match en 1 set, sets de 3 ou 1 point) sont toujours amicaux.
 // mise : en jetons (0 = sans mise), prélevée à chacun quand le match commence ; le gagnant remporte 1,8 fois la mise.
-export const creer = (adversaire, points, sets, classe = true, mise = 0) =>
-  rpc("lancer_defi", { p_adversaire: adversaire, p_points: points, p_sets: sets, p_classe: classe && !formatCourt(points, sets), p_mise: mise || 0 });
+// enjeu : texte facultatif, seulement entre amis (supabase/etape-34-enjeux.sql) ; l'ami l'accepte avec le défi.
+export const creer = (adversaire, points, sets, classe = true, mise = 0, enjeu = null) => enjeu
+  ? rpc("lancer_defi_avec_enjeu", { p_adversaire: adversaire, p_points: points, p_sets: sets, p_classe: classe && !formatCourt(points, sets), p_mise: mise || 0, p_enjeu: enjeu })
+  : rpc("lancer_defi", { p_adversaire: adversaire, p_points: points, p_sets: sets, p_classe: classe && !formatCourt(points, sets), p_mise: mise || 0 });
 export const rejoindre = code => rpc("rejoindre_duel", { p_code: code });
 export const repondre = (id, accepte) => rpc("repondre_duel", { p_id: id, p_accepte: accepte });
 export const annuler = id => rpc("annuler_duel", { p_id: id });

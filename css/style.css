@@ -625,6 +625,10 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .msg-zone { margin: 0 0 10px; }
 .msg-zone[hidden], .msg-fin[hidden], .bulle-msg[hidden] { display: none; }
 .msg-titre { margin: 0 0 6px; font-size: .85rem; color: var(--muted); text-align: center; }
+.enjeu-fin { margin: 10px 0; padding: 10px 12px; border-radius: 12px; border: 2px solid var(--me); background: rgba(244, 197, 66, .12); font-weight: 700; font-size: 1.05rem; text-align: center; line-height: 1.35; }
+.jd.enjeu { color: var(--me); white-space: normal; }
+.enjeu-idees { justify-content: flex-start; margin: 8px 0 4px; }
+#duelEnjeu { width: 100%; }
 .msg-puces { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
 .msg-puces button { font: inherit; font-size: .85rem; color: var(--line); background: var(--panel); border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; padding: 6px 11px; cursor: pointer; }
 .msg-puces button.amis { border-color: var(--me); }
