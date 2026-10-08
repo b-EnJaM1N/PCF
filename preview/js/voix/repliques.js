@@ -170,7 +170,7 @@ export const MOMENTS = {
     { r: "c", t: "Pleine lucarne !", clin: "sport" },
     { r: "c", t: ["Second poteau, la Pierre !", "Second poteau, les Ciseaux !", "Second poteau, la Feuille !"], clin: "sport" },
     { r: "c", t: "Il vous a compris !", f: "Elle vous a compris !", clin: "cine" },
-    { r: "c", t: "Il est entré dans son cerveau !", f: "Elle est entrée dans son cerveau !" },
+    { r: "c", t: "Il est entré dans son cerveau !", f: "Elle est entrée dans son cerveau !", si: "serie4" },   // seulement après 4 points d'affilée ou plus
     { r: "d", t: "Coup de maître.", clin: "sport", rare: true },
   ],
   temps_ecoule: [
