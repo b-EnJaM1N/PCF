@@ -164,6 +164,8 @@ Trois règles d'or : **jamais d'achat de jetons avec de l'argent réel ni de rev
 ## Idées notées en chemin
 - **Mode carrière contre les bots** (3 octobre, plus tard) : le joueur monte l'échelle en battant des bots de plus en plus forts (les 32 bots). Pistes : une saison de tournois, un classement, des bots à débloquer (y compris à l'entraînement selon son niveau), les commentateurs qui suivent sa progression.
 - Applaudissements à l'entrée des joueurs : à garder ou à retirer.
+- **Bouton « Bloquer ce joueur »** (8 octobre) : empêcher un joueur précis de vous défier ou de vous envoyer des messages rapides. Apprécié par Google Play (questionnaire de classification : réponse « Non » pour l'instant, à passer à « Oui » ensuite).
+- **Numéros des bots** : dans « Derniers matchs », ne plus afficher le #numéro des bots en ligne (« Shuriken 🤖 » au lieu de « Shuriken 🤖#8955 »). Proposé le 8 octobre.
 
 ## Annexe : sons du court
 Les sons se créent avec ElevenLabs (Sound Effects) **sur un ordinateur** (le site ne génère pas les sons depuis le téléphone). Fichiers à déposer dans `app/audio/` (voir `app/audio/LISEZMOI.md`) ; sans fichier, l'appli utilise un son fabriqué ou rien. Texte à donner à ElevenLabs :
