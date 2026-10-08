@@ -106,7 +106,16 @@ const avecAudible = etat => Object.assign(etat, { audible: id => !voix.fichiers.
 const voix = new LecteurVoix();
 const ambiance = new Ambiance();
 let sonActif = lire("son", true) !== false;
-voix.actif = ambiance.actif = sonActif;
+// Dans les Options, on peut couper seulement les commentaires (Roland, Monique et la journaliste) ou seulement les bruitages
+// (raquette, public) ; le bouton 🔊 en haut coupe tout. L'arbitre reste tant que le son est allumé.
+let commentairesActifs = lire("sonCommentaires", true) !== false, bruitagesActifs = lire("sonBruitages", true) !== false;
+const ROLES_COMMENTAIRES = ["commentateur", "commentatrice", "journaliste"];
+const appliquerReglagesSon = () => {
+  voix.rolesCoupes = new Set(commentairesActifs ? [] : ROLES_COMMENTAIRES);
+  ambiance.activer(sonActif && bruitagesActifs);
+};
+voix.actif = sonActif; ambiance.actif = sonActif && bruitagesActifs;
+voix.rolesCoupes = new Set(commentairesActifs ? [] : ROLES_COMMENTAIRES);
 // (La voix de synthèse du téléphone, robotique, n'est plus proposée : les répliques sont enregistrées.)
 voix.synthese = false;
 $("snd").checked = sonActif;
@@ -115,12 +124,24 @@ voix.charger().then(() => { ambiance.utiliserFichiers([...voix.fichiers.keys()])
 $("snd").addEventListener("change", e => {
   sonActif = e.target.checked; ecrire("son", sonActif);
   voix.actif = sonActif; if (!sonActif) voix.arreter();
-  ambiance.activer(sonActif);
+  appliquerReglagesSon();
+});
+$("sonCommentaires").checked = commentairesActifs;
+$("sonBruitages").checked = bruitagesActifs;
+$("sonCommentaires").addEventListener("change", e => {
+  commentairesActifs = e.target.checked; ecrire("sonCommentaires", commentairesActifs);
+  if (!commentairesActifs) voix.arreter();
+  appliquerReglagesSon();
+});
+$("sonBruitages").addEventListener("change", e => {
+  bruitagesActifs = e.target.checked; ecrire("sonBruitages", bruitagesActifs);
+  appliquerReglagesSon();
 });
 const note = t => { $("sndNote").textContent = t; $("sndNote").hidden = !t; };
 $("testSnd").addEventListener("click", () => {
   if (!sonActif) { sonActif = true; $("snd").checked = true; ecrire("son", true); voix.actif = true; }
   ambiance.activer(true); ambiance.raquette(); setTimeout(() => ambiance.public("point", 0.5), 400);
+  setTimeout(appliquerReglagesSon, 3000);   // le test fait entendre les bruitages, même coupés ; on remet ensuite les réglages
   const test = CATALOGUE.get("arbitre_balle_de_match_jaune_01");
   if (!voix.peutDire(test)) {
     note("Tu dois entendre un coup de raquette puis des applaudissements. Si ce n'est pas le cas, vérifie le volume et le mode silencieux. Ensuite, Roland et Monique doivent parler.");

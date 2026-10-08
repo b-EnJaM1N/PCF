@@ -24,6 +24,7 @@ export class LecteurVoix {
     this.dossier = dossier;
     this.fichiers = new Map();   // id → élément <audio>, créé la première fois qu'on en a besoin (null avant)
     this.actif = true;
+    this.rolesCoupes = new Set();   // voix coupées dans les Options (ex. les commentateurs), les autres restent
     this.synthese = false;       // voix de synthèse (robotique), désactivée par défaut
     this.voix = null;
     this.jeton = 0;              // pour interrompre une séquence en cours
@@ -33,7 +34,7 @@ export class LecteurVoix {
 
   get syntheseDisponible() { return !!synth; }
   // Cette réplique sera-t-elle entendue ?
-  peutDire(r) { return this.actif && (this.fichiers.has(r.id) || (this.synthese && !!synth)); }
+  peutDire(r) { return this.actif && !this.rolesCoupes.has(r.role) && (this.fichiers.has(r.id) || (this.synthese && !!synth)); }
   get nbVoix() { return synth ? synth.getVoices().length : 0; }
 
   // Charge la liste des répliques enregistrées. Sans elle, tout passe par la synthèse.
@@ -63,7 +64,7 @@ export class LecteurVoix {
 
   // Dit une suite de répliques, l'une après l'autre. `auDebut` est appelé quand le son démarre.
   dire(repliques, auDebut) {
-    repliques = repliques.filter(ditAVoixHaute);
+    repliques = repliques.filter(r => ditAVoixHaute(r) && !this.rolesCoupes.has(r.role));
     if (!this.actif || !repliques.length) return;
     this.arreter();
     const jeton = this.jeton;
