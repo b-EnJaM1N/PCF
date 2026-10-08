@@ -6,6 +6,7 @@ import { avatarSVG } from "./avatar.js";
 import { lire, ecrire } from "./stockage.js";
 import { demanderAmi } from "./social-serveur.js";
 import { MISES, gainDuel } from "./jetons-logique.js";
+import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu } from "./enjeux.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -41,6 +42,18 @@ export function installerDuels(ctx) {
   renderFormat();
   $("duelClasse").addEventListener("change", e => { format.classe = e.target.checked; ecrire("duelClasse", format.classe); });
 
+  // ------------------------------------------------ l'enjeu (facultatif, entre amis)
+  $("duelEnjeuOn").addEventListener("change", e => { $("duelEnjeuBox").hidden = !e.target.checked; if (e.target.checked) $("duelEnjeu").focus(); });
+  $("duelEnjeuIdees").innerHTML = SUGGESTIONS.map((s, i) => `<button type="button" data-i="${i}">${esc(s)}</button>`).join("");
+  $("duelEnjeuIdees").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { $("duelEnjeu").value = SUGGESTIONS[+b.dataset.i]; $("duelEnjeu").focus(); }));
+  // L'enjeu choisi (null : pas d'enjeu) ; une erreur s'il n'est pas accepté.
+  const enjeuChoisi = () => {
+    if (!$("duelEnjeuOn").checked) return null;
+    const e = erreurEnjeu($("duelEnjeu").value);
+    if (e) throw new Error(e);
+    return nettoyerEnjeu($("duelEnjeu").value);
+  };
+
   // ------------------------------------------------ connecté ou pas
   function surSession(session) {
     uid = session?.user?.id || null;
@@ -74,12 +87,12 @@ export function installerDuels(ctx) {
 
     const ligne = (d, p, boutons) => `<div class="joueur" data-id="${d.id}">
       <span class="mini">${p ? avatarSVG(p.avatar || {}) : "🔗"}</span>
-      <div style="min-width:0"><div class="jn">${p ? nomComplet(p) : "Défi par lien"}</div><div class="jd">${d.tournoi_match ? "🏆 Match de tournoi · " : ""}${FORMAT(d)}</div></div>
+      <div style="min-width:0"><div class="jn">${p ? nomComplet(p) : "Défi par lien"}</div><div class="jd">${d.tournoi_match ? "🏆 Match de tournoi · " : ""}${FORMAT(d)}</div>${d.enjeu ? `<div class="jd enjeu">🎯 Enjeu : « ${esc(d.enjeu)} »</div>` : ""}</div>
       <div class="actions">${boutons}</div></div>`;
     $("duelEnCoursCard").hidden = !enCours.length;
     $("duelEnCours").innerHTML = enCours.map(d => ligne(d, joueurs.get(adversaireDe(d, uid)), `<button class="petit" data-a="reprendre">Reprendre</button>`)).join("");
     $("duelRecusCard").hidden = !recus.length;
-    $("duelRecus").innerHTML = recus.map(d => ligne(d, joueurs.get(d.j0), `<button class="petit" data-a="accepter">Accepter</button>${d.tournoi_match ? "" : `<button class="petit alt" data-a="refuser">Refuser</button>`}`)).join("");
+    $("duelRecus").innerHTML = recus.map(d => ligne(d, joueurs.get(d.j0), `<button class="petit" data-a="accepter">${d.enjeu ? "Accepter le défi et l'enjeu" : "Accepter"}</button>${d.tournoi_match ? "" : `<button class="petit alt" data-a="refuser">Refuser</button>`}`)).join("");
     $("duelEnvoyesCard").hidden = !envoyes.length;
     $("duelEnvoyes").innerHTML = envoyes.map(d => ligne(d, d.j1 ? joueurs.get(d.j1) : null,
       `${d.par_lien ? `<button class="petit alt" data-a="partager" data-code="${d.code}">Lien</button>` : ""}${d.tournoi_match ? "" : `<button class="petit alt" data-a="annuler">Annuler</button>`}`)).join("");
@@ -129,8 +142,10 @@ export function installerDuels(ctx) {
 
   // Défier un joueur (depuis la recherche, la liste d'amis ou un cercle), au format choisi dans « Défier un ami ».
   async function defier(p) {
-    await serveur.creer(p.id, format.len, format.win, format.classe, format.mise);
-    const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"}${format.mise ? ` avec une mise de ${format.mise} jetons` : ""} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra en haut de son menu « Jouer », et la partie démarrera dès son acceptation.`;
+    const enjeu = enjeuChoisi();
+    await serveur.creer(p.id, format.len, format.win, format.classe, format.mise, enjeu);
+    if (enjeu) { $("duelEnjeuOn").checked = false; $("duelEnjeuBox").hidden = true; $("duelEnjeu").value = ""; }
+    const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"}${format.mise ? ` avec une mise de ${format.mise} jetons` : ""}${enjeu ? ` et l'enjeu « ${enjeu} »` : ""} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra en haut de son menu « Jouer », et la partie démarrera dès son acceptation.`;
     dire(texte); rafraichir();
     return texte;
   }

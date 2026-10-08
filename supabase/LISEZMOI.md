@@ -251,6 +251,14 @@ Même manipulation avec [`etape-33-64-bots.sql`](etape-33-64-bots.sql), **après
 joueurs peut maintenant être complétée par des bots tous différents. L'entraînement garde ses 15 bots.
 Si on relance un jour l'étape 21 ou 24, il faut relancer celle-ci ensuite.
 
+## 1 quatertricies. Défi avec enjeu entre amis (étape 34)
+
+Même manipulation avec [`etape-34-enjeux.sql`](etape-34-enjeux.sql), **après** l'étape 33
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-34-enjeux.sql).
+En défiant un ami, on peut ajouter un enjeu court (« Qui fait la vaisselle ce soir ? ») : 60 caractères au plus,
+sans argent ni gros mots, et seulement entre amis. L'ami accepte le défi et l'enjeu ; le perdant est annoncé à la fin.
+Sans cette étape, l'envoi d'un défi avec enjeu affiche une erreur (les défis sans enjeu marchent normalement).
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
