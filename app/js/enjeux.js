@@ -12,9 +12,6 @@ export const SUGGESTIONS = [
   "Le perdant paie le café",
   "Qui sort les poubelles ?",
   "Le gagnant choisit le film",
-  "Le perdant conduit au retour",
-  "Le perdant appelle l'autre « Champion » toute la journée",
-  "Qui débarrasse la table ?",
 ];
 
 // Les gros mots refusés (écrits sans accents ; on compare des mots entiers, sans accents ni majuscules).
