@@ -42,7 +42,7 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
 
 // ---------------------------------------------------------------- choisir une réplique
 const CONDITIONS = {
-  onze_zero: c => c.onzeZero, serie6: c => c.serie6, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
+  onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
   balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, un_partout: c => c.unPartout, finale: c => c.finale,
   // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
@@ -186,7 +186,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
       } else if (g === 1 && recents.length >= 8 && recents.filter(Boolean).length >= 6 && peutCommenter(6) && rng() < 0.5) {
         moment = "lecture_subie";
       } else if (lectureReussie(c) && peutCommenter(5) && rng() < 0.5) {
-        moment = "lecture_reussie";
+        moment = "lecture_reussie"; ctx.serie4 = etat.serie.joueur === 0 && etat.serie.n >= 4;
       } else if (h && h.type === "match" && peutCommenter(3, 0.5) && rng() < 0.5) {
         moment = "tension"; ctx.balleContre = h.joueur === 1;
       } else if (!h && pointDecisif(match) && peutCommenter(3, 0.5) && rng() < 0.5) {

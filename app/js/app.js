@@ -176,9 +176,11 @@ function dialogueCriAuChoix(hasard = Math.random) {
 }
 // Les commentaires entendus aux derniers matchs (environ huit), pour ne pas recommencer chaque match par les mêmes.
 function commentairesRecents() { try { return lire("commentairesRecents", []) || []; } catch { return []; } }
-// « Je vous demande de vous arrêter » : jamais deux fois en moins de 30 minutes, même d'un match à l'autre.
-const HUEES_ECART_MS = 30 * 60 * 1000;
-function hueesPermises() { try { return Date.now() - (Number(lire("hueesLe", 0)) || 0) > HUEES_ECART_MS; } catch { return true; } }
+// « Je vous demande de vous arrêter » : rare. Jamais deux fois en moins de 12 heures (même d'un match à l'autre),
+// et jamais pendant le premier match après l'ouverture de l'appli (sinon on l'entendait à chaque reprise).
+const HUEES_ECART_MS = 12 * 60 * 60 * 1000;
+let matchsDepuisOuverture = 0;
+function hueesPermises() { if (matchsDepuisOuverture < 1) return false; try { return Date.now() - (Number(lire("hueesLe", 0)) || 0) > HUEES_ECART_MS; } catch { return true; } }
 function retenirCommentaires(lignes) {
   const ids = lignes.filter(l => l.role === "commentateur" || l.role === "commentatrice").map(l => baseDe(l.id));
   if (ids.length) try { ecrire("commentairesRecents", [...new Set([...ids, ...commentairesRecents()])].slice(0, 120)); } catch { /* rien */ }
@@ -296,7 +298,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   if (rp.ooh) ambiance.ooh();
   // Après le « ooh » du public, Monique le rappelle à l'ordre (une fois sur quatre, et pas plus d'une fois en 30 minutes) :
   // elle parle à la fin du « ooh », et c'est le seul commentaire de ce point.
-  if (rp.ooh && hueesPermises() && Math.random() < 0.25 && CATALOGUE.has("commentatrice_huees_01")) {
+  if (rp.ooh && hueesPermises() && Math.random() < 0.12 && CATALOGUE.has("commentatrice_huees_01")) {
     try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
     for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
     const seance = S, huees = CATALOGUE.get("commentatrice_huees_01");
@@ -504,6 +506,7 @@ function finir() {
   if (enTournoi) { enregistrerMonMatch(T, gagne, m.sets); sauverT(); }
   // Un duel compte dans la fiche (statistiques, historique, titres) mais pas dans le niveau.
   const matchsAvant = P.matchs;
+  matchsDepuisOuverture++;
   const nouveaux = n ? enregistrerMatch(P, {
     match: m, stats: S.stats, devines: S.suivi.devines, lisibles: S.suivi.lisibles,
     adversaire: { id: OPP.id, elo: OPP.elo, nom: S.duel ? `${OPP.nom}#${OPP.numero}` : OPP.nom },
