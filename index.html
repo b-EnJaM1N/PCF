@@ -88,6 +88,9 @@
         <div class="opps" id="opps"></div>
         <p class="hint" id="oppDesc" style="margin:0 0 8px"></p>
         <details class="fo-dossier" id="oppDossier" style="margin:0 0 14px"><summary>📁 Son dossier</summary><p class="dossier-source" id="oppBilan"></p><div id="oppDossierCorps"></div></details>
+        <span class="fmt-lbl">Points par set</span>
+        <div class="seg" id="segLen"><button data-v="11">11 (officiel)</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
+        <p class="hint" id="lenLock" hidden>Le format ne peut pas changer pendant un match ou un tournoi.</p>
         <span class="fmt-lbl">Format du match</span>
         <div class="seg" id="segWin"><button data-v="1">1 set</button><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
         <p class="hint" style="margin-bottom:14px" id="fmtHint"></p>
@@ -178,7 +181,7 @@
   <div class="view" id="viewDuel" hidden>
     <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
     <section class="card" id="duelHors">
-      <h2>Duel en ligne</h2>
+      <h2>Défier un ami</h2>
       <p class="hint" id="duelHorsTexte">Défie tes amis en direct ! Pour jouer en ligne, il faut un compte (gratuit, sans mot de passe).</p>
       <button class="btn" id="duelVersCompte" style="margin-top:12px">Créer mon compte ou me connecter</button>
     </section>
@@ -517,12 +520,6 @@
 
   <div class="view" id="viewOptions" hidden>
     <p class="retour-hub"><button class="linkbtn" id="optionsRetour">← Retour</button></p>
-    <details class="card pli">
-      <summary><h2>🎾 Points par set</h2><span class="pli-resume" id="lenResume"></span></summary>
-      <div class="seg" id="segLen"><button data-v="11">11 (officiel)</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
-      <p class="hint">11 points, c'est le format officiel (2 points d'écart, point décisif à 14 partout). 7, 3 ou 1 : des matchs plus courts.</p>
-      <p class="hint" id="lenLock" hidden>Le format ne peut pas changer pendant un match ou un tournoi.</p>
-    </details>
     <details class="card pli" id="cNotifs">
       <summary><h2>🔔 Notifications</h2><span class="pli-resume">Défis et matchs de tournoi, appli fermée</span></summary>
       <button class="btn" id="btnNotifs" style="margin-top:12px">Activer les notifications</button>
