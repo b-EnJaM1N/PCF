@@ -28,7 +28,9 @@ for (let k = 0; k < 40; k++) {
   sql += `select pg_temp.qui('${A}');
 do $$ declare d uuid; m int; s int[] := '{${seq.map(x => x.join(",")).map(x => `{${x}}`).join(",")}}'; i int; begin
   select id into d from lancer_defi('${B}', ${format.pointsParSet}, ${format.setsGagnants}, true);
-  perform pg_temp.qui('${B}'); perform repondre_duel(d, true); perform pret(d);
+  perform pg_temp.qui('${B}'); perform repondre_duel(d, true);
+  perform pg_temp.qui('${A}'); perform rendez_vous(d);
+  perform pg_temp.qui('${B}'); perform pret(d);
   perform pg_temp.qui('${A}'); perform pret(d);
   for i in 1..array_length(s, 1) loop
     m := (select manche from duels where id = d);

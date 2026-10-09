@@ -690,3 +690,8 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 #tClassement tr.moi td { color: var(--me); font-weight: 700; }
 #tClassement .cl-nom { display: inline-block; max-width: 11em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
 #tnEnjeu { width: 100%; }
+/* La salle d'attente d'un défi accepté (étape 37) */
+.salle-attente { border-color: var(--me); }
+.salle-attente h2 { animation: salle-pulse 1.6s ease-in-out infinite; }
+@keyframes salle-pulse { 50% { opacity: .55; } }
+@media (prefers-reduced-motion: reduce) { .salle-attente h2 { animation: none; } }

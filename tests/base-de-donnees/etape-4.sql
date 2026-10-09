@@ -28,7 +28,9 @@ declare d uuid; m int;
 begin
   perform pg_temp.en_tant_que(gagnant);
   select id into d from lancer_defi(perdant::uuid, 7, 2, classe);
-  perform pg_temp.en_tant_que(perdant); perform repondre_duel(d, true); perform pret(d);
+  perform pg_temp.en_tant_que(perdant); perform repondre_duel(d, true);
+  perform pg_temp.en_tant_que(gagnant); perform rendez_vous(d);    -- étape 37 : le rendez-vous
+  perform pg_temp.en_tant_que(perdant); perform pret(d);
   perform pg_temp.en_tant_que(gagnant); perform pret(d);
   loop
     perform pg_temp.en_tant_que(gagnant);
@@ -136,10 +138,14 @@ select pg_temp.verifier((select points = 1232 from classements where joueur = :'
 
 -- 6. Abandon avant le premier coup : ne compte pas ; abandon en cours de match : compte
 select pg_temp.en_tant_que(:'C'); insert into t select 'd3', (lancer_defi(:'D', 11, 2)).id;
-select pg_temp.en_tant_que(:'D'); select repondre_duel(pg_temp.v('d3')::uuid, true); select abandonner(pg_temp.v('d3')::uuid);
+select pg_temp.en_tant_que(:'D'); select repondre_duel(pg_temp.v('d3')::uuid, true);
+select pg_temp.en_tant_que(:'C'); select rendez_vous(pg_temp.v('d3')::uuid);
+select pg_temp.en_tant_que(:'D'); select abandonner(pg_temp.v('d3')::uuid);
 select pg_temp.verifier((select classement_apres is null and classement_motif = 'non_dispute' from duels where id = pg_temp.v('d3')::uuid), 'abandon sans coup joué : ne compte pas');
 select pg_temp.en_tant_que(:'C'); insert into t select 'd4', (lancer_defi(:'D', 11, 2)).id;
-select pg_temp.en_tant_que(:'D'); select repondre_duel(pg_temp.v('d4')::uuid, true); select pret(pg_temp.v('d4')::uuid);
+select pg_temp.en_tant_que(:'D'); select repondre_duel(pg_temp.v('d4')::uuid, true);
+select pg_temp.en_tant_que(:'C'); select rendez_vous(pg_temp.v('d4')::uuid);
+select pg_temp.en_tant_que(:'D'); select pret(pg_temp.v('d4')::uuid);
 select pg_temp.en_tant_que(:'C'); select pret(pg_temp.v('d4')::uuid); select jouer(pg_temp.v('d4')::uuid, 1, 0);
 select pg_temp.en_tant_que(:'D'); select jouer(pg_temp.v('d4')::uuid, 1, 2); select abandonner(pg_temp.v('d4')::uuid);
 select pg_temp.verifier((select classement_apres = '{1232,1168}' from duels where id = pg_temp.v('d4')::uuid), 'abandon en cours de match : défaite classée');

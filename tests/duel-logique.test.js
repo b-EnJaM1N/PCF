@@ -104,3 +104,15 @@ test("face-à-face : bilan, sets, points, signes favoris, réflexes et série, v
   assert.deepEqual(r.derniers[1].scores, [[5, 7]]);
   assert.deepEqual(r.derniers[2].scores, [[11, 8], [11, 9]]); assert.equal(r.derniers[2].gagne, true);
 });
+
+test("rendez-vous : défi accepté, pas encore commencé, 24 heures pour se retrouver", async () => {
+  const { enRendezVous, texteRdvRestant } = await import("../app/js/duel-logique.js");
+  const t = Date.parse("2026-10-10T12:00:00Z");
+  const d = { phase: "attente", accepte_le: "2026-10-10T10:00:00Z" };
+  assert.equal(enRendezVous(d, t), true);
+  assert.equal(texteRdvRestant(d, t), "22 h");
+  assert.equal(texteRdvRestant({ accepte_le: "2026-10-09T12:30:00Z" }, t), "30 min");
+  assert.equal(enRendezVous({ phase: "attente", accepte_le: null }, t), false, "pas encore accepté");
+  assert.equal(enRendezVous({ phase: "attente", accepte_le: "2026-10-09T11:00:00Z" }, t), false, "plus de 24 heures");
+  assert.equal(enRendezVous({ phase: "presentation", accepte_le: "2026-10-10T10:00:00Z" }, t), false, "déjà commencé");
+});

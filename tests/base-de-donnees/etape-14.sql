@@ -43,6 +43,10 @@ begin
   perform pg_temp.en_tant_que(b::text);
   d := repondre_duel(d.id, true);
   execute 'reset role';
+  perform pg_temp.verifier(pg_temp.solde(1) = 1000 and pg_temp.solde(2) = 1000, 'défi accepté (rendez-vous) : rien de prélevé avant le vrai départ');
+  perform pg_temp.en_tant_que(a::text);
+  d := rendez_vous(d.id);
+  execute 'reset role';
   perform pg_temp.verifier(pg_temp.solde(1) = 900 and pg_temp.solde(2) = 900 and d.mise_payee, 'défi accepté : chacun paie 100');
   perform pg_temp.en_tant_que(a::text);
   perform abandonner(d.id);

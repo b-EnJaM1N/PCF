@@ -18,6 +18,8 @@ export const creer = (adversaire, points, sets, classe = true, mise = 0, enjeu =
 export const rejoindre = code => rpc("rejoindre_duel", { p_code: code });
 export const repondre = (id, accepte) => rpc("repondre_duel", { p_id: id, p_accepte: accepte });
 export const annuler = id => rpc("annuler_duel", { p_id: id });
+// Dans la salle d'attente d'un défi accepté (étape 37) : « je suis là » ; renvoie le duel (« presentation » quand les deux y sont).
+export const rendezVous = id => rpc("rendez_vous", { p_id: id });
 export const pret = id => rpc("pret", { p_id: id });
 export const jouer = (id, manche, signe) => rpc("jouer", { p_id: id, p_manche: manche, p_signe: signe });
 export const reclamer = id => rpc("reclamer", { p_id: id });      // → { maintenant, duel }
