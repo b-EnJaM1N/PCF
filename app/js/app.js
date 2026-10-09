@@ -1685,6 +1685,7 @@ cerclesUI = installerCercles({
   signaler, aller, vueCourante: () => vueCourante,
   ouvrirOnglet,
   defier: p => duelsUI.defier(p),
+  dejaDefie: id => !!duelsUI?.dejaDefie(id),
   lancerDuel,
   trophees: donnees => gagnerTrophees(accorderTitres(P, titresEnLigne(donnees))),
   surClassement: (points, joues = 0, division = null) => {
