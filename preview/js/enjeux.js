@@ -8,7 +8,6 @@ export const ENJEU_MAX = 60;
 // Des idées toutes prêtes, à toucher puis à modifier si on veut.
 export const SUGGESTIONS = [
   "Qui fait la vaisselle ce soir ?",
-  "Le perdant ramène les chocolatines",
   "Le perdant paie le café",
   "Qui sort les poubelles ?",
   "Le gagnant choisit le film",
