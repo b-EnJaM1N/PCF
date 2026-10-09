@@ -116,3 +116,10 @@ test("rendez-vous : défi accepté, pas encore commencé, 24 heures pour se retr
   assert.equal(enRendezVous({ phase: "attente", accepte_le: "2026-10-09T11:00:00Z" }, t), false, "plus de 24 heures");
   assert.equal(enRendezVous({ phase: "presentation", accepte_le: "2026-10-10T10:00:00Z" }, t), false, "déjà commencé");
 });
+
+test("« Défié ✓ » ou « Défiée ✓ » selon le genre", async () => {
+  const { texteDefie } = await import("../app/js/duel-logique.js");
+  assert.equal(texteDefie({ genre: "f" }), "Défiée ✓");
+  assert.equal(texteDefie({ genre: "m" }), "Défié ✓");
+  assert.equal(texteDefie({}), "Défié ✓", "genre inconnu (avant l'étape 38)");
+});

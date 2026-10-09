@@ -288,6 +288,14 @@ d'attente, celui qui a défié reçoit la notification « accepté », et le mat
 Un défi accepté mais jamais joué est annulé au bout de 24 heures, sans vainqueur (les mises ne sont prélevées qu'au vrai départ).
 Les matchs de tournoi ne changent pas. **À coller avant de fusionner** : sinon, la nouvelle appli ne trouve pas la salle d'attente.
 
+
+## 1 octotricies. Le genre dans la carte d'un joueur (étape 38)
+
+Même manipulation avec [`etape-38-genre.sql`](etape-38-genre.sql), **après** l'étape 37
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-38-genre.sql).
+La carte d'un joueur (amis, membres d'un cercle) donne son genre, pour écrire « Défiée ✓ » à une amie.
+Sans cette étape, tout le monde reste « Défié ✓ » : on peut la coller avant ou après la fusion.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
