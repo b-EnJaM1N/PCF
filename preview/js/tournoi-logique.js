@@ -24,17 +24,22 @@ export function texteReste(echeance, maintenant = Date.now()) {
 }
 
 // Comment un match a été décidé.
-export const texteFin = fin => ({ score: "", forfait: "forfait", abandon: "abandon", exempt: "exempt", tete_de_serie: "non joué : tête de série" }[fin] ?? "");
+export const texteFin = fin => ({ score: "", forfait: "forfait", abandon: "abandon", exempt: "exempt", tete_de_serie: "non joué : tête de série", double_forfait: "non joué" }[fin] ?? "");
 
 // Mon match à jouer (ou null), avec mon côté et mon adversaire. En direct, les tours ne sont pas synchronisés :
 // mon match peut être d'un tour plus ancien que le tour le plus avancé du tableau.
+// En championnat, tous mes matchs sont jouables : d'abord celui en cours, puis celui où l'on m'attend.
 export function monMatch(t, uid) {
   if (!t || t.phase !== "en_cours") return null;
-  const m = (t.matchs || []).filter(x => !x.fin && [x.j0?.id, x.j1?.id].includes(uid)).sort((a, b) => a.tour - b.tour)[0];
+  const urgence = x => !x.duel ? 2 : ["presentation", "jeu", "entre_sets"].includes(x.duel.phase) ? 0 : x.duel.phase === "attente" && x.duel.j0 !== uid ? 1 : 2;
+  const m = mesMatchsRestants(t, uid).sort((a, b) => a.tour - b.tour || urgence(a) - urgence(b) || a.position - b.position)[0];
   if (!m) return null;
   const moi = m.j0?.id === uid ? 0 : 1;
   return { match: m, moi, adversaire: moi === 0 ? m.j1 : m.j0, essai: moi === 0 ? m.essai0 : m.essai1, essaiAdv: moi === 0 ? m.essai1 : m.essai0 };
 }
+
+// Mes matchs pas encore décidés.
+export const mesMatchsRestants = (t, uid) => (t?.matchs || []).filter(x => !x.fin && [x.j0?.id, x.j1?.id].includes(uid));
 
 // Les matchs rangés par tour : [[tour 1…], [tour 2…], …]
 export function tableau(t) {
@@ -49,8 +54,25 @@ export function resume(t, maintenant = Date.now()) {
   if (t.phase === "annule") return "Annulé";
   if (t.phase === "termine") return t.vainqueur ? `🏆 ${t.vainqueur.pseudo}#${t.vainqueur.numero}` : "Terminé";
   const reste = texteReste(t.echeance, maintenant);
+  if (t.mode === "championnat") return `Championnat en cours${reste ? ` · reste ${reste}` : ""}${t.a_jouer ? " · des matchs à jouer" : ""}`;
   return `${nomTour(t.tour, t.nb_tours)}${reste ? ` · reste ${reste}` : ""}${t.a_jouer ? " · à toi de jouer !" : t.elimine ? " · parcours terminé" : ""}`;
 }
+
+// ---------------------------------------------------------------- le championnat du cercle
+export const DUREES_CHAMPIONNAT = [[3, "3 jours"], [7, "1 semaine"], [14, "2 semaines"]];
+export const MAX_CHAMPIONNAT = 10;   // comme _max_championnat() dans supabase/etape-35-championnat.sql
+// Nombre de matchs de chaque joueur, et au total.
+export const matchsParJoueur = (n, allerRetour) => (n - 1) * (allerRetour ? 2 : 1);
+export const matchsTotal = (n, allerRetour) => n * (n - 1) / 2 * (allerRetour ? 2 : 1);
+export const texteDureeChampionnat = minutes => (DUREES_CHAMPIONNAT.find(([j]) => j * 1440 === minutes) || [, `${Math.round(minutes / 1440)} jours`])[1];
+// Le champion du cercle : le vainqueur du dernier championnat terminé (liste dans l'ordre du serveur, ou n'importe quel ordre).
+export function championDuCercle(tournois) {
+  const finis = (tournois || []).filter(t => t.mode === "championnat" && t.phase === "termine" && t.vainqueur);
+  finis.sort((a, b) => Date.parse(b.fini_le || 0) - Date.parse(a.fini_le || 0));
+  return finis[0]?.vainqueur || null;
+}
+// Le dernier du classement (celui qui s'y colle), ou null.
+export const dernierDuClassement = classement => (classement?.length ? classement[classement.length - 1].joueur : null);
 
 // Liens d'invitation : https://…/PCF/?tournoi=CODE
 export const lienTournoi = (base, code) => `${base}?tournoi=${encodeURIComponent(code)}`;
