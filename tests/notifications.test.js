@@ -8,6 +8,9 @@ test("les messages des notifications", () => {
     titre: "⚔️ Bob#4821 te défie !", texte: "Sets de 11 points · 2 sets gagnants · duel officiel. Touche pour répondre.", url: "./?ouvrir=duels", tag: "duel-d1",
   });
   assert.equal(message("accepte", duel, adv).titre, "✅ Bob#4821 a accepté ton défi !");
+  assert.match(message("accepte", duel, adv).texte, /salle d'attente/);
+  assert.equal(message("attend", duel, adv).titre, "⏳ Bob#4821 t'attend !");
+  assert.equal(message("attend", duel, adv).url, "./?ouvrir=duels");
   assert.equal(message("tournoi", { ...duel, phase: "presentation" }, adv).texte, "Contre Bob#4821. Tu as 60 secondes pour arriver !");
   assert.equal(message("tournoi", duel, adv).texte, "Bob#4821 t'attend pour votre match.");
   assert.equal(texteFormat(7, 1), "Sets de 7 points · match en 1 set");

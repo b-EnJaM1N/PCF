@@ -27,7 +27,7 @@ export const heureParis = (date: string) => {
   return `${Number(h)} h${m === "00" ? "" : ` ${m}`}`;
 };
 
-// evenement : "defi" | "accepte" | "tournoi" | "test" | "freeroll" | "programme" ; duel : la ligne du duel ;
+// evenement : "defi" | "accepte" | "attend" | "tournoi" | "test" | "freeroll" | "programme" ; duel : la ligne du duel ;
 // adv : { pseudo, numero } de l'adversaire ; tournoi : { nom, depart } (tournoi programmé).
 export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }, tournoi?: { nom: string; depart: string }) {
   if (evenement === "test") return {
@@ -50,7 +50,12 @@ export function message(evenement: string, duel: any, adv: { pseudo: string; num
     url: "./?ouvrir=duels", tag: `duel-${duel.id}`,
   };
   if (evenement === "accepte") return {
-    titre: `✅ ${qui} a accepté ton défi !`, texte: "Le match commence : viens vite !",
+    titre: `✅ ${qui} a accepté ton défi !`, texte: "Il t'attend dans la salle d'attente : touche pour le rejoindre.",
+    url: "./?ouvrir=duels", tag: `duel-${duel.id}`,
+  };
+  // Salle d'attente d'un défi accepté (étape 40) : l'autre y est, et m'attend.
+  if (evenement === "attend") return {
+    titre: `⏳ ${qui} t'attend !`, texte: "Votre défi est prêt : touche pour le rejoindre, le match démarre dès que tu arrives.",
     url: "./?ouvrir=duels", tag: `duel-${duel.id}`,
   };
   return {

@@ -305,6 +305,18 @@ L'appli ouverte signale « je suis là » toutes les minutes ; les amis et les m
 (en ligne) ou orange (en match). Rien d'autre (ni l'heure, ni « vu il y a… »). Option dans Options › Confidentialité pour ne
 pas se montrer. Sans cette étape, aucun point ne s'affiche : on peut la coller avant ou après la fusion.
 
+
+## 1 quadragies. Prévenir celui qu'on attend (étape 40)
+
+1. Même manipulation avec [`etape-40-rappel-rdv.sql`](etape-40-rappel-rdv.sql), **après** l'étape 39
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-40-rappel-rdv.sql).
+   Quand un joueur entre dans la salle d'attente d'un défi accepté et que l'autre n'y est pas, l'autre reçoit
+   « ⏳ X t'attend ! » (au plus une fois toutes les 10 minutes).
+2. **Mettre à jour la fonction « Notifier »** : **Edge Functions** → **Notifier** → onglet **Code** →
+   remplace tout le code par la nouvelle version de [`functions/notifier/index.ts`](functions/notifier/index.ts)
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/functions/notifier/index.ts) → **Deploy**.
+   (Nouveau message « X t'attend », et « X a accepté ton défi » parle maintenant de la salle d'attente.)
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
