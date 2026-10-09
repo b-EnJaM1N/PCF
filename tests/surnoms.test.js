@@ -12,10 +12,10 @@ test("un nom + un qualificatif, choisis par le joueur", () => {
   assert.equal(surnomDe(P).texte, "La Tornade Implacable", "les qualificatifs ne s'accordent pas");
 });
 
-test("un nouveau joueur a un surnom de départ : un nom Novice et un qualificatif humour", () => {
+test("un nouveau joueur a un surnom de départ : un nom rigolo et un qualificatif humour", () => {
   for (let k = 0; k < 50; k++) {
     const s = surnomAuHasard(profilParDefaut(), { depart: true });
-    assert.equal(NOMS.find(x => x.id === s.nom).palier, "novice");
+    assert.equal(NOMS.find(x => x.id === s.nom).famille, "rigolo");
     assert.equal(QUALIFICATIFS.find(x => x.id === s.complement).famille, "humour");
   }
 });
@@ -50,6 +50,13 @@ test("monter de rang : les paliers s'annoncent une fois, et on ne perd jamais un
   assert.equal(monterRang(P, 2).length, 0);
   assert.ok(debloques(QUALIFICATIFS, P).some(x => x.famille === "matiere"), "le rang le plus haut est retenu");
   assert.ok(monterRang(P, 6).some(t => t.includes("prestige")));
+});
+
+test("les noms rigolos : disponibles dès le départ", () => {
+  const ids = debloques(NOMS, profilParDefaut(), 1).map(x => x.id);
+  for (const id of ["le_croque_monsieur", "la_saucisse", "la_quiche", "la_loutre", "la_limace"]) assert.ok(ids.includes(id), id);
+  const P = profilParDefaut(); P.surnom = { nom: "la_quiche", complement: "implacable" };
+  assert.equal(surnomDe(P).texte, "La Quiche Implacable");
 });
 
 test("les noms spécial HandSlam : selon le signe favori", () => {

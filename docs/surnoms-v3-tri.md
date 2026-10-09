@@ -24,11 +24,13 @@ L'idée des niveaux (Novice → Légende) correspond aux **rangs de la carte de 
 | Expert | Platine (niveau officiel 1300, ou un tournoi gagné et 30 matchs) | les qualificatifs **caractère** et **ombre**, les noms **titres** (Le Boss, Le Champion…) |
 | Légende | Diamant (niveau officiel 1400) | les qualificatifs **prestige** (des Titans, de l'Éternité…) |
 
-Un débutant commence donc avec des surnoms drôles, comme prévu : « Le Cobra du PMU », « La Panthère du Canapé ».
+Un débutant commence donc avec des surnoms drôles : son surnom de départ est tiré parmi les **noms rigolos** et les qualificatifs humour (« La Quiche du PMU », « La Loutre du Canapé »).
 
 ---
 
-## 🥊 Les noms (31)
+## 🥊 Les noms (36)
+
+**😋 Rigolos** (5, ajoutés le 10 octobre, choix du porteur du projet) : Le Croque-Monsieur · La Saucisse · La Quiche · La Loutre · La Limace — dès le départ ; ce sont eux qui forment le surnom de départ.
 
 **Animaux** (8) : Le Cobra · Le Scorpion · Le Requin · Le Faucon · Le Tigre · La Panthère · Le Bison · Le Pitbull
 
