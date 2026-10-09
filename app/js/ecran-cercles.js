@@ -9,6 +9,7 @@ import { DIVISIONS, texteDivision, divisionDe } from "./social-logique.js";
 import { EMBLEMES, blasonSVG, normaliserBlason, blasonParDefaut, erreurNomCercle, lienCercle, codeCercleDepuisAdresse, rang, CLASSEMENT_DEPART, texteNiveau, texteCalibrage, provisoire } from "./social-logique.js";
 import { lire, ecrire } from "./stockage.js";
 import { installerTournois } from "./ecran-tournois.js";
+import { championDuCercle } from "./tournoi-logique.js";
 import { profils } from "./duel-serveur.js";
 
 const $ = id => document.getElementById(id);
@@ -311,6 +312,10 @@ export function installerCercles(ctx) {
       if (cercleOuvert !== id) return;
       $("cTournoisVide").hidden = ts.length > 0;
       tournois.liste($("cTournois"), ts);
+      // Le champion du cercle (dernier championnat terminé) : 🏆 à côté de son nom, jusqu'au championnat suivant.
+      const champion = championDuCercle(ts);
+      const ligne = champion && $("cClassement").querySelector(`li[data-id="${champion.id}"] .jn`);
+      if (ligne && !ligne.querySelector(".champion")) ligne.insertAdjacentHTML("beforeend", ' <span class="champion" title="Champion du cercle">🏆</span>');
     }).catch(() => {});
     const membres = c.membres || [];
     const moi = membres.find(m => m.id === uid);

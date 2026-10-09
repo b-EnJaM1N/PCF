@@ -42,6 +42,10 @@ export const desinscrireTournoi = id => rpc("desinscrire_tournoi", { p_id: id })
 export const lancerTournoi = id => rpc("lancer_tournoi", { p_id: id });
 export const annulerTournoi = id => rpc("annuler_tournoi", { p_id: id });
 export const jouerMatchTournoi = id => rpc("jouer_match_tournoi", { p_match: id });                        // → le duel
+// Championnat du cercle (supabase/etape-35-championnat.sql) : p_jours = 3, 7 ou 14 ; enjeu facultatif.
+export const creerChampionnat = (nom, cercle, points, sets, jours, allerRetour, enjeu = null) =>
+  rpc("creer_championnat", { p_nom: nom, p_cercle: cercle, p_points: points, p_sets: sets, p_jours: jours, p_aller_retour: allerRetour, p_enjeu: enjeu });   // → { id, code }
+export const effacerEnjeuTournoi = id => rpc("effacer_enjeu_tournoi", { p_id: id });
 
 // Sit & Go publics (supabase/etape-6-sit-and-go.sql).
 export const sallesSng = () => rpc("salles_sit_and_go");                         // → { salles: [{ taille, inscrits }], mien }

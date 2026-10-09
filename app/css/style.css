@@ -681,3 +681,12 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 /* Classement par division (onglet Cercles). */
 .seg.seg-div button { font-size: 1.3rem; padding: 8px 4px; }
 .classement li.vide { grid-template-columns: 1fr; text-align: center; }
+/* Championnat du cercle : le classement */
+.table-classement { overflow-x: auto; }
+#tClassement { width: 100%; border-collapse: collapse; font-size: .95rem; }
+#tClassement th { font-weight: 600; color: var(--line); font-size: .8rem; text-align: center; padding: 4px; }
+#tClassement td { padding: 6px 4px; text-align: center; border-top: 1px solid rgba(255, 255, 255, .08); }
+#tClassement td:nth-child(2) { text-align: left; width: 100%; }
+#tClassement tr.moi td { color: var(--me); font-weight: 700; }
+#tClassement .cl-nom { display: inline-block; max-width: 11em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+#tnEnjeu { width: 100%; }
