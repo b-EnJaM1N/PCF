@@ -1,4 +1,4 @@
-// Onglet « Cercles » : mon niveau officiel, mes amis, et mes cercles
+// Onglet « Amis » (anciennement « Cercles ») : mon niveau officiel, mes amis, et mes cercles
 // (groupes privés avec leur propre classement).
 import * as social from "./social-serveur.js";
 import { chercher, duelsAvec } from "./duel-serveur.js";
@@ -102,6 +102,7 @@ export function installerCercles(ctx) {
       ctx.surClassement(c ? c.points : CLASSEMENT_DEPART, c?.joues ?? 0, c?.division ?? null);
       const maDiv = c?.division ?? divisionDe(c ? c.points : CLASSEMENT_DEPART);
       if (divVue === null) chargerDivision(maDiv);
+      $("divResume").textContent = `Ta division : ${texteDivision(maDiv)}`;   // visible même replié
     }
     if (listeAmis) { amis = listeAmis; renderAmis(); }
     if (cercles) renderCercles(cercles);
@@ -275,7 +276,7 @@ export function installerCercles(ctx) {
     try {
       const r = await social.demanderAmi(ligne.dataset.id);
       b.replaceWith(Object.assign(document.createElement("span"), { className: "jd", textContent: r === "amis" ? "Amis ✓" : "Demandé ✓" }));
-      dire("socMsg", r === "amis" ? "Vous êtes maintenant amis." : "Demande envoyée : elle apparaîtra dans son onglet Cercles.");
+      dire("socMsg", r === "amis" ? "Vous êtes maintenant amis." : "Demande envoyée : elle apparaîtra dans son onglet Amis.");
       rafraichir();
     } catch (err) { dire("socMsg", err.message, true); b.disabled = false; }
   });
@@ -377,7 +378,7 @@ export function installerCercles(ctx) {
       await social.inviterCercle(cercleOuvert, a.id);
       const cle = `invitesCercle:${cercleOuvert}`; ecrire(cle, [...new Set([...(lire(cle, []) || []), a.id])]);
       b.replaceWith(Object.assign(document.createElement("span"), { className: "jd", textContent: "Invité ✓" }));
-      dire("cInvMsg", `✉️ Invitation envoyée à ${a.pseudo} : elle apparaît dans son onglet Cercles, où il peut l'accepter.`);
+      dire("cInvMsg", `✉️ Invitation envoyée à ${a.pseudo} : elle apparaît dans son onglet Amis, où il peut l'accepter.`);
     } catch (err) { dire("cInvMsg", err.message, true); b.disabled = false; }
   });
   $("cMembresGestion").addEventListener("click", async e => {

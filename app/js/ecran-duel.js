@@ -130,6 +130,7 @@ export function installerDuels(ctx) {
     $("duelRecusCard").hidden = !recus.length;
     $("duelRecus").innerHTML = recus.map(d => ligne(d, joueurs.get(d.j0), `<button class="petit" data-a="accepter">${d.enjeu ? "Accepter le défi et l'enjeu" : "Accepter"}</button>${d.tournoi_match ? "" : `<button class="petit alt" data-a="refuser">Refuser</button>`}`)).join("");
     $("duelEnvoyesCard").hidden = !envoyes.length;
+    $("duelMesDefisCard").hidden = !(enCours.length || rdvs.length || recus.length || envoyes.length);
     $("duelEnvoyes").innerHTML = envoyes.map(d => ligne(d, d.j1 ? joueurs.get(d.j1) : null,
       `${d.par_lien ? `<button class="petit alt" data-a="partager" data-code="${d.code}">Lien</button>` : ""}${d.tournoi_match ? "" : `<button class="petit alt" data-a="annuler">Annuler</button>`}`)).join("");
     ctx.signaler("duels", { recus: recus.length, enCours: enCours.length, rdv: rdvs.length });

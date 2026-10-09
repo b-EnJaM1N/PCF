@@ -40,7 +40,7 @@
     </div>
   </header>
   <p class="sndnote" id="sndNote" hidden></p>
-  <nav class="tabs"><button data-v="jouer" aria-pressed="true">🎮 Jouer<span class="pastille" id="pastilleJouer" hidden></span></button><button data-v="cercles" aria-pressed="false">👥 Cercles<span class="pastille" id="pastilleCercles" hidden></span></button><button data-v="profile" aria-pressed="false">🧑 Ma fiche</button></nav>
+  <nav class="tabs"><button data-v="jouer" aria-pressed="true">🎮 Jouer<span class="pastille" id="pastilleJouer" hidden></span></button><button data-v="cercles" aria-pressed="false">👥 Amis<span class="pastille" id="pastilleCercles" hidden></span></button><button data-v="profile" aria-pressed="false">🧑 Ma fiche</button></nav>
 
   <div class="view" id="viewJouer">
     <div id="hubAlertes"></div>
@@ -193,17 +193,24 @@
         </div>
         <button class="btn alt" id="duelSalleQuitter">Quitter la salle d'attente</button>
       </section>
-      <section class="card" id="duelRdvCard" hidden>
-        <h2>Défis acceptés</h2>
-        <div id="duelRdv"></div>
-      </section>
-      <section class="card" id="duelEnCoursCard" hidden>
-        <h2>Duel en cours</h2>
-        <div id="duelEnCours"></div>
-      </section>
-      <section class="card" id="duelRecusCard" hidden>
-        <h2>Défis reçus</h2>
-        <div id="duelRecus"></div>
+      <section class="card" id="duelMesDefisCard" hidden>
+        <h2>Mes défis</h2>
+        <div class="defis-groupe" id="duelEnCoursCard" hidden>
+          <h3>▶️ Duel en cours</h3>
+          <div id="duelEnCours"></div>
+        </div>
+        <div class="defis-groupe" id="duelRdvCard" hidden>
+          <h3>✅ Acceptés : à jouer</h3>
+          <div id="duelRdv"></div>
+        </div>
+        <div class="defis-groupe" id="duelRecusCard" hidden>
+          <h3>📨 Reçus</h3>
+          <div id="duelRecus"></div>
+        </div>
+        <div class="defis-groupe" id="duelEnvoyesCard" hidden>
+          <h3>📤 Envoyés, en attente de réponse</h3>
+          <div id="duelEnvoyes"></div>
+        </div>
       </section>
       <section class="card edit">
         <h2>Défier un ami</h2>
@@ -217,10 +224,6 @@
         <p class="hint">Ton ami n'a pas encore HandSlam, ou il n'apparaît pas ? Envoie-lui un lien :</p>
         <button class="btn alt" id="duelLien" style="margin-top:8px">Inviter par un lien (WhatsApp, SMS…)</button>
         <p class="locknote" id="duelMsg" role="status"></p>
-      </section>
-      <section class="card" id="duelEnvoyesCard" hidden>
-        <h2>Mes défis en attente</h2>
-        <div id="duelEnvoyes"></div>
       </section>
       <section class="card">
         <label class="sound" style="align-items:flex-start"><input type="checkbox" id="duelVisible" checked> <span>Apparaître dans la recherche des autres joueurs</span></label>
@@ -237,16 +240,17 @@
     </section>
     <div id="socOn" hidden>
       <div id="socListe">
-        <section class="card" id="divCard">
-          <h2>🏆 Classement</h2>
-          <div class="seg seg-div" id="divSeg"><button data-d="0">🥉</button><button data-d="1">🥈</button><button data-d="2">🥇</button><button data-d="3">💎</button><button data-d="4">👑</button></div>
-          <p class="hint" id="divMoi"></p>
-          <ol class="classement" id="divListe"></ol>
-          <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Ta division dépend de ton niveau officiel (duels officiels contre d'autres joueurs ; les bots ne comptent pas) : 🥉 Bronze, 🥈 Argent dès 1 100, 🥇 Or dès 1 250, 💎 Platine dès 1 400, 👑 Diamant dès 1 550. Tu montes dès que tu atteins le seuil, et tu ne redescends que 20 points en dessous. Battre un joueur plus fort rapporte beaucoup, battre un plus faible très peu. Pour figurer au classement : au moins 10 duels officiels, et un duel dans les 30 derniers jours (sinon tu es masqué, sans perdre tes points).</p></details>
-        </section>
         <section class="card" id="socInvitCard" hidden>
           <h2>Invitations</h2>
           <div id="socInvit" class="resultats"></div>
+        </section>
+        <section class="card edit">
+          <h2>Mes amis</h2>
+          <div id="socAmis" class="resultats"></div>
+          <p class="hint" id="socAmisVide">Pas encore d'ami. Cherche un joueur par son pseudo pour lui envoyer une demande.</p>
+          <label class="lbl" for="inAmi">Ajouter un ami</label>
+          <input type="search" id="inAmi" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ex. Benji ou Benji#4821">
+          <div id="amiResultats" class="resultats"></div>
         </section>
         <section class="card edit">
           <h2>Mes cercles</h2>
@@ -261,14 +265,13 @@
             <button class="btn" id="cercleCreer" style="margin-top:14px">Créer le cercle</button>
           </div>
         </section>
-        <section class="card edit">
-          <h2>Mes amis</h2>
-          <div id="socAmis" class="resultats"></div>
-          <p class="hint" id="socAmisVide">Pas encore d'ami. Cherche un joueur par son pseudo pour lui envoyer une demande.</p>
-          <label class="lbl" for="inAmi">Ajouter un ami</label>
-          <input type="search" id="inAmi" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ex. Benji ou Benji#4821">
-          <div id="amiResultats" class="resultats"></div>
-        </section>
+        <details class="card pli" id="divCard">
+          <summary><h2>🏆 Classement des divisions</h2><span class="pli-resume" id="divResume">Bronze, Argent, Or, Platine, Diamant</span></summary>
+          <div class="seg seg-div" id="divSeg"><button data-d="0">🥉</button><button data-d="1">🥈</button><button data-d="2">🥇</button><button data-d="3">💎</button><button data-d="4">👑</button></div>
+          <p class="hint" id="divMoi"></p>
+          <ol class="classement" id="divListe"></ol>
+          <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Ta division dépend de ton niveau officiel (duels officiels contre d'autres joueurs ; les bots ne comptent pas) : 🥉 Bronze, 🥈 Argent dès 1 100, 🥇 Or dès 1 250, 💎 Platine dès 1 400, 👑 Diamant dès 1 550. Tu montes dès que tu atteins le seuil, et tu ne redescends que 20 points en dessous. Battre un joueur plus fort rapporte beaucoup, battre un plus faible très peu. Pour figurer au classement : au moins 10 duels officiels, et un duel dans les 30 derniers jours (sinon tu es masqué, sans perdre tes points).</p></details>
+        </details>
         <p class="locknote" id="socMsg" role="status"></p>
       </div>
 
