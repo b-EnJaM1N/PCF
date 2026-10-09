@@ -119,6 +119,10 @@ export function installerCercles(ctx) {
     }
   }
 
+  // « Défier », ou « Défié ✓ » tant que mon défi à ce joueur attend (on ne relance pas un deuxième défi par erreur).
+  const DEFIE = `<button class="petit alt" data-a="defie" disabled>Défié ✓</button>`;
+  const boutonDefier = id => ctx.dejaDefie?.(id) ? DEFIE : `<button class="petit" data-a="defier">Défier</button>`;
+  const marquerDefie = b => { b.textContent = "Défié ✓"; b.classList.add("alt"); b.dataset.a = "defie"; b.disabled = true; };
   const ligneJoueur = (p, sous, boutons) => `<div class="joueur" data-id="${p.id}">
     <span class="mini">${avatarSVG(p.avatar || {})}</span>
     <div style="min-width:0"><div class="jn">${esc(p.drapeau || "")} ${nomComplet(p)}</div><div class="jd">${sous}</div></div>
@@ -129,7 +133,7 @@ export function installerCercles(ctx) {
     $("socAmisVide").hidden = liste.length > 0;
     $("socAmis").innerHTML = liste.map(a => a.statut === "amis"
       ? ligneJoueur(a, `Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`,
-        `<button class="petit" data-a="defier">Défier</button><button class="petit alt" data-a="retirer" aria-label="Retirer de mes amis">✕</button>`)
+        `${boutonDefier(a.id)}<button class="petit alt" data-a="retirer" aria-label="Retirer de mes amis">✕</button>`)
       : ligneJoueur(a, "Demande envoyée", `<button class="petit alt" data-a="annuler">Annuler</button>`)).join("");
   }
 
@@ -165,6 +169,8 @@ export function installerCercles(ctx) {
     $("aNom").innerHTML = `${esc(a.drapeau || "")} ${nomComplet(a)}`;
     $("aInfo").textContent = `Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`;
     $("aStats").innerHTML = `<p class="hint">Chargement…</p>`; dire("aMsg", "");
+    const deja = !!ctx.dejaDefie?.(id);
+    $("aDefier").disabled = deja; $("aDefier").textContent = deja ? "Défié ✓ (en attente de sa réponse)" : "Défier";
     try {
       const r = statsFaceAFace(await duelsAvec(id), uid);
       if (amiOuvert === id) $("aStats").innerHTML = renderFaceAFace(r, a.pseudo);
@@ -200,7 +206,8 @@ export function installerCercles(ctx) {
   $("aDefier").addEventListener("click", async () => {
     const a = amis.find(x => x.id === amiOuvert); if (!a) return;
     $("aDefier").disabled = true;
-    try { dire("aMsg", await ctx.defier(a)); } catch (err) { dire("aMsg", err.message, true); }
+    try { dire("aMsg", await ctx.defier(a)); $("aDefier").textContent = "Défié ✓ (en attente de sa réponse)"; return; }
+    catch (err) { dire("aMsg", err.message, true); }
     $("aDefier").disabled = false;
   });
 
@@ -225,7 +232,7 @@ export function installerCercles(ctx) {
     if (a === "retirer" && !confirm(`Retirer ${joueur.pseudo} de tes amis ?`)) return;
     b.disabled = true;
     try {
-      if (a === "defier") dire("socMsg", await ctx.defier(joueur));
+      if (a === "defier") { dire("socMsg", await ctx.defier(joueur)); return marquerDefie(b); }
       if (a === "retirer" || a === "annuler") await social.retirerAmi(id);
       if (a === "ami-oui") { await social.repondreAmi(id, true); dire("socMsg", `${joueur.pseudo} et toi êtes maintenant amis.`); }
       if (a === "ami-non") await social.repondreAmi(id, false);
@@ -329,7 +336,7 @@ export function installerCercles(ctx) {
       <div style="min-width:0"><div class="jn">${nomComplet(m)}${m.role === "admin" ? ' <span title="Responsable du cercle">👑</span>' : ""}${m.id === uid ? " <small>(toi)</small>" : ""}</div>
         <div class="jd">${m.v} V – ${m.d} D dans le cercle</div></div>
       <b class="cl-points">${m.classement}</b>
-      ${m.id === uid ? "<span></span>" : `<button class="petit" data-a="defier">Défier</button>`}
+      ${m.id === uid ? "<span></span>" : boutonDefier(m.id)}
     </li>`).join("");
     const dedans = new Set(membres.map(m => m.id));
     const aInviter = amis.filter(a => a.statut === "amis" && !dedans.has(a.id));
@@ -353,7 +360,7 @@ export function installerCercles(ctx) {
     const b = e.target.closest("button[data-a=defier]"); if (!b || !detail) return;
     const m = detail.membres.find(x => x.id === b.closest("li").dataset.id);
     b.disabled = true;
-    try { dire("cMsg", await ctx.defier(m)); } catch (err) { dire("cMsg", err.message, true); }
+    try { dire("cMsg", await ctx.defier(m)); return marquerDefie(b); } catch (err) { dire("cMsg", err.message, true); }
     b.disabled = false;
   });
   $("cAmis").addEventListener("click", async e => {
