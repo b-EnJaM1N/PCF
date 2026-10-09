@@ -1265,19 +1265,20 @@ $("btnOptions").addEventListener("click", () => aller(vueCourante === "viewOptio
 $("optionsRetour").addEventListener("click", () => aller(avantOptions));
 
 // Les alertes en haut du menu « Jouer » (et la pastille de l'onglet).
-const alertes = { duels: { recus: 0, enCours: 0 }, tournois: [], sng: null, freeroll: null, programme: null };
+const alertes = { duels: { recus: 0, enCours: 0, rdv: 0 }, tournois: [], sng: null, freeroll: null, programme: null };
 function signaler(cle, valeur) { alertes[cle] = valeur; renderAlertes(); }
 function renderAlertes() {
   const a = alertes, carte = (attr, icone, titre, texte) => `<button class="hub alerte" ${attr}><span class="hub-i">${icone}</span><span><b>${titre}</b><small>${texte}</small></span></button>`;
   $("hubAlertes").innerHTML = [
     a.duels.enCours ? carte('data-aller="viewDuel"', "▶️", "Duel en cours", "Touche pour le reprendre") : "",
+    a.duels.rdv ? carte('data-aller="viewDuel"', "✅", `${a.duels.rdv > 1 ? `${a.duels.rdv} défis acceptés` : "Défi accepté"} : à jouer`, "Touche « Rejoindre » : le match démarre quand vous êtes là tous les deux") : "",
     a.duels.recus ? carte('data-aller="viewDuel"', "📨", `${a.duels.recus} défi${a.duels.recus > 1 ? "s" : ""} reçu${a.duels.recus > 1 ? "s" : ""}`, "Accepte ou refuse") : "",
     ...a.tournois.map(t => carte(`data-tournoi="${t.id}"`, "🏆", "Ton match de tournoi t'attend", esc(t.nom))),
     a.freeroll ? carte('data-aller="viewFreeroll"', "🌙", a.freeroll.phase === "en_cours" ? "Le freeroll est en cours" : "Le freeroll commence à 20 h", "Garde l'appli ouverte : ton match se lance tout seul") : "",
     a.programme ? carte('data-aller="viewFreeroll"', "🗓️", a.programme.phase === "en_cours" ? `${esc(a.programme.nom)} est en cours` : `${esc(a.programme.nom)} commence bientôt`, "Garde l'appli ouverte : ton match se lance tout seul") : "",
     a.sng ? carte('data-aller="viewSng"', "⚡", a.sng.phase === "inscriptions" ? "Tu es en salle de Sit & Go" : "Ton Sit & Go est en cours", "Garde l'appli ouverte") : "",
   ].join("");
-  const n = a.duels.recus + a.tournois.length;
+  const n = a.duels.recus + (a.duels.rdv || 0) + a.tournois.length;
   $("pastilleJouer").hidden = !n; $("pastilleJouer").textContent = n;
 }
 $("hubAlertes").addEventListener("click", e => { const b = e.target.closest("[data-tournoi]"); if (b) cerclesUI.ouvrirTournoi(b.dataset.tournoi); });

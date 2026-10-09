@@ -39,7 +39,9 @@ begin
 end $$;
 create or replace function pg_temp.accepter(d uuid) returns void language plpgsql as $$
 begin
-  perform pg_temp.en_tant_que('bbbbbbbb-0000-0000-0000-000000000002'); perform repondre_duel(d, true); perform pret(d);
+  perform pg_temp.en_tant_que('bbbbbbbb-0000-0000-0000-000000000002'); perform repondre_duel(d, true);
+  perform pg_temp.en_tant_que('aaaaaaaa-0000-0000-0000-000000000001'); perform rendez_vous(d);   -- étape 37 : le rendez-vous
+  perform pg_temp.en_tant_que('bbbbbbbb-0000-0000-0000-000000000002'); perform pret(d);
   perform pg_temp.en_tant_que('aaaaaaaa-0000-0000-0000-000000000001'); perform pret(d);
 end $$;
 \set A 'aaaaaaaa-0000-0000-0000-000000000001'

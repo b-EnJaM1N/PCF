@@ -278,6 +278,16 @@ est créée avec les mêmes réglages et les mêmes joueurs (chacun peut se dés
 le lundi à 12 h s'il y a au moins 3 joueurs. La série s'arrête si l'organisateur ou le responsable l'arrête, si une édition est
 annulée, ou si personne n'a joué de la semaine. Le minuteur (pg_cron, comme pour les tournois) passe toutes les 5 minutes.
 
+
+## 1 septtricies. Le rendez-vous des défis (étape 37)
+
+Même manipulation avec [`etape-37-rendez-vous.sql`](etape-37-rendez-vous.sql), **après** l'étape 36
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-37-rendez-vous.sql).
+Accepter un défi (ou rejoindre un défi par lien) ne lance plus le match tout de suite : celui qui accepte entre dans une salle
+d'attente, celui qui a défié reçoit la notification « accepté », et le match démarre dès que les deux sont dans la salle d'attente.
+Un défi accepté mais jamais joué est annulé au bout de 24 heures, sans vainqueur (les mises ne sont prélevées qu'au vrai départ).
+Les matchs de tournoi ne changent pas. **À coller avant de fusionner** : sinon, la nouvelle appli ne trouve pas la salle d'attente.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

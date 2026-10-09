@@ -43,7 +43,7 @@ begin
   perform pg_temp.en_tant_que(pg_temp.u(2)::text);
   perform pg_temp.verifier((select enjeu from duels where id = d.id) = 'Qui fait la vaisselle ce soir ?', 'l''ami voit l''enjeu');
   perform repondre_duel(d.id, true);
-  perform pg_temp.verifier((select phase from duels where id = d.id) = 'presentation' and (select enjeu from duels where id = d.id) is not null, 'défi accepté : l''enjeu reste');
+  perform pg_temp.verifier((select accepte_le from duels where id = d.id) is not null and (select enjeu from duels where id = d.id) is not null, 'défi accepté : l''enjeu reste');
   -- Un inconnu ne le voit pas.
   perform pg_temp.en_tant_que(pg_temp.u(3)::text);
   perform pg_temp.verifier(not exists (select 1 from duels where id = d.id), 'un autre joueur ne voit ni le duel ni l''enjeu');

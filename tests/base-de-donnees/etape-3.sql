@@ -55,6 +55,8 @@ select pg_temp.en_tant_que(:'B');
 select pg_temp.verifier((select count(*) = 1 from duels where phase = 'attente'), 'Bob voit le défi reçu');
 select pg_temp.interdit(format('select jouer(%L, 1, 0)', (select val from t where cle = 'duel')), 'on ne joue pas avant d''avoir accepté');
 select repondre_duel((select val from t where cle = 'duel'), true);
+select pg_temp.en_tant_que(:'A'); select rendez_vous((select val from t where cle = 'duel'));   -- étape 37 : le rendez-vous
+select pg_temp.en_tant_que(:'B');
 select pret((select val from t where cle = 'duel'));
 select pg_temp.verifier((select phase = 'presentation' from duels where id = (select val from t where cle = 'duel')), 'un seul prêt : on attend l''autre');
 select pg_temp.en_tant_que(:'A');
@@ -125,9 +127,11 @@ insert into t select 'lien', id from creer_duel(null, 11, 3);
 reset role; create temp table code_lien as select code from duels where id = (select val from t where cle = 'lien'); grant all on code_lien to public;
 select pg_temp.en_tant_que(:'C');
 select rejoindre_duel((select code from code_lien));
-select pg_temp.verifier((select j1 = auth.uid() and phase = 'presentation' from duels where id = (select val from t where cle = 'lien')), 'défi par lien rejoint');
+select pg_temp.verifier((select j1 = auth.uid() and phase = 'attente' and accepte_le is not null from duels where id = (select val from t where cle = 'lien')), 'défi par lien rejoint (rendez-vous)');
 select pg_temp.en_tant_que(:'D');
 select pg_temp.interdit(format('select rejoindre_duel(%L)', (select code from code_lien)), 'un lien déjà utilisé ne marche plus');
+
+select pg_temp.en_tant_que(:'A'); select rendez_vous((select val from t where cle = 'lien'));   -- étape 37 : Alice arrive, le match commence
 
 -- 11. Abandon
 select pg_temp.en_tant_que(:'C'); select abandonner((select val from t where cle = 'lien'));
