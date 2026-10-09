@@ -5,7 +5,7 @@ import { chercher, duelsAvec } from "./duel-serveur.js";
 import { statsFaceAFace, texteDefie } from "./duel-logique.js";
 import { EMOJI, NOM } from "./regles.js";
 import { avatarSVG, FONDS } from "./avatar.js";
-import { DIVISIONS, texteDivision, divisionDe } from "./social-logique.js";
+import { DIVISIONS, texteDivision, divisionDe, pointPresence, textePresence, parPresence } from "./social-logique.js";
 import { EMBLEMES, blasonSVG, normaliserBlason, blasonParDefaut, erreurNomCercle, lienCercle, codeCercleDepuisAdresse, rang, CLASSEMENT_DEPART, texteNiveau, texteCalibrage, provisoire } from "./social-logique.js";
 import { lire, ecrire } from "./stockage.js";
 import { installerTournois } from "./ecran-tournois.js";
@@ -125,14 +125,14 @@ export function installerCercles(ctx) {
   const texteAttente = p => `${texteDefie(p)} (en attente de sa réponse)`;
   const ligneJoueur = (p, sous, boutons) => `<div class="joueur" data-id="${p.id}">
     <span class="mini">${avatarSVG(p.avatar || {})}</span>
-    <div style="min-width:0"><div class="jn">${esc(p.drapeau || "")} ${nomComplet(p)}</div><div class="jd">${sous}</div></div>
+    <div style="min-width:0"><div class="jn">${esc(p.drapeau || "")} ${nomComplet(p)}${pointPresence(p)}</div><div class="jd">${sous}</div></div>
     <div class="actions">${boutons}</div></div>`;
 
   function renderAmis() {
-    const liste = amis.filter(a => !a.recue);
+    const liste = parPresence(amis.filter(a => !a.recue));
     $("socAmisVide").hidden = liste.length > 0;
     $("socAmis").innerHTML = liste.map(a => a.statut === "amis"
-      ? ligneJoueur(a, `Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`,
+      ? ligneJoueur(a, `${textePresence(a)}Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`,
         `${boutonDefier(a)}<button class="petit alt" data-a="retirer" aria-label="Retirer de mes amis">✕</button>`)
       : ligneJoueur(a, "Demande envoyée", `<button class="petit alt" data-a="annuler">Annuler</button>`)).join("");
   }
@@ -167,7 +167,7 @@ export function installerCercles(ctx) {
     montrer("socAmi");
     $("aAvatar").innerHTML = avatarSVG(a.avatar || {});
     $("aNom").innerHTML = `${esc(a.drapeau || "")} ${nomComplet(a)}`;
-    $("aInfo").textContent = `Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`;
+    $("aInfo").textContent = `${textePresence(a)}Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`;
     $("aStats").innerHTML = `<p class="hint">Chargement…</p>`; dire("aMsg", "");
     const deja = !!ctx.dejaDefie?.(id);
     $("aDefier").disabled = deja; $("aDefier").textContent = deja ? texteAttente(a) : "Défier";
@@ -339,7 +339,7 @@ export function installerCercles(ctx) {
     $("cClassement").innerHTML = membres.map((m, i) => `<li class="${m.id === uid ? "moi" : ""}" data-id="${m.id}">
       <span class="cl-rang">${i + 1}</span>
       <span class="mini">${avatarSVG(m.avatar || {})}</span>
-      <div style="min-width:0"><div class="jn">${nomComplet(m)}${m.role === "admin" ? ' <span title="Responsable du cercle">👑</span>' : ""}${m.id === uid ? " <small>(toi)</small>" : ""}</div>
+      <div style="min-width:0"><div class="jn">${nomComplet(m)}${pointPresence(m)}${m.role === "admin" ? ' <span title="Responsable du cercle">👑</span>' : ""}${m.id === uid ? " <small>(toi)</small>" : ""}</div>
         <div class="jd">${m.v} V – ${m.d} D dans le cercle</div></div>
       <b class="cl-points">${m.classement}</b>
       ${m.id === uid ? "<span></span>" : boutonDefier(m)}

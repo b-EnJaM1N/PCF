@@ -4,7 +4,7 @@ import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide } from "./surnoms.js";
-import { voirTournoi, mesAmis, dossierJoueur } from "./social-serveur.js";
+import { voirTournoi, mesAmis, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
 import { carteDe, notesDe, texteRang, rangDe } from "./carte-logique.js";
@@ -1765,6 +1765,28 @@ sngUI = installerSng({
 renderAdversaires();
 nouvelleSeance();
 compteUI.surConnexion(session => { placerCompte(!!session?.user); if (session?.user) rattacherAbonnement(); renderNotifs(); });
+
+// ---------------------------------------------------------------- qui est en ligne (étape 39)
+// Appli ouverte et à l'écran : « je suis là » toutes les minutes (en match ou pas) ; les amis voient 🟢 ou 🟠.
+const enMatchMaintenant = () => !!(S && S.enJeu && !S.match.termine);
+function signalerPresence() {
+  if (!compteUI.session()?.user || document.hidden) return;
+  jeSuisLa(enMatchMaintenant()).catch(() => {});
+}
+setInterval(signalerPresence, 60000);
+document.addEventListener("visibilitychange", signalerPresence);
+function surSessionPresence(session) {
+  $("presenceZone").hidden = !session?.user;
+  if (!session?.user) return;
+  signalerPresence();
+  maPresenceVisible().then(v => { $("presenceVisible").checked = v !== false; }).catch(() => {});
+}
+compteUI.surConnexion(surSessionPresence);
+surSessionPresence(compteUI.session());
+$("presenceVisible").addEventListener("change", async e => {
+  try { await reglerPresence(e.target.checked); }
+  catch { e.target.checked = !e.target.checked; }
+});
 
 // ---------------------------------------------------------------- notifications
 async function renderNotifs(message = "") {

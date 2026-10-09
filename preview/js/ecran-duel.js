@@ -5,6 +5,7 @@ import { lienDefi, codeDepuisAdresse, adversaireDe, FORMAT, formatCourt, enRende
 import { avatarSVG } from "./avatar.js";
 import { lire, ecrire } from "./stockage.js";
 import { demanderAmi, mesAmis } from "./social-serveur.js";
+import { pointPresence, textePresence, parPresence } from "./social-logique.js";
 import { MISES, gainDuel } from "./jetons-logique.js";
 import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu } from "./enjeux.js";
 
@@ -176,7 +177,7 @@ export function installerDuels(ctx) {
   // ------------------------------------------------ mes amis, sous la barre de recherche
   async function chargerAmis() {
     if (Date.now() - amisLus > 60000) {
-      try { amis = (await mesAmis()).filter(a => a.statut === "amis"); amisLus = Date.now(); } catch { /* on garde l'ancienne liste */ }
+      try { amis = parPresence((await mesAmis()).filter(a => a.statut === "amis")); amisLus = Date.now(); } catch { /* on garde l'ancienne liste */ }
     }
     renderAmis();
   }
@@ -185,7 +186,7 @@ export function installerDuels(ctx) {
     $("duelAmisZone").hidden = !uid || !amis.length || cherche;
     $("duelAmis").innerHTML = amis.map(a => `<div class="joueur cliquable" data-id="${a.id}" role="button" tabindex="0">
       <span class="mini">${avatarSVG(a.avatar || {})}</span>
-      <div style="min-width:0"><div class="jn">${esc(a.drapeau || "")} ${nomComplet(a)}</div><div class="jd">Niveau ${a.classement}</div></div>
+      <div style="min-width:0"><div class="jn">${esc(a.drapeau || "")} ${nomComplet(a)}${pointPresence(a)}</div><div class="jd">${textePresence(a)}Niveau ${a.classement}</div></div>
       <div class="actions">${defiesA.has(a.id) ? `<button class="petit alt" disabled>${texteDefie(a)}</button>` : `<button class="petit" data-a="defier">Défier</button>`}</div></div>`).join("");
     majResume();
   }
