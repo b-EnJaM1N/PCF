@@ -1677,6 +1677,7 @@ duelsUI = installerDuels({
   lancerDuel,
   duelEnCours: duelOccupe,
   ouvrirOnglet,
+  ouvrirAmi: id => cerclesUI?.ouvrirAmi(id),
 });
 
 // ---------------------------------------------------------------- amis et cercles
