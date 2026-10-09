@@ -710,3 +710,5 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 /* « Mes défis » : un seul bloc, rangé par état */
 .defis-groupe h3 { margin: 12px 0 6px; font-size: 1rem; color: var(--muted); }
 .defis-groupe:first-of-type h3 { margin-top: 4px; }
+/* Ma fiche : les 3 sous-onglets */
+.sous-onglets { margin: 4px 0 12px; }
