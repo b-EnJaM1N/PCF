@@ -68,3 +68,16 @@ test("divisions : seuils, montée dès le seuil, descente seulement 20 points so
   assert.equal(divisionDe(1229, 2), 1, "Or à 1 229 : redescend");
   assert.equal(texteDivision(2), "🥇 Or");
 });
+
+test("qui est en ligne : point vert, point orange, les amis en ligne d'abord", async () => {
+  const { pointPresence, textePresence, parPresence } = await import("../app/js/social-logique.js");
+  assert.match(pointPresence({ presence: "ligne" }), /presence ligne/);
+  assert.match(pointPresence({ presence: "match" }), /En match/);
+  assert.equal(pointPresence({ presence: null }), "");
+  assert.equal(pointPresence({}), "", "avant l'étape 39 : rien");
+  assert.equal(textePresence({ presence: "ligne" }), "En ligne · ");
+  assert.equal(textePresence({ presence: "match" }), "En match · ");
+  const l = [{ id: "a" }, { id: "b", presence: "match" }, { id: "c", presence: "ligne" }, { id: "d" }, { id: "e", presence: "ligne" }];
+  assert.deepEqual(parPresence(l).map(x => x.id), ["c", "e", "b", "a", "d"]);
+  assert.deepEqual(l.map(x => x.id), ["a", "b", "c", "d", "e"], "la liste d'origine ne bouge pas");
+});
