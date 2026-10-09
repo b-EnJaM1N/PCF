@@ -703,3 +703,7 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .fenetre-fond { position: fixed; inset: 0; z-index: 30; background: rgba(5, 15, 30, .72); display: flex; align-items: center; justify-content: center; padding: 16px; }
 .fenetre-fond[hidden] { display: none; }
 .fenetre { width: 100%; max-width: 420px; margin: 0; border: 2px solid var(--me); }
+/* La fenêtre « Défier X » : longue sur petit écran, elle défile */
+.fenetre-fond { overflow-y: auto; }
+.fenetre-defi { max-height: calc(100vh - 32px); overflow-y: auto; }
+.fenetre-defi .actions-col { position: sticky; bottom: -16px; margin: 12px -16px -16px; padding: 12px 16px 14px; background: var(--court-deep); border-top: 1px solid rgba(255, 255, 255, .1); }
