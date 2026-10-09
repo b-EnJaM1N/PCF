@@ -548,6 +548,7 @@
       <ol class="steps"><li>touche le menu ⋮ en haut à droite ;</li><li>choisis « Installer l'application » ou « Ajouter à l'écran d'accueil ».</li></ol>
       <button class="btn" id="installBtn" style="margin-top:12px" hidden>Installer maintenant</button>
     </details>
+    <span id="placeCompteOptions" hidden></span>
     <details class="card pli">
       <summary><h2>🔒 Confidentialité</h2><span class="pli-resume">Tes données, mentions légales, supprimer mon compte</span></summary>
       <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, ta fiche est gardée en Europe ; ton adresse e-mail n'est jamais montrée aux autres joueurs.</p>
@@ -572,6 +573,10 @@
       <p class="hint" id="pEmpty"></p>
     </section>
 
+    <div class="seg sous-onglets" id="ficheOnglets" role="tablist">
+      <button data-o="carte" aria-pressed="true">🃏 Ma carte</button><button data-o="stats" aria-pressed="false">📊 Stats</button><button data-o="palmares" aria-pressed="false">🏆 Palmarès</button>
+    </div>
+    <div id="ficheCarte" class="fiche-onglet">
     <section class="card" id="cCarte">
       <details class="carte-pli" id="cartePli">
       <summary><img id="carteImg" class="carte-img" alt="Ma carte de joueur"><span class="carte-toucher">🃏 Ma carte de joueur<small>Touche pour l'agrandir et la partager</small></span></summary>
@@ -585,7 +590,6 @@
       <a class="btn alt" id="carteEnregistrer" download="ma-carte.png" href="#">Enregistrer l'image</a>
       </details>
     </section>
-
     <details class="card edit pli" id="cSurnom">
       <summary><h2>🎙️ Mon surnom</h2><span class="pli-resume surnom-resume" id="surnomApercu"></span></summary>
       <p class="hint">Avant chaque match, le speaker te présente avec ton surnom de combattant : <b>un nom + un qualificatif</b>, à composer toi-même. Tu débloques de nouvelles familles en montant les rangs de ta carte de joueur.</p>
@@ -599,7 +603,6 @@
       <p class="lbl" id="genreLbl">Les commentateurs parlent de toi en disant</p>
       <div class="seg" id="segGenre" role="group" aria-labelledby="genreLbl"><button data-v="m">« il »</button><button data-v="f">« elle »</button></div>
     </details>
-
     <details class="card edit pli" id="cCelebrations">
       <summary><h2>🎉 Mes célébrations</h2><span class="pli-resume">Poignée de main, cri, geste, célébration, cadre</span></summary>
       <p class="lbl" id="poigneeLbl">Ma poignée de main habituelle</p>
@@ -616,7 +619,24 @@
       <select id="inCadre"></select>
       <p class="hint">D'autres cris, gestes, célébrations et cadres sont en vente à la <button class="linkbtn" data-aller="viewBoutique">boutique 🛍️</button>.</p>
     </details>
-
+    <details class="card edit pli" id="cAvatar">
+      <summary><h2>🧤 Mon avatar</h2><span class="pli-resume">Pseudo, pays, symbole, couleurs et motifs</span></summary>
+      <div class="av-apercu"><div id="avApercu" aria-hidden="true"></div><small>Aperçu</small></div>
+      <details class="sous-pli" name="avatar"><summary>Mon pseudo et mon pays</summary>
+        <label class="lbl" for="inPseudo">Pseudo</label>
+        <input type="text" id="inPseudo" maxlength="16" placeholder="Ex. Benji-Pierre" autocomplete="nickname">
+        <label class="lbl" for="inFlag">Pays</label>
+        <select id="inFlag"></select>
+      </details>
+      <details class="sous-pli" name="avatar"><summary>Mon symbole</summary><div class="sw" id="swSymbole"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le fond</summary><div class="sw" id="swBg"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le gant</summary><div class="sw" id="swGlove"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le poignet</summary><div class="sw" id="swWrist"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le motif du fond</summary><div class="sw" id="swMotif"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le motif du gant</summary><div class="sw" id="swGantMotif"></div></details>
+      <p class="hint">🛍️ Plus de gants, de motifs, de fonds et de poignets à la <button class="linkbtn" data-aller="viewBoutique">boutique</button>.</p>
+      <p class="locknote" id="lockNote"></p>
+    </details>
     <details class="card edit pli" id="cCompte">
       <summary><h2>🔑 Mon compte</h2><span class="pli-resume" id="compteResume"></span></summary>
       <div id="compteHors">
@@ -646,32 +666,24 @@
       </div>
       <p class="locknote" id="compteMsg" role="status"></p>
     </details>
-
-    <details class="card edit pli" id="cAvatar">
-      <summary><h2>🧤 Mon avatar</h2><span class="pli-resume">Pseudo, pays, symbole, couleurs et motifs</span></summary>
-      <div class="av-apercu"><div id="avApercu" aria-hidden="true"></div><small>Aperçu</small></div>
-      <details class="sous-pli" name="avatar"><summary>Mon pseudo et mon pays</summary>
-        <label class="lbl" for="inPseudo">Pseudo</label>
-        <input type="text" id="inPseudo" maxlength="16" placeholder="Ex. Benji-Pierre" autocomplete="nickname">
-        <label class="lbl" for="inFlag">Pays</label>
-        <select id="inFlag"></select>
-      </details>
-      <details class="sous-pli" name="avatar"><summary>Mon symbole</summary><div class="sw" id="swSymbole"></div></details>
-      <details class="sous-pli" name="avatar"><summary>Le fond</summary><div class="sw" id="swBg"></div></details>
-      <details class="sous-pli" name="avatar"><summary>Le gant</summary><div class="sw" id="swGlove"></div></details>
-      <details class="sous-pli" name="avatar"><summary>Le poignet</summary><div class="sw" id="swWrist"></div></details>
-      <details class="sous-pli" name="avatar"><summary>Le motif du fond</summary><div class="sw" id="swMotif"></div></details>
-      <details class="sous-pli" name="avatar"><summary>Le motif du gant</summary><div class="sw" id="swGantMotif"></div></details>
-      <p class="hint">🛍️ Plus de gants, de motifs, de fonds et de poignets à la <button class="linkbtn" data-aller="viewBoutique">boutique</button>.</p>
-      <p class="locknote" id="lockNote"></p>
-    </details>
-
-    <details class="card pli" id="cGame"><summary><h2>📊 Mon jeu</h2></summary><div id="gameBody"></div></details>
+    </div>
+    <div id="ficheStats" class="fiche-onglet" hidden>
+      <p class="hint" id="ficheStatsVide" hidden>Joue quelques matchs : tes statistiques apparaîtront ici.</p>
+    <details class="card pli" id="cGame" open><summary><h2>📊 Mon jeu</h2></summary><div id="gameBody"></div></details>
     <details class="card pli" id="cMental"><summary><h2>🧠 Mon mental</h2></summary><div class="lines" id="mentalBody"></div></details>
     <details class="card pli" id="cRecords"><summary><h2>🏅 Mes records</h2></summary><div class="lines" id="recBody"></div></details>
     <details class="card pli" id="cElo"><summary><h2>📈 Niveau d'entraînement</h2></summary><div class="spark" id="spark"></div><p class="hint">Calculé comme un ELO, sur tes matchs contre les bots. Ton niveau officiel, contre les autres joueurs, est affiché en haut de ta fiche.</p></details>
-    <details class="card pli" id="cPalmares"><summary><h2>🏆 Palmarès</h2><span class="pli-resume" id="palmaresCompte"></span></summary><div class="badges" id="badges"></div></details>
     <details class="card pli" id="cLast"><summary><h2>🕘 Derniers matchs</h2></summary><div class="lines hist-list" id="lastBody"></div></details>
+    </div>
+    <div id="fichePalmares" class="fiche-onglet" hidden>
+    <details class="card pli" id="cPalmares" open><summary><h2>🏆 Palmarès</h2><span class="pli-resume" id="palmaresCompte"></span></summary><div class="badges" id="badges"></div></details>
+    </div>
+
+
+
+
+
+
     <p class="hint" style="text-align:center" id="infoConnexion">Sans compte, ta fiche est gardée seulement sur ce téléphone.</p>
     <p style="text-align:center;margin:0"><button class="linkbtn" id="resetProfile">Remettre ma fiche à zéro</button></p>
   </div>

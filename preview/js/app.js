@@ -972,10 +972,19 @@ function rafraichirAvatars() {
   majDecouverte();   // (la fiche a pu changer : le menu s'ouvre au fil des matchs)
 }
 
+// ---------------------------------------------------------------- Ma fiche : 3 sous-onglets (Ma carte, Mes stats, Palmarès)
+function ongletFiche(o) {
+  document.querySelectorAll("#ficheOnglets button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.o === o)));
+  [["carte", "ficheCarte"], ["stats", "ficheStats"], ["palmares", "fichePalmares"]].forEach(([k, id]) => { $(id).hidden = k !== o; });
+  ecrire("ongletFiche", o);
+}
+$("ficheOnglets").addEventListener("click", e => { const b = e.target.closest("button[data-o]"); if (b) ongletFiche(b.dataset.o); });
+ongletFiche(["carte", "stats", "palmares"].includes(lire("ongletFiche", "carte")) ? lire("ongletFiche", "carte") : "carte");
+
 // ---------------------------------------------------------------- créer son compte, facilement
 // Sans compte : un bouton bien visible dans le menu Jouer, un encadré à la fin des matchs, et « Mon compte » en haut de Ma fiche.
-const placeCompte = document.createComment("place de Mon compte");
-$("cCompte").before(placeCompte);
+// Connecté : « Mon compte » rejoint les Options (audit du 10 octobre, point D).
+const placeCompte = $("placeCompteOptions");
 function placerCompte(connecte) {
   $("hubHors").hidden = connecte;
   if (connecte) $("compteFin").hidden = true;
@@ -983,7 +992,7 @@ function placerCompte(connecte) {
   else $("viewProfile").querySelector("section.card").after($("cCompte"));   // juste sous l'en-tête de la fiche
 }
 function versCompte() {
-  aller("viewProfile");
+  aller(compteUI?.session()?.user ? "viewOptions" : "viewProfile");
   $("cCompte").open = true;
   $("cCompte").scrollIntoView({ block: "start" });
   setTimeout(() => $("inEmail")?.focus(), 300);
@@ -1135,6 +1144,7 @@ function renderFiche() {
   $("kS").textContent = P.serieEnCours;
   $("pEmpty").textContent = P.matchs ? "" : "Joue ton premier match pour remplir ta fiche.";
   ["cGame", "cMental", "cRecords", "cElo", "cLast"].forEach(id => { $(id).hidden = !P.matchs; });
+  $("ficheStatsVide").hidden = !!P.matchs;
 
   if (P.matchs) {
     const tot = P.signes.reduce((a, b) => a + b, 0), fav = signeFavori(P.signes);
