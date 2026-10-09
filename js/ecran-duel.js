@@ -23,6 +23,9 @@ export function installerDuels(ctx) {
   let defiesA = new Set();
   // Mes amis, sous la barre de recherche (rechargés au plus une fois par minute).
   let amis = [], amisLus = 0;
+  // Les défis reçus déjà montrés dans la fenêtre (une seule fois chacun, même après avoir fermé l'appli).
+  const defisVus = new Set(lire("defisVus", []));
+  let fenetre = null;   // le défi affiché dans la fenêtre
   const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), classe: lire("duelClasse", true), mise: MISES.includes(lire("duelMise", 0)) ? lire("duelMise", 0) : 0 };
   const dire = (t, erreur = false) => { $("duelMsg").textContent = t; $("duelMsg").classList.toggle("erreur", erreur); };
   const base = () => location.origin + location.pathname;
@@ -102,6 +105,10 @@ export function installerDuels(ctx) {
     // Un défi vient d'être accepté (ou je reviens dans l'appli) : on y va.
     const actif = enCours[0];
     if (actif && !ctx.duelEnCours() && joueurs.get(adversaireDe(actif, uid))) { quitterSalle(); ctx.lancerDuel(actif, joueurs.get(adversaireDe(actif, uid))); }
+    // Un défi reçu pas encore montré : une fenêtre s'ouvre (pas pendant un match ni dans une salle d'attente).
+    const nouveau = recus.find(d => !d.tournoi_match && !defisVus.has(d.id) && joueurs.get(d.j0));
+    if (nouveau && !fenetre && !salle && !actif && !ctx.duelEnCours() && !document.body.classList.contains("en-match")) montrerDefi(nouveau, joueurs.get(nouveau.j0), recus.length - 1);
+    if (fenetre && !recus.some(d => d.id === fenetre.duel.id)) fermerFenetre();   // annulé entre-temps
     // Mon défi vient d'être accepté et l'appli est ouverte : j'entre dans la salle d'attente (le match démarre si l'autre y est).
     const pourMoi = rdvs.find(d => d.j0 === uid && !quittes.has(d.id));
     if (!actif && !salle && pourMoi && !document.hidden && !ctx.duelEnCours() && joueurs.get(pourMoi.j1)) entrerSalle(pourMoi, joueurs.get(pourMoi.j1));
@@ -142,6 +149,39 @@ export function installerDuels(ctx) {
       rafraichir();
     }));
   }
+
+  // ------------------------------------------------ la fenêtre « X te défie ! »
+  function montrerDefi(duel, adv, autres) {
+    fenetre = { duel, adv };
+    defisVus.add(duel.id); ecrire("defisVus", [...defisVus].slice(-50));
+    $("defiRecuTitre").textContent = `⚔️ ${adv.pseudo} te défie !`;
+    $("defiRecuCorps").innerHTML = `<div class="joueur"><span class="mini">${avatarSVG(adv.avatar || {})}</span>
+      <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">${FORMAT(duel)}</div>${duel.enjeu ? `<div class="jd enjeu">🎯 Enjeu : « ${esc(duel.enjeu)} »</div>` : ""}</div><span></span></div>
+      ${autres > 0 ? `<p class="hint">Et ${autres} autre${autres > 1 ? "s" : ""} défi${autres > 1 ? "s" : ""} t'attend${autres > 1 ? "ent" : ""} dans Jouer › Défier un ami.</p>` : ""}
+      <p class="hint">En acceptant, tu entres dans la salle d'attente : le match démarre dès que vous êtes là tous les deux.</p>`;
+    $("defiRecuAccepter").textContent = duel.enjeu ? "Accepter le défi et l'enjeu" : "Accepter";
+    $("defiRecuAccepter").disabled = $("defiRecuRefuser").disabled = false;
+    $("defiRecuFenetre").hidden = false;
+  }
+  function fermerFenetre() { fenetre = null; $("defiRecuFenetre").hidden = true; }
+  $("defiRecuPlusTard").addEventListener("click", fermerFenetre);
+  $("defiRecuFenetre").addEventListener("click", e => { if (e.target.id === "defiRecuFenetre") fermerFenetre(); });
+  $("defiRecuRefuser").addEventListener("click", async () => {
+    const f = fenetre; if (!f) return;
+    $("defiRecuRefuser").disabled = true;
+    try { await serveur.repondre(f.duel.id, false); } catch (e) { dire(e.message, true); }
+    fermerFenetre(); rafraichir();
+  });
+  $("defiRecuAccepter").addEventListener("click", async () => {
+    const f = fenetre; if (!f) return;
+    $("defiRecuAccepter").disabled = true;
+    try {
+      const d = await serveur.repondre(f.duel.id, true);
+      fermerFenetre();
+      if (d.phase === "attente") { ctx.ouvrirOnglet("duel"); entrerSalle(d, f.adv); } else ctx.lancerDuel(d, f.adv);
+    } catch (e) { fermerFenetre(); ctx.ouvrirOnglet("duel"); dire(e.message, true); }
+    rafraichir();
+  });
 
   // ------------------------------------------------ la salle d'attente (défi accepté, on attend l'autre)
   function entrerSalle(duel, adv) {
