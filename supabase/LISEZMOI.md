@@ -296,6 +296,15 @@ Même manipulation avec [`etape-38-genre.sql`](etape-38-genre.sql), **après** l
 La carte d'un joueur (amis, membres d'un cercle) donne son genre, pour écrire « Défiée ✓ » à une amie.
 Sans cette étape, tout le monde reste « Défié ✓ » : on peut la coller avant ou après la fusion.
 
+
+## 1 noventricies. Qui est en ligne (étape 39)
+
+Même manipulation avec [`etape-39-en-ligne.sql`](etape-39-en-ligne.sql), **après** l'étape 38
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-39-en-ligne.sql).
+L'appli ouverte signale « je suis là » toutes les minutes ; les amis et les membres d'un même cercle voient un point vert
+(en ligne) ou orange (en match). Rien d'autre (ni l'heure, ni « vu il y a… »). Option dans Options › Confidentialité pour ne
+pas se montrer. Sans cette étape, aucun point ne s'affiche : on peut la coller avant ou après la fusion.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
