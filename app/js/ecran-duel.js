@@ -1,7 +1,7 @@
 // Onglet « Duel » : chercher un joueur, le défier, inviter par lien,
 // voir les défis reçus et envoyés, reprendre un duel en cours.
 import * as serveur from "./duel-serveur.js";
-import { lienDefi, codeDepuisAdresse, adversaireDe, FORMAT, formatCourt, enRendezVous, texteRdvRestant } from "./duel-logique.js";
+import { lienDefi, codeDepuisAdresse, adversaireDe, FORMAT, formatCourt, enRendezVous, texteRdvRestant, texteDefie } from "./duel-logique.js";
 import { avatarSVG } from "./avatar.js";
 import { lire, ecrire } from "./stockage.js";
 import { demanderAmi, mesAmis } from "./social-serveur.js";
@@ -35,22 +35,29 @@ export function installerDuels(ctx) {
     $("duelClasse").disabled = court; $("duelClasse").checked = format.classe && !court;
     $("duelClasseTexte").textContent = court ? `${format.win === 1 ? "Match en 1 set" : `Sets de ${format.len} point${format.len > 1 ? "s" : ""}`} : toujours amical, ton niveau officiel ne bouge pas.`
       : "Match officiel : compte pour ton niveau officiel (décoche pour un match amical)";
+    majResume();
   };
   const renderMise = () => {
     document.querySelectorAll("#duelMise button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === format.mise)));
     $("duelMiseTexte").textContent = format.mise
       ? `Chacun paie ${format.mise} jetons quand le match commence ; le gagnant en remporte ${gainDuel(format.mise)}. Refusé ou annulé : personne ne paie.`
       : "Sans mise : on joue pour le plaisir (et pour le niveau officiel, si le match est officiel).";
+    majResume();
   };
   document.querySelectorAll("#duelMise button").forEach(b => b.addEventListener("click", () => { format.mise = +b.dataset.v; ecrire("duelMise", format.mise); renderMise(); }));
   renderMise();
   document.querySelectorAll("#duelLen button").forEach(b => b.addEventListener("click", () => { format.len = +b.dataset.v; ecrire("duelLen", format.len); renderFormat(); }));
   document.querySelectorAll("#duelWin button").forEach(b => b.addEventListener("click", () => { format.win = +b.dataset.v; ecrire("duelWin", format.win); renderFormat(); }));
   renderFormat();
-  $("duelClasse").addEventListener("change", e => { format.classe = e.target.checked; ecrire("duelClasse", format.classe); });
+  $("duelClasse").addEventListener("change", e => { format.classe = e.target.checked; ecrire("duelClasse", format.classe); majResume(); });
+
+  // Le format choisi (réglé plus bas), rappelé au-dessus de la liste d'amis : on sait ce qu'on envoie.
+  function majResume() {
+    $("duelFormatResume").textContent = `Format : ${FORMAT({ points_par_set: format.len, sets_gagnants: format.win, classe: format.classe && !formatCourt(format.len, format.win), mise: format.mise })} (à régler plus bas)${$("duelEnjeuOn").checked ? " · 🎯 avec enjeu" : ""}.`;
+  }
 
   // ------------------------------------------------ l'enjeu (facultatif, entre amis)
-  $("duelEnjeuOn").addEventListener("change", e => { $("duelEnjeuBox").hidden = !e.target.checked; if (e.target.checked) $("duelEnjeu").focus(); });
+  $("duelEnjeuOn").addEventListener("change", e => { $("duelEnjeuBox").hidden = !e.target.checked; if (e.target.checked) $("duelEnjeu").focus(); majResume(); });
   $("duelEnjeuIdees").innerHTML = SUGGESTIONS.map((s, i) => `<button type="button" data-i="${i}">${esc(s)}</button>`).join("");
   $("duelEnjeuIdees").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { $("duelEnjeu").value = SUGGESTIONS[+b.dataset.i]; $("duelEnjeu").focus(); }));
   // L'enjeu choisi (null : pas d'enjeu) ; une erreur s'il n'est pas accepté.
@@ -179,7 +186,8 @@ export function installerDuels(ctx) {
     $("duelAmis").innerHTML = amis.map(a => `<div class="joueur cliquable" data-id="${a.id}" role="button" tabindex="0">
       <span class="mini">${avatarSVG(a.avatar || {})}</span>
       <div style="min-width:0"><div class="jn">${esc(a.drapeau || "")} ${nomComplet(a)}</div><div class="jd">Niveau ${a.classement}</div></div>
-      <div class="actions">${defiesA.has(a.id) ? `<button class="petit alt" disabled>Défié ✓</button>` : `<button class="petit" data-a="defier">Défier</button>`}</div></div>`).join("");
+      <div class="actions">${defiesA.has(a.id) ? `<button class="petit alt" disabled>${texteDefie(a)}</button>` : `<button class="petit" data-a="defier">Défier</button>`}</div></div>`).join("");
+    majResume();
   }
   $("duelAmis").addEventListener("click", async e => {
     const b = e.target.closest("button[data-a=defier]");
@@ -227,8 +235,8 @@ export function installerDuels(ctx) {
     const enjeu = enjeuChoisi();
     await serveur.creer(p.id, format.len, format.win, format.classe, format.mise, enjeu);
     defiesA.add(p.id);
-    if (enjeu) { $("duelEnjeuOn").checked = false; $("duelEnjeuBox").hidden = true; $("duelEnjeu").value = ""; }
-    const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"}${format.mise ? ` avec une mise de ${format.mise} jetons` : ""}${enjeu ? ` et l'enjeu « ${enjeu} »` : ""} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra en haut de son menu « Jouer ». Quand il l'acceptera, tu seras prévenu : le match démarrera dès que vous serez là tous les deux.`;
+    if (enjeu) { $("duelEnjeuOn").checked = false; $("duelEnjeuBox").hidden = true; $("duelEnjeu").value = ""; majResume(); }
+    const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"}${format.mise ? ` avec une mise de ${format.mise} jetons` : ""}${enjeu ? ` et l'enjeu « ${enjeu} »` : ""} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra en haut de son menu « Jouer ». Quand ${p.genre === "f" ? "elle" : "il"} l'acceptera, tu seras prévenu : le match démarrera dès que vous serez là tous les deux.`;
     dire(texte); rafraichir();
     return texte;
   }
