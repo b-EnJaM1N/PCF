@@ -446,6 +446,8 @@
         <div id="tnFormuleBox" hidden>
           <span class="lbl">Formule</span>
           <div class="seg" id="tnFormule"><button data-v="0">Aller simple</button><button data-v="1">Aller-retour</button></div>
+          <span class="lbl">Répétition</span>
+          <div class="seg" id="tnRepet"><button data-v="0">Une seule fois</button><button data-v="1">Chaque semaine</button></div>
         </div>
       </div>
       <span class="lbl">Points par set</span>
@@ -486,6 +488,12 @@
       <h2>Inscrits</h2>
       <div id="tInscrits" class="resultats"></div>
       <div id="tActions" class="actions-col"></div>
+    </section>
+    <section class="card" id="tSerieCarte" hidden>
+      <h2>🔁 Chaque semaine</h2>
+      <p class="hint" id="tSerieTexte"></p>
+      <div id="tPalmares" class="resultats"></div>
+      <p style="margin:6px 0 0"><button class="linkbtn" id="tSerieArreter" hidden>Arrêter la répétition</button></p>
     </section>
     <section class="card" id="tClassementCarte" hidden>
       <h2>Classement</h2>
