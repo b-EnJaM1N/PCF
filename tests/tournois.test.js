@@ -110,3 +110,13 @@ test("championnat du cercle : résumé, matchs restants, champion, dernier", asy
   assert.equal(dernierDuClassement([{ joueur: a }, { joueur: c }]).id, "c");
   assert.equal(dernierDuClassement([]), null);
 });
+
+test("championnat de chaque semaine : résumé et heure de départ", async () => {
+  const { texteDepart } = await import("../app/js/tournoi-logique.js");
+  assert.equal(texteDepart("2026-10-12T10:00:00Z"), "lundi 12 octobre à 12 h");
+  assert.equal(texteDepart("2026-11-02T11:00:00Z"), "lundi 2 novembre à 12 h", "heure d'hiver");
+  assert.equal(resume({ mode: "championnat", phase: "inscriptions", inscrits: 3, edition: 2, depart: "2026-10-12T10:00:00Z" }),
+    "Semaine n° 2 · inscriptions ouvertes · 3 joueurs · départ lundi 12 octobre à 12 h");
+  assert.equal(resume({ mode: "championnat", phase: "en_cours", hebdo: true, edition: 4, echeance: null }), "Semaine n° 4 · Championnat en cours");
+  assert.equal(resume({ mode: "championnat", phase: "en_cours", edition: null, echeance: null }), "Championnat en cours", "championnat d'une seule fois");
+});
