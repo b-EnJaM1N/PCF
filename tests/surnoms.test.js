@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { NOMS, QUALIFICATIFS, FAMILLES, PALIERS, surnomDe, surnomValide, surnomAuHasard, debloques, aDebloquer, monterRang, idPartie } from "../app/js/surnoms.js";
+import { NOMS, NOMS_DEPART, QUALIFICATIFS, FAMILLES, PALIERS, surnomDe, surnomValide, surnomAuHasard, debloques, aDebloquer, monterRang, idPartie } from "../app/js/surnoms.js";
 import { profilParDefaut, normaliserProfil } from "../app/js/profil.js";
 import { CATALOGUE } from "../app/js/voix/script.js";
 
@@ -12,10 +12,10 @@ test("un nom + un qualificatif, choisis par le joueur", () => {
   assert.equal(surnomDe(P).texte, "La Tornade Implacable", "les qualificatifs ne s'accordent pas");
 });
 
-test("un nouveau joueur a un surnom de départ : un nom rigolo et un qualificatif humour", () => {
+test("un nouveau joueur a un surnom de départ : un nom drôle et un qualificatif de la vie de tous les jours", () => {
   for (let k = 0; k < 50; k++) {
     const s = surnomAuHasard(profilParDefaut(), { depart: true });
-    assert.equal(NOMS.find(x => x.id === s.nom).famille, "rigolo");
+    assert.ok(NOMS_DEPART.has(s.nom), s.nom);
     assert.equal(QUALIFICATIFS.find(x => x.id === s.complement).famille, "humour");
   }
 });
@@ -52,7 +52,11 @@ test("monter de rang : les paliers s'annoncent une fois, et on ne perd jamais un
   assert.ok(monterRang(P, 6).some(t => t.includes("prestige")));
 });
 
-test("les noms rigolos : disponibles dès le départ", () => {
+test("les noms drôles : dans leur catégorie (pas de catégorie « rigolo »), disponibles dès le départ", () => {
+  assert.ok(!FAMILLES.rigolo);
+  assert.equal(NOMS.find(x => x.id === "la_loutre").famille, "animal");
+  assert.equal(NOMS.find(x => x.id === "la_quiche").famille, "cuisine");
+  for (const id of NOMS_DEPART) assert.ok(NOMS.some(x => x.id === id), id);
   const ids = debloques(NOMS, profilParDefaut(), 1).map(x => x.id);
   for (const id of ["le_croque_monsieur", "la_saucisse", "la_quiche", "la_loutre", "la_limace"]) assert.ok(ids.includes(id), id);
   const P = profilParDefaut(); P.surnom = { nom: "la_quiche", complement: "implacable" };

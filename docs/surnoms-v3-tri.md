@@ -24,15 +24,17 @@ L'idée des niveaux (Novice → Légende) correspond aux **rangs de la carte de 
 | Expert | Platine (niveau officiel 1300, ou un tournoi gagné et 30 matchs) | les qualificatifs **caractère** et **ombre**, les noms **titres** (Le Boss, Le Champion…) |
 | Légende | Diamant (niveau officiel 1400) | les qualificatifs **prestige** (des Titans, de l'Éternité…) |
 
-Un débutant commence donc avec des surnoms drôles : son surnom de départ est tiré parmi les **noms rigolos** et les qualificatifs humour (« La Quiche du PMU », « La Loutre du Canapé »).
+Un débutant commence donc avec des surnoms drôles : son surnom de départ est tiré parmi les **noms drôles** (animaux pas féroces, cuisine) et les qualificatifs de la vie de tous les jours (« La Quiche du PMU », « La Loutre du Canapé »).
 
 ---
 
 ## 🥊 Les noms (42)
 
-**😋 Rigolos** (5, ajoutés le 10 octobre, choix du porteur du projet) : Le Croque-Monsieur · La Saucisse · La Quiche · La Loutre · La Limace · Le Cèpe · La Buse · Le Cacatoès · Le Dindon · Le Pigeon · La Truffe (ces six-là ajoutés le 10 octobre) — dès le départ ; ce sont eux qui forment le surnom de départ.
+**Les noms drôles** (11, choix du porteur du projet le 10 octobre), rangés dans leur catégorie, sans catégorie « rigolo » : ce sont eux qui forment le surnom de départ.
 
-**Animaux** (8) : Le Cobra · Le Scorpion · Le Requin · Le Faucon · Le Tigre · La Panthère · Le Bison · Le Pitbull
+**Animaux** (14) : La Loutre · La Limace · La Buse · Le Cacatoès · Le Dindon · Le Pigeon · Le Cobra · Le Scorpion · Le Requin · Le Faucon · Le Tigre · La Panthère · Le Bison · Le Pitbull
+
+**Cuisine** (5) : Le Croque-Monsieur · La Saucisse · La Quiche · Le Cèpe · La Truffe
 
 **Forces et objets** (8) : Le Poing · La Main · Le Marteau · Le Bulldozer · Le Tank · La Foudre · La Tornade · L'Ouragan
 
@@ -48,7 +50,7 @@ Retirés : Le Lion, Le Loup, Le Renard, Le Taureau (moins forts que les autres a
 
 ## ⚡ Les qualificatifs (61)
 
-### 😂 Humour, dès le départ (14)
+### ☕ La vie de tous les jours, dès le départ (14)
 du Dimanche · de l'Apéro · du Comptoir · du PMU · de la Cantine · du Bureau · du Parking · du Supermarché · du Camping · de la Sieste · du Canapé · du Barbecue · du Rond-Point · de la Plage
 
 Retirés : du Café et du Bistrot (doublons du Comptoir et du PMU), du Camping-Car (doublon du Camping), des Vacances (doublon de la Plage), du Métro, du Bus, du Frigo.
