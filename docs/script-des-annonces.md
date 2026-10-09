@@ -916,7 +916,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_cri_03.mp3` | La prochaine fois, prévoyez les boules Quies. |
 | `commentatrice_dialogue_cri_04.mp3` | C'est Ronaldo sans les abdos. |
 
-## Speaker — voix de salle, voyelles étirées (180 répliques)
+## Speaker — voix de salle, voyelles étirées (182 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1007,6 +1007,7 @@ restent lus par la voix de synthèse.
 | `speaker_surnom_le_cepe_01.mp3` | Le Cèpe… |
 | `speaker_surnom_la_buse_01.mp3` | La Buse… |
 | `speaker_surnom_le_cacatoes_01.mp3` | Le Cacatoès… |
+| `speaker_surnom_le_dindon_01.mp3` | Le Dindon… |
 | `speaker_surnom_le_cobra_01.mp3` | Le Cobra… |
 | `speaker_surnom_le_scorpion_01.mp3` | Le Scorpion… |
 | `speaker_surnom_le_requin_01.mp3` | Le Requin… |
@@ -1073,6 +1074,7 @@ restent lus par la voix de synthèse.
 | `speaker_surnom_de_soie_01.mp3` | de Soie… |
 | `speaker_surnom_d_or_01.mp3` | d'Or… |
 | `speaker_surnom_en_dentelle_01.mp3` | en Dentelle… |
+| `speaker_surnom_a_paillettes_01.mp3` | à Paillettes… |
 | `speaker_surnom_de_feu_01.mp3` | de Feu… |
 | `speaker_surnom_de_glace_01.mp3` | de Glace… |
 | `speaker_surnom_de_lave_01.mp3` | de Lave… |

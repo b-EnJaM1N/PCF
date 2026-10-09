@@ -28,9 +28,9 @@ Un débutant commence donc avec des surnoms drôles : son surnom de départ est 
 
 ---
 
-## 🥊 Les noms (39)
+## 🥊 Les noms (40)
 
-**😋 Rigolos** (5, ajoutés le 10 octobre, choix du porteur du projet) : Le Croque-Monsieur · La Saucisse · La Quiche · La Loutre · La Limace · Le Cèpe · La Buse · Le Cacatoès (ces trois-là ajoutés le 10 octobre) — dès le départ ; ce sont eux qui forment le surnom de départ.
+**😋 Rigolos** (5, ajoutés le 10 octobre, choix du porteur du projet) : Le Croque-Monsieur · La Saucisse · La Quiche · La Loutre · La Limace · Le Cèpe · La Buse · Le Cacatoès · Le Dindon (ces quatre-là ajoutés le 10 octobre) — dès le départ ; ce sont eux qui forment le surnom de départ.
 
 **Animaux** (8) : Le Cobra · Le Scorpion · Le Requin · Le Faucon · Le Tigre · La Panthère · Le Bison · Le Pitbull
 
@@ -58,8 +58,8 @@ du Quartier · de la Rue · de la Street · du Bitume · de la Cité · du Ring 
 
 Retirés : des Rues, des Quartiers (doublons), de la Banlieue, de la Ville, de la Campagne, des Champs, des Montagnes, des Plaines, de la Forêt, de la Mer, de l'Océan, du Nord, du Sud, de l'Est, de l'Ouest, du Bloc, du Hood, des Trottoirs.
 
-### 🪨 Matières, palier Moyen (10)
-d'Acier · de Titane · de Béton · de Marbre · de Plomb · de Cristal · de Velours · de Soie · d'Or · en Dentelle (ajouté le 10 octobre)
+### 🪨 Matières, palier Moyen (11)
+d'Acier · de Titane · de Béton · de Marbre · de Plomb · de Cristal · de Velours · de Soie · d'Or · en Dentelle · à Paillettes (ajoutés le 10 octobre)
 
 Retirés : de Fer (doublon d'Acier), de Bronze et d'Argent (moins forts que d'Or), de Diamant (c'est un rang de la carte), de Pierre (c'est un signe du jeu : « Le Poing de Pierre » prête à confusion), de Laine, de Cuir, de Bois, de Verre, de Glace (gardé dans les éléments).
 
