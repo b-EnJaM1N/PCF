@@ -3,7 +3,7 @@
 // Chaque partie est un fichier audio : speaker_surnom_<partie>_01. Les qualificatifs ne s'accordent pas
 // (« Le Cobra Implacable », « La Tornade Implacable ») : un seul enregistrement suffit.
 // On débloque les familles en montant les rangs de la carte de joueur (carte-logique.js).
-import { signeFavori } from "./profil.js";
+import { signeFavori, TITRES } from "./profil.js";
 import { RANGS } from "./carte-logique.js";
 
 // Les paliers : le rang de la carte (numéro, de 1 à 10) qui les ouvre.
@@ -23,6 +23,7 @@ export const FAMILLES = {
   force: { titre: "Forces", palier: "novice" },
   combattant: { titre: "Combattants", palier: "novice" },
   handslam: { titre: "Spécial HandSlam", palier: null },
+  exploit: { titre: "🏅 Exploits", palier: null },
   titre: { titre: "Titres", palier: "expert" },
   humour: { titre: "☕ La vie de tous les jours", palier: "novice" },
   lieu: { titre: "🌍 Lieux", palier: "amateur" },
@@ -42,6 +43,11 @@ const famille = (cle, liste) => liste.map(([id, t]) => {
   return { id, t, famille: cle, palier: p, ok: (P, rang) => rang >= PALIERS[p].rang, aide: aidePalier(p) };
 });
 const favori = (P, s) => P.matchs >= 10 && signeFavori(P.signes) === s;
+// Les surnoms d'exploit (choix du porteur du projet, 10 octobre) : gagnés avec un trophée précis.
+const exploit = (id, t, trophee) => {
+  const tr = TITRES.find(x => x.id === trophee);
+  return { id, t, famille: "exploit", palier: null, trophee, ok: P => !!P.titres?.[trophee], aide: `trophée « ${tr.nom} » : ${tr.desc.replace(/\.$/, "")}` };
+};
 
 export const NOMS = [
   // Les noms drôles (choix du porteur du projet, 10 octobre), rangés dans leur catégorie : le contraste fait rire (« La Quiche Implacable »).
@@ -53,6 +59,10 @@ export const NOMS = [
   { id: "le_menhir", t: "Le Menhir", famille: "handslam", palier: null, ok: P => favori(P, 0), aide: "Pierre en signe favori (10 matchs)" },
   { id: "le_secateur", t: "Le Sécateur", famille: "handslam", palier: null, ok: P => favori(P, 1), aide: "Ciseaux en signe favori (10 matchs)" },
   { id: "l_origami", t: "L'Origami", famille: "handslam", palier: null, ok: P => favori(P, 2), aide: "Feuille en signe favori (10 matchs)" },
+  exploit("le_phenix", "Le Phénix", "phenix"),
+  exploit("le_marathonien", "Le Marathonien", "pilier"),
+  exploit("le_gentleman", "Le Gentleman", "gentleman"),
+  exploit("l_invaincu", "L'Invaincu", "legende"),
   ...famille("titre", [["le_boss", "Le Boss"], ["le_taulier", "Le Taulier"], ["le_maitre", "Le Maître"], ["le_champion", "Le Champion"], ["le_crack", "Le Crack"], ["la_machine", "La Machine"]]),
 ];
 
@@ -63,8 +73,15 @@ export const QUALIFICATIFS = [
   ...famille("element", [["de_feu", "de Feu"], ["de_glace", "de Glace"], ["de_lave", "de Lave"], ["de_braise", "de Braise"], ["de_givre", "de Givre"], ["de_tempete", "de Tempête"], ["de_brume", "de Brume"], ["de_lune", "de Lune"]]),
   ...famille("caractere", [["redoutable", "Redoutable"], ["implacable", "Implacable"], ["impitoyable", "Impitoyable"], ["invincible", "Invincible"], ["inarretable", "Inarrêtable"], ["intraitable", "Intraitable"], ["terrible", "Terrible"], ["sauvage", "Sauvage"]]),
   ...famille("ombre", [["de_la_nuit", "de la Nuit"], ["de_l_ombre", "de l'Ombre"], ["du_chaos", "du Chaos"]]),
+  exploit("du_dimanche_soir", "du Dimanche Soir", "champion_dimanche"),
+  exploit("du_cercle", "du Cercle", "champion_cercle"),
   ...famille("prestige", [["des_titans", "des Titans"], ["des_legendes", "des Légendes"], ["des_immortels", "des Immortels"], ["des_champions", "des Champions"], ["de_l_eternite", "de l'Éternité"], ["de_la_gloire", "de la Gloire"], ["du_destin", "du Destin"], ["de_l_empire", "de l'Empire"]]),
 ];
+
+// Les parties de surnom qu'un trophée débloque : ["Le Phénix"]…
+export const surnomsDuTrophee = id => [...NOMS, ...QUALIFICATIFS].filter(x => x.trophee === id).map(x => x.t);
+// Tout ce qu'un trophée débloque, en une phrase : « le motif étoile et le surnom « Le Phénix » » (ou "").
+export const texteDeblocage = t => [t.debloque, ...surnomsDuTrophee(t.id).map(x => `le surnom « ${x} »`)].filter(Boolean).join(" et ");
 
 // Le rang de carte retenu pour les surnoms : le plus haut jamais atteint (on ne perd pas un surnom débloqué).
 export const rangRetenu = P => Math.max(1, P.rangMax || 1);

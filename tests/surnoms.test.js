@@ -79,3 +79,20 @@ test("chaque partie de surnom a son fichier audio, un id unique et une aide", ()
     if (p.palier) assert.ok(PALIERS[p.palier], p.id);
   }
 });
+
+test("les surnoms d'exploit : gagnés avec un trophée précis", async () => {
+  const { surnomsDuTrophee, texteDeblocage } = await import("../app/js/surnoms.js");
+  const { TITRES } = await import("../app/js/profil.js");
+  const P = profilParDefaut();
+  const ids = () => [...debloques(NOMS, P, 6), ...debloques(QUALIFICATIFS, P, 6)].map(x => x.id);
+  for (const id of ["le_phenix", "le_marathonien", "le_gentleman", "l_invaincu", "du_dimanche_soir", "du_cercle"]) assert.ok(!ids().includes(id), `${id} : verrouillé au départ, même au rang le plus haut`);
+  P.titres = { phenix: true, champion_cercle: true };
+  assert.ok(ids().includes("le_phenix") && ids().includes("du_cercle") && !ids().includes("le_gentleman"));
+  P.surnom = { nom: "le_phenix", complement: "du_cercle" };
+  assert.equal(surnomDe(P).texte, "Le Phénix du Cercle");
+  assert.deepEqual(surnomsDuTrophee("legende"), ["L'Invaincu"]);
+  assert.equal(texteDeblocage(TITRES.find(t => t.id === "legende")), "les coutures dorées et le surnom « L'Invaincu »");
+  assert.equal(texteDeblocage(TITRES.find(t => t.id === "phenix")), "le surnom « Le Phénix »");
+  assert.equal(texteDeblocage(TITRES.find(t => t.id === "habitue")), "");
+  for (const x of [...NOMS, ...QUALIFICATIFS].filter(v => v.famille === "exploit")) assert.ok(TITRES.some(t => t.id === x.trophee), x.id);
+});
