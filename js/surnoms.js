@@ -45,7 +45,8 @@ const favori = (P, s) => P.matchs >= 10 && signeFavori(P.signes) === s;
 
 export const NOMS = [
   // Les noms rigolos (choix du porteur du projet, 10 octobre) : le contraste fait rire (« La Quiche Implacable »).
-  ...famille("rigolo", [["le_croque_monsieur", "Le Croque-Monsieur"], ["la_saucisse", "La Saucisse"], ["la_quiche", "La Quiche"], ["la_loutre", "La Loutre"], ["la_limace", "La Limace"]]),
+  ...famille("rigolo", [["le_croque_monsieur", "Le Croque-Monsieur"], ["la_saucisse", "La Saucisse"], ["la_quiche", "La Quiche"], ["la_loutre", "La Loutre"], ["la_limace", "La Limace"],
+    ["le_cepe", "Le Cèpe"], ["la_buse", "La Buse"], ["le_cacatoes", "Le Cacatoès"], ["le_dindon", "Le Dindon"], ["le_pigeon", "Le Pigeon"], ["la_truffe", "La Truffe"]]),
   ...famille("animal", [["le_cobra", "Le Cobra"], ["le_scorpion", "Le Scorpion"], ["le_requin", "Le Requin"], ["le_faucon", "Le Faucon"], ["le_tigre", "Le Tigre"], ["la_panthere", "La Panthère"], ["le_bison", "Le Bison"], ["le_pitbull", "Le Pitbull"]]),
   ...famille("force", [["le_poing", "Le Poing"], ["la_main", "La Main"], ["le_marteau", "Le Marteau"], ["le_bulldozer", "Le Bulldozer"], ["le_tank", "Le Tank"], ["la_foudre", "La Foudre"], ["la_tornade", "La Tornade"], ["l_ouragan", "L'Ouragan"]]),
   ...famille("combattant", [["le_gladiateur", "Le Gladiateur"], ["le_cogneur", "Le Cogneur"], ["le_barbare", "Le Barbare"], ["le_viking", "Le Viking"], ["le_samourai", "Le Samouraï"], ["le_ninja", "Le Ninja"]]),
@@ -58,7 +59,7 @@ export const NOMS = [
 export const QUALIFICATIFS = [
   ...famille("humour", [["du_dimanche", "du Dimanche"], ["de_l_apero", "de l'Apéro"], ["du_comptoir", "du Comptoir"], ["du_pmu", "du PMU"], ["de_la_cantine", "de la Cantine"], ["du_bureau", "du Bureau"], ["du_parking", "du Parking"], ["du_supermarche", "du Supermarché"], ["du_camping", "du Camping"], ["de_la_sieste", "de la Sieste"], ["du_canape", "du Canapé"], ["du_barbecue", "du Barbecue"], ["du_rond_point", "du Rond-Point"], ["de_la_plage", "de la Plage"]]),
   ...famille("lieu", [["du_quartier", "du Quartier"], ["de_la_rue", "de la Rue"], ["de_la_street", "de la Street"], ["du_bitume", "du Bitume"], ["de_la_cite", "de la Cité"], ["du_ring", "du Ring"], ["de_l_arene", "de l'Arène"], ["de_la_jungle", "de la Jungle"], ["du_desert", "du Désert"], ["des_iles", "des Îles"], ["du_village", "du Village"]]),
-  ...famille("matiere", [["d_acier", "d'Acier"], ["de_titane", "de Titane"], ["de_beton", "de Béton"], ["de_marbre", "de Marbre"], ["de_plomb", "de Plomb"], ["de_cristal", "de Cristal"], ["de_velours", "de Velours"], ["de_soie", "de Soie"], ["d_or", "d'Or"]]),
+  ...famille("matiere", [["d_acier", "d'Acier"], ["de_titane", "de Titane"], ["de_beton", "de Béton"], ["de_marbre", "de Marbre"], ["de_plomb", "de Plomb"], ["de_cristal", "de Cristal"], ["de_velours", "de Velours"], ["de_soie", "de Soie"], ["d_or", "d'Or"], ["en_dentelle", "en Dentelle"], ["a_paillettes", "à Paillettes"]]),
   ...famille("element", [["de_feu", "de Feu"], ["de_glace", "de Glace"], ["de_lave", "de Lave"], ["de_braise", "de Braise"], ["de_givre", "de Givre"], ["de_tempete", "de Tempête"], ["de_brume", "de Brume"], ["de_lune", "de Lune"]]),
   ...famille("caractere", [["redoutable", "Redoutable"], ["implacable", "Implacable"], ["impitoyable", "Impitoyable"], ["invincible", "Invincible"], ["inarretable", "Inarrêtable"], ["intraitable", "Intraitable"], ["terrible", "Terrible"], ["sauvage", "Sauvage"]]),
   ...famille("ombre", [["de_la_nuit", "de la Nuit"], ["de_l_ombre", "de l'Ombre"], ["du_chaos", "du Chaos"]]),
