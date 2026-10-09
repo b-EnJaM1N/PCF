@@ -28,13 +28,15 @@ Un débutant commence donc avec des surnoms drôles : son surnom de départ est 
 
 ---
 
-## 🥊 Les noms (42)
+## 🥊 Les noms (46)
 
 **Les noms drôles** (11, choix du porteur du projet le 10 octobre), rangés dans leur catégorie, sans catégorie « rigolo » : ce sont eux qui forment le surnom de départ.
 
 **Animaux** (14) : La Loutre · La Limace · La Buse · Le Cacatoès · Le Dindon · Le Pigeon · Le Cobra · Le Scorpion · Le Requin · Le Faucon · Le Tigre · La Panthère · Le Bison · Le Pitbull
 
 **Cuisine** (5) : Le Croque-Monsieur · La Saucisse · La Quiche · Le Cèpe · La Truffe
+
+**🏅 Exploits** (4, choix du porteur du projet le 10 octobre), gagnés avec un trophée : Le Phénix (trophée Phénix) · Le Marathonien (Pilier, 100 matchs) · Le Gentleman (Gentleman) · L'Invaincu (Légende vivante, 10 victoires d'affilée)
 
 **Forces et objets** (8) : Le Poing · La Main · Le Marteau · Le Bulldozer · Le Tank · La Foudre · La Tornade · L'Ouragan
 
@@ -96,3 +98,6 @@ Retirés : des Dieux, des Rois, des Maîtres, des Élus, des Guerriers, des Anci
 - Légende : Le Poing des Titans · La Tornade de l'Éternité · Le Taulier de l'Empire
 
 Et le mélange garde l'humour à tous les niveaux : « Le Champion du Dimanche », « Le Gladiateur de la Sieste », « Le Menhir de Velours ».
+
+## 🏅 Qualificatifs d'exploit (2, 10 octobre)
+du Dimanche Soir (trophée Champion du dimanche) · du Cercle (trophée Champion du cercle). Ex. « Le Phénix du Dimanche Soir ».

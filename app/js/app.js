@@ -3,7 +3,7 @@ import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDe
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle } from "./annonces.js";
-import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide } from "./surnoms.js";
+import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
 import { voirTournoi, mesAmis, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible } from "./social-serveur.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
@@ -540,7 +540,7 @@ function finir() {
   if (!S.duel) $("endClassement").hidden = true;
   $("abandonDuelZone").hidden = true;
   if (enTournoi) $("tNext").textContent = gagne ? (tourDe(T, S.tour).finale ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
-  $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (t.debloque ? ` (débloque ${t.debloque})` : "")).join(", ") + " !" : "";
+  $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (texteDeblocage(t) ? ` (débloque ${texteDeblocage(t)})` : "")).join(", ") + " !" : "";
   const paliers = retenirRang();
   if (paliers.length) $("news").textContent = `${$("news").textContent} ${paliers.join(" ")}`.trim();
   if (ouvert.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${ouvert.join(" ")} ${$("news").textContent}`.trim();
@@ -1183,7 +1183,7 @@ function renderFiche() {
     const liste = TITRES.filter(t => t.famille === f.id), n = liste.filter(t => P.titres[t.id]).length;
     return `<h3 class="famille">${f.icone} ${f.nom} <small>${n} / ${liste.length}</small></h3>` + liste.map(t => {
       const on = !!P.titres[t.id];
-      return `<div class="badge ${on ? "on" : "off"}"><div class="bn">${on ? "🏅" : "🔒"} ${t.nom}</div><div class="bd">${t.desc}</div>${t.debloque ? `<div class="bu">Débloque ${t.debloque}</div>` : ""}</div>`;
+      return `<div class="badge ${on ? "on" : "off"}"><div class="bn">${on ? "🏅" : "🔒"} ${t.nom}</div><div class="bd">${t.desc}</div>${texteDeblocage(t) ? `<div class="bu">Débloque ${esc(texteDeblocage(t))}</div>` : ""}</div>`;
     }).join("");
   }).join("");
   renderEditeur();
@@ -1704,7 +1704,7 @@ function gagnerTrophees(nouveaux) {
   if (!nouveaux.length) return;
   sauverP(); if (vueCourante === "viewProfile") renderFiche();
   const t = $("toast");
-  t.textContent = `🏅 Nouveau trophée : ${nouveaux.map(x => x.nom + (x.debloque ? ` (débloque ${x.debloque})` : "")).join(", ")} !`;
+  t.textContent = `🏅 Nouveau trophée : ${nouveaux.map(x => x.nom + (texteDeblocage(x) ? ` (débloque ${texteDeblocage(x)})` : "")).join(", ")} !`;
   t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 5000);
 }
 $("toast").addEventListener("click", () => { $("toast").hidden = true; });
