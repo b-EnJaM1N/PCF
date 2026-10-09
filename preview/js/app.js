@@ -788,14 +788,13 @@ function preparerEcranMatch() {
 
 function renderFormat() {
   document.querySelectorAll("#segLen button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === fmt.len)));
-  $("lenResume").textContent = `Sets de ${fmt.len} point${fmt.len > 1 ? "s" : ""}${fmt.len === 11 ? " (format officiel)" : ""}`;
   document.querySelectorAll("#segWin button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === fmt.win)));
   // Durée : coups par set (égalités comprises), du plus court au plus long match possible.
   const parSet = { 11: 20, 7: 12, 3: 5, 1: 1.5 }[fmt.len], w = fmt.win;
   const arrondi = x => (x >= 20 ? Math.round(x / 5) * 5 : Math.max(1, Math.round(x)));
   const court = arrondi(w * parSet), long = arrondi((2 * w - 1) * parSet * 1.25);
   const officiel = fmt.len === 11;
-  $("fmtHint").textContent = `${texteFormat({ pointsParSet: fmt.len, setsGagnants: w })}${officiel ? " (format officiel)" : ""}, environ ${court} à ${long} coups.${officiel ? "" : " Tu peux revenir au format officiel dans les Options (⚙️)."}`;
+  $("fmtHint").textContent = `${texteFormat({ pointsParSet: fmt.len, setsGagnants: w })}${officiel ? " (format officiel)" : ""}, environ ${court} à ${long} coups.${officiel ? "" : " Le format officiel, c'est 11 points par set."}`;
   $("ruleTxt").textContent = texteFormat({ pointsParSet: T ? lenTournoi() : fmt.len, setsGagnants: WIN });
 }
 const matchEnCours = () => S && S.enJeu && S.match.coups.length > 0 && !S.match.termine;
