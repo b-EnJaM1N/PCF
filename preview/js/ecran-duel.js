@@ -176,13 +176,15 @@ export function installerDuels(ctx) {
   function renderAmis() {
     const cherche = $("inRecherche").value.trim().length > 0;
     $("duelAmisZone").hidden = !uid || !amis.length || cherche;
-    $("duelAmis").innerHTML = amis.map(a => `<div class="joueur" data-id="${a.id}">
+    $("duelAmis").innerHTML = amis.map(a => `<div class="joueur cliquable" data-id="${a.id}" role="button" tabindex="0">
       <span class="mini">${avatarSVG(a.avatar || {})}</span>
       <div style="min-width:0"><div class="jn">${esc(a.drapeau || "")} ${nomComplet(a)}</div><div class="jd">Niveau ${a.classement}</div></div>
       <div class="actions">${defiesA.has(a.id) ? `<button class="petit alt" disabled>Défié ✓</button>` : `<button class="petit" data-a="defier">Défier</button>`}</div></div>`).join("");
   }
   $("duelAmis").addEventListener("click", async e => {
-    const b = e.target.closest("button[data-a=defier]"); if (!b) return;
+    const b = e.target.closest("button[data-a=defier]");
+    // Toucher un ami (ailleurs que sur le bouton) : notre face-à-face, avec l'historique de nos duels.
+    if (!b) { const l = e.target.closest(".joueur"); if (l && !e.target.closest("button")) ctx.ouvrirAmi?.(l.dataset.id); return; }
     const a = amis.find(x => x.id === b.closest(".joueur").dataset.id); if (!a) return;
     b.disabled = true;
     try { await defier(a); renderAmis(); } catch (err) { dire(err.message, true); b.disabled = false; }
