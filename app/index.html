@@ -206,29 +206,14 @@
         <div id="duelRecus"></div>
       </section>
       <section class="card edit">
-        <h2>Défier un joueur</h2>
-        <label class="lbl" for="inRecherche">Pseudo de ton adversaire</label>
+        <h2>Défier un ami</h2>
+        <label class="lbl" for="inRecherche">Chercher un joueur par son pseudo</label>
         <input type="search" id="inRecherche" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ex. Benji ou Benji#4821">
-        <label class="sound" style="align-items:flex-start;margin:10px 0 8px"><input type="checkbox" id="duelEnjeuOn"> <span>🎯 Mettre un enjeu (entre amis)</span></label>
-        <div id="duelEnjeuBox" hidden>
-          <input id="duelEnjeu" maxlength="60" autocomplete="off" placeholder="Ex. Qui fait la vaisselle ce soir ?">
-          <div class="msg-puces enjeu-idees" id="duelEnjeuIdees"></div>
-          <p class="hint" style="margin-bottom:10px">Ton ami verra l'enjeu avant d'accepter le défi. Seulement entre amis, et pas d'argent : un gage, pas un pari.</p>
-        </div>
         <div id="duelResultats" class="resultats"></div>
         <div id="duelAmisZone" hidden>
           <p class="lbl" style="margin-top:10px">Ou défie un de tes amis <small>(touche un ami pour voir vos duels)</small> :</p>
-          <p class="hint" id="duelFormatResume"></p>
           <div id="duelAmis" class="resultats"></div>
         </div>
-        <span class="lbl">Format</span>
-        <span class="fmt-lbl">Points par set</span>
-        <div class="seg" id="duelLen"><button data-v="11">11</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
-        <div class="seg" id="duelWin"><button data-v="1">1 set</button><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
-        <label class="sound" style="align-items:flex-start;margin-bottom:10px"><input type="checkbox" id="duelClasse" checked> <span id="duelClasseTexte">Match officiel : compte pour ton niveau officiel (décoche pour un match amical)</span></label>
-        <span class="fmt-lbl">Mise en jetons</span>
-        <div class="seg seg-mise" id="duelMise"><button data-v="0">Sans mise</button><button data-v="50">50</button><button data-v="100">100</button><button data-v="200">200</button><button data-v="500">500</button><button data-v="1000">1 000</button></div>
-        <p class="hint" id="duelMiseTexte" style="margin-bottom:10px"></p>
         <p class="hint">Ton ami n'a pas encore HandSlam, ou il n'apparaît pas ? Envoie-lui un lien :</p>
         <button class="btn alt" id="duelLien" style="margin-top:8px">Inviter par un lien (WhatsApp, SMS…)</button>
         <p class="locknote" id="duelMsg" role="status"></p>
@@ -779,6 +764,34 @@
 </div>
 
 <div class="toast" id="toast" role="status" hidden></div>
+<!-- La fenêtre « Défier X » : la même partout (Défier un ami, amis, cercles, face-à-face, lien). -->
+<div class="fenetre-fond" id="defiFenetre" hidden>
+  <section class="card fenetre fenetre-defi" role="dialog" aria-modal="true" aria-labelledby="defiFenetreTitre">
+    <h2 id="defiFenetreTitre">⚔️ Défier</h2>
+    <div id="defiFenetreAdv"></div>
+    <span class="lbl">Format</span>
+    <span class="fmt-lbl">Points par set</span>
+    <div class="seg" id="duelLen"><button data-v="11">11</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
+    <div class="seg" id="duelWin"><button data-v="1">1 set</button><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
+    <label class="sound" style="align-items:flex-start;margin-bottom:10px"><input type="checkbox" id="duelClasse" checked> <span id="duelClasseTexte">Match officiel : compte pour ton niveau officiel (décoche pour un match amical)</span></label>
+    <span class="fmt-lbl">Mise en jetons</span>
+    <div class="seg seg-mise" id="duelMise"><button data-v="0">Sans mise</button><button data-v="50">50</button><button data-v="100">100</button><button data-v="200">200</button><button data-v="500">500</button><button data-v="1000">1 000</button></div>
+    <p class="hint" id="duelMiseTexte" style="margin-bottom:10px"></p>
+    <div id="duelEnjeuZone">
+    <label class="sound" style="align-items:flex-start;margin:10px 0 8px"><input type="checkbox" id="duelEnjeuOn"> <span>🎯 Mettre un enjeu (entre amis)</span></label>
+    <div id="duelEnjeuBox" hidden>
+      <input id="duelEnjeu" maxlength="60" autocomplete="off" placeholder="Ex. Qui fait la vaisselle ce soir ?">
+      <div class="msg-puces enjeu-idees" id="duelEnjeuIdees"></div>
+      <p class="hint" style="margin-bottom:10px">Ton ami verra l'enjeu avant d'accepter le défi. Seulement entre amis, et pas d'argent : un gage, pas un pari.</p>
+    </div>
+    </div>
+    <div class="actions-col" style="margin-top:12px">
+      <button class="btn" id="defiEnvoyer">Envoyer le défi</button>
+      <button class="linkbtn" id="defiAnnuler">Annuler</button>
+    </div>
+    <p class="locknote" id="defiFenetreMsg" role="status"></p>
+  </section>
+</div>
 <!-- Un défi reçu : une fenêtre à l'ouverture de l'appli (ou quand il arrive), sans aller le chercher. -->
 <div class="fenetre-fond" id="defiRecuFenetre" hidden>
   <section class="card fenetre" role="dialog" aria-modal="true" aria-labelledby="defiRecuTitre">

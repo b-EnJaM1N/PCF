@@ -212,7 +212,7 @@ export function installerCercles(ctx) {
   $("aDefier").addEventListener("click", async () => {
     const a = amis.find(x => x.id === amiOuvert); if (!a) return;
     $("aDefier").disabled = true;
-    try { dire("aMsg", await ctx.defier(a)); $("aDefier").textContent = texteAttente(a); return; }
+    try { const t = await ctx.defier(a); if (t) { dire("aMsg", t); $("aDefier").textContent = texteAttente(a); return; } }
     catch (err) { dire("aMsg", err.message, true); }
     $("aDefier").disabled = false;
   });
@@ -238,7 +238,7 @@ export function installerCercles(ctx) {
     if (a === "retirer" && !confirm(`Retirer ${joueur.pseudo} de tes amis ?`)) return;
     b.disabled = true;
     try {
-      if (a === "defier") { dire("socMsg", await ctx.defier(joueur)); return marquerDefie(b, joueur); }
+      if (a === "defier") { const t = await ctx.defier(joueur); if (!t) { b.disabled = false; return; } dire("socMsg", t); return marquerDefie(b, joueur); }
       if (a === "retirer" || a === "annuler") await social.retirerAmi(id);
       if (a === "ami-oui") { await social.repondreAmi(id, true); dire("socMsg", `${joueur.pseudo} et toi êtes maintenant amis.`); }
       if (a === "ami-non") await social.repondreAmi(id, false);
@@ -366,7 +366,7 @@ export function installerCercles(ctx) {
     const b = e.target.closest("button[data-a=defier]"); if (!b || !detail) return;
     const m = detail.membres.find(x => x.id === b.closest("li").dataset.id);
     b.disabled = true;
-    try { dire("cMsg", await ctx.defier(m)); return marquerDefie(b, m); } catch (err) { dire("cMsg", err.message, true); }
+    try { const t = await ctx.defier(m); if (t) { dire("cMsg", t); return marquerDefie(b, m); } } catch (err) { dire("cMsg", err.message, true); }
     b.disabled = false;
   });
   $("cAmis").addEventListener("click", async e => {
