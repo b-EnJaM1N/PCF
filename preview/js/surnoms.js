@@ -18,6 +18,7 @@ export const PALIERS = {
 
 // Les familles : leur titre et leur palier (null : débloquée autrement).
 export const FAMILLES = {
+  rigolo: { titre: "😋 Rigolos", palier: "novice" },
   animal: { titre: "Animaux", palier: "novice" },
   force: { titre: "Forces", palier: "novice" },
   combattant: { titre: "Combattants", palier: "novice" },
@@ -43,6 +44,8 @@ const famille = (cle, liste) => liste.map(([id, t]) => {
 const favori = (P, s) => P.matchs >= 10 && signeFavori(P.signes) === s;
 
 export const NOMS = [
+  // Les noms rigolos (choix du porteur du projet, 10 octobre) : le contraste fait rire (« La Quiche Implacable »).
+  ...famille("rigolo", [["le_croque_monsieur", "Le Croque-Monsieur"], ["la_saucisse", "La Saucisse"], ["la_quiche", "La Quiche"], ["la_loutre", "La Loutre"], ["la_limace", "La Limace"]]),
   ...famille("animal", [["le_cobra", "Le Cobra"], ["le_scorpion", "Le Scorpion"], ["le_requin", "Le Requin"], ["le_faucon", "Le Faucon"], ["le_tigre", "Le Tigre"], ["la_panthere", "La Panthère"], ["le_bison", "Le Bison"], ["le_pitbull", "Le Pitbull"]]),
   ...famille("force", [["le_poing", "Le Poing"], ["la_main", "La Main"], ["le_marteau", "Le Marteau"], ["le_bulldozer", "Le Bulldozer"], ["le_tank", "Le Tank"], ["la_foudre", "La Foudre"], ["la_tornade", "La Tornade"], ["l_ouragan", "L'Ouragan"]]),
   ...famille("combattant", [["le_gladiateur", "Le Gladiateur"], ["le_cogneur", "Le Cogneur"], ["le_barbare", "Le Barbare"], ["le_viking", "Le Viking"], ["le_samourai", "Le Samouraï"], ["le_ninja", "Le Ninja"]]),
@@ -83,9 +86,9 @@ export function monterRang(P, numero) {
   return Object.entries(PALIERS).filter(([, p]) => avant < p.rang && numero >= p.rang).map(([cle]) => ANNONCES[cle]).filter(Boolean);
 }
 
-// Un surnom tiré au hasard parmi ceux débloqués ; « depart » : seulement les noms Novice et l'humour (le surnom d'un nouveau joueur).
+// Un surnom tiré au hasard parmi ceux débloqués ; « depart » : un nom rigolo et un qualificatif humour (le surnom d'un nouveau joueur).
 export function surnomAuHasard(P, { depart = false, hasard = Math.random } = {}) {
-  const noms = depart ? NOMS.filter(x => x.palier === "novice") : debloques(NOMS, P);
+  const noms = depart ? NOMS.filter(x => x.famille === "rigolo") : debloques(NOMS, P);
   const quals = depart ? QUALIFICATIFS.filter(x => x.famille === "humour") : debloques(QUALIFICATIFS, P);
   const pioche = l => l[Math.floor(hasard() * l.length) % l.length];
   return { nom: pioche(noms).id, complement: pioche(quals).id };
