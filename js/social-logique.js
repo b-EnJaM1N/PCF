@@ -87,3 +87,11 @@ export const codeCercleDepuisAdresse = recherche => {
 
 // « 1er », « 2e », « 3e »…
 export const rang = n => (n === 1 ? "1er" : `${n}e`);
+
+// ---------------------------------------------------------------- qui est en ligne (étape 39)
+// presence (dans la carte d'un ami ou d'un membre de cercle) : 'ligne', 'match' ou null.
+export const PRESENCES = { ligne: "En ligne", match: "En match" };
+export const pointPresence = p => (PRESENCES[p?.presence] ? `<span class="presence ${p.presence}" title="${PRESENCES[p.presence]}" aria-label="${PRESENCES[p.presence]}"></span>` : "");
+export const textePresence = p => (PRESENCES[p?.presence] ? `${PRESENCES[p.presence]} · ` : "");
+// Les amis en ligne d'abord, puis en match, puis les autres (sans changer l'ordre à l'intérieur).
+export const parPresence = liste => [...liste].sort((a, b) => ({ ligne: 0, match: 1 }[a.presence] ?? 2) - ({ ligne: 0, match: 1 }[b.presence] ?? 2));

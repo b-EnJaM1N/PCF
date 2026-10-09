@@ -695,3 +695,7 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .salle-attente h2 { animation: salle-pulse 1.6s ease-in-out infinite; }
 @keyframes salle-pulse { 50% { opacity: .55; } }
 @media (prefers-reduced-motion: reduce) { .salle-attente h2 { animation: none; } }
+/* Qui est en ligne (étape 39) : un petit point après le pseudo */
+.presence { display: inline-block; width: .6em; height: .6em; border-radius: 50%; margin-left: .35em; vertical-align: .1em; box-shadow: 0 0 0 2px rgba(0, 0, 0, .25); }
+.presence.ligne { background: #3DDC84; }
+.presence.match { background: #F5A524; }

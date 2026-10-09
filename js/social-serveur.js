@@ -10,6 +10,10 @@ export const classements = ids => essayer(async () => new Map(ids.length
   : []));
 
 export const mesAmis = () => rpc("mes_amis");
+// Qui est en ligne (supabase/etape-39-en-ligne.sql) : « je suis là » toutes les minutes, et l'option pour le cacher.
+export const jeSuisLa = enMatch => rpc("je_suis_la", { p_en_match: !!enMatch });
+export const reglerPresence = visible => rpc("regler_presence", { p_visible: !!visible });
+export const maPresenceVisible = () => rpc("ma_presence_visible");
 export const demanderAmi = id => rpc("demander_ami", { p_joueur: id });            // → "envoyee" ou "amis"
 export const repondreAmi = (id, accepte) => rpc("repondre_ami", { p_joueur: id, p_accepte: accepte });
 export const retirerAmi = id => rpc("retirer_ami", { p_joueur: id });
