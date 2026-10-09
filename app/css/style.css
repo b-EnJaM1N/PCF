@@ -707,3 +707,6 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .fenetre-fond { overflow-y: auto; }
 .fenetre-defi { max-height: calc(100vh - 32px); overflow-y: auto; }
 .fenetre-defi .actions-col { position: sticky; bottom: -16px; margin: 12px -16px -16px; padding: 12px 16px 14px; background: var(--court-deep); border-top: 1px solid rgba(255, 255, 255, .1); }
+/* « Mes défis » : un seul bloc, rangé par état */
+.defis-groupe h3 { margin: 12px 0 6px; font-size: 1rem; color: var(--muted); }
+.defis-groupe:first-of-type h3 { margin-top: 4px; }
