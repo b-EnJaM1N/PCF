@@ -28,9 +28,9 @@ Un débutant commence donc avec des surnoms drôles : son surnom de départ est 
 
 ---
 
-## 🥊 Les noms (40)
+## 🥊 Les noms (42)
 
-**😋 Rigolos** (5, ajoutés le 10 octobre, choix du porteur du projet) : Le Croque-Monsieur · La Saucisse · La Quiche · La Loutre · La Limace · Le Cèpe · La Buse · Le Cacatoès · Le Dindon (ces quatre-là ajoutés le 10 octobre) — dès le départ ; ce sont eux qui forment le surnom de départ.
+**😋 Rigolos** (5, ajoutés le 10 octobre, choix du porteur du projet) : Le Croque-Monsieur · La Saucisse · La Quiche · La Loutre · La Limace · Le Cèpe · La Buse · Le Cacatoès · Le Dindon · Le Pigeon · La Truffe (ces six-là ajoutés le 10 octobre) — dès le départ ; ce sont eux qui forment le surnom de départ.
 
 **Animaux** (8) : Le Cobra · Le Scorpion · Le Requin · Le Faucon · Le Tigre · La Panthère · Le Bison · Le Pitbull
 

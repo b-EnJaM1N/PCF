@@ -46,7 +46,7 @@ const favori = (P, s) => P.matchs >= 10 && signeFavori(P.signes) === s;
 export const NOMS = [
   // Les noms rigolos (choix du porteur du projet, 10 octobre) : le contraste fait rire (« La Quiche Implacable »).
   ...famille("rigolo", [["le_croque_monsieur", "Le Croque-Monsieur"], ["la_saucisse", "La Saucisse"], ["la_quiche", "La Quiche"], ["la_loutre", "La Loutre"], ["la_limace", "La Limace"],
-    ["le_cepe", "Le Cèpe"], ["la_buse", "La Buse"], ["le_cacatoes", "Le Cacatoès"], ["le_dindon", "Le Dindon"]]),
+    ["le_cepe", "Le Cèpe"], ["la_buse", "La Buse"], ["le_cacatoes", "Le Cacatoès"], ["le_dindon", "Le Dindon"], ["le_pigeon", "Le Pigeon"], ["la_truffe", "La Truffe"]]),
   ...famille("animal", [["le_cobra", "Le Cobra"], ["le_scorpion", "Le Scorpion"], ["le_requin", "Le Requin"], ["le_faucon", "Le Faucon"], ["le_tigre", "Le Tigre"], ["la_panthere", "La Panthère"], ["le_bison", "Le Bison"], ["le_pitbull", "Le Pitbull"]]),
   ...famille("force", [["le_poing", "Le Poing"], ["la_main", "La Main"], ["le_marteau", "Le Marteau"], ["le_bulldozer", "Le Bulldozer"], ["le_tank", "Le Tank"], ["la_foudre", "La Foudre"], ["la_tornade", "La Tornade"], ["l_ouragan", "L'Ouragan"]]),
   ...famille("combattant", [["le_gladiateur", "Le Gladiateur"], ["le_cogneur", "Le Cogneur"], ["le_barbare", "Le Barbare"], ["le_viking", "Le Viking"], ["le_samourai", "Le Samouraï"], ["le_ninja", "Le Ninja"]]),
