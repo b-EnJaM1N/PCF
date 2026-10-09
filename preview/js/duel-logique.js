@@ -68,6 +68,9 @@ export function texteRdvRestant(d, maintenant = Date.now()) {
   return min >= 60 ? `${Math.floor(min / 60)} h` : `${min} min`;
 }
 
+// « Défié ✓ » ou « Défiée ✓ » (genre : 'f' ou 'm', donné par la carte du joueur, étape 38).
+export const texteDefie = p => (p?.genre === "f" ? "Défiée ✓" : "Défié ✓");
+
 export const lienDefi = (base, code) => `${base}?duel=${encodeURIComponent(code)}`;
 export const codeDepuisAdresse = recherche => {
   const c = new URLSearchParams(recherche || "").get("duel");
