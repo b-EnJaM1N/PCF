@@ -4,7 +4,7 @@ import * as serveur from "./duel-serveur.js";
 import { lienDefi, codeDepuisAdresse, adversaireDe, FORMAT, formatCourt, enRendezVous, texteRdvRestant } from "./duel-logique.js";
 import { avatarSVG } from "./avatar.js";
 import { lire, ecrire } from "./stockage.js";
-import { demanderAmi } from "./social-serveur.js";
+import { demanderAmi, mesAmis } from "./social-serveur.js";
 import { MISES, gainDuel } from "./jetons-logique.js";
 import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu } from "./enjeux.js";
 
@@ -20,6 +20,8 @@ export function installerDuels(ctx) {
   const quittes = new Set();
   // Les joueurs que j'ai défiés et qui n'ont pas encore joué (pour afficher « Défié ✓ » dans les cercles et les amis).
   let defiesA = new Set();
+  // Mes amis, sous la barre de recherche (rechargés au plus une fois par minute).
+  let amis = [], amisLus = 0;
   const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), classe: lire("duelClasse", true), mise: MISES.includes(lire("duelMise", 0)) ? lire("duelMise", 0) : 0 };
   const dire = (t, erreur = false) => { $("duelMsg").textContent = t; $("duelMsg").classList.toggle("erreur", erreur); };
   const base = () => location.origin + location.pathname;
@@ -87,6 +89,7 @@ export function installerDuels(ctx) {
     const envoyes = duels.filter(d => d.phase === "attente" && d.j0 === uid && !d.accepte_le);
     const rdvs = duels.filter(d => enRendezVous(d));
     defiesA = new Set(duels.filter(d => d.phase === "attente" && d.j0 === uid && d.j1).map(d => d.j1));
+    chargerAmis();
 
     // Un défi vient d'être accepté (ou je reviens dans l'appli) : on y va.
     const actif = enCours[0];
@@ -163,10 +166,33 @@ export function installerDuels(ctx) {
     quitterSalle(); rafraichir();
   });
 
+  // ------------------------------------------------ mes amis, sous la barre de recherche
+  async function chargerAmis() {
+    if (Date.now() - amisLus > 60000) {
+      try { amis = (await mesAmis()).filter(a => a.statut === "amis"); amisLus = Date.now(); } catch { /* on garde l'ancienne liste */ }
+    }
+    renderAmis();
+  }
+  function renderAmis() {
+    const cherche = $("inRecherche").value.trim().length > 0;
+    $("duelAmisZone").hidden = !uid || !amis.length || cherche;
+    $("duelAmis").innerHTML = amis.map(a => `<div class="joueur" data-id="${a.id}">
+      <span class="mini">${avatarSVG(a.avatar || {})}</span>
+      <div style="min-width:0"><div class="jn">${esc(a.drapeau || "")} ${nomComplet(a)}</div><div class="jd">Niveau ${a.classement}</div></div>
+      <div class="actions">${defiesA.has(a.id) ? `<button class="petit alt" disabled>Défié ✓</button>` : `<button class="petit" data-a="defier">Défier</button>`}</div></div>`).join("");
+  }
+  $("duelAmis").addEventListener("click", async e => {
+    const b = e.target.closest("button[data-a=defier]"); if (!b) return;
+    const a = amis.find(x => x.id === b.closest(".joueur").dataset.id); if (!a) return;
+    b.disabled = true;
+    try { await defier(a); renderAmis(); } catch (err) { dire(err.message, true); b.disabled = false; }
+  });
+
   // ------------------------------------------------ recherche
   $("inRecherche").addEventListener("input", () => {
     clearTimeout(recherche);
     const t = $("inRecherche").value.trim();
+    renderAmis();   // la liste d'amis s'efface pendant une recherche
     if (t.replace(/#.*/, "").length < 2) { $("duelResultats").innerHTML = ""; return; }
     recherche = setTimeout(async () => {
       try {
@@ -187,7 +213,7 @@ export function installerDuels(ctx) {
           }
           try {
             await defier(p);
-            $("inRecherche").value = ""; $("duelResultats").innerHTML = "";
+            $("inRecherche").value = ""; $("duelResultats").innerHTML = ""; renderAmis();
           } catch (e) { dire(e.message, true); b.disabled = false; }
         }));
       } catch (e) { dire(e.message, true); }
