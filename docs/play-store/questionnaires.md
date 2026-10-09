@@ -60,7 +60,10 @@ Données **collectées** (toutes : traitées de façon éphémère **Non**, coll
 
 À ne **pas** cocher : position, contacts, photos, fichiers, agenda, santé, finances, messages, navigation web, diagnostics et plantages, publicité ou marketing, statistiques d'utilisation (« Analyse »). HandSlam n'a ni outil de mesure d'audience ni publicité.
 
-## 7. Autres cartes de la page
+## 7. Identifiant publicitaire
+- « Votre appli utilise-t-elle un identifiant publicitaire ? » : **Non** (ni publicité, ni mesure d'audience). Demandé le 9 octobre, au moment d'envoyer le test fermé pour examen (appli qui cible Android 13 ou plus).
+
+## 8. Autres cartes de la page
 - Appli gouvernementale : **Non**.
 - Fonctionnalités financières : **Aucune**.
 - Appli de santé : **Non**.
