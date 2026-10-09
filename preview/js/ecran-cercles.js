@@ -1,4 +1,4 @@
-// Onglet « Cercles » : mon niveau officiel, mes amis, et mes cercles
+// Onglet « Amis » (anciennement « Cercles ») : mon niveau officiel, mes amis, et mes cercles
 // (groupes privés avec leur propre classement).
 import * as social from "./social-serveur.js";
 import { chercher, duelsAvec } from "./duel-serveur.js";
@@ -102,6 +102,7 @@ export function installerCercles(ctx) {
       ctx.surClassement(c ? c.points : CLASSEMENT_DEPART, c?.joues ?? 0, c?.division ?? null);
       const maDiv = c?.division ?? divisionDe(c ? c.points : CLASSEMENT_DEPART);
       if (divVue === null) chargerDivision(maDiv);
+      $("divResume").textContent = `Ta division : ${texteDivision(maDiv)}`;   // visible même replié
     }
     if (listeAmis) { amis = listeAmis; renderAmis(); }
     if (cercles) renderCercles(cercles);
@@ -212,7 +213,7 @@ export function installerCercles(ctx) {
   $("aDefier").addEventListener("click", async () => {
     const a = amis.find(x => x.id === amiOuvert); if (!a) return;
     $("aDefier").disabled = true;
-    try { dire("aMsg", await ctx.defier(a)); $("aDefier").textContent = texteAttente(a); return; }
+    try { const t = await ctx.defier(a); if (t) { dire("aMsg", t); $("aDefier").textContent = texteAttente(a); return; } }
     catch (err) { dire("aMsg", err.message, true); }
     $("aDefier").disabled = false;
   });
@@ -238,7 +239,7 @@ export function installerCercles(ctx) {
     if (a === "retirer" && !confirm(`Retirer ${joueur.pseudo} de tes amis ?`)) return;
     b.disabled = true;
     try {
-      if (a === "defier") { dire("socMsg", await ctx.defier(joueur)); return marquerDefie(b, joueur); }
+      if (a === "defier") { const t = await ctx.defier(joueur); if (!t) { b.disabled = false; return; } dire("socMsg", t); return marquerDefie(b, joueur); }
       if (a === "retirer" || a === "annuler") await social.retirerAmi(id);
       if (a === "ami-oui") { await social.repondreAmi(id, true); dire("socMsg", `${joueur.pseudo} et toi êtes maintenant amis.`); }
       if (a === "ami-non") await social.repondreAmi(id, false);
@@ -275,7 +276,7 @@ export function installerCercles(ctx) {
     try {
       const r = await social.demanderAmi(ligne.dataset.id);
       b.replaceWith(Object.assign(document.createElement("span"), { className: "jd", textContent: r === "amis" ? "Amis ✓" : "Demandé ✓" }));
-      dire("socMsg", r === "amis" ? "Vous êtes maintenant amis." : "Demande envoyée : elle apparaîtra dans son onglet Cercles.");
+      dire("socMsg", r === "amis" ? "Vous êtes maintenant amis." : "Demande envoyée : elle apparaîtra dans son onglet Amis.");
       rafraichir();
     } catch (err) { dire("socMsg", err.message, true); b.disabled = false; }
   });
@@ -366,7 +367,7 @@ export function installerCercles(ctx) {
     const b = e.target.closest("button[data-a=defier]"); if (!b || !detail) return;
     const m = detail.membres.find(x => x.id === b.closest("li").dataset.id);
     b.disabled = true;
-    try { dire("cMsg", await ctx.defier(m)); return marquerDefie(b, m); } catch (err) { dire("cMsg", err.message, true); }
+    try { const t = await ctx.defier(m); if (t) { dire("cMsg", t); return marquerDefie(b, m); } } catch (err) { dire("cMsg", err.message, true); }
     b.disabled = false;
   });
   $("cAmis").addEventListener("click", async e => {
@@ -377,7 +378,7 @@ export function installerCercles(ctx) {
       await social.inviterCercle(cercleOuvert, a.id);
       const cle = `invitesCercle:${cercleOuvert}`; ecrire(cle, [...new Set([...(lire(cle, []) || []), a.id])]);
       b.replaceWith(Object.assign(document.createElement("span"), { className: "jd", textContent: "Invité ✓" }));
-      dire("cInvMsg", `✉️ Invitation envoyée à ${a.pseudo} : elle apparaît dans son onglet Cercles, où il peut l'accepter.`);
+      dire("cInvMsg", `✉️ Invitation envoyée à ${a.pseudo} : elle apparaît dans son onglet Amis, où il peut l'accepter.`);
     } catch (err) { dire("cInvMsg", err.message, true); b.disabled = false; }
   });
   $("cMembresGestion").addEventListener("click", async e => {

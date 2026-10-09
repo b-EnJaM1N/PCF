@@ -40,7 +40,7 @@
     </div>
   </header>
   <p class="sndnote" id="sndNote" hidden></p>
-  <nav class="tabs"><button data-v="jouer" aria-pressed="true">🎮 Jouer<span class="pastille" id="pastilleJouer" hidden></span></button><button data-v="cercles" aria-pressed="false">👥 Cercles<span class="pastille" id="pastilleCercles" hidden></span></button><button data-v="profile" aria-pressed="false">🧑 Ma fiche</button></nav>
+  <nav class="tabs"><button data-v="jouer" aria-pressed="true">🎮 Jouer<span class="pastille" id="pastilleJouer" hidden></span></button><button data-v="cercles" aria-pressed="false">👥 Amis<span class="pastille" id="pastilleCercles" hidden></span></button><button data-v="profile" aria-pressed="false">🧑 Ma fiche</button></nav>
 
   <div class="view" id="viewJouer">
     <div id="hubAlertes"></div>
@@ -193,49 +193,37 @@
         </div>
         <button class="btn alt" id="duelSalleQuitter">Quitter la salle d'attente</button>
       </section>
-      <section class="card" id="duelRdvCard" hidden>
-        <h2>Défis acceptés</h2>
-        <div id="duelRdv"></div>
-      </section>
-      <section class="card" id="duelEnCoursCard" hidden>
-        <h2>Duel en cours</h2>
-        <div id="duelEnCours"></div>
-      </section>
-      <section class="card" id="duelRecusCard" hidden>
-        <h2>Défis reçus</h2>
-        <div id="duelRecus"></div>
+      <section class="card" id="duelMesDefisCard" hidden>
+        <h2>Mes défis</h2>
+        <div class="defis-groupe" id="duelEnCoursCard" hidden>
+          <h3>▶️ Duel en cours</h3>
+          <div id="duelEnCours"></div>
+        </div>
+        <div class="defis-groupe" id="duelRdvCard" hidden>
+          <h3>✅ Acceptés : à jouer</h3>
+          <div id="duelRdv"></div>
+        </div>
+        <div class="defis-groupe" id="duelRecusCard" hidden>
+          <h3>📨 Reçus</h3>
+          <div id="duelRecus"></div>
+        </div>
+        <div class="defis-groupe" id="duelEnvoyesCard" hidden>
+          <h3>📤 Envoyés, en attente de réponse</h3>
+          <div id="duelEnvoyes"></div>
+        </div>
       </section>
       <section class="card edit">
-        <h2>Défier un joueur</h2>
-        <label class="lbl" for="inRecherche">Pseudo de ton adversaire</label>
+        <h2>Défier un ami</h2>
+        <label class="lbl" for="inRecherche">Chercher un joueur par son pseudo</label>
         <input type="search" id="inRecherche" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ex. Benji ou Benji#4821">
-        <label class="sound" style="align-items:flex-start;margin:10px 0 8px"><input type="checkbox" id="duelEnjeuOn"> <span>🎯 Mettre un enjeu (entre amis)</span></label>
-        <div id="duelEnjeuBox" hidden>
-          <input id="duelEnjeu" maxlength="60" autocomplete="off" placeholder="Ex. Qui fait la vaisselle ce soir ?">
-          <div class="msg-puces enjeu-idees" id="duelEnjeuIdees"></div>
-          <p class="hint" style="margin-bottom:10px">Ton ami verra l'enjeu avant d'accepter le défi. Seulement entre amis, et pas d'argent : un gage, pas un pari.</p>
-        </div>
         <div id="duelResultats" class="resultats"></div>
         <div id="duelAmisZone" hidden>
           <p class="lbl" style="margin-top:10px">Ou défie un de tes amis <small>(touche un ami pour voir vos duels)</small> :</p>
-          <p class="hint" id="duelFormatResume"></p>
           <div id="duelAmis" class="resultats"></div>
         </div>
-        <span class="lbl">Format</span>
-        <span class="fmt-lbl">Points par set</span>
-        <div class="seg" id="duelLen"><button data-v="11">11</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
-        <div class="seg" id="duelWin"><button data-v="1">1 set</button><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
-        <label class="sound" style="align-items:flex-start;margin-bottom:10px"><input type="checkbox" id="duelClasse" checked> <span id="duelClasseTexte">Match officiel : compte pour ton niveau officiel (décoche pour un match amical)</span></label>
-        <span class="fmt-lbl">Mise en jetons</span>
-        <div class="seg seg-mise" id="duelMise"><button data-v="0">Sans mise</button><button data-v="50">50</button><button data-v="100">100</button><button data-v="200">200</button><button data-v="500">500</button><button data-v="1000">1 000</button></div>
-        <p class="hint" id="duelMiseTexte" style="margin-bottom:10px"></p>
         <p class="hint">Ton ami n'a pas encore HandSlam, ou il n'apparaît pas ? Envoie-lui un lien :</p>
         <button class="btn alt" id="duelLien" style="margin-top:8px">Inviter par un lien (WhatsApp, SMS…)</button>
         <p class="locknote" id="duelMsg" role="status"></p>
-      </section>
-      <section class="card" id="duelEnvoyesCard" hidden>
-        <h2>Mes défis en attente</h2>
-        <div id="duelEnvoyes"></div>
       </section>
       <section class="card">
         <label class="sound" style="align-items:flex-start"><input type="checkbox" id="duelVisible" checked> <span>Apparaître dans la recherche des autres joueurs</span></label>
@@ -252,16 +240,17 @@
     </section>
     <div id="socOn" hidden>
       <div id="socListe">
-        <section class="card" id="divCard">
-          <h2>🏆 Classement</h2>
-          <div class="seg seg-div" id="divSeg"><button data-d="0">🥉</button><button data-d="1">🥈</button><button data-d="2">🥇</button><button data-d="3">💎</button><button data-d="4">👑</button></div>
-          <p class="hint" id="divMoi"></p>
-          <ol class="classement" id="divListe"></ol>
-          <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Ta division dépend de ton niveau officiel (duels officiels contre d'autres joueurs ; les bots ne comptent pas) : 🥉 Bronze, 🥈 Argent dès 1 100, 🥇 Or dès 1 250, 💎 Platine dès 1 400, 👑 Diamant dès 1 550. Tu montes dès que tu atteins le seuil, et tu ne redescends que 20 points en dessous. Battre un joueur plus fort rapporte beaucoup, battre un plus faible très peu. Pour figurer au classement : au moins 10 duels officiels, et un duel dans les 30 derniers jours (sinon tu es masqué, sans perdre tes points).</p></details>
-        </section>
         <section class="card" id="socInvitCard" hidden>
           <h2>Invitations</h2>
           <div id="socInvit" class="resultats"></div>
+        </section>
+        <section class="card edit">
+          <h2>Mes amis</h2>
+          <div id="socAmis" class="resultats"></div>
+          <p class="hint" id="socAmisVide">Pas encore d'ami. Cherche un joueur par son pseudo pour lui envoyer une demande.</p>
+          <label class="lbl" for="inAmi">Ajouter un ami</label>
+          <input type="search" id="inAmi" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ex. Benji ou Benji#4821">
+          <div id="amiResultats" class="resultats"></div>
         </section>
         <section class="card edit">
           <h2>Mes cercles</h2>
@@ -276,14 +265,13 @@
             <button class="btn" id="cercleCreer" style="margin-top:14px">Créer le cercle</button>
           </div>
         </section>
-        <section class="card edit">
-          <h2>Mes amis</h2>
-          <div id="socAmis" class="resultats"></div>
-          <p class="hint" id="socAmisVide">Pas encore d'ami. Cherche un joueur par son pseudo pour lui envoyer une demande.</p>
-          <label class="lbl" for="inAmi">Ajouter un ami</label>
-          <input type="search" id="inAmi" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ex. Benji ou Benji#4821">
-          <div id="amiResultats" class="resultats"></div>
-        </section>
+        <details class="card pli" id="divCard">
+          <summary><h2>🏆 Classement des divisions</h2><span class="pli-resume" id="divResume">Bronze, Argent, Or, Platine, Diamant</span></summary>
+          <div class="seg seg-div" id="divSeg"><button data-d="0">🥉</button><button data-d="1">🥈</button><button data-d="2">🥇</button><button data-d="3">💎</button><button data-d="4">👑</button></div>
+          <p class="hint" id="divMoi"></p>
+          <ol class="classement" id="divListe"></ol>
+          <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Ta division dépend de ton niveau officiel (duels officiels contre d'autres joueurs ; les bots ne comptent pas) : 🥉 Bronze, 🥈 Argent dès 1 100, 🥇 Or dès 1 250, 💎 Platine dès 1 400, 👑 Diamant dès 1 550. Tu montes dès que tu atteins le seuil, et tu ne redescends que 20 points en dessous. Battre un joueur plus fort rapporte beaucoup, battre un plus faible très peu. Pour figurer au classement : au moins 10 duels officiels, et un duel dans les 30 derniers jours (sinon tu es masqué, sans perdre tes points).</p></details>
+        </details>
         <p class="locknote" id="socMsg" role="status"></p>
       </div>
 
@@ -779,6 +767,34 @@
 </div>
 
 <div class="toast" id="toast" role="status" hidden></div>
+<!-- La fenêtre « Défier X » : la même partout (Défier un ami, amis, cercles, face-à-face, lien). -->
+<div class="fenetre-fond" id="defiFenetre" hidden>
+  <section class="card fenetre fenetre-defi" role="dialog" aria-modal="true" aria-labelledby="defiFenetreTitre">
+    <h2 id="defiFenetreTitre">⚔️ Défier</h2>
+    <div id="defiFenetreAdv"></div>
+    <span class="lbl">Format</span>
+    <span class="fmt-lbl">Points par set</span>
+    <div class="seg" id="duelLen"><button data-v="11">11</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
+    <div class="seg" id="duelWin"><button data-v="1">1 set</button><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
+    <label class="sound" style="align-items:flex-start;margin-bottom:10px"><input type="checkbox" id="duelClasse" checked> <span id="duelClasseTexte">Match officiel : compte pour ton niveau officiel (décoche pour un match amical)</span></label>
+    <span class="fmt-lbl">Mise en jetons</span>
+    <div class="seg seg-mise" id="duelMise"><button data-v="0">Sans mise</button><button data-v="50">50</button><button data-v="100">100</button><button data-v="200">200</button><button data-v="500">500</button><button data-v="1000">1 000</button></div>
+    <p class="hint" id="duelMiseTexte" style="margin-bottom:10px"></p>
+    <div id="duelEnjeuZone">
+    <label class="sound" style="align-items:flex-start;margin:10px 0 8px"><input type="checkbox" id="duelEnjeuOn"> <span>🎯 Mettre un enjeu (entre amis)</span></label>
+    <div id="duelEnjeuBox" hidden>
+      <input id="duelEnjeu" maxlength="60" autocomplete="off" placeholder="Ex. Qui fait la vaisselle ce soir ?">
+      <div class="msg-puces enjeu-idees" id="duelEnjeuIdees"></div>
+      <p class="hint" style="margin-bottom:10px">Ton ami verra l'enjeu avant d'accepter le défi. Seulement entre amis, et pas d'argent : un gage, pas un pari.</p>
+    </div>
+    </div>
+    <div class="actions-col" style="margin-top:12px">
+      <button class="btn" id="defiEnvoyer">Envoyer le défi</button>
+      <button class="linkbtn" id="defiAnnuler">Annuler</button>
+    </div>
+    <p class="locknote" id="defiFenetreMsg" role="status"></p>
+  </section>
+</div>
 <!-- Un défi reçu : une fenêtre à l'ouverture de l'appli (ou quand il arrive), sans aller le chercher. -->
 <div class="fenetre-fond" id="defiRecuFenetre" hidden>
   <section class="card fenetre" role="dialog" aria-modal="true" aria-labelledby="defiRecuTitre">
