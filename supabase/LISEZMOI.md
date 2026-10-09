@@ -259,6 +259,16 @@ En défiant un ami, on peut ajouter un enjeu court (« Qui fait la vaisselle ce 
 sans argent ni gros mots, et seulement entre amis. L'ami accepte le défi et l'enjeu ; le perdant est annoncé à la fin.
 Sans cette étape, l'envoi d'un défi avec enjeu affiche une erreur (les défis sans enjeu marchent normalement).
 
+## 1 quinquatricies. Le championnat du cercle (étape 35)
+
+Même manipulation avec [`etape-35-championnat.sql`](etape-35-championnat.sql), **après** l'étape 34
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-35-championnat.sql).
+Dans un cercle, « Organiser un tournoi du cercle » propose aussi un **championnat** : chacun contre tous (aller simple ou
+aller-retour), pendant 3 jours, 1 semaine ou 2 semaines, de 3 à 10 joueurs. 2 points par victoire ; à égalité, le match entre
+les deux joueurs, puis les sets gagnés, puis les points gagnés. Match pas joué à la fin : gagné par celui qui a essayé, perdu
+pour les deux sinon. Enjeu facultatif (le dernier s'y colle), que l'organisateur ou le responsable du cercle peut effacer.
+Sans cette étape, la création d'un championnat affiche une erreur (les tournois à élimination marchent normalement).
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

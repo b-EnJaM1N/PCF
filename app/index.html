@@ -438,14 +438,30 @@
     <section class="card edit">
       <h2 id="tnTitre">Nouveau tournoi</h2>
       <p class="hint" id="tnPrecision"></p>
-      <label class="lbl" for="inTNom">Nom du tournoi</label>
+      <label class="lbl" for="inTNom" id="tnNomLbl">Nom du tournoi</label>
       <input type="text" id="inTNom" maxlength="40" autocomplete="off" placeholder="Ex. L'Open de la Famille">
+      <div id="tnTypeBox" hidden>
+        <span class="lbl">Type</span>
+        <div class="seg" id="tnType"><button data-v="libre">Élimination directe</button><button data-v="championnat">Championnat</button></div>
+        <div id="tnFormuleBox" hidden>
+          <span class="lbl">Formule</span>
+          <div class="seg" id="tnFormule"><button data-v="0">Aller simple</button><button data-v="1">Aller-retour</button></div>
+        </div>
+      </div>
       <span class="lbl">Points par set</span>
       <div class="seg" id="tnLen"></div>
       <span class="lbl">Format des matchs</span>
       <div class="seg" id="tnWin"></div>
-      <span class="lbl">Durée de chaque tour</span>
+      <span class="lbl" id="tnDureeLbl">Durée de chaque tour</span>
       <div class="seg" id="tnDuree"></div>
+      <div id="tnEnjeuZone" hidden>
+        <label class="sound" style="align-items:flex-start;margin:12px 0 8px"><input type="checkbox" id="tnEnjeuOn"> <span>🎯 Mettre un enjeu (le dernier s'y colle)</span></label>
+        <div id="tnEnjeuBox" hidden>
+          <input id="tnEnjeu" maxlength="60" autocomplete="off" placeholder="Ex. Le dernier ramène les chocolatines">
+          <div class="msg-puces enjeu-idees" id="tnEnjeuIdees"></div>
+          <p class="hint">Les inscrits le verront avant de s'inscrire : s'inscrire, c'est accepter l'enjeu. Visible seulement dans le cercle, et pas d'argent : un gage, pas un pari.</p>
+        </div>
+      </div>
       <p class="hint" id="tnHint"></p>
       <button class="btn" id="tnCreer" style="margin-top:12px">Créer le tournoi</button>
       <p class="locknote" id="tnMsg" role="status"></p>
@@ -458,6 +474,10 @@
       <span class="blason-grand" id="tIcone"></span>
       <div><h2 id="tNom"></h2><p class="hint" id="tInfo"></p><p class="hint" id="tEtat" style="color:var(--line);margin-top:4px"></p></div>
     </section>
+    <section class="card" id="tEnjeuCarte" hidden>
+      <p class="enjeu-fin" id="tEnjeu" style="margin:0"></p>
+      <p style="margin:6px 0 0;text-align:center"><button class="linkbtn" id="tEnjeuEffacer" hidden>Effacer l'enjeu</button></p>
+    </section>
     <section class="card" id="tMonMatch" hidden>
       <h2 id="tMonMatchTitre"></h2>
       <div id="tMonMatchCorps"></div>
@@ -467,8 +487,13 @@
       <div id="tInscrits" class="resultats"></div>
       <div id="tActions" class="actions-col"></div>
     </section>
+    <section class="card" id="tClassementCarte" hidden>
+      <h2>Classement</h2>
+      <div class="table-classement"><table id="tClassement"></table></div>
+      <p class="hint">Victoire : 2 points. À égalité : le match entre les deux joueurs, puis les sets gagnés, puis les points gagnés.</p>
+    </section>
     <section class="card" id="tTableauCarte" hidden>
-      <h2>Tableau</h2>
+      <h2 id="tTableauTitre">Tableau</h2>
       <div id="tTableau"></div>
       <p class="hint" id="tRegleAbsence"></p>
     </section>

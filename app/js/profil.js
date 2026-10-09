@@ -55,6 +55,7 @@ export const TITRES = [
   { id: "fondateur", famille: "cercles", nom: "Fondateur", desc: "Créer un cercle." },
   { id: "rassembleur", famille: "cercles", nom: "Rassembleur", desc: "Être responsable d'un cercle de 10 membres.", debloque: "le fond minuit", objet: ["fond", "minuit"] },
   { id: "patron", famille: "cercles", nom: "Patron", desc: "Être 1er du classement d'un cercle d'au moins 5 membres." },
+  { id: "champion_cercle", famille: "cercles", nom: "Champion du cercle", desc: "Remporter un championnat de cercle." },
   { id: "derby", famille: "cercles", nom: "Derby", desc: "Jouer 10 duels contre les membres d'un de tes cercles." },
 
   { id: "imprevisible", famille: "duels", nom: "Imprévisible", desc: "Gagner un match en étant prévisible moins de 30 % du temps.", debloque: "le gant or", objet: ["gant", "or"] },
@@ -80,6 +81,7 @@ export function titresEnLigne({ cercles = [], tournois = [], duelsCercle = 0, cr
   if (cercles.some(c => c.rang === 1 && c.membres >= 5)) ids.push("patron");
   if (duelsCercle >= 10) ids.push("derby");
   if (tournois.some(t => t.createur && t.cercle && t.phase === "termine")) ids.push("organisateur");
+  if (tournois.some(t => t.mode === "championnat" && t.gagne)) ids.push("champion_cercle");
   return ids;
 }
 
