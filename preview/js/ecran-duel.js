@@ -6,6 +6,7 @@ import { avatarSVG } from "./avatar.js";
 import { lire, ecrire } from "./stockage.js";
 import { demanderAmi, mesAmis } from "./social-serveur.js";
 import { pointPresence, textePresence, parPresence } from "./social-logique.js";
+import { etatNotifications, activerNotifications } from "./notifications.js";
 import { MISES, gainDuel } from "./jetons-logique.js";
 import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu } from "./enjeux.js";
 
@@ -25,7 +26,9 @@ export function installerDuels(ctx) {
   let amis = [], amisLus = 0;
   // Les défis reçus déjà montrés dans la fenêtre (une seule fois chacun, même après avoir fermé l'appli).
   const defisVus = new Set(lire("defisVus", []));
-  let fenetre = null;   // le défi affiché dans la fenêtre
+  let fenetre = null;   // { duel, adv, mode : "defi" (reçu) ou "rdv" (accepté, on m'attend) } : affiché dans la fenêtre
+  // Les rendez-vous déjà proposés dans la fenêtre : id → heure (on repropose au bout de 10 minutes si l'autre attend encore).
+  const rdvProposes = new Map();
   const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), classe: lire("duelClasse", true), mise: MISES.includes(lire("duelMise", 0)) ? lire("duelMise", 0) : 0 };
   const dire = (t, erreur = false) => { $("duelMsg").textContent = t; $("duelMsg").classList.toggle("erreur", erreur); };
   const base = () => location.origin + location.pathname;
@@ -108,10 +111,17 @@ export function installerDuels(ctx) {
     // Un défi reçu pas encore montré : une fenêtre s'ouvre (pas pendant un match ni dans une salle d'attente).
     const nouveau = recus.find(d => !d.tournoi_match && !defisVus.has(d.id) && joueurs.get(d.j0));
     if (nouveau && !fenetre && !salle && !actif && !ctx.duelEnCours() && !document.body.classList.contains("en-match")) montrerDefi(nouveau, joueurs.get(nouveau.j0), recus.length - 1);
-    if (fenetre && !recus.some(d => d.id === fenetre.duel.id)) fermerFenetre();   // annulé entre-temps
-    // Mon défi vient d'être accepté et l'appli est ouverte : j'entre dans la salle d'attente (le match démarre si l'autre y est).
-    const pourMoi = rdvs.find(d => d.j0 === uid && !quittes.has(d.id));
-    if (!actif && !salle && pourMoi && !document.hidden && !ctx.duelEnCours() && joueurs.get(pourMoi.j1)) entrerSalle(pourMoi, joueurs.get(pourMoi.j1));
+    if (fenetre && ![...recus, ...rdvs].some(d => d.id === fenetre.duel.id)) fermerFenetre();   // annulé ou commencé entre-temps
+    const libre = !actif && !salle && !fenetre && !document.hidden && !ctx.duelEnCours() && !document.body.classList.contains("en-match");
+    // Mon défi vient d'être accepté, l'appli ouverte : j'entre tout de suite dans la salle d'attente (le match démarre si l'autre y est).
+    const frais = rdvs.find(d => d.j0 === uid && !quittes.has(d.id) && Date.now() - Date.parse(d.accepte_le) < 2 * 60000 && joueurs.get(d.j1));
+    if (libre && frais) { ctx.ouvrirOnglet("duel"); entrerSalle(frais, joueurs.get(frais.j1)); }
+    // Sinon (j'ouvre l'appli plus tard, ou l'autre m'attend) : une fenêtre me le propose.
+    else if (libre) {
+      const attendu = rdvs.find(d => { const adv = joueurs.get(adversaireDe(d, uid)), vu = rdvProposes.get(d.id) || 0;
+        return adv && Date.now() - vu > 10 * 60000 && (d.j0 === uid ? !defisVus.has(`${d.id}:ok`) || lAutreAttend(d) : lAutreAttend(d)); });
+      if (attendu) proposerRdv(attendu, joueurs.get(adversaireDe(attendu, uid)));
+    }
 
     const ligne = (d, p, boutons, info = "") => `<div class="joueur" data-id="${d.id}">
       <span class="mini">${p ? avatarSVG(p.avatar || {}) : "🔗"}</span>
@@ -163,18 +173,38 @@ export function installerDuels(ctx) {
     $("defiRecuAccepter").disabled = $("defiRecuRefuser").disabled = false;
     $("defiRecuFenetre").hidden = false;
   }
-  function fermerFenetre() { fenetre = null; $("defiRecuFenetre").hidden = true; }
-  $("defiRecuPlusTard").addEventListener("click", fermerFenetre);
+  // L'autre est-il dans la salle d'attente en ce moment ?
+  const lAutreAttend = d => { const t = d.j0 === uid ? d.rdv1 : d.rdv0; return !!t && Date.now() - Date.parse(t) < 30000; };
+  // « X a accepté ton défi » ou « X t'attend » : rejoindre la salle d'attente.
+  function proposerRdv(duel, adv) {
+    fenetre = { duel, adv, mode: "rdv" };
+    rdvProposes.set(duel.id, Date.now());
+    if (duel.j0 === uid) { defisVus.add(`${duel.id}:ok`); ecrire("defisVus", [...defisVus].slice(-50)); }
+    const attend = lAutreAttend(duel), elle = (adv.genre || adv.fiche?.genre) === "f";
+    $("defiRecuTitre").textContent = attend ? `⏳ ${adv.pseudo} t'attend !` : `✅ ${adv.pseudo} a accepté ton défi !`;
+    $("defiRecuCorps").innerHTML = `<div class="joueur"><span class="mini">${avatarSVG(adv.avatar || {})}</span>
+      <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">${FORMAT(duel)}</div>${duel.enjeu ? `<div class="jd enjeu">🎯 Enjeu : « ${esc(duel.enjeu)} »</div>` : ""}</div><span></span></div>
+      <p class="hint">${attend ? `${esc(adv.pseudo)} est dans la salle d'attente : rejoins-${elle ? "la" : "le"}, le match démarre aussitôt.`
+        : `Rejoins la salle d'attente : ${esc(adv.pseudo)} sera prévenu${elle ? "e" : ""} que tu l'attends, et le match démarrera dès son arrivée.`}</p>`;
+    $("defiRecuAccepter").textContent = "Rejoindre la salle d'attente";
+    $("defiRecuRefuser").textContent = "Annuler le défi";
+    $("defiRecuAccepter").disabled = $("defiRecuRefuser").disabled = false;
+    $("defiRecuFenetre").hidden = false;
+  }
+  function fermerFenetre() { fenetre = null; $("defiRecuFenetre").hidden = true; $("defiRecuRefuser").textContent = "Refuser"; }
+  $("defiRecuPlusTard").addEventListener("click", () => { if (fenetre?.mode === "rdv") quittes.add(fenetre.duel.id); fermerFenetre(); });
   $("defiRecuFenetre").addEventListener("click", e => { if (e.target.id === "defiRecuFenetre") fermerFenetre(); });
   $("defiRecuRefuser").addEventListener("click", async () => {
     const f = fenetre; if (!f) return;
     $("defiRecuRefuser").disabled = true;
-    try { await serveur.repondre(f.duel.id, false); } catch (e) { dire(e.message, true); }
+    if (f.mode === "rdv" && !confirm(`Annuler le défi avec ${f.adv.pseudo} ?`)) { $("defiRecuRefuser").disabled = false; return; }
+    try { await (f.mode === "rdv" ? serveur.annuler(f.duel.id) : serveur.repondre(f.duel.id, false)); } catch (e) { dire(e.message, true); }
     fermerFenetre(); rafraichir();
   });
   $("defiRecuAccepter").addEventListener("click", async () => {
     const f = fenetre; if (!f) return;
     $("defiRecuAccepter").disabled = true;
+    if (f.mode === "rdv") { fermerFenetre(); quittes.delete(f.duel.id); ctx.ouvrirOnglet("duel"); entrerSalle(f.duel, f.adv); return; }
     try {
       const d = await serveur.repondre(f.duel.id, true);
       fermerFenetre();
@@ -193,7 +223,23 @@ export function installerDuels(ctx) {
       <div style="min-width:0"><div class="jn">En attente de ${nomComplet(adv)}…</div><div class="jd">${FORMAT(duel)}</div>${duel.enjeu ? `<div class="jd enjeu">🎯 Enjeu : « ${esc(duel.enjeu)} »</div>` : ""}</div><span></span></div>`;
     $("duelSalleCard").hidden = false;
     battre();
+    // Pas de notifications sur ce téléphone : on propose de les activer (pour être prévenu quand l'autre arrive).
+    $("duelSalleNotif").hidden = true;
+    etatNotifications().then(e => {
+      if (salle?.duel.id !== duel.id || (e !== "inactif" && e !== "refuse")) return;
+      $("duelSalleNotif").hidden = false;
+      $("duelSalleNotifBtn").hidden = e !== "inactif";
+      $("duelSalleNotifTexte").textContent = e === "inactif"
+        ? `Active les notifications : si tu quittes la salle, tu seras prévenu quand ${adv.pseudo} arrive.`
+        : "Les notifications sont bloquées pour HandSlam dans les réglages du téléphone : débloque-les pour être prévenu quand ton adversaire arrive.";
+    }).catch(() => {});
   }
+  $("duelSalleNotifBtn").addEventListener("click", async () => {
+    $("duelSalleNotifBtn").disabled = true;
+    try { const e = await activerNotifications(); if (e === "actif") { $("duelSalleNotif").hidden = true; dire("🔔 Notifications activées : tu seras prévenu quand on t'attend."); } }
+    catch (err) { dire(err.message, true); }
+    $("duelSalleNotifBtn").disabled = false;
+  });
   function quitterSalle() {
     if (!salle) return;
     clearInterval(salle.minuterie);
