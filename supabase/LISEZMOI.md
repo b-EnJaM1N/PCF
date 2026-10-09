@@ -269,6 +269,15 @@ les deux joueurs, puis les sets gagnés, puis les points gagnés. Match pas jou�
 pour les deux sinon. Enjeu facultatif (le dernier s'y colle), que l'organisateur ou le responsable du cercle peut effacer.
 Sans cette étape, la création d'un championnat affiche une erreur (les tournois à élimination marchent normalement).
 
+## 1 sextricies. Le championnat de chaque semaine (étape 36)
+
+Même manipulation avec [`etape-36-championnat-hebdo.sql`](etape-36-championnat-hebdo.sql), **après** l'étape 35
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-36-championnat-hebdo.sql).
+Un championnat peut se répéter **chaque semaine** : du lundi 12 h au dimanche 22 h (heure de Paris). À la fin, l'édition suivante
+est créée avec les mêmes réglages et les mêmes joueurs (chacun peut se désinscrire jusqu'au lundi 12 h) ; elle part toute seule
+le lundi à 12 h s'il y a au moins 3 joueurs. La série s'arrête si l'organisateur ou le responsable l'arrête, si une édition est
+annulée, ou si personne n'a joué de la semaine. Le minuteur (pg_cron, comme pour les tournois) passe toutes les 5 minutes.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

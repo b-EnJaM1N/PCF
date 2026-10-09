@@ -50,11 +50,12 @@ export function tableau(t) {
 
 // Une ligne de résumé pour les listes.
 export function resume(t, maintenant = Date.now()) {
+  if (t.phase === "inscriptions" && t.mode === "championnat" && t.depart) return `Semaine n° ${t.edition} · inscriptions ouvertes · ${t.inscrits} joueur${t.inscrits > 1 ? "s" : ""} · départ ${texteDepart(t.depart)}`;
   if (t.phase === "inscriptions") return `Inscriptions ouvertes · ${t.inscrits} joueur${t.inscrits > 1 ? "s" : ""}`;
   if (t.phase === "annule") return "Annulé";
   if (t.phase === "termine") return t.vainqueur ? `🏆 ${t.vainqueur.pseudo}#${t.vainqueur.numero}` : "Terminé";
   const reste = texteReste(t.echeance, maintenant);
-  if (t.mode === "championnat") return `Championnat en cours${reste ? ` · reste ${reste}` : ""}${t.a_jouer ? " · des matchs à jouer" : ""}`;
+  if (t.mode === "championnat") return `${t.hebdo || t.serie ? `Semaine n° ${t.edition} · ` : ""}Championnat en cours${reste ? ` · reste ${reste}` : ""}${t.a_jouer ? " · des matchs à jouer" : ""}`;
   return `${nomTour(t.tour, t.nb_tours)}${reste ? ` · reste ${reste}` : ""}${t.a_jouer ? " · à toi de jouer !" : t.elimine ? " · parcours terminé" : ""}`;
 }
 
@@ -71,6 +72,8 @@ export function championDuCercle(tournois) {
   finis.sort((a, b) => Date.parse(b.fini_le || 0) - Date.parse(a.fini_le || 0));
   return finis[0]?.vainqueur || null;
 }
+// Le départ d'une édition de la semaine, à l'heure de Paris : « lundi 12 octobre à 12 h ».
+export const texteDepart = depart => `${new Date(depart).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Paris" })} à 12 h`;
 // Le dernier du classement (celui qui s'y colle), ou null.
 export const dernierDuClassement = classement => (classement?.length ? classement[classement.length - 1].joueur : null);
 

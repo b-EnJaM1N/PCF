@@ -6,7 +6,7 @@ import { blasonSVG } from "./social-logique.js";
 import { texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { formatCourt } from "./duel-logique.js";
 import { nomTour, monTour, DUREES, texteDuree, texteReste, texteFin, monMatch, attente, tableau, resume, lienTournoi, codeTournoiDepuisAdresse,
-  mesMatchsRestants, DUREES_CHAMPIONNAT, MAX_CHAMPIONNAT, matchsParJoueur, texteDureeChampionnat, dernierDuClassement } from "./tournoi-logique.js";
+  mesMatchsRestants, DUREES_CHAMPIONNAT, MAX_CHAMPIONNAT, matchsParJoueur, texteDureeChampionnat, dernierDuClassement, texteDepart } from "./tournoi-logique.js";
 import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu, annonceEnjeu } from "./enjeux.js";
 import { lire, ecrire } from "./stockage.js";
 
@@ -34,13 +34,16 @@ export function installerTournois(ctx) {
   ["socTournois", "cTournois"].forEach(z => { $(z).addEventListener("click", ouvrirDepuisListe); $(z).addEventListener("keydown", ouvrirDepuisListe); });
 
   // ------------------------------------------------ créer un tournoi
-  const form = { len: 11, win: 2, duree: 60, type: "libre", ar: 0, jours: 7 };
+  const form = { len: 11, win: 2, duree: 60, type: "libre", ar: 0, jours: 7, hebdo: 0 };
   const champ = () => !!cercleForm && form.type === "championnat";
   function renderForm() {
     const ch = champ();
     $("tnTypeBox").hidden = !cercleForm; $("tnFormuleBox").hidden = !ch; $("tnEnjeuZone").hidden = !ch;
     $("tnType").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === form.type));
     $("tnFormule").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.v === form.ar));
+    $("tnRepet").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.v === form.hebdo));
+    const hebdo = ch && !!form.hebdo;   // chaque semaine : la durée est fixe (du lundi 12 h au dimanche 22 h)
+    $("tnDureeLbl").hidden = hebdo; $("tnDuree").hidden = hebdo;
     $("tnLen").innerHTML = POINTS_PAR_SET.map(v => `<button data-v="${v}" aria-pressed="${v === form.len}">${v}</button>`).join("");
     $("tnWin").innerHTML = [[1, "1 set"], [2, "2 sets gagnants"], [3, "3 sets gagnants"]].map(([v, l]) => `<button data-v="${v}" aria-pressed="${v === form.win}">${l}</button>`).join("");
     $("tnDureeLbl").textContent = ch ? "Durée du championnat" : "Durée de chaque tour";
@@ -51,13 +54,15 @@ export function installerTournois(ctx) {
     const format = `${texteFormat({ pointsParSet: form.len, setsGagnants: form.win })}. `
       + (formatCourt(form.len, form.win) ? "Format court : les matchs seront amicaux (sans effet sur le niveau officiel). " : "Les matchs compteront pour le niveau officiel. ");
     $("tnHint").textContent = ch
-      ? format + `Chacun joue contre tous${form.ar ? " deux fois (aller-retour)" : ""}, quand il veut pendant ${texteDureeChampionnat(form.jours * 1440)} : `
+      ? format + `Chacun joue contre tous${form.ar ? " deux fois (aller-retour)" : ""}, quand il veut ${hebdo
+          ? "du lundi 12 h au dimanche 22 h. Chaque semaine, une nouvelle édition repart avec les mêmes joueurs (chacun peut se désinscrire jusqu'au lundi midi) : "
+          : `pendant ${texteDureeChampionnat(form.jours * 1440)} : `}`
         + `à 6 joueurs, ${matchsParJoueur(6, form.ar)} matchs chacun. De 3 à ${MAX_CHAMPIONNAT} joueurs. Victoire : 2 points. `
         + "Un match pas joué à la fin est gagné par celui qui a essayé de le jouer, perdu pour les deux si personne n'a essayé."
       : format + `Chaque tour dure ${texteDuree(form.duree)} : les deux joueurs jouent leur match quand ils veulent pendant ce temps.`
         + (form.duree <= 15 ? " Idéal quand tout le monde est là." : "");
   }
-  [["tnLen", "len"], ["tnWin", "win"], ["tnFormule", "ar"]].forEach(([id, cle]) => $(id).addEventListener("click", e => {
+  [["tnLen", "len"], ["tnWin", "win"], ["tnFormule", "ar"], ["tnRepet", "hebdo"]].forEach(([id, cle]) => $(id).addEventListener("click", e => {
     const b = e.target.closest("button"); if (b) { form[cle] = +b.dataset.v; renderForm(); }
   }));
   $("tnDuree").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { form[champ() ? "jours" : "duree"] = +b.dataset.v; renderForm(); } });
@@ -77,7 +82,7 @@ export function installerTournois(ctx) {
     $("tnTitre").textContent = cercle ? `Tournoi du cercle « ${cercle.nom} »` : "Tournoi privé (par lien)";
     $("tnPrecision").textContent = cercle ? "Seuls les membres du cercle pourront s'inscrire." : "Tu inviteras les joueurs en leur envoyant le lien du tournoi.";
     $("inTNom").value = ""; dire("", false, "tnMsg");
-    form.type = "libre"; $("tnEnjeuOn").checked = false; $("tnEnjeuBox").hidden = true; $("tnEnjeu").value = "";
+    form.type = "libre"; form.hebdo = 0; $("tnEnjeuOn").checked = false; $("tnEnjeuBox").hidden = true; $("tnEnjeu").value = "";
     renderForm();
     ctx.montrer("socTournoiNouveau");
   }
@@ -88,10 +93,10 @@ export function installerTournois(ctx) {
     $("tnCreer").disabled = true;
     try {
       const ch = champ();
-      const t = ch ? await social.creerChampionnat(nom, cercleForm.id, form.len, form.win, form.jours, !!form.ar, enjeuChoisi())
+      const t = ch ? await social.creerChampionnat(nom, cercleForm.id, form.len, form.win, form.hebdo ? 7 : form.jours, !!form.ar, enjeuChoisi(), !!form.hebdo)
         : await social.creerTournoi(nom, cercleForm?.id ?? null, form.len, form.win, form.duree);
       ctx.apresChangement();
-      await ouvrir(t.id, ch ? "Championnat créé ! Les membres du cercle peuvent maintenant s'inscrire."
+      await ouvrir(t.id, ch ? `Championnat créé ! Les membres du cercle peuvent maintenant s'inscrire.${form.hebdo ? " Il partira tout seul lundi à 12 h s'il y a au moins 3 joueurs (ou plus tôt si tu le lances)." : ""}`
         : cercleForm ? "Tournoi créé ! Les membres du cercle peuvent maintenant s'inscrire." : "Tournoi créé ! Envoie le lien aux joueurs pour qu'ils s'inscrivent.");
     } catch (e) { dire(e.message, true, "tnMsg"); }
     $("tnCreer").disabled = false;
@@ -101,7 +106,7 @@ export function installerTournois(ctx) {
   async function ouvrir(id, message = "") {
     ouvert = id; detail = null;
     $("tNom").textContent = "…"; $("tInfo").textContent = ""; $("tEtat").textContent = "";
-    ["tMonMatch", "tInscriptions", "tTableauCarte", "tClassementCarte", "tEnjeuCarte"].forEach(x => { $(x).hidden = true; });
+    ["tMonMatch", "tInscriptions", "tTableauCarte", "tClassementCarte", "tEnjeuCarte", "tSerieCarte"].forEach(x => { $(x).hidden = true; });
     dire(message);
     ctx.montrer("socTournoi"); window.scrollTo(0, 0);
     clearInterval(minuterie);
@@ -129,11 +134,11 @@ export function installerTournois(ctx) {
     const direct = t.mode === "direct";   // Sit & Go : matchs lancés automatiquement, sans date limite
     const ch = t.mode === "championnat";   // chacun contre tous, avec un classement
     const format = `${texteFormat({ pointsParSet: t.points_par_set, setsGagnants: t.sets_gagnants })}${formatCourt(t.points_par_set, t.sets_gagnants) ? " · amical" : " · officiel"}`;
-    if (ch) $("tInfo").textContent = `Championnat du cercle « ${t.cercle?.nom ?? ""} » · ${t.aller_retour ? "aller-retour" : "aller simple"} · ${format} · ${texteDureeChampionnat(t.duree_minutes)}`;
+    if (ch) $("tInfo").textContent = `Championnat du cercle « ${t.cercle?.nom ?? ""} » · ${t.aller_retour ? "aller-retour" : "aller simple"} · ${format} · ${t.serie ? `semaine n°\u00a0${t.edition}` : texteDureeChampionnat(t.duree_minutes)}`;
     else $("tInfo").textContent = `${t.programme ? "Tournoi programmé · " : t.freeroll ? "Freeroll · " : direct ? "Sit & Go public · " : t.cercle ? `Cercle « ${t.cercle.nom} » · ` : "Tournoi privé · "}${texteFormat({ pointsParSet: t.points_par_set, setsGagnants: t.sets_gagnants })}`
       + `${formatCourt(t.points_par_set, t.sets_gagnants) ? " · amical" : " · officiel"}${direct ? "" : ` · tours de ${texteDuree(t.duree_minutes)}`}${t.finale_sets ? ` · finale en ${t.finale_sets} sets gagnants` : ""}`;
     const reste = texteReste(t.echeance, maintenant);
-    $("tEtat").textContent = ch ? (t.phase === "inscriptions" ? `Inscriptions ouvertes · ${t.joueurs.length} joueur${t.joueurs.length > 1 ? "s" : ""} (de 3 à ${MAX_CHAMPIONNAT})`
+    $("tEtat").textContent = ch ? (t.phase === "inscriptions" ? `Inscriptions ouvertes · ${t.joueurs.length} joueur${t.joueurs.length > 1 ? "s" : ""} (de 3 à ${MAX_CHAMPIONNAT})${t.depart ? ` · départ ${texteDepart(t.depart)}` : ""}`
         : t.phase === "en_cours" ? `Championnat en cours · ${reste ? `fin dans ${reste}` : "fin passée, résultats en cours"}`
         : t.phase === "termine" ? (t.vainqueur ? `🏆 Champion du cercle : ${t.vainqueur.pseudo}#${t.vainqueur.numero}` : "Championnat terminé, sans vainqueur (aucun match joué)") : "Championnat annulé")
       : t.phase === "inscriptions" ? `Inscriptions ouvertes · ${t.joueurs.length} joueur${t.joueurs.length > 1 ? "s" : ""} (de 3 à 32)`
@@ -146,6 +151,19 @@ export function installerTournois(ctx) {
       const dernier = t.phase === "termine" ? dernierDuClassement(t.classement) : null;
       $("tEnjeu").textContent = dernier ? annonceEnjeu(t.enjeu, dernier.id !== uid, dernier.pseudo) : `🎯 Enjeu : « ${t.enjeu} » — le dernier s'y colle\u00a0!`;
       $("tEnjeuEffacer").hidden = !t.efface_enjeu || t.phase === "termine";
+    }
+
+    // La série (championnat de chaque semaine) : la règle, le palmarès, et l'arrêt.
+    $("tSerieCarte").hidden = !(ch && t.serie);
+    if (ch && t.serie) {
+      $("tSerieTexte").textContent = t.hebdo
+        ? `Semaine n°\u00a0${t.edition}. Chaque édition se joue du lundi 12 h au dimanche 22 h. À la fin, la suivante est créée avec les mêmes joueurs : chacun peut se désinscrire, et les autres membres s'inscrire, jusqu'au lundi 12 h. Elle part toute seule s'il y a au moins 3 joueurs.`
+        : `Semaine n°\u00a0${t.edition}. La répétition est arrêtée : c'est la dernière édition.`;
+      $("tPalmares").innerHTML = (t.palmares || []).length ? `<p class="hint" style="margin:8px 0 4px"><b>Palmarès</b></p>` + t.palmares.map(e => `<div class="joueur cliquable" data-tournoi="${e.id}" role="button" tabindex="0">
+        <span class="mini"><span class="trophee">🏆</span></span>
+        <div style="min-width:0"><div class="jn">Semaine n°\u00a0${e.edition} : ${e.vainqueur ? esc(e.vainqueur.pseudo) : "personne"}</div>
+          <div class="jd">${e.dernier ? `${t.enjeu ? "🎯 " : ""}Dernier : ${esc(e.dernier.pseudo)}` : ""}</div></div><span></span></div>`).join("") : "";
+      $("tSerieArreter").hidden = !t.arrete_serie;
     }
 
     // Mon match à jouer
@@ -174,13 +192,13 @@ export function installerTournois(ctx) {
       if (direct) {
         // Sit & Go : le serveur lance le match ; on le rejoint (60 secondes pour arriver).
         $("tMonMatchCorps").innerHTML = `<div class="joueur"><span class="mini">${avatarSVG(adv.avatar || {})}</span>
-          <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">Niveau ${adv.classement}${adv.tete ? ` · tête de série n° ${adv.tete}` : ""}</div></div><span></span></div>
+          <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">Niveau ${adv.classement}${adv.tete ? ` · tête de série n°\u00a0${adv.tete}` : ""}</div></div><span></span></div>
           <p class="hint">${duel ? "Ton match est lancé : tu as 60 secondes pour le rejoindre, sinon c'est perdu par forfait." : "Ton match va se lancer tout seul. Reste dans l'appli."}</p>
           ${duel ? `<button class="btn" id="tJouer">Rejoindre le match</button>` : ""}`;
         $("tJouer")?.addEventListener("click", () => jouerMonMatch(mm));
       } else {
       $("tMonMatchCorps").innerHTML = `<div class="joueur"><span class="mini">${avatarSVG(adv.avatar || {})}</span>
-        <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">Niveau ${adv.classement}${adv.tete ? ` · tête de série n° ${adv.tete}` : ""}</div></div><span></span></div>
+        <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">Niveau ${adv.classement}${adv.tete ? ` · tête de série n°\u00a0${adv.tete}` : ""}</div></div><span></span></div>
         <p class="hint">${enCours ? "Votre match est en cours." : attendMoi ? `${esc(adv.pseudo)} t'attend pour jouer !`
           : jattends ? `Invitation envoyée : le match démarre dès que ${esc(adv.pseudo)} touche « Jouer mon match ». Garde l'appli ouverte.`
           : `Retrouvez-vous pour jouer avant la date limite${reste ? ` (dans ${reste})` : ""}. Si un seul de vous deux essaie de jouer, la victoire lui revient par forfait.`}</p>
@@ -276,6 +294,12 @@ export function installerTournois(ctx) {
     charger();
   });
 
+  $("tPalmares").addEventListener("click", e => { const l = e.target.closest("[data-tournoi]"); if (l) ouvrir(l.dataset.tournoi); });
+  $("tSerieArreter").addEventListener("click", async () => {
+    if (!detail || !confirm("Arrêter la répétition ? Cette semaine se joue jusqu'au bout, mais il n'y aura pas de semaine suivante.")) return;
+    try { await social.arreterSerie(detail.id); dire("Répétition arrêtée : cette édition est la dernière."); } catch (err) { dire(err.message, true); }
+    charger();
+  });
   $("tEnjeuEffacer").addEventListener("click", async () => {
     if (!detail || !confirm("Effacer l'enjeu de ce championnat ?")) return;
     try { await social.effacerEnjeuTournoi(detail.id); dire("Enjeu effacé."); } catch (err) { dire(err.message, true); }
