@@ -202,7 +202,13 @@ export function installerCercles(ctx) {
       ${serie}
       <h3 class="ff-titre">Derniers affrontements</h3><ul class="ff-derniers">${derniers}</ul>${autres}`;
   }
-  $("amiRetour").addEventListener("click", () => { amiOuvert = null; montrer("socListe"); rafraichir(); });
+  // Ouvert depuis Jouer › Défier un ami : le retour y ramène.
+  let origineAmi = null;
+  $("amiRetour").addEventListener("click", () => {
+    amiOuvert = null;
+    if (origineAmi) { const o = origineAmi; origineAmi = null; montrer("socListe"); ctx.aller(o); return; }
+    montrer("socListe"); rafraichir();
+  });
   $("aDefier").addEventListener("click", async () => {
     const a = amis.find(x => x.id === amiOuvert); if (!a) return;
     $("aDefier").disabled = true;
@@ -457,5 +463,13 @@ export function installerCercles(ctx) {
   return {
     rafraichir: () => { rafraichir(); if (!$("socTournoi").hidden) tournois.rafraichir(); else if (cercleOuvert) chargerCercle(); },
     ouvrirTournoi: id => tournois.ouvrir(id),
+    // Notre face-à-face avec un ami (depuis un autre écran, ex. Défier un ami).
+    ouvrirAmi: async id => {
+      const depuis = ctx.vueCourante();
+      if (!amis.some(a => a.id === id)) await rafraichir();
+      if (!amis.some(a => a.id === id)) return;
+      cercleOuvert = null; ouvrirAmi(id);
+      origineAmi = depuis !== "viewCercles" ? depuis : null;
+    },
   };
 }
