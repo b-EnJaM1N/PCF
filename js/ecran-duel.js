@@ -18,6 +18,8 @@ export function installerDuels(ctx) {
   // La salle d'attente d'un défi accepté : { duel, adv (profil), minuterie } ; quittes : les rendez-vous qu'on a quittés exprès.
   let salle = null;
   const quittes = new Set();
+  // Les joueurs que j'ai défiés et qui n'ont pas encore joué (pour afficher « Défié ✓ » dans les cercles et les amis).
+  let defiesA = new Set();
   const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), classe: lire("duelClasse", true), mise: MISES.includes(lire("duelMise", 0)) ? lire("duelMise", 0) : 0 };
   const dire = (t, erreur = false) => { $("duelMsg").textContent = t; $("duelMsg").classList.toggle("erreur", erreur); };
   const base = () => location.origin + location.pathname;
@@ -84,6 +86,7 @@ export function installerDuels(ctx) {
     const recus = duels.filter(d => d.phase === "attente" && d.j1 === uid && !d.accepte_le);
     const envoyes = duels.filter(d => d.phase === "attente" && d.j0 === uid && !d.accepte_le);
     const rdvs = duels.filter(d => enRendezVous(d));
+    defiesA = new Set(duels.filter(d => d.phase === "attente" && d.j0 === uid && d.j1).map(d => d.j1));
 
     // Un défi vient d'être accepté (ou je reviens dans l'appli) : on y va.
     const actif = enCours[0];
@@ -195,6 +198,7 @@ export function installerDuels(ctx) {
   async function defier(p) {
     const enjeu = enjeuChoisi();
     await serveur.creer(p.id, format.len, format.win, format.classe, format.mise, enjeu);
+    defiesA.add(p.id);
     if (enjeu) { $("duelEnjeuOn").checked = false; $("duelEnjeuBox").hidden = true; $("duelEnjeu").value = ""; }
     const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"}${format.mise ? ` avec une mise de ${format.mise} jetons` : ""}${enjeu ? ` et l'enjeu « ${enjeu} »` : ""} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra en haut de son menu « Jouer ». Quand il l'acceptera, tu seras prévenu : le match démarrera dès que vous serez là tous les deux.`;
     dire(texte); rafraichir();
@@ -247,5 +251,5 @@ export function installerDuels(ctx) {
   });
 
   surSession(ctx.compte.session());
-  return { rafraichir, defier, uid: () => uid };
+  return { rafraichir, defier, uid: () => uid, dejaDefie: id => defiesA.has(id) };
 }
