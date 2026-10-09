@@ -999,17 +999,12 @@ restent lus par la voix de synthèse.
 | `speaker_bot_chaos_01.mp3` | Chaos ! |
 | `speaker_bot_stratege_01.mp3` | Stratège ! |
 | `speaker_bot_professeur_01.mp3` | Le Professeur ! |
-| `speaker_surnom_le_croque_monsieur_01.mp3` | Le Croque-Monsieur… |
-| `speaker_surnom_la_saucisse_01.mp3` | La Saucisse… |
-| `speaker_surnom_la_quiche_01.mp3` | La Quiche… |
 | `speaker_surnom_la_loutre_01.mp3` | La Loutre… |
 | `speaker_surnom_la_limace_01.mp3` | La Limace… |
-| `speaker_surnom_le_cepe_01.mp3` | Le Cèpe… |
 | `speaker_surnom_la_buse_01.mp3` | La Buse… |
 | `speaker_surnom_le_cacatoes_01.mp3` | Le Cacatoès… |
 | `speaker_surnom_le_dindon_01.mp3` | Le Dindon… |
 | `speaker_surnom_le_pigeon_01.mp3` | Le Pigeon… |
-| `speaker_surnom_la_truffe_01.mp3` | La Truffe… |
 | `speaker_surnom_le_cobra_01.mp3` | Le Cobra… |
 | `speaker_surnom_le_scorpion_01.mp3` | Le Scorpion… |
 | `speaker_surnom_le_requin_01.mp3` | Le Requin… |
@@ -1018,6 +1013,11 @@ restent lus par la voix de synthèse.
 | `speaker_surnom_la_panthere_01.mp3` | La Panthère… |
 | `speaker_surnom_le_bison_01.mp3` | Le Bison… |
 | `speaker_surnom_le_pitbull_01.mp3` | Le Pitbull… |
+| `speaker_surnom_le_croque_monsieur_01.mp3` | Le Croque-Monsieur… |
+| `speaker_surnom_la_saucisse_01.mp3` | La Saucisse… |
+| `speaker_surnom_la_quiche_01.mp3` | La Quiche… |
+| `speaker_surnom_le_cepe_01.mp3` | Le Cèpe… |
+| `speaker_surnom_la_truffe_01.mp3` | La Truffe… |
 | `speaker_surnom_le_poing_01.mp3` | Le Poing… |
 | `speaker_surnom_la_main_01.mp3` | La Main… |
 | `speaker_surnom_le_marteau_01.mp3` | Le Marteau… |
