@@ -59,6 +59,15 @@ export function tempsRestant(echeance, decalageMs, maintenant = Date.now()) {
 }
 
 // Liens d'invitation : https://…/PCF/?duel=CODE
+// Rendez-vous (supabase/etape-37-rendez-vous.sql) : défi accepté, match pas encore commencé ; annulé au bout de 24 heures.
+export const ATTENTE_RDV_MS = 24 * 3600 * 1000;
+export const enRendezVous = (d, maintenant = Date.now()) => d?.phase === "attente" && !!d.accepte_le && maintenant - Date.parse(d.accepte_le) < ATTENTE_RDV_MS;
+// Temps qu'il reste pour se retrouver : « 23 h », « 45 min ».
+export function texteRdvRestant(d, maintenant = Date.now()) {
+  const min = Math.max(0, Math.floor((Date.parse(d.accepte_le) + ATTENTE_RDV_MS - maintenant) / 60000));
+  return min >= 60 ? `${Math.floor(min / 60)} h` : `${min} min`;
+}
+
 export const lienDefi = (base, code) => `${base}?duel=${encodeURIComponent(code)}`;
 export const codeDepuisAdresse = recherche => {
   const c = new URLSearchParams(recherche || "").get("duel");

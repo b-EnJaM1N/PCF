@@ -1,7 +1,7 @@
 // Onglet « Duel » : chercher un joueur, le défier, inviter par lien,
 // voir les défis reçus et envoyés, reprendre un duel en cours.
 import * as serveur from "./duel-serveur.js";
-import { lienDefi, codeDepuisAdresse, adversaireDe, FORMAT, formatCourt } from "./duel-logique.js";
+import { lienDefi, codeDepuisAdresse, adversaireDe, FORMAT, formatCourt, enRendezVous, texteRdvRestant } from "./duel-logique.js";
 import { avatarSVG } from "./avatar.js";
 import { lire, ecrire } from "./stockage.js";
 import { demanderAmi } from "./social-serveur.js";
@@ -15,6 +15,9 @@ const nomComplet = p => `${esc(p.pseudo)}<small>#${p.numero}</small>`;
 // ctx : { compte (installerCompte), lancerDuel(duel, profilAdversaire), duelEnCours(), ouvrirOnglet(nom), signaler(cle, valeur) }
 export function installerDuels(ctx) {
   let uid = null, arrets = [], minuterie = 0, recherche = 0;
+  // La salle d'attente d'un défi accepté : { duel, adv (profil), minuterie } ; quittes : les rendez-vous qu'on a quittés exprès.
+  let salle = null;
+  const quittes = new Set();
   const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), classe: lire("duelClasse", true), mise: MISES.includes(lire("duelMise", 0)) ? lire("duelMise", 0) : 0 };
   const dire = (t, erreur = false) => { $("duelMsg").textContent = t; $("duelMsg").classList.toggle("erreur", erreur); };
   const base = () => location.origin + location.pathname;
@@ -59,7 +62,7 @@ export function installerDuels(ctx) {
     uid = session?.user?.id || null;
     $("duelHors").hidden = !!uid; $("duelOn").hidden = !uid;
     arrets.forEach(f => f()); arrets = []; clearInterval(minuterie);
-    if (!uid) { ctx.signaler("duels", { recus: 0, enCours: 0 }); return; }
+    if (!uid) { quitterSalle(); ctx.signaler("duels", { recus: 0, enCours: 0, rdv: 0 }); return; }
     // Défis reçus et envoyés : en direct, avec une vérification régulière en secours.
     arrets.push(serveur.ecouter("recus", `j1=eq.${uid}`, rafraichir), serveur.ecouter("envoyes", `j0=eq.${uid}`, rafraichir));
     minuterie = setInterval(rafraichir, 8000);
@@ -78,36 +81,84 @@ export function installerDuels(ctx) {
     const ids = [...new Set(duels.map(d => adversaireDe(d, uid)).filter(Boolean))];
     const joueurs = new Map((await serveur.profils(ids).catch(() => [])).map(p => [p.id, p]));
     const enCours = duels.filter(d => ["presentation", "jeu", "entre_sets"].includes(d.phase));
-    const recus = duels.filter(d => d.phase === "attente" && d.j1 === uid);
-    const envoyes = duels.filter(d => d.phase === "attente" && d.j0 === uid);
+    const recus = duels.filter(d => d.phase === "attente" && d.j1 === uid && !d.accepte_le);
+    const envoyes = duels.filter(d => d.phase === "attente" && d.j0 === uid && !d.accepte_le);
+    const rdvs = duels.filter(d => enRendezVous(d));
 
     // Un défi vient d'être accepté (ou je reviens dans l'appli) : on y va.
     const actif = enCours[0];
-    if (actif && !ctx.duelEnCours() && joueurs.get(adversaireDe(actif, uid))) ctx.lancerDuel(actif, joueurs.get(adversaireDe(actif, uid)));
+    if (actif && !ctx.duelEnCours() && joueurs.get(adversaireDe(actif, uid))) { quitterSalle(); ctx.lancerDuel(actif, joueurs.get(adversaireDe(actif, uid))); }
+    // Mon défi vient d'être accepté et l'appli est ouverte : j'entre dans la salle d'attente (le match démarre si l'autre y est).
+    const pourMoi = rdvs.find(d => d.j0 === uid && !quittes.has(d.id));
+    if (!actif && !salle && pourMoi && !document.hidden && !ctx.duelEnCours() && joueurs.get(pourMoi.j1)) entrerSalle(pourMoi, joueurs.get(pourMoi.j1));
 
-    const ligne = (d, p, boutons) => `<div class="joueur" data-id="${d.id}">
+    const ligne = (d, p, boutons, info = "") => `<div class="joueur" data-id="${d.id}">
       <span class="mini">${p ? avatarSVG(p.avatar || {}) : "🔗"}</span>
-      <div style="min-width:0"><div class="jn">${p ? nomComplet(p) : "Défi par lien"}</div><div class="jd">${d.tournoi_match ? "🏆 Match de tournoi · " : ""}${FORMAT(d)}</div>${d.enjeu ? `<div class="jd enjeu">🎯 Enjeu : « ${esc(d.enjeu)} »</div>` : ""}</div>
+      <div style="min-width:0"><div class="jn">${p ? nomComplet(p) : "Défi par lien"}</div><div class="jd">${d.tournoi_match ? "🏆 Match de tournoi · " : ""}${FORMAT(d)}</div>${d.enjeu ? `<div class="jd enjeu">🎯 Enjeu : « ${esc(d.enjeu)} »</div>` : ""}${info ? `<div class="jd">${info}</div>` : ""}</div>
       <div class="actions">${boutons}</div></div>`;
     $("duelEnCoursCard").hidden = !enCours.length;
     $("duelEnCours").innerHTML = enCours.map(d => ligne(d, joueurs.get(adversaireDe(d, uid)), `<button class="petit" data-a="reprendre">Reprendre</button>`)).join("");
+    $("duelRdvCard").hidden = !rdvs.length;
+    $("duelRdv").innerHTML = rdvs.map(d => ligne(d, joueurs.get(adversaireDe(d, uid)),
+      `<button class="petit" data-a="rejoindre">${salle?.duel.id === d.id ? "En attente…" : "Rejoindre"}</button><button class="petit alt" data-a="annuler">Annuler</button>`,
+      `✅ Accepté · encore ${texteRdvRestant(d)} pour vous retrouver`)).join("");
     $("duelRecusCard").hidden = !recus.length;
     $("duelRecus").innerHTML = recus.map(d => ligne(d, joueurs.get(d.j0), `<button class="petit" data-a="accepter">${d.enjeu ? "Accepter le défi et l'enjeu" : "Accepter"}</button>${d.tournoi_match ? "" : `<button class="petit alt" data-a="refuser">Refuser</button>`}`)).join("");
     $("duelEnvoyesCard").hidden = !envoyes.length;
     $("duelEnvoyes").innerHTML = envoyes.map(d => ligne(d, d.j1 ? joueurs.get(d.j1) : null,
       `${d.par_lien ? `<button class="petit alt" data-a="partager" data-code="${d.code}">Lien</button>` : ""}${d.tournoi_match ? "" : `<button class="petit alt" data-a="annuler">Annuler</button>`}`)).join("");
-    ctx.signaler("duels", { recus: recus.length, enCours: enCours.length });
+    ctx.signaler("duels", { recus: recus.length, enCours: enCours.length, rdv: rdvs.length });
 
-    const actions = { accepter: id => serveur.repondre(id, true), refuser: id => serveur.repondre(id, false), annuler: id => serveur.annuler(id) };
+    const actions = { refuser: id => serveur.repondre(id, false), annuler: id => serveur.annuler(id) };
     document.querySelectorAll("#viewDuel .joueur button").forEach(b => b.addEventListener("click", async () => {
       const id = b.closest(".joueur").dataset.id, a = b.dataset.a;
       if (a === "partager") return partager(b.dataset.code);
       if (a === "reprendre") { const d = enCours.find(x => x.id === id); return ctx.lancerDuel(d, joueurs.get(adversaireDe(d, uid))); }
+      if (a === "rejoindre") { const d = rdvs.find(x => x.id === id); quittes.delete(id); return entrerSalle(d, joueurs.get(adversaireDe(d, uid))); }
       b.disabled = true;
+      if (a === "accepter") {
+        // Accepter, c'est entrer dans la salle d'attente (un match de tournoi, lui, commence tout de suite).
+        const d0 = recus.find(x => x.id === id), adv = joueurs.get(d0.j0);
+        try { const d = await serveur.repondre(id, true); dire(""); if (d.phase === "attente") entrerSalle(d, adv); else ctx.lancerDuel(d, adv); }
+        catch (e) { dire(e.message, true); }
+        return rafraichir();
+      }
+      if (a === "annuler" && id === salle?.duel.id) quitterSalle();
       try { await actions[a](id); dire(""); } catch (e) { dire(e.message, true); }
       rafraichir();
     }));
   }
+
+  // ------------------------------------------------ la salle d'attente (défi accepté, on attend l'autre)
+  function entrerSalle(duel, adv) {
+    if (!duel || !adv) return;
+    if (salle?.duel.id === duel.id) return;
+    quitterSalle();
+    salle = { duel, adv, minuterie: setInterval(battre, 3000) };
+    $("duelSalle").innerHTML = `<div class="joueur"><span class="mini">${avatarSVG(adv.avatar || {})}</span>
+      <div style="min-width:0"><div class="jn">En attente de ${nomComplet(adv)}…</div><div class="jd">${FORMAT(duel)}</div>${duel.enjeu ? `<div class="jd enjeu">🎯 Enjeu : « ${esc(duel.enjeu)} »</div>` : ""}</div><span></span></div>`;
+    $("duelSalleCard").hidden = false;
+    battre();
+  }
+  function quitterSalle() {
+    if (!salle) return;
+    clearInterval(salle.minuterie);
+    salle = null;
+    $("duelSalleCard").hidden = true;
+  }
+  // Toutes les 3 secondes : « je suis là » ; le match démarre quand l'autre y est aussi.
+  async function battre() {
+    const s = salle; if (!s || document.hidden) return;
+    let d;
+    try { d = await serveur.rendezVous(s.duel.id); } catch (e) { if (salle === s) { quitterSalle(); dire(e.message, true); } return; }
+    if (salle !== s) return;
+    if (["presentation", "jeu", "entre_sets"].includes(d.phase)) { quitterSalle(); if (!ctx.duelEnCours()) ctx.lancerDuel(d, s.adv); return; }
+    if (d.phase !== "attente") { quitterSalle(); dire(d.phase === "annule" ? `Le défi avec ${s.adv.pseudo} a été annulé.` : ""); rafraichir(); }
+  }
+  $("duelSalleQuitter").addEventListener("click", () => {
+    if (salle) { quittes.add(salle.duel.id); dire(`Tu as quitté la salle d'attente. Le défi reste dans « Défis acceptés » : touche « Rejoindre » quand tu veux.`); }
+    quitterSalle(); rafraichir();
+  });
 
   // ------------------------------------------------ recherche
   $("inRecherche").addEventListener("input", () => {
@@ -145,7 +196,7 @@ export function installerDuels(ctx) {
     const enjeu = enjeuChoisi();
     await serveur.creer(p.id, format.len, format.win, format.classe, format.mise, enjeu);
     if (enjeu) { $("duelEnjeuOn").checked = false; $("duelEnjeuBox").hidden = true; $("duelEnjeu").value = ""; }
-    const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"}${format.mise ? ` avec une mise de ${format.mise} jetons` : ""}${enjeu ? ` et l'enjeu « ${enjeu} »` : ""} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra en haut de son menu « Jouer », et la partie démarrera dès son acceptation.`;
+    const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"}${format.mise ? ` avec une mise de ${format.mise} jetons` : ""}${enjeu ? ` et l'enjeu « ${enjeu} »` : ""} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra en haut de son menu « Jouer ». Quand il l'acceptera, tu seras prévenu : le match démarrera dès que vous serez là tous les deux.`;
     dire(texte); rafraichir();
     return texte;
   }
@@ -182,8 +233,9 @@ export function installerDuels(ctx) {
     if (codeDepuisAdresse(location.search)) history.replaceState(null, "", location.pathname + location.hash);
     try {
       const d = await serveur.rejoindre(code);
-      if (d.phase === "attente") { dire("C'est ton propre lien : envoie-le à un ami !"); ctx.ouvrirOnglet("duel"); return; }
+      if (d.phase === "attente" && !d.accepte_le) { dire("C'est ton propre lien : envoie-le à un ami !"); ctx.ouvrirOnglet("duel"); return; }
       const [p] = await serveur.profils([adversaireDe(d, uid)]);
+      if (d.phase === "attente") { ctx.ouvrirOnglet("duel"); entrerSalle(d, p); rafraichir(); return; }
       ctx.lancerDuel(d, p);
     } catch (e) { ctx.ouvrirOnglet("duel"); dire(e.message, true); }
   }
