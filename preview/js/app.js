@@ -1274,7 +1274,7 @@ $("btnOptions").addEventListener("click", () => aller(vueCourante === "viewOptio
 $("optionsRetour").addEventListener("click", () => aller(avantOptions));
 
 // Les alertes en haut du menu « Jouer » (et la pastille de l'onglet).
-const alertes = { duels: { recus: 0, enCours: 0, rdv: 0 }, tournois: [], sng: null, freeroll: null, programme: null };
+const alertes = { duels: { recus: 0, enCours: 0, rdv: 0, rdvNouveaux: 0 }, tournois: [], sng: null, freeroll: null, programme: null };
 function signaler(cle, valeur) { alertes[cle] = valeur; renderAlertes(); }
 function renderAlertes() {
   const a = alertes, carte = (attr, icone, titre, texte) => `<button class="hub alerte" ${attr}><span class="hub-i">${icone}</span><span><b>${titre}</b><small>${texte}</small></span></button>`;
@@ -1287,7 +1287,7 @@ function renderAlertes() {
     a.programme ? carte('data-aller="viewFreeroll"', "🗓️", a.programme.phase === "en_cours" ? `${esc(a.programme.nom)} est en cours` : `${esc(a.programme.nom)} commence bientôt`, "Garde l'appli ouverte : ton match se lance tout seul") : "",
     a.sng ? carte('data-aller="viewSng"', "⚡", a.sng.phase === "inscriptions" ? "Tu es en salle de Sit & Go" : "Ton Sit & Go est en cours", "Garde l'appli ouverte") : "",
   ].join("");
-  const n = a.duels.recus + (a.duels.rdv || 0) + a.tournois.length;
+  const n = a.duels.recus + (a.duels.rdvNouveaux || 0) + a.tournois.length;   // la carte « Défi accepté » reste, sans pastille une fois vu
   $("pastilleJouer").hidden = !n; $("pastilleJouer").textContent = n;
 }
 $("hubAlertes").addEventListener("click", e => { const b = e.target.closest("[data-tournoi]"); if (b) cerclesUI.ouvrirTournoi(b.dataset.tournoi); });
