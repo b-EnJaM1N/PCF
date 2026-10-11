@@ -8,6 +8,7 @@ import { formatCourt } from "./duel-logique.js";
 import { nomTour, monTour, DUREES, texteDuree, texteReste, texteFin, monMatch, attente, tableau, resume, lienTournoi, codeTournoiDepuisAdresse,
   mesMatchsRestants, DUREES_CHAMPIONNAT, MAX_CHAMPIONNAT, matchsParJoueur, texteDureeChampionnat, dernierDuClassement, texteDepart } from "./tournoi-logique.js";
 import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu, annonceEnjeu } from "./enjeux.js";
+import { texteDepart as texteDepartProgramme } from "./programmes-logique.js";
 import { lire, ecrire } from "./stockage.js";
 
 const $ = id => document.getElementById(id);
@@ -141,7 +142,8 @@ export function installerTournois(ctx) {
     $("tEtat").textContent = ch ? (t.phase === "inscriptions" ? `Inscriptions ouvertes · ${t.joueurs.length} joueur${t.joueurs.length > 1 ? "s" : ""} (de 3 à ${MAX_CHAMPIONNAT})${t.depart ? ` · départ ${texteDepart(t.depart)}` : ""}`
         : t.phase === "en_cours" ? `Championnat en cours · ${reste ? `fin dans ${reste}` : "fin passée, résultats en cours"}`
         : t.phase === "termine" ? (t.vainqueur ? `🏆 Champion du cercle : ${t.vainqueur.pseudo}#${t.vainqueur.numero}` : "Championnat terminé, sans vainqueur (aucun match joué)") : "Championnat annulé")
-      : t.phase === "inscriptions" ? `Inscriptions ouvertes · ${t.joueurs.length} joueur${t.joueurs.length > 1 ? "s" : ""} (de 3 à 32)`
+      : t.phase === "inscriptions" ? `Inscriptions ouvertes · ${t.joueurs.length} joueur${t.joueurs.length > 1 ? "s" : ""}${
+          !direct ? " (de 3 à 32)" : t.depart ? ` · départ ${texteDepartProgramme(t.depart, maintenant)}` : t.freeroll ? " · départ à 20 h" : t.taille ? ` sur ${t.taille}` : ""}`
       : t.phase === "en_cours" ? (direct ? `${nomTour(t.tour, t.nb_tours)} · en direct` : `${nomTour(t.tour, t.nb_tours)} · ${reste ? `date limite dans ${reste}` : "date limite passée, résultats en cours"}`)
       : t.phase === "termine" ? (t.vainqueur ? `🏆 Vainqueur : ${t.vainqueur.pseudo}#${t.vainqueur.numero}` : "Tournoi terminé") : "Tournoi annulé";
 
@@ -229,16 +231,17 @@ export function installerTournois(ctx) {
     const insc = t.phase === "inscriptions";
     $("tInscriptions").hidden = !insc;
     if (insc) {
+      const organise = t.organise && !direct;   // Sit & Go, freeroll, tournois programmés : ils partent tout seuls
       $("tInscrits").innerHTML = t.joueurs.map(j => `<div class="joueur"><span class="mini">${avatarSVG(j.avatar || {})}</span>
         <div style="min-width:0"><div class="jn">${esc(j.drapeau || "")} ${nomComplet(j)}${j.id === uid ? " <small>(toi)</small>" : ""}</div><div class="jd">Niveau ${j.classement}</div></div><span></span></div>`).join("");
       $("tActions").innerHTML = [
         !t.inscrit ? `<button class="btn" data-a="inscrire">${t.enjeu ? "M'inscrire et accepter l'enjeu" : "M'inscrire"}</button>` : "",
         ch && t.joueurs.length >= 3 ? `<p class="hint">À ${t.joueurs.length} joueurs : ${matchsParJoueur(t.joueurs.length, t.aller_retour)} matchs chacun.</p>` : "",
         `<button class="btn alt" data-a="partager">Inviter avec le lien (WhatsApp, SMS…)</button>`,
-        t.organise ? `<button class="btn" data-a="lancer" ${t.joueurs.length < 3 ? "disabled" : ""}>Lancer le ${ch ? "championnat" : "tournoi"} (${t.joueurs.length} joueurs)</button>` : "",
-        t.organise && t.joueurs.length < 3 ? `<p class="hint">Il faut au moins 3 joueurs pour lancer le ${ch ? "championnat" : "tournoi"}.</p>` : "",
+        organise ? `<button class="btn" data-a="lancer" ${t.joueurs.length < 3 ? "disabled" : ""}>Lancer le ${ch ? "championnat" : "tournoi"} (${t.joueurs.length} joueurs)</button>` : "",
+        organise && t.joueurs.length < 3 ? `<p class="hint">Il faut au moins 3 joueurs pour lancer le ${ch ? "championnat" : "tournoi"}.</p>` : "",
         t.inscrit && !t.createur ? `<button class="linkbtn" data-a="desinscrire">Me désinscrire</button>` : "",
-        t.organise ? `<button class="linkbtn" data-a="annuler">Annuler le ${ch ? "championnat" : "tournoi"}</button>` : "",
+        organise ? `<button class="linkbtn" data-a="annuler">Annuler le ${ch ? "championnat" : "tournoi"}</button>` : "",
       ].filter(Boolean).join("");
     }
 
