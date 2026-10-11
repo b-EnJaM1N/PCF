@@ -51,7 +51,7 @@ const exploit = (id, t, trophee) => {
 
 export const NOMS = [
   // Les noms drôles (choix du porteur du projet, 10 octobre), rangés dans leur catégorie : le contraste fait rire (« La Quiche Implacable »).
-  ...famille("animal", [["la_loutre", "La Loutre"], ["la_limace", "La Limace"], ["la_buse", "La Buse"], ["le_cacatoes", "Le Cacatoès"], ["le_dindon", "Le Dindon"], ["le_pigeon", "Le Pigeon"],
+  ...famille("animal", [["la_loutre", "La Loutre"], ["la_limace", "La Limace"], ["la_buse", "La Buse"], ["le_cacatoes", "Le Cacatoès"], ["le_dindon", "Le Dindon"], ["le_pigeon", "Le Pigeon"], ["la_morue", "La Morue"],
     ["le_cobra", "Le Cobra"], ["le_scorpion", "Le Scorpion"], ["le_requin", "Le Requin"], ["le_faucon", "Le Faucon"], ["le_tigre", "Le Tigre"], ["la_panthere", "La Panthère"], ["le_bison", "Le Bison"], ["le_pitbull", "Le Pitbull"]]),
   ...famille("cuisine", [["le_croque_monsieur", "Le Croque-Monsieur"], ["la_saucisse", "La Saucisse"], ["la_quiche", "La Quiche"], ["le_cepe", "Le Cèpe"], ["la_truffe", "La Truffe"]]),
   ...famille("force", [["le_poing", "Le Poing"], ["la_main", "La Main"], ["le_marteau", "Le Marteau"], ["le_bulldozer", "Le Bulldozer"], ["le_tank", "Le Tank"], ["la_foudre", "La Foudre"], ["la_tornade", "La Tornade"], ["l_ouragan", "L'Ouragan"]]),
