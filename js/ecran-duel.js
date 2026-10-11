@@ -74,7 +74,7 @@ export function installerDuels(ctx) {
     uid = session?.user?.id || null;
     $("duelHors").hidden = !!uid; $("duelOn").hidden = !uid;
     arrets.forEach(f => f()); arrets = []; clearInterval(minuterie);
-    if (!uid) { quitterSalle(); ctx.signaler("duels", { recus: 0, enCours: 0, rdv: 0 }); return; }
+    if (!uid) { quitterSalle(); ctx.signaler("duels", { recus: 0, enCours: 0, rdv: 0, rdvNouveaux: 0 }); return; }
     // Défis reçus et envoyés : en direct, avec une vérification régulière en secours.
     arrets.push(serveur.ecouter("recus", `j1=eq.${uid}`, rafraichir), serveur.ecouter("envoyes", `j0=eq.${uid}`, rafraichir));
     minuterie = setInterval(rafraichir, 8000);
@@ -133,7 +133,10 @@ export function installerDuels(ctx) {
     $("duelMesDefisCard").hidden = !(enCours.length || rdvs.length || recus.length || envoyes.length);
     $("duelEnvoyes").innerHTML = envoyes.map(d => ligne(d, d.j1 ? joueurs.get(d.j1) : null,
       `${d.par_lien ? `<button class="petit alt" data-a="partager" data-code="${d.code}">Lien</button>` : ""}${d.tournoi_match ? "" : `<button class="petit alt" data-a="annuler">Annuler</button>`}`)).join("");
-    ctx.signaler("duels", { recus: recus.length, enCours: enCours.length, rdv: rdvs.length });
+    // La pastille de l'onglet : seulement ce qui est nouveau (mon défi accepté, pas encore vu ; l'autre m'attend en ce moment),
+    // pas un défi que je viens d'accepter moi-même.
+    const nouveaux = rdvs.filter(d => salle?.duel.id !== d.id && ((d.j0 === uid && !defisVus.has(`${d.id}:ok`)) || lAutreAttend(d)));
+    ctx.signaler("duels", { recus: recus.length, enCours: enCours.length, rdv: rdvs.length, rdvNouveaux: nouveaux.length });
 
     const actions = { refuser: id => serveur.repondre(id, false), annuler: id => serveur.annuler(id) };
     document.querySelectorAll("#viewDuel .joueur button").forEach(b => b.addEventListener("click", async () => {
@@ -213,6 +216,7 @@ export function installerDuels(ctx) {
     if (!duel || !adv) return;
     if (salle?.duel.id === duel.id) return;
     quitterSalle();
+    if (duel.j0 === uid) { defisVus.add(`${duel.id}:ok`); ecrire("defisVus", [...defisVus].slice(-50)); }   // vu : plus de pastille
     salle = { duel, adv, minuterie: setInterval(battre, 3000) };
     $("duelSalle").innerHTML = `<div class="joueur"><span class="mini">${avatarSVG(adv.avatar || {})}</span>
       <div style="min-width:0"><div class="jn">En attente de ${nomComplet(adv)}…</div><div class="jd">${FORMAT(duel)}</div>${duel.enjeu ? `<div class="jd enjeu">🎯 Enjeu : « ${esc(duel.enjeu)} »</div>` : ""}</div><span></span></div>`;
