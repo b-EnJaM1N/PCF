@@ -317,6 +317,15 @@ pas se montrer. Sans cette étape, aucun point ne s'affiche : on peut la coller 
    (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/functions/notifier/index.ts) → **Deploy**.
    (Nouveau message « X t'attend », et « X a accepté ton défi » parle maintenant de la salle d'attente.)
 
+## 1 quadragies semel. Personne n'annule le Grand Chelem (étape 41)
+
+Même manipulation avec [`etape-41-tournois-automatiques.sql`](etape-41-tournois-automatiques.sql), **après** l'étape 40
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-41-tournois-automatiques.sql).
+Correction : un inscrit (ou même n'importe qui) pouvait lancer avant l'heure ou annuler un tournoi automatique
+(Grand Chelem, freeroll, Sit & Go), ou un tournoi dont le créateur avait supprimé son compte. Désormais, les tournois
+automatiques partent tout seuls et personne ne les annule ; un tournoi entre amis sans créateur reste géré par ses inscrits.
+À coller dès que possible (avant ou après la fusion).
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
