@@ -916,7 +916,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_cri_03.mp3` | La prochaine fois, prévoyez les boules Quies. |
 | `commentatrice_dialogue_cri_04.mp3` | C'est Ronaldo sans les abdos. |
 
-## Speaker — voix de salle, voyelles étirées (190 répliques)
+## Speaker — voix de salle, voyelles étirées (191 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1005,6 +1005,7 @@ restent lus par la voix de synthèse.
 | `speaker_surnom_le_cacatoes_01.mp3` | Le Cacatoès… |
 | `speaker_surnom_le_dindon_01.mp3` | Le Dindon… |
 | `speaker_surnom_le_pigeon_01.mp3` | Le Pigeon… |
+| `speaker_surnom_la_morue_01.mp3` | La Morue… |
 | `speaker_surnom_le_cobra_01.mp3` | Le Cobra… |
 | `speaker_surnom_le_scorpion_01.mp3` | Le Scorpion… |
 | `speaker_surnom_le_requin_01.mp3` | Le Requin… |

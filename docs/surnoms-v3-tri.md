@@ -32,7 +32,7 @@ Un débutant commence donc avec des surnoms drôles : son surnom de départ est 
 
 **Les noms drôles** (11, choix du porteur du projet le 10 octobre), rangés dans leur catégorie, sans catégorie « rigolo » : ce sont eux qui forment le surnom de départ.
 
-**Animaux** (14) : La Loutre · La Limace · La Buse · Le Cacatoès · Le Dindon · Le Pigeon · Le Cobra · Le Scorpion · Le Requin · Le Faucon · Le Tigre · La Panthère · Le Bison · Le Pitbull
+**Animaux** (15) : La Loutre · La Limace · La Buse · Le Cacatoès · Le Dindon · Le Pigeon · La Morue · Le Cobra · Le Scorpion · Le Requin · Le Faucon · Le Tigre · La Panthère · Le Bison · Le Pitbull
 
 **Cuisine** (5) : Le Croque-Monsieur · La Saucisse · La Quiche · Le Cèpe · La Truffe
 
