@@ -333,6 +333,14 @@ Même manipulation avec [`etape-42-salles-sit-and-go.sql`](etape-42-salles-sit-a
 Correction : « Entrer » dans un Sit & Go de 64 joueurs à 1 000 jetons envoyait dans le Grand Chelem (erreur
 « duplicate key… » si on y était déjà inscrit), et un Sit & Go de 64 sans mise, dans le freeroll. À coller dès que possible.
 
+## 1 quadragies ter. Le compteur de visites (étape 43)
+
+Même manipulation avec [`etape-43-visites.sql`](etape-43-visites.sql), **après** l'étape 42
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-43-visites.sql).
+Chaque téléphone signale au plus une fois par jour « j'ai ouvert l'appli », sans identifiant ; le serveur garde des totaux
+par jour et par origine (site, appli Android, appli installée). La version de test ne compte pas.
+Pour lire les chiffres (éditeur SQL, une ligne) : `select * from visites order by jour desc, origine limit 60;`
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
