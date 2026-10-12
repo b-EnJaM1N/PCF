@@ -326,6 +326,13 @@ Correction : un inscrit (ou même n'importe qui) pouvait lancer avant l'heure ou
 automatiques partent tout seuls et personne ne les annule ; un tournoi entre amis sans créateur reste géré par ses inscrits.
 À coller dès que possible (avant ou après la fusion).
 
+## 1 quadragies bis. Un Sit & Go n'est pas le Grand Chelem (étape 42)
+
+Même manipulation avec [`etape-42-salles-sit-and-go.sql`](etape-42-salles-sit-and-go.sql), **après** l'étape 41
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-42-salles-sit-and-go.sql).
+Correction : « Entrer » dans un Sit & Go de 64 joueurs à 1 000 jetons envoyait dans le Grand Chelem (erreur
+« duplicate key… » si on y était déjà inscrit), et un Sit & Go de 64 sans mise, dans le freeroll. À coller dès que possible.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
