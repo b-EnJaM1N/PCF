@@ -54,11 +54,11 @@ Données **collectées** (toutes : traitées de façon éphémère **Non**, coll
 | Infos personnelles › Adresse e-mail | e-mail du compte, pour se connecter | Fonctionnalités de l'appli ; Gestion du compte |
 | Infos personnelles › ID utilisateur | identifiant du compte, pseudo et numéro (ex. Benji#4821) | Fonctionnalités de l'appli ; Gestion du compte ; Prévention des fraudes, sécurité et conformité |
 | Infos personnelles › Autres infos | pays choisi par le joueur (affiché sur sa fiche) | Fonctionnalités de l'appli |
-| Activité dans les applis › Interactions avec l'appli | duels et coups joués, niveau, tournois, jetons, achats en jetons, trophées | Fonctionnalités de l'appli |
+| Activité dans les applis › Interactions avec l'appli | duels et coups joués, niveau, tournois, jetons, achats en jetons, trophées ; compteur de visites anonyme (une ouverture par jour, sans identifiant, depuis le 12 octobre) | Fonctionnalités de l'appli ; Analyse |
 | Activité dans les applis › Autre contenu généré par l'utilisateur | noms de cercles, texte facultatif d'un signalement | Fonctionnalités de l'appli ; Prévention des fraudes, sécurité et conformité |
 | Appareil ou autres ID | abonnement aux notifications de ce téléphone (seulement si on les active) | Fonctionnalités de l'appli ; Communications du développeur (rappels de tournoi) |
 
-À ne **pas** cocher : position, contacts, photos, fichiers, agenda, santé, finances, messages, navigation web, diagnostics et plantages, publicité ou marketing, statistiques d'utilisation (« Analyse »). HandSlam n'a ni outil de mesure d'audience ni publicité.
+À ne **pas** cocher : position, contacts, photos, fichiers, agenda, santé, finances, messages, navigation web, diagnostics et plantages, publicité ou marketing. HandSlam n'a ni outil de mesure d'audience extérieur ni publicité : seulement un compteur de visites maison, anonyme (étape 43, 12 octobre), d'où la finalité « Analyse » ajoutée aux interactions avec l'appli.
 
 ## 7. Identifiant publicitaire
 - « Votre appli utilise-t-elle un identifiant publicitaire ? » : **Non** (ni publicité, ni mesure d'audience). Demandé le 9 octobre, au moment d'envoyer le test fermé pour examen (appli qui cible Android 13 ou plus).
