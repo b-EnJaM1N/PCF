@@ -1369,7 +1369,8 @@ $("tPlay").addEventListener("click", () => {
   const mm = monMatch(T); if (!mm) return;
   OPP = botParId(mm.a === "moi" ? mm.b : mm.a); WIN = tourDe(T).sets;
   S.match = nouveauMatch({ pointsParSet: lenTournoi(), setsGagnants: WIN });
-  S.tour = T.tour; renderFormat(); render(); rafraichirAvatars(); ouvrirFaceAFace();
+  S.tour = T.tour; S.passe = false;   // (avoir passé la présentation du tour précédent ne coupe pas celle-ci)
+  renderFormat(); render(); rafraichirAvatars(); ouvrirFaceAFace();
 });
 $("tQuit").addEventListener("click", () => {
   if (!T.fini && !confirm("Abandonner le tournoi en cours ?")) return;
@@ -1507,7 +1508,8 @@ function majDuel(duel) {
     }
   }
 
-  // 2. La phase du duel.
+  // 2. La phase du duel. Un match en cours reste à l'écran (filet de sécurité : si un autre écran s'est ouvert par-dessus).
+  if (["presentation", "jeu", "entre_sets"].includes(duel.phase) && vueCourante !== "viewMatch") ouvrirOnglet("match");
   if (duel.phase === "presentation") {
     if (!D.presente) { D.presente = true; ouvrirFaceAFace(); }
   } else if (duel.phase === "jeu") {
@@ -1750,15 +1752,18 @@ jetonsUI = installerJetons({ compte: compteUI });
 defisUI = installerDefis({ compte: compteUI, jetons: () => jetonsUI?.rafraichir() });
 boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, jetons: () => jetonsUI?.rafraichir(),
   apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); } });
+// Au départ d'un Sit & Go, du freeroll ou d'un tournoi programmé, la page du tournoi s'ouvre… sauf si mon premier match
+// est déjà lancé : elle passait sous la présentation du match, et « Passer » faisait alors quitter le match.
+const ouvrirTournoiSiLibre = id => { if (!duelOccupe()) cerclesUI.ouvrirTournoi(id); };
 freerollUI = installerFreeroll({
   compte: compteUI, signaler,
-  ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
+  ouvrirTournoi: ouvrirTournoiSiLibre,
   chercherMatch: () => { if (!duelOccupe()) duelsUI.rafraichir(); },
   jetons: () => jetonsUI?.rafraichir(),
 });
 programmesUI = installerProgrammes({
   compte: compteUI, signaler,
-  ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
+  ouvrirTournoi: ouvrirTournoiSiLibre,
   chercherMatch: () => { if (!duelOccupe()) duelsUI.rafraichir(); },
   jetons: () => jetonsUI?.rafraichir(),
 });
@@ -1766,7 +1771,7 @@ sngUI = installerSng({
   jetons: () => jetonsUI?.rafraichir(),
   signaler,
   compte: compteUI,
-  ouvrirTournoi: id => cerclesUI.ouvrirTournoi(id),
+  ouvrirTournoi: ouvrirTournoiSiLibre,
   chercherMatch: () => { if (!duelOccupe()) duelsUI.rafraichir(); },   // mon match suivant est-il lancé ?
 });
 
