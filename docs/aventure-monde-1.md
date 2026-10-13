@@ -40,10 +40,10 @@ Elle garde son caractère : sèche, exigeante, un compliment par monde au maximu
 
 | Combat | Mission de Monique | Après la victoire |
 |---|---|---|
-| 🦌 Bambi | « Commence par Bambi. Il est têtu : il rejoue le même signe tant qu'il n'a pas perdu deux fois. Même toi, tu devrais y arriver. » | « Bien. Tiens, une Loupe. Elle te montre ce que l'autre prépare. Ne la gaspille pas. » |
-| 👺 Gobelin | « Le Gobelin ne lâche jamais sa massue. Réfléchis deux secondes à ce que ça veut dire. » | « Pas mal. Prends ce Bouclier, tu en auras besoin. » |
-| 🦇 Pipistrelle | « La chauve-souris ne tient pas en place : jamais deux fois le même signe. Sers-toi de ta tête. » | « Correct. Voici un Coup double. Frappe fort, pour une fois. » |
-| 🍄 Amanite | « L'Amanite t'imite, comme un mauvais élève. Et méfie-toi des égalités : elles empoisonnent. » | « Tu as encore tes deux mains ? Bien. Une Potion, au cas où. » |
+| 🦌 Bambi | « Commence par Bambi. Il est têtu : il rejoue le même signe tant qu'il n'a pas perdu deux fois. Même toi, tu devrais y arriver. » | « Bien. Tiens, un Œil de Lynx. Il te montre ce que l'autre prépare. Ne le gaspille pas. » |
+| 👺 Gobelin | « Le Gobelin ne lâche jamais sa massue. Réfléchis deux secondes à ce que ça veut dire. » | « Pas mal. Prends cette Écorce de Chêne, tu en auras besoin. » |
+| 🦇 Pipistrelle | « La chauve-souris ne tient pas en place : jamais deux fois le même signe. Sers-toi de ta tête. » | « Correct. Voici la Frappe du Sanglier. Frappe fort, pour une fois. » |
+| 🍄 Amanite | « L'Amanite t'imite, comme un mauvais élève. Et méfie-toi des égalités : elles empoisonnent. » | « Tu as encore tes deux mains ? Bien. Un peu de Sève de Vie, au cas où. » |
 | 🐺 Loup gris | « Le Loup sent la peur. Quand il gagne, il insiste. Quand il perd, il change. Ne lui laisse pas deux victoires d'affilée. » | « Choisis ton pouvoir. Et réfléchis, cette fois. » |
 | 🌳 Le Gardien | « Le Gardien de la Forêt. Des poings de pierre, des branches qui coupent comme des ciseaux… et quand son cœur s'allume, il lit dans ton jeu. Ne sois pas prévisible. » | « … Pas mal, petit scarabée. Pas mal du tout. Ne le répète à personne. » |
 
@@ -79,25 +79,27 @@ pour montrer qu'elle te prend peu à peu au sérieux.
 
 ## Les pouvoirs
 
+Noms choisis par le porteur du projet le 14 octobre (au lieu de Loupe, Bouclier, Coup double, Potion).
+
 On gagne un pouvoir à chaque victoire (y compris en rejouant un combat), s'il reste de la place : on peut en garder
 **3 au maximum**, et chacun ne sert qu'une fois (perdu même si on abandonne le combat). On l'active avant de choisir son signe.
-Le Bouclier et le Coup double restent prêts tant que le coup se termine par une égalité.
+L'Écorce de Chêne et la Frappe du Sanglier restent prêtes tant que le coup se termine par une égalité.
 
 | Pouvoir | Effet |
 |---|---|
-| 🔍 **Loupe** | pendant 3 coups, montre le signe que l'adversaire préfère en ce moment |
-| 🛡️ **Bouclier** | si tu perds le prochain coup, tu ne perds pas de vie |
-| ⚔️ **Coup double** | si tu gagnes le prochain coup, il fait deux fois plus de dégâts |
-| 🧪 **Potion** | rend 30 de vie tout de suite |
+| 👁️ **Œil de Lynx** | pendant 3 coups, montre le signe que l'adversaire préfère en ce moment |
+| 🪵 **Écorce de Chêne** | si tu perds le prochain coup, tu ne perds pas de vie |
+| 🐗 **Frappe du Sanglier** | si tu gagnes le prochain coup, il fait deux fois plus de dégâts |
+| 🌿 **Sève de Vie** | rend 30 de vie tout de suite |
 
 ## Les 6 combats
 
 | | Adversaire | Vie | Force | Sa façon de jouer | Récompense |
 |---|---|---|---|---|---|
-| 1 | 🦌 **Bambi**, le faon timide | 30 | 12 | Rejoue le même signe tant qu'il n'a pas perdu deux fois de suite (comme le bot actuel). Le combat pour apprendre. | 🔍 Loupe |
-| 2 | 👺 **Le Gobelin** à la massue | 50 | 18 | Adore la **Pierre** (sa massue) : il la joue un coup sur deux. | 🛡️ Bouclier |
-| 3 | 🦇 **Pipistrelle**, la chauve-souris | 60 | 20 | Très agitée : ne joue **jamais deux fois de suite le même signe**. | ⚔️ Coup double |
-| 4 | 🍄 **L'Amanite**, champignon vénéneux | 70 | 20 | **Copie ton coup précédent** (85 % du temps). Spécialité : le **poison**, chaque égalité te fait perdre 5 de vie. | 🧪 Potion |
+| 1 | 🦌 **Bambi**, le faon timide | 30 | 12 | Rejoue le même signe tant qu'il n'a pas perdu deux fois de suite (comme le bot actuel). Le combat pour apprendre. | 👁️ Œil de Lynx |
+| 2 | 👺 **Le Gobelin** à la massue | 50 | 18 | Adore la **Pierre** (sa massue) : il la joue un coup sur deux. | 🪵 Écorce de Chêne |
+| 3 | 🦇 **Pipistrelle**, la chauve-souris | 60 | 20 | Très agitée : ne joue **jamais deux fois de suite le même signe**. | 🐗 Frappe du Sanglier |
+| 4 | 🍄 **L'Amanite**, champignon vénéneux | 70 | 20 | **Copie ton coup précédent** (85 % du temps). Spécialité : le **poison**, chaque égalité te fait perdre 5 de vie. | 🌿 Sève de Vie |
 | 5 | 🐺 **Le Loup gris** | 90 | 22 | Rusé (80 % du temps) : s'il gagne, il rejoue le même signe ; s'il perd, il prend le signe qui bat le tien. **Morsure** : après 2 coups gagnés d'affilée, son coup suivant fait double dégâts. | au choix, 1 des 4 pouvoirs |
 | 🌳 | **Le Gardien de la Forêt**, golem de bois et de pierre (boss) | 160 | 24 | **Phase 1** : joue surtout Pierre (ses poings) et Ciseaux (ses branches), 45 % chacun. **Phase 2, son cœur s'allume** (à la moitié de sa vie) : force 30, et il joue ce qui bat ton dernier signe (70 % du temps). En entrant en rage, **Racines** : tes pouvoirs sont bloqués pendant 2 coups. | 🏆 le Gant d'Or, et l'accès au Monde 2 |
 
@@ -113,7 +115,7 @@ Quelques idées de répliques (bulles, et voix des commentateurs plus tard) :
 
 Chaque adversaire a une habitude à découvrir : Pierre pour le Gobelin, jamais deux fois le même signe pour Pipistrelle,
 copier ton coup pour l'Amanite… Le joueur qui observe gagne plus vite et avec plus de vie. Les pouvoirs ajoutent des choix
-(garder le Bouclier pour le boss ou s'en servir tout de suite ?).
+(garder l'Écorce de Chêne pour le boss ou s'en servir tout de suite ?).
 
 ## À décider plus tard
 
