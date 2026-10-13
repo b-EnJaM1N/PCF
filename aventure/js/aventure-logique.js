@@ -120,8 +120,8 @@ export function normaliser(p) {
 export const victoires = (p, m) => m.adversaires.filter(a => p.etoiles[a.id]).length;
 // Le héros grandit à chaque adversaire battu (la première fois seulement).
 export const heros = (p, m) => ({ vie: HEROS.vie + GAIN.vie * victoires(p, m), force: HEROS.force + GAIN.force * victoires(p, m) });
-// On ouvre un combat en battant le précédent.
-export const ouvert = (p, m, i) => i === 0 || !!p.etoiles[m.adversaires[i - 1].id];
+// On ouvre un combat en battant tous ceux d'avant (une étoile isolée, restée d'un ancien essai, n'ouvre rien).
+export const ouvert = (p, m, i) => m.adversaires.slice(0, i).every(a => !!p.etoiles[a.id]);
 export const termine = (p, m) => m.adversaires.every(a => p.etoiles[a.id]);
 
 // 1 étoile pour la victoire, 2 s'il reste plus de la moitié de sa vie, 3 s'il en reste plus de 80 %.
