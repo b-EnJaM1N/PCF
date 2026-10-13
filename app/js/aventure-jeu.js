@@ -6,7 +6,7 @@ import {
   MONDES, POUVOIRS, MAX_POUVOIRS, GAIN, normaliser, heros, ouvert, termine, etoilesDe, apresVictoire,
   nouveauCombat, signeAdversaire, indiceLoupe, peutUtiliser, utiliser, jouer, piqueAuHasard,
 } from "./aventure-logique.js";
-import { LARGEUR, HAUTEUR, ETAPES, trajet, position, dessinerCarte } from "./aventure-carte.js";
+import { IMAGE, LARGEUR, HAUTEUR, ETAPES, MS_PAR_PIXEL, trajet, position } from "./aventure-carte.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -138,11 +138,11 @@ function carte({ allerVers = null } = {}) {
     ${pancarte(`Monde ${M.numero}`, esc(M.nom))}
     ${P.introVue ? "" : `${dialogue(M.intro)}<button class="pbtn vert large" data-av="intro">C'est parti !</button>`}
     <div class="carte-monde cadre" id="carteMonde">
-      <canvas id="carteFond" aria-hidden="true"></canvas>
+      <img class="carte-fond" src="${IMAGE}" alt="">
       ${noeuds}
       <div class="heros-pion" id="pion" style="${pct(position(pos))}"><img class="sprite" src="${HEROS_IMG}" alt="Toi"></div>
-      <p class="carte-aide" id="carteAide">${P.introVue ? (prochaine >= 0 ? `Touche l'étape ${prochaine + 1} pour avancer.` : "Touche une étape pour rejouer le combat.") : ""}</p>
     </div>
+    <p class="carte-aide" id="carteAide">${P.introVue ? (prochaine >= 0 ? `Touche l'étape ${prochaine + 1} pour avancer.` : "Touche une étape pour rejouer le combat.") : ""}</p>
     <div class="cadre heros-carte">
       <span class="tete heros-tete"></span>
       <div><b>Toi</b><small>vie ${h.vie} · force ${h.force}</small><div class="sac">${sac()}<span class="discret">${P.pouvoirs.length}/${MAX_POUVOIRS}</span></div></div>
@@ -158,7 +158,6 @@ function carte({ allerVers = null } = {}) {
     </details>
     <div class="barre-bas"><button class="pbtn bois petit" data-av="son">${sonOn ? "🔊 Son" : "🔇 Son"}</button></div>
   </div>`);
-  dessinerCarte($("carteFond"));
   if (P.introVue) $("pion").scrollIntoView({ block: "center" });
   if (allerVers !== null) setTimeout(() => marcher(allerVers), 400);
 }
@@ -173,7 +172,7 @@ async function marcher(i) {
   let [x, y] = [position(pos).x, position(pos).y];
   for (const [nx, ny] of points) {
     if (nx !== x) pion.classList.toggle("gauche", nx < x);
-    const ms = Math.max(120, Math.hypot(nx - x, ny - y) * 14);
+    const ms = Math.max(120, Math.hypot(nx - x, ny - y) * MS_PAR_PIXEL);
     pion.style.transition = `left ${ms}ms linear, top ${ms}ms linear`;
     pion.style.left = `${(100 * nx) / LARGEUR}%`; pion.style.top = `${(100 * ny) / HAUTEUR}%`;
     son("pas");

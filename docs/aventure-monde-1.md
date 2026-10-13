@@ -10,11 +10,10 @@ boutons bleu / vert / rouge, sons façon console 8 bits. Animations : les combat
 quand ils sont touchés, tombent au K.-O. ; les dégâts s'envolent en chiffres. Tous les adversaires ont leur dessin (14 octobre :
 Bambi, Pipistrelle, l'Amanite, le Loup gris et le boss, un golem de bois et de pierre, fournis par le porteur du projet,
 damier du fond retiré) ; Bambi et Pipistrelle sont retournés pour regarder le héros, Pipistrelle vole, le boss est plus grand. Monique parle dans une boîte de dialogue, lettre par lettre (voix plus tard).
-**Carte du monde façon premiers Mario** (14 octobre) : vue de dessus en gros pixels (herbe, sapins de la Forêt des Ombres
-en haut, rivière et pont, chemin de terre à angles droits, tente du campement au départ), une étape par adversaire avec son
+**Carte du monde façon premiers Mario** (14 octobre) : le dessin du porteur du projet (`app/img/aventure/carte.webp` : forêt,
+rivière et pont, chemin de terre à angles droits, triangle rouge au départ), une étape par adversaire avec son
 visage et ses étoiles ; le héros marche le long du chemin jusqu'à l'étape touchée, puis Monique donne la mission. Après une
-victoire, « En route vers… » le fait avancer tout seul jusqu'à l'adversaire suivant. Dessin de la carte : `app/js/aventure-carte.js`
-(on pourra le remplacer par une image dessinée). Les combattants sont posés sur le chemin du décor (14 octobre).
+victoire, « En route vers… » le fait avancer tout seul jusqu'à l'adversaire suivant. Place des étapes et trajets sur le dessin : `app/js/aventure-carte.js`. Les combattants sont posés sur le chemin du décor (14 octobre).
 Fichiers : `app/aventure.html`, `app/js/aventure-carte.js`, `app/css/aventure.css`, `app/js/aventure-jeu.js` (écran), `app/js/aventure-logique.js` (règles, testées). Un mode solo façon RPG, contre l'ordinateur,
 sans serveur (jouable sans compte). 5 ou 6 mondes à terme ; on commence par un seul monde pour voir si les joueurs accrochent.
 Les dessins (style pixel art) viendront après.
