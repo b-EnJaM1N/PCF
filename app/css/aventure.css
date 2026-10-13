@@ -100,11 +100,36 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .barre-bas { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .page > .barre-bas { justify-content: center; }
 
+/* La carte du monde, façon premiers Mario (aventure-carte.js) : le décor en gros pixels, les étapes et le héros par-dessus. */
+.carte-monde { position: relative; padding: 0; overflow: hidden; }
+.carte-monde canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; image-rendering: crisp-edges; }
+.noeud { position: absolute; transform: translate(-50%, -50%); width: 15%; aspect-ratio: 1; padding: 0; border: 0; background: none; cursor: pointer; z-index: 2; }
+.noeud .tete { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--brun); box-shadow: 0 0 0 2px #f0d9a0, 0 3px 0 2px rgba(0, 0, 0, .4); }
+.noeud .tete .pix { width: 70%; height: 70%; }
+.noeud.boss { width: 19%; }
+.noeud.boss .tete { box-shadow: 0 0 0 2px #ff6a5c, 0 3px 0 2px rgba(0, 0, 0, .4); }
+.noeud:disabled { cursor: default; filter: grayscale(.9) brightness(.7); }
+.noeud.fait .tete { box-shadow: 0 0 0 2px #f4d06f, 0 3px 0 2px rgba(0, 0, 0, .4); }
+.noeud.prochain { animation: sautille .7s steps(2) infinite; }
+.noeud.attente { pointer-events: none; animation: none; }
+.noeud-num { position: absolute; left: -6px; top: -6px; min-width: 20px; height: 20px; padding: 0 4px; border-radius: 4px; background: var(--brun); border: 2px solid var(--or);
+  color: #fff; font-size: .7rem; line-height: 16px; text-align: center; }
+.noeud-et { position: absolute; left: 50%; bottom: -16px; transform: translateX(-50%); background: rgba(0, 0, 0, .65); border-radius: 4px; padding: 0 3px; line-height: 1; }
+.noeud-et .etoiles { font-size: .62rem; }
+.heros-pion { position: absolute; width: 16%; transform: translate(-50%, -112%); z-index: 3; pointer-events: none; }
+.heros-pion .sprite { width: 100%; height: auto; display: block; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .45)); animation: respire 1.2s steps(2) infinite; }
+.heros-pion.gauche .sprite { transform: scaleX(-1); animation-name: respire-miroir; }
+.heros-pion.marche .sprite { animation-duration: .3s; }
+.carte-aide { position: absolute; left: 50%; top: 6px; transform: translateX(-50%); width: max-content; max-width: 94%; margin: 0; padding: 2px 10px; z-index: 4;
+  background: rgba(10, 12, 24, .82); border: 2px solid var(--or); border-radius: 4px; font-size: .8rem; text-align: center; }
+.carte-aide:empty { display: none; }
+@keyframes sautille { 50% { transform: translate(-50%, -62%); } }
+
 /* La scène : le décor de la forêt, avec les deux combattants posés sur le chemin. */
-.scene { position: relative; height: min(58vh, 520px); min-height: 330px; overflow: hidden;
-  background: url(../img/aventure/foret.webp) 50% 78% / cover; image-rendering: pixelated; }
+.scene { position: relative; height: min(58vh, 520px); min-height: 380px; overflow: hidden;
+  background: url(../img/aventure/foret.webp) 50% 70% / cover; image-rendering: pixelated; }
 .page .scene { border: 3px solid var(--or); border-radius: 6px; box-shadow: 0 0 0 3px var(--brun); }
-.combattant { position: absolute; bottom: 6%; width: min(44%, 230px); z-index: 2; }
+.combattant { position: absolute; bottom: 19%; width: min(42%, 220px); z-index: 2; }
 .combattant.moi { left: 2%; }
 .combattant.lui { right: 2%; }
 .combattant .sprite { width: 100%; height: auto; display: block; animation: respire 1.2s steps(2) infinite; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .35)); }
@@ -112,9 +137,9 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .combattant.lui.emoji { width: min(34%, 170px); }
 /* Les adversaires dessinés vers la droite sont retournés, pour regarder le héros. */
 .combattant.miroir .sprite, .tete.miroir { transform: scaleX(-1); }
-.combattant.lui.vol { bottom: 30%; width: min(46%, 240px); }      /* Pipistrelle vole */
-.combattant.lui.grand { width: min(68%, 360px); right: -4%; bottom: 4%; }   /* le boss */
-.combattant.vol ~ .bulle-parole { bottom: 61%; }
+.combattant.lui.vol { bottom: 40%; width: min(44%, 230px); }      /* Pipistrelle vole */
+.combattant.lui.grand { width: min(64%, 340px); right: -4%; bottom: 16%; }   /* le boss */
+
 .combattant.protege .sprite { filter: drop-shadow(0 0 6px #6fb7ff) drop-shadow(0 0 2px #6fb7ff); }
 .combattant.charge .sprite { filter: drop-shadow(0 0 6px #ffb347) drop-shadow(0 0 2px #ffb347); }
 .combattant.enrage .sprite { filter: drop-shadow(0 0 8px #ff3b2f) saturate(1.6) hue-rotate(-25deg); animation-duration: .6s; }
@@ -122,7 +147,7 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
   background: #fff; border: 3px solid var(--brun); border-radius: 50%; opacity: 0; transition: opacity .15s; }
 .signe-bulle.vue { opacity: 1; }
 .signe-bulle .pix { width: 36px; height: 36px; }
-.bulle-parole { position: absolute; right: 4%; bottom: 52%; max-width: 62%; margin: 0; z-index: 4; background: #fff; color: #1a1a1a; font-weight: 400; font-size: .95rem;
+.bulle-parole { position: absolute; right: 4%; top: 168px; max-width: 62%; margin: 0; z-index: 4; background: #fff; color: #1a1a1a; font-weight: 400; font-size: .95rem;
   padding: 8px 12px; border: 3px solid var(--brun); border-radius: 8px; box-shadow: 0 4px 0 rgba(0, 0, 0, .35); }
 .bulle-parole::after { content: ""; position: absolute; bottom: -12px; right: 34%; border: 9px solid transparent; border-top-color: #fff; border-bottom: 0; }
 .bulle-parole[hidden] { display: none; }
@@ -198,7 +223,7 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .lui.ko { animation-name: ko-d; }
 @keyframes ko-d { 100% { transform: translateY(12%) rotate(12deg); opacity: .25; filter: grayscale(1); } }
 .scene.tremble { animation: tremble .3s steps(4); }
-@keyframes tremble { 25% { background-position: calc(50% - 6px) 78%; } 75% { background-position: calc(50% + 6px) 78%; } }
+@keyframes tremble { 25% { background-position: calc(50% - 6px) 70%; } 75% { background-position: calc(50% + 6px) 70%; } }
 .signe-bulle.secoue { animation: secoue .2s steps(2) infinite; }
 @keyframes secoue { 50% { transform: translate(-50%, -10px); } 0%, 100% { transform: translate(-50%, 0); } }
 @keyframes envol { 0% { opacity: 0; transform: translate(-50%, 10px); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -70px); } }
