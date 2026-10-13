@@ -67,6 +67,8 @@ const SONS = {
   pouvoir: [[523, 0.07], [659, 0.07], [784, 0.12]],
   rage: [[110, 0.35, "sawtooth", 0.09, 55]],
   victoire: [[523, 0.12], [659, 0.12], [784, 0.12], [1047, 0.35]],
+  // le petit générique de l'écran titre
+  generique: [[392, 0.14], [523, 0.14], [659, 0.14], [784, 0.28], [659, 0.14], [784, 0.14], [1047, 0.5, "square", 0.07], [784, 0.12, "triangle", 0.06], [1047, 0.45, "triangle", 0.07]],
   defaite: [[392, 0.2, "triangle", 0.1], [330, 0.2, "triangle", 0.1], [262, 0.45, "triangle", 0.1]],
 };
 function son(nom) {
@@ -112,6 +114,28 @@ const scene = (a, contenu = "") => `<div class="scene" id="scene">
 let ecran = "carte", adv = null, C = null, occupe = false, fin = null;
 const jeu = $("jeu");
 function afficher(html) { jeu.innerHTML = html; animerDialogues(); window.scrollTo(0, 0); }
+
+// ---------------------------------------------------------------- l'écran titre
+// À chaque ouverture : le titre du jeu sur le décor de la forêt, le Gant d'Or qui brille, le héros sur le chemin.
+function titre() {
+  ecran = "titre";
+  const n = M.adversaires.filter(a => P.etoiles[a.id]).length;
+  const etincelles = [[18, 22], [80, 18], [30, 40], [72, 38], [52, 12], [88, 30]]
+    .map(([x, y], i) => `<i class="etincelle" style="left:${x}%;top:${y}%;animation-delay:${(i * 0.37).toFixed(2)}s"></i>`).join("");
+  afficher(`<button class="titre-ecran" data-av="commencer" aria-label="Commencer">
+    ${etincelles}
+    <span class="titre-haut">
+      <span class="titre-gant">${imgPix("✋", "", 20)}</span>
+      <span class="titre-texte"><span class="titre-petit">La Quête</span><span class="titre-du">du</span><span class="titre-grand">Gant d'Or</span></span>
+      <span class="titre-monde">Monde ${M.numero} · ${esc(M.nom)}</span>
+    </span>
+    <img class="sprite titre-heros" src="${HEROS_IMG}" alt="">
+    <span class="titre-bas">
+      <span class="titre-commencer">Touche l'écran pour commencer</span>
+      ${n ? `<span class="titre-progres">${n} adversaire${n > 1 ? "s" : ""} battu${n > 1 ? "s" : ""} sur ${M.adversaires.length}</span>` : ""}
+    </span>
+  </button>`);
+}
 
 // ---------------------------------------------------------------- la carte du monde
 // Où se tient le héros sur la carte : -1 au campement, sinon l'étape (jamais au-delà de ce qui est ouvert).
@@ -371,7 +395,8 @@ function voile() {
 jeu.addEventListener("click", e => {
   const b = e.target.closest("[data-av]"); if (!b || b.disabled) return;
   const act = b.dataset.av;
-  if (act !== "signe" && act !== "pouvoir") son("clic");
+  if (act !== "signe" && act !== "pouvoir" && act !== "commencer") son("clic");
+  if (act === "commencer") { son("generique"); b.classList.add("part"); setTimeout(carte, 650); return; }
   if (act === "intro") { P.introVue = true; sauver(); carte({ allerVers: 0 }); }
   else if (act === "aller") marcher(Number(b.dataset.i));
   else if (act === "suivant") carte({ allerVers: Number(b.dataset.i) });
@@ -385,4 +410,4 @@ jeu.addEventListener("click", e => {
   else if (act === "zero") { if (confirm("Recommencer l'aventure à zéro ? Tes étoiles et tes pouvoirs seront effacés.")) { P = normaliser(null); sauver(); pos = -1; ecrire("aventurePos", pos); carte(); } }
 });
 
-carte();
+titre();
