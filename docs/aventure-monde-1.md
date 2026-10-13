@@ -16,7 +16,9 @@ Les dessins (style pixel art) viendront après.
 
 ## L'histoire
 
-Le Roi des Gobelins, **Grok**, a volé le Gant d'Or, le trophée du HandSlam, et s'est caché au fond de la Forêt des Ombres.
+Le Gant d'Or, le trophée du HandSlam, a disparu dans la Forêt des Ombres. Le **Gardien de la Forêt**, un vieux golem de bois
+et de pierre, l'a trouvé et ne veut plus le rendre (décision du 14 octobre : le boss est ce golem, d'après le dessin du
+porteur du projet, au lieu de Grok, le Roi des Gobelins).
 Le héros traverse la forêt, affronte ses habitants un par un, et gagne en force à chaque victoire, jusqu'au duel final.
 
 ## Monique, la mentore (idée du 13 octobre)
@@ -26,8 +28,8 @@ Elle garde son caractère : sèche, exigeante, un compliment par monde au maximu
 
 **Introduction** (au premier lancement du mode Aventure) :
 > « Bonjour, petit scarabée. Tu veux devenir un as de la discipline ? Alors suis mes conseils.
-> J'ai été championne en 1997. Toi, pour l'instant, tu n'es rien. Le Roi des Gobelins a volé le Gant d'Or :
-> va le chercher au fond de la Forêt des Ombres. Et tiens-toi droit. »
+> J'ai été championne en 1997. Toi, pour l'instant, tu n'es rien. Le Gant d'Or a disparu dans la Forêt des Ombres.
+> Le Gardien de la Forêt, un vieux golem de bois et de pierre, l'a trouvé et ne veut plus le rendre. Va le chercher. Et tiens-toi droit. »
 
 **Les missions**, une avant chaque combat (le conseil donne l'indice sur la manie de l'adversaire) :
 
@@ -38,7 +40,7 @@ Elle garde son caractère : sèche, exigeante, un compliment par monde au maximu
 | 🦇 Pipistrelle | « La chauve-souris ne tient pas en place : jamais deux fois le même signe. Sers-toi de ta tête. » | « Correct. Voici un Coup double. Frappe fort, pour une fois. » |
 | 🍄 Amanite | « L'Amanite t'imite, comme un mauvais élève. Et méfie-toi des égalités : elles empoisonnent. » | « Tu as encore tes deux mains ? Bien. Une Potion, au cas où. » |
 | 🐺 Loup gris | « Le Loup sent la peur. Quand il gagne, il insiste. Quand il perd, il change. Ne lui laisse pas deux victoires d'affilée. » | « Choisis ton pouvoir. Et réfléchis, cette fois. » |
-| 👑 Grok | « Grok. Il cogne avec la Pierre et les Ciseaux… et quand il se fâche, il lit dans ton jeu. Ne sois pas prévisible. » | « … Pas mal, petit scarabée. Pas mal du tout. Ne le répète à personne. » |
+| 🌳 Le Gardien | « Le Gardien de la Forêt. Des poings de pierre, des branches qui coupent comme des ciseaux… et quand son cœur s'allume, il lit dans ton jeu. Ne sois pas prévisible. » | « … Pas mal, petit scarabée. Pas mal du tout. Ne le répète à personne. » |
 
 En cas de défaite, une pique courte (« Muscle ton jeu. », « En 1997, j'aurais gagné les yeux fermés. ») puis on recommence.
 
@@ -92,7 +94,7 @@ Le Bouclier et le Coup double restent prêts tant que le coup se termine par une
 | 3 | 🦇 **Pipistrelle**, la chauve-souris | 60 | 20 | Très agitée : ne joue **jamais deux fois de suite le même signe**. | ⚔️ Coup double |
 | 4 | 🍄 **L'Amanite**, champignon vénéneux | 70 | 20 | **Copie ton coup précédent** (85 % du temps). Spécialité : le **poison**, chaque égalité te fait perdre 5 de vie. | 🧪 Potion |
 | 5 | 🐺 **Le Loup gris** | 90 | 22 | Rusé (80 % du temps) : s'il gagne, il rejoue le même signe ; s'il perd, il prend le signe qui bat le tien. **Morsure** : après 2 coups gagnés d'affilée, son coup suivant fait double dégâts. | au choix, 1 des 4 pouvoirs |
-| 👑 | **Grok, le Roi des Gobelins** (boss) | 160 | 24 | **Phase 1** : joue surtout Pierre et Ciseaux (45 % chacun). **Phase 2, en rage** (à la moitié de sa vie) : force 30, et il joue ce qui bat ton dernier signe (70 % du temps). En entrant en rage, **Racines** : tes pouvoirs sont bloqués pendant 2 coups. | 🏆 le Gant d'Or, et l'accès au Monde 2 |
+| 🌳 | **Le Gardien de la Forêt**, golem de bois et de pierre (boss) | 160 | 24 | **Phase 1** : joue surtout Pierre (ses poings) et Ciseaux (ses branches), 45 % chacun. **Phase 2, son cœur s'allume** (à la moitié de sa vie) : force 30, et il joue ce qui bat ton dernier signe (70 % du temps). En entrant en rage, **Racines** : tes pouvoirs sont bloqués pendant 2 coups. | 🏆 le Gant d'Or, et l'accès au Monde 2 |
 
 Quelques idées de répliques (bulles, et voix des commentateurs plus tard) :
 - Bambi : « Euh… on peut faire ami-ami ? »
@@ -100,7 +102,7 @@ Quelques idées de répliques (bulles, et voix des commentateurs plus tard) :
 - Pipistrelle : « Tu ne me vois pas venir ! »
 - L'Amanite : « Approche… je ne suis pas si toxique. »
 - Le Loup gris : « Je sens ta peur d'ici. »
-- Grok : « Le Gant d'Or est à moi ! » ; en rage : « ASSEZ JOUÉ ! »
+- Le Gardien : « Nul ne quitte ma forêt avec le Gant d'Or. » ; en rage : « LA FORÊT SE RÉVEILLE ! »
 
 ## Pourquoi c'est un vrai jeu, pas seulement de la chance
 
@@ -111,8 +113,8 @@ copier ton coup pour l'Amanite… Le joueur qui observe gagne plus vite et avec 
 ## À décider plus tard
 
 - Les chiffres exacts (à régler en jouant). Réglage du 13 octobre, par simulation : en jouant au hasard, on bat Bambi
-  presque toujours, le Gobelin 8 fois sur 10, le Loup 2 fois sur 3 et Grok 4 fois sur 10 ; en lisant les manies, on gagne
+  presque toujours, le Gobelin 8 fois sur 10, le Loup 2 fois sur 3 et le Gardien 4 fois sur 10 ; en lisant les manies, on gagne
   presque à coup sûr.
-- Ce qu'on gagne en plus : jetons, un surnom (« le Tueur de Gobelins »), un trophée, une tenue pour l'avatar.
+- Ce qu'on gagne en plus : jetons, un surnom (« le Bûcheron »), un trophée, une tenue pour l'avatar.
 - Le style des dessins (pixel art) et d'où ils viennent : images par IA retouchées, pack acheté, ou dessinateur.
 - Les mondes suivants (idées : le Désert, les Glaces, le Volcan, le Château, le monde final).

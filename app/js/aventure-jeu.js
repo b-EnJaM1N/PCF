@@ -42,7 +42,7 @@ const POSE = {
   pipistrelle: { miroir: true, vol: true, visage: ["300%", "60% 52%"] },
   amanite: { visage: ["210%", "45% 72%"] },
   loup: { visage: ["250%", "24% 30%"] },
-  grok: { grand: true, visage: ["320%", "66% 18%"] },
+  gardien: { grand: true, visage: ["320%", "66% 18%"] },
 };
 const pose = a => POSE[a.id] || {};
 const classesPose = a => ["miroir", "vol", "grand"].filter(k => pose(a)[k]).join(" ");
@@ -168,7 +168,7 @@ function combat() {
     ${scene(adv, `
       <div class="hud">
         <div class="cadre hud-j"><span class="tete heros-tete"></span><div><b>Toi</b><small id="forceMoi"></small><div id="pvMoi"></div></div></div>
-        <div class="cadre hud-j">${tete(adv)}<div><b>${esc(adv.nom)}</b><small id="forceLui"></small><div id="pvLui"></div></div></div>
+        <div class="cadre hud-j">${tete(adv)}<div><b>${esc(adv.court || adv.nom)}</b><small id="forceLui"></small><div id="pvLui"></div></div></div>
       </div>
       <div class="pancarte petite"><b>Monde ${M.numero}</b><span>${adv.boss ? "Le boss" : `Combat ${i + 1} / ${M.adversaires.length}`}</span></div>
       <p class="bulle-parole" id="parole">${esc(adv.replique)}</p>
@@ -263,7 +263,7 @@ async function jouerCoup(moi) {
     await pause(450);
     $("parole").textContent = adv.repliqueRage; $("parole").hidden = false;
     anime($("scene"), "tremble"); son("rage");
-    $("statut").textContent = k.effets.includes("racines") ? `${adv.nom} enrage : force ${C.force[1]} ! Ses racines bloquent tes pouvoirs.` : `${adv.nom} enrage !`;
+    $("statut").textContent = k.effets.includes("racines") ? `Son cœur s'allume : force ${C.force[1]} ! Ses racines bloquent tes pouvoirs.` : `${adv.nom} enrage !`;
   }
   await pause(450);
   occupe = false;

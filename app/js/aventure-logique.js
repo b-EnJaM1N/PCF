@@ -24,7 +24,7 @@ const UNIFORME = [1 / 3, 1 / 3, 1 / 3];
 // (c : le combat en cours, avec c.coups = [{ moi, lui, gagnant }]). La Loupe montre le signe le plus probable.
 export const MONDES = [{
   id: "foret", numero: 1, nom: "La Forêt des Ombres", emoji: "🌲", surnom: "petit scarabée",
-  intro: "Bonjour, petit scarabée. Tu veux devenir un as de la discipline ? Alors suis mes conseils. J'ai été championne en 1997. Toi, pour l'instant, tu n'es rien. Le Roi des Gobelins a volé le Gant d'Or : va le chercher au fond de la Forêt des Ombres. Et tiens-toi droit.",
+  intro: "Bonjour, petit scarabée. Tu veux devenir un as de la discipline ? Alors suis mes conseils. J'ai été championne en 1997. Toi, pour l'instant, tu n'es rien. Le Gant d'Or a disparu dans la Forêt des Ombres. Le Gardien de la Forêt, un vieux golem de bois et de pierre, l'a trouvé et ne veut plus le rendre. Va le chercher. Et tiens-toi droit.",
   adversaires: [
     {
       id: "bambi", nom: "Bambi", titre: "le faon timide", emoji: "🦌", image: "img/aventure/bambi.png", vie: 30, force: 12, recompense: "loupe",
@@ -81,11 +81,11 @@ export const MONDES = [{
       },
     },
     {
-      id: "grok", nom: "Grok", titre: "le Roi des Gobelins", emoji: "👑", image: "img/aventure/grok.png", vie: 160, force: 24, recompense: "gant", boss: true, rage: true, racines: true,
-      replique: "Le Gant d'Or est à moi !", repliqueRage: "ASSEZ JOUÉ !",
-      mission: "Grok. Il cogne avec la Pierre et les Ciseaux… et quand il se fâche, il lit dans ton jeu. Ne sois pas prévisible.",
+      id: "gardien", nom: "Le Gardien de la Forêt", court: "Le Gardien", titre: "golem de bois et de pierre", emoji: "🌳", image: "img/aventure/gardien.png", vie: 160, force: 24, recompense: "gant", boss: true, rage: true, racines: true,
+      replique: "Nul ne quitte ma forêt avec le Gant d'Or.", repliqueRage: "LA FORÊT SE RÉVEILLE !",
+      mission: "Le Gardien de la Forêt. Des poings de pierre, des branches qui coupent comme des ciseaux… et quand son cœur s'allume, il lit dans ton jeu. Ne sois pas prévisible.",
       bravo: "… Pas mal, petit scarabée. Pas mal du tout. Ne le répète à personne.",
-      // Calme : surtout Pierre et Ciseaux. En rage : le signe qui bat ton dernier coup (le plus souvent).
+      // Calme : surtout Pierre (ses poings) et Ciseaux (ses branches). En rage : le signe qui bat ton dernier coup (le plus souvent).
       probabilites(c) {
         if (c.enRage && c.coups.length) return somme(unSur(contre(c.coups.at(-1).moi), 0.7), [0.1, 0.1, 0.1]);
         return [0.45, 0.45, 0.1];
@@ -112,7 +112,8 @@ export function normaliser(p) {
   if (!p || typeof p !== "object") return n;
   return {
     introVue: !!p.introVue,
-    etoiles: Object.fromEntries(Object.entries(p.etoiles || {}).filter(([, e]) => [1, 2, 3].includes(e))),
+    // (le boss s'appelait « grok » avant de devenir le Gardien de la Forêt)
+    etoiles: Object.fromEntries(Object.entries(p.etoiles || {}).map(([id, e]) => [id === "grok" ? "gardien" : id, e]).filter(([, e]) => [1, 2, 3].includes(e))),
     pouvoirs: (Array.isArray(p.pouvoirs) ? p.pouvoirs : []).filter(k => POUVOIRS[k]).slice(0, MAX_POUVOIRS),
   };
 }
@@ -164,7 +165,7 @@ export function indiceLoupe(adv, c) {
 // Utiliser un pouvoir de son sac (avant de choisir son signe). Renvoie le combat mis à jour, ou une erreur.
 export function peutUtiliser(c, cle) {
   if (c.fin) return "Le combat est fini.";
-  if (c.racines > 0) return "Les racines de Grok bloquent tes pouvoirs.";
+  if (c.racines > 0) return "Les racines du Gardien bloquent tes pouvoirs.";
   if (cle === "loupe" && c.loupe > 0) return "La Loupe est déjà active.";
   if (cle === "bouclier" && c.bouclier) return "Le Bouclier est déjà levé.";
   if (cle === "double" && c.double) return "Le Coup double est déjà prêt.";
@@ -208,7 +209,7 @@ export function jouer(c, adv, moi, lui) {
   d.coups.push({ moi, lui, gagnant });
   if (d.loupe > 0) d.loupe--;
   if (d.racines > 0) d.racines--;
-  // Grok entre en rage sous la moitié de sa vie : plus fort, et ses racines bloquent tes pouvoirs pendant 2 coups.
+  // Le Gardien entre en rage sous la moitié de sa vie : plus fort, et ses racines bloquent tes pouvoirs pendant 2 coups.
   if (adv.rage && !d.enRage && d.vie[1] > 0 && d.vie[1] <= d.max[1] / 2) {
     d.enRage = true; d.force[1] = FORCE_RAGE; effets.push("rage");
     if (adv.racines && !d.racinesFaites) { d.racines = COUPS_RACINES; d.racinesFaites = true; effets.push("racines"); }

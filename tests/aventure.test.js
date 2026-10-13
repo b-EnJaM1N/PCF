@@ -14,10 +14,10 @@ const H = { vie: 100, force: 10 };
 const suite = (adv, coups, c = nouveauCombat(adv, H)) => coups.reduce((x, [m, l]) => jouer(x, adv, m, l).combat, c);
 const prefere = (adv, c) => indiceLoupe(adv, c).signe;
 
-test("le Monde 1 : 6 combats, le dernier est Grok (le boss), chacun avec sa mission et sa récompense", () => {
+test("le Monde 1 : 6 combats, le dernier est le Gardien de la Forêt (le boss), chacun avec sa mission et sa récompense", () => {
   assert.equal(M.adversaires.length, 6);
-  assert.deepEqual(M.adversaires.map(a => a.id), ["bambi", "gobelin", "pipistrelle", "amanite", "loup", "grok"]);
-  assert.ok(A("grok").boss);
+  assert.deepEqual(M.adversaires.map(a => a.id), ["bambi", "gobelin", "pipistrelle", "amanite", "loup", "gardien"]);
+  assert.ok(A("gardien").boss);
   for (const a of M.adversaires) {
     assert.ok(a.mission && a.bravo && a.replique, a.id);
     assert.ok(POUVOIRS[a.recompense] || ["choix", "gant"].includes(a.recompense), a.id);
@@ -71,18 +71,18 @@ test("le poison de l'Amanite et la morsure du Loup", () => {
   assert.equal(r.coup.degats[0], 2 * loup.force); assert.ok(r.coup.effets.includes("morsure"));
 });
 
-test("Grok entre en rage sous la moitié de sa vie : force plus grande, racines qui bloquent les pouvoirs", () => {
-  const grok = A("grok"), fort = { vie: 150, force: 40 };
-  let c = nouveauCombat(grok, fort);
-  let r = jouer(c, grok, PIERRE, CISEAUX); c = r.combat;
+test("le Gardien entre en rage sous la moitié de sa vie : force plus grande, racines qui bloquent les pouvoirs", () => {
+  const boss = A("gardien"), fort = { vie: 150, force: 40 };
+  let c = nouveauCombat(boss, fort);
+  let r = jouer(c, boss, PIERRE, CISEAUX); c = r.combat;
   assert.ok(!c.enRage);
-  r = jouer(c, grok, PIERRE, CISEAUX); c = r.combat;              // 160 − 80 = 80 : la moitié
+  r = jouer(c, boss, PIERRE, CISEAUX); c = r.combat;              // 160 − 80 = 80 : la moitié
   assert.ok(c.enRage); assert.equal(c.force[1], FORCE_RAGE);
   assert.ok(r.coup.effets.includes("rage") && r.coup.effets.includes("racines"));
   assert.match(peutUtiliser(c, "loupe"), /racines/);
-  c = suite(grok, [[PIERRE, PIERRE], [PIERRE, PIERRE]], c);
+  c = suite(boss, [[PIERRE, PIERRE], [PIERRE, PIERRE]], c);
   assert.equal(peutUtiliser(c, "loupe"), null);
-  assert.equal(prefere(grok, c), FEUILLE, "en rage, il joue ce qui bat ton dernier signe");
+  assert.equal(prefere(boss, c), FEUILLE, "en rage, il joue ce qui bat ton dernier signe");
 });
 
 test("les pouvoirs : Bouclier, Coup double, Potion, Loupe", () => {
@@ -130,7 +130,7 @@ test("progression : combats ouverts un par un, le héros grandit, 3 pouvoirs au 
   assert.equal(r.pouvoir, null, "sac plein"); p = r.progression;
   p.pouvoirs = []; p = apresVictoire(p, A("amanite"), 3).progression;
   assert.equal(apresVictoire(p, A("loup"), 3, "double").pouvoir, "double", "le Loup : pouvoir au choix");
-  p = apresVictoire(apresVictoire(p, A("loup"), 3, "double").progression, A("grok"), 1).progression;
+  p = apresVictoire(apresVictoire(p, A("loup"), 3, "double").progression, A("gardien"), 1).progression;
   assert.ok(termine(p, M));
 });
 
@@ -138,4 +138,5 @@ test("une progression abîmée est remise d'aplomb", () => {
   assert.deepEqual(normaliser(null), nouvelleProgression());
   const p = normaliser({ introVue: 1, etoiles: { bambi: 3, gobelin: 7 }, pouvoirs: ["loupe", "fusée", "potion", "double", "bouclier"] });
   assert.deepEqual(p, { introVue: true, etoiles: { bambi: 3 }, pouvoirs: ["loupe", "potion", "double"] });
+  assert.deepEqual(normaliser({ etoiles: { grok: 2 } }).etoiles, { gardien: 2 }, "l'ancien nom du boss");
 });

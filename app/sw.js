@@ -78,7 +78,7 @@ const FICHIERS = [
   "img/aventure/pipistrelle.png",
   "img/aventure/amanite.png",
   "img/aventure/loup.png",
-  "img/aventure/grok.png",
+  "img/aventure/gardien.png",
   "js/ecran-signaler.js",
   "js/notifications.js",
   "js/tournoi-logique.js",
