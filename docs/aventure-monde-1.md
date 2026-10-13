@@ -9,6 +9,32 @@ Les dessins (style pixel art) viendront après.
 Le Roi des Gobelins, **Grok**, a volé le Gant d'Or, le trophée du HandSlam, et s'est caché au fond de la Forêt des Ombres.
 Le héros traverse la forêt, affronte ses habitants un par un, et gagne en force à chaque victoire, jusqu'au duel final.
 
+## Monique, la mentore (idée du 13 octobre)
+
+C'est **Monique Latouffe**, la commentatrice glaciale, championne de 1997, qui ouvre l'aventure et donne les missions.
+Elle garde son caractère : sèche, exigeante, un compliment par monde au maximum. Sa voix existe déjà (ElevenLabs).
+
+**Introduction** (au premier lancement du mode Aventure) :
+> « Bonjour, jeune padawan. Tu veux devenir un as de la discipline ? Alors suis mes conseils.
+> J'ai été championne en 1997. Toi, pour l'instant, tu n'es rien. Le Roi des Gobelins a volé le Gant d'Or :
+> va le chercher au fond de la Forêt des Ombres. Et tiens-toi droit. »
+
+**Les missions**, une avant chaque combat (le conseil donne l'indice sur la manie de l'adversaire) :
+
+| Combat | Mission de Monique | Après la victoire |
+|---|---|---|
+| 🦌 Bambi | « Commence par Bambi. Il est têtu : il rejoue le même signe tant qu'il n'a pas perdu deux fois. Même toi, tu devrais y arriver. » | « Bien. Tiens, une Loupe. Elle te montre ce que l'autre prépare. Ne la gaspille pas. » |
+| 👺 Gobelin | « Le Gobelin ne lâche jamais sa massue. Réfléchis deux secondes à ce que ça veut dire. » | « Pas mal. Prends ce Bouclier, tu en auras besoin. » |
+| 🦇 Pipistrelle | « La chauve-souris ne tient pas en place : jamais deux fois le même signe. Sers-toi de ta tête. » | « Correct. Voici un Coup double. Frappe fort, pour une fois. » |
+| 🍄 Amanite | « L'Amanite t'imite, comme un mauvais élève. Et méfie-toi des égalités : elles empoisonnent. » | « Tu as encore tes deux mains ? Bien. Une Potion, au cas où. » |
+| 🐺 Loup gris | « Le Loup sent la peur. Quand il gagne, il insiste. Quand il perd, il change. Ne lui laisse pas deux victoires d'affilée. » | « Choisis ton pouvoir. Et réfléchis, cette fois. » |
+| 👑 Grok | « Grok. Il cogne avec la Pierre et les Ciseaux… et quand il se fâche, il lit dans ton jeu. Ne sois pas prévisible. » | « … Pas mal, jeune padawan. Pas mal du tout. Ne le répète à personne. » |
+
+En cas de défaite, une pique courte (« Muscle ton jeu. », « En 1997, j'aurais gagné les yeux fermés. ») puis on recommence.
+
+À vérifier : « padawan » est un mot de Star Wars. Le citer dans une réplique est sans doute sans risque, mais pour être
+tranquille on pourrait dire « jeune apprenti » ou « jeune pousse ».
+
 ## Les règles d'un combat
 
 - **Vie** : chacun a une barre de vie. On la retrouve pleine au début de chaque combat.
