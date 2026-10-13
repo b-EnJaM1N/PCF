@@ -17,7 +17,7 @@ const M = MONDES[0];
 // Le choix et la personnalisation sont gardés sur le téléphone (« aventurePerso » : { heros, peau, cheveux, yeux, image }).
 const HEROS_CHOIX = [
   { id: "cape", nom: "Le Héros", desc: "Cape rouge et poings serrés.", image: "img/aventure/heros.png", visage: ["250%", "62% 3%"],
-    zones: { cheveux: [{ x: 170, y: 0, w: 206, h: 122 }], yeux: [{ x: 262, y: 105, w: 22, h: 28 }, { x: 298, y: 105, w: 16, h: 28 }] } },
+    zones: { cheveux: [{ x: 180, y: 0, w: 196, h: 100 }, { x: 225, y: 100, w: 140, h: 18 }], ecartMeches: 0.1, yeux: [{ x: 262, y: 105, w: 22, h: 28 }, { x: 298, y: 105, w: 16, h: 28 }] } },
   { id: "heroine", nom: "L'Héroïne", desc: "Queue de cheval et regard décidé.", image: "img/aventure/heroine.png", visage: ["250%", "86% 18%"],
     zones: { cheveux: [{ x: 0, y: 0, w: 380, h: 132 }, { x: 0, y: 132, w: 305, h: 18 }, { x: 0, y: 150, w: 130, h: 60 }], yeux: [{ x: 255, y: 99, w: 24, h: 21 }, { x: 290, y: 99, w: 15, h: 21 }] } },
 ];
