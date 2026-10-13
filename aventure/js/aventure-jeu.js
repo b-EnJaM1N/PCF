@@ -7,20 +7,29 @@ import {
   nouveauCombat, signeAdversaire, indiceLoupe, peutUtiliser, utiliser, jouer, piqueAuHasard,
 } from "./aventure-logique.js";
 import { IMAGE, LARGEUR, HAUTEUR, ETAPES, MS_PAR_PIXEL, trajet, position } from "./aventure-carte.js";
+import { PEAUX, CHEVEUX, YEUX, ORIGINE, estOrigine, personnaliser } from "./aventure-perso.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const M = MONDES[0];
-// Les héros au choix ; le choix est gardé sur le téléphone.
+// Les héros au choix, avec où se trouvent leurs cheveux et leurs yeux dans le dessin (pour les repeindre).
+// Le choix et la personnalisation sont gardés sur le téléphone (« aventurePerso » : { heros, peau, cheveux, yeux, image }).
 const HEROS_CHOIX = [
-  { id: "cape", nom: "Le Héros", desc: "Cape rouge et poings serrés.", image: "img/aventure/heros.png", visage: ["250%", "62% 3%"] },
-  { id: "heroine", nom: "L'Héroïne", desc: "Queue de cheval et regard décidé.", image: "img/aventure/heroine.png", visage: ["250%", "86% 18%"] },
+  { id: "cape", nom: "Le Héros", desc: "Cape rouge et poings serrés.", image: "img/aventure/heros.png", visage: ["250%", "62% 3%"],
+    zones: { cheveux: [{ x: 170, y: 0, w: 206, h: 122 }], yeux: [{ x: 262, y: 105, w: 22, h: 28 }, { x: 298, y: 105, w: 16, h: 28 }] } },
+  { id: "heroine", nom: "L'Héroïne", desc: "Queue de cheval et regard décidé.", image: "img/aventure/heroine.png", visage: ["250%", "86% 18%"],
+    zones: { cheveux: [{ x: 0, y: 0, w: 380, h: 132 }, { x: 0, y: 132, w: 305, h: 18 }, { x: 0, y: 150, w: 130, h: 60 }], yeux: [{ x: 255, y: 99, w: 24, h: 21 }, { x: 290, y: 99, w: 15, h: 21 }] } },
 ];
-let herosId = lire("aventureHeros", null);
-if (!HEROS_CHOIX.some(h => h.id === herosId)) herosId = null;   // (l'option « Toi en héros », à partir d'une photo, a été retirée)
-ecrire("aventurePhoto", null);
-const herosChoisi = () => HEROS_CHOIX.find(h => h.id === herosId) || HEROS_CHOIX[0];
+ecrire("aventurePhoto", null);   // (l'option « Toi en héros », à partir d'une photo, a été retirée)
+let perso = lire("aventurePerso", null);
+if (!perso && HEROS_CHOIX.some(h => h.id === lire("aventureHeros", null))) perso = { heros: lire("aventureHeros"), ...ORIGINE };
+if (perso && !HEROS_CHOIX.some(h => h.id === perso.heros)) perso = null;
+let herosId = perso?.heros || null;
+function herosChoisi() {
+  const h = HEROS_CHOIX.find(x => x.id === herosId) || HEROS_CHOIX[0];
+  return perso?.heros === h.id && perso.image ? { ...h, image: perso.image } : h;
+}
 const herosImg = () => herosChoisi().image;
 const teteHeros = (h = herosChoisi()) => `<span class="tete" style="background-image:url(${h.image});background-size:${h.visage[0]} auto;background-position:${h.visage[1]}"></span>`;
 // 0 Pierre, 1 Ciseaux, 2 Feuille (comme regles.js) ; les boutons dans l'ordre Pierre, Feuille, Ciseaux.
@@ -153,7 +162,7 @@ function choixHeros() {
   ecran = "heros";
   const actuel = herosId ? herosChoisi().id : null;
   const cartes = HEROS_CHOIX.map(h => `<button class="cadre heros-choix ${h.id === actuel ? "choisi" : ""}" data-av="heros" data-id="${h.id}">
-    <span class="heros-portrait"><img class="sprite" src="${h.image}" alt=""></span>
+    <span class="heros-portrait"><img class="sprite" src="${perso?.heros === h.id && perso.image ? perso.image : h.image}" alt=""></span>
     <b>${esc(h.nom)}</b><small>${esc(h.desc)}</small>
   </button>`).join("");
   afficher(`<div class="page">
@@ -161,6 +170,48 @@ function choixHeros() {
     <div class="heros-grille">${cartes}</div>
     <button class="pbtn bois large" data-av="titre">← Retour</button>
   </div>`);
+}
+
+// ---------------------------------------------------------------- la personnalisation
+// Peau, cheveux, yeux : des pastilles de couleurs, et le héros en grand qui change aussitôt.
+let essai = null;   // { heros, peau, cheveux, yeux } en cours de réglage
+const corpsCharges = {};
+const corpsDe = h => (corpsCharges[h.id] ||= new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = h.image; }));
+function ecranPerso(id) {
+  ecran = "perso";
+  const h = HEROS_CHOIX.find(x => x.id === id);
+  essai = perso?.heros === id ? { heros: id, peau: perso.peau, cheveux: perso.cheveux, yeux: perso.yeux } : { heros: id, ...ORIGINE };
+  const ligne = (cle, titre, couleurs) => `<div class="perso-ligne"><b>${titre}</b><div class="pastilles">
+    <button class="pastille origine" data-av="teinte" data-cle="${cle}" data-i="-1" title="Comme le dessin" aria-label="Comme le dessin">✦</button>
+    ${couleurs.map((c, i) => `<button class="pastille" data-av="teinte" data-cle="${cle}" data-i="${i}" style="background:rgb(${c.rgb})" title="${esc(c.nom)}" aria-label="${esc(c.nom)}"></button>`).join("")}
+  </div></div>`;
+  afficher(`<div class="page">
+    ${pancarte("Personnalise", esc(h.nom))}
+    <div class="heros-portrait perso-apercu"><canvas id="persoApercu" class="sprite"></canvas></div>
+    <div class="cadre perso-reglages">
+      ${ligne("peau", "Peau", PEAUX)}
+      ${ligne("cheveux", "Cheveux", CHEVEUX)}
+      ${ligne("yeux", "Yeux", YEUX)}
+    </div>
+    <button class="pbtn vert large" data-av="persoValider">✔ C'est parti !</button>
+    <button class="pbtn bois large" data-av="choixHeros">← Changer de héros</button>
+  </div>`);
+  majPerso();
+}
+async function majPerso() {
+  if (!essai || ecran !== "perso") return;
+  document.querySelectorAll("[data-av=teinte]").forEach(b => b.classList.toggle("actif", Number(b.dataset.i) === essai[b.dataset.cle]));
+  const h = HEROS_CHOIX.find(x => x.id === essai.heros), res = personnaliser(await corpsDe(h), h.zones, essai), a = $("persoApercu");
+  if (!a) return;
+  a.width = res.width; a.height = res.height; a.getContext("2d").drawImage(res, 0, 0);
+}
+async function validerPerso() {
+  const h = HEROS_CHOIX.find(x => x.id === essai.heros);
+  const image = estOrigine(essai) ? null : personnaliser(await corpsDe(h), h.zones, essai).toDataURL("image/png");
+  perso = { ...essai, image };
+  try { localStorage.setItem("pcf:aventurePerso", JSON.stringify(perso)); } catch { perso.image = null; ecrire("aventurePerso", perso); }
+  herosId = perso.heros; ecrire("aventureHeros", herosId);
+  son("pouvoir"); carte();
 }
 
 // ---------------------------------------------------------------- la carte du monde
@@ -425,7 +476,9 @@ jeu.addEventListener("click", e => {
   if (act === "commencer") { son("generique"); document.querySelector(".titre-ecran").classList.add("part"); setTimeout(herosId ? carte : choixHeros, 650); return; }
   if (act === "choixHeros") { choixHeros(); return; }
   if (act === "titre") { titre(); return; }
-  if (act === "heros") { herosId = b.dataset.id; ecrire("aventureHeros", herosId); son("pouvoir"); b.classList.add("choisi"); setTimeout(carte, 350); return; }
+  if (act === "heros") { ecranPerso(b.dataset.id); return; }
+  if (act === "teinte") { essai[b.dataset.cle] = Number(b.dataset.i); majPerso(); return; }
+  if (act === "persoValider") { validerPerso(); return; }
   if (act === "intro") { P.introVue = true; sauver(); carte({ allerVers: 0 }); }
   else if (act === "aller") marcher(Number(b.dataset.i));
   else if (act === "suivant") carte({ allerVers: Number(b.dataset.i) });

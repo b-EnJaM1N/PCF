@@ -137,6 +137,16 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .heros-choix b { font-size: 1.1rem; margin-top: 4px; }
 .heros-choix small { color: var(--discret); font-size: .8rem; }
 
+/* La personnalisation du héros. */
+.perso-apercu { width: min(78%, 300px); align-self: center; border: 3px solid var(--or); box-shadow: 0 0 0 3px var(--brun); }
+.perso-apercu canvas { width: 92%; height: auto; image-rendering: pixelated; animation: respire 1.2s steps(2) infinite; }
+.perso-reglages { padding: 10px 12px; display: flex; flex-direction: column; gap: 10px; }
+.perso-ligne b { display: block; margin-bottom: 4px; }
+.pastilles { display: flex; flex-wrap: wrap; gap: 8px; }
+.pastille { width: 34px; height: 34px; padding: 0; border: 3px solid var(--brun); border-radius: 6px; cursor: pointer; box-shadow: 0 3px 0 rgba(0, 0, 0, .4); }
+.pastille.origine { background: #2a2d45; color: #f4d06f; font-size: .9rem; }
+.pastille.actif { outline: 3px solid #fff; outline-offset: 1px; }
+
 /* La carte du monde, façon premiers Mario (aventure-carte.js) : le dessin de la carte, les étapes et le héros par-dessus. */
 .carte-monde { position: relative; padding: 0; overflow: hidden; }
 .carte-fond { display: block; width: 100%; height: auto; image-rendering: pixelated; }
