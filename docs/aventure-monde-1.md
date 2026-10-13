@@ -13,11 +13,9 @@ damier du fond retiré) ; Bambi et Pipistrelle sont retournés pour regarder le 
 **Écran titre** (14 octobre, idée 1 choisie par le porteur du projet) : « La Quête du Gant d'Or » en lettres pixel dorées sur le
 décor de la forêt, le Gant d'Or qui flotte et brille, le héros sur le chemin, un bouton « Commencer » (14 octobre) et un petit générique 8 bits.
 **Choix du héros** (14 octobre) : à la première partie, écran « Choisis ton héros » : le Héros, l'Héroïne (dessin du porteur
-du projet, damier retiré) ou « Toi en héros » : le héros ou l'héroïne repeint aux couleurs d'une photo (la peau lue sur les joues, les cheveux en haut
-du rond), en gardant le dessin, ses ombres et ses lumières (`app/js/aventure-photo.js`). Essais écartés le 14 octobre : le visage
-en photo pixelisée collé dans un rond (« artisanal »), puis le visage redessiné dans la peau du dessin (fondu, mais plus du tout
-ressemblant). La photo reste sur le téléphone, rien n'est envoyé (une version par intelligence artificielle serait payante et
-poserait la question des photos de visages) ; ensuite on va droit à la carte, avec « Changer de héros » sur l'écran titre. Idée pour plus tard : une mini-BD de 4 images avant la première partie (le Gant d'Or
+du projet, damier retiré) (« Toi en héros », à partir d'une photo, essayé puis retiré le 14 octobre à la demande du porteur du projet : un visage en
+photo collé dans un rond faisait « artisanal », un visage redessiné n'était plus ressemblant, et le héros repeint aux couleurs
+de la photo ne convainquait pas non plus ; une version par intelligence artificielle serait payante) ; ensuite on va droit à la carte, avec « Changer de héros » sur l'écran titre. Idée pour plus tard : une mini-BD de 4 images avant la première partie (le Gant d'Or
 sur son socle, les racines qui l'emportent, Monique au micro, le héros qui part du campement).
 
 **Carte du monde façon premiers Mario** (14 octobre) : le dessin du porteur du projet (`app/img/aventure/carte.webp` : forêt,

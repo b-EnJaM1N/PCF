@@ -71,7 +71,6 @@ const FICHIERS = [
   "css/aventure.css",
   "js/aventure-jeu.js",
   "js/aventure-carte.js",
-  "js/aventure-photo.js",
   "fonts/jersey10-latin.woff2",
   "img/aventure/foret.webp",
   "img/aventure/carte.webp",

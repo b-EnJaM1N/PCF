@@ -134,29 +134,8 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .heros-portrait { display: flex; align-items: flex-end; justify-content: center; width: 100%; aspect-ratio: 1; border-radius: 4px;
   background: linear-gradient(rgba(10, 16, 40, .2), rgba(10, 16, 40, .5)), url(../img/aventure/foret.webp) 50% 70% / cover; image-rendering: pixelated; }
 .heros-portrait .sprite { width: 92%; animation: respire 1.2s steps(2) infinite; }
-.heros-mystere { align-self: center; font-size: 4rem; color: #f4d06f; text-shadow: 4px 4px 0 var(--brun); }
 .heros-choix b { font-size: 1.1rem; margin-top: 4px; }
 .heros-choix small { color: var(--discret); font-size: .8rem; }
-
-.heros-choix.photo { grid-column: span 2; flex-direction: row; text-align: left; gap: 12px; }
-.heros-choix.photo .heros-portrait { width: 38%; flex: none; }
-.heros-choix.photo b, .heros-choix.photo small { display: block; }
-.heros-mystere .pix { width: 64px; height: 64px; }
-
-/* « Toi en héros » : l'éditeur de photo. */
-.photo-boite { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-#photoReglages { display: flex; flex-direction: column; gap: 10px; align-items: center; }
-#photoReglages[hidden] { display: none; }
-.photo-editeur { width: min(100%, 260px); aspect-ratio: 1; border: 3px solid var(--brun); border-radius: 6px; touch-action: none; cursor: grab; }
-.photo-zoom { display: flex; align-items: center; gap: 8px; width: min(100%, 260px); }
-.photo-zoom input { flex: 1; accent-color: #f4d06f; }
-.photo-corps { display: flex; gap: 8px; }
-.photo-nuances { display: flex; gap: 16px; margin: 0; font-size: .9rem; }
-.photo-nuances span { display: inline-flex; align-items: center; gap: 6px; }
-.photo-nuances i { width: 22px; height: 22px; border: 2px solid #f0ead6; border-radius: 4px; }
-.photo-corps .actif { outline: 3px solid #fff; }
-.photo-apercu { width: min(70%, 220px); }
-.photo-apercu canvas { width: 92%; height: auto; image-rendering: pixelated; }
 
 /* La carte du monde, façon premiers Mario (aventure-carte.js) : le dessin de la carte, les étapes et le héros par-dessus. */
 .carte-monde { position: relative; padding: 0; overflow: hidden; }
