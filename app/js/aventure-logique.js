@@ -27,7 +27,7 @@ export const MONDES = [{
   intro: "Bonjour, petit scarabée. Tu veux devenir un as de la discipline ? Alors suis mes conseils. J'ai été championne en 1997. Toi, pour l'instant, tu n'es rien. Le Roi des Gobelins a volé le Gant d'Or : va le chercher au fond de la Forêt des Ombres. Et tiens-toi droit.",
   adversaires: [
     {
-      id: "bambi", nom: "Bambi", titre: "le faon timide", emoji: "🦌", vie: 30, force: 12, recompense: "loupe",
+      id: "bambi", nom: "Bambi", titre: "le faon timide", emoji: "🦌", image: "img/aventure/bambi.png", vie: 30, force: 12, recompense: "loupe",
       replique: "Euh… on peut faire ami-ami ?",
       mission: "Commence par Bambi. Il est têtu : il rejoue le même signe tant qu'il n'a pas perdu deux fois. Même toi, tu devrais y arriver.",
       bravo: "Bien. Tiens, une Loupe. Elle te montre ce que l'autre prépare. Ne la gaspille pas.",
@@ -53,7 +53,7 @@ export const MONDES = [{
       probabilites: () => somme(unSur(PIERRE, 0.5), repartir(0.5, PIERRE)),
     },
     {
-      id: "pipistrelle", nom: "Pipistrelle", titre: "la chauve-souris", feminin: true, emoji: "🦇", vie: 60, force: 20, recompense: "double",
+      id: "pipistrelle", nom: "Pipistrelle", titre: "la chauve-souris", feminin: true, emoji: "🦇", image: "img/aventure/pipistrelle.png", vie: 60, force: 20, recompense: "double",
       replique: "Tu ne me vois pas venir !",
       mission: "La chauve-souris ne tient pas en place : jamais deux fois le même signe. Sers-toi de ta tête.",
       bravo: "Correct. Voici un Coup double. Frappe fort, pour une fois.",
@@ -61,7 +61,7 @@ export const MONDES = [{
       probabilites: c => (c.coups.length ? repartir(1, c.coups.at(-1).lui) : UNIFORME),
     },
     {
-      id: "amanite", nom: "L'Amanite", titre: "champignon vénéneux", feminin: true, emoji: "🍄", vie: 70, force: 20, recompense: "potion", poison: POISON,
+      id: "amanite", nom: "L'Amanite", titre: "champignon vénéneux", feminin: true, emoji: "🍄", image: "img/aventure/amanite.png", vie: 70, force: 20, recompense: "potion", poison: POISON,
       replique: "Approche… je ne suis pas si toxique.",
       mission: "L'Amanite t'imite, comme un mauvais élève. Et méfie-toi des égalités : elles empoisonnent.",
       bravo: "Tu as encore tes deux mains ? Bien. Une Potion, au cas où.",
@@ -69,7 +69,7 @@ export const MONDES = [{
       probabilites: c => (c.coups.length ? somme(unSur(c.coups.at(-1).moi, 0.85), repartir(0.15, c.coups.at(-1).moi)) : UNIFORME),
     },
     {
-      id: "loup", nom: "Le Loup gris", titre: "le rusé", emoji: "🐺", vie: 90, force: 22, recompense: "choix", morsure: true,
+      id: "loup", nom: "Le Loup gris", titre: "le rusé", emoji: "🐺", image: "img/aventure/loup.png", vie: 90, force: 22, recompense: "choix", morsure: true,
       replique: "Je sens ta peur d'ici.",
       mission: "Le Loup sent la peur. Quand il gagne, il insiste. Quand il perd, il change. Ne lui laisse pas deux victoires d'affilée.",
       bravo: "Choisis ton pouvoir. Et réfléchis, cette fois.",
@@ -81,7 +81,7 @@ export const MONDES = [{
       },
     },
     {
-      id: "grok", nom: "Grok", titre: "le Roi des Gobelins", emoji: "👑", vie: 160, force: 24, recompense: "gant", boss: true, rage: true, racines: true,
+      id: "grok", nom: "Grok", titre: "le Roi des Gobelins", emoji: "👑", image: "img/aventure/grok.png", vie: 160, force: 24, recompense: "gant", boss: true, rage: true, racines: true,
       replique: "Le Gant d'Or est à moi !", repliqueRage: "ASSEZ JOUÉ !",
       mission: "Grok. Il cogne avec la Pierre et les Ciseaux… et quand il se fâche, il lit dans ton jeu. Ne sois pas prévisible.",
       bravo: "… Pas mal, petit scarabée. Pas mal du tout. Ne le répète à personne.",

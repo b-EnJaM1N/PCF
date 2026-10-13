@@ -110,7 +110,11 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .combattant .sprite { width: 100%; height: auto; display: block; animation: respire 1.2s steps(2) infinite; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .35)); }
 .combattant.lui .sprite { animation-delay: .3s; }
 .combattant.lui.emoji { width: min(34%, 170px); }
-.combattant.lui.emoji .sprite { transform: scaleX(-1); }   /* les émojis regardent vers la gauche, vers le héros */
+/* Les adversaires dessinés vers la droite sont retournés, pour regarder le héros. */
+.combattant.miroir .sprite, .tete.miroir { transform: scaleX(-1); }
+.combattant.lui.vol { bottom: 30%; width: min(46%, 240px); }      /* Pipistrelle vole */
+.combattant.lui.grand { width: min(68%, 360px); right: -4%; bottom: 4%; }   /* le boss */
+.combattant.vol ~ .bulle-parole { bottom: 61%; }
 .combattant.protege .sprite { filter: drop-shadow(0 0 6px #6fb7ff) drop-shadow(0 0 2px #6fb7ff); }
 .combattant.charge .sprite { filter: drop-shadow(0 0 6px #ffb347) drop-shadow(0 0 2px #ffb347); }
 .combattant.enrage .sprite { filter: drop-shadow(0 0 8px #ff3b2f) saturate(1.6) hue-rotate(-25deg); animation-duration: .6s; }
@@ -174,7 +178,11 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 
 /* Les animations (en saccades, pour rester « pixel »). */
 @keyframes respire { 50% { transform: translateY(-3%); } }
-.combattant.lui.emoji .sprite { animation-name: respire-miroir; }
+.combattant.miroir .sprite { animation-name: respire-miroir; }
+.combattant.vol .sprite { animation: voler .9s steps(3) infinite; }
+.combattant.miroir.vol .sprite { animation-name: voler-miroir; }
+@keyframes voler { 50% { transform: translateY(-12%); } }
+@keyframes voler-miroir { 0%, 100% { transform: scaleX(-1); } 50% { transform: scaleX(-1) translateY(-12%); } }
 @keyframes respire-miroir { 0%, 100% { transform: scaleX(-1); } 50% { transform: scaleX(-1) translateY(-3%); } }
 .moi.attaque { animation: fonce-d .4s steps(4); } .lui.attaque { animation: fonce-g .4s steps(4); }
 @keyframes fonce-d { 50% { transform: translateX(45%); } }

@@ -7,8 +7,9 @@ mise en ligne automatiquement à l'adresse https://handslam.fr/aventure/aventure
 Version pixel art (13 octobre), d'après la maquette du porteur du projet : le décor de la forêt (`app/img/aventure/foret.webp`),
 le héros et le Gobelin découpés dans la maquette (`heros.png`, `gobelin.png`), police pixel Jersey 10, cadres dorés, gros
 boutons bleu / vert / rouge, sons façon console 8 bits. Animations : les combattants respirent, foncent sur l'autre, clignotent
-quand ils sont touchés, tombent au K.-O. ; les dégâts s'envolent en chiffres. Les autres adversaires sont des émojis dessinés
-en gros pixels, en attendant leurs dessins. Monique parle dans une boîte de dialogue, lettre par lettre (voix plus tard).
+quand ils sont touchés, tombent au K.-O. ; les dégâts s'envolent en chiffres. Tous les adversaires ont leur dessin (14 octobre :
+Bambi, Pipistrelle, l'Amanite, le Loup gris et le boss, un golem de bois et de pierre, fournis par le porteur du projet,
+damier du fond retiré) ; Bambi et Pipistrelle sont retournés pour regarder le héros, Pipistrelle vole, le boss est plus grand. Monique parle dans une boîte de dialogue, lettre par lettre (voix plus tard).
 Fichiers : `app/aventure.html`, `app/css/aventure.css`, `app/js/aventure-jeu.js` (écran), `app/js/aventure-logique.js` (règles, testées). Un mode solo façon RPG, contre l'ordinateur,
 sans serveur (jouable sans compte). 5 ou 6 mondes à terme ; on commence par un seul monde pour voir si les joueurs accrochent.
 Les dessins (style pixel art) viendront après.
