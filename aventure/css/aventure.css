@@ -52,6 +52,7 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
   box-shadow: inset 0 3px 0 rgba(255, 255, 255, .28), inset 0 -5px 0 rgba(0, 0, 0, .3), 0 4px 0 #120a04;
 }
 .pbtn:active:not(:disabled) { transform: translateY(3px); box-shadow: inset 0 3px 0 rgba(255, 255, 255, .28), inset 0 -3px 0 rgba(0, 0, 0, .3), 0 1px 0 #120a04; }
+.pbtn[hidden] { display: none; }
 .pbtn:disabled { filter: grayscale(.7) brightness(.7); cursor: default; }
 .pbtn.bleu { background: var(--bleu); } .pbtn.vert { background: var(--vert); } .pbtn.rouge { background: var(--rouge); }
 .pbtn.bois { background: linear-gradient(var(--bois-clair), var(--bois)); }
@@ -136,6 +137,23 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .heros-mystere { align-self: center; font-size: 4rem; color: #f4d06f; text-shadow: 4px 4px 0 var(--brun); }
 .heros-choix b { font-size: 1.1rem; margin-top: 4px; }
 .heros-choix small { color: var(--discret); font-size: .8rem; }
+
+.heros-choix.photo { grid-column: span 2; flex-direction: row; text-align: left; gap: 12px; }
+.heros-choix.photo .heros-portrait { width: 38%; flex: none; }
+.heros-choix.photo b, .heros-choix.photo small { display: block; }
+.heros-mystere .pix { width: 64px; height: 64px; }
+
+/* « Toi en héros » : l'éditeur de photo. */
+.photo-boite { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+#photoReglages { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+#photoReglages[hidden] { display: none; }
+.photo-editeur { width: min(100%, 260px); aspect-ratio: 1; border: 3px solid var(--brun); border-radius: 6px; touch-action: none; cursor: grab; }
+.photo-zoom { display: flex; align-items: center; gap: 8px; width: min(100%, 260px); }
+.photo-zoom input { flex: 1; accent-color: #f4d06f; }
+.photo-corps { display: flex; gap: 8px; }
+.photo-corps .actif { outline: 3px solid #fff; }
+.photo-apercu { width: min(70%, 220px); }
+.photo-apercu canvas { width: 92%; height: auto; image-rendering: pixelated; }
 
 /* La carte du monde, façon premiers Mario (aventure-carte.js) : le dessin de la carte, les étapes et le héros par-dessus. */
 .carte-monde { position: relative; padding: 0; overflow: hidden; }
