@@ -12,8 +12,10 @@ Bambi, Pipistrelle, l'Amanite, le Loup gris et le boss, un golem de bois et de p
 damier du fond retiré) ; Bambi et Pipistrelle sont retournés pour regarder le héros, Pipistrelle vole, le boss est plus grand. Monique parle dans une boîte de dialogue, lettre par lettre (voix plus tard).
 **Écran titre** (14 octobre, idée 1 choisie par le porteur du projet) : « La Quête du Gant d'Or » en lettres pixel dorées sur le
 décor de la forêt, le Gant d'Or qui flotte et brille, le héros sur le chemin, un bouton « Commencer » (14 octobre) et un petit générique 8 bits.
-**Choix du héros** (14 octobre) : à la première partie, écran « Choisis ton héros » (le héros à la cape ; un second héros
-attend son dessin) ; ensuite on va droit à la carte, avec « Changer de héros » sur l'écran titre. Idée pour plus tard : une mini-BD de 4 images avant la première partie (le Gant d'Or
+**Choix du héros** (14 octobre) : à la première partie, écran « Choisis ton héros » : le Héros, l'Héroïne (dessin du porteur
+du projet, damier retiré) ou « Toi en héros » : une photo choisie sur le téléphone, le visage placé dans un rond (glisser, zoom),
+réduit en gros pixels et posé sur la tête du héros ou de l'héroïne (`app/js/aventure-photo.js`) ; la photo reste sur le téléphone,
+rien n'est envoyé (une version par intelligence artificielle serait payante et poserait la question des photos de visages) ; ensuite on va droit à la carte, avec « Changer de héros » sur l'écran titre. Idée pour plus tard : une mini-BD de 4 images avant la première partie (le Gant d'Or
 sur son socle, les racines qui l'emportent, Monique au micro, le héros qui part du campement).
 
 **Carte du monde façon premiers Mario** (14 octobre) : le dessin du porteur du projet (`app/img/aventure/carte.webp` : forêt,
