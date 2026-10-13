@@ -7,24 +7,20 @@ import {
   nouveauCombat, signeAdversaire, indiceLoupe, peutUtiliser, utiliser, jouer, piqueAuHasard,
 } from "./aventure-logique.js";
 import { IMAGE, LARGEUR, HAUTEUR, ETAPES, MS_PAR_PIXEL, trajet, position } from "./aventure-carte.js";
-import { CADRE, chargerImage, dessinerEditeur, couleursPhoto, teinter } from "./aventure-photo.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const M = MONDES[0];
-// Les héros au choix ; cheveux : où sont les cheveux dans le dessin (pour les repeindre aux couleurs d'une photo).
-// Le choix est gardé sur le téléphone, comme le héros fait à partir d'une photo (« aventurePhoto » : { corps, image }).
+// Les héros au choix ; le choix est gardé sur le téléphone.
 const HEROS_CHOIX = [
-  { id: "cape", nom: "Le Héros", desc: "Cape rouge et poings serrés.", image: "img/aventure/heros.png", visage: ["250%", "62% 3%"], cheveux: [{ x: 170, y: 0, w: 206, h: 122 }] },
-  { id: "heroine", nom: "L'Héroïne", desc: "Queue de cheval et regard décidé.", image: "img/aventure/heroine.png", visage: ["250%", "86% 18%"], cheveux: [{ x: 0, y: 0, w: 380, h: 150 }, { x: 0, y: 150, w: 130, h: 60 }] },
+  { id: "cape", nom: "Le Héros", desc: "Cape rouge et poings serrés.", image: "img/aventure/heros.png", visage: ["250%", "62% 3%"] },
+  { id: "heroine", nom: "L'Héroïne", desc: "Queue de cheval et regard décidé.", image: "img/aventure/heroine.png", visage: ["250%", "86% 18%"] },
 ];
 let herosId = lire("aventureHeros", null);
-let photo = lire("aventurePhoto", null);
-function herosChoisi() {
-  if (herosId === "photo" && photo?.image) { const corps = HEROS_CHOIX.find(h => h.id === photo.corps) || HEROS_CHOIX[0]; return { ...corps, id: "photo", nom: "Toi en héros", image: photo.image }; }
-  return HEROS_CHOIX.find(h => h.id === herosId) || HEROS_CHOIX[0];
-}
+if (!HEROS_CHOIX.some(h => h.id === herosId)) herosId = null;   // (l'option « Toi en héros », à partir d'une photo, a été retirée)
+ecrire("aventurePhoto", null);
+const herosChoisi = () => HEROS_CHOIX.find(h => h.id === herosId) || HEROS_CHOIX[0];
 const herosImg = () => herosChoisi().image;
 const teteHeros = (h = herosChoisi()) => `<span class="tete" style="background-image:url(${h.image});background-size:${h.visage[0]} auto;background-position:${h.visage[1]}"></span>`;
 // 0 Pierre, 1 Ciseaux, 2 Feuille (comme regles.js) ; les boutons dans l'ordre Pierre, Feuille, Ciseaux.
@@ -160,99 +156,11 @@ function choixHeros() {
     <span class="heros-portrait"><img class="sprite" src="${h.image}" alt=""></span>
     <b>${esc(h.nom)}</b><small>${esc(h.desc)}</small>
   </button>`).join("");
-  const cartephoto = photo?.image
-    ? `<button class="cadre heros-choix photo ${actuel === "photo" ? "choisi" : ""}" data-av="heros" data-id="photo">
-        <span class="heros-portrait"><img class="sprite" src="${photo.image}" alt=""></span>
-        <span><b>Toi en héros</b><small>Le héros à tes couleurs.</small></span>
-      </button>`
-    : `<button class="cadre heros-choix photo" data-av="photo">
-        <span class="heros-portrait"><span class="heros-mystere">${imgPix("📷", "", 18)}</span></span>
-        <span><b>Toi en héros</b><small>Choisis une photo : le héros prend la couleur de ta peau et de tes cheveux.</small></span>
-      </button>`;
   afficher(`<div class="page">
     ${pancarte("Choisis", "ton héros")}
-    <div class="heros-grille">${cartes}${cartephoto}</div>
-    ${photo?.image ? `<button class="pbtn bois large" data-av="photo">📷 Changer de photo</button>` : ""}
+    <div class="heros-grille">${cartes}</div>
     <button class="pbtn bois large" data-av="titre">← Retour</button>
   </div>`);
-}
-
-// ---------------------------------------------------------------- « Toi en héros » : la photo
-// On choisit une photo, on place son visage dans le rond (glisser, zoom), on choisit le corps, et on voit le résultat.
-let ed = null;   // { img, zoom, dx, dy, corps }
-function editeurPhoto() {
-  ecran = "photo";
-  ed = null;
-  afficher(`<div class="page">
-    ${pancarte("Toi", "en héros")}
-    <input type="file" accept="image/*" id="photoFichier" hidden>
-    <div class="cadre photo-boite">
-      <p class="petit-texte" id="photoAide">Choisis une photo où l'on voit bien ton visage et tes cheveux, de face.</p>
-      <button class="pbtn vert large" data-av="photoChoisir">📷 Choisir une photo</button>
-      <div id="photoReglages" hidden>
-        <canvas id="photoEditeur" class="photo-editeur" width="${CADRE}" height="${CADRE}"></canvas>
-        <p class="petit-texte">Fais glisser la photo : ton visage dans le rond, tes cheveux en haut du rond.</p>
-        <p class="photo-nuances" id="photoNuances"></p>
-        <label class="photo-zoom">🔍 <input type="range" id="photoZoom" min="1" max="4" step="0.02" value="1.4"></label>
-        <div class="photo-corps">${HEROS_CHOIX.map(h => `<button class="pbtn bois petit" data-av="photoCorps" data-id="${h.id}">${esc(h.nom)}</button>`).join("")}</div>
-        <div class="heros-portrait photo-apercu"><canvas id="photoApercu" class="sprite"></canvas></div>
-        <button class="pbtn vert large" data-av="photoValider">✔ C'est moi !</button>
-        <button class="pbtn bois large" data-av="photoChoisir">📷 Une autre photo</button>
-      </div>
-    </div>
-    <p class="petit-texte">🔒 Ta photo reste sur ton téléphone : elle n'est envoyée nulle part.</p>
-    <button class="pbtn bois large" data-av="choixHeros">← Retour</button>
-  </div>`);
-  $("photoFichier").addEventListener("change", async e => {
-    const f = e.target.files?.[0]; if (!f) return;
-    const url = URL.createObjectURL(f);
-    try {
-      const img = await chargerImage(url);
-      ed = { img, zoom: 1.4, dx: 0, dy: 0, corps: photo?.corps || (herosChoisi().id === "heroine" ? "heroine" : "cape") };
-      $("photoZoom").value = ed.zoom; $("photoReglages").hidden = false;
-      document.querySelector('[data-av="photoChoisir"]').hidden = true;
-      $("photoAide").textContent = "Place ton visage dans le rond, puis choisis ton héros.";
-      majPhoto();
-    } catch { $("photoAide").textContent = "Cette image ne s'ouvre pas. Essaie une autre photo."; }
-  });
-  $("photoZoom").addEventListener("input", e => { if (ed) { ed.zoom = Number(e.target.value); majPhoto(); } });
-  // Glisser la photo du doigt (ou de la souris).
-  const c = $("photoEditeur"); let glisse = null;
-  c.addEventListener("pointerdown", e => { if (!ed) return; c.setPointerCapture(e.pointerId); glisse = { x: e.clientX, y: e.clientY, dx: ed.dx, dy: ed.dy }; });
-  c.addEventListener("pointermove", e => {
-    if (!glisse) return;
-    const k = CADRE / c.getBoundingClientRect().width;
-    ed.dx = glisse.dx + (e.clientX - glisse.x) * k; ed.dy = glisse.dy + (e.clientY - glisse.y) * k; majPhoto();
-  });
-  const fin = () => { glisse = null; };
-  c.addEventListener("pointerup", fin); c.addEventListener("pointercancel", fin);
-}
-let corpsCharges = {};
-async function corpsDe(id) { return (corpsCharges[id] ||= chargerImage(HEROS_CHOIX.find(h => h.id === id).image)); }
-let rafPhoto = 0;
-function majPhoto() {
-  cancelAnimationFrame(rafPhoto);
-  rafPhoto = requestAnimationFrame(async () => {
-    if (!ed || ecran !== "photo") return;
-    dessinerEditeur($("photoEditeur"), ed.img, ed.zoom, ed.dx, ed.dy);
-    document.querySelectorAll('[data-av="photoCorps"]').forEach(b => b.classList.toggle("actif", b.dataset.id === ed.corps));
-    const h = HEROS_CHOIX.find(x => x.id === ed.corps), corps = await corpsDe(ed.corps);
-    const coul = couleursPhoto(ed.img, ed.zoom, ed.dx, ed.dy), res = teinter(corps, coul, h.cheveux), a = $("photoApercu");
-    $("photoNuances").innerHTML = `<span>Peau <i style="background:rgb(${coul.peau})"></i></span><span>Cheveux <i style="background:rgb(${coul.cheveux})"></i></span>`;
-    if (!a) return;
-    a.width = res.width; a.height = res.height; a.getContext("2d").drawImage(res, 0, 0);
-  });
-}
-async function validerPhoto() {
-  if (!ed) return;
-  const h = HEROS_CHOIX.find(x => x.id === ed.corps), corps = await corpsDe(ed.corps);
-  const image = teinter(corps, couleursPhoto(ed.img, ed.zoom, ed.dx, ed.dy), h.cheveux).toDataURL("image/png");
-  photo = { corps: ed.corps, image };
-  try { localStorage.setItem("pcf:aventurePhoto", JSON.stringify(photo)); }
-  catch { $("photoAide").textContent = "Le téléphone n'a pas pu garder l'image (mémoire pleine)."; return; }
-  herosId = "photo"; ecrire("aventureHeros", herosId);
-  URL.revokeObjectURL(ed.img.src); ed = null;
-  son("pouvoir"); carte();
 }
 
 // ---------------------------------------------------------------- la carte du monde
@@ -517,10 +425,6 @@ jeu.addEventListener("click", e => {
   if (act === "commencer") { son("generique"); document.querySelector(".titre-ecran").classList.add("part"); setTimeout(herosId ? carte : choixHeros, 650); return; }
   if (act === "choixHeros") { choixHeros(); return; }
   if (act === "titre") { titre(); return; }
-  if (act === "photo") { editeurPhoto(); return; }
-  if (act === "photoChoisir") { $("photoFichier").click(); return; }
-  if (act === "photoCorps") { if (ed) { ed.corps = b.dataset.id; majPhoto(); } return; }
-  if (act === "photoValider") { validerPhoto(); return; }
   if (act === "heros") { herosId = b.dataset.id; ecrire("aventureHeros", herosId); son("pouvoir"); b.classList.add("choisi"); setTimeout(carte, 350); return; }
   if (act === "intro") { P.introVue = true; sauver(); carte({ allerVers: 0 }); }
   else if (act === "aller") marcher(Number(b.dataset.i));
