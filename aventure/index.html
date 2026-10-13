@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HandSlam</title>
+<meta name="description" content="HandSlam — le Pierre-Feuille-Ciseaux devient un sport. Sets de 11 points, arbitre, commentateur et tournois.">
+<meta name="theme-color" content="#0F2C52">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HandSlam">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preload" href="fonts/barlow-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+<script>
+  // Si quelque chose casse, on l'affiche à l'écran pour pouvoir le signaler (capture d'écran).
+  (function () {
+    function montrer(msg) {
+      var d = document.getElementById("erreur");
+      if (!d) { d = document.createElement("div"); d.id = "erreur"; d.setAttribute("role", "alert"); (document.body || document.documentElement).appendChild(d); }
+      d.textContent = "Oups, un problème : " + msg + " — fais une capture d'écran et envoie-la. (touche pour fermer)";
+      d.onclick = function () { d.remove(); };
+    }
+    window.addEventListener("error", function (e) { montrer((e.message || "erreur de chargement") + (e.filename ? " [" + e.filename.split("/").pop() + ":" + e.lineno + "]" : "")); }, true);
+    window.addEventListener("unhandledrejection", function (e) { montrer(String(e.reason && e.reason.message || e.reason)); });
+  })();
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="marque"><img class="logo" src="icons/icon.svg" alt="" width="46" height="46"><div><h1>HandSlam</h1><div class="rule" id="ruleTxt">Sets de 11, 2 sets gagnants</div></div></div>
+    <div class="haut-droite">
+      <button class="jetons-haut" id="jetonsHaut" data-palier="3" data-aller="viewBoutique" hidden title="Tes jetons (fictifs : ils ne s'achètent pas et ne s'échangent pas) · touche pour la boutique">🪙 <span id="jetonsSolde">…</span></button>
+      <label class="son-haut icone" title="Son"><input type="checkbox" id="snd" checked aria-label="Son"><span class="snd-on" aria-hidden="true">🔊</span><span class="snd-off" aria-hidden="true">🔇</span></label>
+      <button class="icone" id="btnOptions" aria-label="Options" title="Options">⚙️</button>
+    </div>
+  </header>
+  <p class="sndnote" id="sndNote" hidden></p>
+  <nav class="tabs"><button data-v="jouer" aria-pressed="true">🎮 Jouer<span class="pastille" id="pastilleJouer" hidden></span></button><button data-v="cercles" aria-pressed="false">👥 Amis<span class="pastille" id="pastilleCercles" hidden></span></button><button data-v="profile" aria-pressed="false">🧑 Ma fiche</button></nav>
+
+  <div class="view" id="viewJouer">
+    <div id="hubAlertes"></div>
+    <section class="card accueil" id="accueil" hidden>
+      <div class="accueil-mains" aria-hidden="true">🪨 📄 ✂️</div>
+      <h2>Bienvenue sur HandSlam !</h2>
+      <p>Le pierre-feuille-ciseaux façon match de tennis : des sets, un arbitre, des commentateurs… et un adversaire à lire.</p>
+      <button class="btn" id="premierMatch">▶ Jouer mon premier match</button>
+      <p class="hint">Contre Bambi 🤖, le débutant · un set de 7 points, environ 2 minutes · sans compte.</p>
+      <p class="hint"><button class="linkbtn" id="toutLeMenu">J'ai déjà joué : afficher tout le menu</button></p>
+    </section>
+    <section class="card mdj" id="mdj" data-palier="3">
+      <div class="mdj-ligne">
+        <span class="mdj-av" id="mdjAv"></span>
+        <div><b id="mdjTitre">📅 Le match du jour</b><small id="mdjEtat"></small></div>
+        <button class="btn mdj-btn" id="mdjJouer">Jouer</button>
+        <button class="btn alt mdj-btn" id="mdjPartager" hidden title="Partager mon résultat" aria-label="Partager mon résultat">📤</button>
+      </div>
+      <details class="defis-carte" id="defisCarte" hidden>
+        <summary class="defis-titre" id="defisTitre">🎯 Défis du jour</summary>
+        <ul class="defis-liste" id="defisListe"></ul>
+        <p class="hint" id="defisMsg" role="status"></p>
+      </details>
+    </section>
+    <div class="jetons-barre" id="jetonsCarte" data-palier="3" hidden>
+      <span id="jetonsDedans"><button class="jetons-puce" id="jetonsBonus" hidden></button><button class="jetons-puce" id="jetonsRenfl" hidden title="Renflouement : moins de 100 jetons, une fois par jour">🛟 +200 jetons</button></span>
+      <span id="jetonsHors" hidden>🪙 1 000 jetons offerts avec un compte · <button class="linkbtn" data-aller="viewProfile">le créer</button></span>
+      <span class="jetons-msg" id="jetonsMsg" role="status"></span>
+    </div>
+    <button class="hub alerte" id="hubHors" data-palier="1" hidden><span class="hub-i">🔑</span><span><b>Créer mon compte</b><small>Gratuit, sans mot de passe : défie tes amis, joue en ligne et garde ta fiche</small></span></button>
+    <button class="hub" data-aller="viewRapide" data-palier="1"><span class="hub-i">⚡</span><span><b>Partie rapide</b><small>Un adversaire de ton niveau, en un clic</small></span></button>
+    <button class="hub" data-aller="viewDuel"><span class="hub-i">🤝</span><span><b>Défier un ami</b><small>Un duel en direct, par pseudo ou par lien</small></span></button>
+    <button class="hub" data-aller="viewCompet" data-palier="5"><span class="hub-i">🏆</span><span><b>Tournois</b><small>Sit &amp; Go, freeroll du soir, Grand Chelem du dimanche, tournois entre amis</small></span></button>
+    <button class="hub" data-aller="viewMatch"><span class="hub-i">🎯</span><span><b>Entraînement</b><small>Contre les bots d'entraînement, et le HandSlam Open (8 ou 16 joueurs)</small></span></button>
+    <p class="hint" id="menuSuite" hidden style="text-align:center;margin-top:14px">Le reste du menu s'ouvre au fil de tes matchs. <button class="linkbtn" id="toutLeMenu2">Tout afficher</button></p>
+  </div>
+
+  <div class="view" id="viewMatch" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
+    <section class="card" id="startCard">
+      <h2>Entraînement contre les bots</h2>
+      <div class="seg" id="segMode"><button data-v="amical" aria-pressed="true">Match amical</button><button data-v="tournoi" aria-pressed="false">Tournoi</button></div>
+      <div id="amicalBox">
+        <span class="fmt-lbl">Adversaire</span>
+        <div class="opps" id="opps"></div>
+        <p class="hint" id="oppDesc" style="margin:0 0 8px"></p>
+        <details class="fo-dossier" id="oppDossier" style="margin:0 0 14px"><summary>📁 Son dossier</summary><p class="dossier-source" id="oppBilan"></p><div id="oppDossierCorps"></div></details>
+        <span class="fmt-lbl">Points par set</span>
+        <div class="seg" id="segLen"><button data-v="11">11 (officiel)</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
+        <p class="hint" id="lenLock" hidden>Le format ne peut pas changer pendant un match ou un tournoi.</p>
+        <span class="fmt-lbl">Format du match</span>
+        <div class="seg" id="segWin"><button data-v="1">1 set</button><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
+        <p class="hint" style="margin-bottom:14px" id="fmtHint"></p>
+        <button class="btn" id="startBtn">Commencer un match</button>
+      </div>
+      <div id="tourBox" hidden>
+        <p class="hint" style="margin-bottom:14px">Le HandSlam Open : un tournoi à élimination directe contre les bots. Tous les tours en 2 sets gagnants, la finale en 3 sets gagnants, comme un Grand Chelem. Les têtes de série sont placées selon leur niveau.</p>
+        <span class="fmt-lbl">Nombre de joueurs</span>
+        <div class="seg" id="segOpen"><button data-v="8">8 joueurs</button><button data-v="16">16 joueurs</button></div>
+        <p class="hint" style="margin-bottom:14px">À 8 : toi et les 7 bots les plus proches de ton niveau (3 matchs à gagner). À 16 : toi et les 15 bots (4 matchs à gagner, huitièmes de finale compris).</p>
+        <button class="btn" id="tourBtn">Lancer le tournoi</button>
+      </div>
+    </section>
+
+    <section class="card" id="tourCard" hidden>
+      <h2>🏆 HandSlam Open</h2>
+      <div id="bracket"></div>
+      <p class="tmsg" id="tMsg"></p>
+      <button class="btn" id="tPlay"></button>
+      <p style="text-align:center;margin:12px 0 0"><button class="linkbtn" id="tQuit">Abandonner le tournoi</button></p>
+    </section>
+
+    <section class="board">
+      <div class="side me"><div class="name"><span class="mini" id="miniAv"></span><span id="pseudoMe">Toi</span></div><div class="score" id="sMe">0</div><div class="sets" id="setsMe"></div></div>
+      <div class="side bot"><div class="name"><span class="mini" id="miniBot"></span><span id="botName">Le bot</span></div><div class="score" id="sBot">0</div><div class="sets" id="setsBot"></div></div>
+      <div class="status" id="status">Choisis ton premier coup</div>
+      <div class="done-sets" id="doneSets"></div>
+    </section>
+
+
+    <div>
+      <div class="arena"><div class="hand" id="hMe">❔</div><div class="vs">contre</div><div class="hand" id="hBot">❔</div>
+        <div class="cri-bulle" id="criBulle" aria-live="polite" hidden><span class="cri-poing" id="criPoing"></span><span class="cri-texte" id="criTexte"></span></div></div>
+      <div class="verdict" id="verdict"></div>
+    </div>
+    <p class="coach" id="coach" aria-live="polite" hidden></p>
+    <div class="timer" id="timer" aria-hidden="true"><div id="bar"></div></div>
+    <div class="moves" id="moves">
+      <button data-m="0" disabled><span class="e">🪨</span><span class="l">Pierre</span></button>
+      <button data-m="2" disabled><span class="e">📄</span><span class="l">Feuille</span></button>
+      <button data-m="1" disabled><span class="e">✂️</span><span class="l">Ciseaux</span></button>
+    </div>
+    <details class="lecture" id="lecture">
+      <summary>🔎 Lire l'adversaire</summary>
+      <div class="lecture-rep" id="lectureRep"></div>
+      <ul class="lecture-hab" id="lectureHab"></ul>
+      <p class="lecture-piste" id="lecturePiste" hidden></p>
+    </details>
+    <p class="hint lecture-off" id="lectureOff" hidden>🔎 Match officiel : à toi de lire l'adversaire ! L'analyse de ses coups s'affichera à la fin.</p>
+
+    <section class="end" id="end" hidden>
+      <h2 id="endTitle"></h2>
+      <p id="endLine"></p>
+      <p class="enjeu-fin" id="endEnjeu" hidden></p>
+      <div class="bars" id="bars"></div>
+      <p class="readout" id="endRead"></p>
+      <p class="news" id="endClassement" hidden></p>
+      <div class="msg-fin" id="finMsg" hidden>
+        <p class="bulle-msg adv" id="finBulleAdv" hidden></p>
+        <p class="bulle-msg" id="finBulleMoi" hidden></p>
+        <div class="msg-zone" id="finMsgZone"><p class="msg-titre">💬 Un mot pour ton adversaire</p><div class="msg-puces" id="finMsgPuces"></div></div>
+      </div>
+      <div class="nom-fin" id="nomFin" hidden>
+        <label class="lbl" for="inNomFin">✏️ Comment t'appelles-tu ? Ce nom sera affiché à tes adversaires.</label>
+        <div class="nom-fin-ligne"><input id="inNomFin" maxlength="16" autocomplete="nickname" placeholder="Ton pseudo"><button class="btn" id="okNomFin">OK</button></div>
+      </div>
+      <div class="compte-fin" id="compteFin" hidden>
+        <p><b>🔑 Garde ta fiche et défie tes amis</b><br>Crée ton compte gratuit, sans mot de passe : ta fiche est sauvegardée, et tu peux jouer en ligne.</p>
+        <button class="btn" id="compteFinBtn">Créer mon compte</button>
+      </div>
+      <p class="news" id="news"></p>
+      <button class="btn une-btn" id="btnUne" hidden>📰 Voir la Une du journal</button>
+      <button class="btn" id="mdjPartagerFin" hidden>📤 Partager mon résultat du jour</button>
+      <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button><button class="btn" id="revanche" hidden>Proposer une revanche</button><button class="btn alt" id="retourDuels" hidden>Retour aux duels</button><button class="btn" id="encoreRapide" hidden>Nouvelle partie rapide</button><button class="btn" id="voirTournoi" hidden>Voir le tableau du tournoi</button><button class="btn alt" id="finAccueil">🏠 Retour au menu</button></p>
+      <p style="text-align:center;margin:6px 0 0" id="signalerZone" hidden><button class="linkbtn" id="signalerAdv">⚑ Signaler ce joueur</button></p>
+    </section>
+
+    <section>
+      <h2>Historique</h2>
+      <div class="tape" id="tape"><p class="empty">Les coups apparaîtront ici. Observe-les : ton adversaire le fait.</p></div>
+    </section>
+    <p class="readout" id="read">L'analyse de ton jeu démarre au premier coup.</p>
+    <p class="record" id="record"></p>
+    <p style="text-align:center;margin:0" id="abandonDuelZone" hidden><button class="linkbtn" id="abandonDuel">Abandonner le duel</button></p>
+    <p style="text-align:center;margin:0" id="quitterSoloZone" hidden><button class="linkbtn" id="quitterSolo">Quitter le match</button></p>
+  </div>
+
+  <div class="view" id="viewDuel" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
+    <section class="card" id="duelHors">
+      <h2>Défier un ami</h2>
+      <p class="hint" id="duelHorsTexte">Défie tes amis en direct ! Pour jouer en ligne, il faut un compte (gratuit, sans mot de passe).</p>
+      <button class="btn" id="duelVersCompte" style="margin-top:12px">Créer mon compte ou me connecter</button>
+    </section>
+    <div id="duelOn" hidden>
+      <section class="card salle-attente" id="duelSalleCard" hidden>
+        <h2>⏳ Salle d'attente</h2>
+        <div id="duelSalle"></div>
+        <p class="hint">Le match démarre dès que vous êtes là tous les deux. Garde l'appli ouverte. Tu peux aussi partir et revenir plus tard : le défi reste 24 heures dans « Défis acceptés ».</p>
+        <div id="duelSalleNotif" hidden>
+          <p class="hint" id="duelSalleNotifTexte"></p>
+          <button class="btn alt" id="duelSalleNotifBtn" style="margin-bottom:8px">🔔 Activer les notifications</button>
+        </div>
+        <button class="btn alt" id="duelSalleQuitter">Quitter la salle d'attente</button>
+      </section>
+      <section class="card" id="duelMesDefisCard" hidden>
+        <h2>Mes défis</h2>
+        <div class="defis-groupe" id="duelEnCoursCard" hidden>
+          <h3>▶️ Duel en cours</h3>
+          <div id="duelEnCours"></div>
+        </div>
+        <div class="defis-groupe" id="duelRdvCard" hidden>
+          <h3>✅ Acceptés : à jouer</h3>
+          <div id="duelRdv"></div>
+        </div>
+        <div class="defis-groupe" id="duelRecusCard" hidden>
+          <h3>📨 Reçus</h3>
+          <div id="duelRecus"></div>
+        </div>
+        <div class="defis-groupe" id="duelEnvoyesCard" hidden>
+          <h3>📤 Envoyés, en attente de réponse</h3>
+          <div id="duelEnvoyes"></div>
+        </div>
+      </section>
+      <section class="card edit">
+        <h2>Défier un ami</h2>
+        <label class="lbl" for="inRecherche">Chercher un joueur par son pseudo</label>
+        <input type="search" id="inRecherche" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ex. Benji ou Benji#4821">
+        <div id="duelResultats" class="resultats"></div>
+        <div id="duelAmisZone" hidden>
+          <p class="lbl" style="margin-top:10px">Ou défie un de tes amis <small>(touche un ami pour voir vos duels)</small> :</p>
+          <div id="duelAmis" class="resultats"></div>
+        </div>
+        <p class="hint">Ton ami n'a pas encore HandSlam, ou il n'apparaît pas ? Envoie-lui un lien :</p>
+        <button class="btn alt" id="duelLien" style="margin-top:8px">Inviter par un lien (WhatsApp, SMS…)</button>
+        <p class="locknote" id="duelMsg" role="status"></p>
+      </section>
+      <section class="card">
+        <label class="sound" style="align-items:flex-start"><input type="checkbox" id="duelVisible" checked> <span>Apparaître dans la recherche des autres joueurs</span></label>
+        <p class="hint">Même caché, tu peux toujours être invité par un lien.</p>
+      </section>
+    </div>
+  </div>
+
+  <div class="view" id="viewCercles" hidden>
+    <section class="card" id="socHors">
+      <h2>Amis et cercles</h2>
+      <p class="hint" id="socHorsTexte">Ajoute tes amis, crée un cercle (famille, travail, bande d'amis…) et comparez vos niveaux officiels. Il faut un compte (gratuit, sans mot de passe).</p>
+      <button class="btn" id="socVersCompte" style="margin-top:12px">Créer mon compte ou me connecter</button>
+    </section>
+    <div id="socOn" hidden>
+      <div id="socListe">
+        <section class="card" id="socInvitCard" hidden>
+          <h2>Invitations</h2>
+          <div id="socInvit" class="resultats"></div>
+        </section>
+        <section class="card edit">
+          <h2>Mes amis</h2>
+          <div id="socAmis" class="resultats"></div>
+          <p class="hint" id="socAmisVide">Pas encore d'ami. Cherche un joueur par son pseudo pour lui envoyer une demande.</p>
+          <label class="lbl" for="inAmi">Ajouter un ami</label>
+          <input type="search" id="inAmi" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ex. Benji ou Benji#4821">
+          <div id="amiResultats" class="resultats"></div>
+        </section>
+        <section class="card edit">
+          <h2>Mes cercles</h2>
+          <div id="socCercles" class="resultats"></div>
+          <p class="hint" id="socCerclesVide">Un cercle, c'est ton groupe privé (famille, travail, amis) avec son propre classement. Crée le tien, puis invite tes proches par un lien.</p>
+          <button class="btn alt" id="cercleNouveau" style="margin-top:10px">Créer un cercle</button>
+          <div id="cercleForm" hidden>
+            <label class="lbl" for="inCercleNom">Nom du cercle</label>
+            <input type="text" id="inCercleNom" maxlength="30" autocomplete="off" placeholder="Ex. La Famille, Les collègues…">
+            <span class="lbl">Blason</span>
+            <div class="blason-choix"><span class="blason-apercu" id="cercleApercu"></span><div><div class="sw emblemes" id="cercleEmblemes"></div><div class="sw" id="cercleFonds" style="margin-top:10px"></div></div></div>
+            <button class="btn" id="cercleCreer" style="margin-top:14px">Créer le cercle</button>
+          </div>
+        </section>
+        <details class="card pli" id="divCard">
+          <summary><h2>🏆 Classement des divisions</h2><span class="pli-resume" id="divResume">Bronze, Argent, Or, Platine, Diamant</span></summary>
+          <div class="seg seg-div" id="divSeg"><button data-d="0">🥉</button><button data-d="1">🥈</button><button data-d="2">🥇</button><button data-d="3">💎</button><button data-d="4">👑</button></div>
+          <p class="hint" id="divMoi"></p>
+          <ol class="classement" id="divListe"></ol>
+          <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Ta division dépend de ton niveau officiel (duels officiels contre d'autres joueurs ; les bots ne comptent pas) : 🥉 Bronze, 🥈 Argent dès 1 100, 🥇 Or dès 1 250, 💎 Platine dès 1 400, 👑 Diamant dès 1 550. Tu montes dès que tu atteins le seuil, et tu ne redescends que 20 points en dessous. Battre un joueur plus fort rapporte beaucoup, battre un plus faible très peu. Pour figurer au classement : au moins 10 duels officiels, et un duel dans les 30 derniers jours (sinon tu es masqué, sans perdre tes points).</p></details>
+        </details>
+        <p class="locknote" id="socMsg" role="status"></p>
+      </div>
+
+      <div id="socCercle" hidden>
+        <p style="margin:0 0 10px"><button class="linkbtn" id="cercleRetour">← Mes cercles</button></p>
+        <section class="card cercle-tete">
+          <span class="blason-grand" id="cBlason"></span>
+          <div><h2 id="cNom"></h2><p class="hint" id="cInfo"></p></div>
+        </section>
+        <section class="card">
+          <h2>Classement du cercle</h2>
+          <ol class="classement" id="cClassement"></ol>
+          <p class="hint">Rangé par niveau officiel. Victoires et défaites : duels joués entre membres depuis la création du cercle.</p>
+        </section>
+        <section class="card">
+          <h2>Tournois du cercle</h2>
+          <div id="cTournois" class="resultats"></div>
+          <p class="hint" id="cTournoisVide">Aucun tournoi pour l'instant. Organise le premier !</p>
+          <button class="btn alt" id="cNouveauTournoi" style="margin-top:10px">Organiser un tournoi du cercle</button>
+        </section>
+        <section class="card">
+          <h2>Inviter dans le cercle</h2>
+          <button class="btn" id="cPartager">Envoyer le lien d'invitation (WhatsApp, SMS…)</button>
+          <div id="cAmis" class="resultats" style="margin-top:12px"></div>
+          <p class="locknote" id="cInvMsg" role="status"></p>
+        </section>
+        <section class="card edit" id="cGestion" hidden>
+          <h2>Gérer le cercle</h2>
+          <label class="lbl" for="inCNom">Nom</label>
+          <input type="text" id="inCNom" maxlength="30" autocomplete="off">
+          <span class="lbl">Blason</span>
+          <div class="blason-choix"><span class="blason-apercu" id="cApercu"></span><div><div class="sw emblemes" id="cEmblemes"></div><div class="sw" id="cFonds" style="margin-top:10px"></div></div></div>
+          <button class="btn" id="cEnregistrer" style="margin-top:14px">Enregistrer</button>
+          <div id="cMembresGestion" class="resultats" style="margin-top:16px"></div>
+          <button class="btn alt" id="cNouveauLien" style="margin-top:8px">Changer le lien d'invitation</button>
+          <p class="hint">L'ancien lien ne fonctionnera plus.</p>
+          <button class="btn alt danger" id="cSupprimer" style="margin-top:12px">Supprimer le cercle</button>
+        </section>
+        <p class="locknote" id="cMsg" role="status"></p>
+        <p style="text-align:center;margin:6px 0 0"><button class="linkbtn" id="cQuitter">Quitter le cercle</button></p>
+      </div>
+
+      <div id="socAmi" hidden>
+        <p style="margin:0 0 10px"><button class="linkbtn" id="amiRetour">← Mes amis</button></p>
+        <section class="card cercle-tete">
+          <span class="blason-grand" id="aAvatar"></span>
+          <div><h2 id="aNom"></h2><p class="hint" id="aInfo"></p></div>
+        </section>
+        <section class="card">
+          <h2>⚔️ Face-à-face</h2>
+          <div id="aStats"><p class="hint">Chargement…</p></div>
+        </section>
+        <button class="btn" id="aDefier">Défier</button>
+        <p class="locknote" id="aMsg" role="status"></p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="view" id="viewRapide" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
+    <section class="card" id="rapideCard" hidden>
+      <h2>⚡ Partie rapide</h2>
+      <div id="rapideChoix">
+        <p class="hint">Choisis ton format : on te trouve un adversaire humain, du niveau le plus proche du tien. Sans mise et amicale : pour le plaisir, sans effet sur ton niveau. Reste sur cet écran pendant la recherche. (Pour jouer des jetons : Sit &amp; Go, dont le heads-up à deux.)</p>
+        <div class="resultats">
+          <button class="joueur rapide-choix" data-format="officiel"><span><span class="jn">Classique</span><span class="jd">Sets de 11, 2 sets gagnants · amicale</span></span><span class="rapide-nb" id="rapideNb_officiel"></span></button>
+          <button class="joueur rapide-choix" data-format="eclair"><span><span class="jn">Éclair</span><span class="jd">Un set de 7 · amicale</span></span><span class="rapide-nb" id="rapideNb_eclair"></span></button>
+        </div>
+        <p class="hint" id="rapideFile"></p>
+      </div>
+      <div id="rapideAttente" hidden>
+        <div class="rapide-radar" aria-hidden="true">⚡</div>
+        <p class="rapide-titre">Recherche d'un adversaire <span id="rapideChrono">0:00</span></p>
+        <p class="hint" id="rapideFormat"></p>
+        <p class="hint" id="rapideEtat" role="status"></p>
+        <div id="rapideBot" hidden>
+          <p class="sndnote">Personne n'est disponible pour l'instant. Tu peux jouer contre un bot en attendant : ce sera un bot, pas un humain, sans mise, et le match ne comptera pas pour ton niveau officiel.</p>
+          <button class="btn" id="rapideBotGo">Jouer contre un bot</button>
+        </div>
+        <button class="btn alt" id="rapideAnnuler" style="margin-top:8px">Annuler la recherche</button>
+      </div>
+      <p class="locknote" id="rapideMsg" role="status"></p>
+    </section>
+    <section class="card" id="rapideHors" hidden><p class="hint">La Partie rapide se joue en ligne contre d'autres joueurs : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
+  </div>
+
+  <div class="view" id="viewCompet" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Jouer</button></p>
+    <button class="hub" data-aller="viewFreeroll"><span class="hub-i">🗓️</span><span><b>Tournois programmés</b><small>Le freeroll gratuit chaque soir à 20 h, le Grand Chelem le dimanche à 21 h · classement du mois</small></span></button>
+    <button class="hub" data-aller="viewSng"><span class="hub-i">🏁</span><span><b>Sit &amp; Go</b><small>Tournois express publics : départ dès que la salle est pleine</small></span></button>
+    <button class="hub" data-aller="viewTournois"><span class="hub-i">📋</span><span><b>Mes tournois</b><small>Tes tournois en cours, tournois de cercle et tournois privés entre amis</small></span></button>
+  </div>
+
+  <div class="view" id="viewSng" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewCompet">← Tournois</button></p>
+    <section class="card" id="sngCard" hidden>
+      <h2>Tournois express (Sit &amp; Go)</h2>
+      <p class="hint">Départ dès que la salle est pleine · compte pour ton niveau officiel.</p>
+      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. À 2, c'est un heads-up : un seul match, un contre un. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours. 🪙 Avec une mise : l'entrée est payée en jetons, rendue si tu quittes la salle avant le départ ; la cagnotte, moins 10 %, revient au gagnant à 2 (1,8 fois la mise) et se partage comme au poker dans les plus grandes salles : 1er et 2e à 8 et 16, jusqu'aux demi-finalistes à 32, jusqu'aux quarts de finalistes à 64. 🤖 Deux minutes après l'arrivée du premier joueur, même s'il est seul, des bots complètent la salle. Plus la mise est haute, plus ils sont forts, mise par mise : sans mise, n'importe lesquels ; à 50, les débutants ; puis un cran de plus à 100, à 200, à 500, et les meilleurs à 1 000. Les bots comptent dans la cagnotte comme s'ils avaient payé, mais ne gagnent jamais de jetons : chacun est payé selon sa vraie place (matchs contre un bot amicaux).</p></details>
+      <span class="fmt-lbl">Mise en jetons</span>
+      <div class="seg seg-mise" id="sngMise"><button data-v="0">Sans mise</button><button data-v="50">50</button><button data-v="100">100</button><button data-v="200">200</button><button data-v="500">500</button><button data-v="1000">1 000</button></div>
+      <p class="sndnote" id="sngMien" hidden style="margin-top:10px"></p>
+      <div id="sngSalles" class="resultats"></div>
+      <p class="locknote" id="sngMsg" role="status"></p>
+    </section>
+    <section class="card" id="sngHors" hidden><p class="hint">Les Sit &amp; Go se jouent en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
+  </div>
+
+  <div class="view" id="viewFreeroll" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewCompet">← Tournois</button></p>
+    <p class="sndnote tenant" id="progTenant" hidden></p>
+    <section class="card" id="freeCard" hidden>
+      <h2>🌙 Freeroll de 20 h</h2>
+      <p class="hint">Gratuit, chaque soir à 20 h, avec une cagnotte offerte. Inscris-toi, puis sois dans l'appli à 20 h.</p>
+      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Un tournoi gratuit chaque soir à 20 h, avec une cagnotte offerte : 1 000 jetons + 50 par joueur, partagée comme au poker (environ 10 à 15 % des joueurs payés). Inscris-toi dans la journée ; à 20 h, sois dans l'appli : le tournoi démarre avec les inscrits présents, même un seul. 🤖 S'il manque du monde, des bots complètent le tableau : ils ne gagnent jamais de jetons, chacun est payé selon sa vraie place. Sets de 11, 2 sets gagnants (les matchs contre un bot sont amicaux).</p></details>
+      <p class="sndnote" id="freeStatut" style="margin-top:10px"></p>
+      <p class="hint" id="freeInfo"></p>
+      <button class="btn" id="freeInscrire" hidden>M'inscrire pour ce soir</button>
+      <button class="btn alt" id="freeDesinscrire" hidden>Me désinscrire</button>
+      <button class="btn alt" id="freeVoir" hidden>Voir le tableau</button>
+      <p class="locknote" id="freeMsg" role="status"></p>
+    </section>
+    <section class="card" id="progCard" hidden>
+      <h2>🗓️ Tournois à jetons</h2>
+      <p class="hint">Le Grand Chelem, chaque dimanche à 21 h · entrée en jetons.</p>
+      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Le grand rendez-vous de la semaine : le Grand Chelem, chaque dimanche à 21 h. Payant en jetons. L'entrée est payée à l'inscription et rendue si tu te désinscris avant le départ (ou si le tournoi est annulé faute de joueurs). Au départ, sois dans l'appli : le tournoi démarre avec les inscrits présents, même un seul. Un inscrit absent n'est pas remboursé. 🤖 S'il manque du monde, des bots forts complètent le tableau : ils comptent dans la cagnotte comme s'ils avaient payé, mais ne gagnent jamais de jetons, chacun est payé selon sa vraie place. La cagnotte (les entrées moins 10 %) est partagée comme au poker : environ 10 à 15 % des joueurs sont payés, au moins 1,5 fois l'entrée pour le plus petit gain. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel (sauf les matchs contre un bot, amicaux).</p></details>
+      <div id="progListe" class="resultats"></div>
+      <p class="locknote" id="progMsg" role="status"></p>
+    </section>
+    <details class="card pli" id="classementCard" hidden>
+      <summary><h2>🏅 <span id="classementTitre">Classement des gains du mois</span></h2><span class="pli-resume">Qui a gagné le plus de jetons ce mois-ci</span></summary>
+      <p class="hint">Le bénéfice du mois dans les duels à mise, les Sit &amp; Go à mise, les tournois programmés et les freerolls (gains moins mises). Les bonus et les défis ne comptent pas. Remise à zéro le 1er du mois.</p>
+      <ol class="classement" id="classementListe"></ol>
+      <p class="hint" id="classementMoi"></p>
+    </details>
+    <section class="card" id="freeHors" hidden><p class="hint">Les tournois programmés et le freeroll se jouent en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
+  </div>
+
+  <div class="view" id="viewBoutique" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewProfile">← Ma fiche</button></p>
+    <section class="card">
+      <h2>🛍️ La boutique <span class="boutique-solde" id="boutiqueSolde"></span></h2>
+      <p class="hint">De l'apparence seulement, achetée avec tes jetons : jamais d'avantage en match, jamais d'argent réel. Un achat est définitif et il est à toi pour toujours.</p>
+      <p class="locknote" id="boutiqueMsg" role="status"></p>
+      <p class="hint" id="boutiqueHors" hidden>La boutique demande un compte : <button class="linkbtn" data-aller="viewProfile">crée le tien</button> (1 000 jetons offerts).</p>
+    </section>
+    <section class="card" id="boutiqueVitrineCarte" hidden>
+      <h2>⭐ La vitrine du jour · −30 %</h2>
+      <div class="articles" id="boutiqueVitrine"></div>
+    </section>
+    <section class="card">
+      <div class="boutique-onglets" id="boutiqueOnglets"></div>
+      <div class="articles" id="boutiqueArticles"></div>
+    </section>
+  </div>
+
+  <div class="view" id="viewTournois" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewCompet">← Tournois</button></p>
+    <section class="card" id="tournoisCard" hidden>
+      <h2>Mes tournois</h2>
+      <div id="socTournois" class="resultats"></div>
+      <p class="hint" id="socTournoisVide">Organise un tournoi à élimination directe : dans un de tes cercles (page du cercle), ou entre amis avec un lien d'invitation.</p>
+      <button class="btn alt" id="tournoiPrive" style="margin-top:10px">Créer un tournoi privé (par lien)</button>
+    </section>
+    <section class="card" id="tournoisHors" hidden><p class="hint">Les tournois se jouent en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
+  </div>
+
+  <div class="view" id="socTournoiNouveau" hidden>
+    <p style="margin:0 0 10px"><button class="linkbtn" id="tnRetour">← Retour</button></p>
+    <section class="card edit">
+      <h2 id="tnTitre">Nouveau tournoi</h2>
+      <p class="hint" id="tnPrecision"></p>
+      <label class="lbl" for="inTNom" id="tnNomLbl">Nom du tournoi</label>
+      <input type="text" id="inTNom" maxlength="40" autocomplete="off" placeholder="Ex. L'Open de la Famille">
+      <div id="tnTypeBox" hidden>
+        <span class="lbl">Type</span>
+        <div class="seg" id="tnType"><button data-v="libre">Élimination directe</button><button data-v="championnat">Championnat</button></div>
+        <div id="tnFormuleBox" hidden>
+          <span class="lbl">Formule</span>
+          <div class="seg" id="tnFormule"><button data-v="0">Aller simple</button><button data-v="1">Aller-retour</button></div>
+          <span class="lbl">Répétition</span>
+          <div class="seg" id="tnRepet"><button data-v="0">Une seule fois</button><button data-v="1">Chaque semaine</button></div>
+        </div>
+      </div>
+      <span class="lbl">Points par set</span>
+      <div class="seg" id="tnLen"></div>
+      <span class="lbl">Format des matchs</span>
+      <div class="seg" id="tnWin"></div>
+      <span class="lbl" id="tnDureeLbl">Durée de chaque tour</span>
+      <div class="seg" id="tnDuree"></div>
+      <div id="tnEnjeuZone" hidden>
+        <label class="sound" style="align-items:flex-start;margin:12px 0 8px"><input type="checkbox" id="tnEnjeuOn"> <span>🎯 Mettre un enjeu (le dernier s'y colle)</span></label>
+        <div id="tnEnjeuBox" hidden>
+          <input id="tnEnjeu" maxlength="60" autocomplete="off" placeholder="Ex. Le dernier ramène les chocolatines">
+          <div class="msg-puces enjeu-idees" id="tnEnjeuIdees"></div>
+          <p class="hint">Les inscrits le verront avant de s'inscrire : s'inscrire, c'est accepter l'enjeu. Visible seulement dans le cercle, et pas d'argent : un gage, pas un pari.</p>
+        </div>
+      </div>
+      <p class="hint" id="tnHint"></p>
+      <button class="btn" id="tnCreer" style="margin-top:12px">Créer le tournoi</button>
+      <p class="locknote" id="tnMsg" role="status"></p>
+    </section>
+  </div>
+
+  <div class="view" id="socTournoi" hidden>
+    <p style="margin:0 0 10px"><button class="linkbtn" id="tRetour">← Retour</button></p>
+    <section class="card cercle-tete">
+      <span class="blason-grand" id="tIcone"></span>
+      <div><h2 id="tNom"></h2><p class="hint" id="tInfo"></p><p class="hint" id="tEtat" style="color:var(--line);margin-top:4px"></p></div>
+    </section>
+    <section class="card" id="tEnjeuCarte" hidden>
+      <p class="enjeu-fin" id="tEnjeu" style="margin:0"></p>
+      <p style="margin:6px 0 0;text-align:center"><button class="linkbtn" id="tEnjeuEffacer" hidden>Effacer l'enjeu</button></p>
+    </section>
+    <section class="card" id="tMonMatch" hidden>
+      <h2 id="tMonMatchTitre"></h2>
+      <div id="tMonMatchCorps"></div>
+    </section>
+    <section class="card" id="tInscriptions" hidden>
+      <h2>Inscrits</h2>
+      <div id="tInscrits" class="resultats"></div>
+      <div id="tActions" class="actions-col"></div>
+    </section>
+    <section class="card" id="tSerieCarte" hidden>
+      <h2>🔁 Chaque semaine</h2>
+      <p class="hint" id="tSerieTexte"></p>
+      <div id="tPalmares" class="resultats"></div>
+      <p style="margin:6px 0 0"><button class="linkbtn" id="tSerieArreter" hidden>Arrêter la répétition</button></p>
+    </section>
+    <section class="card" id="tClassementCarte" hidden>
+      <h2>Classement</h2>
+      <div class="table-classement"><table id="tClassement"></table></div>
+      <p class="hint">Victoire : 2 points. À égalité : le match entre les deux joueurs, puis les sets gagnés, puis les points gagnés.</p>
+    </section>
+    <section class="card" id="tTableauCarte" hidden>
+      <h2 id="tTableauTitre">Tableau</h2>
+      <div id="tTableau"></div>
+      <p class="hint" id="tRegleAbsence"></p>
+    </section>
+    <p class="locknote" id="tMsg" role="status"></p>
+  </div>
+
+  <div class="view" id="viewOptions" hidden>
+    <p class="retour-hub"><button class="linkbtn" id="optionsRetour">← Retour</button></p>
+    <details class="card pli" id="cNotifs">
+      <summary><h2>🔔 Notifications</h2><span class="pli-resume">Défis et matchs de tournoi, appli fermée</span></summary>
+      <button class="btn" id="btnNotifs" style="margin-top:12px">Activer les notifications</button>
+      <button class="btn alt" id="btnTestNotif" hidden>Envoyer une notification de test</button>
+      <p class="locknote" id="notifsMsg" role="status"></p>
+    </details>
+    <details class="card pli">
+      <summary><h2>🔊 Le son</h2><span class="pli-resume">Commentaires, bruitages, tester le son</span></summary>
+      <button class="test" id="testSnd" style="margin-top:12px">Tester le son</button>
+      <label class="sound" style="margin-top:12px;align-items:flex-start"><input type="checkbox" id="sonCommentaires" checked> <span>🎙️ Commentaires (Roland et Monique)</span></label>
+      <label class="sound" style="margin-top:8px;align-items:flex-start"><input type="checkbox" id="sonBruitages" checked> <span>🎾 Bruitages et public (raquette, applaudissements)</span></label>
+      <p class="hint" style="margin-top:10px">Le bouton 🔊 en haut de l'écran coupe tout. L'arbitre parle tant que le son est allumé.</p>
+    </details>
+    <details class="card pli">
+      <summary><h2>💬 Messages rapides</h2><span class="pli-resume">Les mots échangés avant et après un duel</span></summary>
+      <label class="sound" style="margin-top:12px;align-items:flex-start"><input type="checkbox" id="masquerMessages"> <span>Masquer les messages de mes adversaires</span></label>
+    </details>
+    <details class="card pli" id="installCard">
+      <summary><h2>📲 Installer HandSlam</h2><span class="pli-resume">L'avoir sur l'écran d'accueil, comme une appli</span></summary>
+      <p class="hint"><b>iPhone (Safari)</b> :</p>
+      <ol class="steps"><li>touche le bouton Partager (le carré avec une flèche) ;</li><li>choisis « Sur l'écran d'accueil » ;</li><li>touche « Ajouter ».</li></ol>
+      <p class="hint" style="margin-top:10px"><b>Android (Chrome)</b> :</p>
+      <ol class="steps"><li>touche le menu ⋮ en haut à droite ;</li><li>choisis « Installer l'application » ou « Ajouter à l'écran d'accueil ».</li></ol>
+      <button class="btn" id="installBtn" style="margin-top:12px" hidden>Installer maintenant</button>
+    </details>
+    <span id="placeCompteOptions" hidden></span>
+    <details class="card pli">
+      <summary><h2>🔒 Confidentialité</h2><span class="pli-resume">Tes données, mentions légales, supprimer mon compte</span></summary>
+      <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, ta fiche est gardée en Europe ; ton adresse e-mail n'est jamais montrée aux autres joueurs.</p>
+      <p class="hint"><a href="mentions.html#confidentialite" style="color:var(--me)">Tout savoir sur tes données</a> · <a href="mentions.html#mentions" style="color:var(--me)">Mentions légales</a> · <a href="suppression-compte.html" style="color:var(--me)">Supprimer mon compte, mode d'emploi</a> · Contact : contact.handslam@gmail.com</p>
+      <label class="sound" id="presenceZone" style="align-items:flex-start;margin-top:10px" hidden><input type="checkbox" id="presenceVisible" checked> <span>Montrer à mes amis et à mes cercles quand je suis en ligne (point vert 🟢, ou orange 🟠 pendant un match)</span></label>
+      <button class="btn alt danger" id="supprimerCompte" style="margin-top:12px" hidden>Supprimer mon compte</button>
+    </details>
+    <p class="record" id="version"></p>
+  </div>
+
+  <div class="view" id="viewProfile" hidden>
+    <section class="card">
+      <div class="id"><div class="av" id="pAv"></div>
+        <div><div class="pseudo" id="pName"></div><div class="title" id="pTitle"></div><div class="elo" id="pElo"></div><div class="elo" id="pClassement" hidden></div>
+          <details class="niveau-aide" id="pNiveauAide" hidden><summary>D'où vient ce niveau ?</summary><p id="clDetail"></p><p>Calculé par le serveur, uniquement avec les duels officiels contre d'autres joueurs. Ton niveau contre les bots est un niveau d'entraînement, à part.</p></details></div>
+      </div>
+      <div class="kpis">
+        <div><b id="kM">0</b><span>matchs</span></div>
+        <div><b id="kW">–</b><span>victoires</span></div>
+        <div><b id="kS">0</b><span>série en cours</span></div>
+      </div>
+      <p class="hint" id="pEmpty"></p>
+    </section>
+
+    <div class="seg sous-onglets" id="ficheOnglets" role="tablist">
+      <button data-o="carte" aria-pressed="true">🃏 Ma carte</button><button data-o="stats" aria-pressed="false">📊 Stats</button><button data-o="palmares" aria-pressed="false">🏆 Palmarès</button>
+    </div>
+    <div id="ficheCarte" class="fiche-onglet">
+    <section class="card" id="cCarte">
+      <details class="carte-pli" id="cartePli">
+      <summary><img id="carteImg" class="carte-img" alt="Ma carte de joueur"><span class="carte-toucher">🃏 Ma carte de joueur<small>Touche pour l'agrandir et la partager</small></span></summary>
+      <p class="hint" id="carteRarete"></p>
+      <details class="carte-aide"><summary>Comment sont calculées les notes ?</summary>
+        <p class="hint">Chaque note est sur 99. 50, c'est le niveau du hasard ; il faut des preuves pour s'en éloigner : avec peu de matchs, les notes restent proches de 50.</p>
+        <ul id="carteNotes"></ul>
+      </details>
+      <p class="hint" id="carteMsg" role="status"></p>
+      <button class="btn" id="cartePartager">Partager ma carte</button>
+      <a class="btn alt" id="carteEnregistrer" download="ma-carte.png" href="#">Enregistrer l'image</a>
+      </details>
+    </section>
+    <details class="card edit pli" id="cSurnom">
+      <summary><h2>🎙️ Mon surnom</h2><span class="pli-resume surnom-resume" id="surnomApercu"></span></summary>
+      <p class="hint">Avant chaque match, le speaker te présente avec ton surnom de combattant : <b>un nom + un qualificatif</b>, à composer toi-même. Tu débloques de nouvelles familles en montant les rangs de ta carte de joueur.</p>
+      <label class="lbl" for="inSurnomNom">Nom</label>
+      <select id="inSurnomNom"></select>
+      <label class="lbl" for="inSurnomComp">Qualificatif</label>
+      <select id="inSurnomComp"></select>
+      <button class="btn alt" id="surnomHasard" style="margin-top:12px">🎲 Un surnom au hasard</button>
+      <p class="hint" id="surnomCompte"></p>
+      <details class="surnoms-verrou"><summary id="surnomVerrouTitre">Surnoms à débloquer</summary><div id="surnomVerrou"></div></details>
+      <p class="lbl" id="genreLbl">Les commentateurs parlent de toi en disant</p>
+      <div class="seg" id="segGenre" role="group" aria-labelledby="genreLbl"><button data-v="m">« il »</button><button data-v="f">« elle »</button></div>
+    </details>
+    <details class="card edit pli" id="cCelebrations">
+      <summary><h2>🎉 Mes célébrations</h2><span class="pli-resume">Poignée de main, cri, geste, célébration, cadre</span></summary>
+      <p class="lbl" id="poigneeLbl">Ma poignée de main habituelle</p>
+      <div class="seg seg4" id="segPoignee" role="group" aria-labelledby="poigneeLbl"><button data-v="franche">💪 Franche</button><button data-v="normale">🤝 Normale</button><button data-v="legere">🤏 Légère</button><button data-v="froide">🧊 Froide</button></div>
+      <p class="hint" id="poigneeInfo">À la fin de chaque match, tu as 3 secondes pour choisir ta poignée de main. Sinon, c'est celle-ci.</p>
+      <label class="lbl" for="inCri">Mon cri de victoire</label>
+      <select id="inCri"></select>
+      <p class="hint">Dans une bulle quand tu gagnes un set, en grand avec des confettis quand tu gagnes le match. En duel, ton adversaire le voit.</p>
+      <label class="lbl" for="inGeste">Mon geste de victoire</label>
+      <select id="inGeste"></select>
+      <label class="lbl" for="inCelebration">Ma célébration de fin de match</label>
+      <select id="inCelebration"></select>
+      <label class="lbl" for="inCadre">Le cadre de ma carte de joueur</label>
+      <select id="inCadre"></select>
+      <p class="hint">D'autres cris, gestes, célébrations et cadres sont en vente à la <button class="linkbtn" data-aller="viewBoutique">boutique 🛍️</button>.</p>
+    </details>
+    <details class="card edit pli" id="cAvatar">
+      <summary><h2>🧤 Mon avatar</h2><span class="pli-resume">Pseudo, pays, symbole, couleurs et motifs</span></summary>
+      <div class="av-apercu"><div id="avApercu" aria-hidden="true"></div><small>Aperçu</small></div>
+      <details class="sous-pli" name="avatar"><summary>Mon pseudo et mon pays</summary>
+        <label class="lbl" for="inPseudo">Pseudo</label>
+        <input type="text" id="inPseudo" maxlength="16" placeholder="Ex. Benji-Pierre" autocomplete="nickname">
+        <label class="lbl" for="inFlag">Pays</label>
+        <select id="inFlag"></select>
+      </details>
+      <details class="sous-pli" name="avatar"><summary>Mon symbole</summary><div class="sw" id="swSymbole"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le fond</summary><div class="sw" id="swBg"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le gant</summary><div class="sw" id="swGlove"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le poignet</summary><div class="sw" id="swWrist"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le motif du fond</summary><div class="sw" id="swMotif"></div></details>
+      <details class="sous-pli" name="avatar"><summary>Le motif du gant</summary><div class="sw" id="swGantMotif"></div></details>
+      <p class="hint">🛍️ Plus de gants, de motifs, de fonds et de poignets à la <button class="linkbtn" data-aller="viewBoutique">boutique</button>.</p>
+      <p class="locknote" id="lockNote"></p>
+    </details>
+    <details class="card edit pli" id="cCompte">
+      <summary><h2>🔑 Mon compte</h2><span class="pli-resume" id="compteResume"></span></summary>
+      <div id="compteHors">
+        <p class="hint">Crée ton compte gratuit pour <b>sauvegarder ta fiche en ligne</b> et la retrouver sur n'importe quel téléphone. Pas de mot de passe : tu reçois un code de connexion par e-mail.</p>
+        <label class="lbl" for="inEmail">Ton adresse e-mail</label>
+        <input type="email" id="inEmail" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="toi@exemple.fr">
+        <button class="btn" id="btnCode" style="margin-top:12px">Recevoir mon code de connexion</button>
+      </div>
+      <div id="compteCode" hidden>
+        <p class="hint" id="codeInfo"></p>
+        <label class="lbl" for="inCode">Le code reçu par e-mail :</label>
+        <input type="text" id="inCode" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="123456" class="code">
+        <button class="btn" id="btnValider" style="margin-top:12px">Valider</button>
+        <p class="hint" style="margin-top:10px"><button class="linkbtn" id="btnRenvoyer">Renvoyer l'e-mail</button> · <button class="linkbtn" id="btnAutreEmail">Changer d'adresse</button></p>
+      </div>
+      <div id="comptePseudo" hidden>
+        <p class="hint">Dernière étape : choisis ton pseudo. Un numéro est ajouté automatiquement (ex. <b>Benji#4821</b>), pour que plusieurs joueurs puissent porter le même pseudo.</p>
+        <label class="lbl" for="inPseudoCompte">Pseudo</label>
+        <input type="text" id="inPseudoCompte" maxlength="16" autocomplete="nickname" placeholder="Ex. Benji">
+        <button class="btn" id="btnCreer" style="margin-top:12px">Créer mon compte</button>
+      </div>
+      <div id="compteOn" hidden>
+        <p style="margin:0 0 4px;font-weight:600" id="compteNom"></p>
+        <p class="hint" id="compteEmailAff" style="margin:0 0 8px"></p>
+        <p class="hint" id="compteEtat"></p>
+        <button class="btn alt" id="btnDeco" style="margin-top:12px">Se déconnecter</button>
+      </div>
+      <p class="locknote" id="compteMsg" role="status"></p>
+    </details>
+    </div>
+    <div id="ficheStats" class="fiche-onglet" hidden>
+      <p class="hint" id="ficheStatsVide" hidden>Joue quelques matchs : tes statistiques apparaîtront ici.</p>
+    <details class="card pli" id="cGame" open><summary><h2>📊 Mon jeu</h2></summary><div id="gameBody"></div></details>
+    <details class="card pli" id="cMental"><summary><h2>🧠 Mon mental</h2></summary><div class="lines" id="mentalBody"></div></details>
+    <details class="card pli" id="cRecords"><summary><h2>🏅 Mes records</h2></summary><div class="lines" id="recBody"></div></details>
+    <details class="card pli" id="cElo"><summary><h2>📈 Niveau d'entraînement</h2></summary><div class="spark" id="spark"></div><p class="hint">Calculé comme un ELO, sur tes matchs contre les bots. Ton niveau officiel, contre les autres joueurs, est affiché en haut de ta fiche.</p></details>
+    <details class="card pli" id="cLast"><summary><h2>🕘 Derniers matchs</h2></summary><div class="lines hist-list" id="lastBody"></div></details>
+    </div>
+    <div id="fichePalmares" class="fiche-onglet" hidden>
+    <details class="card pli" id="cPalmares" open><summary><h2>🏆 Palmarès</h2><span class="pli-resume" id="palmaresCompte"></span></summary><div class="badges" id="badges"></div></details>
+    </div>
+
+
+
+
+
+
+    <p class="hint" style="text-align:center" id="infoConnexion">Sans compte, ta fiche est gardée seulement sur ce téléphone.</p>
+    <p style="text-align:center;margin:0"><button class="linkbtn" id="resetProfile">Remettre ma fiche à zéro</button></p>
+  </div>
+</div>
+
+<div class="inter intro" id="faceoff" role="dialog" aria-modal="true" aria-label="Présentation du match">
+  <div class="fo">
+    <button class="fo-passer" id="foPasser">Passer ⏭</button>
+    <div class="fo-banner"><div class="fo-stage" id="foStage"></div><div class="fo-fmt" id="foFmt"></div></div>
+    <div class="fo-top">
+      <div class="fo-p left"><div class="fo-av" id="foAvMe"></div><div class="fo-name" id="foNameMe"></div><div class="fo-sub" id="foSubMe"></div><div class="fo-rec" id="foRecMe"></div><div class="fo-surnom" id="foSurMe"></div><div class="bulle-msg" id="foBulleMoi" hidden></div></div>
+      <div class="fo-vs" aria-hidden="true">VS</div>
+      <div class="fo-p right"><div class="fo-av" id="foAvBot"></div><div class="fo-name" id="foNameBot"></div><div class="fo-sub" id="foSubBot"></div><div class="fo-rec" id="foRecBot"></div><div class="fo-surnom" id="foSurBot"></div><div class="bulle-msg adv" id="foBulleAdv" hidden></div></div>
+    </div>
+    <div class="fo-rows" id="foRows"></div>
+    <details class="fo-dossier" id="foDossier" open hidden><summary>📁 Son dossier</summary><div id="foDossierCorps"></div></details>
+    <p class="fo-key" id="foKey"></p>
+    <div class="msg-zone" id="foMsg" hidden><p class="msg-titre">💬 Un mot pour ton adversaire</p><div class="msg-puces" id="foMsgPuces"></div></div>
+    <div class="fo-end">
+      <p class="fo-attente" id="foAttente" role="status" hidden></p>
+      <button class="btn" id="foGo">Commencer</button>
+      <button class="btn alt" id="foBack">Retour</button>
+    </div>
+  </div>
+</div>
+
+<div class="inter" id="inter" role="dialog" aria-modal="true" aria-labelledby="iBig">
+  <div class="panel">
+    <div class="kick" id="iKick"></div>
+    <div class="big" id="iBig"></div>
+    <div class="sc" id="iSc"></div>
+    <div class="tally" id="iTally"></div>
+    <div class="next" id="iNext"></div>
+    <button class="btn" id="iGo"></button>
+  </div>
+</div>
+
+<div class="inter" id="signaler" role="dialog" aria-modal="true" aria-labelledby="sgTitre">
+  <div class="panel sg-panel">
+    <div class="kick" id="sgTitre">Signaler <b id="sgQui"></b></div>
+    <p class="hint">Pour quelle raison ?</p>
+    <div class="sg-motifs" id="sgMotifs">
+      <button data-m="pseudo">Pseudo choquant</button><button data-m="avatar">Avatar</button><button data-m="comportement">Comportement</button>
+    </div>
+    <label class="lbl" for="sgDetail">Précisions (facultatif)</label>
+    <textarea id="sgDetail" maxlength="300" rows="3" placeholder="Ce qui s'est passé…"></textarea>
+    <p class="locknote" id="sgMsg" role="status"></p>
+    <button class="btn" id="sgEnvoyer" disabled>Envoyer le signalement</button>
+    <button class="btn alt" id="sgAnnuler">Annuler</button>
+    <p class="hint" style="margin-top:10px">Les signalements sont anonymes pour le joueur signalé. Un pseudo signalé par plusieurs joueurs est retiré automatiquement.</p>
+  </div>
+</div>
+
+<div class="inter" id="poignee" role="dialog" aria-modal="true" aria-labelledby="pmTitre">
+  <div class="panel pm-panel">
+    <div class="kick" id="pmTitre">La poignée de main</div>
+    <div class="pm-scene" id="pmScene">
+      <div class="pm-j"><div class="pm-av" id="pmMoi"></div><div class="pm-style" id="pmStyleMoi"></div></div>
+      <div class="pm-main" id="pmMain" aria-hidden="true">🤝</div>
+      <div class="pm-j"><div class="pm-av adv" id="pmAdv"></div><div class="pm-style" id="pmStyleAdv"></div></div>
+    </div>
+    <div class="pm-choix" id="pmChoix"><button data-s="franche">💪<br>Franche</button><button data-s="normale">🤝<br>Normale</button><button data-s="legere">🤏<br>Légère</button><button data-s="froide">🧊<br>Froide</button></div>
+    <div class="pm-temps" id="pmTemps"><div id="pmBarre"></div></div>
+  </div>
+</div>
+
+<div class="celebration" id="celebration" aria-live="polite" hidden>
+  <div class="cel-confettis" id="celConfettis" aria-hidden="true"></div>
+  <div class="cel-av" id="celAv"></div>
+  <div class="cel-cri" id="celCri"></div>
+</div>
+
+<div class="inter" id="une" role="dialog" aria-modal="true" aria-label="La Une du journal">
+  <div class="panel une-panel">
+    <img id="uneImg" alt="">
+    <p class="hint" id="uneMsg" role="status"></p>
+    <button class="btn" id="unePartager">Partager</button>
+    <a class="btn alt" id="uneEnregistrer" download="la-une.png" href="#">Enregistrer l'image</a>
+    <button class="btn alt" id="uneFermer">Fermer</button>
+  </div>
+</div>
+
+<div class="inter" id="interview" role="dialog" aria-modal="true" aria-labelledby="ivQ">
+  <div class="panel">
+    <div class="kick">🎤 Interview d'après-finale</div>
+    <p class="iv-champ" id="ivChamp"></p>
+    <p class="iv-q" id="ivQ"></p>
+    <div class="iv-rep" id="ivRep"></div>
+    <p class="iv-moi" id="ivMoi" hidden></p>
+    <p class="iv-q" id="ivFin" hidden></p>
+    <button class="btn" id="ivGo" hidden>Fermer</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+<!-- La fenêtre « Défier X » : la même partout (Défier un ami, amis, cercles, face-à-face, lien). -->
+<div class="fenetre-fond" id="defiFenetre" hidden>
+  <section class="card fenetre fenetre-defi" role="dialog" aria-modal="true" aria-labelledby="defiFenetreTitre">
+    <h2 id="defiFenetreTitre">⚔️ Défier</h2>
+    <div id="defiFenetreAdv"></div>
+    <span class="lbl">Format</span>
+    <span class="fmt-lbl">Points par set</span>
+    <div class="seg" id="duelLen"><button data-v="11">11</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
+    <div class="seg" id="duelWin"><button data-v="1">1 set</button><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
+    <label class="sound" style="align-items:flex-start;margin-bottom:10px"><input type="checkbox" id="duelClasse" checked> <span id="duelClasseTexte">Match officiel : compte pour ton niveau officiel (décoche pour un match amical)</span></label>
+    <span class="fmt-lbl">Mise en jetons</span>
+    <div class="seg seg-mise" id="duelMise"><button data-v="0">Sans mise</button><button data-v="50">50</button><button data-v="100">100</button><button data-v="200">200</button><button data-v="500">500</button><button data-v="1000">1 000</button></div>
+    <p class="hint" id="duelMiseTexte" style="margin-bottom:10px"></p>
+    <div id="duelEnjeuZone">
+    <label class="sound" style="align-items:flex-start;margin:10px 0 8px"><input type="checkbox" id="duelEnjeuOn"> <span>🎯 Mettre un enjeu (entre amis)</span></label>
+    <div id="duelEnjeuBox" hidden>
+      <input id="duelEnjeu" maxlength="60" autocomplete="off" placeholder="Ex. Qui fait la vaisselle ce soir ?">
+      <div class="msg-puces enjeu-idees" id="duelEnjeuIdees"></div>
+      <p class="hint" style="margin-bottom:10px">Ton ami verra l'enjeu avant d'accepter le défi. Seulement entre amis, et pas d'argent : un gage, pas un pari.</p>
+    </div>
+    </div>
+    <div class="actions-col" style="margin-top:12px">
+      <button class="btn" id="defiEnvoyer">Envoyer le défi</button>
+      <button class="linkbtn" id="defiAnnuler">Annuler</button>
+    </div>
+    <p class="locknote" id="defiFenetreMsg" role="status"></p>
+  </section>
+</div>
+<!-- Un défi reçu : une fenêtre à l'ouverture de l'appli (ou quand il arrive), sans aller le chercher. -->
+<div class="fenetre-fond" id="defiRecuFenetre" hidden>
+  <section class="card fenetre" role="dialog" aria-modal="true" aria-labelledby="defiRecuTitre">
+    <h2 id="defiRecuTitre"></h2>
+    <div id="defiRecuCorps"></div>
+    <div class="actions-col" style="margin-top:12px">
+      <button class="btn" id="defiRecuAccepter">Accepter</button>
+      <button class="btn alt" id="defiRecuRefuser">Refuser</button>
+      <button class="linkbtn" id="defiRecuPlusTard">Plus tard</button>
+    </div>
+  </section>
+</div>
+
+<script src="vendor/supabase.js" defer></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+/* Le Mode Aventure, en pixel art (aventure.html). Projet à part : rien ici n'est utilisé par l'appli HandSlam. */
+/* Police : Jersey 10 (Google Fonts, licence OFL), petite par nature : d'où la taille de base plus grande. */
+@font-face { font-family: "Jersey 10"; font-weight: 400; font-style: normal; font-display: swap; src: url(../fonts/jersey10-latin.woff2) format("woff2"); }
+
+:root {
+  --nuit: #0d1a12; --panneau: #16182a; --or: #d9b45a; --or-fonce: #7a5523; --brun: #3a2210; --bois: #8a5a2b; --bois-clair: #b07a3e;
+  --texte: #f6f1e3; --discret: #b8b2a0; --rouge: #c8322f; --vert: #2f9a3c; --bleu: #2f5fd0; --pv: #e23b33;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { height: 100%; font-size: 22px; }
+body {
+  margin: 0; min-height: 100%; color: var(--texte); background: var(--nuit);
+  font-family: "Jersey 10", ui-monospace, monospace; font-size: 1rem; line-height: 1.15; letter-spacing: .02em;
+  -webkit-tap-highlight-color: transparent;
+}
+/* Le décor de la forêt, assombri, derrière la carte et la mission. */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1;
+  background: linear-gradient(rgba(6, 12, 9, .62), rgba(6, 12, 9, .82)), url(../img/aventure/foret.webp) center 60% / cover;
+  image-rendering: pixelated;
+}
+button { font: inherit; color: inherit; touch-action: manipulation; }
+b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gras imité, qui baverait */
+.pix, .sprite { image-rendering: pixelated; image-rendering: crisp-edges; }
+.pix { width: 1.6em; height: 1.6em; vertical-align: middle; }
+.jeu { max-width: 520px; margin: 0 auto; padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0); }
+.page { padding: 14px 12px 24px; display: flex; flex-direction: column; gap: 12px; }
+.discret { color: var(--discret); font-size: .85rem; }
+
+/* Cadres : fond sombre, bord doré, contour brun (comme les panneaux de la maquette). */
+.cadre {
+  background: var(--panneau); border: 3px solid var(--or); border-radius: 6px;
+  box-shadow: 0 0 0 3px var(--brun), inset 0 0 0 2px rgba(0, 0, 0, .5), 0 6px 0 3px rgba(0, 0, 0, .35);
+}
+.pancarte {
+  align-self: center; text-align: center; padding: 6px 22px 8px; border-radius: 6px;
+  background: linear-gradient(#9b6633, #6e4320); border: 3px solid var(--brun);
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .18), inset 0 -4px 0 rgba(0, 0, 0, .3), 0 4px 0 rgba(0, 0, 0, .4);
+  text-shadow: 2px 2px 0 var(--brun);
+}
+.pancarte b { display: block; font-size: 1.25rem; text-transform: uppercase; letter-spacing: .04em; }
+.pancarte span { display: block; font-size: 1rem; }
+.pancarte.petite { position: absolute; top: 112px; left: 50%; transform: translateX(-50%); padding: 3px 12px 4px; z-index: 3; }
+.pancarte.petite b { font-size: .85rem; } .pancarte.petite span { font-size: .8rem; }
+
+/* Boutons « en relief » façon console. */
+.pbtn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
+  border: 3px solid var(--brun); border-radius: 8px; padding: 10px 14px; font-weight: 400; color: #fff;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, .45); background: var(--bois);
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .28), inset 0 -5px 0 rgba(0, 0, 0, .3), 0 4px 0 #120a04;
+}
+.pbtn:active:not(:disabled) { transform: translateY(3px); box-shadow: inset 0 3px 0 rgba(255, 255, 255, .28), inset 0 -3px 0 rgba(0, 0, 0, .3), 0 1px 0 #120a04; }
+.pbtn:disabled { filter: grayscale(.7) brightness(.7); cursor: default; }
+.pbtn.bleu { background: var(--bleu); } .pbtn.vert { background: var(--vert); } .pbtn.rouge { background: var(--rouge); }
+.pbtn.bois { background: linear-gradient(var(--bois-clair), var(--bois)); }
+.pbtn.large { width: 100%; font-size: 1.1rem; padding: 12px; }
+.pbtn.petit { padding: 6px 10px; font-size: .9rem; }
+:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.lien { background: none; border: 0; padding: 0; color: var(--discret); text-decoration: underline; cursor: pointer; }
+
+/* La boîte de dialogue de Monique. */
+.dialogue { position: relative; background: #1b2350; border: 3px solid #f0ead6; border-radius: 6px; padding: 16px 12px 12px; margin-top: 10px;
+  box-shadow: 0 0 0 3px #0b0f26, 0 6px 0 3px rgba(0, 0, 0, .35); cursor: pointer; }
+.dia-nom { position: absolute; top: -13px; left: 10px; background: #7d3c98; border: 2px solid #f0ead6; border-radius: 4px; padding: 0 8px; font-size: .8rem; font-weight: 400; text-transform: uppercase; }
+.dia-corps { display: grid; grid-template-columns: 48px 1fr; gap: 10px; align-items: start; }
+.dia-av { width: 48px; height: 48px; background: #0b0f26; border: 2px solid #f0ead6; border-radius: 4px; padding: 4px; }
+.dia-texte { margin: 0; min-height: 3.6em; }
+.dia-suite { position: absolute; right: 10px; bottom: 4px; font-size: .8rem; animation: clignote .8s steps(2) infinite; }
+.dialogue:not(.fini) .dia-suite { visibility: hidden; }
+
+/* La carte du monde. */
+.heros-carte { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; padding: 10px; }
+.heros-carte b, .hud-j b { display: block; font-size: 1.1rem; font-weight: 400; }
+.heros-carte small, .hud-j small { color: var(--discret); }
+.tete { display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 4px; background: #0b0f1d no-repeat;
+  background-size: 230% auto; background-position: 46% 4%; border: 2px solid var(--or-fonce); image-rendering: pixelated; overflow: hidden; }
+.tete .pix { width: 44px; height: 44px; }
+.heros-tete { background-image: url(../img/aventure/heros.png); background-size: 250% auto; background-position: 62% 3%; }
+.sac { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-top: 4px; }
+.puce { display: inline-flex; align-items: center; gap: 2px; font-size: .8rem; background: #0b0f1d; border: 2px solid var(--or-fonce); border-radius: 4px; padding: 0 6px 0 2px; }
+.puce .pix { width: 1.3em; height: 1.3em; }
+.etapes { display: grid; gap: 10px; margin-top: 4px; }
+.etape { display: grid; grid-template-columns: 24px 60px 1fr auto; gap: 8px; align-items: center; width: 100%; text-align: left; padding: 8px 10px; cursor: pointer; }
+.etape:disabled { filter: grayscale(.8) brightness(.6); cursor: default; }
+.etape.boss:not(:disabled) { border-color: var(--rouge); }
+.etape.faite { border-color: #f4d06f; }
+.num { font-size: 1.3rem; font-weight: 400; color: var(--or); text-align: center; }
+.num .pix { width: 24px; height: 24px; }
+.et-nom b { display: block; font-size: 1.1rem; font-weight: 400; }
+.et-nom small { color: var(--discret); font-size: .78rem; }
+.etoiles { color: #f4d06f; font-size: 1.1rem; letter-spacing: 1px; white-space: nowrap; text-shadow: 2px 2px 0 var(--brun); }
+.etoiles i { font-style: normal; color: #4a4a5a; }
+.gant { padding: 10px 12px; text-align: center; color: #f4d06f; }
+.regles { padding: 10px 12px; }
+.regles summary { cursor: pointer; font-weight: 400; }
+.regles p { margin: 8px 0 0; font-size: .9rem; color: var(--discret); }
+.regles p b { color: var(--texte); }
+.barre-bas { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.page > .barre-bas { justify-content: center; }
+
+/* La scène : le décor de la forêt, avec les deux combattants posés sur le chemin. */
+.scene { position: relative; height: min(58vh, 520px); min-height: 330px; overflow: hidden;
+  background: url(../img/aventure/foret.webp) 50% 78% / cover; image-rendering: pixelated; }
+.page .scene { border: 3px solid var(--or); border-radius: 6px; box-shadow: 0 0 0 3px var(--brun); }
+.combattant { position: absolute; bottom: 6%; width: min(44%, 230px); z-index: 2; }
+.combattant.moi { left: 2%; }
+.combattant.lui { right: 2%; }
+.combattant .sprite { width: 100%; height: auto; display: block; animation: respire 1.2s steps(2) infinite; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .35)); }
+.combattant.lui .sprite { animation-delay: .3s; }
+.combattant.lui.emoji { width: min(34%, 170px); }
+.combattant.lui.emoji .sprite { transform: scaleX(-1); }   /* les émojis regardent vers la gauche, vers le héros */
+.combattant.protege .sprite { filter: drop-shadow(0 0 6px #6fb7ff) drop-shadow(0 0 2px #6fb7ff); }
+.combattant.charge .sprite { filter: drop-shadow(0 0 6px #ffb347) drop-shadow(0 0 2px #ffb347); }
+.combattant.enrage .sprite { filter: drop-shadow(0 0 8px #ff3b2f) saturate(1.6) hue-rotate(-25deg); animation-duration: .6s; }
+.signe-bulle { position: absolute; top: -62px; left: 50%; transform: translateX(-50%); width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
+  background: #fff; border: 3px solid var(--brun); border-radius: 50%; opacity: 0; transition: opacity .15s; }
+.signe-bulle.vue { opacity: 1; }
+.signe-bulle .pix { width: 36px; height: 36px; }
+.bulle-parole { position: absolute; right: 4%; bottom: 52%; max-width: 62%; margin: 0; z-index: 4; background: #fff; color: #1a1a1a; font-weight: 400; font-size: .95rem;
+  padding: 8px 12px; border: 3px solid var(--brun); border-radius: 8px; box-shadow: 0 4px 0 rgba(0, 0, 0, .35); }
+.bulle-parole::after { content: ""; position: absolute; bottom: -12px; right: 34%; border: 9px solid transparent; border-top-color: #fff; border-bottom: 0; }
+.bulle-parole[hidden] { display: none; }
+.fiche-adv { margin: 0; text-align: center; color: var(--discret); font-size: .9rem; }
+
+/* Le combat : les fiches en haut, le message en bas de la scène, les commandes dessous. */
+.combat { position: relative; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; background: #10170f; }
+.combat .scene { flex: 1 0 auto; }
+.hud { position: absolute; top: 8px; left: 8px; right: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; z-index: 3; }
+.hud-j { display: grid; grid-template-columns: 44px 1fr; gap: 6px; align-items: center; padding: 5px 6px; min-width: 0; }
+.hud-j .tete { width: 44px; height: 44px; }
+.hud-j .tete .pix { width: 36px; height: 36px; }
+.hud-j b { font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hud-j small { font-size: .75rem; }
+.pv { display: flex; align-items: center; gap: 2px; margin-top: 2px; }
+.coeur .pix { width: 20px; height: 20px; }
+.pv-barre { position: relative; flex: 1; height: 16px; background: #2a0d0d; border: 2px solid #f0ead6; border-radius: 3px; overflow: hidden; }
+.pv-barre i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(#ff6a5c 0 35%, var(--pv) 35%); transition: width .5s steps(8); }
+.pv-barre b { position: relative; display: block; text-align: center; font-size: .72rem; line-height: 12px; text-shadow: 1px 1px 0 #000; }
+.statut { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); width: max-content; max-width: 92%; padding: 6px 14px; text-align: center; font-weight: 400; z-index: 4; }
+.commandes { padding: 10px 10px 14px; display: flex; flex-direction: column; gap: 10px; background: linear-gradient(#2a1a0c, #1a1008); border-top: 4px solid var(--brun); }
+.info { margin: 0; min-height: 1.3em; text-align: center; font-size: .85rem; color: #f4d06f; }
+.coups { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.coup { flex-direction: column; padding: 8px 4px 6px; font-size: 1rem; text-transform: uppercase; }
+.coup .pix { width: 52px; height: 52px; }
+.pouvoirs { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.pouvoirs:empty { display: none; }
+.pouvoir { flex-direction: column; gap: 0; padding: 4px 10px; font-size: .75rem; min-width: 80px; }
+.pouvoir .pix { width: 28px; height: 28px; }
+.histo { display: flex; gap: 3px; justify-content: center; flex: 1; min-width: 0; overflow: hidden; }
+.histo span { display: flex; flex-direction: column; align-items: center; font-size: 1rem; padding: 0 3px 2px; border-bottom: 3px solid transparent; font-family: system-ui, sans-serif; }
+.histo small { font-size: .7rem; }
+.histo .g { border-color: #f4d06f; } .histo .p { border-color: var(--rouge); } .histo .e { border-color: #555; }
+
+/* Les chiffres qui s'envolent. */
+.nombre { position: absolute; left: 50%; top: 10%; transform: translateX(-50%); font-size: 1.6rem; font-weight: 400; color: #fff; white-space: nowrap; z-index: 5;
+  text-shadow: 3px 3px 0 #000, -1px -1px 0 #000; animation: envol 1.1s steps(10) forwards; pointer-events: none; }
+.nombre.gros { font-size: 2.2rem; color: #ffb347; }
+.nombre.vert { color: #7dff7a; } .nombre.bleu { color: #9fd0ff; font-size: 1.1rem; }
+
+/* La fin du combat, par-dessus la scène. */
+.voile { position: fixed; inset: 0; z-index: 10; background: rgba(0, 0, 0, .6); display: flex; align-items: center; justify-content: center; padding: 16px; overflow-y: auto; }
+.voile[hidden] { display: none; }
+.fin { width: 100%; max-width: 440px; padding: 14px 14px 16px; display: flex; flex-direction: column; gap: 10px; animation: apparait .3s steps(4); }
+.titre-fin { margin: 0; text-align: center; font-size: 2.2rem; color: #f4d06f; text-transform: uppercase; text-shadow: 3px 3px 0 var(--brun); }
+.titre-fin.rouge { color: #ff6a5c; }
+.grandes-etoiles { margin: 0; text-align: center; } .grandes-etoiles .etoiles { font-size: 2.4rem; }
+.gain { margin: 0; color: #9be38f; font-weight: 400; }
+.petit-texte { margin: 0; color: var(--discret); font-size: .9rem; }
+.choix { display: grid; gap: 8px; }
+.choix .pbtn { flex-wrap: wrap; }
+.choix small { flex-basis: 100%; font-weight: 400; font-size: .75rem; text-shadow: none; }
+
+/* Les animations (en saccades, pour rester « pixel »). */
+@keyframes respire { 50% { transform: translateY(-3%); } }
+.combattant.lui.emoji .sprite { animation-name: respire-miroir; }
+@keyframes respire-miroir { 0%, 100% { transform: scaleX(-1); } 50% { transform: scaleX(-1) translateY(-3%); } }
+.moi.attaque { animation: fonce-d .4s steps(4); } .lui.attaque { animation: fonce-g .4s steps(4); }
+@keyframes fonce-d { 50% { transform: translateX(45%); } }
+@keyframes fonce-g { 50% { transform: translateX(-45%); } }
+.touche { animation: touche .45s steps(6); }
+@keyframes touche { 0%, 40%, 80% { filter: brightness(2.5) sepia(1) saturate(6) hue-rotate(-30deg); transform: translateX(0); } 20%, 60% { transform: translateX(-6%); filter: none; } 100% { filter: none; } }
+.bloque { animation: bloque .45s steps(4); }
+@keyframes bloque { 0%, 60% { filter: brightness(1.8) drop-shadow(0 0 10px #6fb7ff); } }
+.sursaut { animation: sursaut .3s steps(3); }
+@keyframes sursaut { 50% { transform: translateY(-8%); } }
+.ko { animation: ko .8s steps(6) forwards; }
+@keyframes ko { 100% { transform: translateY(12%) rotate(-12deg); opacity: .25; filter: grayscale(1); } }
+.lui.ko { animation-name: ko-d; }
+@keyframes ko-d { 100% { transform: translateY(12%) rotate(12deg); opacity: .25; filter: grayscale(1); } }
+.scene.tremble { animation: tremble .3s steps(4); }
+@keyframes tremble { 25% { background-position: calc(50% - 6px) 78%; } 75% { background-position: calc(50% + 6px) 78%; } }
+.signe-bulle.secoue { animation: secoue .2s steps(2) infinite; }
+@keyframes secoue { 50% { transform: translate(-50%, -10px); } 0%, 100% { transform: translate(-50%, 0); } }
+@keyframes envol { 0% { opacity: 0; transform: translate(-50%, 10px); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -70px); } }
+@keyframes clignote { 50% { opacity: 0; } }
+@keyframes apparait { from { transform: scale(.85); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition: none !important; } }
