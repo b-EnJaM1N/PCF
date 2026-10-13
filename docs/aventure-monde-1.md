@@ -15,7 +15,7 @@ C'est **Monique Latouffe**, la commentatrice glaciale, championne de 1997, qui o
 Elle garde son caractère : sèche, exigeante, un compliment par monde au maximum. Sa voix existe déjà (ElevenLabs).
 
 **Introduction** (au premier lancement du mode Aventure) :
-> « Bonjour, jeune padawan. Tu veux devenir un as de la discipline ? Alors suis mes conseils.
+> « Bonjour, petit scarabée. Tu veux devenir un as de la discipline ? Alors suis mes conseils.
 > J'ai été championne en 1997. Toi, pour l'instant, tu n'es rien. Le Roi des Gobelins a volé le Gant d'Or :
 > va le chercher au fond de la Forêt des Ombres. Et tiens-toi droit. »
 
@@ -28,12 +28,20 @@ Elle garde son caractère : sèche, exigeante, un compliment par monde au maximu
 | 🦇 Pipistrelle | « La chauve-souris ne tient pas en place : jamais deux fois le même signe. Sers-toi de ta tête. » | « Correct. Voici un Coup double. Frappe fort, pour une fois. » |
 | 🍄 Amanite | « L'Amanite t'imite, comme un mauvais élève. Et méfie-toi des égalités : elles empoisonnent. » | « Tu as encore tes deux mains ? Bien. Une Potion, au cas où. » |
 | 🐺 Loup gris | « Le Loup sent la peur. Quand il gagne, il insiste. Quand il perd, il change. Ne lui laisse pas deux victoires d'affilée. » | « Choisis ton pouvoir. Et réfléchis, cette fois. » |
-| 👑 Grok | « Grok. Il cogne avec la Pierre et les Ciseaux… et quand il se fâche, il lit dans ton jeu. Ne sois pas prévisible. » | « … Pas mal, jeune padawan. Pas mal du tout. Ne le répète à personne. » |
+| 👑 Grok | « Grok. Il cogne avec la Pierre et les Ciseaux… et quand il se fâche, il lit dans ton jeu. Ne sois pas prévisible. » | « … Pas mal, petit scarabée. Pas mal du tout. Ne le répète à personne. » |
 
 En cas de défaite, une pique courte (« Muscle ton jeu. », « En 1997, j'aurais gagné les yeux fermés. ») puis on recommence.
 
-À vérifier : « padawan » est un mot de Star Wars. Le citer dans une réplique est sans doute sans risque, mais pour être
-tranquille on pourrait dire « jeune apprenti » ou « jeune pousse ».
+**Comment Monique t'appelle** (choix du porteur du projet, 13 octobre) : le surnom évolue au fil des mondes,
+pour montrer qu'elle te prend peu à peu au sérieux.
+
+| Moment | Elle t'appelle |
+|---|---|
+| Monde 1 | « petit scarabée » |
+| Monde 2 | « le débutant » |
+| Mondes 3 et 4 | « jeune espoir » (avec ironie) |
+| Monde 5 | « champion », du bout des lèvres |
+| Après le boss final | ton vrai pseudo, pour la première fois |
 
 ## Les règles d'un combat
 
