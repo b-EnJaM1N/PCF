@@ -7,17 +7,17 @@ import {
   nouveauCombat, signeAdversaire, indiceLoupe, peutUtiliser, utiliser, jouer, piqueAuHasard,
 } from "./aventure-logique.js";
 import { IMAGE, LARGEUR, HAUTEUR, ETAPES, MS_PAR_PIXEL, trajet, position } from "./aventure-carte.js";
-import { CADRE, chargerImage, dessinerEditeur, visagePixel, composer } from "./aventure-photo.js";
+import { CADRE, chargerImage, dessinerEditeur, couleursPhoto, teinter } from "./aventure-photo.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const M = MONDES[0];
-// Les héros au choix ; tete : la place de la tête dans le dessin (pour y poser un visage en photo).
+// Les héros au choix ; cheveux : où sont les cheveux dans le dessin (pour les repeindre aux couleurs d'une photo).
 // Le choix est gardé sur le téléphone, comme le héros fait à partir d'une photo (« aventurePhoto » : { corps, image }).
 const HEROS_CHOIX = [
-  { id: "cape", nom: "Le Héros", desc: "Cape rouge et poings serrés.", image: "img/aventure/heros.png", visage: ["250%", "62% 3%"], tete: { x: 281, y: 119, r: 51 } },
-  { id: "heroine", nom: "L'Héroïne", desc: "Queue de cheval et regard décidé.", image: "img/aventure/heroine.png", visage: ["250%", "86% 18%"], tete: { x: 284, y: 98, r: 44 } },
+  { id: "cape", nom: "Le Héros", desc: "Cape rouge et poings serrés.", image: "img/aventure/heros.png", visage: ["250%", "62% 3%"], cheveux: [{ x: 170, y: 0, w: 206, h: 122 }] },
+  { id: "heroine", nom: "L'Héroïne", desc: "Queue de cheval et regard décidé.", image: "img/aventure/heroine.png", visage: ["250%", "86% 18%"], cheveux: [{ x: 0, y: 0, w: 380, h: 150 }, { x: 0, y: 150, w: 130, h: 60 }] },
 ];
 let herosId = lire("aventureHeros", null);
 let photo = lire("aventurePhoto", null);
@@ -163,11 +163,11 @@ function choixHeros() {
   const cartephoto = photo?.image
     ? `<button class="cadre heros-choix photo ${actuel === "photo" ? "choisi" : ""}" data-av="heros" data-id="photo">
         <span class="heros-portrait"><img class="sprite" src="${photo.image}" alt=""></span>
-        <span><b>Toi en héros</b><small>Ton visage sur le héros.</small></span>
+        <span><b>Toi en héros</b><small>Le héros à tes couleurs.</small></span>
       </button>`
     : `<button class="cadre heros-choix photo" data-av="photo">
         <span class="heros-portrait"><span class="heros-mystere">${imgPix("📷", "", 18)}</span></span>
-        <span><b>Toi en héros</b><small>Choisis une photo : ton visage, en gros pixels, sur le héros.</small></span>
+        <span><b>Toi en héros</b><small>Choisis une photo : le héros prend la couleur de ta peau et de tes cheveux.</small></span>
       </button>`;
   afficher(`<div class="page">
     ${pancarte("Choisis", "ton héros")}
@@ -187,11 +187,12 @@ function editeurPhoto() {
     ${pancarte("Toi", "en héros")}
     <input type="file" accept="image/*" id="photoFichier" hidden>
     <div class="cadre photo-boite">
-      <p class="petit-texte" id="photoAide">Choisis une photo où l'on voit bien ton visage, de face.</p>
+      <p class="petit-texte" id="photoAide">Choisis une photo où l'on voit bien ton visage et tes cheveux, de face.</p>
       <button class="pbtn vert large" data-av="photoChoisir">📷 Choisir une photo</button>
       <div id="photoReglages" hidden>
         <canvas id="photoEditeur" class="photo-editeur" width="${CADRE}" height="${CADRE}"></canvas>
-        <p class="petit-texte">Fais glisser la photo pour mettre ton visage dans le rond.</p>
+        <p class="petit-texte">Fais glisser la photo : ton visage dans le rond, tes cheveux en haut du rond.</p>
+        <p class="photo-nuances" id="photoNuances"></p>
         <label class="photo-zoom">🔍 <input type="range" id="photoZoom" min="1" max="4" step="0.02" value="1.4"></label>
         <div class="photo-corps">${HEROS_CHOIX.map(h => `<button class="pbtn bois petit" data-av="photoCorps" data-id="${h.id}">${esc(h.nom)}</button>`).join("")}</div>
         <div class="heros-portrait photo-apercu"><canvas id="photoApercu" class="sprite"></canvas></div>
@@ -236,7 +237,8 @@ function majPhoto() {
     dessinerEditeur($("photoEditeur"), ed.img, ed.zoom, ed.dx, ed.dy);
     document.querySelectorAll('[data-av="photoCorps"]').forEach(b => b.classList.toggle("actif", b.dataset.id === ed.corps));
     const h = HEROS_CHOIX.find(x => x.id === ed.corps), corps = await corpsDe(ed.corps);
-    const res = composer(corps, visagePixel(ed.img, ed.zoom, ed.dx, ed.dy), h.tete), a = $("photoApercu");
+    const coul = couleursPhoto(ed.img, ed.zoom, ed.dx, ed.dy), res = teinter(corps, coul, h.cheveux), a = $("photoApercu");
+    $("photoNuances").innerHTML = `<span>Peau <i style="background:rgb(${coul.peau})"></i></span><span>Cheveux <i style="background:rgb(${coul.cheveux})"></i></span>`;
     if (!a) return;
     a.width = res.width; a.height = res.height; a.getContext("2d").drawImage(res, 0, 0);
   });
@@ -244,7 +246,7 @@ function majPhoto() {
 async function validerPhoto() {
   if (!ed) return;
   const h = HEROS_CHOIX.find(x => x.id === ed.corps), corps = await corpsDe(ed.corps);
-  const image = composer(corps, visagePixel(ed.img, ed.zoom, ed.dx, ed.dy), h.tete).toDataURL("image/png");
+  const image = teinter(corps, couleursPhoto(ed.img, ed.zoom, ed.dx, ed.dy), h.cheveux).toDataURL("image/png");
   photo = { corps: ed.corps, image };
   try { localStorage.setItem("pcf:aventurePhoto", JSON.stringify(photo)); }
   catch { $("photoAide").textContent = "Le téléphone n'a pas pu garder l'image (mémoire pleine)."; return; }
