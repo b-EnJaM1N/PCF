@@ -1,8 +1,7 @@
-// « Toi en héros » : une photo devient un visage en gros pixels, posé sur la tête d'un héros dessiné.
+// « Toi en héros » : le visage d'une photo, redessiné dans les couleurs et les gros pixels d'un héros dessiné.
 // Tout se passe sur le téléphone (dans un canevas) : la photo n'est envoyée nulle part.
 
 export const CADRE = 240, RAYON = 100;   // l'éditeur : un carré de 240 px, le visage dans un rond de 100 px de rayon
-const PIXELS = 22;                       // le visage fait 22 × 22 gros pixels
 
 export const chargerImage = src => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = src; });
 
@@ -23,36 +22,51 @@ export function dessinerEditeur(canvas, img, zoom, dx, dy) {
   g.strokeStyle = "#f4d06f"; g.lineWidth = 3; g.beginPath(); g.arc(CADRE / 2, CADRE / 2, RAYON, 0, Math.PI * 2); g.stroke();
 }
 
-// Le visage en gros pixels : le rond de la photo réduit à 22 × 22, couleurs simplifiées, contour sombre.
-export function visagePixel(img, zoom, dx, dy) {
-  const p = placement(img, zoom, dx, dy), c = document.createElement("canvas");
-  c.width = c.height = PIXELS;
-  const g = c.getContext("2d");
-  const cx = (CADRE / 2 - p.x) / p.s, cy = (CADRE / 2 - p.y) / p.s, r = RAYON / p.s;
-  g.imageSmoothingEnabled = true; g.imageSmoothingQuality = "high";
-  g.drawImage(img, cx - r, cy - r, 2 * r, 2 * r, 0, 0, PIXELS, PIXELS);
-  const d = g.getImageData(0, 0, PIXELS, PIXELS), m = PIXELS / 2;
-  for (let y = 0; y < PIXELS; y++) for (let x = 0; x < PIXELS; x++) {
-    const i = (y * PIXELS + x) * 4, dist = Math.hypot(x + 0.5 - m, y + 0.5 - m);
-    if (dist > m) { d.data[i + 3] = 0; continue; }
-    if (dist > m - 1.2) { d.data.set([26, 12, 6, 255], i); continue; }          // le contour, comme les dessins
-    for (let k = 0; k < 3; k++) {
-      const v = (d.data[i + k] - 128) * 1.15 + 128;                              // un peu plus de contraste
-      d.data[i + k] = Math.max(0, Math.min(255, Math.round(v / 36) * 36));       // moins de nuances : effet pixel art
-    }
-    d.data[i + 3] = 255;
-  }
-  g.putImageData(d, 0, 0);
-  return c;
+// « À tes couleurs » : on lit sur la photo la couleur de la peau (les joues) et celle des cheveux (le haut du rond),
+// puis on repeint le héros dessiné avec ces couleurs, en gardant ses ombres et ses lumières : le dessin reste intact.
+const lum = (r, g, b) => 0.299 * r + 0.587 * g + 0.114 * b;
+// La peau du dessin, ombres comprises (les ombres orangées sont très claires en rouge), sans les ornements dorés.
+const estPeau = (r, g, b, a) => a > 0 && r > g && g > b && !(g > 150 && b < 70)
+  && ((r > 150 && g > 95 && b > 70 && r - b > 40) || (r >= 225 && g >= 100 && r - b > 60));
+// Les cheveux du dessin : brun ou roux (le vert est nettement au-dessus du bleu), ni la peau, ni le contour noir,
+// ni la cape rouge (vert et bleu à égalité), ni les ornements dorés.
+const estCheveu = (r, g, b, a) => a > 0 && !estPeau(r, g, b, a) && lum(r, g, b) > 18 && r < 225 && r > g && g >= b + 8 && g > r * 0.22 && !(g > 150 && b < 90);
+const mediane = cols => [0, 1, 2].map(k => { const v = cols.map(c => c[k]).sort((a, b) => a - b); return v[Math.floor(v.length / 2)] || 0; });
+
+export function couleursPhoto(img, zoom, dx, dy) {
+  const p = placement(img, zoom, dx, dy), cx = (CADRE / 2 - p.x) / p.s, cy = (CADRE / 2 - p.y) / p.s, r = RAYON / p.s;
+  const N = 40, c = document.createElement("canvas"); c.width = c.height = N;
+  const g = c.getContext("2d"); g.drawImage(img, cx - r, cy - r, 2 * r, 2 * r, 0, 0, N, N);
+  const d = g.getImageData(0, 0, N, N).data, zone = (x0, x1, y0, y1) => {
+    const out = [];
+    for (let y = Math.floor(y0 * N); y < y1 * N; y++) for (let x = Math.floor(x0 * N); x < x1 * N; x++) { const i = (y * N + x) * 4; out.push([d[i], d[i + 1], d[i + 2]]); }
+    return mediane(out);
+  };
+  return { peau: zone(0.3, 0.7, 0.5, 0.72), cheveux: zone(0.3, 0.7, 0.03, 0.17) };
 }
 
-// Le héros complet : le corps dessiné, avec le visage à la place de la tête. tete : { x, y, r } en px du dessin.
-export function composer(corps, visage, tete) {
-  const c = document.createElement("canvas");
-  c.width = corps.width; c.height = corps.height;
-  const g = c.getContext("2d");
-  g.drawImage(corps, 0, 0);
-  g.imageSmoothingEnabled = false;
-  g.drawImage(visage, tete.x - tete.r, tete.y - tete.r, 2 * tete.r, 2 * tete.r);
+// cheveux : les rectangles du dessin où se trouvent les cheveux.
+export function teinter(corps, couleurs, cheveux) {
+  const c = document.createElement("canvas"); c.width = corps.width; c.height = corps.height;
+  const g = c.getContext("2d"); g.drawImage(corps, 0, 0);
+  const W = c.width, H = c.height, data = g.getImageData(0, 0, W, H), d = data.data;
+  const dansCheveux = (x, y) => cheveux.some(z => x >= z.x && x < z.x + z.w && y >= z.y && y < z.y + z.h);
+  const peau = [], chev = [];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = (y * W + x) * 4, px = [d[i], d[i + 1], d[i + 2], d[i + 3]];
+    if (estPeau(...px)) peau.push(i); else if (dansCheveux(x, y) && estCheveu(...px)) chev.push(i);
+  }
+  // Chaque teinte du dessin est déplacée vers la couleur voulue, en gardant son ombre ou sa lumière (rapport à la teinte moyenne).
+  const repeindre = (liste, cible) => {
+    if (!liste.length) return;
+    const moy = mediane(liste.map(i => [d[i], d[i + 1], d[i + 2]])), lm = lum(...moy) || 1;
+    for (const i of liste) {
+      const f = lum(d[i], d[i + 1], d[i + 2]) / lm;                  // plus clair ou plus sombre que la moyenne
+      for (let k = 0; k < 3; k++) d[i + k] = Math.max(0, Math.min(255, Math.round(cible[k] * f)));
+    }
+  };
+  repeindre(peau, couleurs.peau);
+  repeindre(chev, couleurs.cheveux);
+  g.putImageData(data, 0, 0);
   return c;
 }

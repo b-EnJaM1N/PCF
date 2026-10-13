@@ -151,6 +151,9 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .photo-zoom { display: flex; align-items: center; gap: 8px; width: min(100%, 260px); }
 .photo-zoom input { flex: 1; accent-color: #f4d06f; }
 .photo-corps { display: flex; gap: 8px; }
+.photo-nuances { display: flex; gap: 16px; margin: 0; font-size: .9rem; }
+.photo-nuances span { display: inline-flex; align-items: center; gap: 6px; }
+.photo-nuances i { width: 22px; height: 22px; border: 2px solid #f0ead6; border-radius: 4px; }
 .photo-corps .actif { outline: 3px solid #fff; }
 .photo-apercu { width: min(70%, 220px); }
 .photo-apercu canvas { width: 92%; height: auto; image-rendering: pixelated; }
