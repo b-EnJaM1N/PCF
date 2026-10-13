@@ -77,7 +77,6 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .tete { display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 4px; background: #0b0f1d no-repeat;
   background-size: 230% auto; background-position: 46% 4%; border: 2px solid var(--or-fonce); image-rendering: pixelated; overflow: hidden; }
 .tete .pix { width: 44px; height: 44px; }
-.heros-tete { background-image: url(../img/aventure/heros.png); background-size: 250% auto; background-position: 62% 3%; }
 .sac { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-top: 4px; }
 .puce { display: inline-flex; align-items: center; gap: 2px; font-size: .8rem; background: #0b0f1d; border: 2px solid var(--or-fonce); border-radius: 4px; padding: 0 6px 0 2px; }
 .puce .pix { width: 1.3em; height: 1.3em; }
@@ -102,7 +101,7 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 
 /* L'écran titre : « La Quête du Gant d'Or », sur le décor de la forêt. */
 .titre-ecran { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between; width: 100%;
-  min-height: 100vh; min-height: 100dvh; padding: 7vh 12px 5vh; border: 0; cursor: pointer; overflow: hidden; text-align: center;
+  min-height: 100vh; min-height: 100dvh; padding: 7vh 16px 5vh; overflow: hidden; text-align: center;
   background: linear-gradient(rgba(10, 16, 40, .55), rgba(10, 16, 40, 0) 45%, rgba(0, 0, 0, .35)), url(../img/aventure/foret.webp) 50% 62% / cover;
   image-rendering: pixelated; }
 .titre-ecran.part { animation: fondu .65s steps(5) forwards; }
@@ -114,16 +113,29 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .titre-petit { font-size: 2.2rem; letter-spacing: .06em; }
 .titre-du { font-size: 1.3rem; color: #fff3c4; margin: 2px 0; }
 .titre-grand { font-size: 3.4rem; letter-spacing: .04em; }
-.titre-monde { margin-top: 12px; padding: 3px 14px; background: rgba(10, 12, 24, .75); border: 2px solid var(--or); border-radius: 4px; font-size: .9rem; color: var(--texte); }
 .titre-heros { position: absolute; left: 6%; bottom: 17%; width: min(40%, 210px); z-index: 1; animation: respire 1.2s steps(2) infinite; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .35)); }
-.titre-bas { display: flex; flex-direction: column; align-items: center; gap: 6px; z-index: 2; }
-.titre-commencer { padding: 6px 16px; background: rgba(10, 12, 24, .82); border: 3px solid var(--or); border-radius: 6px; font-size: 1.15rem; color: #fff; animation: clignote 1.1s steps(2) infinite; }
+.titre-bas { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2; width: min(100%, 320px); }
+.titre-commencer { font-size: 1.5rem; padding: 10px; animation: pulse 1.2s steps(2) infinite; }
+.titre-lien { color: #fff3c4; text-shadow: 2px 2px 0 #000; font-size: .85rem; }
+@keyframes pulse { 50% { transform: scale(1.04); } }
 .titre-progres { font-size: .85rem; color: #fff3c4; text-shadow: 2px 2px 0 #000; }
 .etincelle { position: absolute; width: 8px; height: 8px; background: #fff6c8; z-index: 1; animation: scintille 1.8s steps(3) infinite;
   clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); }
 @keyframes flotte { 50% { transform: translateY(-8px); } }
 @keyframes scintille { 0%, 100% { opacity: 0; transform: scale(.5); } 50% { opacity: 1; transform: scale(1.4); } }
 @keyframes fondu { to { opacity: 0; filter: brightness(2); } }
+
+/* Le choix du héros. */
+.heros-grille { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.heros-choix { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 8px 12px; cursor: pointer; text-align: center; }
+.heros-choix:disabled { cursor: default; filter: grayscale(.6) brightness(.75); }
+.heros-choix.choisi { border-color: #fff; box-shadow: 0 0 0 3px var(--brun), 0 0 14px 4px rgba(244, 208, 111, .7); }
+.heros-portrait { display: flex; align-items: flex-end; justify-content: center; width: 100%; aspect-ratio: 1; border-radius: 4px;
+  background: linear-gradient(rgba(10, 16, 40, .2), rgba(10, 16, 40, .5)), url(../img/aventure/foret.webp) 50% 70% / cover; image-rendering: pixelated; }
+.heros-portrait .sprite { width: 92%; animation: respire 1.2s steps(2) infinite; }
+.heros-mystere { align-self: center; font-size: 4rem; color: #f4d06f; text-shadow: 4px 4px 0 var(--brun); }
+.heros-choix b { font-size: 1.1rem; margin-top: 4px; }
+.heros-choix small { color: var(--discret); font-size: .8rem; }
 
 /* La carte du monde, façon premiers Mario (aventure-carte.js) : le dessin de la carte, les étapes et le héros par-dessus. */
 .carte-monde { position: relative; padding: 0; overflow: hidden; }

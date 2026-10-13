@@ -12,7 +12,15 @@ const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const M = MONDES[0];
-const HEROS_IMG = "img/aventure/heros.png";
+// Les héros au choix (le second attend son dessin) ; le choix est gardé sur le téléphone.
+const HEROS_CHOIX = [
+  { id: "cape", nom: "Le Héros à la cape", desc: "Cape rouge et poings serrés.", image: "img/aventure/heros.png", visage: ["250%", "62% 3%"] },
+  { id: "second", nom: "Deuxième héros", desc: "Son dessin arrive bientôt.", image: null },
+];
+let herosId = lire("aventureHeros", null);
+const herosChoisi = () => HEROS_CHOIX.find(h => h.id === herosId && h.image) || HEROS_CHOIX[0];
+const herosImg = () => herosChoisi().image;
+const teteHeros = (h = herosChoisi()) => `<span class="tete" style="background-image:url(${h.image});background-size:${h.visage[0]} auto;background-position:${h.visage[1]}"></span>`;
 // 0 Pierre, 1 Ciseaux, 2 Feuille (comme regles.js) ; les boutons dans l'ordre Pierre, Feuille, Ciseaux.
 const EMO = ["🪨", "✂️", "✋"], NOMS = ["Pierre", "Ciseaux", "Feuille"];
 const BOUTONS = [{ s: 0, c: "bleu" }, { s: 2, c: "vert" }, { s: 1, c: "rouge" }];
@@ -106,7 +114,7 @@ const sac = () => (P.pouvoirs.length
 const pancarte = (haut, bas) => `<div class="pancarte"><b>${haut}</b><span>${bas}</span></div>`;
 // La scène : le décor de la forêt, le héros à gauche, l'adversaire à droite.
 const scene = (a, contenu = "") => `<div class="scene" id="scene">
-  <div class="combattant moi" id="fMoi"><img class="sprite" src="${HEROS_IMG}" alt="Toi"><div class="signe-bulle" id="bMoi"></div></div>
+  <div class="combattant moi" id="fMoi"><img class="sprite" src="${herosImg()}" alt="Toi"><div class="signe-bulle" id="bMoi"></div></div>
   <div class="combattant lui ${a.image ? "" : "emoji miroir"} ${classesPose(a)}" id="fLui">${sprite(a)}<div class="signe-bulle" id="bLui"></div></div>
   ${contenu}
 </div>`;
@@ -122,19 +130,34 @@ function titre() {
   const n = M.adversaires.filter(a => P.etoiles[a.id]).length;
   const etincelles = [[18, 22], [80, 18], [30, 40], [72, 38], [52, 12], [88, 30]]
     .map(([x, y], i) => `<i class="etincelle" style="left:${x}%;top:${y}%;animation-delay:${(i * 0.37).toFixed(2)}s"></i>`).join("");
-  afficher(`<button class="titre-ecran" data-av="commencer" aria-label="Commencer">
+  afficher(`<div class="titre-ecran">
     ${etincelles}
     <span class="titre-haut">
       <span class="titre-gant">${imgPix("✋", "", 20)}</span>
       <span class="titre-texte"><span class="titre-petit">La Quête</span><span class="titre-du">du</span><span class="titre-grand">Gant d'Or</span></span>
-      <span class="titre-monde">Monde ${M.numero} · ${esc(M.nom)}</span>
     </span>
-    <img class="sprite titre-heros" src="${HEROS_IMG}" alt="">
+    <img class="sprite titre-heros" src="${herosImg()}" alt="">
     <span class="titre-bas">
-      <span class="titre-commencer">Touche l'écran pour commencer</span>
+      <button class="pbtn vert large titre-commencer" data-av="commencer">▶ Commencer</button>
       ${n ? `<span class="titre-progres">${n} adversaire${n > 1 ? "s" : ""} battu${n > 1 ? "s" : ""} sur ${M.adversaires.length}</span>` : ""}
+      ${herosId ? `<button class="lien titre-lien" data-av="choixHeros">Changer de héros</button>` : ""}
     </span>
-  </button>`);
+  </div>`);
+}
+
+// ---------------------------------------------------------------- le choix du héros
+// La première fois (et sur demande depuis l'écran titre) ; ensuite, on va droit à la carte.
+function choixHeros() {
+  ecran = "heros";
+  const cartes = HEROS_CHOIX.map(h => `<button class="cadre heros-choix ${h.id === herosChoisi().id && herosId ? "choisi" : ""}" data-av="heros" data-id="${h.id}" ${h.image ? "" : "disabled"}>
+    <span class="heros-portrait">${h.image ? `<img class="sprite" src="${h.image}" alt="">` : `<span class="heros-mystere">?</span>`}</span>
+    <b>${esc(h.nom)}</b><small>${esc(h.desc)}</small>
+  </button>`).join("");
+  afficher(`<div class="page">
+    ${pancarte("Choisis", "ton héros")}
+    <div class="heros-grille">${cartes}</div>
+    <button class="pbtn bois large" data-av="titre">← Retour</button>
+  </div>`);
 }
 
 // ---------------------------------------------------------------- la carte du monde
@@ -164,11 +187,11 @@ function carte({ allerVers = null } = {}) {
     <div class="carte-monde cadre" id="carteMonde">
       <img class="carte-fond" src="${IMAGE}" alt="">
       ${noeuds}
-      <div class="heros-pion" id="pion" style="${pct(position(pos))}"><img class="sprite" src="${HEROS_IMG}" alt="Toi"></div>
+      <div class="heros-pion" id="pion" style="${pct(position(pos))}"><img class="sprite" src="${herosImg()}" alt="Toi"></div>
     </div>
     <p class="carte-aide" id="carteAide">${P.introVue ? (prochaine >= 0 ? `Touche l'étape ${prochaine + 1} pour avancer.` : "Touche une étape pour rejouer le combat.") : ""}</p>
     <div class="cadre heros-carte">
-      <span class="tete heros-tete"></span>
+      ${teteHeros()}
       <div><b>Toi</b><small>vie ${h.vie} · force ${h.force}</small><div class="sac">${sac()}<span class="discret">${P.pouvoirs.length}/${MAX_POUVOIRS}</span></div></div>
     </div>
     ${termine(P, M) ? `<div class="cadre gant">${imgPix("🏆", "", 16)} Tu as repris le Gant d'Or ! Le Monde 2 arrive bientôt. Rejoue les combats pour avoir 3 étoiles partout.</div>` : ""}
@@ -232,7 +255,7 @@ function combat() {
   afficher(`<div class="combat">
     ${scene(adv, `
       <div class="hud">
-        <div class="cadre hud-j"><span class="tete heros-tete"></span><div><b>Toi</b><small id="forceMoi"></small><div id="pvMoi"></div></div></div>
+        <div class="cadre hud-j">${teteHeros()}<div><b>Toi</b><small id="forceMoi"></small><div id="pvMoi"></div></div></div>
         <div class="cadre hud-j">${tete(adv)}<div><b>${esc(adv.court || adv.nom)}</b><small id="forceLui"></small><div id="pvLui"></div></div></div>
       </div>
       <div class="pancarte petite"><b>Monde ${M.numero}</b><span>${adv.boss ? "Le boss" : `Combat ${i + 1} / ${M.adversaires.length}`}</span></div>
@@ -396,7 +419,10 @@ jeu.addEventListener("click", e => {
   const b = e.target.closest("[data-av]"); if (!b || b.disabled) return;
   const act = b.dataset.av;
   if (act !== "signe" && act !== "pouvoir" && act !== "commencer") son("clic");
-  if (act === "commencer") { son("generique"); b.classList.add("part"); setTimeout(carte, 650); return; }
+  if (act === "commencer") { son("generique"); document.querySelector(".titre-ecran").classList.add("part"); setTimeout(herosId ? carte : choixHeros, 650); return; }
+  if (act === "choixHeros") { choixHeros(); return; }
+  if (act === "titre") { titre(); return; }
+  if (act === "heros") { herosId = b.dataset.id; ecrire("aventureHeros", herosId); son("pouvoir"); b.classList.add("choisi"); setTimeout(carte, 350); return; }
   if (act === "intro") { P.introVue = true; sauver(); carte({ allerVers: 0 }); }
   else if (act === "aller") marcher(Number(b.dataset.i));
   else if (act === "suivant") carte({ allerVers: Number(b.dataset.i) });
