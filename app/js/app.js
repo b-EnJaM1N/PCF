@@ -41,6 +41,7 @@ import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, co
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
+import { installerAventure } from "./ecran-aventure.js";
 import { GESTES, CELEBRATIONS, CADRES, gesteValide, celebrationValide, articleDe, possede } from "./catalogue.js";
 import { gainDuel } from "./jetons-logique.js";
 import { texteClassementFin, texteNiveau, provisoire, divisionDe, texteDivision } from "./social-logique.js";
@@ -96,7 +97,7 @@ const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier
 const sauverT = () => ecrire("tournoi", T);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
-let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, programmesUI = null, defisUI = null, boutiqueUI = null;
+let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, programmesUI = null, defisUI = null, boutiqueUI = null, aventureUI = null;
 let monClassement = null, mesDuelsOfficiels = 0, maDivision = null;
 // « Niveau officiel : 1232 ? · provisoire, encore 9 duels de calibrage »
 const texteNiveauFiche = (points, joues, division = null) => `Niveau officiel : ${texteNiveau(points, joues)} · ${texteDivision(division ?? divisionDe(points))}` +
@@ -1247,14 +1248,16 @@ $("resetProfile").addEventListener("click", () => {
 // ---------------------------------------------------------------- navigation
 // Trois onglets (Jouer, Cercles, Ma fiche) et la roue des Options. L'onglet « Jouer » est un menu
 // qui mène aux pages Partie rapide, Défier un ami, Tournois (Programmés, Sit & Go, Mes tournois) et Entraînement.
-const VUES = ["viewJouer", "viewCompet", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewBoutique", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
-const ONGLET_DE = { viewJouer: "jouer", viewCompet: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewBoutique: "profile", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
+const VUES = ["viewJouer", "viewCompet", "viewRapide", "viewAventure", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewBoutique", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
+const ONGLET_DE = { viewJouer: "jouer", viewCompet: "jouer", viewRapide: "jouer", viewAventure: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewBoutique: "profile", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
 let vueCourante = "viewJouer", avantOptions = "viewJouer";
 function aller(vue) {
   if (!VUES.includes(vue)) return;
   if (vue === "viewOptions" && vueCourante !== "viewOptions") avantOptions = vueCourante;
   if (vueCourante === "viewRapide" && vue !== "viewRapide") rapideUI?.quitterEcran();   // la recherche demande de rester sur l'écran
   if (vue === "viewRapide") rapideUI?.rafraichir();
+  if (vueCourante === "viewAventure" && vue !== "viewAventure") aventureUI?.quitter();
+  if (vue === "viewAventure") aventureUI?.ouvrir();
   VUES.forEach(v => { $(v).hidden = v !== vue; });
   vueCourante = vue;
   const onglet = ONGLET_DE[vue];
@@ -1752,6 +1755,7 @@ rapideUI = installerRapide({
 
 jetonsUI = installerJetons({ compte: compteUI });
 defisUI = installerDefis({ compte: compteUI, jetons: () => jetonsUI?.rafraichir() });
+aventureUI = installerAventure({ sons: { coup: s => ambiance.raquette(s), public: (t, v) => ambiance.public(t, v), ooh: () => ambiance.ooh() } });
 boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, jetons: () => jetonsUI?.rafraichir(),
   apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); } });
 // Au départ d'un Sit & Go, du freeroll ou d'un tournoi programmé, la page du tournoi s'ouvre… sauf si mon premier match

@@ -1,6 +1,10 @@
 # Mode Aventure — Monde 1 : la Forêt des Ombres (projet)
 
-Idée du porteur du projet (13 octobre), *rien de programmé pour l'instant*. Un mode solo façon RPG, contre l'ordinateur,
+Idée du porteur du projet (13 octobre). **Programmé le 13 octobre, *à valider*** : Jouer › 🗺️ Aventure
+(visible après le premier match), règles dans `app/js/aventure-logique.js` (testées), écran dans `app/js/ecran-aventure.js`,
+progression gardée sur le téléphone. Premier dessin : le Gobelin (`app/img/aventure/gobelin.png`, pixel art fourni par le
+porteur du projet, fond retiré) ; les autres adversaires sont des émojis en attendant leurs dessins. Les répliques s'affichent
+par écrit (voix de Monique plus tard). Un mode solo façon RPG, contre l'ordinateur,
 sans serveur (jouable sans compte). 5 ou 6 mondes à terme ; on commence par un seul monde pour voir si les joueurs accrochent.
 Les dessins (style pixel art) viendront après.
 
@@ -50,19 +54,21 @@ pour montrer qu'elle te prend peu à peu au sérieux.
 - **Égalité** : personne ne perd de vie (sauf exception, voir l'Amanite).
 - Le premier dont la vie tombe à 0 a perdu.
 - **Défaite** : on recommence ce combat, autant de fois qu'on veut (on ne perd pas sa progression).
-- **Étoiles** : 1 étoile pour la victoire, 2 s'il te reste plus de la moitié de ta vie, 3 si tu n'as utilisé aucun pouvoir
-  ou s'il te reste plus de 80 % de ta vie (à choisir). De quoi rejouer les combats pour faire mieux.
+- **Étoiles** : 1 étoile pour la victoire, 2 s'il te reste plus de la moitié de ta vie, 3 s'il te reste plus de 80 % de ta vie
+  (choix du 13 octobre). On garde le meilleur score. De quoi rejouer les combats pour faire mieux.
+- Pas de minuteur : on prend le temps d'observer l'adversaire.
 
 ## Le héros
 
 - Au départ : **100 de vie, 10 de force**.
-- Chaque victoire : **+3 de force et +10 de vie**.
-- À l'arrivée devant le boss : environ 115 de vie et 25 de force.
+- Chaque adversaire battu **pour la première fois** : **+3 de force et +10 de vie** (rejouer un combat ne rend pas plus fort).
+- À l'arrivée devant le boss : 150 de vie et 25 de force.
 
 ## Les pouvoirs
 
-On gagne un pouvoir à chaque victoire. On peut en garder **3 au maximum**, et chacun ne sert qu'une fois.
-On l'active avant de choisir son signe.
+On gagne un pouvoir à chaque victoire (y compris en rejouant un combat), s'il reste de la place : on peut en garder
+**3 au maximum**, et chacun ne sert qu'une fois (perdu même si on abandonne le combat). On l'active avant de choisir son signe.
+Le Bouclier et le Coup double restent prêts tant que le coup se termine par une égalité.
 
 | Pouvoir | Effet |
 |---|---|
@@ -75,12 +81,12 @@ On l'active avant de choisir son signe.
 
 | | Adversaire | Vie | Force | Sa façon de jouer | Récompense |
 |---|---|---|---|---|---|
-| 1 | 🦌 **Bambi**, le faon timide | 30 | 5 | Rejoue le même signe tant qu'il n'a pas perdu deux fois de suite (comme le bot actuel). Le combat pour apprendre. | 🔍 Loupe |
-| 2 | 👺 **Le Gobelin** à la massue | 50 | 8 | Adore la **Pierre** (sa massue) : il la joue un coup sur deux. | 🛡️ Bouclier |
-| 3 | 🦇 **Pipistrelle**, la chauve-souris | 60 | 10 | Très agitée : ne joue **jamais deux fois de suite le même signe**. | ⚔️ Coup double |
-| 4 | 🍄 **L'Amanite**, champignon vénéneux | 70 | 10 | **Copie ton coup précédent**. Spécialité : le **poison**, chaque égalité te fait perdre 5 de vie. | 🧪 Potion |
-| 5 | 🐺 **Le Loup gris** | 90 | 12 | Rusé : s'il gagne, il rejoue le même signe ; s'il perd, il change. **Morsure** : après 2 coups gagnés d'affilée, son coup suivant fait double dégâts. | au choix, 1 des 4 pouvoirs |
-| 👑 | **Grok, le Roi des Gobelins** (boss) | 160 | 15 | **Phase 1** : joue surtout Pierre et Ciseaux. **Phase 2, en rage** (sous la moitié de sa vie) : force 20, et il joue ce qui bat ton dernier signe. Une fois par combat, **Racines** : tes pouvoirs sont bloqués pendant 2 coups. | 🏆 le Gant d'Or, et l'accès au Monde 2 |
+| 1 | 🦌 **Bambi**, le faon timide | 30 | 12 | Rejoue le même signe tant qu'il n'a pas perdu deux fois de suite (comme le bot actuel). Le combat pour apprendre. | 🔍 Loupe |
+| 2 | 👺 **Le Gobelin** à la massue | 50 | 18 | Adore la **Pierre** (sa massue) : il la joue un coup sur deux. | 🛡️ Bouclier |
+| 3 | 🦇 **Pipistrelle**, la chauve-souris | 60 | 20 | Très agitée : ne joue **jamais deux fois de suite le même signe**. | ⚔️ Coup double |
+| 4 | 🍄 **L'Amanite**, champignon vénéneux | 70 | 20 | **Copie ton coup précédent** (85 % du temps). Spécialité : le **poison**, chaque égalité te fait perdre 5 de vie. | 🧪 Potion |
+| 5 | 🐺 **Le Loup gris** | 90 | 22 | Rusé (80 % du temps) : s'il gagne, il rejoue le même signe ; s'il perd, il prend le signe qui bat le tien. **Morsure** : après 2 coups gagnés d'affilée, son coup suivant fait double dégâts. | au choix, 1 des 4 pouvoirs |
+| 👑 | **Grok, le Roi des Gobelins** (boss) | 160 | 24 | **Phase 1** : joue surtout Pierre et Ciseaux (45 % chacun). **Phase 2, en rage** (à la moitié de sa vie) : force 30, et il joue ce qui bat ton dernier signe (70 % du temps). En entrant en rage, **Racines** : tes pouvoirs sont bloqués pendant 2 coups. | 🏆 le Gant d'Or, et l'accès au Monde 2 |
 
 Quelques idées de répliques (bulles, et voix des commentateurs plus tard) :
 - Bambi : « Euh… on peut faire ami-ami ? »
@@ -98,7 +104,9 @@ copier ton coup pour l'Amanite… Le joueur qui observe gagne plus vite et avec 
 
 ## À décider plus tard
 
-- Les chiffres exacts (à régler en jouant).
+- Les chiffres exacts (à régler en jouant). Réglage du 13 octobre, par simulation : en jouant au hasard, on bat Bambi
+  presque toujours, le Gobelin 8 fois sur 10, le Loup 2 fois sur 3 et Grok 4 fois sur 10 ; en lisant les manies, on gagne
+  presque à coup sûr.
 - Ce qu'on gagne en plus : jetons, un surnom (« le Tueur de Gobelins »), un trophée, une tenue pour l'avatar.
 - Le style des dessins (pixel art) et d'où ils viennent : images par IA retouchées, pack acheté, ou dessinateur.
 - Les mondes suivants (idées : le Désert, les Glaces, le Volcan, le Château, le monde final).
