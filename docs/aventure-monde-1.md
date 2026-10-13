@@ -14,7 +14,9 @@ damier du fond retiré) ; Bambi et Pipistrelle sont retournés pour regarder le 
 rivière et pont, chemin de terre à angles droits, triangle rouge au départ), une étape par adversaire avec son
 visage et ses étoiles ; le héros marche le long du chemin jusqu'à l'étape touchée, puis Monique donne la mission. Après une
 victoire, « En route vers… » le fait avancer tout seul jusqu'à l'adversaire suivant. Place des étapes et trajets sur le dessin : `app/js/aventure-carte.js`. Les combattants sont posés sur le chemin du décor (14 octobre).
-Fichiers : `app/aventure.html`, `app/js/aventure-carte.js`, `app/css/aventure.css`, `app/js/aventure-jeu.js` (écran), `app/js/aventure-logique.js` (règles, testées). Un mode solo façon RPG, contre l'ordinateur,
+Fichiers : `app/aventure.html`, `app/js/aventure-carte.js`, `app/css/aventure.css`, `app/js/aventure-jeu.js` (écran), `app/js/aventure-logique.js` (règles, testées).
+
+Un mode solo façon RPG, contre l'ordinateur,
 sans serveur (jouable sans compte). 5 ou 6 mondes à terme ; on commence par un seul monde pour voir si les joueurs accrochent.
 Les dessins (style pixel art) viendront après.
 
