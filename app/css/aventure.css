@@ -137,7 +137,7 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .combattant.lui.emoji { width: min(34%, 170px); }
 /* Les adversaires dessinés vers la droite sont retournés, pour regarder le héros. */
 .combattant.miroir .sprite, .tete.miroir { transform: scaleX(-1); }
-.combattant.lui.vol { bottom: 40%; width: min(44%, 230px); }      /* Pipistrelle vole */
+.combattant.lui.vol { bottom: 25%; width: min(40%, 210px); }   /* assez bas pour que son signe reste visible */      /* Pipistrelle vole */
 .combattant.lui.grand { width: min(64%, 340px); right: -4%; bottom: 16%; }   /* le boss */
 
 .combattant.protege .sprite { filter: drop-shadow(0 0 6px #6fb7ff) drop-shadow(0 0 2px #6fb7ff); }

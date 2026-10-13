@@ -165,7 +165,7 @@ function carte({ allerVers = null } = {}) {
 
 // Le héros marche le long du chemin jusqu'à l'étape i, puis on passe à la mission.
 async function marcher(i) {
-  if (enMarche || ecran !== "carte") return;
+  if (enMarche || ecran !== "carte" || !P.introVue || !ouvert(P, M, i)) return;
   const points = trajet(pos, i), pion = $("pion");
   enMarche = true; document.querySelectorAll(".noeud").forEach(b => b.classList.add("attente"));
   $("carteAide").textContent = `En route vers ${M.adversaires[i].nom}…`;

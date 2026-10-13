@@ -132,6 +132,9 @@ test("progression : combats ouverts un par un, le héros grandit, 3 pouvoirs au 
   assert.equal(apresVictoire(p, A("loup"), 3, "double").pouvoir, "double", "le Loup : pouvoir au choix");
   p = apresVictoire(apresVictoire(p, A("loup"), 3, "double").progression, A("gardien"), 1).progression;
   assert.ok(termine(p, M));
+  const trou = { ...nouvelleProgression(), etoiles: { loup: 3 } };
+  assert.ok(!ouvert(trou, M, 5), "une étoile isolée sur le Loup n'ouvre pas le boss");
+  assert.ok(ouvert(trou, M, 0) && !ouvert(trou, M, 1));
 });
 
 test("une progression abîmée est remise d'aplomb", () => {
