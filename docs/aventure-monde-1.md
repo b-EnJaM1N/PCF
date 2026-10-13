@@ -15,7 +15,9 @@ décor de la forêt, le Gant d'Or qui flotte et brille, le héros sur le chemin,
 **Choix du héros** (14 octobre) : à la première partie, écran « Choisis ton héros » : le Héros, l'Héroïne (dessin du porteur
 du projet, damier retiré) (« Toi en héros », à partir d'une photo, essayé puis retiré le 14 octobre à la demande du porteur du projet : un visage en
 photo collé dans un rond faisait « artisanal », un visage redessiné n'était plus ressemblant, et le héros repeint aux couleurs
-de la photo ne convainquait pas non plus ; une version par intelligence artificielle serait payante) ; ensuite on va droit à la carte, avec « Changer de héros » sur l'écran titre. Idée pour plus tard : une mini-BD de 4 images avant la première partie (le Gant d'Or
+de la photo ne convainquait pas non plus ; une version par intelligence artificielle serait payante) . **Personnalisation** (14 octobre) : après le choix, peau (5 teintes), cheveux (8 couleurs) et yeux (6 couleurs), ou
+« comme le dessin » ; le dessin est repeint en gardant ses ombres (`app/js/aventure-perso.js`). La forme de la coiffure demanderait
+des dessins du même héros, même pose, avec d'autres coiffures; ensuite on va droit à la carte, avec « Changer de héros » sur l'écran titre. Idée pour plus tard : une mini-BD de 4 images avant la première partie (le Gant d'Or
 sur son socle, les racines qui l'emportent, Monique au micro, le héros qui part du campement).
 
 **Carte du monde façon premiers Mario** (14 octobre) : le dessin du porteur du projet (`app/img/aventure/carte.webp` : forêt,
