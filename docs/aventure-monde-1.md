@@ -1,10 +1,15 @@
 # Mode Aventure — Monde 1 : la Forêt des Ombres (projet)
 
-Idée du porteur du projet (13 octobre). **Programmé le 13 octobre, *à valider*** : Jouer › 🗺️ Aventure
-(visible après le premier match), règles dans `app/js/aventure-logique.js` (testées), écran dans `app/js/ecran-aventure.js`,
-progression gardée sur le téléphone. Premier dessin : le Gobelin (`app/img/aventure/gobelin.png`, pixel art fourni par le
-porteur du projet, fond retiré) ; les autres adversaires sont des émojis en attendant leurs dessins. Les répliques s'affichent
-par écrit (voix de Monique plus tard). Un mode solo façon RPG, contre l'ordinateur,
+Idée du porteur du projet (13 octobre). **Projet à part, hors de l'appli HandSlam** (décision du 13 octobre : le ton
+« aventure » ne va pas avec la simulation sportive ; peut-être jamais ajouté). Il vit sur la branche `aventure-experimentale`,
+mise en ligne automatiquement à l'adresse https://handslam.fr/aventure/aventure.html (aucun lien depuis l'appli).
+
+Version pixel art (13 octobre), d'après la maquette du porteur du projet : le décor de la forêt (`app/img/aventure/foret.webp`),
+le héros et le Gobelin découpés dans la maquette (`heros.png`, `gobelin.png`), police pixel Jersey 10, cadres dorés, gros
+boutons bleu / vert / rouge, sons façon console 8 bits. Animations : les combattants respirent, foncent sur l'autre, clignotent
+quand ils sont touchés, tombent au K.-O. ; les dégâts s'envolent en chiffres. Les autres adversaires sont des émojis dessinés
+en gros pixels, en attendant leurs dessins. Monique parle dans une boîte de dialogue, lettre par lettre (voix plus tard).
+Fichiers : `app/aventure.html`, `app/css/aventure.css`, `app/js/aventure-jeu.js` (écran), `app/js/aventure-logique.js` (règles, testées). Un mode solo façon RPG, contre l'ordinateur,
 sans serveur (jouable sans compte). 5 ou 6 mondes à terme ; on commence par un seul monde pour voir si les joueurs accrochent.
 Les dessins (style pixel art) viendront après.
 
