@@ -1,5 +1,6 @@
 # À chaque envoi de code : on lance les tests, puis, s'ils passent, on met en ligne.
 #   branche main           → https://handslam.fr/          (version validée)
+#   branche aventure-experimentale → https://handslam.fr/aventure/  (le Mode Aventure, projet à part, hors de l'appli)
 #   autres branches        → https://handslam.fr/preview/  (version à tester)
 # Le fichier CNAME (le nom de domaine, réglé dans Settings → Pages) est conservé à chaque mise en ligne.
 name: Tests et mise en ligne
@@ -74,11 +75,13 @@ jobs:
             (cd site && git checkout --orphan gh-pages-new && git rm -rfq .)
           fi
           if [ "$GITHUB_REF_NAME" = "main" ]; then
-            find site -mindepth 1 -maxdepth 1 ! -name preview ! -name .git ! -name CNAME -exec rm -rf {} +
+            find site -mindepth 1 -maxdepth 1 ! -name preview ! -name aventure ! -name .git ! -name CNAME -exec rm -rf {} +
             cp -r app/. site/
           else
-            rm -rf site/preview && mkdir -p site/preview
-            cp -r app/. site/preview/
+            DOSSIER=preview
+            if [ "$GITHUB_REF_NAME" = "aventure-experimentale" ]; then DOSSIER=aventure; fi
+            rm -rf "site/$DOSSIER" && mkdir -p "site/$DOSSIER"
+            cp -r app/. "site/$DOSSIER/"
           fi
           touch site/.nojekyll
           cd site
