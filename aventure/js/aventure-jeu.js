@@ -6,6 +6,7 @@ import {
   MONDES, POUVOIRS, MAX_POUVOIRS, GAIN, normaliser, heros, ouvert, termine, etoilesDe, apresVictoire,
   nouveauCombat, signeAdversaire, indiceLoupe, peutUtiliser, utiliser, jouer, piqueAuHasard,
 } from "./aventure-logique.js";
+import { LARGEUR, HAUTEUR, ETAPES, trajet, position, dessinerCarte } from "./aventure-carte.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -57,6 +58,7 @@ function tete(a) {
 let audio = null, sonOn = lire("aventureSon", true) !== false;
 const SONS = {
   clic: [[880, 0.03, "square", 0.03]],
+  pas: [[140, 0.04, "triangle", 0.05]],
   coup: [[180, 0.07, "square", 0.05, 420]],
   touche: [[700, 0.09, "square", 0.08, 200]],
   aie: [[220, 0.18, "sawtooth", 0.07, 60]],
@@ -112,26 +114,39 @@ const jeu = $("jeu");
 function afficher(html) { jeu.innerHTML = html; animerDialogues(); window.scrollTo(0, 0); }
 
 // ---------------------------------------------------------------- la carte du monde
-function carte() {
-  ecran = "carte";
+// Où se tient le héros sur la carte : -1 au campement, sinon l'étape (jamais au-delà de ce qui est ouvert).
+const dernierOuvert = () => M.adversaires.reduce((n, a, i) => (ouvert(P, M, i) ? i : n), 0);
+let pos = Math.max(-1, Math.min(lire("aventurePos", -1), dernierOuvert()));
+let enMarche = false;
+const pct = p => `left:${(100 * p.x) / LARGEUR}%;top:${(100 * p.y) / HAUTEUR}%`;
+
+// allerVers : l'étape où le héros doit se rendre tout seul en arrivant (après « Combat suivant »).
+function carte({ allerVers = null } = {}) {
+  ecran = "carte"; enMarche = false;
+  pos = Math.max(-1, Math.min(pos, dernierOuvert()));
   const h = heros(P, M);
-  const etapes = M.adversaires.map((a, i) => {
-    const ok = ouvert(P, M, i), e = P.etoiles[a.id] || 0;
-    return `<button class="cadre etape ${a.boss ? "boss" : ""} ${e ? "faite" : ""}" data-av="choisir" data-id="${a.id}" ${ok && P.introVue ? "" : "disabled"}>
-      <span class="num">${a.boss ? imgPix("👑", "", 12) : i + 1}</span>
-      <span class="et-av">${ok ? tete(a) : `<span class="tete">${imgPix("🔒", "", 14)}</span>`}</span>
-      <span class="et-nom"><b>${ok ? esc(a.nom) : "???"}</b><small>${ok ? `${esc(a.titre)} · vie ${a.vie} · force ${a.force}` : "Bats le précédent"}</small></span>
-      ${e ? etoiles(e) : ""}
+  const prochaine = M.adversaires.findIndex((a, i) => ouvert(P, M, i) && !P.etoiles[a.id]);
+  const noeuds = M.adversaires.map((a, i) => {
+    const ok = ouvert(P, M, i) && P.introVue, e = P.etoiles[a.id] || 0;
+    return `<button class="noeud ${a.boss ? "boss" : ""} ${e ? "fait" : ""} ${i === prochaine && P.introVue ? "prochain" : ""}" style="${pct(ETAPES[i])}" data-av="aller" data-i="${i}" ${ok ? "" : "disabled"} aria-label="${ok ? esc(a.nom) : "Étape fermée"}">
+      ${ok ? tete(a) : `<span class="tete">${imgPix("🔒", "", 14)}</span>`}
+      <span class="noeud-num">${a.boss ? "★" : i + 1}</span>
+      ${e ? `<span class="noeud-et">${etoiles(e)}</span>` : ""}
     </button>`;
   }).join("");
   afficher(`<div class="page">
     ${pancarte(`Monde ${M.numero}`, esc(M.nom))}
+    ${P.introVue ? "" : `${dialogue(M.intro)}<button class="pbtn vert large" data-av="intro">C'est parti !</button>`}
+    <div class="carte-monde cadre" id="carteMonde">
+      <canvas id="carteFond" aria-hidden="true"></canvas>
+      ${noeuds}
+      <div class="heros-pion" id="pion" style="${pct(position(pos))}"><img class="sprite" src="${HEROS_IMG}" alt="Toi"></div>
+      <p class="carte-aide" id="carteAide">${P.introVue ? (prochaine >= 0 ? `Touche l'étape ${prochaine + 1} pour avancer.` : "Touche une étape pour rejouer le combat.") : ""}</p>
+    </div>
     <div class="cadre heros-carte">
       <span class="tete heros-tete"></span>
       <div><b>Toi</b><small>vie ${h.vie} · force ${h.force}</small><div class="sac">${sac()}<span class="discret">${P.pouvoirs.length}/${MAX_POUVOIRS}</span></div></div>
     </div>
-    ${P.introVue ? "" : `${dialogue(M.intro)}<button class="pbtn vert large" data-av="intro">C'est parti !</button>`}
-    <div class="etapes">${etapes}</div>
     ${termine(P, M) ? `<div class="cadre gant">${imgPix("🏆", "", 16)} Tu as repris le Gant d'Or ! Le Monde 2 arrive bientôt. Rejoue les combats pour avoir 3 étoiles partout.</div>` : ""}
     <details class="cadre regles"><summary>Comment ça marche ?</summary>
       <p>Chaque combat se joue à la barre de vie. Coup gagné : l'adversaire perd ta force. Coup perdu : tu perds la sienne. Égalité : rien ne se passe.</p>
@@ -143,6 +158,33 @@ function carte() {
     </details>
     <div class="barre-bas"><button class="pbtn bois petit" data-av="son">${sonOn ? "🔊 Son" : "🔇 Son"}</button></div>
   </div>`);
+  dessinerCarte($("carteFond"));
+  if (P.introVue) $("pion").scrollIntoView({ block: "center" });
+  if (allerVers !== null) setTimeout(() => marcher(allerVers), 400);
+}
+
+// Le héros marche le long du chemin jusqu'à l'étape i, puis on passe à la mission.
+async function marcher(i) {
+  if (enMarche || ecran !== "carte") return;
+  const points = trajet(pos, i), pion = $("pion");
+  enMarche = true; document.querySelectorAll(".noeud").forEach(b => b.classList.add("attente"));
+  $("carteAide").textContent = `En route vers ${M.adversaires[i].nom}…`;
+  pion.classList.add("marche");
+  let [x, y] = [position(pos).x, position(pos).y];
+  for (const [nx, ny] of points) {
+    if (nx !== x) pion.classList.toggle("gauche", nx < x);
+    const ms = Math.max(120, Math.hypot(nx - x, ny - y) * 14);
+    pion.style.transition = `left ${ms}ms linear, top ${ms}ms linear`;
+    pion.style.left = `${(100 * nx) / LARGEUR}%`; pion.style.top = `${(100 * ny) / HAUTEUR}%`;
+    son("pas");
+    await pause(ms);
+    [x, y] = [nx, ny];
+  }
+  pion.classList.remove("marche", "gauche");
+  pos = i; ecrire("aventurePos", pos);
+  await pause(points.length ? 300 : 0);
+  if (ecran !== "carte") return;
+  adv = M.adversaires[i]; mission();
 }
 
 // ---------------------------------------------------------------- avant le combat : la mission
@@ -319,7 +361,7 @@ function voile() {
     html = `<h2 class="titre-fin">${adv.boss ? "Le Gant d'Or !" : "Victoire !"}</h2><p class="grandes-etoiles">${etoiles(fin.etoiles)}</p>${dialogue(adv.bravo)}
       ${gains.map(t => `<p class="gain">${esc(t)}</p>`).join("")}
       ${adv.boss ? `<p class="petit-texte">Le Monde 2 arrive bientôt.</p>` : ""}
-      ${suivant ? `<button class="pbtn vert large" data-av="choisir" data-id="${suivant.id}">Combat suivant : ${esc(suivant.nom)}</button>` : ""}
+      ${suivant ? `<button class="pbtn vert large" data-av="suivant" data-i="${i + 1}">En route vers ${esc(suivant.nom)}</button>` : ""}
       <button class="pbtn bois large" data-av="carte">🗺️ La carte</button>`;
   }
   v.innerHTML = `<div class="cadre fin">${html}</div>`;
@@ -331,8 +373,9 @@ jeu.addEventListener("click", e => {
   const b = e.target.closest("[data-av]"); if (!b || b.disabled) return;
   const act = b.dataset.av;
   if (act !== "signe" && act !== "pouvoir") son("clic");
-  if (act === "intro") { P.introVue = true; sauver(); carte(); }
-  else if (act === "choisir") { adv = M.adversaires.find(a => a.id === b.dataset.id); mission(); }
+  if (act === "intro") { P.introVue = true; sauver(); carte({ allerVers: 0 }); }
+  else if (act === "aller") marcher(Number(b.dataset.i));
+  else if (act === "suivant") carte({ allerVers: Number(b.dataset.i) });
   else if (act === "combattre") combat();
   else if (act === "carte") carte();
   else if (act === "signe") jouerCoup(Number(b.dataset.s));
@@ -340,7 +383,7 @@ jeu.addEventListener("click", e => {
   else if (act === "abandon") { if (!occupe && confirm("Fuir le combat ? Les pouvoirs déjà utilisés sont perdus.")) mission(); }
   else if (act === "choix") { Object.assign(fin, recompenser(b.dataset.k), { choisir: false }); voile(); }
   else if (act === "son") { sonOn = !sonOn; ecrire("aventureSon", sonOn); b.textContent = b.textContent.replace(/🔊|🔇/, sonOn ? "🔊" : "🔇"); son("clic"); }
-  else if (act === "zero") { if (confirm("Recommencer l'aventure à zéro ? Tes étoiles et tes pouvoirs seront effacés.")) { P = normaliser(null); sauver(); carte(); } }
+  else if (act === "zero") { if (confirm("Recommencer l'aventure à zéro ? Tes étoiles et tes pouvoirs seront effacés.")) { P = normaliser(null); sauver(); pos = -1; ecrire("aventurePos", pos); carte(); } }
 });
 
 carte();
