@@ -34,8 +34,24 @@ function pix(emoji, taille = 18) {
   return cachePix.get(k);
 }
 const imgPix = (emoji, cls = "", taille = 18) => `<img class="pix ${cls}" src="${pix(emoji, taille)}" alt="">`;
+// La mise en scène de chaque adversaire : retourné pour regarder le héros, en vol, plus grand (le boss),
+// et le cadrage de son visage dans les petites vignettes (taille de l'image, point visé).
+const POSE = {
+  bambi: { miroir: true, visage: ["230%", "88% 22%"] },
+  gobelin: { visage: ["230%", "46% 4%"] },
+  pipistrelle: { miroir: true, vol: true, visage: ["300%", "60% 52%"] },
+  amanite: { visage: ["210%", "45% 72%"] },
+  loup: { visage: ["250%", "24% 30%"] },
+  grok: { grand: true, visage: ["320%", "66% 18%"] },
+};
+const pose = a => POSE[a.id] || {};
+const classesPose = a => ["miroir", "vol", "grand"].filter(k => pose(a)[k]).join(" ");
 const sprite = a => (a.image ? `<img class="sprite" src="${a.image}" alt="${esc(a.nom)}">` : imgPix(a.emoji, "sprite", 22));
-const tete = a => (a.image ? `<span class="tete" style="background-image:url(${a.image})"></span>` : `<span class="tete">${imgPix(a.emoji, "", 16)}</span>`);
+function tete(a) {
+  if (!a.image) return `<span class="tete">${imgPix(a.emoji, "", 16)}</span>`;
+  const [taille, point] = pose(a).visage || ["230%", "50% 20%"];
+  return `<span class="tete ${pose(a).miroir ? "miroir" : ""}" style="background-image:url(${a.image});background-size:${taille} auto;background-position:${point}"></span>`;
+}
 
 // ---------------------------------------------------------------- les sons, façon console 8 bits
 let audio = null, sonOn = lire("aventureSon", true) !== false;
@@ -87,7 +103,7 @@ const pancarte = (haut, bas) => `<div class="pancarte"><b>${haut}</b><span>${bas
 // La scène : le décor de la forêt, le héros à gauche, l'adversaire à droite.
 const scene = (a, contenu = "") => `<div class="scene" id="scene">
   <div class="combattant moi" id="fMoi"><img class="sprite" src="${HEROS_IMG}" alt="Toi"><div class="signe-bulle" id="bMoi"></div></div>
-  <div class="combattant lui ${a.image ? "" : "emoji"}" id="fLui">${sprite(a)}<div class="signe-bulle" id="bLui"></div></div>
+  <div class="combattant lui ${a.image ? "" : "emoji miroir"} ${classesPose(a)}" id="fLui">${sprite(a)}<div class="signe-bulle" id="bLui"></div></div>
   ${contenu}
 </div>`;
 
