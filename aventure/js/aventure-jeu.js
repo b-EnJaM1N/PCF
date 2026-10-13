@@ -232,9 +232,9 @@ function majCombat() {
   $("pvMoi").innerHTML = pv(C.vie[0], C.max[0]);
   $("pvLui").innerHTML = pv(C.vie[1], C.max[1]);
   const infos = [];
-  if (C.loupe > 0 && !C.fin) { const l = indiceLoupe(adv, C); infos.push(`🔍 ${esc(adv.nom)} prépare plutôt ${EMO[l.signe]} ${NOMS[l.signe]} (${l.pourcent} %) · encore ${C.loupe} coup${C.loupe > 1 ? "s" : ""}`); }
-  if (C.bouclier) infos.push("🛡️ Bouclier levé");
-  if (C.double) infos.push("⚔️ Coup double prêt");
+  if (C.loupe > 0 && !C.fin) { const l = indiceLoupe(adv, C); infos.push(`👁️ ${esc(adv.nom)} prépare plutôt ${EMO[l.signe]} ${NOMS[l.signe]} (${l.pourcent} %) · encore ${C.loupe} coup${C.loupe > 1 ? "s" : ""}`); }
+  if (C.bouclier) infos.push("🪵 Écorce de Chêne prête");
+  if (C.double) infos.push("🐗 Frappe du Sanglier prête");
   if (C.racines > 0) infos.push(`🌿 Pouvoirs bloqués (${C.racines})`);
   const morsure = adv.morsure && C.coups.length >= 2 && C.coups.at(-1).gagnant === 1 && C.coups.at(-2).gagnant === 1;
   if (morsure && !C.fin) infos.push("🐺 Sa morsure est prête !");
@@ -283,11 +283,11 @@ async function jouerCoup(moi) {
     anime($("fLui"), "touche"); anime($("scene"), "tremble");
     nombre("fLui", `-${k.degats[1]}`, k.effets.includes("double") ? "gros" : "");
     son("touche");
-    texte = k.effets.includes("double") ? `Coup double ! −${k.degats[1]}` : `Touché ! −${k.degats[1]}`;
+    texte = k.effets.includes("double") ? `Frappe du Sanglier ! −${k.degats[1]}` : `Touché ! −${k.degats[1]}`;
   } else if (k.gagnant === 1) {
     anime($("fLui"), "attaque");
     await pause(170);
-    if (k.effets.includes("bouclier")) { anime($("fMoi"), "bloque"); nombre("fMoi", "Bloqué !", "bleu"); son("bloque"); texte = "Le Bouclier te protège !"; }
+    if (k.effets.includes("bouclier")) { anime($("fMoi"), "bloque"); nombre("fMoi", "Bloqué !", "bleu"); son("bloque"); texte = "L'Écorce de Chêne te protège !"; }
     else {
       anime($("fMoi"), "touche"); anime($("scene"), "tremble");
       nombre("fMoi", `-${k.degats[0]}`, k.effets.includes("morsure") ? "gros" : "");

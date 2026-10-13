@@ -8,10 +8,10 @@ export const GAIN = { vie: 10, force: 3 };             // à chaque adversaire b
 export const MAX_POUVOIRS = 3;
 
 export const POUVOIRS = {
-  loupe: { emoji: "🔍", nom: "Loupe", effet: "Pendant 3 coups, montre le signe que l'adversaire prépare le plus souvent." },
-  bouclier: { emoji: "🛡️", nom: "Bouclier", effet: "Si tu perds le prochain coup, tu ne perds pas de vie." },
-  double: { emoji: "⚔️", nom: "Coup double", effet: "Si tu gagnes le prochain coup, il fait deux fois plus de dégâts." },
-  potion: { emoji: "🧪", nom: "Potion", effet: "Rend 30 de vie tout de suite." },
+  loupe: { emoji: "👁️", nom: "Œil de Lynx", effet: "Pendant 3 coups, montre le signe que l'adversaire prépare le plus souvent." },
+  bouclier: { emoji: "🪵", nom: "Écorce de Chêne", effet: "Si tu perds le prochain coup, tu ne perds pas de vie." },
+  double: { emoji: "🐗", nom: "Frappe du Sanglier", effet: "Si tu gagnes le prochain coup, il fait deux fois plus de dégâts." },
+  potion: { emoji: "🌿", nom: "Sève de Vie", effet: "Rend 30 de vie tout de suite." },
 };
 export const SOIN_POTION = 30, COUPS_LOUPE = 3, POISON = 5, FORCE_RAGE = 30, COUPS_RACINES = 2;
 
@@ -21,7 +21,7 @@ const somme = (...ts) => [0, 1, 2].map(s => ts.reduce((n, t) => n + t[s], 0));
 const UNIFORME = [1 / 3, 1 / 3, 1 / 3];
 
 // Chaque adversaire a une manie : probabilites(c) donne ses chances de jouer Pierre, Ciseaux, Feuille au prochain coup
-// (c : le combat en cours, avec c.coups = [{ moi, lui, gagnant }]). La Loupe montre le signe le plus probable.
+// (c : le combat en cours, avec c.coups = [{ moi, lui, gagnant }]). L'Œil de Lynx montre le signe le plus probable.
 export const MONDES = [{
   id: "foret", numero: 1, nom: "La Forêt des Ombres", emoji: "🌲", surnom: "petit scarabée",
   intro: "Bonjour, petit scarabée. Tu veux devenir un as de la discipline ? Alors suis mes conseils. J'ai été championne en 1997. Toi, pour l'instant, tu n'es rien. Le Gant d'Or a disparu dans la Forêt des Ombres. Le Gardien de la Forêt, un vieux golem de bois et de pierre, l'a trouvé et ne veut plus le rendre. Va le chercher. Et tiens-toi droit.",
@@ -30,7 +30,7 @@ export const MONDES = [{
       id: "bambi", nom: "Bambi", titre: "le faon timide", emoji: "🦌", image: "img/aventure/bambi.png", vie: 30, force: 12, recompense: "loupe",
       replique: "Euh… on peut faire ami-ami ?",
       mission: "Commence par Bambi. Il est têtu : il rejoue le même signe tant qu'il n'a pas perdu deux fois. Même toi, tu devrais y arriver.",
-      bravo: "Bien. Tiens, une Loupe. Elle te montre ce que l'autre prépare. Ne la gaspille pas.",
+      bravo: "Bien. Tiens, un Œil de Lynx. Il te montre ce que l'autre prépare. Ne le gaspille pas.",
       // Même signe tant qu'il n'a pas perdu deux fois de suite ; ensuite, un autre signe.
       probabilites(c) {
         if (!c.coups.length) return UNIFORME;
@@ -48,7 +48,7 @@ export const MONDES = [{
       id: "gobelin", nom: "Le Gobelin", titre: "à la massue", emoji: "👺", image: "img/aventure/gobelin.png", vie: 50, force: 18, recompense: "bouclier",
       replique: "Hé hé… tu ne vas pas gagner si facilement !",
       mission: "Le Gobelin ne lâche jamais sa massue. Réfléchis deux secondes à ce que ça veut dire.",
-      bravo: "Pas mal. Prends ce Bouclier, tu en auras besoin.",
+      bravo: "Pas mal. Prends cette Écorce de Chêne, tu en auras besoin.",
       // La Pierre (sa massue) un coup sur deux.
       probabilites: () => somme(unSur(PIERRE, 0.5), repartir(0.5, PIERRE)),
     },
@@ -56,7 +56,7 @@ export const MONDES = [{
       id: "pipistrelle", nom: "Pipistrelle", titre: "la chauve-souris", feminin: true, emoji: "🦇", image: "img/aventure/pipistrelle.png", vie: 60, force: 20, recompense: "double",
       replique: "Tu ne me vois pas venir !",
       mission: "La chauve-souris ne tient pas en place : jamais deux fois le même signe. Sers-toi de ta tête.",
-      bravo: "Correct. Voici un Coup double. Frappe fort, pour une fois.",
+      bravo: "Correct. Voici la Frappe du Sanglier. Frappe fort, pour une fois.",
       // Jamais deux fois de suite le même signe.
       probabilites: c => (c.coups.length ? repartir(1, c.coups.at(-1).lui) : UNIFORME),
     },
@@ -64,7 +64,7 @@ export const MONDES = [{
       id: "amanite", nom: "L'Amanite", titre: "champignon vénéneux", feminin: true, emoji: "🍄", image: "img/aventure/amanite.png", vie: 70, force: 20, recompense: "potion", poison: POISON,
       replique: "Approche… je ne suis pas si toxique.",
       mission: "L'Amanite t'imite, comme un mauvais élève. Et méfie-toi des égalités : elles empoisonnent.",
-      bravo: "Tu as encore tes deux mains ? Bien. Une Potion, au cas où.",
+      bravo: "Tu as encore tes deux mains ? Bien. Un peu de Sève de Vie, au cas où.",
       // Copie ton coup précédent (presque toujours).
       probabilites: c => (c.coups.length ? somme(unSur(c.coups.at(-1).moi, 0.85), repartir(0.15, c.coups.at(-1).moi)) : UNIFORME),
     },
@@ -155,7 +155,7 @@ export function signeAdversaire(adv, c, rng = Math.random) {
   for (const s of [PIERRE, CISEAUX, FEUILLE]) { if (x < t[s]) return s; x -= t[s]; }
   return FEUILLE;
 }
-// Ce que montre la Loupe : le signe le plus probable et sa chance (en %).
+// Ce que montre l'Œil de Lynx : le signe le plus probable et sa chance (en %).
 export function indiceLoupe(adv, c) {
   const t = chancesDe(adv, c), total = t[0] + t[1] + t[2];
   const s = [0, 1, 2].reduce((a, b) => (t[b] > t[a] ? b : a), 0);
@@ -166,9 +166,9 @@ export function indiceLoupe(adv, c) {
 export function peutUtiliser(c, cle) {
   if (c.fin) return "Le combat est fini.";
   if (c.racines > 0) return "Les racines du Gardien bloquent tes pouvoirs.";
-  if (cle === "loupe" && c.loupe > 0) return "La Loupe est déjà active.";
-  if (cle === "bouclier" && c.bouclier) return "Le Bouclier est déjà levé.";
-  if (cle === "double" && c.double) return "Le Coup double est déjà prêt.";
+  if (cle === "loupe" && c.loupe > 0) return "L'Œil de Lynx est déjà ouvert.";
+  if (cle === "bouclier" && c.bouclier) return "L'Écorce de Chêne est déjà prête.";
+  if (cle === "double" && c.double) return "La Frappe du Sanglier est déjà prête.";
   if (cle === "potion" && c.vie[0] >= c.max[0]) return "Ta vie est déjà pleine.";
   return null;
 }
