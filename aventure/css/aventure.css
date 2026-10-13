@@ -100,9 +100,9 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .barre-bas { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .page > .barre-bas { justify-content: center; }
 
-/* La carte du monde, façon premiers Mario (aventure-carte.js) : le décor en gros pixels, les étapes et le héros par-dessus. */
+/* La carte du monde, façon premiers Mario (aventure-carte.js) : le dessin de la carte, les étapes et le héros par-dessus. */
 .carte-monde { position: relative; padding: 0; overflow: hidden; }
-.carte-monde canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; image-rendering: crisp-edges; }
+.carte-fond { display: block; width: 100%; height: auto; image-rendering: pixelated; }
 .noeud { position: absolute; transform: translate(-50%, -50%); width: 15%; aspect-ratio: 1; padding: 0; border: 0; background: none; cursor: pointer; z-index: 2; }
 .noeud .tete { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--brun); box-shadow: 0 0 0 2px #f0d9a0, 0 3px 0 2px rgba(0, 0, 0, .4); }
 .noeud .tete .pix { width: 70%; height: 70%; }
@@ -120,8 +120,7 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .heros-pion .sprite { width: 100%; height: auto; display: block; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .45)); animation: respire 1.2s steps(2) infinite; }
 .heros-pion.gauche .sprite { transform: scaleX(-1); animation-name: respire-miroir; }
 .heros-pion.marche .sprite { animation-duration: .3s; }
-.carte-aide { position: absolute; left: 50%; top: 6px; transform: translateX(-50%); width: max-content; max-width: 94%; margin: 0; padding: 2px 10px; z-index: 4;
-  background: rgba(10, 12, 24, .82); border: 2px solid var(--or); border-radius: 4px; font-size: .8rem; text-align: center; }
+.carte-aide { align-self: center; margin: -4px 0 0; padding: 2px 10px; background: rgba(10, 12, 24, .82); border: 2px solid var(--or); border-radius: 4px; font-size: .85rem; text-align: center; }
 .carte-aide:empty { display: none; }
 @keyframes sautille { 50% { transform: translate(-50%, -62%); } }
 

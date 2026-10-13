@@ -73,6 +73,7 @@ const FICHIERS = [
   "js/aventure-carte.js",
   "fonts/jersey10-latin.woff2",
   "img/aventure/foret.webp",
+  "img/aventure/carte.webp",
   "img/aventure/heros.png",
   "img/aventure/gobelin.png",
   "img/aventure/bambi.png",
