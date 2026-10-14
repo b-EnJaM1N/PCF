@@ -2,26 +2,25 @@
 
 Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ · contact : contact.handslam@gmail.com
 
-## En bref (6 octobre 2026)
+## En bref (14 octobre 2026)
 
 **À faire ensuite, dans l'ordre** (pas de précipitation, faire les choses bien) :
-1. **Valider** tout ce qui est marqué « à valider » ci-dessous (sur la version de test).
+1. **Finir de valider** ce qui reste « à valider » (sur la version de test) : le lot 5 (surnoms, trophées, avatars, face-à-face), puis ce qui demande un deuxième joueur ou le soir (défis entre amis, enjeux, salle d'attente, « en ligne », messages rapides, championnat du cercle, tournois programmés et freeroll de 20 h), et le nouveau fond sonore (14 octobre).
 2. **Tests avec les proches** : 10 à 20 personnes dans un cercle « Testeurs HandSlam », invitées par petites vagues, avec une soirée freeroll (message d'invitation déjà préparé dans une conversation précédente).
 3. **Google Play Store** (plan ci-dessous) : le test fermé de 14 jours sert aussi de test avec les proches.
 4. Puis : réactiver Le Midi, L'Apéro et Le Nocturne quand il y aura du monde ; finir le passage de « PCF » à « HandSlam » dans le code ; classement du match du jour ; enregistrer les voix des surnoms (liste version 3) et les dialogues du Grand Chelem (au renouvellement des crédits ElevenLabs).
 
 **Fait, à valider** (détails plus bas) :
-- tournois programmés, bots dans les tournois et programme allégé (étapes 18, 19, 21) ;
-- tirage au sort des tableaux (étape 23) ;
-- 32 bots choisis selon la mise, puis échelle des bots (étapes 24 et 29) ;
-- partie rapide amicale et heads-up en Sit & Go (étape 27), toutes les tailles de salle avec mise (étape 28), 3 minutes de patience en salle (étape 30) ;
-- plus de sets à rallonge (étape 26) ;
-- divisions et classement par division (étape 31) ;
-- messages rapides (étape 22) ;
-- jetons, bonus, freeroll, défis du jour, boutique (étapes 13 à 17) ;
-- première visite guidée, match du jour, « Lire l'adversaire » ;
+- tournois programmés et freeroll du soir (étapes 15, 18, 19, 21) ;
+- messages rapides (étape 22) ; défi avec enjeu, championnat du cercle, rendez-vous des défis, « qui est en ligne » (étapes 34 à 40) ;
 - surnoms version 3 ; face-à-face avec un ami ; trophées et avatars ;
-- navigation allégée (carte « Tournois » unique, « Ma fiche » repliée).
+- **fond sonore plus présent** (14 octobre, remarque d'un proche : les commentaires « sortaient de nulle part ») : murmure du public plus fort et jamais coupé pendant l'échange, foule plus dense (deux couches de l'enregistrement, décalées, à gauche et à droite), petits applaudissements après chaque point gagné. Idée pour plus tard, avec des crédits ElevenLabs : un nouvel enregistrement de foule de tennis plus animée.
+
+**Validé le 14 octobre** (par lots, sur la version de test) :
+- lot 1 : première visite guidée, menu qui s'ouvre au fil des matchs, navigation allégée (carte « Tournois » unique, « Ma fiche » en 3 sous-onglets, solde en haut à droite) ;
+- lot 2 : match du jour et partage, « Lire l'adversaire », dossier de l'adversaire, son à la carte ;
+- lot 3 : partie rapide (amicale, bot au bout de 30 s), jetons, bonus du jour, +10 contre un bot, défis du jour, boutique ;
+- lot 4 : Sit & Go (rangée de mises, toutes les tailles, heads-up, bots au bout de 2 minutes, 3 minutes de patience), tirage au sort des tableaux et écran d'attente, plus de sets à rallonge, corrections des étapes 41 et 42, divisions.
 
 **Fait et validé** : mode solo, comptes, duel en ligne, niveau officiel, amis, cercles, tournois en ligne, Sit & Go, navigation en trois onglets, voix ElevenLabs (demande n° 59).
 
