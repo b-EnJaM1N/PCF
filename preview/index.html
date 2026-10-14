@@ -87,7 +87,7 @@
         <span class="fmt-lbl">Adversaire</span>
         <div class="opps" id="opps"></div>
         <p class="hint" id="oppDesc" style="margin:0 0 8px"></p>
-        <details class="fo-dossier" id="oppDossier" style="margin:0 0 14px"><summary>📁 Son dossier</summary><p class="dossier-source" id="oppBilan"></p><div id="oppDossierCorps"></div></details>
+        <p style="margin:0 0 14px"><button class="linkbtn" id="oppFiche">📊 Notre face-à-face et son dossier</button></p>
         <span class="fmt-lbl">Points par set</span>
         <div class="seg" id="segLen"><button data-v="11">11 (officiel)</button><button data-v="7">7</button><button data-v="3">3</button><button data-v="1">1</button></div>
         <p class="hint" id="lenLock" hidden>Le format ne peut pas changer pendant un match ou un tournoi.</p>
@@ -484,7 +484,7 @@
     <p style="margin:0 0 10px"><button class="linkbtn" id="tRetour">← Retour</button></p>
     <section class="card cercle-tete">
       <span class="blason-grand" id="tIcone"></span>
-      <div><h2 id="tNom"></h2><p class="hint" id="tInfo"></p><p class="hint" id="tEtat" style="color:var(--line);margin-top:4px"></p></div>
+      <div><h2 id="tNom"></h2><p class="hint" id="tInfo"></p><p class="hint" id="tEtat" style="color:var(--line);margin-top:4px"></p><p class="t-resultat" id="tResultat" hidden></p></div>
     </section>
     <section class="card" id="tEnjeuCarte" hidden>
       <p class="enjeu-fin" id="tEnjeu" style="margin:0"></p>
