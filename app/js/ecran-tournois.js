@@ -9,6 +9,7 @@ import { nomTour, monTour, DUREES, texteDuree, texteReste, texteFin, monMatch, a
   mesMatchsRestants, DUREES_CHAMPIONNAT, MAX_CHAMPIONNAT, matchsParJoueur, texteDureeChampionnat, dernierDuClassement, texteDepart } from "./tournoi-logique.js";
 import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu, annonceEnjeu } from "./enjeux.js";
 import { texteDepart as texteDepartProgramme } from "./programmes-logique.js";
+import { monResultat, texteJetons } from "./jetons-logique.js";
 import { lire, ecrire } from "./stockage.js";
 
 const $ = id => document.getElementById(id);
@@ -146,6 +147,13 @@ export function installerTournois(ctx) {
           !direct ? " (de 3 à 32)" : t.depart ? ` · départ ${texteDepartProgramme(t.depart, maintenant)}` : t.freeroll ? " · départ à 20 h" : t.taille ? ` sur ${t.taille}` : ""}`
       : t.phase === "en_cours" ? (direct ? `${nomTour(t.tour, t.nb_tours)} · en direct` : `${nomTour(t.tour, t.nb_tours)} · ${reste ? `date limite dans ${reste}` : "date limite passée, résultats en cours"}`)
       : t.phase === "termine" ? (t.vainqueur ? `🏆 Vainqueur : ${t.vainqueur.pseudo}#${t.vainqueur.numero}` : "Tournoi terminé") : "Tournoi annulé";
+
+    // Tournoi terminé : ma place et mes gains (calculés comme le serveur les verse).
+    const res = monResultat(t, uid), entree = t.mise > 0 && !t.freeroll ? ` (entrée : ${texteJetons(t.mise)})` : "";
+    $("tResultat").hidden = !res;
+    if (res) $("tResultat").innerHTML = (res.rang === 1 ? "🏆 <b>Tu as gagné le tournoi !</b>" : `🏁 Tu finis <b>${res.place}</b>`)
+      + (res.gain > 0 ? ` · 🪙 <b>+${texteJetons(res.gain)}</b> gagnés${entree}`
+        : res.gain === 0 ? ` · pas de gain : ${res.payees === 1 ? "seul le vainqueur est payé" : `${res.payees} premiers payés`}${entree}` : "");
 
     // L'enjeu : annoncé pendant le championnat, le dernier désigné à la fin.
     $("tEnjeuCarte").hidden = !t.enjeu;
