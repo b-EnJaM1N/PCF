@@ -219,8 +219,13 @@ export class Ambiance {
   }
   // Pendant l'échange, le public baisse la voix ; entre les points, il reprend.
   calmer(echange) {
-    // l'échange commence : les applaudissements du point précédent s'éteignent aussitôt (ils ne débordent pas sur le suivant)
-    if (echange && this.bravos) { try { this.bravos.g.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08); } catch { /* rien */ } this.bravos = null; }
+    // L'échange commence : la réaction du point précédent ne déborde pas sur le suivant. Les applaudissements et le brouhaha
+    // s'éteignent en douceur ; les cris (« Allez ! », « Bravo ! », « Ohhh… ») vont au bout de leur mot, un peu moins fort.
+    if (echange && this.bravos) {
+      const { son, parle } = this.bravos;
+      try { son.g.gain.setTargetAtTime(parle ? son.g.gain.value * 0.55 : 0, this.ctx.currentTime, parle ? 0.15 : 0.3); } catch { /* rien */ }
+      this.bravos = null;
+    }
     if (!this.fondGain) return;
     try { this.fondGain.gain.setTargetAtTime(echange ? FOND.echange : FOND.entrePoints, this.ctx.currentTime, echange ? 0.25 : 0.6); } catch { /* rien */ }
   }
@@ -244,9 +249,11 @@ export class Ambiance {
     const vol = (type === "applaudir" || !versions.length ? h(...APPLAUDIR.vol) : VOLUME_REACTION[type]) * egal;
     const son = this.jouer(buffer, vol, true, { delai, vitesse });
     if (!son) return;
-    const duree = type === "brouhaha" || type === "ohDecu" ? buffer.duration : APPLAUDIR.duree;
+    // Les cris enregistrés vont jusqu'au bout ; les applaudissements (et le brouhaha) s'éteignent au bout d'un moment.
+    const parle = versions.length > 0 && type !== "brouhaha" && type !== "applaudir";
+    const duree = parle || type === "brouhaha" ? buffer.duration / vitesse : APPLAUDIR.duree;
     try { son.g.gain.setTargetAtTime(0, this.ctx.currentTime + delai + duree, 0.25); son.src.stop(this.ctx.currentTime + delai + duree + 1.5); } catch { /* rien */ }
-    this.bravos = son;
+    this.bravos = { son, parle };
   }
   // Le « ooh » sur un point disputé.
   ooh() { this.jouer(this.buf.ooh, 0.5, true, { delai: 0.15 }); }
