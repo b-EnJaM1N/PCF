@@ -53,6 +53,42 @@
     "public_ovation_01": {
       "texte": "Standing ovation in a tennis stadium, loud cheers and whistles",
       "duree": 8
+    },
+    "public_allez_01": {
+      "texte": "A single French male tennis spectator shouting \"Allez !\" enthusiastically from the stands, short, light crowd murmur behind",
+      "duree": 1.5
+    },
+    "public_allez_02": {
+      "texte": "A single French female tennis spectator cheering \"Allez !\" from the stands, short, light crowd murmur behind",
+      "duree": 1.5
+    },
+    "public_allez_03": {
+      "texte": "A few French tennis fans chanting \"Allez, allez, allez !\" briefly in the stands, short",
+      "duree": 2
+    },
+    "public_oh_decu_01": {
+      "texte": "Tennis crowd disappointed groan \"ohhh\", falling tone, short",
+      "duree": 2
+    },
+    "public_oh_decu_02": {
+      "texte": "Tennis stadium crowd sighing in disappointment, \"aww\", short",
+      "duree": 2
+    },
+    "public_bravo_01": {
+      "texte": "A French tennis spectator shouting \"Bravo !\" followed by a few claps, short",
+      "duree": 2
+    },
+    "public_bravo_02": {
+      "texte": "Several tennis spectators calling \"Bravo !\" with short warm applause",
+      "duree": 2.5
+    },
+    "public_brouhaha_01": {
+      "texte": "Tennis crowd chatter swelling briefly after a point then settling down, lively murmurs, people talking",
+      "duree": 4
+    },
+    "public_brouhaha_02": {
+      "texte": "Lively tennis crowd buzz, spectators commenting excitedly after a rally, rising then fading",
+      "duree": 4
     }
   }
 }

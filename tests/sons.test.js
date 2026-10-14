@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { applaudissements, coupDeRaquette, echoStade, FOULES } from "../app/js/sons.js";
-import { FICHIERS_AMBIANCE, FICHIERS_RAQUETTE, reactionsPublic, egalitesAvantDernier, doitApplaudir } from "../app/js/ambiance.js";
+import { FICHIERS_AMBIANCE, FICHIERS_RAQUETTE, FICHIERS_REACTIONS, reactionsPublic, egalitesAvantDernier, series, reactionPoint } from "../app/js/ambiance.js";
 import { rngFixe } from "./outils.js";
 
 const valide = c => { for (const v of c) if (!Number.isFinite(v) || Math.abs(v) > 1) return false; return true; };
@@ -51,15 +51,22 @@ test("le public : tension sur les balles de set et de match, « ooh » sur les p
   assert.equal(egalitesAvantDernier([c(0)]), 0);
 });
 
-test("les petits applaudissements : jamais sur une égalité ni deux points de suite, toujours après des égalités, sinon de temps en temps", () => {
-  const etat = {}, jamais = () => 0.99, toujours = () => 0;
-  assert.equal(doitApplaudir(etat, { egalite: true }, 0, toujours), false);
-  assert.equal(doitApplaudir(etat, { gagnant: 0 }, 0, jamais), false, "un point ordinaire : pas toujours");
-  assert.equal(doitApplaudir(etat, { gagnant: 0 }, 2, jamais), true, "après des égalités : le public se libère");
-  assert.equal(doitApplaudir(etat, { gagnant: 1 }, 3, toujours), false, "jamais deux points de suite");
-  assert.equal(doitApplaudir(etat, { egalite: true }, 0, toujours), false);
-  assert.equal(doitApplaudir(etat, { gagnant: 1 }, 0, toujours), true, "une égalité entre deux ne compte pas comme un point applaudi");
-  let n = 0; const e = {};
-  for (let i = 0; i < 3000; i++) if (doitApplaudir(e, { gagnant: 0 }, 0)) n++;
-  assert.ok(n > 500 && n < 1000, `environ un point sur quatre ou cinq (${n} sur 3000)`);
+test("les réactions du public après un point : variées, jamais deux de suite, « Ohhh… » quand une belle série est brisée", () => {
+  const c = (...g) => g.map(x => ({ gagnant: x }));
+  assert.deepEqual(series(c(0, 0, null, 0)), { serie: 3, brisee: 0 }, "les égalités ne coupent pas une série");
+  assert.deepEqual(series(c(1, 1, 1, 0)), { serie: 1, brisee: 3 });
+  const tot = () => 0, tard = () => 0.99;
+  assert.equal(reactionPoint({}, { egalite: true }, c(0, null), tot), null, "jamais sur une égalité");
+  assert.equal(reactionPoint({}, { gagnant: 0 }, c(1, 1, 1, 1, 0), tot), "ohDecu", "une série de 4 brisée");
+  assert.equal(reactionPoint({ dernier: true }, { gagnant: 0 }, c(1, 1, 1, 1, 0), tot), "ohDecu", "même juste après une autre réaction");
+  assert.equal(reactionPoint({}, { gagnant: 0 }, c(1, null, 0), tot), "bravo", "un point arraché après une égalité");
+  assert.equal(reactionPoint({}, { gagnant: 0 }, c(0, 0, 0), tot), "allez", "une série qui se construit");
+  assert.equal(reactionPoint({ dernier: true }, { gagnant: 0 }, c(0, 0, 0), tot), null, "jamais deux points de suite");
+  assert.equal(reactionPoint({}, { gagnant: 0 }, c(1, 0), tard), null, "le plus souvent, le murmure suffit");
+  const vus = new Set(); let n = 0, e = {};
+  const coups = [];
+  for (let i = 0; i < 4000; i++) { coups.push({ gagnant: Math.random() < 0.15 ? null : Math.random() < 0.5 ? 0 : 1 }); const r = reactionPoint(e, coups.at(-1).gagnant === null ? { egalite: true } : { gagnant: coups.at(-1).gagnant }, coups); if (r) { vus.add(r); n++; } }
+  assert.deepEqual([...vus].sort(), ["allez", "applaudir", "bravo", "brouhaha", "ohDecu"]);
+  assert.ok(n > 400 && n < 1300, `une réaction de temps en temps, pas à chaque point (${n} sur 4000 coups)`);
+  for (const id of Object.values(FICHIERS_REACTIONS).flat()) assert.match(id, /^[a-z_]+_\d{2}$/);
 });

@@ -14,7 +14,7 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 - tournois programmés et freeroll du soir (étapes 15, 18, 19, 21) ;
 - messages rapides (étape 22) ; défi avec enjeu, championnat du cercle, rendez-vous des défis, « qui est en ligne » (étapes 34 à 40) ;
 - surnoms version 3 ; face-à-face avec un ami ; trophées et avatars ;
-- **fond sonore plus présent** (14 octobre, remarque d'un proche : les commentaires « sortaient de nulle part ») : murmure du public plus fort et jamais coupé pendant l'échange, foule plus dense (deux couches de l'enregistrement, décalées, à gauche et à droite), petits applaudissements après chaque point gagné. Idée pour plus tard, avec des crédits ElevenLabs : un nouvel enregistrement de foule de tennis plus animée.
+- **fond sonore plus présent** (14 octobre, remarque d'un proche : les commentaires « sortaient de nulle part ») : murmure du public plus fort et jamais coupé pendant l'échange, foule plus dense (deux couches de l'enregistrement, décalées, à gauche et à droite). **Réactions variées après un point** (environ un point sur quatre, jamais deux de suite) : applaudissements courts, « Allez ! » (série qui se construit), « Bravo ! » (point arraché après des égalités), « Ohhh… » (série de 4 points brisée), brouhaha ; elles s'éteignent dès l'échange suivant. Les 9 nouveaux sons sont à fabriquer avec le robot « Voix » (choix « sons ») : sans eux, seuls les applaudissements jouent.
 
 **Validé le 14 octobre** (par lots, sur la version de test) :
 - lot 1 : première visite guidée, menu qui s'ouvre au fil des matchs, navigation allégée (carte « Tournois » unique, « Ma fiche » en 3 sous-onglets, solde en haut à droite) ;
@@ -198,3 +198,7 @@ Les sons se créent avec ElevenLabs (Sound Effects) **sur un ordinateur** (le si
 | public_clameur_01 | point spectaculaire | 3 s | Tennis crowd cheering burst after a great point |
 | public_set_01 | fin de set | 5 s | Warm tennis crowd applause with a few cheers |
 | public_ovation_01 | fin de match | 8 s | Standing ovation in a tennis stadium, loud cheers and whistles |
+| public_allez_01 à 03 | réaction après un point (série qui se construit, de temps en temps) | 1,5 à 2 s | A single French spectator shouting "Allez !" … / A few French tennis fans chanting "Allez, allez, allez !" |
+| public_oh_decu_01, 02 | une série de 4 points ou plus vient d'être brisée | 2 s | Tennis crowd disappointed groan "ohhh", falling tone / crowd sighing "aww" |
+| public_bravo_01, 02 | point arraché après des égalités | 2 à 2,5 s | A French tennis spectator shouting "Bravo !" followed by a few claps |
+| public_brouhaha_01, 02 | de temps en temps entre deux points | 4 s | Tennis crowd chatter swelling briefly after a point then settling down |
