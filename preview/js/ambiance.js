@@ -29,8 +29,17 @@ export const FICHIERS_RAQUETTE = FICHIERS_RAQUETTE_SIGNE.flat();
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
 export const FOND = { entrePoints: 0.34, echange: 0.15 };
-// Les petits applaudissements après un point gagné, comme au tennis : volume et vitesse tirés au hasard (jamais deux fois pareils).
-export const APPLAUDIR = { vol: [0.16, 0.26], vitesse: [0.93, 1.08] };
+// Les petits applaudissements après un point gagné, comme au tennis : volume et vitesse tirés au hasard (jamais deux fois pareils),
+// courts (ils s'éteignent au bout d'une seconde environ, et tout de suite si l'échange suivant commence).
+export const APPLAUDIR = { vol: [0.16, 0.26], vitesse: [0.93, 1.08], duree: 1.1, chance: 0.3 };
+
+// Faut-il applaudir ce point ? Pas sur une égalité, jamais deux points de suite ; toujours quand le point arrive après une
+// ou plusieurs égalités (le public se libère), sinon un point sur trois environ. etat : { dernier } (gardé d'un point à l'autre).
+export function doitApplaudir(etat, evt, egalitesAvant = 0, rng = Math.random) {
+  const oui = !!evt && !evt.egalite && !etat.dernier && (egalitesAvant >= 1 || rng() < APPLAUDIR.chance);
+  if (!evt?.egalite) etat.dernier = oui;
+  return oui;
+}
 
 // Les réactions du public après un coup. evt : ce que renvoie jouerCoup ;
 // egalitesAvant : le nombre d'égalités d'affilée juste avant ce coup.
@@ -119,13 +128,14 @@ export class Ambiance {
   }
 
   jouer(buffer, vol, echo, { delai = 0, vitesse = 1 } = {}) {
-    const ctx = this.ctx; if (!ctx || !buffer) return;
+    const ctx = this.ctx; if (!ctx || !buffer) return null;
     try {
       const src = ctx.createBufferSource(); src.buffer = buffer; src.playbackRate.value = vitesse;
       const g = ctx.createGain(); g.gain.value = vol;
       src.connect(g); g.connect(this.master); if (echo) g.connect(this.echo);
       src.start(ctx.currentTime + delai);
-    } catch { /* un son raté ne doit jamais bloquer le match */ }
+      return { src, g };
+    } catch { return null; /* un son raté ne doit jamais bloquer le match */ }
   }
 
   // Le coup de raquette, quand on choisit son signe : l'enregistrement de ce signe (sa version forte dans les grands moments ;
@@ -167,6 +177,8 @@ export class Ambiance {
   }
   // Pendant l'échange, le public baisse la voix ; entre les points, il reprend.
   calmer(echange) {
+    // l'échange commence : les applaudissements du point précédent s'éteignent aussitôt (ils ne débordent pas sur le suivant)
+    if (echange && this.bravos) { try { this.bravos.g.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08); } catch { /* rien */ } this.bravos = null; }
     if (!this.fondGain) return;
     try { this.fondGain.gain.setTargetAtTime(echange ? FOND.echange : FOND.entrePoints, this.ctx.currentTime, echange ? 0.25 : 0.6); } catch { /* rien */ }
   }
@@ -178,8 +190,11 @@ export class Ambiance {
   }
   // Les petits applaudissements après un point gagné.
   applaudir() {
-    const h = (a, b) => a + Math.random() * (b - a);
-    this.jouer(this.buf.point, h(...APPLAUDIR.vol), true, { delai: h(0.05, 0.2), vitesse: h(...APPLAUDIR.vitesse) });
+    const h = (a, b) => a + Math.random() * (b - a), delai = h(0.05, 0.2);
+    const son = this.jouer(this.buf.point, h(...APPLAUDIR.vol), true, { delai, vitesse: h(...APPLAUDIR.vitesse) });
+    if (!son) return;
+    try { son.g.gain.setTargetAtTime(0, this.ctx.currentTime + delai + APPLAUDIR.duree, 0.25); son.src.stop(this.ctx.currentTime + delai + APPLAUDIR.duree + 1.5); } catch { /* rien */ }
+    this.bravos = son;
   }
   // Le « ooh » sur un point disputé.
   ooh() { this.jouer(this.buf.ooh, 0.5, true, { delai: 0.15 }); }
