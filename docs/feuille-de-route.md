@@ -14,6 +14,7 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 - tournois programmés et freeroll du soir (étapes 15, 18, 19, 21) ;
 - messages rapides (étape 22) ; défi avec enjeu, championnat du cercle, rendez-vous des défis, « qui est en ligne » (étapes 34 à 40) ;
 - surnoms version 3 ; face-à-face avec un ami ; trophées et avatars ;
+- **face-à-face avec un adversaire** (14 octobre) : dans « Ma fiche » › 🕘 Derniers matchs, toucher le nom d'un adversaire ouvre notre bilan (bot d'entraînement : victoires, ses signes contre moi, son dossier, derniers affrontements, bouton « Jouer contre lui » ; adversaire en ligne, humain ou bot : le bilan détaillé de nos duels, comme pour un ami) ;
 - **fond sonore plus présent** (14 octobre, remarque d'un proche : les commentaires « sortaient de nulle part ») : murmure du public plus fort et jamais coupé pendant l'échange, foule plus dense (deux couches de l'enregistrement, décalées, à gauche et à droite). **Réactions variées après un point** (environ un point sur quatre, jamais deux de suite) : applaudissements courts, « Allez ! » (série qui se construit), « Bravo ! » (point arraché après des égalités), « Ohhh… » (série de 4 points brisée), brouhaha ; elles s'éteignent dès l'échange suivant. Les 9 nouveaux sons sont à fabriquer avec le robot « Voix » (choix « sons ») : sans eux, seuls les applaudissements jouent.
 
 **Validé le 14 octobre** (par lots, sur la version de test) :

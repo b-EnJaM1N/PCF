@@ -19,6 +19,34 @@ const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 
 // ctx : { compte, ouvrirOnglet(nom), defier(profil) → texte, surClassement(points ou null), lancerDuel(duel, profil),
 //         trophees(donnees) : trophées des cercles et tournois en ligne (voir titresEnLigne dans profil.js) }
+// Le bilan de nos duels avec un joueur (ami, ou adversaire en ligne touché dans « Derniers matchs »).
+export function renderFaceAFace(r, nom) {
+  if (!r.matchs) return `<p class="hint">Vous ne vous êtes encore jamais affrontés. Lance-lui un défi !</p>`;
+  const n = esc(nom), pct = (x, y) => (x + y ? `${Math.round(100 * x / (x + y))} %` : "–");
+  const ligne = (moi, label, lui) => `<div class="ff-ligne"><b>${moi}</b><span>${label}</span><b>${lui}</b></div>`;
+  // La part de chaque signe joué, de chaque côté.
+  const part = (t, k) => { const tot = t[0] + t[1] + t[2]; return tot ? `${Math.round(100 * t[k] / tot)} %` : "–"; };
+  const signes = [0, 1, 2].map(k => ligne(part(r.mesSignes, k), `${EMOJI[k]} ${NOM[k]}`, part(r.sesSignes, k))).join("");
+  const taux = (x, k) => (x.total ? `${Math.round(100 * x[k] / x.total)} %` : "–");
+  const serie = r.serie.n >= 2 ? `<p class="hint">🔥 ${r.serie.n} ${r.serie.gagne ? "victoires" : "défaites"} de suite ${r.serie.gagne ? "pour toi" : `face à ${n}`}.</p>` : "";
+  const date = d => new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
+  const duelLigne = m => `<li>${m.gagne ? "✅ Victoire" : "❌ Défaite"}${m.scores.length ? ` · ${m.scores.map(([x, y]) => `${x}–${y}`).join(", ")}` : ""}${m.fin === "forfait" ? " · forfait" : m.fin === "abandon" ? " · abandon" : ""} · ${m.type} · ${date(m.date)}</li>`;
+  // Les 3 derniers affrontements ; les autres en touchant « Voir tous ».
+  const derniers = r.derniers.slice(0, 3).map(duelLigne).join("");
+  const autres = r.derniers.length > 3
+    ? `<details class="ff-tous"><summary>Voir tous (${r.derniers.length})</summary><ul class="ff-derniers">${r.derniers.slice(3).map(duelLigne).join("")}</ul></details>` : "";
+  return `<div class="ff-tete"><span>Toi</span><b>${r.v} – ${r.d}</b><span>${n}</span></div>
+    <p class="hint" style="text-align:center;margin-top:0">${pluriel(r.matchs, "duel")}${r.officiels ? `, dont ${r.officiels} officiel${r.officiels > 1 ? "s" : ""}` : ""} · ${pct(r.v, r.d)} de victoires pour toi</p>
+    ${ligne(r.sets[0], "Sets gagnés", r.sets[1])}
+    ${ligne(r.points[0], "Points gagnés", r.points[1])}
+    <h3 class="ff-titre">Signes joués</h3>
+    ${signes}
+    ${ligne(taux(r.rejoueApresVictoire[0], "meme"), "Rejoue le même signe après un point gagné", taux(r.rejoueApresVictoire[1], "meme"))}
+    ${ligne(taux(r.changeApresDefaite[0], "change"), "Change de signe après un point perdu", taux(r.changeApresDefaite[1], "change"))}
+    ${serie}
+    <h3 class="ff-titre">Derniers affrontements</h3><ul class="ff-derniers">${derniers}</ul>${autres}`;
+}
+
 export function installerCercles(ctx) {
   let uid = null, minuterie = 0, recherche = 0, amis = [], cercleOuvert = null, detail = null;
   const base = () => location.origin + location.pathname;
@@ -176,32 +204,6 @@ export function installerCercles(ctx) {
       const r = statsFaceAFace(await duelsAvec(id), uid);
       if (amiOuvert === id) $("aStats").innerHTML = renderFaceAFace(r, a.pseudo);
     } catch { if (amiOuvert === id) $("aStats").innerHTML = `<p class="hint">Impossible de charger vos duels. Vérifie ta connexion.</p>`; }
-  }
-  function renderFaceAFace(r, nom) {
-    if (!r.matchs) return `<p class="hint">Vous ne vous êtes encore jamais affrontés. Lance-lui un défi !</p>`;
-    const n = esc(nom), pct = (x, y) => (x + y ? `${Math.round(100 * x / (x + y))} %` : "–");
-    const ligne = (moi, label, lui) => `<div class="ff-ligne"><b>${moi}</b><span>${label}</span><b>${lui}</b></div>`;
-    // La part de chaque signe joué, de chaque côté.
-    const part = (t, k) => { const tot = t[0] + t[1] + t[2]; return tot ? `${Math.round(100 * t[k] / tot)} %` : "–"; };
-    const signes = [0, 1, 2].map(k => ligne(part(r.mesSignes, k), `${EMOJI[k]} ${NOM[k]}`, part(r.sesSignes, k))).join("");
-    const taux = (x, k) => (x.total ? `${Math.round(100 * x[k] / x.total)} %` : "–");
-    const serie = r.serie.n >= 2 ? `<p class="hint">🔥 ${r.serie.n} ${r.serie.gagne ? "victoires" : "défaites"} de suite ${r.serie.gagne ? "pour toi" : `face à ${n}`}.</p>` : "";
-    const date = d => new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
-    const duelLigne = m => `<li>${m.gagne ? "✅ Victoire" : "❌ Défaite"}${m.scores.length ? ` · ${m.scores.map(([x, y]) => `${x}–${y}`).join(", ")}` : ""}${m.fin === "forfait" ? " · forfait" : m.fin === "abandon" ? " · abandon" : ""} · ${m.type} · ${date(m.date)}</li>`;
-    // Les 3 derniers affrontements ; les autres en touchant « Voir tous ».
-    const derniers = r.derniers.slice(0, 3).map(duelLigne).join("");
-    const autres = r.derniers.length > 3
-      ? `<details class="ff-tous"><summary>Voir tous (${r.derniers.length})</summary><ul class="ff-derniers">${r.derniers.slice(3).map(duelLigne).join("")}</ul></details>` : "";
-    return `<div class="ff-tete"><span>Toi</span><b>${r.v} – ${r.d}</b><span>${n}</span></div>
-      <p class="hint" style="text-align:center;margin-top:0">${pluriel(r.matchs, "duel")}${r.officiels ? `, dont ${r.officiels} officiel${r.officiels > 1 ? "s" : ""}` : ""} · ${pct(r.v, r.d)} de victoires pour toi</p>
-      ${ligne(r.sets[0], "Sets gagnés", r.sets[1])}
-      ${ligne(r.points[0], "Points gagnés", r.points[1])}
-      <h3 class="ff-titre">Signes joués</h3>
-      ${signes}
-      ${ligne(taux(r.rejoueApresVictoire[0], "meme"), "Rejoue le même signe après un point gagné", taux(r.rejoueApresVictoire[1], "meme"))}
-      ${ligne(taux(r.changeApresDefaite[0], "change"), "Change de signe après un point perdu", taux(r.changeApresDefaite[1], "change"))}
-      ${serie}
-      <h3 class="ff-titre">Derniers affrontements</h3><ul class="ff-derniers">${derniers}</ul>${autres}`;
   }
   // Ouvert depuis Jouer › Défier un ami : le retour y ramène.
   let origineAmi = null;
