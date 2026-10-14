@@ -23,14 +23,15 @@ import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS } from "./voix/script.js";
-import { Ambiance, reactionsPublic, egalitesAvantDernier } from "./ambiance.js";
+import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
 import { messagesPossibles, momentApres, texteMessage } from "./messages-rapides.js";
 import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
 import { installerDuels } from "./ecran-duel.js";
-import { installerCercles } from "./ecran-cercles.js";
+import { installerCercles, renderFaceAFace } from "./ecran-cercles.js";
+import { duelsAvec } from "./duel-serveur.js";
 import { installerSng } from "./ecran-sng.js";
 import { installerJetons } from "./ecran-jetons.js";
 import { installerFreeroll } from "./ecran-freeroll.js";
@@ -45,7 +46,7 @@ import { GESTES, CELEBRATIONS, CADRES, gesteValide, celebrationValide, articleDe
 import { gainDuel } from "./jetons-logique.js";
 import { texteClassementFin, texteNiveau, provisoire, divisionDe, texteDivision } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
-import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel } from "./duel-logique.js";
+import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel, statsFaceAFace } from "./duel-logique.js";
 
 // Le caillou 🪨 est un emoji récent : certains ordinateurs (anciens Windows) l'affichent comme un point d'interrogation.
 // Si l'appareil ne sait pas le dessiner en couleur, on le remplace partout par le poing ✊.
@@ -336,6 +337,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
 
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
   if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
+  // Sinon, parfois, une réaction du public : applaudissements, « Allez ! », « Bravo ! », « Ohhh… » ou brouhaha (voir reactionPoint).
+  else if (!rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups); if (r) setTimeout(() => ambiance.reagir(r), 300); }
   // Parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
   if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length))
     a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));
@@ -709,6 +712,53 @@ $("btnUne").addEventListener("click", async () => {
     fichier: "la-une.png", alt: `La Une : ${h.titre}. ${h.chapo}`, titre: MARQUE.journal });
 });
 $("uneFermer").addEventListener("click", () => $("une").classList.remove("show"));
+
+// ---------------------------------------------------------------- face-à-face avec un adversaire (touché dans « Derniers matchs »)
+// Bot d'entraînement : notre bilan (gardé sur le téléphone), ses signes contre moi, son dossier, et un bouton pour le rejouer.
+// Adversaire en ligne (humain ou bot du serveur) : le bilan détaillé de nos duels, comme pour un ami.
+let ficheDemande = 0;
+async function ouvrirFicheAdv(id, nom) {
+  const demande = ++ficheDemande, b = botParId(id), f = P.faceAFace[id];
+  const pourcent = t => { const n = t.reduce((x, y) => x + y, 0); return n ? t.map(v => Math.round((100 * v) / n)) : null; };
+  $("faJouer").hidden = !b;
+  if (b) {
+    $("faAv").innerHTML = avatarSVG(b.av);
+    $("faNom").textContent = b.nom;
+    $("faInfo").textContent = `${b.style} · Niveau ${b.elo} · ${b.desc}`;
+    $("faJouer").textContent = `Jouer contre ${b.nom}`; $("faJouer").dataset.bot = b.id;
+    const v = f?.v || 0, d = f?.d || 0, sig = f ? pourcent(f.signes) : null;
+    const contre = P.derniers.filter(x => x.adv === id);
+    $("faCorps").innerHTML = v + d
+      ? `<div class="ff-tete"><span>Toi</span><b>${v} – ${d}</b><span>${esc(b.nom)}</span></div>
+        <p class="hint" style="text-align:center;margin-top:0">${v + d} match${v + d > 1 ? "s" : ""} · ${Math.round((100 * v) / (v + d))} % de victoires pour toi</p>
+        ${sig ? `<h3 class="ff-titre">Ses signes contre toi</h3><p class="dossier-signes">${sig.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>` : ""}
+        <h3 class="ff-titre">📁 Son dossier</h3>${corpsDossierBot(b)}
+        ${contre.length ? `<h3 class="ff-titre">Derniers affrontements</h3><ul class="ff-derniers">${contre.map(x => `<li>${x.gagne ? "✅ Victoire" : "❌ Défaite"} · ${esc(x.detail)} · ${new Date(x.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</li>`).join("")}</ul>` : ""}`
+      : `<p class="hint">Tu n'as encore jamais affronté ${esc(b.nom)}.</p>`;
+  } else {
+    const court = String(nom || "").replace(/#\d+$/, "");
+    $("faAv").textContent = /🤖/.test(nom) ? "🤖" : "🧑";
+    $("faNom").textContent = court || "Adversaire";
+    $("faInfo").textContent = /🤖/.test(nom) ? "Bot en ligne" : "Joueur en ligne";
+    const uid = String(id).replace(/^h:/, ""), moi = compteUI?.session()?.user?.id;
+    const v = f?.v || 0, d = f?.d || 0;
+    const local = v + d ? `<div class="ff-tete"><span>Toi</span><b>${v} – ${d}</b><span>${esc(court)}</span></div>` : `<p class="hint">Pas encore de duel enregistré contre ${esc(court)}.</p>`;
+    $("faCorps").innerHTML = moi ? `<p class="hint">Chargement…</p>` : local;
+    if (moi) {
+      try { const r = statsFaceAFace(await duelsAvec(uid), moi); if (demande === ficheDemande) $("faCorps").innerHTML = r.matchs ? renderFaceAFace(r, court) : local; }
+      catch { if (demande === ficheDemande) $("faCorps").innerHTML = local + `<p class="hint">Le détail de vos duels n'a pas pu être chargé. Vérifie ta connexion.</p>`; }
+    }
+  }
+  $("ficheAdv").classList.add("show");
+}
+$("lastBody").addEventListener("click", e => { const x = e.target.closest(".nom-adv"); if (x) ouvrirFicheAdv(x.dataset.adv, x.dataset.nom); });
+$("faFermer").addEventListener("click", () => $("ficheAdv").classList.remove("show"));
+$("faJouer").addEventListener("click", () => {
+  const id = $("faJouer").dataset.bot; $("ficheAdv").classList.remove("show");
+  if (!botParId(id) || matchEnCours()) return;
+  amicalId = id; ecrire("adversaire", amicalId); OPP = botParId(amicalId);
+  aller("viewMatch"); renderAdversaires(); rafraichirAvatars();
+});
 
 // ---------------------------------------------------------------- la carte de joueur (Ma fiche)
 let carteT = 0, carteJeton = 0;
@@ -1184,7 +1234,9 @@ function renderFiche() {
     $("lastBody").innerHTML = P.derniers.map(d => {
       const adv = botParId(d.adv);
       const nom = adv ? adv.nom : d.nomAdv;
-      return `<div class="ln"><span>${d.gagne ? "✅ Victoire" : "❌ Défaite"} ${d.sets}${nom ? ` contre ${esc(nom)}` : ""}</span><span style="font-weight:400;color:var(--muted)">${esc(d.detail)}</span></div>`;
+      // Le nom de l'adversaire se touche : notre face-à-face.
+      const qui = nom ? ` contre <button class="linkbtn nom-adv" data-adv="${esc(d.adv)}" data-nom="${esc(nom)}">${esc(nom)}</button>` : "";
+      return `<div class="ln"><span>${d.gagne ? "✅ Victoire" : "❌ Défaite"} ${d.sets}${qui}</span><span style="font-weight:400;color:var(--muted)">${esc(d.detail)}</span></div>`;
     }).join("");
   }
   // Le palmarès : les trophées, famille par famille.
