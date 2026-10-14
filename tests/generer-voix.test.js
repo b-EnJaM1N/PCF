@@ -39,8 +39,8 @@ test("ce qu'il reste à générer : les rôles choisis, sans refaire les fichier
 
 test("les bruitages : les noms attendus par l'appli, des durées permises, le fond en boucle", async () => {
   const { SONS, sonsAFaire } = await import("../outils/generer-sons.js");
-  const { FICHIERS_AMBIANCE: FICHIERS_PUBLIC, FICHIERS_RAQUETTE } = await import("../app/js/ambiance.js");
-  const attendus = [...Object.values(FICHIERS_PUBLIC), ...FICHIERS_RAQUETTE].sort();
+  const { FICHIERS_AMBIANCE: FICHIERS_PUBLIC, FICHIERS_RAQUETTE, FICHIERS_REACTIONS } = await import("../app/js/ambiance.js");
+  const attendus = [...Object.values(FICHIERS_PUBLIC), ...FICHIERS_RAQUETTE, ...Object.values(FICHIERS_REACTIONS).flat()].sort();
   assert.deepEqual(Object.keys(SONS).sort(), attendus);
   for (const [id, s] of Object.entries(SONS)) assert.ok(s.texte && s.duree >= 0.5 && s.duree <= 30, id);
   assert.equal(SONS.public_fond_01.boucle, true);

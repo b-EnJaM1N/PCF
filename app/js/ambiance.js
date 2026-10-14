@@ -17,6 +17,17 @@ export const FICHIERS_AMBIANCE = {
   tension: "public_tension_01",     // balles de set et de match
   ooh: "public_ooh_01",             // point disputé
 };
+// Les réactions variées du public après un point (plusieurs versions de chacune, pour ne pas se répéter).
+export const FICHIERS_REACTIONS = {
+  allez: ["public_allez_01", "public_allez_02", "public_allez_03"],
+  ohDecu: ["public_oh_decu_01", "public_oh_decu_02"],
+  bravo: ["public_bravo_01", "public_bravo_02"],
+  brouhaha: ["public_brouhaha_01", "public_brouhaha_02"],
+};
+// La force moyenne d'un enregistrement (racine de la moyenne des carrés), et celle visée pour les réactions du public.
+export const forceMoyenne = canaux => { let t = 0, n = 0; for (const c of canaux) for (let i = 0; i < c.length; i++) { t += c[i] * c[i]; n++; } return n ? Math.sqrt(t / n) : 0; };
+const FORCE_REACTION = 0.12;
+const VOLUME_REACTION = { allez: 0.38, ohDecu: 0.42, bravo: 0.38, brouhaha: 0.3, applaudir: 0.22 };
 // Le coup de raquette : un son par signe (0 Pierre, 1 Ciseaux, 2 Feuille), et une version forte pour les grands moments
 // (balle de set ou de match, point décisif) : [normal, fort].
 export const FICHIERS_RAQUETTE_SIGNE = [
@@ -26,8 +37,40 @@ export const FICHIERS_RAQUETTE_SIGNE = [
 ];
 export const FICHIERS_RAQUETTE = FICHIERS_RAQUETTE_SIGNE.flat();
 
-// Volume du murmure de fond : entre les points, et pendant l'échange (le public se tait).
-export const FOND = { entrePoints: 0.22, echange: 0.06 };
+// Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
+// les commentaires ne doivent jamais sortir du silence).
+export const FOND = { entrePoints: 0.34, echange: 0.15 };
+// Les petits applaudissements après un point gagné, comme au tennis : volume et vitesse tirés au hasard (jamais deux fois pareils),
+// courts (ils s'éteignent au bout d'une seconde environ, et tout de suite si l'échange suivant commence).
+export const APPLAUDIR = { vol: [0.16, 0.26], vitesse: [0.93, 1.08], duree: 1.1 };
+
+// Combien de points de suite le gagnant de ce coup vient d'enchaîner (égalités ignorées), et la série qu'il vient de briser.
+export function series(coups) {
+  const gagnes = coups.filter(c => c.gagnant !== null && c.gagnant !== undefined).map(c => c.gagnant);
+  if (!gagnes.length) return { serie: 0, brisee: 0 };
+  const g = gagnes.at(-1); let serie = 0, brisee = 0, i = gagnes.length - 1;
+  while (i >= 0 && gagnes[i] === g) { serie++; i--; }
+  while (i >= 0 && gagnes[i] !== g) { brisee++; i--; }
+  return { serie, brisee };
+}
+
+// La réaction du public après un point : rien (le murmure suffit), des applaudissements, « Allez ! », « Bravo ! »,
+// « Ohhh… » (une série de 4 points ou plus vient d'être brisée) ou un brouhaha. Jamais deux points de suite (sauf le « Ohhh… »),
+// jamais sur une égalité. etat : { dernier } (gardé d'un point à l'autre) ; coups : les coups du match, celui-ci compris.
+export function reactionPoint(etat, evt, coups, rng = Math.random) {
+  if (!evt || evt.egalite) return null;
+  const { serie, brisee } = series(coups), egalites = egalitesAvantDernier(coups);
+  let r = null;
+  const x = rng();
+  if (brisee >= 4 && x < 0.45) r = "ohDecu";                                         // une belle série vient d'être brisée
+  else if (!etat.dernier) {
+    if (egalites >= 1) r = x < 0.35 ? "bravo" : x < 0.6 ? "applaudir" : null;      // un point arraché après des égalités
+    else if (serie >= 3) r = x < 0.4 ? "allez" : x < 0.55 ? "applaudir" : null;    // une série qui se construit
+    else r = x < 0.08 ? "applaudir" : x < 0.15 ? "brouhaha" : x < 0.19 ? "allez" : null;
+  }
+  etat.dernier = !!r;
+  return r;
+}
 
 // Les réactions du public après un coup. evt : ce que renvoie jouerCoup ;
 // egalitesAvant : le nombre d'égalités d'affilée juste avant ce coup.
@@ -50,7 +93,7 @@ const HAUTEUR = [0.8, 1.4, 1];   // Pierre grave, Ciseaux aigu, Feuille entre le
 
 export class Ambiance {
   constructor() {
-    this.ctx = null; this.master = null; this.echo = null; this.buf = {}; this.raquettes = []; this.raquettesFichiers = []; this.fichiers = []; this.actif = true;
+    this.ctx = null; this.master = null; this.echo = null; this.buf = {}; this.raquettes = []; this.raquettesFichiers = []; this.reactions = {}; this.fichiers = []; this.actif = true;
     this.fondVoulu = false; this.fondSource = null; this.fondGain = null; this.dernierTension = -99;
   }
 
@@ -93,6 +136,17 @@ export class Ambiance {
       if (!this.fichiers.includes(id) || this.charges?.has(id)) continue;
       try { this.buf[type] = await charger(id); (this.charges ||= new Set()).add(id); } catch { /* on garde le son fabriqué (ou rien) */ }
     }
+    for (const [type, ids] of Object.entries(FICHIERS_REACTIONS)) {
+      for (const id of ids) {
+        if (!this.fichiers.includes(id) || this.charges?.has(id)) continue;
+        try {
+          // Les enregistrements n'ont pas tous le même volume : on les ramène à la même force moyenne (sans exagérer).
+          const b = await charger(id), canaux = Array.from({ length: b.numberOfChannels }, (_, c) => b.getChannelData(c));
+          (this.reactions[type] ||= []).push({ b, g: Math.min(4, FORCE_REACTION / (forceMoyenne(canaux) || 1)) });
+          (this.charges ||= new Set()).add(id);
+        } catch { /* sans ce son */ }
+      }
+    }
     for (const [k, ids] of FICHIERS_RAQUETTE_SIGNE.entries()) {
       for (const [f, id] of ids.entries()) {
         if (!this.fichiers.includes(id)) continue;
@@ -116,13 +170,14 @@ export class Ambiance {
   }
 
   jouer(buffer, vol, echo, { delai = 0, vitesse = 1 } = {}) {
-    const ctx = this.ctx; if (!ctx || !buffer) return;
+    const ctx = this.ctx; if (!ctx || !buffer) return null;
     try {
       const src = ctx.createBufferSource(); src.buffer = buffer; src.playbackRate.value = vitesse;
       const g = ctx.createGain(); g.gain.value = vol;
       src.connect(g); g.connect(this.master); if (echo) g.connect(this.echo);
       src.start(ctx.currentTime + delai);
-    } catch { /* un son raté ne doit jamais bloquer le match */ }
+      return { src, g };
+    } catch { return null; /* un son raté ne doit jamais bloquer le match */ }
   }
 
   // Le coup de raquette, quand on choisit son signe : l'enregistrement de ce signe (sa version forte dans les grands moments ;
@@ -141,19 +196,36 @@ export class Ambiance {
     if (!ctx) return;
     try {
       if (on && !this.fondSource && this.buf.fond) {
-        const src = ctx.createBufferSource(); src.buffer = this.buf.fond; src.loop = true;
+        // Deux couches du même enregistrement, décalées, l'une un peu à gauche et l'autre un peu à droite (et un peu plus grave) :
+        // une foule plus dense et plus vivante, qui ne se répète pas à l'oreille.
         const g = ctx.createGain(); g.gain.value = 0; g.gain.setTargetAtTime(FOND.entrePoints, ctx.currentTime, 0.8);
-        src.connect(g); g.connect(this.master); src.start();
-        this.fondSource = src; this.fondGain = g;
+        g.connect(this.master);
+        const duree = this.buf.fond.duration;
+        const sources = [[-0.35, 1, 0, 1], [0.35, 0.94, duree / 2, 0.75]].map(([cote, vitesse, depart, vol]) => {
+          const src = ctx.createBufferSource(); src.buffer = this.buf.fond; src.loop = true; src.playbackRate.value = vitesse;
+          const v = ctx.createGain(); v.gain.value = vol;
+          let sortie = v;
+          if (ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = cote; v.connect(p); sortie = p; }
+          src.connect(v); sortie.connect(g); src.start(ctx.currentTime, depart % duree);
+          return src;
+        });
+        this.fondSource = sources; this.fondGain = g;
       } else if (!on && this.fondSource) {
         this.fondGain.gain.setTargetAtTime(0, ctx.currentTime, 0.6);
-        this.fondSource.stop(ctx.currentTime + 3);
+        for (const src of this.fondSource) src.stop(ctx.currentTime + 3);
         this.fondSource = null; this.fondGain = null;
       }
     } catch { /* sans murmure */ }
   }
   // Pendant l'échange, le public baisse la voix ; entre les points, il reprend.
   calmer(echange) {
+    // L'échange commence : la réaction du point précédent ne déborde pas sur le suivant. Les applaudissements et le brouhaha
+    // s'éteignent en douceur ; les cris (« Allez ! », « Bravo ! », « Ohhh… ») vont au bout de leur mot, un peu moins fort.
+    if (echange && this.bravos) {
+      const { son, parle } = this.bravos;
+      try { son.g.gain.setTargetAtTime(parle ? son.g.gain.value * 0.55 : 0, this.ctx.currentTime, parle ? 0.15 : 0.3); } catch { /* rien */ }
+      this.bravos = null;
+    }
     if (!this.fondGain) return;
     try { this.fondGain.gain.setTargetAtTime(echange ? FOND.echange : FOND.entrePoints, this.ctx.currentTime, echange ? 0.25 : 0.6); } catch { /* rien */ }
   }
@@ -162,6 +234,26 @@ export class Ambiance {
     if (!this.ctx || !this.buf.tension || this.ctx.currentTime - this.dernierTension < 5) return;
     this.dernierTension = this.ctx.currentTime;
     this.jouer(this.buf.tension, 0.45, false);
+  }
+  // La réaction du public après un point (voir reactionPoint). Sans l'enregistrement voulu : des applaudissements pour
+  // « Bravo ! », rien pour les autres. Courte : elle s'éteint d'elle-même, et tout de suite quand l'échange suivant commence.
+  reagir(type) {
+    const h = (a, b) => a + Math.random() * (b - a), delai = h(0.05, 0.2);
+    const versions = this.reactions[type] || [];
+    let buffer = null, vitesse = 1, egal = 1;
+    if (versions.length) {
+      const choix = versions.filter(v => v !== this.derniereReaction), v = (choix.length ? choix : versions)[Math.floor(Math.random() * (choix.length || versions.length))];
+      this.derniereReaction = v; buffer = v.b; egal = v.g; vitesse = h(0.97, 1.03);
+    } else if (type === "applaudir" || type === "bravo") { buffer = this.buf.point; vitesse = h(...APPLAUDIR.vitesse); }
+    if (!buffer) return;
+    const vol = (type === "applaudir" || !versions.length ? h(...APPLAUDIR.vol) : VOLUME_REACTION[type]) * egal;
+    const son = this.jouer(buffer, vol, true, { delai, vitesse });
+    if (!son) return;
+    // Les cris enregistrés vont jusqu'au bout ; les applaudissements (et le brouhaha) s'éteignent au bout d'un moment.
+    const parle = versions.length > 0 && type !== "brouhaha" && type !== "applaudir";
+    const duree = parle || type === "brouhaha" ? buffer.duration / vitesse : APPLAUDIR.duree;
+    try { son.g.gain.setTargetAtTime(0, this.ctx.currentTime + delai + duree, 0.25); son.src.stop(this.ctx.currentTime + delai + duree + 1.5); } catch { /* rien */ }
+    this.bravos = { son, parle };
   }
   // Le « ooh » sur un point disputé.
   ooh() { this.jouer(this.buf.ooh, 0.5, true, { delai: 0.15 }); }
