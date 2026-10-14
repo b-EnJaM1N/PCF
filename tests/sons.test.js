@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { applaudissements, coupDeRaquette, echoStade, FOULES } from "../app/js/sons.js";
-import { FICHIERS_AMBIANCE, FICHIERS_RAQUETTE, reactionsPublic, egalitesAvantDernier } from "../app/js/ambiance.js";
+import { FICHIERS_AMBIANCE, FICHIERS_RAQUETTE, reactionsPublic, egalitesAvantDernier, doitApplaudir } from "../app/js/ambiance.js";
 import { rngFixe } from "./outils.js";
 
 const valide = c => { for (const v of c) if (!Number.isFinite(v) || Math.abs(v) > 1) return false; return true; };
@@ -49,4 +49,17 @@ test("le public : tension sur les balles de set et de match, « ooh » sur les p
   assert.equal(egalitesAvantDernier([c(0), c(null), c(null), c(1)]), 2);
   assert.equal(egalitesAvantDernier([c(null), c(0)]), 1);
   assert.equal(egalitesAvantDernier([c(0)]), 0);
+});
+
+test("les petits applaudissements : jamais sur une égalité ni deux points de suite, toujours après des égalités, sinon de temps en temps", () => {
+  const etat = {}, jamais = () => 0.99, toujours = () => 0;
+  assert.equal(doitApplaudir(etat, { egalite: true }, 0, toujours), false);
+  assert.equal(doitApplaudir(etat, { gagnant: 0 }, 0, jamais), false, "un point ordinaire : pas toujours");
+  assert.equal(doitApplaudir(etat, { gagnant: 0 }, 2, jamais), true, "après des égalités : le public se libère");
+  assert.equal(doitApplaudir(etat, { gagnant: 1 }, 3, toujours), false, "jamais deux points de suite");
+  assert.equal(doitApplaudir(etat, { egalite: true }, 0, toujours), false);
+  assert.equal(doitApplaudir(etat, { gagnant: 1 }, 0, toujours), true, "une égalité entre deux ne compte pas comme un point applaudi");
+  let n = 0; const e = {};
+  for (let i = 0; i < 3000; i++) if (doitApplaudir(e, { gagnant: 0 }, 0)) n++;
+  assert.ok(n > 500 && n < 1000, `environ un point sur quatre ou cinq (${n} sur 3000)`);
 });

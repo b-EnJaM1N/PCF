@@ -23,7 +23,7 @@ import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS } from "./voix/script.js";
-import { Ambiance, reactionsPublic, egalitesAvantDernier } from "./ambiance.js";
+import { Ambiance, reactionsPublic, egalitesAvantDernier, doitApplaudir } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
 import { messagesPossibles, momentApres, texteMessage } from "./messages-rapides.js";
@@ -336,8 +336,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
 
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
   if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
-  // Sinon, après chaque point gagné, de petits applaudissements comme au tennis (pas sur une égalité ni après un « ooh »).
-  else if (!evt.egalite && !rp.ooh) setTimeout(() => ambiance.applaudir(), 300);
+  // Sinon, de temps en temps, de petits applaudissements comme au tennis (voir doitApplaudir ; pas après un « ooh »).
+  else if (!rp.ooh && doitApplaudir(S.bravos ||= {}, evt, egalitesAvantDernier(m.coups))) setTimeout(() => ambiance.applaudir(), 300);
   // Parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
   if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length))
     a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));
