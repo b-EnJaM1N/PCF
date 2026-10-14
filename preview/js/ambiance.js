@@ -24,6 +24,9 @@ export const FICHIERS_REACTIONS = {
   bravo: ["public_bravo_01", "public_bravo_02"],
   brouhaha: ["public_brouhaha_01", "public_brouhaha_02"],
 };
+// La force moyenne d'un enregistrement (racine de la moyenne des carrés), et celle visée pour les réactions du public.
+export const forceMoyenne = canaux => { let t = 0, n = 0; for (const c of canaux) for (let i = 0; i < c.length; i++) { t += c[i] * c[i]; n++; } return n ? Math.sqrt(t / n) : 0; };
+const FORCE_REACTION = 0.12;
 const VOLUME_REACTION = { allez: 0.38, ohDecu: 0.42, bravo: 0.38, brouhaha: 0.3, applaudir: 0.22 };
 // Le coup de raquette : un son par signe (0 Pierre, 1 Ciseaux, 2 Feuille), et une version forte pour les grands moments
 // (balle de set ou de match, point décisif) : [normal, fort].
@@ -136,7 +139,12 @@ export class Ambiance {
     for (const [type, ids] of Object.entries(FICHIERS_REACTIONS)) {
       for (const id of ids) {
         if (!this.fichiers.includes(id) || this.charges?.has(id)) continue;
-        try { (this.reactions[type] ||= []).push(await charger(id)); (this.charges ||= new Set()).add(id); } catch { /* sans ce son */ }
+        try {
+          // Les enregistrements n'ont pas tous le même volume : on les ramène à la même force moyenne (sans exagérer).
+          const b = await charger(id), canaux = Array.from({ length: b.numberOfChannels }, (_, c) => b.getChannelData(c));
+          (this.reactions[type] ||= []).push({ b, g: Math.min(4, FORCE_REACTION / (forceMoyenne(canaux) || 1)) });
+          (this.charges ||= new Set()).add(id);
+        } catch { /* sans ce son */ }
       }
     }
     for (const [k, ids] of FICHIERS_RAQUETTE_SIGNE.entries()) {
@@ -227,14 +235,13 @@ export class Ambiance {
   reagir(type) {
     const h = (a, b) => a + Math.random() * (b - a), delai = h(0.05, 0.2);
     const versions = this.reactions[type] || [];
-    let buffer = null, vitesse = 1;
+    let buffer = null, vitesse = 1, egal = 1;
     if (versions.length) {
-      const choix = versions.filter(v => v !== this.derniereReaction);
-      buffer = (choix.length ? choix : versions)[Math.floor(Math.random() * (choix.length || versions.length))];
-      this.derniereReaction = buffer; vitesse = h(0.97, 1.03);
+      const choix = versions.filter(v => v !== this.derniereReaction), v = (choix.length ? choix : versions)[Math.floor(Math.random() * (choix.length || versions.length))];
+      this.derniereReaction = v; buffer = v.b; egal = v.g; vitesse = h(0.97, 1.03);
     } else if (type === "applaudir" || type === "bravo") { buffer = this.buf.point; vitesse = h(...APPLAUDIR.vitesse); }
     if (!buffer) return;
-    const vol = type === "applaudir" || !versions.length ? h(...APPLAUDIR.vol) : VOLUME_REACTION[type];
+    const vol = (type === "applaudir" || !versions.length ? h(...APPLAUDIR.vol) : VOLUME_REACTION[type]) * egal;
     const son = this.jouer(buffer, vol, true, { delai, vitesse });
     if (!son) return;
     const duree = type === "brouhaha" || type === "ohDecu" ? buffer.duration : APPLAUDIR.duree;
