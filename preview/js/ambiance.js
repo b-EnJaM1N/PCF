@@ -26,8 +26,11 @@ export const FICHIERS_RAQUETTE_SIGNE = [
 ];
 export const FICHIERS_RAQUETTE = FICHIERS_RAQUETTE_SIGNE.flat();
 
-// Volume du murmure de fond : entre les points, et pendant l'échange (le public se tait).
-export const FOND = { entrePoints: 0.22, echange: 0.06 };
+// Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
+// les commentaires ne doivent jamais sortir du silence).
+export const FOND = { entrePoints: 0.34, echange: 0.15 };
+// Les petits applaudissements après un point gagné, comme au tennis : volume et vitesse tirés au hasard (jamais deux fois pareils).
+export const APPLAUDIR = { vol: [0.16, 0.26], vitesse: [0.93, 1.08] };
 
 // Les réactions du public après un coup. evt : ce que renvoie jouerCoup ;
 // egalitesAvant : le nombre d'égalités d'affilée juste avant ce coup.
@@ -141,13 +144,23 @@ export class Ambiance {
     if (!ctx) return;
     try {
       if (on && !this.fondSource && this.buf.fond) {
-        const src = ctx.createBufferSource(); src.buffer = this.buf.fond; src.loop = true;
+        // Deux couches du même enregistrement, décalées, l'une un peu à gauche et l'autre un peu à droite (et un peu plus grave) :
+        // une foule plus dense et plus vivante, qui ne se répète pas à l'oreille.
         const g = ctx.createGain(); g.gain.value = 0; g.gain.setTargetAtTime(FOND.entrePoints, ctx.currentTime, 0.8);
-        src.connect(g); g.connect(this.master); src.start();
-        this.fondSource = src; this.fondGain = g;
+        g.connect(this.master);
+        const duree = this.buf.fond.duration;
+        const sources = [[-0.35, 1, 0, 1], [0.35, 0.94, duree / 2, 0.75]].map(([cote, vitesse, depart, vol]) => {
+          const src = ctx.createBufferSource(); src.buffer = this.buf.fond; src.loop = true; src.playbackRate.value = vitesse;
+          const v = ctx.createGain(); v.gain.value = vol;
+          let sortie = v;
+          if (ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = cote; v.connect(p); sortie = p; }
+          src.connect(v); sortie.connect(g); src.start(ctx.currentTime, depart % duree);
+          return src;
+        });
+        this.fondSource = sources; this.fondGain = g;
       } else if (!on && this.fondSource) {
         this.fondGain.gain.setTargetAtTime(0, ctx.currentTime, 0.6);
-        this.fondSource.stop(ctx.currentTime + 3);
+        for (const src of this.fondSource) src.stop(ctx.currentTime + 3);
         this.fondSource = null; this.fondGain = null;
       }
     } catch { /* sans murmure */ }
@@ -162,6 +175,11 @@ export class Ambiance {
     if (!this.ctx || !this.buf.tension || this.ctx.currentTime - this.dernierTension < 5) return;
     this.dernierTension = this.ctx.currentTime;
     this.jouer(this.buf.tension, 0.45, false);
+  }
+  // Les petits applaudissements après un point gagné.
+  applaudir() {
+    const h = (a, b) => a + Math.random() * (b - a);
+    this.jouer(this.buf.point, h(...APPLAUDIR.vol), true, { delai: h(0.05, 0.2), vitesse: h(...APPLAUDIR.vitesse) });
   }
   // Le « ooh » sur un point disputé.
   ooh() { this.jouer(this.buf.ooh, 0.5, true, { delai: 0.15 }); }

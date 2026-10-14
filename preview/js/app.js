@@ -336,6 +336,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
 
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
   if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
+  // Sinon, après chaque point gagné, de petits applaudissements comme au tennis (pas sur une égalité ni après un « ooh »).
+  else if (!evt.egalite && !rp.ooh) setTimeout(() => ambiance.applaudir(), 300);
   // Parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
   if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length))
     a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));
