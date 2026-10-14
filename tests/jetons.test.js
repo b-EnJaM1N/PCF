@@ -40,3 +40,31 @@ test("les mises : duel à 1,8 fois la mise, Sit & Go partagé façon poker (65 /
   assert.match(sql, /array\[50, 100, 200, 500, 1000\]/, "mêmes mises côté serveur");
   assert.match(sql, /select 0\.10/, "même commission côté serveur");
 });
+
+test("mon résultat dans un tournoi terminé : place et gain, comme le serveur les verse", async () => {
+  const { monResultat, gainsSng, gainDuel, cagnotteVersee } = await import("../app/js/jetons-logique.js");
+  const { dotations } = await import("../app/js/programmes-logique.js");
+  const J = id => ({ id }), M = (tour, a, b, v) => ({ tour, fin: "score", j0: J(a), j1: J(b), vainqueur: v });
+  const huit = ["moi", "b1", "b2", "b3", "b4", "b5", "b6", "b7"].map(J);
+  const matchs = [M(1, "moi", "b2", "moi"), M(1, "b1", "b3", "b1"), M(1, "b4", "b5", "b4"), M(1, "b6", "b7", "b6"),
+    M(2, "moi", "b4", "moi"), M(2, "b1", "b6", "b1"), M(3, "moi", "b1", "b1")];
+  const sng = { phase: "termine", mode: "direct", mise: 100, inscrits: 8, bots: 7, nb_tours: 3, vainqueur: J("b1"), joueurs: huit, matchs };
+  assert.deepEqual(monResultat(sng, "moi"), { place: "2e", rang: 2, gain: gainsSng(100, 8)[1], payees: 2 });
+  assert.deepEqual(monResultat({ ...sng, vainqueur: J("moi"), matchs: [...matchs.slice(0, 6), M(3, "moi", "b1", "moi")] }, "moi").gain, gainsSng(100, 8)[0]);
+  // éliminé en demi-finale : 3e-4e, hors des 2 places payées
+  const demi = [...matchs.slice(0, 4), M(2, "moi", "b4", "b4"), M(2, "b1", "b6", "b1"), M(3, "b4", "b1", "b1")];
+  assert.deepEqual(monResultat({ ...sng, matchs: demi }, "moi"), { place: "3e-4e", rang: 3, gain: 0, payees: 2 });
+  // sans mise : la place seulement
+  assert.deepEqual(monResultat({ ...sng, mise: 0, matchs: demi }, "moi"), { place: "3e-4e", rang: 3, gain: null });
+  // heads-up à 50 : le gagnant prend 1,8 fois la mise
+  const hu = { phase: "termine", mode: "direct", mise: 50, inscrits: 2, bots: 1, nb_tours: 1, vainqueur: J("moi"), joueurs: [J("moi"), J("b")], matchs: [M(1, "moi", "b", "moi")] };
+  assert.equal(monResultat(hu, "moi").gain, gainDuel(50));
+  // freeroll : cagnotte offerte selon les humains ; 3e-4e se partagent leurs deux parts
+  const fr = { ...sng, mise: 0, freeroll: true, inscrits: 8, bots: 5, matchs: demi };
+  assert.equal(cagnotteVersee(fr), 1150);
+  assert.equal(monResultat(fr, "moi").gain, 0, "8 joueurs : 2 premiers payés");
+  // pas fini, championnat, ou pas inscrit : rien
+  assert.equal(monResultat({ ...sng, phase: "en_cours" }, "moi"), null);
+  assert.equal(monResultat(sng, "inconnu"), null);
+  assert.ok(dotations(1000, 8).length === 2);
+});

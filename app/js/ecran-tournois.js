@@ -9,6 +9,7 @@ import { nomTour, monTour, DUREES, texteDuree, texteReste, texteFin, monMatch, a
   mesMatchsRestants, DUREES_CHAMPIONNAT, MAX_CHAMPIONNAT, matchsParJoueur, texteDureeChampionnat, dernierDuClassement, texteDepart } from "./tournoi-logique.js";
 import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu, annonceEnjeu } from "./enjeux.js";
 import { texteDepart as texteDepartProgramme } from "./programmes-logique.js";
+import { monResultat, texteJetons } from "./jetons-logique.js";
 import { lire, ecrire } from "./stockage.js";
 
 const $ = id => document.getElementById(id);
@@ -25,11 +26,38 @@ export function installerTournois(ctx) {
   const base = () => location.origin + location.pathname;
 
   // ------------------------------------------------ une liste de tournois (mes tournois, tournois d'un cercle)
+  // Mes résultats dans les tournois terminés (place et gain), gardés sur le téléphone : un tournoi fini ne change plus.
+  const resultats = () => lire("resultatsTournois") || {};
+  function retenirResultat(id, res) {
+    const r = resultats(); r[id] = { place: res.place, rang: res.rang, gain: res.gain };
+    const ids = Object.keys(r); if (ids.length > 60) delete r[ids[0]];   // (les plus anciens s'en vont)
+    ecrire("resultatsTournois", r);
+  }
+  const texteResultat = r => (r ? `${r.rang === 1 ? "🏆 Vainqueur" : `🏁 ${r.place}`}${r.gain > 0 ? ` · 🪙 +${texteJetons(r.gain)}` : ""}` : "");
+  const aCalculer = t => t.phase === "termine" && t.inscrit && t.mode !== "championnat";
+
   function liste(el, tournois) {
+    const r = resultats();
     el.innerHTML = tournois.map(t => `<div class="joueur cliquable${t.a_jouer ? " a-jouer" : ""}" data-tournoi="${t.id}" role="button" tabindex="0">
       <span class="mini">${t.cercle ? blasonSVG(t.cercle.blason) : '<span class="trophee">🏆</span>'}</span>
-      <div style="min-width:0"><div class="jn">${esc(t.nom)}</div><div class="jd">${esc(resume(t))}${t.cercle ? ` · ${esc(t.cercle.nom)}` : ""}</div></div>
+      <div style="min-width:0"><div class="jn">${esc(t.nom)}</div><div class="jd">${esc(resume(t))}${t.cercle ? ` · ${esc(t.cercle.nom)}` : ""}</div>
+        ${aCalculer(t) ? `<div class="jd t-gain" data-resultat="${t.id}">${texteResultat(r[t.id])}</div>` : ""}</div>
       <div class="actions"><button class="petit ${t.a_jouer ? "" : "alt"}" data-a="voir">${t.a_jouer ? "Jouer" : "Voir"}</button></div></div>`).join("");
+    completerResultats(el, tournois.filter(t => aCalculer(t) && !r[t.id]).slice(0, 6));
+  }
+  // Les résultats pas encore connus : on ouvre ces tournois en arrière-plan (6 au plus à la fois), et on complète la liste.
+  let enCalcul = false;
+  async function completerResultats(el, aFaire) {
+    if (enCalcul || !aFaire.length) return;
+    enCalcul = true;
+    try {
+      for (const t of aFaire) {
+        let d; try { d = await social.voirTournoi(t.id); } catch { continue; }
+        const res = monResultat(d, ctx.uid()); if (!res) continue;
+        retenirResultat(t.id, res);
+        const ligne = el.querySelector(`[data-resultat="${t.id}"]`); if (ligne) ligne.textContent = texteResultat(res);
+      }
+    } finally { enCalcul = false; }
   }
   const ouvrirDepuisListe = e => { const l = e.target.closest("[data-tournoi]"); if (l && (e.type === "click" || e.key === "Enter")) ouvrir(l.dataset.tournoi); };
   ["socTournois", "cTournois"].forEach(z => { $(z).addEventListener("click", ouvrirDepuisListe); $(z).addEventListener("keydown", ouvrirDepuisListe); });
@@ -146,6 +174,14 @@ export function installerTournois(ctx) {
           !direct ? " (de 3 à 32)" : t.depart ? ` · départ ${texteDepartProgramme(t.depart, maintenant)}` : t.freeroll ? " · départ à 20 h" : t.taille ? ` sur ${t.taille}` : ""}`
       : t.phase === "en_cours" ? (direct ? `${nomTour(t.tour, t.nb_tours)} · en direct` : `${nomTour(t.tour, t.nb_tours)} · ${reste ? `date limite dans ${reste}` : "date limite passée, résultats en cours"}`)
       : t.phase === "termine" ? (t.vainqueur ? `🏆 Vainqueur : ${t.vainqueur.pseudo}#${t.vainqueur.numero}` : "Tournoi terminé") : "Tournoi annulé";
+
+    // Tournoi terminé : ma place et mes gains (calculés comme le serveur les verse).
+    const res = monResultat(t, uid); if (res) retenirResultat(t.id, res);
+    const entree = t.mise > 0 && !t.freeroll ? ` (entrée : ${texteJetons(t.mise)})` : "";
+    $("tResultat").hidden = !res;
+    if (res) $("tResultat").innerHTML = (res.rang === 1 ? "🏆 <b>Tu as gagné le tournoi !</b>" : `🏁 Tu finis <b>${res.place}</b>`)
+      + (res.gain > 0 ? ` · 🪙 <b>+${texteJetons(res.gain)}</b> gagnés${entree}`
+        : res.gain === 0 ? ` · pas de gain : ${res.payees === 1 ? "seul le vainqueur est payé" : `${res.payees} premiers payés`}${entree}` : "");
 
     // L'enjeu : annoncé pendant le championnat, le dernier désigné à la fin.
     $("tEnjeuCarte").hidden = !t.enjeu;

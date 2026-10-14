@@ -717,10 +717,10 @@ $("uneFermer").addEventListener("click", () => $("une").classList.remove("show")
 // Bot d'entraînement : notre bilan (gardé sur le téléphone), ses signes contre moi, son dossier, et un bouton pour le rejouer.
 // Adversaire en ligne (humain ou bot du serveur) : le bilan détaillé de nos duels, comme pour un ami.
 let ficheDemande = 0;
-async function ouvrirFicheAdv(id, nom) {
+async function ouvrirFicheAdv(id, nom, { jouer = true } = {}) {
   const demande = ++ficheDemande, b = botParId(id), f = P.faceAFace[id];
   const pourcent = t => { const n = t.reduce((x, y) => x + y, 0); return n ? t.map(v => Math.round((100 * v) / n)) : null; };
-  $("faJouer").hidden = !b;
+  $("faJouer").hidden = !b || !jouer;   // (depuis l'entraînement, le bot est déjà choisi)
   if (b) {
     $("faAv").innerHTML = avatarSVG(b.av);
     $("faNom").textContent = b.nom;
@@ -1313,6 +1313,7 @@ function aller(vue) {
   if (onglet || vue === "viewOptions") document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === onglet)));
   $("lenLock").hidden = true;
   if (vue === "viewProfile") renderFiche();
+  if (vue === "viewMatch") majDossierBot();   // le bilan en bref sous le bot choisi (à jour après un match)
   if (vue === "viewDuel") duelsUI?.rafraichir();
   if (vue === "viewCercles" || vue === "viewTournois") cerclesUI?.rafraichir();
   if (vue === "viewSng") sngUI?.rafraichir();
@@ -1369,13 +1370,12 @@ function renderAdversaires() {
   const b = botParId(amicalId); $("oppDesc").textContent = `${b.nom}, ${b.style.toLowerCase()} : ${b.desc}`;
   majDossierBot();
 }
-// Toucher un bot montre aussi notre bilan contre lui et son dossier (remis à jour quand on l'ouvre, après un match).
+// Sous le bot choisi : notre bilan en bref ; le toucher ouvre le face-à-face complet (bilan, ses signes, son dossier).
 function majDossierBot() {
-  const b = botParId(amicalId), f = P.faceAFace[b.id], v = f?.v || 0, d = f?.d || 0;
-  $("oppBilan").textContent = v + d ? `Ton bilan contre ${b.nom} : ${v} victoire${v > 1 ? "s" : ""}, ${d} défaite${d > 1 ? "s" : ""}.` : `Tu n'as encore jamais affronté ${b.nom}.`;
-  $("oppDossierCorps").innerHTML = corpsDossierBot(b);
+  const f = P.faceAFace[amicalId], v = f?.v || 0, d = f?.d || 0;
+  $("oppFiche").textContent = `📊 Notre face-à-face${v + d ? ` (${v} – ${d})` : ""} et son dossier`;
 }
-$("oppDossier").addEventListener("toggle", () => { if ($("oppDossier").open) majDossierBot(); });
+$("oppFiche").addEventListener("click", () => ouvrirFicheAdv(amicalId, botParId(amicalId).nom, { jouer: false }));
 const renderHistoriqueVide = () => { if (!S.match.coups.length) $("tape").innerHTML = `<p class="empty">Les coups apparaîtront ici. Observe-les : ton adversaire le fait.</p>`; };
 document.querySelectorAll("#segMode button").forEach(b => b.addEventListener("click", () => {
   const v = b.dataset.v;
