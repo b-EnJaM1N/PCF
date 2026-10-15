@@ -525,7 +525,7 @@ function finir() {
   $("coach").hidden = true;
   if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
   // La première visite : ce qui vient de s'ouvrir dans le menu.
-  const ouvert = lire("menuComplet") ? [] : nouveautes(matchsAvant, P.matchs);
+  const ouvert = menuComplet() ? [] : nouveautes(matchsAvant, P.matchs);
   // « La Une » : on garde de quoi raconter ce match.
   S.pourUne = n && !special ? {
     etape: S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.direct ? (D.tourVoix === "finale" && D.nbTours > 1 ? "Finale de Sit & Go" : "Sit & Go") : D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
@@ -1053,8 +1053,11 @@ $("compteFinBtn").addEventListener("click", versCompte);
 
 // ---------------------------------------------------------------- la première visite
 // Le menu « Jouer » s'ouvre au fil des matchs ; au tout début, un écran de bienvenue propose un premier match contre Bambi.
+// « Tout afficher » est gardé dans la fiche (donc avec le compte, sur tous les téléphones) et sur ce téléphone.
+const menuComplet = () => !!(P.menuComplet || lire("menuComplet"));
+if (lire("menuComplet") && !P.menuComplet) { P.menuComplet = true; sauverP(); }   // (un ancien « Tout afficher » rejoint le compte)
 function majDecouverte() {
-  const n = palier(P.matchs, !!lire("menuComplet"));
+  const n = palier(P.matchs, menuComplet());
   document.body.dataset.decouverte = String(n);
   $("accueil").hidden = n !== 0; $("menuSuite").hidden = n >= 5;
 }
@@ -1112,7 +1115,7 @@ $("mdjPartager").addEventListener("click", partagerMatchDuJour);
 $("mdjPartagerFin").addEventListener("click", partagerMatchDuJour);
 renderMatchDuJour();
 
-function toutLeMenu() { ecrire("menuComplet", true); majDecouverte(); }
+function toutLeMenu() { ecrire("menuComplet", true); P.menuComplet = true; sauverP(); majDecouverte(); }
 $("toutLeMenu").addEventListener("click", toutLeMenu);
 $("toutLeMenu2").addEventListener("click", toutLeMenu);
 $("premierMatch").addEventListener("click", () => {
