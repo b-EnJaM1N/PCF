@@ -147,6 +147,28 @@ Trois règles d'or : **jamais d'achat de jetons avec de l'argent réel ni de rev
 4. Test fermé Google de 14 jours avec les testeurs Android (les testeurs iPhone restent sur le site). *Envoyé à Google pour examen le 9 octobre* (canal « Tests fermés - Alpha », version 1 (1.0.0.0), tous les pays, déclaration identifiant publicitaire : Non). Peu de réponses des proches. Essai du service payant **Testers Community** le 9 octobre, abandonné : ils refusent pour l'instant les applis TWA (PWABuilder, Bubblewrap). D'après eux, Google compterait mal l'activité des testeurs d'une TWA, d'où beaucoup de refus pour la publication ; ils conseillent de passer à une version WebView. Rien n'a été débité, remboursement demandé. Décision : on garde la TWA (une WebView perdrait les notifications et demanderait Android Studio) ; on n'étudiera la WebView que si Google refuse la publication à cause de l'activité des testeurs. Testeurs : liste d'e-mails des proches dans l'onglet Testeurs (à compléter ; Google n'accepte pas liste et groupe à la fois). Pistes pour compléter : échanges gratuits entre développeurs (r/AndroidClosedTesting…), avec des testeurs qui ouvrent l'appli chaque jour.
 5. Corrections, puis demande de publication.
 
+## Modèle économique (proposé le 16 octobre, rien de décidé ni de mis en place)
+
+**Règles à ne jamais casser** : jamais de vente de jetons (et aucun achat n'en donne : sinon, avec les mises, ce serait un jeu d'argent) ; jamais d'avantage en match à vendre (apparence, confort, spectacle seulement) ; pas de « boîtes à surprise » payantes.
+
+**Coûts actuels** : nom de domaine ~10 € par an, ElevenLabs Starter ~5 € par mois, Supabase gratuit puis ~25 $ par mois au-delà de quelques centaines de joueurs simultanés (compte Google Play déjà payé) : environ **10 à 35 € par mois** pour être à l'équilibre.
+
+**Sources de revenus, par ordre** :
+1. **Publicité récompensée, facultative** : « Regarde une pub : +100 jetons », « Double tes gains du freeroll » ; pas de pub forcée entre les matchs. Quelques euros pour 1 000 vidéos vues. L'appli étant un site, il faut la régie de Google pour les jeux web (pas celle des applis classiques).
+2. **Pack « Supporter » (~2,99 € une fois) ou abonnement « Club HandSlam » (~2 € par mois)**, quand il y aura du monde : **son pseudo prononcé par Roland et Monique** (l'atout unique ; crédits ElevenLabs à prévoir, en lot), apparence exclusive, sans publicité, statistiques avancées, plus de tournois de cercle. Sur le Play Store : paiement par Google obligatoire (15 % prélevés), vrai chantier technique.
+3. **Événements et partenariats**, avec une audience : « HandSlam Open » privé pour entreprises, bars, fêtes (écran géant, commentaire, trophées) ; parrainage de tournois (« Le Grand Chelem présenté par… »), à partir de quelques milliers de joueurs.
+
+**Ordres de grandeur** (hypothèses : une pub récompensée par joueur actif et par jour, 1 à 2 % d'acheteurs ; à vérifier avec les vrais chiffres de fidélité) : 300 joueurs actifs par mois couvrent les frais ; 3 000 : 200 à 450 € par mois ; 30 000 : 2 000 à 4 500 € par mois.
+
+**Calendrier conseillé** : rien pendant le test fermé (on mesure si les joueurs reviennent) ; à la publication, si les retours sont bons, la pub récompensée seule ; à quelques milliers de joueurs, le pack « Supporter » ; ensuite événements et parrainage.
+
+**Avant le premier euro** : un statut pour encaisser (par exemple une micro-entreprise ; B-Dev Labs n'est qu'un nom de studio) ; mentions légales et confidentialité à jour (bandeau de consentement pour la publicité) ; fiche Play Store (« Contient des annonces », « Achats intégrés »). Chaque étape qui coûte ou engage se décide avec le porteur du projet.
+
+## Organisation en onglets (idée du 15 octobre, pour plus tard)
+- **Simulation** : l'appli actuelle, l'identité « faux sport sérieux ».
+- **Arcade** : objets spéciaux, pouvoirs, un peu de stratégie et de fun (pour répondre à la lassitude du chifoumi pur, si les retours des testeurs la confirment) ; décision du 15 octobre : on lance d'abord la version actuelle, l'Arcade viendra selon les retours du test fermé (avant la publication si plusieurs testeurs trouvent le jeu répétitif, sinon en mise à jour).
+- **Aventure** : plus tard (projet à part sur la branche `aventure-experimentale`).
+
 ## Décisions prises
 - **Nom : HandSlam** (marque vérifiée à l'INPI). C'est le nom de l'appli et des compétitions (HandSlam Open, L'Écho du HandSlam) ; le sport reste le Pierre-Feuille-Ciseaux dans la bouche des commentateurs. Le code dit encore « PCF » par endroits (à finir).
 - **Nom de domaine** : handslam.fr (OVH ; handslam.com était pris). Zone DNS OVH : 4 lignes A vers GitHub Pages + www en CNAME ; GitHub : Custom domain + HTTPS. Mentions légales et confidentialité : `app/mentions.html`.
