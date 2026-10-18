@@ -16,6 +16,7 @@
   color-scheme: dark;
 }
 html, body { height: 100%; }
+[hidden] { display: none !important; }
 body {
   background: var(--court-deep); color: var(--line); font-family: var(--body);
   overflow: hidden; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
@@ -25,13 +26,14 @@ body {
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 6px; box-sizing: border-box;
 }
-.barre { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.barre .titre { font-family: var(--display); font-weight: 800; font-size: 1.25rem; letter-spacing: .02em; }
-.barre .titre b { color: var(--me); }
-.compteurs { display: flex; gap: 14px; align-items: baseline; font-variant-numeric: tabular-nums; }
-.compteurs span { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-.compteurs strong { font-family: var(--display); font-size: 1.5rem; font-weight: 800; color: var(--line); margin-left: 4px; }
-#vies { font-size: 1.05rem; letter-spacing: 2px; }
+.colonne { display: flex; flex-direction: column; gap: 10px; width: 58px; flex: none; min-height: 0; }
+.colonne .titre { font-family: var(--display); font-weight: 800; font-size: .95rem; line-height: .95; text-align: center; letter-spacing: .02em; }
+.colonne .titre b { color: var(--me); }
+.compteurs { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; font-variant-numeric: tabular-nums; text-align: center; }
+.compteurs div { display: flex; flex-direction: column; align-items: center; }
+.compteurs span { font-size: .6rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.compteurs strong { font-family: var(--display); font-size: 1.35rem; font-weight: 800; color: var(--line); line-height: 1; }
+#vies { font-size: .8rem; line-height: 1.3; }
 .terrain {
   position: relative; flex: 1; min-height: 0; border-radius: 14px; overflow: hidden;
   background: radial-gradient(120% 80% at 50% 100%, var(--court) 0%, var(--court-deep) 75%);
@@ -40,7 +42,7 @@ body {
 canvas { display: block; width: 100%; height: 100%; }
 .zone { flex: 1; min-height: 0; display: flex; gap: 6px; }
 .zone.gaucher { flex-direction: row-reverse; }
-.boutons { display: flex; flex-direction: column; gap: 8px; width: 58px; flex: none; }
+.boutons { display: flex; flex-direction: column; gap: 4px; flex: 0 0 48%; }
 .boutons button { flex: 1; justify-content: center; }
 .cote { font: inherit; font-size: .85rem; border: 1px solid rgba(245, 247, 250, .3); background: transparent; color: var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
 .boutons button {
@@ -74,20 +76,19 @@ canvas { display: block; width: 100%; height: 100%; }
 </style>
 
 <div class="jeu">
-  <div class="barre">
-    <div class="titre">HAND<b>SLAM</b> Invaders</div>
+  <div class="zone" id="zone">
+  <div class="colonne">
+    <div class="titre">HAND<br><b>SLAM</b></div>
     <div class="compteurs">
       <div><span>Score</span><strong id="score">0</strong></div>
       <div><span>Record</span><strong id="record">0</strong></div>
       <div id="vies" aria-label="Vies">❤️❤️❤️</div>
     </div>
-  </div>
-
-  <div class="zone" id="zone">
   <div class="boutons">
     <button id="bPierre" data-signe="pierre"><span class="e">✊</span><span class="n">Pierre</span></button>
     <button id="bFeuille" data-signe="feuille"><span class="e">✋</span><span class="n">Feuille</span></button>
     <button id="bCiseaux" data-signe="ciseaux"><span class="e">✌️</span><span class="n">Ciseaux</span></button>
+  </div>
   </div>
 
   <div class="terrain" id="terrain">
