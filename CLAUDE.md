@@ -15,3 +15,4 @@
 
 ## Où en est le projet
 Voir `docs/feuille-de-route.md` (étapes faites, décisions, prochain lot à faire).
+HandSlam Invaders (jeu à part, prototype `docs/prototypes/handslam-invaders.html`) : voir `docs/invaders.md`. Il est suivi dans une session à part ; ne pas y toucher depuis une session HandSlam (et inversement).
