@@ -4,8 +4,8 @@ import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
-import { voirTournoi, mesAmis, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite } from "./social-serveur.js";
-import { compterVisite } from "./visites.js";
+import { voirTournoi, mesAmis, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs } from "./social-serveur.js";
+import { compterVisite, compterTroisMatchs } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
 import { carteDe, notesDe, texteRang, rangDe } from "./carte-logique.js";
@@ -37,6 +37,7 @@ import { installerJetons } from "./ecran-jetons.js";
 import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerProgrammes } from "./ecran-programmes.js";
 import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
+import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder } from "./match-du-jour.js";
@@ -47,6 +48,8 @@ import { gainDuel } from "./jetons-logique.js";
 import { texteClassementFin, texteNiveau, provisoire, divisionDe, texteDivision } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
 import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel, statsFaceAFace } from "./duel-logique.js";
+// La version de lancement : ce qui a besoin de monde est caché pour l'instant (lancement.js).
+document.body.classList.toggle("lancement", LANCEMENT.actif);
 
 // Le caillou 🪨 est un emoji récent : certains ordinateurs (anciens Windows) l'affichent comme un point d'interrogation.
 // Si l'appareil ne sait pas le dessiner en couleur, on le remplace partout par le poing ✊.
@@ -100,7 +103,7 @@ let D = null;       // le duel en ligne en cours (null en solo)
 let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, programmesUI = null, defisUI = null, boutiqueUI = null;
 let monClassement = null, mesDuelsOfficiels = 0, maDivision = null;
 // « Niveau officiel : 1232 ? · provisoire, encore 9 duels de calibrage »
-const texteNiveauFiche = (points, joues, division = null) => `Niveau officiel : ${texteNiveau(points, joues)} · ${texteDivision(division ?? divisionDe(points))}` +
+const texteNiveauFiche = (points, joues, division = null) => `Niveau officiel : ${texteNiveau(points, joues)}` + (LANCEMENT.actif ? "" : ` · ${texteDivision(division ?? divisionDe(points))}`) +
   (provisoire(joues) ? ` · provisoire, encore ${10 - joues} duel${10 - joues > 1 ? "s" : ""} de calibrage` : "");   // niveau officiel (duels entre humains), connu une fois connecté
 let panneauOuvert = null, faceAFaceOuvert = false;
 
@@ -526,6 +529,7 @@ function finir() {
   if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
   // La première visite : ce qui vient de s'ouvrir dans le menu.
   const ouvert = menuComplet() ? [] : nouveautes(matchsAvant, P.matchs);
+  if (matchsAvant < 3 && P.matchs >= 3) compterTroisMatchs(envoyerTroisMatchs);   // pour savoir si les nouveaux joueurs accrochent (anonyme)
   // « La Une » : on garde de quoi raconter ce match.
   S.pourUne = n && !special ? {
     etape: S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.direct ? (D.tourVoix === "finale" && D.nbTours > 1 ? "Finale de Sit & Go" : "Sit & Go") : D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
@@ -537,6 +541,7 @@ function finir() {
   const tournoiId = S.duel && D ? D.duel.tournoi_id : null;   // match de tournoi en ligne
   const rapide = !!(S.duel && D?.duel?.rapide) || !!S.contreBotRapide;
   $("revanche").hidden = !S.duel || !!tournoiId; $("retourDuels").hidden = !S.duel || !!tournoiId || rapide; $("revanche").disabled = false;
+  $("revanche").textContent = D?.duel?.enjeu ? "🔁 Revanche, même enjeu" : "🔁 Revanche";   // en un geste, avec le même format et le même enjeu
   $("encoreRapide").hidden = !rapide;
   if (S.contreBotRapide || S.matchJour) $("again").hidden = true;
   $("mdjPartagerFin").hidden = !S.matchJour;
@@ -682,7 +687,7 @@ async function preparerPartage(canvas, { img, partager, enregistrer, msg, fichie
   const blob = await new Promise(ok => canvas.toBlob(ok, "image/png"));
   if (img.dataset.url) URL.revokeObjectURL(img.dataset.url);
   const url = URL.createObjectURL(blob), f = new File([blob], fichier, { type: "image/png" });
-  img.dataset.url = url; img.src = url; img.alt = alt; enregistrer.href = url;
+  img.dataset.url = url; img.src = url; img.alt = alt; enregistrer.href = url; enregistrer.download = fichier;
   const ok = !!navigator.canShare?.({ files: [f] });
   partager.hidden = !ok;
   msg.textContent = ok ? "" : "Enregistre l'image, puis partage-la depuis ta galerie.";
@@ -1733,7 +1738,7 @@ $("revanche").addEventListener("click", async () => {
   const f = S.match.format, adv = OPP.uid;
   $("revanche").disabled = true;
   try {
-    await serveur.creer(adv, f.pointsParSet, f.setsGagnants, D?.duel?.classe !== false, D?.duel?.mise || 0);
+    await serveur.creer(adv, f.pointsParSet, f.setsGagnants, D?.duel?.classe !== false, D?.duel?.mise || 0, D?.duel?.enjeu || null);
     quitterDuel(); ouvrirOnglet("duel");
     $("duelMsg").textContent = `Revanche proposée à ${OPP.nom} ! La partie démarre dès que ${OPP.nom} accepte.`;
   } catch (e) { $("revanche").disabled = false; $("verdict").textContent = e.message; }

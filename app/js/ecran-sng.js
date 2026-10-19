@@ -3,6 +3,7 @@
 import * as social from "./social-serveur.js";
 import { TAILLES_SNG, dureeSng, resume } from "./tournoi-logique.js";
 import { gainsSng, gainDuel, MISES } from "./jetons-logique.js";
+import { misesVisibles, taillesVisibles } from "./lancement.js";
 import { lire, ecrire } from "./stockage.js";
 
 const $ = id => document.getElementById(id);
@@ -11,7 +12,7 @@ const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 // ctx : { compte, ouvrirTournoi(id), chercherMatch() (lance le duel s'il y en a un qui m'attend), signaler(cle, valeur) }
 export function installerSng(ctx) {
   let uid = null, minuterie = 0, etat = null, dernierePhase = null;
-  let mise = [0, ...MISES].includes(lire("sngMise", 0)) ? lire("sngMise", 0) : 0;
+  let mise = [0, ...misesVisibles(MISES)].includes(lire("sngMise", 0)) ? lire("sngMise", 0) : 0;
   const dire = (t, erreur = false) => { $("sngMsg").textContent = t; $("sngMsg").classList.toggle("erreur", erreur); };
 
   function surSession(session) {
@@ -50,9 +51,9 @@ export function installerSng(ctx) {
 
   function render() {
     const mien = etat?.mien;
-    // Les salles de la mise choisie, de 2 (heads-up) à 64 joueurs.
+    // Les salles de la mise choisie, de 2 (heads-up) à 64 joueurs (2 et 8 dans la version de lancement).
     document.querySelectorAll("#sngMise button").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.v === mise)));
-    $("sngSalles").innerHTML = TAILLES_SNG.map(n => {
+    $("sngSalles").innerHTML = taillesVisibles(TAILLES_SNG).map(n => {
       const s = salle(n, mise) || { inscrits: 0 };
       const ici = mien?.phase === "inscriptions" && mien.taille === n && (mien.mise || 0) === mise;
       const gains = mise ? gainsSalle(n, mise) : `environ ${dureeSng(n)}`;

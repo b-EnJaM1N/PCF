@@ -5,14 +5,14 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 ## En bref (14 octobre 2026)
 
 **À faire ensuite, dans l'ordre** (pas de précipitation, faire les choses bien) :
-1. **Finir de valider** ce qui reste « à valider » (sur la version de test) : les tournois programmés et le freeroll de 20 h (à tester un soir), et les rires du public sur 4 égalités d'affilée (sons à fabriquer).
+1. **Finir de valider** ce qui reste « à valider » (sur la version de test) : les tournois programmés et le freeroll de 20 h (à tester un soir), puis la version de lancement.
 2. **Tests avec les proches** : 10 à 20 personnes dans un cercle « Testeurs HandSlam », invitées par petites vagues, avec une soirée freeroll (message d'invitation déjà préparé dans une conversation précédente).
 3. **Google Play Store** (plan ci-dessous) : le test fermé de 14 jours sert aussi de test avec les proches.
 4. Puis : réactiver Le Midi, L'Apéro et Le Nocturne quand il y aura du monde ; finir le passage de « PCF » à « HandSlam » dans le code ; classement du match du jour ; enregistrer les voix des surnoms (liste version 3) et les dialogues du Grand Chelem (au renouvellement des crédits ElevenLabs).
 
 **Fait, à valider** (détails plus bas) :
+- **version de lancement** (décision du porteur du projet, 19 octobre : épurer plutôt qu'ajouter, tout miser sur le spectacle, les défis entre proches et le match du jour). Tout ce qui a besoin de monde est **caché, pas supprimé** (`app/js/lancement.js` : passer `actif` à `false` réaffiche tout) : Grand Chelem, Sit & Go de 16 à 64, mises de 200 à 1 000, divisions (et la division dans « Ma fiche »), classement du mois. Les championnats et tournois de cercle restent (choix du porteur du projet). Page Tournois : le freeroll de 20 h en premier, puis « Heads-up et Sit & Go » (2 et 8 joueurs, sans mise, 50 ou 100), puis Mes tournois. Le match du jour s'ouvre dès le 1er match (jetons, défis et boutique au 3e, tournois au 5e). Ajouts : bouton **« 🔁 Revanche »** qui garde le même enjeu ; compteur de **fidélité** (étape 44 : visiteurs revenus de la veille, téléphones qui ont joué 3 matchs ; lecture : `select jour, sum(visiteurs) visiteurs, sum(nouveaux) nouveaux, sum(revenus) revenus, sum(trois_matchs) trois_matchs from visites group by jour order by jour desc limit 30;`) ;
 - tournois programmés et freeroll du soir (étapes 15, 18, 19, 21) ;
-- **rires du public** : à la 4e égalité d'affilée (les deux joueurs s'obstinent sur le même signe), puis à la 7e, le public rit au lieu de rester muet (demande du porteur du projet). Deux sons à fabriquer avec le robot « Voix » (choix « sons », `public_rires_01,public_rires_02`) : sans eux, rien ne joue.
 
 **Validé** (par lots, sur la version de test ; lots 1 à 4 le 14 octobre) :
 - lot 1 : première visite guidée, menu qui s'ouvre au fil des matchs, navigation allégée (carte « Tournois » unique, « Ma fiche » en 3 sous-onglets, solde en haut à droite) ;
@@ -20,7 +20,7 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 - lot 3 : partie rapide (amicale, bot au bout de 30 s), jetons, bonus du jour, +10 contre un bot, défis du jour, boutique ;
 - lot 4 : Sit & Go (rangée de mises, toutes les tailles, heads-up, bots au bout de 2 minutes, 3 minutes de patience), tirage au sort des tableaux et écran d'attente, plus de sets à rallonge, corrections des étapes 41 et 42, divisions ;
 - lot 5 : surnoms version 3, trophées et avatars, face-à-face avec un ami et avec un adversaire, ma place et mes gains à la fin d'un tournoi ;
-- lot 6 : défis entre amis, enjeux, salle d'attente, « qui est en ligne », messages rapides, championnat du cercle (tests à deux) ; fond sonore plus présent et réactions variées du public après un point (sons fabriqués).
+- lot 6 : défis entre amis, enjeux, salle d'attente, « qui est en ligne », messages rapides, championnat du cercle (tests à deux) ; fond sonore plus présent et réactions variées du public après un point (sons fabriqués), rires du public à la 4e égalité d'affilée (puis à la 7e).
 
 **Fait et validé** : mode solo, comptes, duel en ligne, niveau officiel, amis, cercles, tournois en ligne, Sit & Go, navigation en trois onglets, voix ElevenLabs (demande n° 59).
 

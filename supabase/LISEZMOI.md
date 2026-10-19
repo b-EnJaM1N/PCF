@@ -341,6 +341,14 @@ Chaque téléphone signale au plus une fois par jour « j'ai ouvert l'appli », 
 par jour et par origine (site, appli Android, appli installée). La version de test ne compte pas.
 Pour lire les chiffres (éditeur SQL, une ligne) : `select * from visites order by jour desc, origine limit 60;`
 
+## 1 quadragies quater. La fidélité des joueurs (étape 44)
+
+Même manipulation avec [`etape-44-fidelite.sql`](etape-44-fidelite.sql), **après** l'étape 43
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-44-fidelite.sql).
+Deux chiffres de plus, toujours anonymes : les visiteurs revenus de la veille, et les téléphones qui viennent de jouer
+leur 3e match. Ne pas relancer l'étape 43 ensuite (elle remettrait l'ancienne version du compteur).
+Pour lire les chiffres (une ligne) : `select jour, sum(visiteurs) visiteurs, sum(nouveaux) nouveaux, sum(revenus) revenus, sum(trois_matchs) trois_matchs from visites group by jour order by jour desc limit 30;`
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

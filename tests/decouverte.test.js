@@ -12,7 +12,7 @@ test("le menu s'ouvre au fil des matchs : 1 (Partie rapide), 3 (jetons, défis, 
 
 test("les nouveautés s'annoncent une seule fois, au bon match", () => {
   assert.equal(nouveautes(0, 1).length, 1);
-  assert.match(nouveautes(0, 1)[0], /Partie rapide/);
+  assert.match(nouveautes(0, 1)[0], /Partie rapide/); assert.match(nouveautes(0, 1)[0], /match du jour/);
   assert.deepEqual(nouveautes(1, 2), []);
   assert.match(nouveautes(2, 3)[0], /boutique/);
   assert.match(nouveautes(4, 5)[0], /tournois/);
