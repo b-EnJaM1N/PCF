@@ -148,14 +148,18 @@ canvas { display: block; width: 100%; height: 100%; }
 
   const $ = id => document.getElementById(id);
   const toile = $("toile"), ctx = toile.getContext("2d"), terrain = $("terrain");
-  let W = 0, H = 0, R = 22; // R : rayon d'un signe
+  // H : hauteur du terrain de jeu ; en dessous, une bande réservée au doigt (hauteur Z) :
+  // on glisse le doigt dedans pour bouger, et le doigt ne cache plus le gant ni la ligne.
+  let W = 0, H = 0, Z = 0, R = 22; // R : rayon d'un signe
 
   function redimensionner() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = terrain.clientWidth; H = terrain.clientHeight;
-    toile.width = W * dpr; toile.height = H * dpr;
+    W = terrain.clientWidth;
+    const total = terrain.clientHeight;
+    toile.width = W * dpr; toile.height = total * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     R = Math.max(18, Math.min(28, W / 15));
+    Z = Math.round(Math.max(60, R * 3)); H = total - Z;
     if (J) J.x = Math.min(Math.max(J.x, R), W - R);
   }
 
@@ -1103,7 +1107,7 @@ canvas { display: block; width: 100%; height: 100%; }
   }
 
   function dessiner() {
-    ctx.clearRect(0, 0, W, H);
+    ctx.clearRect(0, 0, W, H + Z);
 
     const decor = J && MONDES[J.monde].decor;
     if (decor === "plage") dessinerPlage();
@@ -1112,8 +1116,28 @@ canvas { display: block; width: 100%; height: 100%; }
     else dessinerGymnase();
     ctx.strokeStyle = "rgba(232, 87, 74, .35)"; ctx.setLineDash([6, 8]);
     ctx.beginPath(); ctx.moveTo(0, H - R * 3.4); ctx.lineTo(W, H - R * 3.4); ctx.stroke(); ctx.setLineDash([]);
+    if (J) dessinerJeu();
+    dessinerBandeDoigt(); // par-dessus : ce qui sort du terrain passe dessous
+  }
+
+  // la bande du doigt, sous le terrain : un rail avec des flèches, et un repère sous le gant
+  function dessinerBandeDoigt() {
+    ctx.fillStyle = "#0B2140"; ctx.fillRect(0, H, W, Z);
+    ctx.fillStyle = "rgba(245, 247, 250, .18)"; ctx.fillRect(0, H, W, 2);
+    const y = H + Z * 0.5;
+    ctx.strokeStyle = "rgba(245, 247, 250, .22)"; ctx.lineWidth = 4; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(R * 1.6, y); ctx.lineTo(W - R * 1.6, y); ctx.stroke();
+    ctx.fillStyle = "rgba(245, 247, 250, .45)";
+    ctx.font = `800 ${Math.round(R * 0.9)}px "Barlow Condensed", sans-serif`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("◀", R * 0.8, y); ctx.fillText("▶", W - R * 0.8, y);
+    ctx.font = `700 ${Math.round(R * 0.5)}px "Barlow Condensed", sans-serif`;
+    ctx.fillText("GLISSE TON DOIGT ICI", W / 2, H + Z * 0.82);
     if (!J) return;
-    dessinerJeu();
+    // le repère suit le gant
+    ctx.fillStyle = COUL.me;
+    ctx.beginPath(); ctx.roundRect(J.x - R * 0.9, y - 6, R * 1.8, 12, 6); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(J.x - 7, H + 3); ctx.lineTo(J.x + 7, H + 3); ctx.lineTo(J.x, H + 11); ctx.closePath(); ctx.fill();
   }
 
   function dessinerGymnase() {

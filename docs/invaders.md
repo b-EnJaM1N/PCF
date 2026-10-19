@@ -8,6 +8,7 @@ Prototype : [`prototypes/handslam-invaders.html`](prototypes/handslam-invaders.h
 Prototype jouable du 18 octobre, validé (« amusant, prometteur »). Des signes tombent ; on se place dessous et on tire celui qui les bat (contre ✌️ tirer ✊, contre ✋ tirer ✌️, contre ✊ tirer ✋).
 
 - **Commandes retenues** : une colonne étroite sur le côté (gauche par défaut, à droite pour les gauchers) avec le score, le record et les vies en haut, et les 3 signes serrés en bas ; l'autre main glisse sur le terrain pour bouger ; le terrain prend toute la hauteur.
+- **Bande du doigt** (demande du porteur du projet, 20 octobre : le doigt cachait le gant) : sous le terrain, une bande réservée au doigt, avec un rail, des flèches ◀ ▶, « Glisse ton doigt ici » et un repère jaune qui suit le gant. On glisse le doigt dedans pour bouger ; le gant et la ligne rouge restent visibles au-dessus. Toucher le terrain lui-même fait toujours bouger le gant.
 - **Règles** : mauvais signe = l'ennemi accélère, même signe = il recule ; 3 vies ; séries qui multiplient les points (jusqu'à ×5) ; vitesse qui monte, zigzags ; record gardé sur le téléphone.
 
 ## Ce qui est fait dans le prototype
