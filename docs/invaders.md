@@ -37,12 +37,7 @@ Prototype jouable du 18 octobre, validé (« amusant, prometteur »). Des signes
 ## Mondes 3 et 4 : la Forêt et l'Espace (19 octobre, à tester)
 Le porteur du projet trouvait 2 mondes légers pour le lancement : on passe à 4. Choix du porteur du projet : les ciseaux de la Forêt sont le **lucane** (cerf-volant, ses pinces), le monde 4 est **l'Espace**. Chaque monde s'ouvre au boss de la vague 9 du précédent. L'accueil montre un bouton par monde ouvert ; « Essayer tous les mondes (démo) » les montre tous (aussi avec « #monde3 », etc., dans l'adresse).
 
-- **Monde 3 « La Forêt »** (boss : le Vieux Chêne 🌳) : sous-bois, sapins et arbres ronds sur les côtés, rayons de soleil. Des objets dès la vague 1, qui changent toutes les 3 vagues ; les ciseaux sont toujours le lucane (dessiné) :
-  - vagues 1-3, l'orée du bois : 🪨 rocher = pierre, 🍃 feuille = feuille ;
-  - 4-6, les chênes : gland (dessiné) = pierre, 🍂 feuille morte = feuille ;
-  - 7-9, le verger : 🍎 pomme = pierre, 🍁 feuille d'érable = feuille ;
-  - 10-12, les sapins, plus petits : pomme de pin (dessinée) = pierre, 🌿 fougère = feuille ;
-  - 13-15, la forêt profonde, plus petits : 🌰 châtaigne = pierre, ☘️ trèfle = feuille.
+- **Monde 3 « La Forêt »** (boss : le Vieux Chêne 🌳) : sous-bois, sapins et arbres ronds sur les côtés, rayons de soleil. Revue le 20 octobre avec la règle de chaque monde : le **lucane** (dessiné) est toujours les ciseaux (l'objet repère) ; toutes les 3 vagues, on alterne entre 🪨 rocher = pierre avec 🍃 feuille verte = feuille (vagues 1-3, 7-9) et 🍎 pomme = pierre avec 🍁 feuille d'érable = feuille (4-6, 10-12) ; vagues 13-15, les deux séries mélangées ; plus petits à partir de la vague 10. Le gland et la pomme de pin restent dessinés dans le prototype, si on veut les reprendre.
 
   **Spécialité** : les feuilles tombent en se balançant au vent (il faut les suivre).
 - **Monde 4 « L'Espace »** (boss : la Soucoupe Mère 🛸) : ciel noir et violet, étoiles qui défilent, une grosse planète pâle au loin. Revu le 20 octobre (le satellite, la voile solaire et le vaisseau ne se reconnaissaient pas) : des extraterrestres qui jouent avec leurs mains vertes aux longs doigts. Météorite (grosse, avec sa traînée de feu) = pierre, main d'alien ouverte = feuille, doigts d'alien en V = ciseaux, tous dessinés ; les mêmes objets jusqu'à la vague 9, plus petits ensuite.

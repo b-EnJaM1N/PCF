@@ -213,14 +213,18 @@ canvas { display: block; width: 100%; height: 100%; }
     { nom: "Tennis", petit: true, pierre: { e: "🎾", nom: "Balle" }, feuille: { dessin: "raquette", nom: "Raquette" }, ciseaux: { croix: "🏸", retourne: true, nom: "Raquettes croisées" } },
     { nom: "Baseball", petit: true, pierre: { e: "⚾", nom: "Balle" }, feuille: { dessin: "gant", nom: "Gant" }, ciseaux: { croix: "🏏", retourne: true, nom: "Battes" } },
   ];
-  // Forêt : des objets dès la vague 1 ; les ciseaux sont toujours le lucane (ses pinces).
-  const LUCANE = { dessin: "lucane", nom: "Lucane" };
+  // Forêt : le lucane (ses pinces) est toujours les ciseaux ; toutes les 3 vagues, rocher et feuille verte,
+  // ou pomme et feuille d'érable ; les deux séries mélangées aux vagues 13 à 15.
+  const LUCANE = { dessin: "lucane", nom: "Lucane", taille: 1.15 };
+  const ROCHER = { e: "🪨", nom: "Rocher", taille: 1.15 }, POMME = { e: "🍎", nom: "Pomme", taille: 1.1 };
+  const FEUILLE_VERTE = { e: "🍃", nom: "Feuille", taille: 1.1 }, ERABLE = { e: "🍁", nom: "Feuille d'érable", taille: 1.1 };
   const FORET = [
-    { nom: "L'orée du bois", pierre: { e: "🪨", nom: "Rocher" }, feuille: { e: "🍃", nom: "Feuille" }, ciseaux: LUCANE },
-    { nom: "Les chênes", pierre: { dessin: "gland", nom: "Gland" }, feuille: { e: "🍂", nom: "Feuille morte" }, ciseaux: LUCANE },
-    { nom: "Le verger", pierre: { e: "🍎", nom: "Pomme" }, feuille: { e: "🍁", nom: "Feuille d'érable" }, ciseaux: LUCANE },
-    { nom: "Les sapins", petit: true, pierre: { dessin: "pommeDePin", nom: "Pomme de pin" }, feuille: { e: "🌿", nom: "Fougère" }, ciseaux: LUCANE },
-    { nom: "La forêt profonde", petit: true, pierre: { e: "🌰", nom: "Châtaigne" }, feuille: { e: "☘️", nom: "Trèfle" }, ciseaux: LUCANE },
+    { nom: "L'orée du bois", pierre: ROCHER, feuille: FEUILLE_VERTE, ciseaux: LUCANE },
+    { nom: "Le verger", pierre: POMME, feuille: ERABLE, ciseaux: LUCANE },
+    { nom: "Les rochers", pierre: ROCHER, feuille: FEUILLE_VERTE, ciseaux: LUCANE },
+    { nom: "L'automne", petit: true, pierre: POMME, feuille: ERABLE, ciseaux: LUCANE },
+    // vagues 13 à 15 : les deux séries mélangées
+    { nom: "Le grand mélange", petit: true, pierre: [ROCHER, POMME], feuille: [FEUILLE_VERTE, ERABLE], ciseaux: LUCANE },
   ];
   // Plage : des galets ; toutes les 3 vagues, palmier et crabe, ou serviette et lunettes de soleil.
   // Les crabes qui avancent en biais restent des crabes.
