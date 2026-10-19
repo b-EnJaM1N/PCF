@@ -217,14 +217,16 @@ canvas { display: block; width: 100%; height: 100%; }
     { nom: "Les sapins", petit: true, pierre: { dessin: "pommeDePin", nom: "Pomme de pin" }, feuille: { e: "🌿", nom: "Fougère" }, ciseaux: LUCANE },
     { nom: "La forêt profonde", petit: true, pierre: { e: "🌰", nom: "Châtaigne" }, feuille: { e: "☘️", nom: "Trèfle" }, ciseaux: LUCANE },
   ];
-  // Plage : des galets, des crabes, et une feuille de palmier ou une serviette qui changent toutes les 3 vagues.
+  // Plage : des galets ; toutes les 3 vagues, palmier et crabe, ou serviette et lunettes de soleil.
+  // Les crabes qui avancent en biais restent des crabes.
   const GALET = { dessin: "galet", nom: "Galet", taille: 1.15 }, CRABE = { e: "🦀", retourne: true, nom: "Crabe" };
+  const LUNETTES = { dessin: "lunettes", nom: "Lunettes de soleil" };
   const PALME = { dessin: "palme", nom: "Feuille de palmier" }, SERVIETTE = { dessin: "serviette", nom: "Serviette de plage" };
   const PLAGE = [
     { nom: "Les palmiers", pierre: GALET, feuille: PALME, ciseaux: CRABE },
-    { nom: "Les serviettes", pierre: GALET, feuille: SERVIETTE, ciseaux: CRABE },
+    { nom: "Les serviettes", pierre: GALET, feuille: SERVIETTE, ciseaux: LUNETTES },
     { nom: "Les palmiers", pierre: GALET, feuille: PALME, ciseaux: CRABE },
-    { nom: "La sieste", petit: true, pierre: GALET, feuille: SERVIETTE, ciseaux: CRABE },
+    { nom: "La sieste", petit: true, pierre: GALET, feuille: SERVIETTE, ciseaux: LUNETTES },
     { nom: "Le soleil couchant", petit: true, pierre: GALET, feuille: PALME, ciseaux: CRABE },
   ];
   // Espace : une grosse météorite, et des extraterrestres qui jouent avec leurs mains vertes.
@@ -900,6 +902,22 @@ canvas { display: block; width: 100%; height: 100%; }
       ctx.beginPath();
       for (let k = 0; k <= 12; k++) ctx.lineTo(...pt(k / 12));
       ctx.stroke();
+    } else if (o.dessin === "lunettes") {
+      // des lunettes de soleil : les verres en haut, les branches ouvertes vers le bas (vers le joueur)
+      ctx.strokeStyle = "#1E1E24"; ctx.lineWidth = s * 0.06;
+      for (const sens of [-1, 1]) {
+        ctx.beginPath(); ctx.moveTo(x + sens * s * 0.44, y - s * 0.22);
+        ctx.lineTo(x + sens * s * 0.6, y + s * 0.36); ctx.quadraticCurveTo(x + sens * s * 0.62, y + s * 0.48, x + sens * s * 0.5, y + s * 0.48); ctx.stroke();
+      }
+      ctx.beginPath(); ctx.moveTo(x - s * 0.06, y - s * 0.26); ctx.quadraticCurveTo(x, y - s * 0.34, x + s * 0.06, y - s * 0.26); ctx.stroke(); // le pont
+      for (const sens of [-1, 1]) {
+        const g = ctx.createLinearGradient(x, y - s * 0.4, x, y - s * 0.04);
+        g.addColorStop(0, "#3A3F55"); g.addColorStop(1, "#0E1020");
+        ctx.fillStyle = g; ctx.strokeStyle = "#E8574A"; ctx.lineWidth = s * 0.05;
+        ctx.beginPath(); ctx.ellipse(x + sens * s * 0.25, y - s * 0.22, s * 0.2, s * 0.16, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = "rgba(255, 255, 255, .55)"; // reflet
+        ctx.beginPath(); ctx.ellipse(x + sens * s * 0.25 - s * 0.07, y - s * 0.28, s * 0.06, s * 0.03, -0.5, 0, Math.PI * 2); ctx.fill();
+      }
     } else if (o.dessin === "serviette") {
       // une serviette de plage : rayures de couleur et franges aux deux bouts
       const w = s * 0.98, h = s * 0.7;
@@ -1101,7 +1119,7 @@ canvas { display: block; width: 100%; height: 100%; }
       ctx.beginPath(); ctx.arc(0, 0, r * 1.08, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(245, 247, 250, .16)"; ctx.fill(); // fond clair : les objets sombres restent visibles
       ctx.lineWidth = 3.5; ctx.strokeStyle = COUL_ROLE[n.signe]; ctx.stroke();
-      objet(th[n.signe], 0, 0, r * 1.55);
+      objet(n.crabe ? CRABE : th[n.signe], 0, 0, r * 1.55);
     } else pastille(0, 0, n.signe, COUL_ROLE[n.signe], R, n.bond);
     ctx.restore();
     ctx.globalAlpha = 1;
