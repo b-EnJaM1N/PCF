@@ -4,6 +4,17 @@ Jeu à part, prévu **après le lancement de HandSlam** (voir « Seconde appli �
 
 Prototype : [`prototypes/handslam-invaders.html`](prototypes/handslam-invaders.html), aussi en page privée Claude : https://claude.ai/artifact/Dpm6ozsstzXgemVVYb9prK (visible seulement par le porteur du projet ; c'est là qu'on le teste, pas sur https://handslam.fr/preview/).
 
+## ⏸ En pause depuis le 20 octobre
+Décision du porteur du projet, après l'audit du 20 octobre : Invaders est mis en pause pour revenir à HandSlam (lancement d'abord). Dernier lot fait avant la pause : la moitié des ciseaux de la Plage sont des crabes en biais (il n'y a plus trop de ciseaux), le boss descend moins bas pour laisser lisible le texte du haut, et le bandeau qui présente les objets montre leurs dessins, avec le texte dans la couleur du rôle.
+
+**Pour reprendre, dans l'ordre conseillé (audit du 20 octobre)** :
+1. Faire essayer le prototype à 3 à 5 proches, sans rien expliquer, et regarder où ils bloquent (la page privée se partage depuis son menu « Partager »).
+2. Régler la difficulté d'après leurs retours : la Forêt et l'Espace commencent haut, les téléportations sont peut-être trop dures ; jamais réglé en vrai, seulement au calcul.
+3. Le son et les sensations : vrais bruitages (tir, explosion, série, boss), une musique par monde, vibration quand on détruit un signe, écran qui tremble quand on perd une vie.
+4. L'apprentissage joué, sans texte (prévu dans « Première version publique »).
+5. Daltonisme : orange (pierre) et vert (feuille) se confondent pour environ 1 homme sur 12 ; ajouter une marque dans le cercle ou changer une couleur.
+6. Avant une sortie publique : retirer le bouton « Essayer tous les mondes (démo) » et les raccourcis (#vague, #tour, #boss, #monde) ; transformer le fichier unique en vraie appli (comme HandSlam : icône, hors ligne, tests, fiche Play Store).
+
 ## Le principe
 Prototype jouable du 18 octobre, validé (« amusant, prometteur »). Des signes tombent ; on se place dessous et on tire celui qui les bat (contre ✌️ tirer ✊, contre ✋ tirer ✌️, contre ✊ tirer ✋).
 
