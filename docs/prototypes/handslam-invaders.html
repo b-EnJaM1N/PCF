@@ -71,6 +71,7 @@ canvas { display: block; width: 100%; height: 100%; }
   border: 0; border-radius: 999px; padding: 12px 34px; background: var(--me); color: var(--court-deep); cursor: pointer;
 }
 .ecran .petit { font-size: .82rem; }
+.ecran .pourcent { font-family: var(--display); font-weight: 800; font-size: 1.3rem; color: var(--line); }
 .mondes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 340px; }
 .mondes .go { font-size: 1.02rem; padding: 10px 8px; line-height: 1.05; }
 .mondes .go small { display: block; font-size: .72rem; opacity: .85; letter-spacing: .06em; }
@@ -109,7 +110,7 @@ canvas { display: block; width: 100%; height: 100%; }
         <span class="e">✋</span><span class="fl">→ tire</span><span class="e">✌️</span>
         <span class="e">✊</span><span class="fl">→ tire</span><span class="e">✋</span>
       </div>
-      <p class="petit">Une main choisit le signe sur le côté, l'autre glisse sur le terrain pour bouger. Un mauvais signe fait accélérer l'ennemi. Chaque monde : 15 vagues et 5 boss. Attrape les objets qui tombent : ❤️ 🛡️ ⏱️ 🔁 ⚡</p>
+      <p class="petit">Une main choisit le signe sur le côté, l'autre glisse sur le terrain pour bouger. Un mauvais signe fait accélérer l'ennemi. Chaque monde : 15 vagues et 5 boss, puis ça recommence en plus rapide. Attrape les objets qui tombent : ❤️ 🛡️ ⏱️ 🔁 ⚡</p>
       <button class="go" id="reprise" hidden>▶ Reprendre la partie</button>
       <div class="mondes" id="mondes"></div>
       <p class="petit" id="verrou"></p>
@@ -127,6 +128,7 @@ canvas { display: block; width: 100%; height: 100%; }
     <div class="ecran" id="fin" hidden>
       <h1 id="titreFin">Fin de partie</h1>
       <div class="gros" id="scoreFin">0</div>
+      <p class="pourcent" id="pourcentFin"></p>
       <p id="detailFin"></p>
       <button class="go" id="rejouer">Rejouer</button>
       <button class="cote" id="menu">Choisir le monde</button>
@@ -179,6 +181,9 @@ canvas { display: block; width: 100%; height: 100%; }
   // un record par monde (le monde 1 garde l'ancienne clé)
   const CLES_RECORD = ["hs-invaders-record", "hs-invaders-record-2", "hs-invaders-record-3", "hs-invaders-record-4"];
   const records = CLES_RECORD.map(cle => { try { return +localStorage.getItem(cle) || 0; } catch (e) { return 0; } });
+  // le meilleur pourcentage accompli dans chaque monde (100 % = les 15 vagues, 200 % = deux tours…)
+  const CLES_POURCENT = CLES_RECORD.map((_, i) => `hs-invaders-pourcent-${i + 1}`);
+  const pourcents = CLES_POURCENT.map(cle => { try { return +localStorage.getItem(cle) || 0; } catch (e) { return 0; } });
   $("record").textContent = records[0];
 
   // ---------- Côté des boutons (gauche par défaut) ----------
@@ -266,7 +271,7 @@ canvas { display: block; width: 100%; height: 100%; }
     $("mondes").replaceChildren(...MONDES.slice(0, visibles).map((m, i) => {
       const b = document.createElement("button");
       b.className = "go"; b.style.background = m.couleur; b.style.color = m.texte;
-      b.innerHTML = `<small>MONDE ${i + 1}</small>${m.nom}`;
+      b.innerHTML = `<small>MONDE ${i + 1}${pourcents[i] ? ` · ${pourcents[i]} %` : ""}</small>${m.nom}`;
       b.addEventListener("click", () => demarrer(i));
       return b;
     }));
@@ -289,7 +294,7 @@ canvas { display: block; width: 100%; height: 100%; }
     J = {
       x: W / 2, cible: W / 2, vies: 3, score: 0, combo: 0, meilleurCombo: 0, touches: 0, rates: 0, bossBattus: 0,
       ennemis: [], tirs: [], eclats: [], textes: [], bonus: [], prochain: 0, temps: 0, recharge: 0, flash: 0, flashBlanc: 0,
-      monde: 0, vague: 0, resteVague: 0, pause: 0, bossAVenir: false, boss: null, bandeau: null,
+      monde: 0, vague: 0, tour: 1, faites: 0, resteVague: 0, pause: 0, bossAVenir: false, boss: null, bandeau: null,
       effets: { bouclier: 0, ralenti: 0, triple: 0 },
     };
     majCompteurs();
@@ -299,8 +304,14 @@ canvas { display: block; width: 100%; height: 100%; }
   // Toutes les 3 vagues, un boss. La difficulté monte de vague en vague.
   // Chaque monde commence plus haut (la Plage : vague 6 du Gymnase, la Forêt : 7, l'Espace : 9).
   const niveau = () => Math.min(1, (MONDES[J.monde].depart + Math.max(0, J.vague - 1)) / 14);
-  const vitesse = () => 55 + 115 * niveau() + Math.random() * 25;       // pixels par seconde
-  const intervalle = () => 1750 - 900 * niveau() + Math.random() * 450; // millisecondes
+  // Après les 15 vagues, le monde recommence (tour 2, 3…) : plus rapide, jusqu'à un plafond ;
+  // au-delà, c'est le nombre de signes par vague qui augmente.
+  const tour = () => J.tour || 1;
+  const accel = () => Math.min(1.6, 1 + 0.2 * (tour() - 1));
+  const vitesse = () => (55 + 115 * niveau() + Math.random() * 25) * accel();        // pixels par seconde
+  const intervalle = () => (1750 - 900 * niveau() + Math.random() * 450) / accel(); // millisecondes
+  // part du monde accomplie : chaque vague réussie compte, 15 vagues = 100 %
+  const pourcent = () => Math.round(100 * J.faites / VAGUES_PAR_MONDE);
   const lent = () => (J.effets.ralenti > 0 ? 0.45 : 1);
 
   function lancerVague(n) {
@@ -312,7 +323,7 @@ canvas { display: block; width: 100%; height: 100%; }
         (n === VAGUE_DEBLOCAGE && J.monde + 1 < MONDES.length && mondesOuverts < J.monde + 2 ? " (ouvre le monde suivant)" : ""), vie: 1, rouge: true };
       bip(220, 0.25, "sawtooth", 0.06); setTimeout(() => bip(180, 0.35, "sawtooth", 0.06), 260);
     } else {
-      J.resteVague = 6 + n;
+      J.resteVague = 6 + n + 2 * (tour() - 1);
       J.bandeau = n === 1
         ? { titre: `Monde ${J.monde + 1}`, sous: `${m.nom} · ${J.resteVague} signes`, vie: 1.4 }
         : { titre: `Vague ${n}/${VAGUES_PAR_MONDE}`, sous: `${J.resteVague} signes`, vie: 1 };
@@ -331,11 +342,19 @@ canvas { display: block; width: 100%; height: 100%; }
 
   function vagueFinie() {
     if (J.vague > 0) {
-      const prime = 50 * J.vague;
-      J.score += prime; majCompteurs();
-      texte(W / 2, H * 0.45, `Vague terminée +${prime}`, COUL.good);
+      const prime = 50 * J.vague * tour();
+      J.score += prime; J.faites++; majCompteurs();
+      texte(W / 2, H * 0.45, `Vague terminée +${prime} · ${pourcent()} %`, COUL.good);
     }
-    if (J.vague >= VAGUES_PAR_MONDE) return finir(true);
+    if (J.vague >= VAGUES_PAR_MONDE) {
+      // le monde ne s'arrête pas : on repart à la vague 1, plus vite, avec une vie en cadeau
+      J.tour = tour() + 1;
+      J.vies = Math.min(VIES_MAX, J.vies + 1); majCompteurs();
+      lancerVague(1);
+      J.bandeau = { titre: `Tour ${J.tour} !`, sous: `Plus rapide · points ×${J.tour} · +1 vie`, vie: 1.8 };
+      [523, 659, 784, 1047, 1319].forEach((f, i) => setTimeout(() => bip(f, 0.14, "triangle", 0.07), i * 110));
+      return;
+    }
     lancerVague(J.vague + 1);
     // après le boss de la vague 9 : le monde suivant s'ouvre, et on continue ici pour le record
     if (J.vague === VAGUE_DEBLOCAGE + 1 && J.monde + 1 < MONDES.length && mondesOuverts < J.monde + 2) {
@@ -370,7 +389,8 @@ canvas { display: block; width: 100%; height: 100%; }
 
   // ---------- Boss ----------
   function creerBoss() {
-    const k = J.vague / 3 + MONDES[J.monde].bossPlus; // 1er boss, 2e boss… (plus fort dans les mondes suivants)
+    // 1er boss, 2e boss… (plus fort dans les mondes suivants, et à chaque tour)
+    const k = J.vague / 3 + MONDES[J.monde].bossPlus + (tour() - 1);
     const pv = Math.round(3 + 2 * k);
     J.boss = {
       x: W / 2, y: -R * 3, yCible: R * 4.8, r: R * 2.1, pv, pvMax: pv, k,
@@ -420,7 +440,7 @@ canvas { display: block; width: 100%; height: 100%; }
   }
 
   function bossBattu(b) {
-    const pts = Math.round(200 * b.k);
+    const pts = Math.round(200 * b.k) * tour();
     J.score += pts; J.bossBattus++;
     eclater(b.x, b.y, COUL.me, 40); eclater(b.x, b.y, COUL.bot, 30);
     texte(b.x, b.y, `Boss battu ! +${pts}`, COUL.me);
@@ -487,16 +507,20 @@ canvas { display: block; width: 100%; height: 100%; }
     $("vies").textContent = "❤️".repeat(v) + "🖤".repeat(Math.max(0, 3 - v));
   }
 
-  function finir(victoire = false) {
+  function finir() {
     enCours = false; effacerSauvegarde();
-    $("titreFin").textContent = victoire ? "Victoire !" : "Fin de partie";
+    const pc = pourcent(), mieux = pc > pourcents[J.monde];
+    if (mieux) { pourcents[J.monde] = pc; try { localStorage.setItem(CLES_POURCENT[J.monde], pc); } catch (e) {} majAccueil(); }
+    $("titreFin").textContent = pc >= 100 ? "Bravo !" : "Fin de partie";
     const nouveau = J.score > records[J.monde];
     if (nouveau) { records[J.monde] = J.score; try { localStorage.setItem(CLES_RECORD[J.monde], J.score); } catch (e) {} }
     $("record").textContent = records[J.monde];
     $("scoreFin").textContent = J.score;
     const precision = J.touches + J.rates ? Math.round(100 * J.touches / (J.touches + J.rates)) : 0;
+    $("pourcentFin").textContent = `Tu as accompli ${pc} % ${MONDES[J.monde].du}` +
+      (mieux ? " : ton meilleur !" : pc > 0 || pourcents[J.monde] > 0 ? ` (ton meilleur : ${pourcents[J.monde]} %)` : "");
     $("detailFin").textContent = (nouveau ? "Nouveau record ! " : "") +
-      (victoire ? `Monde ${J.monde + 1} terminé, les 15 vagues ! ` : `Monde ${J.monde + 1}, vague ${J.vague} · `) + ` ${J.bossBattus} boss battu${J.bossBattus > 1 ? "s" : ""} · ${J.touches} signes battus · meilleure série ×${J.meilleurCombo} · précision ${precision} %`;
+      `Monde ${J.monde + 1}, ${tour() > 1 ? `tour ${tour()}, ` : ""}vague ${J.vague} · ${J.bossBattus} boss battu${J.bossBattus > 1 ? "s" : ""} · ${J.touches} signes battus · meilleure série ×${J.meilleurCombo} · précision ${precision} %`;
     $("fin").hidden = false;
     $("rejouer").focus();
   }
@@ -509,9 +533,12 @@ canvas { display: block; width: 100%; height: 100%; }
     $("accueil").hidden = true; $("fin").hidden = true;
     effacerSauvegarde(); enPause = false;
     enCours = true; dernier = performance.now();
-    // pour les essais : « #boss » commence à la vague 3, « #vague7 » à la vague 7…
-    const essai = /^#vague(\d+)$/.exec(location.hash);
-    lancerVague(location.hash === "#boss" ? 3 : essai ? Math.min(VAGUES_PAR_MONDE, Math.max(1, +essai[1])) : 1);
+    // pour les essais : « #boss » commence à la vague 3, « #vague7 » à la vague 7, « #tour2 » au tour 2…
+    const essai = /^#vague(\d+)$/.exec(location.hash), essaiTour = /^#tour(\d+)$/.exec(location.hash);
+    if (essaiTour) J.tour = Math.max(1, +essaiTour[1]);
+    const depart = location.hash === "#boss" ? 3 : essai ? Math.min(VAGUES_PAR_MONDE, Math.max(1, +essai[1])) : 1;
+    J.faites = (J.tour - 1) * VAGUES_PAR_MONDE + depart - 1;
+    lancerVague(depart);
   }
   $("rejouer").addEventListener("click", () => demarrer());
   $("menu").addEventListener("click", () => { $("fin").hidden = true; $("accueil").hidden = false; premierBouton(); });
@@ -531,7 +558,7 @@ canvas { display: block; width: 100%; height: 100%; }
   function mettreEnPause() {
     if (!enCours || enPause) return;
     enPause = true;
-    $("detailPause").textContent = `Monde ${J.monde + 1} · vague ${J.vague}/${VAGUES_PAR_MONDE} · score ${J.score}`;
+    $("detailPause").textContent = `Monde ${J.monde + 1} · ${tour() > 1 ? `tour ${tour()} · ` : ""}vague ${J.vague}/${VAGUES_PAR_MONDE} · ${pourcent()} % · score ${J.score}`;
     $("ecranPause").hidden = false;
     $("reprendre").focus();
     sauver();
@@ -561,6 +588,7 @@ canvas { display: block; width: 100%; height: 100%; }
   $("reprise").addEventListener("click", () => {
     if (!sauvegarde) return;
     J = sauvegarde.J; mondeDepart = sauvegarde.mondeDepart || 0;
+    J.tour ||= 1; J.faites ||= 0; // parties gardées avant les tours et les pourcentages
     // l'écran a pu changer de taille : on remet les positions à l'échelle
     const f = W / (sauvegarde.W || W);
     for (const o of [J, J.boss, ...J.ennemis, ...J.tirs, ...J.bonus]) if (o) { o.x *= f; if ("x0" in o) o.x0 *= f; }
@@ -653,8 +681,8 @@ canvas { display: block; width: 100%; height: 100%; }
         if (BAT[t.signe] === b.signe) {
           b.pv--; b.bond = 1; J.combo++; J.touches++;
           J.meilleurCombo = Math.max(J.meilleurCombo, J.combo);
-          J.score += 15; majCompteurs();
-          eclater(t.x, t.y, COUL.me, 8); texte(t.x, t.y, "+15", COUL.me);
+          J.score += 15 * tour(); majCompteurs();
+          eclater(t.x, t.y, COUL.me, 8); texte(t.x, t.y, `+${15 * tour()}`, COUL.me);
           bip(520, 0.1, "sawtooth", 0.06, -200);
           if (b.pv <= 0) bossBattu(b);
         } else if (t.signe === b.signe) {
@@ -672,7 +700,7 @@ canvas { display: block; width: 100%; height: 100%; }
           n.mort = true; J.combo++; J.touches++;
           J.meilleurCombo = Math.max(J.meilleurCombo, J.combo);
           const mult = Math.min(5, 1 + Math.floor(J.combo / 5));
-          const pts = 10 * mult;
+          const pts = 10 * mult * tour();
           J.score += pts;
           eclater(n.x, n.y, COUL.me);
           texte(n.x, n.y, mult > 1 ? `+${pts} ×${mult}` : `+${pts}`, COUL.me);
@@ -1176,7 +1204,7 @@ canvas { display: block; width: 100%; height: 100%; }
     ctx.textAlign = "left"; ctx.textBaseline = "top"; ctx.fillStyle = COUL.muted;
     if (J.vague) {
       ctx.fillStyle = MONDES[J.monde].decor === "gymnase" ? COUL.muted : COUL.line;
-      ctx.fillText(`MONDE ${J.monde + 1} · VAGUE ${J.vague}/${VAGUES_PAR_MONDE}`, 12, yHaut);
+      ctx.fillText(`MONDE ${J.monde + 1} · ${tour() > 1 ? `TOUR ${tour()} · ` : ""}VAGUE ${J.vague}/${VAGUES_PAR_MONDE}`, 12, yHaut);
     }
     if (J.combo >= 5) { ctx.fillStyle = COUL.me; ctx.fillText(`SÉRIE ×${J.combo}`, 12, yHaut + R * 0.8); }
     let xb = W - 26;
