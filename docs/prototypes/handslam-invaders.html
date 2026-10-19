@@ -72,6 +72,7 @@ canvas { display: block; width: 100%; height: 100%; }
 .ecran .petit { font-size: .82rem; }
 .ecran .go.plage { background: #2E9BC0; color: var(--line); }
 .ecran .gros { font-family: var(--display); font-size: 3.4rem; font-weight: 800; color: var(--me); line-height: 1; font-variant-numeric: tabular-nums; }
+.son.pause { right: 52px; }
 .son { position: absolute; top: 8px; right: 8px; border: 0; background: var(--panel); color: var(--line); border-radius: 999px; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .boutons button:active { transform: none; } }
 </style>
@@ -95,6 +96,7 @@ canvas { display: block; width: 100%; height: 100%; }
   <div class="terrain" id="terrain">
     <canvas id="toile"></canvas>
     <button class="son" id="son" aria-label="Couper le son">🔊</button>
+    <button class="son pause" id="pause" aria-label="Mettre en pause">⏸</button>
 
     <div class="ecran" id="accueil">
       <h1>HAND<b>SLAM</b><br>Invaders</h1>
@@ -107,8 +109,16 @@ canvas { display: block; width: 100%; height: 100%; }
       <p class="petit">Une main choisit le signe sur le côté, l'autre glisse sur le terrain pour bouger. Un mauvais signe fait accélérer l'ennemi. Chaque monde : 9 vagues et 3 boss. Attrape les objets qui tombent : ❤️ 🛡️ ⏱️ 🔁 ⚡</p>
       <button class="go" id="jouer">Monde 1 · Le Gymnase</button>
       <button class="go plage" id="jouer2" hidden>Monde 2 · La Plage</button>
+      <button class="go" id="reprise" hidden>▶ Reprendre la partie</button>
       <p class="petit" id="verrou">🔒 Monde 2 : La Plage, après le 3e boss du Gymnase (vague 9)</p>
       <button class="cote" id="cote">Mettre les signes à droite</button>
+    </div>
+
+    <div class="ecran" id="ecranPause" hidden>
+      <h1>Pause</h1>
+      <p id="detailPause"></p>
+      <button class="go" id="reprendre">Reprendre</button>
+      <button class="cote" id="abandonner">Abandonner la partie</button>
     </div>
 
     <div class="ecran" id="fin" hidden>
@@ -383,7 +393,7 @@ canvas { display: block; width: 100%; height: 100%; }
   }
 
   function finir(victoire = false) {
-    enCours = false;
+    enCours = false; effacerSauvegarde();
     $("titreFin").textContent = victoire ? "Victoire !" : "Fin de partie";
     const nouveau = J.score > records[J.monde];
     if (nouveau) { records[J.monde] = J.score; try { localStorage.setItem(CLES_RECORD[J.monde], J.score); } catch (e) {} }
@@ -402,6 +412,7 @@ canvas { display: block; width: 100%; height: 100%; }
     J.monde = monde;
     $("record").textContent = records[monde];
     $("accueil").hidden = true; $("fin").hidden = true;
+    effacerSauvegarde(); enPause = false;
     enCours = true; dernier = performance.now();
     lancerVague(location.hash === "#boss" ? 3 : 1);
   }
@@ -409,6 +420,63 @@ canvas { display: block; width: 100%; height: 100%; }
   $("jouer2").addEventListener("click", () => demarrer(1));
   $("rejouer").addEventListener("click", () => demarrer());
   $("menu").addEventListener("click", () => { $("fin").hidden = true; $("accueil").hidden = false; $("jouer").focus(); });
+
+  // ---------- Pause et reprise ----------
+  // Pause automatique quand on quitte l'appli (appel, notification…). La partie est aussi gardée
+  // sur le téléphone : si le navigateur ferme la page entre-temps, l'accueil propose de la reprendre.
+  let enPause = false;
+  const CLE_PARTIE = "hs-invaders-partie";
+  function sauver() {
+    try { localStorage.setItem(CLE_PARTIE, JSON.stringify({ J, mondeDepart, W })); } catch (e) {}
+  }
+  function effacerSauvegarde() {
+    try { localStorage.removeItem(CLE_PARTIE); } catch (e) {}
+    $("reprise").hidden = true;
+  }
+  function mettreEnPause() {
+    if (!enCours || enPause) return;
+    enPause = true;
+    $("detailPause").textContent = `Monde ${J.monde + 1} · vague ${J.vague}/${VAGUES_PAR_MONDE} · score ${J.score}`;
+    $("ecranPause").hidden = false;
+    $("reprendre").focus();
+    sauver();
+  }
+  function reprendre() {
+    enPause = false; $("ecranPause").hidden = true;
+    dernier = performance.now();
+  }
+  function abandonner() {
+    enCours = false; enPause = false; effacerSauvegarde();
+    $("ecranPause").hidden = true; $("accueil").hidden = false; $("jouer").focus();
+  }
+  $("pause").addEventListener("click", mettreEnPause);
+  $("reprendre").addEventListener("click", reprendre);
+  $("abandonner").addEventListener("click", abandonner);
+  document.addEventListener("visibilitychange", () => { if (document.hidden) mettreEnPause(); });
+  addEventListener("blur", mettreEnPause);
+  addEventListener("pagehide", () => { if (enCours) sauver(); });
+
+  let sauvegarde = null;
+  try { sauvegarde = JSON.parse(localStorage.getItem(CLE_PARTIE)); } catch (e) {}
+  if (sauvegarde && sauvegarde.J) {
+    const s = sauvegarde.J;
+    $("reprise").hidden = false;
+    $("reprise").textContent = `▶ Reprendre : monde ${s.monde + 1}, vague ${s.vague}`;
+  }
+  $("reprise").addEventListener("click", () => {
+    if (!sauvegarde) return;
+    J = sauvegarde.J; mondeDepart = sauvegarde.mondeDepart || 0;
+    // l'écran a pu changer de taille : on remet les positions à l'échelle
+    const f = W / (sauvegarde.W || W);
+    for (const o of [J, J.boss, ...J.ennemis, ...J.tirs, ...J.bonus]) if (o) { o.x *= f; if ("x0" in o) o.x0 *= f; }
+    J.cible = J.x; J.textes = []; J.eclats = [];
+    sauvegarde = null;
+    $("record").textContent = records[J.monde];
+    majCompteurs();
+    $("accueil").hidden = true;
+    enCours = true;
+    mettreEnPause();
+  });
 
   // ---------- Commandes ----------
   terrain.addEventListener("pointerdown", e => { if (e.target === toile) deplacer(e); });
@@ -424,6 +492,7 @@ canvas { display: block; width: 100%; height: 100%; }
   });
   const touches = {};
   addEventListener("keydown", e => {
+    if (e.key === "Escape" || e.key.toLowerCase() === "p") { enPause ? reprendre() : mettreEnPause(); return; }
     touches[e.key] = true;
     const s = { "1": "pierre", "2": "feuille", "3": "ciseaux", a: "pierre", z: "feuille", e: "ciseaux" }[e.key.toLowerCase()];
     if (s) { tirer(s); const b = document.querySelector(`[data-signe="${s}"]`); b.classList.add("appuye"); setTimeout(() => b.classList.remove("appuye"), 90); }
@@ -567,7 +636,7 @@ canvas { display: block; width: 100%; height: 100%; }
     ctx.lineWidth = 6; ctx.strokeStyle = alerte ? COUL.line : COUL.bot; ctx.stroke();
     emoji(EMOJI[b.signe], b.x, b.y, r * 1.2);
     // barre de vie du boss
-    const l = W - 68, part = Math.max(0, b.pv / b.pvMax);
+    const l = W - 112, part = Math.max(0, b.pv / b.pvMax);
     ctx.fillStyle = "rgba(0, 0, 0, .35)"; ctx.fillRect(12, 10, l, 8);
     ctx.fillStyle = COUL.bot; ctx.fillRect(12, 10, l * part, 8);
     ctx.font = `800 ${Math.round(R * 0.6)}px "Barlow Condensed", sans-serif`;
@@ -692,7 +761,7 @@ canvas { display: block; width: 100%; height: 100%; }
 
   function boucle(t) {
     const dt = Math.min(0.05, (t - dernier) / 1000); dernier = t;
-    if (enCours) maj(dt);
+    if (enCours && !enPause) maj(dt);
     dessiner();
     requestAnimationFrame(boucle);
   }
