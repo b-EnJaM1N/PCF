@@ -70,6 +70,7 @@ canvas { display: block; width: 100%; height: 100%; }
   border: 0; border-radius: 999px; padding: 12px 34px; background: var(--me); color: var(--court-deep); cursor: pointer;
 }
 .ecran .petit { font-size: .82rem; }
+.ecran .go.plage { background: #2E9BC0; color: var(--line); }
 .ecran .gros { font-family: var(--display); font-size: 3.4rem; font-weight: 800; color: var(--me); line-height: 1; font-variant-numeric: tabular-nums; }
 .son { position: absolute; top: 8px; right: 8px; border: 0; background: var(--panel); color: var(--line); border-radius: 999px; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .boutons button:active { transform: none; } }
@@ -103,16 +104,19 @@ canvas { display: block; width: 100%; height: 100%; }
         <span class="e">✋</span><span class="fl">→ tire</span><span class="e">✌️</span>
         <span class="e">✊</span><span class="fl">→ tire</span><span class="e">✋</span>
       </div>
-      <p class="petit">Une main choisit le signe sur le côté, l'autre glisse sur le terrain pour bouger. Un mauvais signe fait accélérer l'ennemi. Toutes les 3 vagues, un boss. Attrape les objets qui tombent : ❤️ 🛡️ ⏱️ 🔁 ⚡</p>
-      <button class="go" id="jouer">Jouer</button>
+      <p class="petit">Une main choisit le signe sur le côté, l'autre glisse sur le terrain pour bouger. Un mauvais signe fait accélérer l'ennemi. Chaque monde : 9 vagues et 3 boss. Attrape les objets qui tombent : ❤️ 🛡️ ⏱️ 🔁 ⚡</p>
+      <button class="go" id="jouer">Monde 1 · Le Gymnase</button>
+      <button class="go plage" id="jouer2" hidden>Monde 2 · La Plage</button>
+      <p class="petit" id="verrou">🔒 Monde 2 : La Plage, après les 3 boss du Gymnase</p>
       <button class="cote" id="cote">Mettre les signes à droite</button>
     </div>
 
     <div class="ecran" id="fin" hidden>
-      <h1>Fin de partie</h1>
+      <h1 id="titreFin">Fin de partie</h1>
       <div class="gros" id="scoreFin">0</div>
       <p id="detailFin"></p>
       <button class="go" id="rejouer">Rejouer</button>
+      <button class="cote" id="menu">Choisir le monde</button>
     </div>
   </div>
   </div>
@@ -174,6 +178,21 @@ canvas { display: block; width: 100%; height: 100%; }
   });
   appliquerCote();
 
+  // ---------- Mondes ----------
+  // 9 vagues par monde, un boss toutes les 3 vagues ; le boss de la vague 9 ouvre le monde suivant.
+  const VAGUES_PAR_MONDE = 9;
+  const MONDES = [
+    { nom: "Le Gymnase", boss: "la Main de Fer", decor: "gymnase" },
+    { nom: "La Plage", boss: "le Roi Crabe", decor: "plage", crabes: true },
+  ];
+  let mondesOuverts = 1, mondeDepart = 0;
+  try { mondesOuverts = Math.min(MONDES.length, Math.max(1, +localStorage.getItem("hs-invaders-mondes") || 1)); } catch (e) {}
+  function majAccueil() {
+    $("jouer2").hidden = mondesOuverts < 2;
+    $("verrou").hidden = mondesOuverts >= 2;
+  }
+  majAccueil();
+
   // ---------- État de la partie ----------
   let J = null, enCours = false, dernier = 0;
   const VIES_MAX = 5;
@@ -184,7 +203,7 @@ canvas { display: block; width: 100%; height: 100%; }
     J = {
       x: W / 2, cible: W / 2, vies: 3, score: 0, combo: 0, meilleurCombo: 0, touches: 0, rates: 0, bossBattus: 0,
       ennemis: [], tirs: [], eclats: [], textes: [], bonus: [], prochain: 0, temps: 0, recharge: 0, flash: 0, flashBlanc: 0,
-      vague: 0, resteVague: 0, pause: 0, bossAVenir: false, boss: null, bandeau: null,
+      monde: 0, vague: 0, resteVague: 0, pause: 0, bossAVenir: false, boss: null, bandeau: null,
       effets: { bouclier: 0, ralenti: 0, triple: 0 },
     };
     majCompteurs();
@@ -192,20 +211,25 @@ canvas { display: block; width: 100%; height: 100%; }
 
   // ---------- Vagues ----------
   // Toutes les 3 vagues, un boss. La difficulté monte de vague en vague.
-  const niveau = () => Math.min(1, Math.max(0, J.vague - 1) / 14);
+  // Le monde 2 commence à peu près au niveau de la vague 6 du monde 1.
+  const niveau = () => Math.min(1, (J.monde * 5 + Math.max(0, J.vague - 1)) / 14);
   const vitesse = () => 55 + 115 * niveau() + Math.random() * 25;       // pixels par seconde
   const intervalle = () => 1750 - 900 * niveau() + Math.random() * 450; // millisecondes
   const lent = () => (J.effets.ralenti > 0 ? 0.45 : 1);
 
   function lancerVague(n) {
+    const m = MONDES[J.monde];
     J.vague = n; J.pause = 1800; J.prochain = 0;
     if (n % 3 === 0) {
       J.bossAVenir = true;
-      J.bandeau = { titre: `Vague ${n}`, sous: "⚠️ BOSS : la Main de Fer", vie: 1, rouge: true };
+      J.bandeau = { titre: `Vague ${n}/${VAGUES_PAR_MONDE}`, sous: `⚠️ ${n === VAGUES_PAR_MONDE ? "BOSS FINAL" : "BOSS"} : ${m.boss}`, vie: 1, rouge: true };
       bip(220, 0.25, "sawtooth", 0.06); setTimeout(() => bip(180, 0.35, "sawtooth", 0.06), 260);
     } else {
       J.resteVague = 6 + n;
-      J.bandeau = { titre: `Vague ${n}`, sous: `${J.resteVague} signes`, vie: 1 };
+      J.bandeau = n === 1
+        ? { titre: `Monde ${J.monde + 1}`, sous: `${m.nom} · ${J.resteVague} signes`, vie: 1.4 }
+        : { titre: `Vague ${n}/${VAGUES_PAR_MONDE}`, sous: `${J.resteVague} signes`, vie: 1 };
+      if (n === 1) J.pause = 2500;
       bip(520, 0.1, "triangle", 0.06); setTimeout(() => bip(780, 0.12, "triangle", 0.06), 110);
     }
   }
@@ -216,17 +240,32 @@ canvas { display: block; width: 100%; height: 100%; }
       J.score += prime; majCompteurs();
       texte(W / 2, H * 0.45, `Vague terminée +${prime}`, COUL.good);
     }
-    lancerVague(J.vague + 1);
+    if (J.vague < VAGUES_PAR_MONDE) return lancerVague(J.vague + 1);
+    // monde terminé
+    if (J.monde + 1 < MONDES.length) {
+      J.monde++;
+      if (mondesOuverts < J.monde + 1) {
+        mondesOuverts = J.monde + 1; majAccueil();
+        try { localStorage.setItem("hs-invaders-mondes", mondesOuverts); } catch (e) {}
+      }
+      texte(W / 2, H * 0.3, `${MONDES[J.monde].nom} débloquée !`, COUL.me);
+      lancerVague(1);
+    } else finir(true);
   }
 
   function faireApparaitre(x = R + Math.random() * (W - 2 * R), y = -R, v = vitesse()) {
-    const zigzag = niveau() > 0.45 && Math.random() < 0.25; // zigzags à partir de la vague 8
+    // sur la plage, des crabes ✌️ qui avancent en biais et rebondissent sur les bords
+    if (MONDES[J.monde].crabes && Math.random() < 0.3) {
+      const vx = (Math.random() < 0.5 ? -1 : 1) * (45 + 45 * niveau());
+      return J.ennemis.push({ x, x0: x, y, v: v * 0.85, signe: "ciseaux", crabe: true, vx, phase: 0, bond: 0 });
+    }
+    const zigzag = niveau() > 0.45 && Math.random() < 0.25; // zigzags à partir de la vague 8 du monde 1
     J.ennemis.push({ x, x0: x, y, v, signe: SIGNES[Math.random() * 3 | 0], zigzag, phase: Math.random() * 6, bond: 0 });
   }
 
   // ---------- Boss ----------
   function creerBoss() {
-    const k = J.vague / 3; // 1er boss, 2e boss…
+    const k = J.vague / 3 + J.monde; // 1er boss, 2e boss… (plus fort dans le monde 2)
     J.boss = {
       x: W / 2, y: -R * 3, yCible: R * 4.8, r: R * 2.1, pv: 3 + 2 * k, pvMax: 3 + 2 * k, k,
       signe: SIGNES[Math.random() * 3 | 0], change: 4000, tir: 2400, phase: "calme", phaseT: 6000, salves: 0, dir: 1, v: 25 + 15 * k, bond: 0,
@@ -342,27 +381,32 @@ canvas { display: block; width: 100%; height: 100%; }
     $("vies").textContent = "❤️".repeat(v) + "🖤".repeat(Math.max(0, 3 - v));
   }
 
-  function finir() {
+  function finir(victoire = false) {
     enCours = false;
+    $("titreFin").textContent = victoire ? "Victoire !" : "Fin de partie";
     const nouveau = J.score > record;
     if (nouveau) { record = J.score; try { localStorage.setItem("hs-invaders-record", record); } catch (e) {} }
     $("record").textContent = record;
     $("scoreFin").textContent = J.score;
     const precision = J.touches + J.rates ? Math.round(100 * J.touches / (J.touches + J.rates)) : 0;
     $("detailFin").textContent = (nouveau ? "Nouveau record ! " : "") +
-      `Vague ${J.vague} atteinte · ${J.bossBattus} boss battu${J.bossBattus > 1 ? "s" : ""} · ${J.touches} signes battus · meilleure série ×${J.meilleurCombo} · précision ${precision} %`;
+      (victoire ? "Les 2 mondes sont terminés ! " : `Monde ${J.monde + 1}, vague ${J.vague} · `) + ` ${J.bossBattus} boss battu${J.bossBattus > 1 ? "s" : ""} · ${J.touches} signes battus · meilleure série ×${J.meilleurCombo} · précision ${precision} %`;
     $("fin").hidden = false;
     $("rejouer").focus();
   }
 
-  function demarrer() {
+  function demarrer(monde = mondeDepart) {
+    mondeDepart = monde;
     nouvellePartie();
+    J.monde = monde;
     $("accueil").hidden = true; $("fin").hidden = true;
     enCours = true; dernier = performance.now();
     lancerVague(location.hash === "#boss" ? 3 : 1);
   }
-  $("jouer").addEventListener("click", demarrer);
-  $("rejouer").addEventListener("click", demarrer);
+  $("jouer").addEventListener("click", () => demarrer(location.hash === "#monde2" ? 1 : 0));
+  $("jouer2").addEventListener("click", () => demarrer(1));
+  $("rejouer").addEventListener("click", () => demarrer());
+  $("menu").addEventListener("click", () => { $("fin").hidden = true; $("accueil").hidden = false; $("jouer").focus(); });
 
   // ---------- Commandes ----------
   terrain.addEventListener("pointerdown", e => { if (e.target === toile) deplacer(e); });
@@ -413,6 +457,11 @@ canvas { display: block; width: 100%; height: 100%; }
     for (const t of J.tirs) { t.y -= 520 * dt; t.x += t.vx * dt; }
     for (const n of J.ennemis) {
       n.y += n.v * lent() * dt;
+      if (n.crabe) {
+        n.x += n.vx * lent() * dt;
+        if (n.x < R) { n.x = R; n.vx = Math.abs(n.vx); }
+        if (n.x > W - R) { n.x = W - R; n.vx = -Math.abs(n.vx); }
+      }
       if (n.zigzag) { n.phase += dt * 2.2 * lent(); n.x = Math.min(W - R, Math.max(R, n.x0 + Math.sin(n.phase) * W * 0.18)); }
       n.bond = Math.max(0, n.bond - dt * 4);
     }
@@ -521,24 +570,59 @@ canvas { display: block; width: 100%; height: 100%; }
     ctx.fillStyle = COUL.bot; ctx.fillRect(12, 10, l * part, 8);
     ctx.font = `800 ${Math.round(R * 0.6)}px "Barlow Condensed", sans-serif`;
     ctx.fillStyle = COUL.line; ctx.textAlign = "left"; ctx.textBaseline = "top";
-    ctx.fillText("LA MAIN DE FER", 12, 22);
+    ctx.fillText(MONDES[J.monde].boss.toUpperCase(), 12, 22);
   }
 
   function dessiner() {
     ctx.clearRect(0, 0, W, H);
 
+    if (J && MONDES[J.monde].decor === "plage") dessinerPlage();
+    else dessinerGymnase();
+    ctx.strokeStyle = "rgba(232, 87, 74, .35)"; ctx.setLineDash([6, 8]);
+    ctx.beginPath(); ctx.moveTo(0, H - R * 3.4); ctx.lineTo(W, H - R * 3.4); ctx.stroke(); ctx.setLineDash([]);
+    if (!J) return;
+    dessinerJeu();
+  }
+
+  function dessinerGymnase() {
     // lignes du terrain (façon parquet de salle)
     ctx.strokeStyle = "rgba(245, 247, 250, .08)"; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(0, H * 0.5); ctx.lineTo(W, H * 0.5); ctx.stroke();
     ctx.beginPath(); ctx.arc(W / 2, H * 0.5, Math.min(W, H) * 0.16, 0, Math.PI * 2); ctx.stroke();
-    ctx.strokeStyle = "rgba(232, 87, 74, .35)"; ctx.setLineDash([6, 8]);
-    ctx.beginPath(); ctx.moveTo(0, H - R * 3.4); ctx.lineTo(W, H - R * 3.4); ctx.stroke(); ctx.setLineDash([]);
+  }
 
-    if (!J) return;
+  function dessinerPlage() {
+    // la mer en haut, le sable en bas, des vagues qui ondulent entre les deux
+    const t = performance.now() / 1000, rivage = H * 0.42;
+    let g = ctx.createLinearGradient(0, 0, 0, rivage);
+    g.addColorStop(0, "#0E4C6E"); g.addColorStop(1, "#2389B0");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, rivage + 12);
+    g = ctx.createLinearGradient(0, rivage, 0, H);
+    g.addColorStop(0, "#E3C487"); g.addColorStop(1, "#C79E5E");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.moveTo(0, H); ctx.lineTo(0, rivage);
+    for (let x = 0; x <= W; x += 8) ctx.lineTo(x, rivage + Math.sin(x / 26 + t * 1.6) * 5);
+    ctx.lineTo(W, rivage + Math.sin(W / 26 + t * 1.6) * 5); ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "rgba(245, 247, 250, .55)"; ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let x = 0; x <= W; x += 8) ctx.lineTo(x, rivage + Math.sin(x / 26 + t * 1.6) * 5);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(245, 247, 250, .18)";
+    for (const y of [rivage * 0.35, rivage * 0.68]) {
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 10) ctx.lineTo(x, y + Math.sin(x / 34 + t + y) * 4);
+      ctx.stroke();
+    }
+  }
+
+  function dessinerJeu() {
 
     if (J.effets.ralenti > 0) { ctx.fillStyle = "rgba(157, 180, 211, .08)"; ctx.fillRect(0, 0, W, H); }
     if (J.boss) dessinerBoss(J.boss);
-    for (const n of J.ennemis) pastille(n.x, n.y, n.signe, COUL.bot, R, n.bond);
+    for (const n of J.ennemis) {
+      pastille(n.x, n.y, n.signe, COUL.bot, R, n.bond);
+      if (n.crabe) emoji("🦀", n.x + R * 0.8, n.y - R * 0.8, R * 0.75);
+    }
     for (const t of J.tirs) pastille(t.x, t.y, t.signe, COUL.me, R * 0.72);
     for (const o of J.bonus) {
       ctx.beginPath(); ctx.arc(o.x, o.y, R * 0.85, 0, Math.PI * 2);
@@ -553,6 +637,7 @@ canvas { display: block; width: 100%; height: 100%; }
     ctx.fillStyle = "rgba(0, 0, 0, .3)"; ctx.fill();
     ctx.beginPath(); ctx.arc(J.x, yJ, R * 1.05, 0, Math.PI * 2);
     ctx.fillStyle = COUL.me; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = "rgba(15, 44, 82, .7)"; ctx.stroke();
     emoji("🧤", J.x, yJ, R * 1.1);
     if (J.effets.bouclier > 0) {
       ctx.beginPath(); ctx.arc(J.x, yJ, R * 1.5, 0, Math.PI * 2);
@@ -572,7 +657,10 @@ canvas { display: block; width: 100%; height: 100%; }
     const yHaut = J.boss ? 46 : 12;
     ctx.font = `800 ${Math.round(R * 0.7)}px "Barlow Condensed", sans-serif`;
     ctx.textAlign = "left"; ctx.textBaseline = "top"; ctx.fillStyle = COUL.muted;
-    if (J.vague) ctx.fillText(`VAGUE ${J.vague}`, 12, yHaut);
+    if (J.vague) {
+      ctx.fillStyle = MONDES[J.monde].decor === "plage" ? COUL.line : COUL.muted;
+      ctx.fillText(`MONDE ${J.monde + 1} · VAGUE ${J.vague}/${VAGUES_PAR_MONDE}`, 12, yHaut);
+    }
     if (J.combo >= 5) { ctx.fillStyle = COUL.me; ctx.fillText(`SÉRIE ×${J.combo}`, 12, yHaut + R * 0.8); }
     let xb = W - 26;
     for (const k of ["bouclier", "ralenti", "triple"]) {
