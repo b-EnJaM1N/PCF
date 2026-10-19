@@ -25,10 +25,28 @@ Prototype jouable du 18 octobre, validé (« amusant, prometteur »). Des signes
 
   Les feuilles et les javelots sont dessinés, le reste en emojis. Un bandeau présente les rôles à chaque changement ; le boss prend aussi l'apparence des objets ; les boutons de tir restent ✊ ✋ ✌️.
 - **Pause** : bouton ⏸ (ou touche P / Échap) ; pause automatique quand on quitte l'appli (appel, notification) ; la partie est gardée sur le téléphone et l'accueil propose « Reprendre » si la page a été fermée entre-temps.
-- **Raccourcis pour tester** (à ajouter à l'adresse) : « #boss » commence à la vague 3, « #vague7 » (etc.) à une vague donnée, « #monde2 » essaie la Plage sans la débloquer.
+- **Raccourcis pour tester** (à ajouter à l'adresse) : « #boss » commence à la vague 3, « #vague7 » (etc.) à une vague donnée, « #monde2 » (ou 3, 4) montre tous les mondes à l'accueil, sans les débloquer.
 
-## En cours : deux nouveaux mondes (19 octobre)
-Le porteur du projet trouve 2 mondes légers pour le lancement : on en ajoute 2, dont **la Forêt** (pierre : rochers, fruits, pommes, glands… ; feuille : des feuilles). Le reste est en discussion.
+## Mondes 3 et 4 : la Forêt et l'Espace (19 octobre, à tester)
+Le porteur du projet trouvait 2 mondes légers pour le lancement : on passe à 4. Choix du porteur du projet : les ciseaux de la Forêt sont le **lucane** (cerf-volant, ses pinces), le monde 4 est **l'Espace**. Chaque monde s'ouvre au boss de la vague 9 du précédent. L'accueil montre un bouton par monde ouvert ; « Essayer tous les mondes (démo) » les montre tous (aussi avec « #monde3 », etc., dans l'adresse).
+
+- **Monde 3 « La Forêt »** (boss : le Vieux Chêne 🌳) : sous-bois, sapins et arbres ronds sur les côtés, rayons de soleil. Des objets dès la vague 1, qui changent toutes les 3 vagues ; les ciseaux sont toujours le lucane (dessiné) :
+  - vagues 1-3, l'orée du bois : 🪨 rocher = pierre, 🍃 feuille = feuille ;
+  - 4-6, les chênes : gland (dessiné) = pierre, 🍂 feuille morte = feuille ;
+  - 7-9, le verger : 🍎 pomme = pierre, 🍁 feuille d'érable = feuille ;
+  - 10-12, les sapins, plus petits : pomme de pin (dessinée) = pierre, 🌿 fougère = feuille ;
+  - 13-15, la forêt profonde, plus petits : 🌰 châtaigne = pierre, ☘️ trèfle = feuille.
+
+  **Spécialité** : les feuilles tombent en se balançant au vent (il faut les suivre).
+- **Monde 4 « L'Espace »** (boss : la Soucoupe Mère 🛸) : ciel noir et violet, étoiles qui défilent, une grosse planète pâle au loin. Les ciseaux sont toujours le vaisseau en V (dessiné), nez vers le bas :
+  - vagues 1-3, les astéroïdes : astéroïde (dessiné) = pierre, 🛰️ satellite = feuille ;
+  - 4-6, la Lune : 🌕 Lune = pierre, voile solaire (dessinée) = feuille ;
+  - 7-9, les planètes : 🪐 planète = pierre, 🛰️ satellite = feuille ;
+  - 10-12, les comètes, plus petits : ☄️ comète = pierre, voile solaire = feuille ;
+  - 13-15, le bout de la galaxie, plus petits : astéroïde = pierre, 🛰️ satellite = feuille.
+
+  **Spécialité** : un ennemi sur trois se téléporte un peu plus loin ; il clignote juste avant, et jamais près du gant.
+- **Difficulté** : la vague 1 de la Forêt est au niveau de la vague 7 du Gymnase, celle de l'Espace au niveau de la vague 9 ; les boss sont un peu plus forts à chaque monde. Un record par monde.
 
 ## Idées pour l'étoffer (18 octobre, rien de décidé)
 - **Difficulté** : vitesse ; taille des cibles (plus petites = viser plus juste) ; ennemis qui bougent : zigzag, téléporteur, caméléon (change de signe en tombant), costaud (2 ou 3 bons tirs), diviseur (se coupe en deux petits), masqué ❓ (signe révélé au dernier moment) ; vagues avec un boss à la fin (main géante qui change de signe et lance des rafales).
@@ -41,8 +59,8 @@ Le porteur du projet trouve 2 mondes légers pour le lancement : on en ajoute 2,
 
 ## Première version publique (avis du 19 octobre, rien de décidé)
 - **Promesse** : « Les signes tombent, tire celui qui les bat : des parties de 2 minutes, réflexes et rigolades. » Ce qui ne sert pas cette promesse attend.
-- **Contenu** : 1. un apprentissage joué, sans texte (1re vague : seulement des ✌️ avec une main qui montre ✊ ; 2e : on ajoute ✋ ; 3e : tout mélangé) ; 2. le Gymnase complet (15 vagues, 5 boss, objets de sport) ; 3. la Plage à débloquer au boss de la vague 9 ; 4. le défi du jour (même partie pour tous, un essai, score à partager : « 🏀 HandSlam Invaders, défi du 19/10 : vague 8, 2 340 points ») ; 5. records par monde sur le téléphone ; 6. confort déjà fait (pause, reprise après un appel, son, côté gaucher). *Mise à jour du 19 octobre : 4 mondes au lancement plutôt que 2 (voir « En cours »).*
+- **Contenu** : 1. un apprentissage joué, sans texte (1re vague : seulement des ✌️ avec une main qui montre ✊ ; 2e : on ajoute ✋ ; 3e : tout mélangé) ; 2. le Gymnase complet (15 vagues, 5 boss, objets de sport) ; 3. la Plage, la Forêt et l'Espace, chacun à débloquer au boss de la vague 9 du monde précédent ; 4. le défi du jour (même partie pour tous, un essai, score à partager : « 🏀 HandSlam Invaders, défi du 19/10 : vague 8, 2 340 points ») ; 5. records par monde sur le téléphone ; 6. confort déjà fait (pause, reprise après un appel, son, côté gaucher). *Mise à jour du 19 octobre : 4 mondes au lancement plutôt que 2.*
 - **Simplicité** : un seul gros bouton « Jouer » qui relance le dernier monde joué ; aucun compte au départ ; trois écrans seulement (accueil, partie, fin).
-- **Mises à jour suivantes** : 1. pièces et boutique de gants (apparence seulement) ; 2. classement en ligne (demande des comptes ; réutiliser le serveur Supabase de HandSlam, à décider) ; 3. nouveaux mondes, un par mise à jour ; 4. défi à deux en direct.
+- **Mises à jour suivantes** : 1. pièces et boutique de gants (apparence seulement) ; 2. classement en ligne (demande des comptes ; réutiliser le serveur Supabase de HandSlam, à décider) ; 3. nouveaux mondes (Montagne, etc.), un par mise à jour ; 4. défi à deux en direct.
 - **Argent** : rien au lancement ; plus tard, une pub choisie par le joueur pour « continuer avec 1 vie » après une défaite, et les gants.
 - **À savoir** : nouvelle fiche Play Store, donc nouveau test fermé (12 testeurs pendant 14 jours ; les testeurs de HandSlam peuvent resservir). **Nom à décider par le porteur du projet** (difficile à changer ensuite) : « HandSlam Invaders » seul (message clair, fait connaître HandSlam ; conseillé pour démarrer) ou « Shifumi en folie » (boîte à jeux avec plusieurs modes, plus dure à présenter au début).
