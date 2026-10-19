@@ -5,7 +5,7 @@ Jeu à part, prévu **après le lancement de HandSlam** (voir « Seconde appli �
 Prototype : [`prototypes/handslam-invaders.html`](prototypes/handslam-invaders.html), aussi en page privée Claude : https://claude.ai/artifact/Dpm6ozsstzXgemVVYb9prK (visible seulement par le porteur du projet ; c'est là qu'on le teste, pas sur https://handslam.fr/preview/).
 
 ## ⏸ En pause depuis le 20 octobre
-Décision du porteur du projet, après l'audit du 20 octobre : Invaders est mis en pause pour revenir à HandSlam (lancement d'abord). Dernier lot fait avant la pause : la moitié des ciseaux de la Plage sont des crabes en biais (il n'y a plus trop de ciseaux), le boss descend moins bas pour laisser lisible le texte du haut, et le bandeau qui présente les objets montre leurs dessins, avec le texte dans la couleur du rôle.
+Décision du porteur du projet, après l'audit du 20 octobre : Invaders est mis en pause pour revenir à HandSlam (lancement d'abord). Dernier lot fait avant la pause : la moitié des ciseaux de la Plage sont des crabes en biais (il n'y a plus trop de ciseaux), le boss descend moins bas pour laisser lisible le texte du haut, et le bandeau qui présente les objets montre leurs dessins, avec le texte dans la couleur du rôle. Et les vagues s'enchaînent sans coupure (demande du porteur du projet : le passage d'une vague à l'autre faisait « un coup d'arrêt ») : entre deux vagues ordinaires, « Vague 2/15 » s'affiche brièvement en haut, sans pause, et les signes de la nouvelle vague commencent à tomber pendant que les derniers finissent leur chute ; on attend encore que l'écran soit vide avant un boss et quand les objets changent (bandeau des objets).
 
 **Pour reprendre, dans l'ordre conseillé (audit du 20 octobre)** :
 1. Faire essayer le prototype à 3 à 5 proches, sans rien expliquer, et regarder où ils bloquent (la page privée se partage depuis son menu « Partager »).
@@ -13,7 +13,6 @@ Décision du porteur du projet, après l'audit du 20 octobre : Invaders est mis 
 3. Le son et les sensations : vrais bruitages (tir, explosion, série, boss), une musique par monde, vibration quand on détruit un signe, écran qui tremble quand on perd une vie.
 4. L'apprentissage joué, sans texte (prévu dans « Première version publique »).
 5. Daltonisme : orange (pierre) et vert (feuille) se confondent pour environ 1 homme sur 12 ; ajouter une marque dans le cercle ou changer une couleur.
-3 bis. **Enchaîner les vagues sans coupure** (demande du porteur du projet, 20 octobre : le passage d'une vague à l'autre fait « un coup d'arrêt ») : aujourd'hui, la vague suivante attend que l'écran soit vide, puis marque une pause de près de 2 secondes avec le bandeau « Vague 2 ». À faire : afficher « Vague 2 » brièvement en haut, sans pause, et faire tomber les premiers signes de la vague suivante pendant que les derniers finissent de tomber. Garder une courte annonce avant un boss et quand les objets changent (le bandeau des objets).
 6. Avant une sortie publique : retirer le bouton « Essayer tous les mondes (démo) » et les raccourcis (#vague, #tour, #boss, #monde) ; transformer le fichier unique en vraie appli (comme HandSlam : icône, hors ligne, tests, fiche Play Store).
 
 ## Le principe

@@ -339,10 +339,11 @@ canvas { display: block; width: 100%; height: 100%; }
       bip(220, 0.25, "sawtooth", 0.06); setTimeout(() => bip(180, 0.35, "sawtooth", 0.06), 260);
     } else {
       J.resteVague = 6 + n + 2 * (tour() - 1);
+      // entre deux vagues ordinaires, pas de coupure : « Vague 2 » s'affiche en haut et le jeu continue
       J.bandeau = n === 1
         ? { titre: `Monde ${J.monde + 1}`, sous: `${m.nom} · ${J.resteVague} signes`, vie: 1.4 }
-        : { titre: `Vague ${n}/${VAGUES_PAR_MONDE}`, sous: `${J.resteVague} signes`, vie: 1 };
-      if (n === 1) J.pause = 2500;
+        : { titre: `Vague ${n}/${VAGUES_PAR_MONDE}`, sous: `${J.resteVague} signes`, vie: 1, discret: true };
+      J.pause = n === 1 ? 2500 : 0;
       const th = themeCourant();
       if (th && (n === 1 || th !== themeDe(n - 1))) {
         // nouveaux objets : on présente qui joue quel rôle
@@ -356,6 +357,13 @@ canvas { display: block; width: 100%; height: 100%; }
       }
       bip(520, 0.1, "triangle", 0.06); setTimeout(() => bip(780, 0.12, "triangle", 0.06), 110);
     }
+  }
+
+  // la vague suivante peut commencer pendant que les derniers signes finissent de tomber,
+  // sauf avant un boss ou quand les objets changent (on attend alors que l'écran soit vide)
+  function sansCoupure() {
+    const n = J.vague + 1;
+    return J.vague > 0 && J.vague % 3 !== 0 && n % 3 !== 0 && themeDe(n) === themeDe(J.vague);
   }
 
   function vagueFinie() {
@@ -665,7 +673,7 @@ canvas { display: block; width: 100%; height: 100%; }
       // jamais deux signes collés : on attend que le précédent soit bien descendu
       const libre = J.ennemis.every(n => n.y > R * 4);
       if (J.prochain <= 0 && libre) { faireApparaitre(); J.resteVague--; J.prochain = intervalle(); }
-    } else if (!J.boss && J.ennemis.length === 0) vagueFinie();
+    } else if (!J.boss && (J.ennemis.length === 0 || sansCoupure())) vagueFinie();
     if (J.boss) majBoss(J.boss, dt);
 
     for (const t of J.tirs) { t.y -= 520 * dt; t.x += t.vx * dt; }
@@ -1265,7 +1273,16 @@ canvas { display: block; width: 100%; height: 100%; }
     }
 
     // bandeau de vague
-    if (J.bandeau) {
+    if (J.bandeau && J.bandeau.discret) {
+      // vague ordinaire : juste le numéro, en haut, sans cacher le jeu
+      ctx.globalAlpha = Math.min(1, J.bandeau.vie * 3);
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.font = `800 ${Math.round(R * 1.15)}px "Barlow Condensed", sans-serif`;
+      ctx.fillStyle = COUL.me; ctx.fillText(J.bandeau.titre.toUpperCase(), W / 2, R * 2.6);
+      ctx.font = `700 ${Math.round(R * 0.6)}px "Barlow Condensed", sans-serif`;
+      ctx.fillStyle = COUL.line; ctx.fillText(J.bandeau.sous, W / 2, R * 3.5);
+      ctx.globalAlpha = 1;
+    } else if (J.bandeau) {
       const a = Math.min(1, J.bandeau.vie * 3);
       ctx.globalAlpha = a;
       ctx.fillStyle = "rgba(15, 44, 82, .82)"; ctx.fillRect(0, H * 0.36, W, R * (J.bandeau.legende ? 5.7 : 3.4));
