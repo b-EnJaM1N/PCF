@@ -107,7 +107,7 @@ canvas { display: block; width: 100%; height: 100%; }
       <p class="petit">Une main choisit le signe sur le côté, l'autre glisse sur le terrain pour bouger. Un mauvais signe fait accélérer l'ennemi. Chaque monde : 9 vagues et 3 boss. Attrape les objets qui tombent : ❤️ 🛡️ ⏱️ 🔁 ⚡</p>
       <button class="go" id="jouer">Monde 1 · Le Gymnase</button>
       <button class="go plage" id="jouer2" hidden>Monde 2 · La Plage</button>
-      <p class="petit" id="verrou">🔒 Monde 2 : La Plage, après les 3 boss du Gymnase</p>
+      <p class="petit" id="verrou">🔒 Monde 2 : La Plage, après le 3e boss du Gymnase (vague 9)</p>
       <button class="cote" id="cote">Mettre les signes à droite</button>
     </div>
 
@@ -161,9 +161,10 @@ canvas { display: block; width: 100%; height: 100%; }
   });
 
   // ---------- Record ----------
-  let record = 0;
-  try { record = +localStorage.getItem("hs-invaders-record") || 0; } catch (e) {}
-  $("record").textContent = record;
+  // un record par monde (le monde 1 garde l'ancienne clé)
+  const CLES_RECORD = ["hs-invaders-record", "hs-invaders-record-2"];
+  const records = CLES_RECORD.map(cle => { try { return +localStorage.getItem(cle) || 0; } catch (e) { return 0; } });
+  $("record").textContent = records[0];
 
   // ---------- Côté des boutons (gauche par défaut) ----------
   let aDroite = false;
@@ -179,8 +180,9 @@ canvas { display: block; width: 100%; height: 100%; }
   appliquerCote();
 
   // ---------- Mondes ----------
-  // 9 vagues par monde, un boss toutes les 3 vagues ; le boss de la vague 9 ouvre le monde suivant.
-  const VAGUES_PAR_MONDE = 9;
+  // 15 vagues par monde, un boss toutes les 3 vagues. Le boss de la vague 9 ouvre le monde suivant,
+  // mais on peut continuer jusqu'à la vague 15 pour battre son record.
+  const VAGUES_PAR_MONDE = 15, VAGUE_DEBLOCAGE = 9;
   const MONDES = [
     { nom: "Le Gymnase", boss: "la Main de Fer", decor: "gymnase" },
     { nom: "La Plage", boss: "le Roi Crabe", decor: "plage", crabes: true },
@@ -222,7 +224,8 @@ canvas { display: block; width: 100%; height: 100%; }
     J.vague = n; J.pause = 1800; J.prochain = 0;
     if (n % 3 === 0) {
       J.bossAVenir = true;
-      J.bandeau = { titre: `Vague ${n}/${VAGUES_PAR_MONDE}`, sous: `⚠️ ${n === VAGUES_PAR_MONDE ? "BOSS FINAL" : "BOSS"} : ${m.boss}`, vie: 1, rouge: true };
+      J.bandeau = { titre: `Vague ${n}/${VAGUES_PAR_MONDE}`, sous: `⚠️ ${n === VAGUES_PAR_MONDE ? "BOSS FINAL" : "BOSS"} : ${m.boss}` +
+        (n === VAGUE_DEBLOCAGE && J.monde + 1 < MONDES.length && mondesOuverts < J.monde + 2 ? " (ouvre le monde suivant)" : ""), vie: 1, rouge: true };
       bip(220, 0.25, "sawtooth", 0.06); setTimeout(() => bip(180, 0.35, "sawtooth", 0.06), 260);
     } else {
       J.resteVague = 6 + n;
@@ -240,17 +243,15 @@ canvas { display: block; width: 100%; height: 100%; }
       J.score += prime; majCompteurs();
       texte(W / 2, H * 0.45, `Vague terminée +${prime}`, COUL.good);
     }
-    if (J.vague < VAGUES_PAR_MONDE) return lancerVague(J.vague + 1);
-    // monde terminé
-    if (J.monde + 1 < MONDES.length) {
-      J.monde++;
-      if (mondesOuverts < J.monde + 1) {
-        mondesOuverts = J.monde + 1; majAccueil();
-        try { localStorage.setItem("hs-invaders-mondes", mondesOuverts); } catch (e) {}
-      }
-      texte(W / 2, H * 0.3, `${MONDES[J.monde].nom} débloquée !`, COUL.me);
-      lancerVague(1);
-    } else finir(true);
+    if (J.vague >= VAGUES_PAR_MONDE) return finir(true);
+    lancerVague(J.vague + 1);
+    // après le boss de la vague 9 : le monde suivant s'ouvre, et on continue ici pour le record
+    if (J.vague === VAGUE_DEBLOCAGE + 1 && J.monde + 1 < MONDES.length && mondesOuverts < J.monde + 2) {
+      mondesOuverts = J.monde + 2; majAccueil();
+      try { localStorage.setItem("hs-invaders-mondes", mondesOuverts); } catch (e) {}
+      J.bandeau = { titre: `${MONDES[J.monde + 1].nom} ouverte !`, sous: "Continue ici pour battre ton record", vie: 1.6 };
+      J.pause = 2600;
+    }
   }
 
   function faireApparaitre(x = R + Math.random() * (W - 2 * R), y = -R, v = vitesse()) {
@@ -384,13 +385,13 @@ canvas { display: block; width: 100%; height: 100%; }
   function finir(victoire = false) {
     enCours = false;
     $("titreFin").textContent = victoire ? "Victoire !" : "Fin de partie";
-    const nouveau = J.score > record;
-    if (nouveau) { record = J.score; try { localStorage.setItem("hs-invaders-record", record); } catch (e) {} }
-    $("record").textContent = record;
+    const nouveau = J.score > records[J.monde];
+    if (nouveau) { records[J.monde] = J.score; try { localStorage.setItem(CLES_RECORD[J.monde], J.score); } catch (e) {} }
+    $("record").textContent = records[J.monde];
     $("scoreFin").textContent = J.score;
     const precision = J.touches + J.rates ? Math.round(100 * J.touches / (J.touches + J.rates)) : 0;
     $("detailFin").textContent = (nouveau ? "Nouveau record ! " : "") +
-      (victoire ? "Les 2 mondes sont terminés ! " : `Monde ${J.monde + 1}, vague ${J.vague} · `) + ` ${J.bossBattus} boss battu${J.bossBattus > 1 ? "s" : ""} · ${J.touches} signes battus · meilleure série ×${J.meilleurCombo} · précision ${precision} %`;
+      (victoire ? `Monde ${J.monde + 1} terminé, les 15 vagues ! ` : `Monde ${J.monde + 1}, vague ${J.vague} · `) + ` ${J.bossBattus} boss battu${J.bossBattus > 1 ? "s" : ""} · ${J.touches} signes battus · meilleure série ×${J.meilleurCombo} · précision ${precision} %`;
     $("fin").hidden = false;
     $("rejouer").focus();
   }
@@ -399,6 +400,7 @@ canvas { display: block; width: 100%; height: 100%; }
     mondeDepart = monde;
     nouvellePartie();
     J.monde = monde;
+    $("record").textContent = records[monde];
     $("accueil").hidden = true; $("fin").hidden = true;
     enCours = true; dernier = performance.now();
     lancerVague(location.hash === "#boss" ? 3 : 1);
