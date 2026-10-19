@@ -70,7 +70,9 @@ canvas { display: block; width: 100%; height: 100%; }
   border: 0; border-radius: 999px; padding: 12px 34px; background: var(--me); color: var(--court-deep); cursor: pointer;
 }
 .ecran .petit { font-size: .82rem; }
+.ecran .go.plage { background: #2E9BC0; color: var(--line); }
 .ecran .gros { font-family: var(--display); font-size: 3.4rem; font-weight: 800; color: var(--me); line-height: 1; font-variant-numeric: tabular-nums; }
+.son.pause { right: 52px; }
 .son { position: absolute; top: 8px; right: 8px; border: 0; background: var(--panel); color: var(--line); border-radius: 999px; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .boutons button:active { transform: none; } }
 </style>
@@ -94,6 +96,7 @@ canvas { display: block; width: 100%; height: 100%; }
   <div class="terrain" id="terrain">
     <canvas id="toile"></canvas>
     <button class="son" id="son" aria-label="Couper le son">🔊</button>
+    <button class="son pause" id="pause" aria-label="Mettre en pause">⏸</button>
 
     <div class="ecran" id="accueil">
       <h1>HAND<b>SLAM</b><br>Invaders</h1>
@@ -103,16 +106,28 @@ canvas { display: block; width: 100%; height: 100%; }
         <span class="e">✋</span><span class="fl">→ tire</span><span class="e">✌️</span>
         <span class="e">✊</span><span class="fl">→ tire</span><span class="e">✋</span>
       </div>
-      <p class="petit">Une main choisit le signe sur le côté, l'autre glisse sur le terrain pour bouger. Un mauvais signe fait accélérer l'ennemi.</p>
-      <button class="go" id="jouer">Jouer</button>
+      <p class="petit">Une main choisit le signe sur le côté, l'autre glisse sur le terrain pour bouger. Un mauvais signe fait accélérer l'ennemi. Chaque monde : 9 vagues et 3 boss. Attrape les objets qui tombent : ❤️ 🛡️ ⏱️ 🔁 ⚡</p>
+      <button class="go" id="jouer">Monde 1 · Le Gymnase</button>
+      <button class="go plage" id="jouer2" hidden>Monde 2 · La Plage</button>
+      <button class="go" id="reprise" hidden>▶ Reprendre la partie</button>
+      <p class="petit" id="verrou">🔒 Monde 2 : La Plage, après le 3e boss du Gymnase (vague 9)</p>
+      <button class="cote" id="essaiPlage">Essayer la Plage (démo)</button>
       <button class="cote" id="cote">Mettre les signes à droite</button>
     </div>
 
+    <div class="ecran" id="ecranPause" hidden>
+      <h1>Pause</h1>
+      <p id="detailPause"></p>
+      <button class="go" id="reprendre">Reprendre</button>
+      <button class="cote" id="abandonner">Abandonner la partie</button>
+    </div>
+
     <div class="ecran" id="fin" hidden>
-      <h1>Fin de partie</h1>
+      <h1 id="titreFin">Fin de partie</h1>
       <div class="gros" id="scoreFin">0</div>
       <p id="detailFin"></p>
       <button class="go" id="rejouer">Rejouer</button>
+      <button class="cote" id="menu">Choisir le monde</button>
     </div>
   </div>
   </div>
@@ -157,9 +172,10 @@ canvas { display: block; width: 100%; height: 100%; }
   });
 
   // ---------- Record ----------
-  let record = 0;
-  try { record = +localStorage.getItem("hs-invaders-record") || 0; } catch (e) {}
-  $("record").textContent = record;
+  // un record par monde (le monde 1 garde l'ancienne clé)
+  const CLES_RECORD = ["hs-invaders-record", "hs-invaders-record-2"];
+  const records = CLES_RECORD.map(cle => { try { return +localStorage.getItem(cle) || 0; } catch (e) { return 0; } });
+  $("record").textContent = records[0];
 
   // ---------- Côté des boutons (gauche par défaut) ----------
   let aDroite = false;
@@ -174,32 +190,196 @@ canvas { display: block; width: 100%; height: 100%; }
   });
   appliquerCote();
 
+  // ---------- Mondes ----------
+  // 15 vagues par monde, un boss toutes les 3 vagues. Le boss de la vague 9 ouvre le monde suivant,
+  // mais on peut continuer jusqu'à la vague 15 pour battre son record.
+  const VAGUES_PAR_MONDE = 15, VAGUE_DEBLOCAGE = 9;
+  const MONDES = [
+    { nom: "Le Gymnase", boss: "la Main de Fer", decor: "gymnase" },
+    { nom: "La Plage", boss: "le Roi Crabe", decor: "plage", crabes: true },
+  ];
+  // Gymnase : vagues 1 à 3 avec les mains, puis toutes les 3 vagues des objets de sport changent de rôle.
+  // "e" : un emoji ; "croix" : deux emojis croisés en V ; "dessin" : dessiné à la main.
+  const THEMES = [
+    { nom: "Basket et athlé", pierre: { e: "🏀", nom: "Ballon" }, feuille: { dessin: "dossard", nom: "Dossard" }, ciseaux: { dessin: "javelots", nom: "Javelots" } },
+    { nom: "Foot et hockey", pierre: { e: "⚽", nom: "Ballon" }, feuille: { dessin: "drapeau", nom: "Drapeau de corner" }, ciseaux: { croix: "🏒", nom: "Crosses" } },
+    { nom: "Tennis", petit: true, pierre: { e: "🎾", nom: "Balle" }, feuille: { dessin: "raquette", nom: "Raquette" }, ciseaux: { croix: "🏸", nom: "Raquettes croisées" } },
+    { nom: "Baseball", petit: true, pierre: { e: "⚾", nom: "Balle" }, feuille: { dessin: "gant", nom: "Gant" }, ciseaux: { croix: "🏏", nom: "Battes" } },
+  ];
+  const themeCourant = () => (J && J.monde === 0 && J.vague >= 4 ? THEMES[Math.min(THEMES.length - 1, Math.floor((J.vague - 1) / 3) - 1)] : null);
+  let mondesOuverts = 1, mondeDepart = 0;
+  try { mondesOuverts = Math.min(MONDES.length, Math.max(1, +localStorage.getItem("hs-invaders-mondes") || 1)); } catch (e) {}
+  function majAccueil() {
+    $("jouer2").hidden = mondesOuverts < 2;
+    $("verrou").hidden = mondesOuverts >= 2;
+    $("essaiPlage").hidden = mondesOuverts >= 2;
+  }
+  majAccueil();
+
   // ---------- État de la partie ----------
   let J = null, enCours = false, dernier = 0;
+  const VIES_MAX = 5;
+  const BONUS = { vie: "❤️", bouclier: "🛡️", ralenti: "⏱️", triple: "🔁", eclair: "⚡" };
+  const DUREES = { bouclier: 10000, ralenti: 6000, triple: 8000 };
 
   function nouvellePartie() {
     J = {
-      x: W / 2, cible: W / 2, vies: 3, score: 0, combo: 0, meilleurCombo: 0, touches: 0, rates: 0,
-      ennemis: [], tirs: [], eclats: [], textes: [], prochain: 600, temps: 0, recharge: 0, flash: 0,
+      x: W / 2, cible: W / 2, vies: 3, score: 0, combo: 0, meilleurCombo: 0, touches: 0, rates: 0, bossBattus: 0,
+      ennemis: [], tirs: [], eclats: [], textes: [], bonus: [], prochain: 0, temps: 0, recharge: 0, flash: 0, flashBlanc: 0,
+      monde: 0, vague: 0, resteVague: 0, pause: 0, bossAVenir: false, boss: null, bandeau: null,
+      effets: { bouclier: 0, ralenti: 0, triple: 0 },
     };
     majCompteurs();
   }
 
-  // La difficulté monte avec le temps : chute plus rapide, apparitions plus serrées.
-  const niveau = () => Math.min(1, J.temps / 120000);
-  const vitesse = () => 55 + 115 * niveau() + Math.random() * 25;     // pixels par seconde
-  const intervalle = () => 1500 - 950 * niveau() + Math.random() * 400; // millisecondes
+  // ---------- Vagues ----------
+  // Toutes les 3 vagues, un boss. La difficulté monte de vague en vague.
+  // Le monde 2 commence à peu près au niveau de la vague 6 du monde 1.
+  const niveau = () => Math.min(1, (J.monde * 5 + Math.max(0, J.vague - 1)) / 14);
+  const vitesse = () => 55 + 115 * niveau() + Math.random() * 25;       // pixels par seconde
+  const intervalle = () => 1750 - 900 * niveau() + Math.random() * 450; // millisecondes
+  const lent = () => (J.effets.ralenti > 0 ? 0.45 : 1);
 
-  function faireApparaitre() {
-    const x = R + Math.random() * (W - 2 * R);
-    const zigzag = niveau() > 0.35 && Math.random() < 0.3;
-    J.ennemis.push({ x, x0: x, y: -R, v: vitesse(), signe: SIGNES[Math.random() * 3 | 0], zigzag, phase: Math.random() * 6, bond: 0 });
+  function lancerVague(n) {
+    const m = MONDES[J.monde];
+    J.vague = n; J.pause = 1800; J.prochain = 0;
+    if (n % 3 === 0) {
+      J.bossAVenir = true;
+      J.bandeau = { titre: `Vague ${n}/${VAGUES_PAR_MONDE}`, sous: `⚠️ ${n === VAGUES_PAR_MONDE ? "BOSS FINAL" : "BOSS"} : ${m.boss}` +
+        (n === VAGUE_DEBLOCAGE && J.monde + 1 < MONDES.length && mondesOuverts < J.monde + 2 ? " (ouvre le monde suivant)" : ""), vie: 1, rouge: true };
+      bip(220, 0.25, "sawtooth", 0.06); setTimeout(() => bip(180, 0.35, "sawtooth", 0.06), 260);
+    } else {
+      J.resteVague = 6 + n;
+      J.bandeau = n === 1
+        ? { titre: `Monde ${J.monde + 1}`, sous: `${m.nom} · ${J.resteVague} signes`, vie: 1.4 }
+        : { titre: `Vague ${n}/${VAGUES_PAR_MONDE}`, sous: `${J.resteVague} signes`, vie: 1 };
+      if (n === 1) J.pause = 2500;
+      const th = themeCourant();
+      if (th && n % 3 === 1) {
+        // nouveaux objets : on présente qui joue quel rôle
+        const ic = o => o.e || (o.croix ? o.croix + o.croix : "");
+        J.bandeau = { titre: th.nom, sous: `${ic(th.pierre)} ${th.pierre.nom} = Pierre · ${ic(th.feuille)} ${th.feuille.nom} = Feuille · ${ic(th.ciseaux)} ${th.ciseaux.nom} = Ciseaux`, vie: 2.4, petit: true };
+        J.pause = 3600;
+      }
+      bip(520, 0.1, "triangle", 0.06); setTimeout(() => bip(780, 0.12, "triangle", 0.06), 110);
+    }
   }
 
+  function vagueFinie() {
+    if (J.vague > 0) {
+      const prime = 50 * J.vague;
+      J.score += prime; majCompteurs();
+      texte(W / 2, H * 0.45, `Vague terminée +${prime}`, COUL.good);
+    }
+    if (J.vague >= VAGUES_PAR_MONDE) return finir(true);
+    lancerVague(J.vague + 1);
+    // après le boss de la vague 9 : le monde suivant s'ouvre, et on continue ici pour le record
+    if (J.vague === VAGUE_DEBLOCAGE + 1 && J.monde + 1 < MONDES.length && mondesOuverts < J.monde + 2) {
+      mondesOuverts = J.monde + 2; majAccueil();
+      try { localStorage.setItem("hs-invaders-mondes", mondesOuverts); } catch (e) {}
+      J.bandeau = { titre: `${MONDES[J.monde + 1].nom} ouverte !`, sous: "Continue ici pour battre ton record", vie: 1.6 };
+      J.pause = 2600;
+    }
+  }
+
+  function faireApparaitre(x = R + Math.random() * (W - 2 * R), y = -R, v = vitesse()) {
+    // sur la plage, des crabes ✌️ qui avancent en biais et rebondissent sur les bords
+    if (MONDES[J.monde].crabes && Math.random() < 0.3) {
+      const vx = (Math.random() < 0.5 ? -1 : 1) * (45 + 45 * niveau());
+      return J.ennemis.push({ x, x0: x, y, v: v * 0.85, signe: "ciseaux", crabe: true, vx, phase: 0, bond: 0 });
+    }
+    const zigzag = niveau() > 0.45 && Math.random() < 0.25; // zigzags à partir de la vague 8 du monde 1
+    const t = themeCourant()?.petit ? 0.72 : 1; // balles de tennis et de baseball : plus petites
+    J.ennemis.push({ x, x0: x, y, v, signe: SIGNES[Math.random() * 3 | 0], zigzag, phase: Math.random() * 6, bond: 0, t });
+  }
+
+  // ---------- Boss ----------
+  function creerBoss() {
+    const k = J.vague / 3 + J.monde; // 1er boss, 2e boss… (plus fort dans le monde 2)
+    J.boss = {
+      x: W / 2, y: -R * 3, yCible: R * 4.8, r: R * 2.1, pv: 3 + 2 * k, pvMax: 3 + 2 * k, k,
+      signe: SIGNES[Math.random() * 3 | 0], change: 4000, tir: 2400, phase: "calme", phaseT: 6000, salves: 0, dir: 1, v: 25 + 15 * k, bond: 0,
+    };
+    J.bossAVenir = false;
+    J.bonus.push({ x: W / 2, y: -R, type: "bouclier" }); // un coup de pouce pour commencer
+  }
+
+  function majBoss(b, dt) {
+    const ms = dt * 1000;
+    if (b.y < b.yCible) { b.y += 80 * dt; return; }
+    if (b.phase !== "repos") b.x += b.dir * b.v * lent() * dt; // au repos, il s'arrête
+    if (b.x < b.r) { b.x = b.r; b.dir = 1; }
+    if (b.x > W - b.r) { b.x = W - b.r; b.dir = -1; }
+    b.bond = Math.max(0, b.bond - dt * 4);
+    if (b.phase !== "repos") b.change -= ms * lent();
+    if (b.change <= 0) {
+      const autres = SIGNES.filter(s => s !== b.signe);
+      b.signe = autres[Math.random() * 2 | 0];
+      b.change = Math.max(1800, 4500 - 500 * b.k);
+      bip(300, 0.06, "square", 0.03);
+    }
+    // Rythme en 3 temps : calme (tirs isolés, jamais plus de 2 + k signes à l'écran),
+    // salve (2 ou 3 signes l'un après l'autre, seulement quand l'écran est vide), repos (aucun tir).
+    b.tir -= ms * lent(); b.phaseT -= ms * lent();
+    if (b.phase === "calme") {
+      if (b.tir <= 0 && J.ennemis.length < 1 + b.k) {
+        // tirs isolés depuis un côté de la main, pour laisser le passage sous elle
+        faireApparaitre(Math.min(W - R, Math.max(R, b.x + (Math.random() < 0.5 ? -1 : 1) * R * 1.6)), b.y + b.r, vitesse() * 0.75);
+        b.tir = Math.max(1600, 2400 - 200 * b.k);
+      }
+      if (b.phaseT <= 0) { b.phase = "salve"; b.salves = b.k >= 3 ? 2 : 1; b.tir = 0; b.rafale = 0; }
+    } else if (b.phase === "salve") {
+      if (b.rafale > 0 && b.tir <= 0) {
+        // un signe de la salve, alternativement à gauche et à droite de la main
+        const dx = b.rafale % 2 ? -1 : 1;
+        faireApparaitre(Math.min(W - R, Math.max(R, b.x + dx * R * 2)), b.y + b.r, vitesse() * 0.75);
+        b.rafale--; b.tir = b.k === 1 ? 900 : 650;
+        if (b.rafale === 0) { b.salves--; b.tir = 2500; }
+      } else if (b.rafale === 0 && b.salves > 0 && b.tir <= 0 && J.ennemis.length === 0) {
+        b.bond = 1; texte(b.x, b.y + b.r, "Salve !", COUL.bot); bip(160, 0.2, "sawtooth", 0.06);
+        b.rafale = b.k === 1 ? 2 : 3; b.tir = 400;
+      }
+      if (b.salves <= 0 && b.rafale === 0) { b.phase = "repos"; b.phaseT = 4000; setTimeout(() => J.boss === b && texte(b.x, b.y + b.r * 1.6, "Il fatigue : frappe !", COUL.good), 1200); }
+    } else if (b.phaseT <= 0) { b.phase = "calme"; b.phaseT = Math.max(4000, 6000 - 500 * b.k); b.tir = 600; }
+  }
+
+  function bossBattu(b) {
+    const pts = 200 * b.k;
+    J.score += pts; J.bossBattus++;
+    eclater(b.x, b.y, COUL.me, 40); eclater(b.x, b.y, COUL.bot, 30);
+    texte(b.x, b.y, `Boss battu ! +${pts}`, COUL.me);
+    J.bonus.push({ x: b.x, y: b.y, type: "vie" });
+    J.boss = null; J.flashBlanc = 1;
+    [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => bip(f, 0.16, "triangle", 0.07), i * 120));
+    majCompteurs();
+  }
+
+  // ---------- Bonus ----------
+  function lacherBonus(x, y) {
+    const types = Object.keys(BONUS).filter(t => t !== "vie" || J.vies < VIES_MAX);
+    J.bonus.push({ x, y, type: types[Math.random() * types.length | 0] });
+  }
+
+  function prendreBonus(o) {
+    const noms = { vie: "+1 vie", bouclier: "Bouclier", ralenti: "Ralenti", triple: "Tir triple", eclair: "Éclair !" };
+    texte(J.x, H - R * 3, noms[o.type], COUL.good);
+    [880, 1175].forEach((f, i) => setTimeout(() => bip(f, 0.08, "sine", 0.07), i * 70));
+    if (o.type === "vie") { J.vies = Math.min(VIES_MAX, J.vies + 1); majCompteurs(); }
+    else if (o.type === "eclair") {
+      J.flashBlanc = 1;
+      for (const n of J.ennemis) { n.mort = true; J.score += 5; eclater(n.x, n.y, COUL.line, 8); }
+      if (J.boss) { J.boss.pv -= 2; J.boss.bond = 1; if (J.boss.pv <= 0) bossBattu(J.boss); }
+      majCompteurs();
+    } else J.effets[o.type] = DUREES[o.type];
+  }
+
+  // ---------- Tirs ----------
   function tirer(signe) {
     if (!enCours || J.recharge > 0) return;
     J.recharge = 170;
-    J.tirs.push({ x: J.x, y: H - R * 2.6, signe });
+    const y = H - R * 2.6;
+    if (J.effets.triple > 0) for (const vx of [-130, 0, 130]) J.tirs.push({ x: J.x, y, vx, signe });
+    else J.tirs.push({ x: J.x, y, vx: 0, signe });
     bip(660, 0.06, "square", 0.04, 300);
   }
 
@@ -212,6 +392,11 @@ canvas { display: block; width: 100%; height: 100%; }
   const texte = (x, y, t, couleur) => J.textes.push({ x, y, t, couleur, vie: 1 });
 
   function perdreVie(x, y) {
+    if (J.effets.bouclier > 0) {
+      J.effets.bouclier = 0; eclater(x, y, COUL.good, 16);
+      texte(J.x, H - R * 3, "Bouclier !", COUL.good); bip(440, 0.2, "sine", 0.07, 200);
+      return;
+    }
     J.vies--; J.combo = 0; J.flash = 1;
     eclater(x, y, COUL.bot, 18);
     bip(140, 0.35, "sawtooth", 0.08, -90);
@@ -221,31 +406,100 @@ canvas { display: block; width: 100%; height: 100%; }
   }
 
   function majCompteurs() {
+    const v = Math.max(0, J.vies);
     $("score").textContent = J.score;
-    $("vies").textContent = "❤️".repeat(Math.max(0, J.vies)) + "🖤".repeat(3 - Math.max(0, J.vies));
+    $("vies").textContent = "❤️".repeat(v) + "🖤".repeat(Math.max(0, 3 - v));
   }
 
-  function finir() {
-    enCours = false;
-    const nouveau = J.score > record;
-    if (nouveau) { record = J.score; try { localStorage.setItem("hs-invaders-record", record); } catch (e) {} }
-    $("record").textContent = record;
+  function finir(victoire = false) {
+    enCours = false; effacerSauvegarde();
+    $("titreFin").textContent = victoire ? "Victoire !" : "Fin de partie";
+    const nouveau = J.score > records[J.monde];
+    if (nouveau) { records[J.monde] = J.score; try { localStorage.setItem(CLES_RECORD[J.monde], J.score); } catch (e) {} }
+    $("record").textContent = records[J.monde];
     $("scoreFin").textContent = J.score;
     const precision = J.touches + J.rates ? Math.round(100 * J.touches / (J.touches + J.rates)) : 0;
     $("detailFin").textContent = (nouveau ? "Nouveau record ! " : "") +
-      `${J.touches} signes battus · meilleure série ×${J.meilleurCombo} · précision ${precision} %`;
+      (victoire ? `Monde ${J.monde + 1} terminé, les 15 vagues ! ` : `Monde ${J.monde + 1}, vague ${J.vague} · `) + ` ${J.bossBattus} boss battu${J.bossBattus > 1 ? "s" : ""} · ${J.touches} signes battus · meilleure série ×${J.meilleurCombo} · précision ${precision} %`;
     $("fin").hidden = false;
     $("rejouer").focus();
   }
 
-  function demarrer() {
+  function demarrer(monde = mondeDepart) {
+    mondeDepart = monde;
     nouvellePartie();
+    J.monde = monde;
+    $("record").textContent = records[monde];
     $("accueil").hidden = true; $("fin").hidden = true;
+    effacerSauvegarde(); enPause = false;
     enCours = true; dernier = performance.now();
-    bip(520, 0.1, "triangle", 0.06); setTimeout(() => bip(780, 0.12, "triangle", 0.06), 110);
+    // pour les essais : « #boss » commence à la vague 3, « #vague7 » à la vague 7…
+    const essai = /^#vague(\d+)$/.exec(location.hash);
+    lancerVague(location.hash === "#boss" ? 3 : essai ? Math.min(VAGUES_PAR_MONDE, Math.max(1, +essai[1])) : 1);
   }
-  $("jouer").addEventListener("click", demarrer);
-  $("rejouer").addEventListener("click", demarrer);
+  $("jouer").addEventListener("click", () => demarrer(location.hash === "#monde2" ? 1 : 0));
+  $("jouer2").addEventListener("click", () => demarrer(1));
+  // pour la démo seulement : essayer la Plage sans l'avoir débloquée
+  $("essaiPlage").addEventListener("click", () => demarrer(1));
+  $("rejouer").addEventListener("click", () => demarrer());
+  $("menu").addEventListener("click", () => { $("fin").hidden = true; $("accueil").hidden = false; $("jouer").focus(); });
+
+  // ---------- Pause et reprise ----------
+  // Pause automatique quand on quitte l'appli (appel, notification…). La partie est aussi gardée
+  // sur le téléphone : si le navigateur ferme la page entre-temps, l'accueil propose de la reprendre.
+  let enPause = false;
+  const CLE_PARTIE = "hs-invaders-partie";
+  function sauver() {
+    try { localStorage.setItem(CLE_PARTIE, JSON.stringify({ J, mondeDepart, W })); } catch (e) {}
+  }
+  function effacerSauvegarde() {
+    try { localStorage.removeItem(CLE_PARTIE); } catch (e) {}
+    $("reprise").hidden = true;
+  }
+  function mettreEnPause() {
+    if (!enCours || enPause) return;
+    enPause = true;
+    $("detailPause").textContent = `Monde ${J.monde + 1} · vague ${J.vague}/${VAGUES_PAR_MONDE} · score ${J.score}`;
+    $("ecranPause").hidden = false;
+    $("reprendre").focus();
+    sauver();
+  }
+  function reprendre() {
+    enPause = false; $("ecranPause").hidden = true;
+    dernier = performance.now();
+  }
+  function abandonner() {
+    enCours = false; enPause = false; effacerSauvegarde();
+    $("ecranPause").hidden = true; $("accueil").hidden = false; $("jouer").focus();
+  }
+  $("pause").addEventListener("click", mettreEnPause);
+  $("reprendre").addEventListener("click", reprendre);
+  $("abandonner").addEventListener("click", abandonner);
+  document.addEventListener("visibilitychange", () => { if (document.hidden) mettreEnPause(); });
+  addEventListener("blur", mettreEnPause);
+  addEventListener("pagehide", () => { if (enCours) sauver(); });
+
+  let sauvegarde = null;
+  try { sauvegarde = JSON.parse(localStorage.getItem(CLE_PARTIE)); } catch (e) {}
+  if (sauvegarde && sauvegarde.J) {
+    const s = sauvegarde.J;
+    $("reprise").hidden = false;
+    $("reprise").textContent = `▶ Reprendre : monde ${s.monde + 1}, vague ${s.vague}`;
+  }
+  $("reprise").addEventListener("click", () => {
+    if (!sauvegarde) return;
+    J = sauvegarde.J; mondeDepart = sauvegarde.mondeDepart || 0;
+    // l'écran a pu changer de taille : on remet les positions à l'échelle
+    const f = W / (sauvegarde.W || W);
+    for (const o of [J, J.boss, ...J.ennemis, ...J.tirs, ...J.bonus]) if (o) { o.x *= f; if ("x0" in o) o.x0 *= f; }
+    J.cible = J.x; J.textes = []; J.eclats = [];
+    sauvegarde = null;
+    $("record").textContent = records[J.monde];
+    majCompteurs();
+    $("accueil").hidden = true;
+    enCours = true;
+    mettreEnPause();
+  });
 
   // ---------- Commandes ----------
   terrain.addEventListener("pointerdown", e => { if (e.target === toile) deplacer(e); });
@@ -261,6 +515,7 @@ canvas { display: block; width: 100%; height: 100%; }
   });
   const touches = {};
   addEventListener("keydown", e => {
+    if (e.key === "Escape" || e.key.toLowerCase() === "p") { enPause ? reprendre() : mettreEnPause(); return; }
     touches[e.key] = true;
     const s = { "1": "pierre", "2": "feuille", "3": "ciseaux", a: "pierre", z: "feuille", e: "ciseaux" }[e.key.toLowerCase()];
     if (s) { tirer(s); const b = document.querySelector(`[data-signe="${s}"]`); b.classList.add("appuye"); setTimeout(() => b.classList.remove("appuye"), 90); }
@@ -269,30 +524,66 @@ canvas { display: block; width: 100%; height: 100%; }
 
   // ---------- Boucle ----------
   function maj(dt) {
-    J.temps += dt * 1000;
-    J.recharge = Math.max(0, J.recharge - dt * 1000);
+    const ms = dt * 1000;
+    J.temps += ms;
+    J.recharge = Math.max(0, J.recharge - ms);
     J.flash = Math.max(0, J.flash - dt * 2.5);
+    J.flashBlanc = Math.max(0, J.flashBlanc - dt * 3);
+    for (const k in J.effets) J.effets[k] = Math.max(0, J.effets[k] - ms);
+    if (J.bandeau) { J.bandeau.vie -= dt / 1.8; if (J.bandeau.vie <= 0) J.bandeau = null; }
 
     // déplacement : clavier ou doigt (avec un peu d'inertie)
     if (touches.ArrowLeft) J.cible = Math.max(R, J.cible - 420 * dt);
     if (touches.ArrowRight) J.cible = Math.min(W - R, J.cible + 420 * dt);
     J.x += (J.cible - J.x) * Math.min(1, dt * 16);
 
-    J.prochain -= dt * 1000;
-    if (J.prochain <= 0) { faireApparaitre(); J.prochain = intervalle(); }
+    // vague en cours
+    if (J.pause > 0) J.pause -= ms;
+    else if (J.bossAVenir) creerBoss();
+    else if (J.resteVague > 0) {
+      J.prochain -= ms * lent();
+      // jamais deux signes collés : on attend que le précédent soit bien descendu
+      const libre = J.ennemis.every(n => n.y > R * 4);
+      if (J.prochain <= 0 && libre) { faireApparaitre(); J.resteVague--; J.prochain = intervalle(); }
+    } else if (!J.boss && J.ennemis.length === 0) vagueFinie();
+    if (J.boss) majBoss(J.boss, dt);
 
-    for (const t of J.tirs) t.y -= 520 * dt;
+    for (const t of J.tirs) { t.y -= 520 * dt; t.x += t.vx * dt; }
     for (const n of J.ennemis) {
-      n.y += n.v * dt;
-      if (n.zigzag) { n.phase += dt * 2.2; n.x = Math.min(W - R, Math.max(R, n.x0 + Math.sin(n.phase) * W * 0.18)); }
+      n.y += n.v * lent() * dt;
+      if (n.crabe) {
+        n.x += n.vx * lent() * dt;
+        if (n.x < R) { n.x = R; n.vx = Math.abs(n.vx); }
+        if (n.x > W - R) { n.x = W - R; n.vx = -Math.abs(n.vx); }
+      }
+      if (n.zigzag) { n.phase += dt * 2.2 * lent(); n.x = Math.min(W - R, Math.max(R, n.x0 + Math.sin(n.phase) * W * 0.18)); }
       n.bond = Math.max(0, n.bond - dt * 4);
     }
+    for (const o of J.bonus) o.y += 110 * dt;
 
-    // collisions tir / ennemi
+    // collisions tir / boss / ennemi
     for (const t of J.tirs) {
       if (t.mort) continue;
+      const b = J.boss;
+      if (b && Math.hypot(t.x - b.x, t.y - b.y) < b.r + R) {
+        t.mort = true;
+        if (BAT[t.signe] === b.signe) {
+          b.pv--; b.bond = 1; J.combo++; J.touches++;
+          J.meilleurCombo = Math.max(J.meilleurCombo, J.combo);
+          J.score += 15; majCompteurs();
+          eclater(t.x, t.y, COUL.me, 8); texte(t.x, t.y, "+15", COUL.me);
+          bip(520, 0.1, "sawtooth", 0.06, -200);
+          if (b.pv <= 0) bossBattu(b);
+        } else if (t.signe === b.signe) {
+          texte(t.x, t.y, "Égalité", COUL.muted); bip(330, 0.07, "square", 0.04);
+        } else {
+          J.combo = 0; J.rates++; if (b.phase === "calme" && b.k >= 2) b.tir = Math.min(b.tir, 900);
+          texte(t.x, t.y, b.k >= 2 ? "Raté ! Il riposte" : "Raté !", COUL.bot); bip(200, 0.12, "square", 0.05, -60);
+        }
+        continue;
+      }
       for (const n of J.ennemis) {
-        if (n.mort || Math.hypot(t.x - n.x, t.y - n.y) > R * 1.7) continue;
+        if (n.mort || Math.hypot(t.x - n.x, t.y - n.y) > R * (0.7 + (n.t || 1))) continue;
         t.mort = true;
         if (BAT[t.signe] === n.signe) {
           n.mort = true; J.combo++; J.touches++;
@@ -303,6 +594,7 @@ canvas { display: block; width: 100%; height: 100%; }
           eclater(n.x, n.y, COUL.me);
           texte(n.x, n.y, mult > 1 ? `+${pts} ×${mult}` : `+${pts}`, COUL.me);
           bip(880 + Math.min(J.combo, 12) * 40, 0.09, "triangle", 0.07);
+          if (Math.random() < 0.09) lacherBonus(n.x, n.y);
           majCompteurs();
         } else if (t.signe === n.signe) {
           // égalité : le signe recule un peu
@@ -319,8 +611,13 @@ canvas { display: block; width: 100%; height: 100%; }
       }
     }
 
-    // ennemis qui arrivent en bas ou touchent le joueur
+    // bonus attrapés par le gant
     const yJ = H - R * 1.6;
+    for (const o of J.bonus) {
+      if (Math.hypot(o.x - J.x, o.y - yJ) < R * 1.9) { o.pris = true; prendreBonus(o); }
+    }
+
+    // ennemis qui arrivent en bas ou touchent le joueur
     for (const n of J.ennemis) {
       if (n.mort) continue;
       if (Math.hypot(n.x - J.x, n.y - yJ) < R * 1.6 || n.y > H + R) {
@@ -332,36 +629,205 @@ canvas { display: block; width: 100%; height: 100%; }
     for (const p of J.eclats) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 300 * dt; p.vie -= dt * 1.8; }
     for (const t of J.textes) { t.y -= 40 * dt; t.vie -= dt * 1.3; }
 
-    J.tirs = J.tirs.filter(t => !t.mort && t.y > -R);
+    J.tirs = J.tirs.filter(t => !t.mort && t.y > -R && t.x > -R && t.x < W + R);
     J.ennemis = J.ennemis.filter(n => !n.mort);
+    J.bonus = J.bonus.filter(o => !o.pris && o.y < H + R);
     J.eclats = J.eclats.filter(p => p.vie > 0);
     J.textes = J.textes.filter(t => t.vie > 0);
   }
+
+  const POLICE_EMOJI = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+  function emoji(e, x, y, taille) {
+    ctx.font = `${taille}px ${POLICE_EMOJI}`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillStyle = "#000"; // couleur opaque, sinon l'emoji hérite de la transparence du dernier remplissage
+    ctx.fillText(e, x, y + taille * 0.05);
+  }
+
+  // dessine un objet de sport (taille : sa hauteur environ)
+  function objet(o, x, y, taille) {
+    if (o.e) return emoji(o.e, x, y, taille);
+    if (o.croix) {
+      for (const sens of [-1, 1]) {
+        ctx.save(); ctx.translate(x + sens * taille * 0.16, y); ctx.scale(sens, 1); ctx.rotate(-0.38);
+        emoji(o.croix, 0, 0, taille); ctx.restore();
+      }
+      return;
+    }
+    const s = taille;
+    ctx.save();
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    if (o.dessin === "javelots") {
+      // deux javelots en V, réunis en haut, pointes métalliques vers le bas
+      for (const sens of [-1, 1]) {
+        const x1 = x + sens * s * 0.06, y1 = y - s * 0.5, x2 = x + sens * s * 0.42, y2 = y + s * 0.5;
+        const pt = f => [x1 + (x2 - x1) * f, y1 + (y2 - y1) * f];
+        ctx.lineWidth = s * 0.08; ctx.strokeStyle = "#D9A441";
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(...pt(0.8)); ctx.stroke();
+        // pointe métallique effilée
+        const [bx, by] = pt(0.76), dx = (x2 - x1), dy = (y2 - y1), l = Math.hypot(dx, dy);
+        const nx = -dy / l * s * 0.07, ny = dx / l * s * 0.07;
+        ctx.beginPath(); ctx.moveTo(bx + nx, by + ny); ctx.lineTo(x2 + dx / l * s * 0.06, y2 + dy / l * s * 0.06); ctx.lineTo(bx - nx, by - ny); ctx.closePath();
+        ctx.fillStyle = "#E6ECF2"; ctx.fill();
+        ctx.lineWidth = s * 0.11; ctx.strokeStyle = "#3B2A1A";
+        ctx.beginPath(); ctx.moveTo(...pt(0.4)); ctx.lineTo(...pt(0.52)); ctx.stroke();
+      }
+    } else if (o.dessin === "dossard") {
+      // un dossard de course : feuille blanche, bandeau rouge, numéro, 4 épingles
+      const w = s * 0.86, h = s * 0.66;
+      ctx.translate(x, y); ctx.rotate(-0.07);
+      ctx.fillStyle = "#FFFFFF"; ctx.strokeStyle = "#9AA6B4"; ctx.lineWidth = s * 0.03;
+      ctx.beginPath(); ctx.roundRect(-w / 2, -h / 2, w, h, s * 0.06); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#E8574A"; ctx.fillRect(-w / 2 + s * 0.03, -h / 2 + s * 0.03, w - s * 0.06, h * 0.2);
+      ctx.fillStyle = "#14243A"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.font = `800 ${Math.round(h * 0.56)}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+      ctx.fillText("23", 0, h * 0.14);
+      ctx.fillStyle = "#7D8896";
+      for (const [a, b] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+        ctx.beginPath(); ctx.arc(a * (w / 2 - s * 0.08), b * (h / 2 - s * 0.08), s * 0.035, 0, Math.PI * 2); ctx.fill();
+      }
+    } else if (o.dessin === "drapeau") {
+      // un drapeau de corner : mât blanc, tissu jaune qui flotte
+      const px = x - s * 0.28, haut = y - s * 0.5;
+      ctx.strokeStyle = "#F5F7FA"; ctx.lineWidth = s * 0.07;
+      ctx.beginPath(); ctx.moveTo(px, y + s * 0.5); ctx.lineTo(px, haut); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(px, haut + s * 0.02);
+      ctx.bezierCurveTo(px + s * 0.25, haut - s * 0.08, px + s * 0.4, haut + s * 0.14, px + s * 0.66, haut + s * 0.08);
+      ctx.lineTo(px + s * 0.6, haut + s * 0.5);
+      ctx.bezierCurveTo(px + s * 0.38, haut + s * 0.56, px + s * 0.22, haut + s * 0.36, px, haut + s * 0.46);
+      ctx.closePath();
+      ctx.fillStyle = "#FFD23F"; ctx.fill(); ctx.lineWidth = s * 0.03; ctx.strokeStyle = "#B8860B"; ctx.stroke();
+    } else if (o.dessin === "raquette") {
+      // une raquette de tennis : tamis ovale cordé et manche
+      const cy = y - s * 0.14, rx = s * 0.3, ry = s * 0.36;
+      ctx.strokeStyle = "#1E1E24"; ctx.lineWidth = s * 0.1;
+      ctx.beginPath(); ctx.moveTo(x, cy + ry); ctx.lineTo(x, y + s * 0.52); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(x, cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(245, 247, 250, .2)"; ctx.fill();
+      ctx.save(); ctx.clip();
+      ctx.strokeStyle = "rgba(245, 247, 250, .85)"; ctx.lineWidth = s * 0.018;
+      for (let i = -4; i <= 4; i++) {
+        ctx.beginPath(); ctx.moveTo(x + i * rx / 4.5, cy - ry); ctx.lineTo(x + i * rx / 4.5, cy + ry); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x - rx, cy + i * ry / 4.5); ctx.lineTo(x + rx, cy + i * ry / 4.5); ctx.stroke();
+      }
+      ctx.restore();
+      ctx.beginPath(); ctx.ellipse(x, cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = "#E8574A"; ctx.lineWidth = s * 0.07; ctx.stroke();
+    } else if (o.dessin === "gant") {
+      // un gant de baseball : la main ouverte en cuir
+      const cuir = "#A8662E", bord = "#5E3716";
+      ctx.fillStyle = cuir; ctx.strokeStyle = bord; ctx.lineWidth = s * 0.03;
+      const capsule = (ang, long, larg, ox, oy) => {
+        ctx.save(); ctx.translate(ox, oy); ctx.rotate(ang);
+        ctx.beginPath(); ctx.roundRect(-larg / 2, -long, larg, long, larg / 2); ctx.fill(); ctx.stroke();
+        ctx.restore();
+      };
+      const bx = x + s * 0.04, by = y + s * 0.22;
+      capsule(-1.05, s * 0.42, s * 0.19, bx - s * 0.12, by); // pouce
+      for (const [i, a] of [-0.32, -0.11, 0.1, 0.31].entries()) capsule(a, s * (0.66 - Math.abs(i - 1.5) * 0.05), s * 0.17, bx, by);
+      ctx.beginPath(); ctx.ellipse(bx, by, s * 0.27, s * 0.24, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(bx, by - s * 0.06, s * 0.15, s * 0.12, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "#C98A4B"; ctx.fill();
+      ctx.strokeStyle = "#E9D3A6"; ctx.lineWidth = s * 0.025; // le laçage entre pouce et index
+      for (let k = 0; k < 3; k++) {
+        const yy = by - s * (0.12 + k * 0.1);
+        ctx.beginPath(); ctx.moveTo(bx - s * 0.28, yy); ctx.lineTo(bx - s * 0.14, yy - s * 0.05); ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
 
   function pastille(x, y, signe, couleur, rayon, bond = 0) {
     const r = rayon * (1 + bond * 0.15);
     ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fillStyle = "rgba(15, 44, 82, .85)"; ctx.fill();
     ctx.lineWidth = 3; ctx.strokeStyle = couleur; ctx.stroke();
-    ctx.font = `${r * 1.15}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;
-    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText(EMOJI[signe], x, y + r * 0.06);
+    emoji(EMOJI[signe], x, y, r * 1.15);
+  }
+
+  function dessinerBoss(b) {
+    const r = b.r * (1 + b.bond * 0.08);
+    const alerte = b.change < 900 && Math.floor(b.change / 100) % 2 === 0;
+    ctx.beginPath(); ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(60, 14, 20, .92)"; ctx.fill();
+    ctx.lineWidth = 6; ctx.strokeStyle = alerte ? COUL.line : COUL.bot; ctx.stroke();
+    const th = themeCourant();
+    if (th) objet(th[b.signe], b.x, b.y, r * 1.25); else emoji(EMOJI[b.signe], b.x, b.y, r * 1.2);
+    // barre de vie du boss
+    const l = W - 112, part = Math.max(0, b.pv / b.pvMax);
+    ctx.fillStyle = "rgba(0, 0, 0, .35)"; ctx.fillRect(12, 10, l, 8);
+    ctx.fillStyle = COUL.bot; ctx.fillRect(12, 10, l * part, 8);
+    ctx.font = `800 ${Math.round(R * 0.6)}px "Barlow Condensed", sans-serif`;
+    ctx.fillStyle = COUL.line; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    ctx.fillText(MONDES[J.monde].boss.toUpperCase(), 12, 22);
   }
 
   function dessiner() {
     ctx.clearRect(0, 0, W, H);
 
+    if (J && MONDES[J.monde].decor === "plage") dessinerPlage();
+    else dessinerGymnase();
+    ctx.strokeStyle = "rgba(232, 87, 74, .35)"; ctx.setLineDash([6, 8]);
+    ctx.beginPath(); ctx.moveTo(0, H - R * 3.4); ctx.lineTo(W, H - R * 3.4); ctx.stroke(); ctx.setLineDash([]);
+    if (!J) return;
+    dessinerJeu();
+  }
+
+  function dessinerGymnase() {
     // lignes du terrain (façon parquet de salle)
     ctx.strokeStyle = "rgba(245, 247, 250, .08)"; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(0, H * 0.5); ctx.lineTo(W, H * 0.5); ctx.stroke();
     ctx.beginPath(); ctx.arc(W / 2, H * 0.5, Math.min(W, H) * 0.16, 0, Math.PI * 2); ctx.stroke();
-    ctx.strokeStyle = "rgba(232, 87, 74, .35)"; ctx.setLineDash([6, 8]);
-    ctx.beginPath(); ctx.moveTo(0, H - R * 3.4); ctx.lineTo(W, H - R * 3.4); ctx.stroke(); ctx.setLineDash([]);
+  }
 
-    if (!J) return;
+  function dessinerPlage() {
+    // la mer en haut, le sable en bas, des vagues qui ondulent entre les deux
+    const t = performance.now() / 1000, rivage = H * 0.42;
+    let g = ctx.createLinearGradient(0, 0, 0, rivage);
+    g.addColorStop(0, "#0E4C6E"); g.addColorStop(1, "#2389B0");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, rivage + 12);
+    g = ctx.createLinearGradient(0, rivage, 0, H);
+    g.addColorStop(0, "#E3C487"); g.addColorStop(1, "#C79E5E");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.moveTo(0, H); ctx.lineTo(0, rivage);
+    for (let x = 0; x <= W; x += 8) ctx.lineTo(x, rivage + Math.sin(x / 26 + t * 1.6) * 5);
+    ctx.lineTo(W, rivage + Math.sin(W / 26 + t * 1.6) * 5); ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "rgba(245, 247, 250, .55)"; ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let x = 0; x <= W; x += 8) ctx.lineTo(x, rivage + Math.sin(x / 26 + t * 1.6) * 5);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(245, 247, 250, .18)";
+    for (const y of [rivage * 0.35, rivage * 0.68]) {
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 10) ctx.lineTo(x, y + Math.sin(x / 34 + t + y) * 4);
+      ctx.stroke();
+    }
+  }
 
-    for (const n of J.ennemis) pastille(n.x, n.y, n.signe, COUL.bot, R, n.bond);
+  function dessinerJeu() {
+
+    if (J.effets.ralenti > 0) { ctx.fillStyle = "rgba(157, 180, 211, .08)"; ctx.fillRect(0, 0, W, H); }
+    if (J.boss) dessinerBoss(J.boss);
+    for (const n of J.ennemis) {
+      const th = themeCourant();
+      if (th) {
+        // un objet de sport : sa forme compte, un simple halo rouge rappelle que c'est un ennemi
+        const r = R * (n.t || 1) * (1 + n.bond * 0.15);
+        ctx.beginPath(); ctx.arc(n.x, n.y, r * 1.08, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(245, 247, 250, .16)"; ctx.fill(); // fond clair : les objets sombres restent visibles
+        ctx.lineWidth = 2; ctx.strokeStyle = "rgba(232, 87, 74, .6)"; ctx.stroke();
+        objet(th[n.signe], n.x, n.y, r * 1.55);
+      } else pastille(n.x, n.y, n.signe, COUL.bot, R, n.bond);
+      if (n.crabe) emoji("🦀", n.x + R * 0.8, n.y - R * 0.8, R * 0.75);
+    }
     for (const t of J.tirs) pastille(t.x, t.y, t.signe, COUL.me, R * 0.72);
+    for (const o of J.bonus) {
+      ctx.beginPath(); ctx.arc(o.x, o.y, R * 0.85, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(91, 214, 154, .18)"; ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = COUL.good; ctx.stroke();
+      emoji(BONUS[o.type], o.x, o.y, R);
+    }
 
     // joueur
     const yJ = H - R * 1.6;
@@ -369,27 +835,66 @@ canvas { display: block; width: 100%; height: 100%; }
     ctx.fillStyle = "rgba(0, 0, 0, .3)"; ctx.fill();
     ctx.beginPath(); ctx.arc(J.x, yJ, R * 1.05, 0, Math.PI * 2);
     ctx.fillStyle = COUL.me; ctx.fill();
-    ctx.font = `${R * 1.1}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;
-    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText("🧤", J.x, yJ + R * 0.06);
+    ctx.lineWidth = 2; ctx.strokeStyle = "rgba(15, 44, 82, .7)"; ctx.stroke();
+    emoji("🧤", J.x, yJ, R * 1.1);
+    if (J.effets.bouclier > 0) {
+      ctx.beginPath(); ctx.arc(J.x, yJ, R * 1.5, 0, Math.PI * 2);
+      ctx.lineWidth = 3; ctx.strokeStyle = COUL.good;
+      ctx.globalAlpha = J.effets.bouclier < 2000 && Math.floor(J.effets.bouclier / 150) % 2 ? 0.3 : 0.9;
+      ctx.stroke(); ctx.globalAlpha = 1;
+    }
 
     for (const p of J.eclats) { ctx.globalAlpha = Math.max(0, p.vie); ctx.fillStyle = p.couleur; ctx.fillRect(p.x - 2, p.y - 2, 4, 4); }
     ctx.globalAlpha = 1;
     ctx.font = `800 ${Math.round(R * 0.8)}px "Barlow Condensed", sans-serif`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
     for (const t of J.textes) { ctx.globalAlpha = Math.max(0, t.vie); ctx.fillStyle = t.couleur; ctx.fillText(t.t, t.x, t.y - R * 1.3); }
     ctx.globalAlpha = 1;
 
-    if (J.combo >= 5) {
-      ctx.font = `800 ${Math.round(R * 0.85)}px "Barlow Condensed", sans-serif`;
-      ctx.fillStyle = COUL.me; ctx.textAlign = "left";
-      ctx.fillText(`Série ×${J.combo}`, 12, 20);
+    // en haut à gauche : vague, série, bonus actifs
+    const yHaut = J.boss ? 46 : 12;
+    ctx.font = `800 ${Math.round(R * 0.7)}px "Barlow Condensed", sans-serif`;
+    ctx.textAlign = "left"; ctx.textBaseline = "top"; ctx.fillStyle = COUL.muted;
+    if (J.vague) {
+      ctx.fillStyle = MONDES[J.monde].decor === "plage" ? COUL.line : COUL.muted;
+      ctx.fillText(`MONDE ${J.monde + 1} · VAGUE ${J.vague}/${VAGUES_PAR_MONDE}`, 12, yHaut);
     }
+    if (J.combo >= 5) { ctx.fillStyle = COUL.me; ctx.fillText(`SÉRIE ×${J.combo}`, 12, yHaut + R * 0.8); }
+    let xb = W - 26;
+    for (const k of ["bouclier", "ralenti", "triple"]) {
+      if (J.effets[k] <= 0) continue;
+      emoji(BONUS[k], xb, yHaut + R * 0.5, R * 0.8);
+      ctx.fillStyle = COUL.good; ctx.fillRect(xb - R * 0.5, yHaut + R * 1.05, R * (J.effets[k] / DUREES[k]), 3);
+      xb -= R * 1.3;
+    }
+
+    // bandeau de vague
+    if (J.bandeau) {
+      const a = Math.min(1, J.bandeau.vie * 3);
+      ctx.globalAlpha = a;
+      ctx.fillStyle = "rgba(15, 44, 82, .75)"; ctx.fillRect(0, H * 0.36, W, R * (J.bandeau.petit ? 5 : 3.4));
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.font = `800 ${Math.round(R * 1.6)}px "Barlow Condensed", sans-serif`;
+      ctx.fillStyle = COUL.me; ctx.fillText(J.bandeau.titre.toUpperCase(), W / 2, H * 0.36 + R * 1.25);
+      ctx.fillStyle = J.bandeau.rouge ? COUL.bot : COUL.line;
+      if (J.bandeau.petit) {
+        // la légende des objets, une ligne par rôle
+        ctx.font = `700 ${Math.round(R * 0.62)}px "Barlow Condensed", sans-serif`;
+        J.bandeau.sous.split(" · ").forEach((l, i) => ctx.fillText(l, W / 2, H * 0.36 + R * (2.5 + i * 0.85)));
+      } else {
+        ctx.font = `700 ${Math.round(R * 0.75)}px "Barlow Condensed", sans-serif`;
+        ctx.fillText(J.bandeau.sous, W / 2, H * 0.36 + R * 2.6);
+      }
+      ctx.globalAlpha = 1;
+    }
+
     if (J.flash > 0) { ctx.fillStyle = `rgba(232, 87, 74, ${J.flash * 0.35})`; ctx.fillRect(0, 0, W, H); }
+    if (J.flashBlanc > 0) { ctx.fillStyle = `rgba(245, 247, 250, ${J.flashBlanc * 0.5})`; ctx.fillRect(0, 0, W, H); }
   }
 
   function boucle(t) {
     const dt = Math.min(0.05, (t - dernier) / 1000); dernier = t;
-    if (enCours) maj(dt);
+    if (enCours && !enPause) maj(dt);
     dessiner();
     requestAnimationFrame(boucle);
   }
