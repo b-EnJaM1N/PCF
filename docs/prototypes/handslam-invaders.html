@@ -217,15 +217,15 @@ canvas { display: block; width: 100%; height: 100%; }
     { nom: "Les sapins", petit: true, pierre: { dessin: "pommeDePin", nom: "Pomme de pin" }, feuille: { e: "🌿", nom: "Fougère" }, ciseaux: LUCANE },
     { nom: "La forêt profonde", petit: true, pierre: { e: "🌰", nom: "Châtaigne" }, feuille: { e: "☘️", nom: "Trèfle" }, ciseaux: LUCANE },
   ];
-  // Plage : des galets, des crabes, et des algues ou des méduses qui changent toutes les 3 vagues.
+  // Plage : des galets, des crabes, et une feuille de palmier ou une serviette qui changent toutes les 3 vagues.
   const GALET = { dessin: "galet", nom: "Galet", taille: 1.15 }, CRABE = { e: "🦀", retourne: true, nom: "Crabe" };
-  const ALGUE = { dessin: "algue", nom: "Algue" }, MEDUSE = { dessin: "meduse", nom: "Méduse" };
+  const PALME = { dessin: "palme", nom: "Feuille de palmier" }, SERVIETTE = { dessin: "serviette", nom: "Serviette de plage" };
   const PLAGE = [
-    { nom: "Le bord de l'eau", pierre: GALET, feuille: ALGUE, ciseaux: CRABE },
-    { nom: "Les méduses", pierre: GALET, feuille: MEDUSE, ciseaux: CRABE },
-    { nom: "Les algues", pierre: GALET, feuille: ALGUE, ciseaux: CRABE },
-    { nom: "Le large", petit: true, pierre: GALET, feuille: MEDUSE, ciseaux: CRABE },
-    { nom: "La marée haute", petit: true, pierre: GALET, feuille: ALGUE, ciseaux: CRABE },
+    { nom: "Les palmiers", pierre: GALET, feuille: PALME, ciseaux: CRABE },
+    { nom: "Les serviettes", pierre: GALET, feuille: SERVIETTE, ciseaux: CRABE },
+    { nom: "Les palmiers", pierre: GALET, feuille: PALME, ciseaux: CRABE },
+    { nom: "La sieste", petit: true, pierre: GALET, feuille: SERVIETTE, ciseaux: CRABE },
+    { nom: "Le soleil couchant", petit: true, pierre: GALET, feuille: PALME, ciseaux: CRABE },
   ];
   // Espace : une grosse météorite, et des extraterrestres qui jouent avec leurs mains vertes.
   const METEORITE = { dessin: "meteorite", nom: "Météorite", taille: 1.3 };
@@ -883,34 +883,39 @@ canvas { display: block; width: 100%; height: 100%; }
       }
       ctx.fillStyle = "rgba(255, 255, 255, .45)";
       ctx.beginPath(); ctx.ellipse(x - s * 0.2, y - s * 0.16, s * 0.16, s * 0.07, -0.3, 0, Math.PI * 2); ctx.fill();
-    } else if (o.dessin === "algue") {
-      // une algue : trois longues lanières vertes qui ondulent
-      const t = performance.now() / 400;
-      for (const [dx, h, c] of [[-0.14, 0.86, "#2E8B57"], [0.14, 0.8, "#3FA463"], [0, 1, "#56C27A"]]) {
-        ctx.strokeStyle = c; ctx.lineWidth = s * 0.16;
-        ctx.beginPath(); ctx.moveTo(x + s * dx, y + s * 0.48);
-        for (let k = 1; k <= 6; k++) {
-          const f = k / 6;
-          ctx.lineTo(x + s * dx + Math.sin(f * 4 + t + dx * 9) * s * 0.09 * f, y + s * 0.48 - f * s * h * 0.95);
+    } else if (o.dessin === "palme") {
+      // une feuille de palmier : une nervure courbe et ses longues folioles de chaque côté
+      const pt = f => [x - s * 0.18 + f * s * 0.36 + Math.sin(f * Math.PI) * s * 0.12, y + s * 0.5 - f * s * 1.0];
+      for (let k = 2; k <= 11; k++) {
+        const f = k / 12, [px, py] = pt(f), l = s * (0.52 - f * 0.32);
+        for (const sens of [-1, 1]) {
+          const a = -Math.PI / 2 + sens * (1.2 - f * 0.5); // les folioles pointent vers le bout de la feuille
+          ctx.save(); ctx.translate(px, py); ctx.rotate(a + 0.25);
+          ctx.beginPath(); ctx.ellipse(l / 2, 0, l / 2, s * 0.055, 0, 0, Math.PI * 2);
+          ctx.fillStyle = sens < 0 ? "#2FA84F" : "#3CC261"; ctx.fill();
+          ctx.restore();
         }
-        ctx.stroke();
       }
-    } else if (o.dessin === "meduse") {
-      // une méduse : un dôme rose transparent et ses filaments qui ondulent
-      const t = performance.now() / 300;
-      ctx.strokeStyle = "rgba(255, 170, 220, .9)"; ctx.lineWidth = s * 0.045;
-      for (const dx of [-0.24, -0.12, 0, 0.12, 0.24]) {
-        ctx.beginPath(); ctx.moveTo(x + s * dx, y);
-        for (let k = 1; k <= 5; k++) ctx.lineTo(x + s * dx + Math.sin(k * 1.3 + t + dx * 10) * s * 0.05, y + k * s * 0.1);
-        ctx.stroke();
+      ctx.strokeStyle = "#1E6B33"; ctx.lineWidth = s * 0.05;
+      ctx.beginPath();
+      for (let k = 0; k <= 12; k++) ctx.lineTo(...pt(k / 12));
+      ctx.stroke();
+    } else if (o.dessin === "serviette") {
+      // une serviette de plage : rayures de couleur et franges aux deux bouts
+      const w = s * 0.98, h = s * 0.7;
+      ctx.translate(x, y); ctx.rotate(-0.12);
+      ctx.strokeStyle = "#F5F7FA"; ctx.lineWidth = s * 0.02;
+      for (const bout of [-1, 1]) for (let k = -4; k <= 4; k++) {
+        ctx.beginPath(); ctx.moveTo(bout * w / 2, k * h / 9.5); ctx.lineTo(bout * (w / 2 + s * 0.06), k * h / 9.5); ctx.stroke();
       }
-      const g = ctx.createRadialGradient(x, y - s * 0.12, s * 0.04, x, y - s * 0.05, s * 0.36);
-      g.addColorStop(0, "rgba(255, 220, 245, .95)"); g.addColorStop(1, "rgba(214, 110, 200, .85)");
-      ctx.fillStyle = g; ctx.strokeStyle = "#A64A9B"; ctx.lineWidth = s * 0.03;
-      ctx.beginPath(); ctx.ellipse(x, y + s * 0.02, s * 0.36, s * 0.34, 0, Math.PI, Math.PI * 2);
-      ctx.quadraticCurveTo(x, y + s * 0.12, x - s * 0.36, y + s * 0.02); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = "rgba(255, 255, 255, .5)";
-      ctx.beginPath(); ctx.ellipse(x - s * 0.13, y - s * 0.16, s * 0.07, s * 0.04, -0.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(-w / 2, -h / 2, w, h, s * 0.04);
+      ctx.save(); ctx.clip();
+      ["#E8574A", "#F5F7FA", "#2E9BC0", "#F4C542", "#E8574A", "#F5F7FA", "#2E9BC0"].forEach((c, i, l) => {
+        ctx.fillStyle = c; ctx.fillRect(-w / 2, -h / 2 + i * h / l.length, w, h / l.length + 1);
+      });
+      ctx.restore();
+      ctx.strokeStyle = "rgba(0, 0, 0, .35)"; ctx.lineWidth = s * 0.025;
+      ctx.beginPath(); ctx.roundRect(-w / 2, -h / 2, w, h, s * 0.04); ctx.stroke();
     } else if (o.dessin === "meteorite") {
       // une météorite : un gros caillou qui tombe, avec sa traînée de feu au-dessus
       const g = ctx.createLinearGradient(x, y - s * 0.75, x, y);
