@@ -23,11 +23,12 @@ export const FICHIERS_REACTIONS = {
   ohDecu: ["public_oh_decu_01", "public_oh_decu_02"],
   bravo: ["public_bravo_01", "public_bravo_02"],
   brouhaha: ["public_brouhaha_01", "public_brouhaha_02"],
+  rires: ["public_rires_01", "public_rires_02"],
 };
 // La force moyenne d'un enregistrement (racine de la moyenne des carrés), et celle visée pour les réactions du public.
 export const forceMoyenne = canaux => { let t = 0, n = 0; for (const c of canaux) for (let i = 0; i < c.length; i++) { t += c[i] * c[i]; n++; } return n ? Math.sqrt(t / n) : 0; };
 const FORCE_REACTION = 0.12;
-const VOLUME_REACTION = { allez: 0.38, ohDecu: 0.42, bravo: 0.38, brouhaha: 0.3, applaudir: 0.22 };
+const VOLUME_REACTION = { allez: 0.38, ohDecu: 0.42, bravo: 0.38, brouhaha: 0.3, rires: 0.36, applaudir: 0.22 };
 // Le coup de raquette : un son par signe (0 Pierre, 1 Ciseaux, 2 Feuille), et une version forte pour les grands moments
 // (balle de set ou de match, point décisif) : [normal, fort].
 export const FICHIERS_RAQUETTE_SIGNE = [
@@ -55,10 +56,12 @@ export function series(coups) {
 }
 
 // La réaction du public après un point : rien (le murmure suffit), des applaudissements, « Allez ! », « Bravo ! »,
-// « Ohhh… » (une série de 4 points ou plus vient d'être brisée) ou un brouhaha. Jamais deux points de suite (sauf le « Ohhh… »),
-// jamais sur une égalité. etat : { dernier } (gardé d'un point à l'autre) ; coups : les coups du match, celui-ci compris.
+// « Ohhh… » (une série de 4 points ou plus vient d'être brisée) ou un brouhaha. Jamais deux points de suite (sauf le « Ohhh… »).
+// Sur une égalité : seulement des rires, à la 4e égalité d'affilée (les deux joueurs s'obstinent sur le même signe), puis à la 7e.
+// etat : { dernier } (gardé d'un point à l'autre) ; coups : les coups du match, celui-ci compris.
 export function reactionPoint(etat, evt, coups, rng = Math.random) {
-  if (!evt || evt.egalite) return null;
+  if (!evt) return null;
+  if (evt.egalite) { const n = egalitesAvantDernier(coups) + 1; return n === 4 || n === 7 ? "rires" : null; }
   const { serie, brisee } = series(coups), egalites = egalitesAvantDernier(coups);
   let r = null;
   const x = rng();
