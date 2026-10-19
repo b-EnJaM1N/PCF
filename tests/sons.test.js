@@ -56,7 +56,11 @@ test("les réactions du public après un point : variées, jamais deux de suite,
   assert.deepEqual(series(c(0, 0, null, 0)), { serie: 3, brisee: 0 }, "les égalités ne coupent pas une série");
   assert.deepEqual(series(c(1, 1, 1, 0)), { serie: 1, brisee: 3 });
   const tot = () => 0, tard = () => 0.99;
-  assert.equal(reactionPoint({}, { egalite: true }, c(0, null), tot), null, "jamais sur une égalité");
+  assert.equal(reactionPoint({}, { egalite: true }, c(0, null), tot), null, "pas de réaction sur une simple égalité");
+  assert.equal(reactionPoint({}, { egalite: true }, c(0, null, null, null), tot), null, "ni sur 3 égalités d'affilée");
+  assert.equal(reactionPoint({}, { egalite: true }, c(0, null, null, null, null), tot), "rires", "le public rit à la 4e égalité d'affilée");
+  assert.equal(reactionPoint({}, { egalite: true }, c(null, null, null, null, null), tot), null, "pas à la 5e");
+  assert.equal(reactionPoint({}, { egalite: true }, c(null, null, null, null, null, null, null), tot), "rires", "il rit encore à la 7e");
   assert.equal(reactionPoint({}, { gagnant: 0 }, c(1, 1, 1, 1, 0), tot), "ohDecu", "une série de 4 brisée");
   assert.equal(reactionPoint({ dernier: true }, { gagnant: 0 }, c(1, 1, 1, 1, 0), tot), "ohDecu", "même juste après une autre réaction");
   assert.equal(reactionPoint({}, { gagnant: 0 }, c(1, null, 0), tot), "bravo", "un point arraché après une égalité");

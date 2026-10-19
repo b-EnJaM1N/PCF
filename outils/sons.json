@@ -89,6 +89,14 @@
     "public_brouhaha_02": {
       "texte": "Lively tennis crowd buzz, spectators commenting excitedly after a rally, rising then fading",
       "duree": 4
+    },
+    "public_rires_01": {
+      "texte": "Tennis stadium crowd bursting into light amused laughter, warm chuckles, then settling down, no music",
+      "duree": 2.5
+    },
+    "public_rires_02": {
+      "texte": "Large tennis crowd laughing together at a funny moment, friendly giggles and chuckles fading out",
+      "duree": 2.5
     }
   }
 }

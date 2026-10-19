@@ -5,22 +5,22 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 ## En bref (14 octobre 2026)
 
 **À faire ensuite, dans l'ordre** (pas de précipitation, faire les choses bien) :
-1. **Finir de valider** ce qui reste « à valider » (sur la version de test) : ce qui demande un deuxième joueur ou le soir (défis entre amis, enjeux, salle d'attente, « en ligne », messages rapides, championnat du cercle, tournois programmés et freeroll de 20 h), et le nouveau fond sonore (14 octobre).
+1. **Finir de valider** ce qui reste « à valider » (sur la version de test) : les tournois programmés et le freeroll de 20 h (à tester un soir), et les rires du public sur 4 égalités d'affilée (sons à fabriquer).
 2. **Tests avec les proches** : 10 à 20 personnes dans un cercle « Testeurs HandSlam », invitées par petites vagues, avec une soirée freeroll (message d'invitation déjà préparé dans une conversation précédente).
 3. **Google Play Store** (plan ci-dessous) : le test fermé de 14 jours sert aussi de test avec les proches.
 4. Puis : réactiver Le Midi, L'Apéro et Le Nocturne quand il y aura du monde ; finir le passage de « PCF » à « HandSlam » dans le code ; classement du match du jour ; enregistrer les voix des surnoms (liste version 3) et les dialogues du Grand Chelem (au renouvellement des crédits ElevenLabs).
 
 **Fait, à valider** (détails plus bas) :
 - tournois programmés et freeroll du soir (étapes 15, 18, 19, 21) ;
-- messages rapides (étape 22) ; défi avec enjeu, championnat du cercle, rendez-vous des défis, « qui est en ligne » (étapes 34 à 40) ;
-- **fond sonore plus présent** (14 octobre, remarque d'un proche : les commentaires « sortaient de nulle part ») : murmure du public plus fort et jamais coupé pendant l'échange, foule plus dense (deux couches de l'enregistrement, décalées, à gauche et à droite). **Réactions variées après un point** (environ un point sur quatre, jamais deux de suite) : applaudissements courts, « Allez ! » (série qui se construit), « Bravo ! » (point arraché après des égalités), « Ohhh… » (série de 4 points brisée), brouhaha ; elles s'éteignent dès l'échange suivant. Les 9 nouveaux sons sont à fabriquer avec le robot « Voix » (choix « sons ») : sans eux, seuls les applaudissements jouent.
+- **rires du public** : à la 4e égalité d'affilée (les deux joueurs s'obstinent sur le même signe), puis à la 7e, le public rit au lieu de rester muet (demande du porteur du projet). Deux sons à fabriquer avec le robot « Voix » (choix « sons », `public_rires_01,public_rires_02`) : sans eux, rien ne joue.
 
 **Validé** (par lots, sur la version de test ; lots 1 à 4 le 14 octobre) :
 - lot 1 : première visite guidée, menu qui s'ouvre au fil des matchs, navigation allégée (carte « Tournois » unique, « Ma fiche » en 3 sous-onglets, solde en haut à droite) ;
 - lot 2 : match du jour et partage, « Lire l'adversaire », dossier de l'adversaire, son à la carte ;
 - lot 3 : partie rapide (amicale, bot au bout de 30 s), jetons, bonus du jour, +10 contre un bot, défis du jour, boutique ;
 - lot 4 : Sit & Go (rangée de mises, toutes les tailles, heads-up, bots au bout de 2 minutes, 3 minutes de patience), tirage au sort des tableaux et écran d'attente, plus de sets à rallonge, corrections des étapes 41 et 42, divisions ;
-- lot 5 : surnoms version 3, trophées et avatars, face-à-face avec un ami et avec un adversaire, ma place et mes gains à la fin d'un tournoi.
+- lot 5 : surnoms version 3, trophées et avatars, face-à-face avec un ami et avec un adversaire, ma place et mes gains à la fin d'un tournoi ;
+- lot 6 : défis entre amis, enjeux, salle d'attente, « qui est en ligne », messages rapides, championnat du cercle (tests à deux) ; fond sonore plus présent et réactions variées du public après un point (sons fabriqués).
 
 **Fait et validé** : mode solo, comptes, duel en ligne, niveau officiel, amis, cercles, tournois en ligne, Sit & Go, navigation en trois onglets, voix ElevenLabs (demande n° 59).
 
