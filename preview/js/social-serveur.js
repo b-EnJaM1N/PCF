@@ -11,7 +11,8 @@ export const classements = ids => essayer(async () => new Map(ids.length
 
 export const mesAmis = () => rpc("mes_amis");
 // Le compteur de visites (supabase/etape-43-visites.sql), anonyme : une fois par jour, avec ou sans compte.
-export const compterVisite = (origine, nouveau) => rpc("compter_visite", { p_origine: origine, p_nouveau: !!nouveau });
+export const compterVisite = (origine, nouveau, revenu) => rpc("compter_visite", { p_origine: origine, p_nouveau: !!nouveau, p_revenu: !!revenu });
+export const compterTroisMatchs = origine => rpc("compter_trois_matchs", { p_origine: origine });
 // Qui est en ligne (supabase/etape-39-en-ligne.sql) : « je suis là » toutes les minutes, et l'option pour le cacher.
 export const jeSuisLa = enMatch => rpc("je_suis_la", { p_en_match: !!enMatch });
 export const reglerPresence = visible => rpc("regler_presence", { p_visible: !!visible });

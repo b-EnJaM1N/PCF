@@ -63,3 +63,9 @@ export function citationDuMatch(citations) {
   }
   return null;
 }
+
+// « La phrase de Monique » : sa réplique du match à partager en image (la dernière assez courte pour tenir sur l'image).
+export function phraseDeMonique(citations) {
+  const r = [...citations].reverse().find(l => l.role === "commentatrice" && l.texte.length <= 140);
+  return r ? r.texte : null;
+}
