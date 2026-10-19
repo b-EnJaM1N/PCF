@@ -6,9 +6,8 @@ import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, 
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
 import { voirTournoi, mesAmis, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs } from "./social-serveur.js";
 import { compterVisite, compterTroisMatchs } from "./visites.js";
-import { histoireDuMatch, phraseDeMonique } from "./une-logique.js";
+import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
-import { dessinerPhrase } from "./phrase.js";
 import { carteDe, notesDe, texteRang, rangDe } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
 import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee } from "./poignee.js";
@@ -538,7 +537,6 @@ function finir() {
     finale: !!S.annonces.finale, numero: P.matchs,
   } : null;
   $("btnUne").hidden = !S.pourUne;
-  $("btnPhrase").hidden = !(S.pourUne && phraseDeMonique(S.citations || []));
   $("again").hidden = enTournoi || !!S.duel; $("tNext").hidden = !enTournoi;
   const tournoiId = S.duel && D ? D.duel.tournoi_id : null;   // match de tournoi en ligne
   const rapide = !!(S.duel && D?.duel?.rapide) || !!S.contreBotRapide;
@@ -717,16 +715,6 @@ $("btnUne").addEventListener("click", async () => {
   });
   await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
     fichier: "la-une.png", alt: `La Une : ${h.titre}. ${h.chapo}`, titre: MARQUE.journal });
-});
-// ---------------------------------------------------------------- La phrase de Monique (sa réplique du match, en image à partager)
-$("btnPhrase").addEventListener("click", async () => {
-  const phrase = S?.pourUne && phraseDeMonique(S.citations || []); if (!phrase) return;
-  const m = S.match, unSet = m.format.setsGagnants === 1, score = unSet ? m.scoresSets[0].join(" – ") : `${m.sets[0]} – ${m.sets[1]}`;
-  $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
-  $("une").classList.add("show");
-  const canvas = await dessinerPhrase(document.createElement("canvas"), phrase, { ligne: `${nomAffiche(P)} ${score} ${OPP.nom}`, etape: S.pourUne.etape });
-  await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
-    fichier: "la-phrase-de-monique.png", alt: `La phrase du match, par ${MARQUE.commentatrice} : « ${phrase} »`, titre: MARQUE.nom });
 });
 $("uneFermer").addEventListener("click", () => $("une").classList.remove("show"));
 

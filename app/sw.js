@@ -32,7 +32,6 @@ const FICHIERS = [
   "js/surnoms.js",
   "js/marque.js",
   "js/lancement.js",
-  "js/phrase.js",
   "js/une.js",
   "js/une-logique.js",
   "js/carte.js",
