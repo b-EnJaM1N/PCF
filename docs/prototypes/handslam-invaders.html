@@ -228,41 +228,43 @@ canvas { display: block; width: 100%; height: 100%; }
   function creerBoss() {
     const k = J.vague / 3; // 1er boss, 2e boss…
     J.boss = {
-      x: W / 2, y: -R * 3, yCible: R * 4.8, r: R * 2.1, pv: 4 + 2 * k, pvMax: 4 + 2 * k, k,
-      signe: SIGNES[Math.random() * 3 | 0], change: 3200, tir: 2400, phase: "calme", phaseT: 6000, salves: 0, dir: 1, v: 50 + 12 * k, bond: 0,
+      x: W / 2, y: -R * 3, yCible: R * 4.8, r: R * 2.1, pv: 3 + 2 * k, pvMax: 3 + 2 * k, k,
+      signe: SIGNES[Math.random() * 3 | 0], change: 4000, tir: 2400, phase: "calme", phaseT: 6000, salves: 0, dir: 1, v: 25 + 15 * k, bond: 0,
     };
     J.bossAVenir = false;
+    J.bonus.push({ x: W / 2, y: -R, type: "bouclier" }); // un coup de pouce pour commencer
   }
 
   function majBoss(b, dt) {
     const ms = dt * 1000;
     if (b.y < b.yCible) { b.y += 80 * dt; return; }
-    b.x += b.dir * b.v * lent() * dt;
+    if (b.phase !== "repos") b.x += b.dir * b.v * lent() * dt; // au repos, il s'arrête
     if (b.x < b.r) { b.x = b.r; b.dir = 1; }
     if (b.x > W - b.r) { b.x = W - b.r; b.dir = -1; }
     b.bond = Math.max(0, b.bond - dt * 4);
-    b.change -= ms * lent();
+    if (b.phase !== "repos") b.change -= ms * lent();
     if (b.change <= 0) {
       const autres = SIGNES.filter(s => s !== b.signe);
       b.signe = autres[Math.random() * 2 | 0];
-      b.change = Math.max(1800, 3200 - 250 * b.k);
+      b.change = Math.max(1800, 4500 - 500 * b.k);
       bip(300, 0.06, "square", 0.03);
     }
     // Rythme en 3 temps : calme (tirs isolés, jamais plus de 2 + k signes à l'écran),
     // salve (rafale de 3, seulement quand l'écran est presque vide), repos (aucun tir).
     b.tir -= ms * lent(); b.phaseT -= ms * lent();
     if (b.phase === "calme") {
-      if (b.tir <= 0 && J.ennemis.length < 2 + b.k) {
-        faireApparaitre(b.x, b.y + b.r, vitesse() * 0.85);
+      if (b.tir <= 0 && J.ennemis.length < 1 + b.k) {
+        // tirs isolés depuis un côté de la main, pour laisser le passage sous elle
+        faireApparaitre(Math.min(W - R, Math.max(R, b.x + (Math.random() < 0.5 ? -1 : 1) * R * 1.6)), b.y + b.r, vitesse() * 0.75);
         b.tir = Math.max(1600, 2400 - 200 * b.k);
       }
       if (b.phaseT <= 0) { b.phase = "salve"; b.salves = b.k >= 3 ? 2 : 1; b.tir = 0; }
     } else if (b.phase === "salve") {
       if (b.tir <= 0 && J.ennemis.length <= 1) {
         b.bond = 1; texte(b.x, b.y + b.r, "Salve !", COUL.bot); bip(160, 0.2, "sawtooth", 0.06);
-        for (const dx of [-1, 0, 1]) faireApparaitre(Math.min(W - R, Math.max(R, b.x + dx * R * 2.4)), b.y + b.r, vitesse() * 0.85);
+        for (const dx of [-1, 0, 1]) faireApparaitre(Math.min(W - R, Math.max(R, b.x + dx * R * 2.4)), b.y + b.r, vitesse() * 0.75);
         b.salves--; b.tir = 1400;
-        if (b.salves <= 0) { b.phase = "repos"; b.phaseT = 3500; }
+        if (b.salves <= 0) { b.phase = "repos"; b.phaseT = 4000; setTimeout(() => J.boss === b && texte(b.x, b.y + b.r * 1.6, "Il fatigue : frappe !", COUL.good), 1200); }
       }
     } else if (b.phaseT <= 0) { b.phase = "calme"; b.phaseT = Math.max(4000, 6000 - 500 * b.k); b.tir = 600; }
   }
@@ -413,7 +415,7 @@ canvas { display: block; width: 100%; height: 100%; }
     for (const t of J.tirs) {
       if (t.mort) continue;
       const b = J.boss;
-      if (b && Math.hypot(t.x - b.x, t.y - b.y) < b.r + R * 0.7) {
+      if (b && Math.hypot(t.x - b.x, t.y - b.y) < b.r + R) {
         t.mort = true;
         if (BAT[t.signe] === b.signe) {
           b.pv--; b.bond = 1; J.combo++; J.touches++;
@@ -425,8 +427,8 @@ canvas { display: block; width: 100%; height: 100%; }
         } else if (t.signe === b.signe) {
           texte(t.x, t.y, "Égalité", COUL.muted); bip(330, 0.07, "square", 0.04);
         } else {
-          J.combo = 0; J.rates++; if (b.phase === "calme") b.tir = Math.min(b.tir, 900);
-          texte(t.x, t.y, "Raté ! Il riposte", COUL.bot); bip(200, 0.12, "square", 0.05, -60);
+          J.combo = 0; J.rates++; if (b.phase === "calme" && b.k >= 2) b.tir = Math.min(b.tir, 900);
+          texte(t.x, t.y, b.k >= 2 ? "Raté ! Il riposte" : "Raté !", COUL.bot); bip(200, 0.12, "square", 0.05, -60);
         }
         continue;
       }
