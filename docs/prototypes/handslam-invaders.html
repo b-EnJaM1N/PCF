@@ -250,7 +250,7 @@ canvas { display: block; width: 100%; height: 100%; }
       bip(300, 0.06, "square", 0.03);
     }
     // Rythme en 3 temps : calme (tirs isolés, jamais plus de 2 + k signes à l'écran),
-    // salve (rafale de 3, seulement quand l'écran est presque vide), repos (aucun tir).
+    // salve (2 ou 3 signes l'un après l'autre, seulement quand l'écran est vide), repos (aucun tir).
     b.tir -= ms * lent(); b.phaseT -= ms * lent();
     if (b.phase === "calme") {
       if (b.tir <= 0 && J.ennemis.length < 1 + b.k) {
@@ -258,14 +258,19 @@ canvas { display: block; width: 100%; height: 100%; }
         faireApparaitre(Math.min(W - R, Math.max(R, b.x + (Math.random() < 0.5 ? -1 : 1) * R * 1.6)), b.y + b.r, vitesse() * 0.75);
         b.tir = Math.max(1600, 2400 - 200 * b.k);
       }
-      if (b.phaseT <= 0) { b.phase = "salve"; b.salves = b.k >= 3 ? 2 : 1; b.tir = 0; }
+      if (b.phaseT <= 0) { b.phase = "salve"; b.salves = b.k >= 3 ? 2 : 1; b.tir = 0; b.rafale = 0; }
     } else if (b.phase === "salve") {
-      if (b.tir <= 0 && J.ennemis.length <= 1) {
+      if (b.rafale > 0 && b.tir <= 0) {
+        // un signe de la salve, alternativement à gauche et à droite de la main
+        const dx = b.rafale % 2 ? -1 : 1;
+        faireApparaitre(Math.min(W - R, Math.max(R, b.x + dx * R * 2)), b.y + b.r, vitesse() * 0.75);
+        b.rafale--; b.tir = b.k === 1 ? 900 : 650;
+        if (b.rafale === 0) { b.salves--; b.tir = 2500; }
+      } else if (b.rafale === 0 && b.salves > 0 && b.tir <= 0 && J.ennemis.length === 0) {
         b.bond = 1; texte(b.x, b.y + b.r, "Salve !", COUL.bot); bip(160, 0.2, "sawtooth", 0.06);
-        for (const dx of [-1, 0, 1]) faireApparaitre(Math.min(W - R, Math.max(R, b.x + dx * R * 2.4)), b.y + b.r, vitesse() * 0.75);
-        b.salves--; b.tir = 1400;
-        if (b.salves <= 0) { b.phase = "repos"; b.phaseT = 4000; setTimeout(() => J.boss === b && texte(b.x, b.y + b.r * 1.6, "Il fatigue : frappe !", COUL.good), 1200); }
+        b.rafale = b.k === 1 ? 2 : 3; b.tir = 400;
       }
+      if (b.salves <= 0 && b.rafale === 0) { b.phase = "repos"; b.phaseT = 4000; setTimeout(() => J.boss === b && texte(b.x, b.y + b.r * 1.6, "Il fatigue : frappe !", COUL.good), 1200); }
     } else if (b.phaseT <= 0) { b.phase = "calme"; b.phaseT = Math.max(4000, 6000 - 500 * b.k); b.tir = 600; }
   }
 
