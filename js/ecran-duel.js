@@ -8,6 +8,7 @@ import { demanderAmi, mesAmis } from "./social-serveur.js";
 import { pointPresence, textePresence, parPresence } from "./social-logique.js";
 import { etatNotifications, activerNotifications } from "./notifications.js";
 import { MISES, gainDuel } from "./jetons-logique.js";
+import { misesVisibles } from "./lancement.js";
 import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu } from "./enjeux.js";
 
 const $ = id => document.getElementById(id);
@@ -29,7 +30,7 @@ export function installerDuels(ctx) {
   let fenetre = null;   // { duel, adv, mode : "defi" (reçu) ou "rdv" (accepté, on m'attend) } : affiché dans la fenêtre
   // Les rendez-vous déjà proposés dans la fenêtre : id → heure (on repropose au bout de 10 minutes si l'autre attend encore).
   const rdvProposes = new Map();
-  const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), classe: lire("duelClasse", true), mise: MISES.includes(lire("duelMise", 0)) ? lire("duelMise", 0) : 0 };
+  const format = { len: lire("duelLen", 11), win: lire("duelWin", 2), classe: lire("duelClasse", true), mise: misesVisibles(MISES).includes(lire("duelMise", 0)) ? lire("duelMise", 0) : 0 };
   const dire = (t, erreur = false) => { $("duelMsg").textContent = t; $("duelMsg").classList.toggle("erreur", erreur); };
   const base = () => location.origin + location.pathname;
 

@@ -4,9 +4,9 @@
 // Ce qui s'ouvre après combien de matchs joués (tous les matchs : bots, duels, tournois).
 // Au départ : le premier match, Défier un ami et l'Entraînement.
 export const PALIERS = [
-  { matchs: 1, texte: "⚡ Nouveau : la Partie rapide, un adversaire de ton niveau en un clic." },
-  { matchs: 3, texte: "📅 Nouveau : le match du jour (à partager avec tes amis), les jetons, les défis du jour et la boutique." },
-  { matchs: 5, texte: "🏆 Nouveau : les tournois (Sit & Go, freeroll du soir, Grand Chelem du dimanche)." },
+  { matchs: 1, texte: "⚡ Nouveau : la Partie rapide, un adversaire de ton niveau en un clic, et 📅 le match du jour (le même pour tout le monde, à partager avec tes amis)." },
+  { matchs: 3, texte: "🪙 Nouveau : les jetons, les défis du jour et la boutique." },
+  { matchs: 5, texte: "🏆 Nouveau : les tournois (le freeroll gratuit de 20 h, les heads-up et les Sit & Go)." },
 ];
 
 // Le palier atteint (0, 1, 3 ou 5) ; « complet » : le joueur a demandé à tout voir.
