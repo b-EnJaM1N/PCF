@@ -196,14 +196,15 @@ canvas { display: block; width: 100%; height: 100%; }
   // 15 vagues par monde, un boss toutes les 3 vagues. Le boss de la vague 9 ouvre le monde suivant,
   // mais on peut continuer jusqu'à la vague 15 pour battre son record.
   const VAGUES_PAR_MONDE = 15, VAGUE_DEBLOCAGE = 9;
-  // "e" : un emoji ; "croix" : deux emojis croisés en V ("retourne" : réunis en haut, ouverts vers le bas) ;
+  // "e" : un emoji ; "croix" : deux emojis croisés en V ; "retourne" : tourné pour que les ciseaux
+  // aient toujours le côté ouvert vers le joueur (crosses réunies en haut, pinces du crabe vers le bas…) ;
   // "dessin" : dessiné à la main ; "taille" : plus grand ou plus petit que les autres objets.
   // Gymnase : vagues 1 à 3 avec les mains, puis toutes les 3 vagues des objets de sport changent de rôle.
   const GYMNASE = [
     { nom: "Basket et athlé", pierre: { e: "🏀", nom: "Ballon" }, feuille: { dessin: "dossard", nom: "Dossard" }, ciseaux: { dessin: "javelots", nom: "Javelots" } },
     { nom: "Foot et hockey", pierre: { e: "⚽", nom: "Ballon" }, feuille: { dessin: "drapeau", nom: "Drapeau de corner" }, ciseaux: { croix: "🏒", retourne: true, nom: "Crosses" } },
-    { nom: "Tennis", petit: true, pierre: { e: "🎾", nom: "Balle" }, feuille: { dessin: "raquette", nom: "Raquette" }, ciseaux: { croix: "🏸", nom: "Raquettes croisées" } },
-    { nom: "Baseball", petit: true, pierre: { e: "⚾", nom: "Balle" }, feuille: { dessin: "gant", nom: "Gant" }, ciseaux: { croix: "🏏", nom: "Battes" } },
+    { nom: "Tennis", petit: true, pierre: { e: "🎾", nom: "Balle" }, feuille: { dessin: "raquette", nom: "Raquette" }, ciseaux: { croix: "🏸", retourne: true, nom: "Raquettes croisées" } },
+    { nom: "Baseball", petit: true, pierre: { e: "⚾", nom: "Balle" }, feuille: { dessin: "gant", nom: "Gant" }, ciseaux: { croix: "🏏", retourne: true, nom: "Battes" } },
   ];
   // Forêt : des objets dès la vague 1 ; les ciseaux sont toujours le lucane (ses pinces).
   const LUCANE = { dessin: "lucane", nom: "Lucane" };
@@ -215,7 +216,7 @@ canvas { display: block; width: 100%; height: 100%; }
     { nom: "La forêt profonde", petit: true, pierre: { e: "🌰", nom: "Châtaigne" }, feuille: { e: "☘️", nom: "Trèfle" }, ciseaux: LUCANE },
   ];
   // Plage : des galets, des crabes, et des algues ou des méduses qui changent toutes les 3 vagues.
-  const GALET = { dessin: "galet", nom: "Galet" }, CRABE = { e: "🦀", nom: "Crabe" };
+  const GALET = { dessin: "galet", nom: "Galet" }, CRABE = { e: "🦀", retourne: true, nom: "Crabe" };
   const ALGUE = { dessin: "algue", nom: "Algue" }, MEDUSE = { dessin: "meduse", nom: "Méduse" };
   const PLAGE = [
     { nom: "Le bord de l'eau", pierre: GALET, feuille: ALGUE, ciseaux: CRABE },
@@ -226,7 +227,7 @@ canvas { display: block; width: 100%; height: 100%; }
   ];
   // Espace : une grosse météorite, et des extraterrestres qui jouent avec leurs mains vertes.
   const METEORITE = { dessin: "meteorite", nom: "Météorite", taille: 1.3 };
-  const MAIN_ALIEN = { dessin: "mainAlien", nom: "Main d'alien ouverte" }, V_ALIEN = { dessin: "vAlien", nom: "Doigts d'alien en V" };
+  const MAIN_ALIEN = { dessin: "mainAlien", nom: "Main d'alien ouverte" }, V_ALIEN = { dessin: "vAlien", retourne: true, nom: "Doigts d'alien en V" };
   const ESPACE = [
     { nom: "L'invasion", pierre: METEORITE, feuille: MAIN_ALIEN, ciseaux: V_ALIEN },
     { nom: "Le bout de la galaxie", petit: true, pierre: { ...METEORITE, taille: 1.5 }, feuille: MAIN_ALIEN, ciseaux: V_ALIEN },
@@ -719,6 +720,11 @@ canvas { display: block; width: 100%; height: 100%; }
 
   // dessine un objet de sport (taille : sa hauteur environ)
   function objet(o, x, y, taille) {
+    if (o.retourne && !o.croix) {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(Math.PI);
+      objet({ ...o, retourne: false }, 0, 0, taille); ctx.restore();
+      return;
+    }
     if (o.e) return emoji(o.e, x, y, taille);
     if (o.croix) {
       for (const sens of [-1, 1]) {

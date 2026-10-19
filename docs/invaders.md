@@ -27,6 +27,8 @@ Prototype jouable du 18 octobre, validé (« amusant, prometteur »). Des signes
 - **Pause** : bouton ⏸ (ou touche P / Échap) ; pause automatique quand on quitte l'appli (appel, notification) ; la partie est gardée sur le téléphone et l'accueil propose « Reprendre » si la page a été fermée entre-temps.
 - **Raccourcis pour tester** (à ajouter à l'adresse) : « #boss » commence à la vague 3, « #vague7 » (etc.) à une vague donnée, « #monde2 » (ou 3, 4) montre tous les mondes à l'accueil, sans les débloquer.
 
+- **Règle pour les ciseaux** (demande du porteur du projet, 20 octobre) : tous les objets qui jouent les ciseaux ont le côté ouvert tourné vers le joueur, en bas (javelots, crosses, raquettes de badminton et battes réunies en haut ; pinces du crabe et du lucane vers le bas ; doigts d'alien en V vers le bas).
+
 ## Mondes 3 et 4 : la Forêt et l'Espace (19 octobre, à tester)
 Le porteur du projet trouvait 2 mondes légers pour le lancement : on passe à 4. Choix du porteur du projet : les ciseaux de la Forêt sont le **lucane** (cerf-volant, ses pinces), le monde 4 est **l'Espace**. Chaque monde s'ouvre au boss de la vague 9 du précédent. L'accueil montre un bouton par monde ouvert ; « Essayer tous les mondes (démo) » les montre tous (aussi avec « #monde3 », etc., dans l'adresse).
 
