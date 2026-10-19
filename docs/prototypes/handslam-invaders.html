@@ -210,12 +210,14 @@ canvas { display: block; width: 100%; height: 100%; }
   // "e" : un emoji ; "croix" : deux emojis croisés en V ; "retourne" : tourné pour que les ciseaux
   // aient toujours le côté ouvert vers le joueur (crosses réunies en haut, pinces du crabe vers le bas…) ;
   // "dessin" : dessiné à la main ; "taille" : plus grand ou plus petit que les autres objets.
-  // Gymnase : vagues 1 à 3 avec les mains, puis toutes les 3 vagues des objets de sport changent de rôle.
+  // Gymnase : vagues 1 à 3 avec les mains (pour apprendre), puis basket et foot qui alternent toutes les 3 vagues,
+  // et les deux mélangés aux vagues 13 à 15. Le tennis et le baseball, qu'on ne reconnaissait pas, ont été retirés.
+  const BASKET = { nom: "Basket et athlé", pierre: { e: "🏀", nom: "Ballon de basket", taille: 1.1 }, feuille: { dessin: "dossard", nom: "Dossard" }, ciseaux: { dessin: "javelots", nom: "Javelots" } };
+  const FOOT = { nom: "Foot et hockey", pierre: { e: "⚽", nom: "Ballon de foot", taille: 1.1 }, feuille: { dessin: "drapeau", nom: "Drapeau de corner" }, ciseaux: { croix: "🏒", retourne: true, nom: "Crosses" } };
   const GYMNASE = [
-    { nom: "Basket et athlé", pierre: { e: "🏀", nom: "Ballon" }, feuille: { dessin: "dossard", nom: "Dossard" }, ciseaux: { dessin: "javelots", nom: "Javelots" } },
-    { nom: "Foot et hockey", pierre: { e: "⚽", nom: "Ballon" }, feuille: { dessin: "drapeau", nom: "Drapeau de corner" }, ciseaux: { croix: "🏒", retourne: true, nom: "Crosses" } },
-    { nom: "Tennis", petit: true, pierre: { e: "🎾", nom: "Balle" }, feuille: { dessin: "raquette", nom: "Raquette" }, ciseaux: { croix: "🏸", retourne: true, nom: "Raquettes croisées" } },
-    { nom: "Baseball", petit: true, pierre: { e: "⚾", nom: "Balle" }, feuille: { dessin: "gant", nom: "Gant" }, ciseaux: { croix: "🏏", retourne: true, nom: "Battes" } },
+    BASKET, FOOT, { ...BASKET, nom: "Retour au basket" },
+    // vagues 13 à 15 : les deux séries mélangées
+    { nom: "Le grand mélange", pierre: [BASKET.pierre, FOOT.pierre], feuille: [BASKET.feuille, FOOT.feuille], ciseaux: [BASKET.ciseaux, FOOT.ciseaux] },
   ];
   // Forêt : le lucane (ses pinces) est toujours les ciseaux ; toutes les 3 vagues, gland et trèfle,
   // ou pomme et feuille d'érable ; les deux séries mélangées aux vagues 13 à 15.
@@ -826,42 +828,6 @@ canvas { display: block; width: 100%; height: 100%; }
       ctx.bezierCurveTo(px + s * 0.38, haut + s * 0.56, px + s * 0.22, haut + s * 0.36, px, haut + s * 0.46);
       ctx.closePath();
       ctx.fillStyle = "#FFD23F"; ctx.fill(); ctx.lineWidth = s * 0.03; ctx.strokeStyle = "#B8860B"; ctx.stroke();
-    } else if (o.dessin === "raquette") {
-      // une raquette de tennis : tamis ovale cordé et manche
-      const cy = y - s * 0.14, rx = s * 0.3, ry = s * 0.36;
-      ctx.strokeStyle = "#1E1E24"; ctx.lineWidth = s * 0.1;
-      ctx.beginPath(); ctx.moveTo(x, cy + ry); ctx.lineTo(x, y + s * 0.52); ctx.stroke();
-      ctx.beginPath(); ctx.ellipse(x, cy, rx, ry, 0, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(245, 247, 250, .2)"; ctx.fill();
-      ctx.save(); ctx.clip();
-      ctx.strokeStyle = "rgba(245, 247, 250, .85)"; ctx.lineWidth = s * 0.018;
-      for (let i = -4; i <= 4; i++) {
-        ctx.beginPath(); ctx.moveTo(x + i * rx / 4.5, cy - ry); ctx.lineTo(x + i * rx / 4.5, cy + ry); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(x - rx, cy + i * ry / 4.5); ctx.lineTo(x + rx, cy + i * ry / 4.5); ctx.stroke();
-      }
-      ctx.restore();
-      ctx.beginPath(); ctx.ellipse(x, cy, rx, ry, 0, 0, Math.PI * 2);
-      ctx.strokeStyle = "#E8574A"; ctx.lineWidth = s * 0.07; ctx.stroke();
-    } else if (o.dessin === "gant") {
-      // un gant de baseball : la main ouverte en cuir
-      const cuir = "#A8662E", bord = "#5E3716";
-      ctx.fillStyle = cuir; ctx.strokeStyle = bord; ctx.lineWidth = s * 0.03;
-      const capsule = (ang, long, larg, ox, oy) => {
-        ctx.save(); ctx.translate(ox, oy); ctx.rotate(ang);
-        ctx.beginPath(); ctx.roundRect(-larg / 2, -long, larg, long, larg / 2); ctx.fill(); ctx.stroke();
-        ctx.restore();
-      };
-      const bx = x + s * 0.04, by = y + s * 0.22;
-      capsule(-1.05, s * 0.42, s * 0.19, bx - s * 0.12, by); // pouce
-      for (const [i, a] of [-0.32, -0.11, 0.1, 0.31].entries()) capsule(a, s * (0.66 - Math.abs(i - 1.5) * 0.05), s * 0.17, bx, by);
-      ctx.beginPath(); ctx.ellipse(bx, by, s * 0.27, s * 0.24, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      ctx.beginPath(); ctx.ellipse(bx, by - s * 0.06, s * 0.15, s * 0.12, 0, 0, Math.PI * 2);
-      ctx.fillStyle = "#C98A4B"; ctx.fill();
-      ctx.strokeStyle = "#E9D3A6"; ctx.lineWidth = s * 0.025; // le laçage entre pouce et index
-      for (let k = 0; k < 3; k++) {
-        const yy = by - s * (0.12 + k * 0.1);
-        ctx.beginPath(); ctx.moveTo(bx - s * 0.28, yy); ctx.lineTo(bx - s * 0.14, yy - s * 0.05); ctx.stroke();
-      }
     } else if (o.dessin === "lucane") {
       // un lucane (cerf-volant) vu de dessus : ses grandes pinces ouvertes, tournées vers le bas
       ctx.strokeStyle = "#2A1408"; ctx.lineWidth = s * 0.035;
