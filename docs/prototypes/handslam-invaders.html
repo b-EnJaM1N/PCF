@@ -111,6 +111,7 @@ canvas { display: block; width: 100%; height: 100%; }
       <button class="go plage" id="jouer2" hidden>Monde 2 · La Plage</button>
       <button class="go" id="reprise" hidden>▶ Reprendre la partie</button>
       <p class="petit" id="verrou">🔒 Monde 2 : La Plage, après le 3e boss du Gymnase (vague 9)</p>
+      <button class="cote" id="essaiPlage">Essayer la Plage (démo)</button>
       <button class="cote" id="cote">Mettre les signes à droite</button>
     </div>
 
@@ -202,6 +203,7 @@ canvas { display: block; width: 100%; height: 100%; }
   function majAccueil() {
     $("jouer2").hidden = mondesOuverts < 2;
     $("verrou").hidden = mondesOuverts >= 2;
+    $("essaiPlage").hidden = mondesOuverts >= 2;
   }
   majAccueil();
 
@@ -418,6 +420,8 @@ canvas { display: block; width: 100%; height: 100%; }
   }
   $("jouer").addEventListener("click", () => demarrer(location.hash === "#monde2" ? 1 : 0));
   $("jouer2").addEventListener("click", () => demarrer(1));
+  // pour la démo seulement : essayer la Plage sans l'avoir débloquée
+  $("essaiPlage").addEventListener("click", () => demarrer(1));
   $("rejouer").addEventListener("click", () => demarrer());
   $("menu").addEventListener("click", () => { $("fin").hidden = true; $("accueil").hidden = false; $("jouer").focus(); });
 
