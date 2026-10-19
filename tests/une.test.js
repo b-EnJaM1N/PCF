@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { histoireDuMatch, chiffreDuMatch, citationDuMatch } from "../app/js/une-logique.js";
+import { histoireDuMatch, chiffreDuMatch, citationDuMatch, phraseDeMonique } from "../app/js/une-logique.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX } from "../app/js/regles.js";
 import { nouvellesStats, suivreCoup } from "../app/js/stats-match.js";
 
@@ -48,4 +48,10 @@ test("la phrase du match : la commentatrice d'abord", () => {
   assert.deepEqual(citationDuMatch(c), { texte: "Propre. Net. Sans bavure.", auteur: "Monique Latouffe" });
   assert.equal(citationDuMatch([c[1]]).auteur, "Roland Pignon");
   assert.equal(citationDuMatch([]), null);
+});
+
+test("la phrase de Monique : sa dernière réplique assez courte pour l'image, jamais celle de Roland", () => {
+  const c = [{ role: "commentatrice", texte: "Propre." }, { role: "commentateur", texte: "Quel point !" }, { role: "commentatrice", texte: "Nous n'en parlerons pas." }, { role: "commentatrice", texte: "x".repeat(200) }];
+  assert.equal(phraseDeMonique(c), "Nous n'en parlerons pas.");
+  assert.equal(phraseDeMonique([{ role: "commentateur", texte: "Quel point !" }]), null);
 });

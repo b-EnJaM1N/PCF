@@ -585,6 +585,8 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 .cel-confettis i.forme { width: auto; height: auto; background: none; border-radius: 0; line-height: 1; }
 @media (prefers-reduced-motion: reduce) { [class^="geste-"] { animation: none !important; } }
 
+/* La version de lancement (lancement.js) : ce qui a besoin de monde est caché pour l'instant. */
+body.lancement .cache-lancement, body:not(.lancement) .seul-lancement { display: none !important; }
 /* La première visite : le menu « Jouer » s'ouvre au fil des matchs (decouverte.js). */
 body[data-decouverte="0"] [data-palier="1"], body[data-decouverte="0"] [data-palier="3"], body[data-decouverte="0"] [data-palier="5"],
 body[data-decouverte="1"] [data-palier="3"], body[data-decouverte="1"] [data-palier="5"],
