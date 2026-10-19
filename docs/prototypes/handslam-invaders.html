@@ -196,11 +196,12 @@ canvas { display: block; width: 100%; height: 100%; }
   // 15 vagues par monde, un boss toutes les 3 vagues. Le boss de la vague 9 ouvre le monde suivant,
   // mais on peut continuer jusqu'à la vague 15 pour battre son record.
   const VAGUES_PAR_MONDE = 15, VAGUE_DEBLOCAGE = 9;
-  // "e" : un emoji ; "croix" : deux emojis croisés en V ; "dessin" : dessiné à la main.
+  // "e" : un emoji ; "croix" : deux emojis croisés en V ("retourne" : réunis en haut, ouverts vers le bas) ;
+  // "dessin" : dessiné à la main ; "taille" : plus grand ou plus petit que les autres objets.
   // Gymnase : vagues 1 à 3 avec les mains, puis toutes les 3 vagues des objets de sport changent de rôle.
   const GYMNASE = [
     { nom: "Basket et athlé", pierre: { e: "🏀", nom: "Ballon" }, feuille: { dessin: "dossard", nom: "Dossard" }, ciseaux: { dessin: "javelots", nom: "Javelots" } },
-    { nom: "Foot et hockey", pierre: { e: "⚽", nom: "Ballon" }, feuille: { dessin: "drapeau", nom: "Drapeau de corner" }, ciseaux: { croix: "🏒", nom: "Crosses" } },
+    { nom: "Foot et hockey", pierre: { e: "⚽", nom: "Ballon" }, feuille: { dessin: "drapeau", nom: "Drapeau de corner" }, ciseaux: { croix: "🏒", retourne: true, nom: "Crosses" } },
     { nom: "Tennis", petit: true, pierre: { e: "🎾", nom: "Balle" }, feuille: { dessin: "raquette", nom: "Raquette" }, ciseaux: { croix: "🏸", nom: "Raquettes croisées" } },
     { nom: "Baseball", petit: true, pierre: { e: "⚾", nom: "Balle" }, feuille: { dessin: "gant", nom: "Gant" }, ciseaux: { croix: "🏏", nom: "Battes" } },
   ];
@@ -213,32 +214,42 @@ canvas { display: block; width: 100%; height: 100%; }
     { nom: "Les sapins", petit: true, pierre: { dessin: "pommeDePin", nom: "Pomme de pin" }, feuille: { e: "🌿", nom: "Fougère" }, ciseaux: LUCANE },
     { nom: "La forêt profonde", petit: true, pierre: { e: "🌰", nom: "Châtaigne" }, feuille: { e: "☘️", nom: "Trèfle" }, ciseaux: LUCANE },
   ];
-  // Espace : les ciseaux sont toujours le vaisseau en V.
-  const VAISSEAU = { dessin: "vaisseau", nom: "Vaisseau" }, SATELLITE = { e: "🛰️", nom: "Satellite" }, VOILE = { dessin: "voile", nom: "Voile solaire" };
-  const ESPACE = [
-    { nom: "Les astéroïdes", pierre: { dessin: "asteroide", nom: "Astéroïde" }, feuille: SATELLITE, ciseaux: VAISSEAU },
-    { nom: "La Lune", pierre: { e: "🌕", nom: "Lune" }, feuille: VOILE, ciseaux: VAISSEAU },
-    { nom: "Les planètes", pierre: { e: "🪐", nom: "Planète" }, feuille: SATELLITE, ciseaux: VAISSEAU },
-    { nom: "Les comètes", petit: true, pierre: { e: "☄️", nom: "Comète" }, feuille: VOILE, ciseaux: VAISSEAU },
-    { nom: "Le bout de la galaxie", petit: true, pierre: { dessin: "asteroide", nom: "Astéroïde" }, feuille: SATELLITE, ciseaux: VAISSEAU },
+  // Plage : des galets, des crabes, et des algues ou des méduses qui changent toutes les 3 vagues.
+  const GALET = { dessin: "galet", nom: "Galet" }, CRABE = { e: "🦀", nom: "Crabe" };
+  const ALGUE = { dessin: "algue", nom: "Algue" }, MEDUSE = { dessin: "meduse", nom: "Méduse" };
+  const PLAGE = [
+    { nom: "Le bord de l'eau", pierre: GALET, feuille: ALGUE, ciseaux: CRABE },
+    { nom: "Les méduses", pierre: GALET, feuille: MEDUSE, ciseaux: CRABE },
+    { nom: "Les algues", pierre: GALET, feuille: ALGUE, ciseaux: CRABE },
+    { nom: "Le large", petit: true, pierre: GALET, feuille: MEDUSE, ciseaux: CRABE },
+    { nom: "La marée haute", petit: true, pierre: GALET, feuille: ALGUE, ciseaux: CRABE },
   ];
+  // Espace : une grosse météorite, et des extraterrestres qui jouent avec leurs mains vertes.
+  const METEORITE = { dessin: "meteorite", nom: "Météorite", taille: 1.3 };
+  const MAIN_ALIEN = { dessin: "mainAlien", nom: "Main d'alien ouverte" }, V_ALIEN = { dessin: "vAlien", nom: "Doigts d'alien en V" };
+  const ESPACE = [
+    { nom: "L'invasion", pierre: METEORITE, feuille: MAIN_ALIEN, ciseaux: V_ALIEN },
+    { nom: "Le bout de la galaxie", petit: true, pierre: { ...METEORITE, taille: 1.5 }, feuille: MAIN_ALIEN, ciseaux: V_ALIEN },
+  ];
+  const ESPACE_VAGUES = [0, 0, 0, 1, 1]; // les mêmes objets jusqu'à la vague 9, plus petits ensuite
   // depart : la difficulté de la vague 1 (en vagues du Gymnase) ; bossPlus : les boss sont plus forts.
   const MONDES = [
     { nom: "Le Gymnase", du: "du Gymnase", boss: "la Main de Fer", decor: "gymnase", couleur: "#F4C542", texte: "#0F2C52",
       themes: GYMNASE, themesDes: 1, depart: 0, bossPlus: 0 },
-    { nom: "La Plage", du: "de la Plage", ouverte: "La Plage est ouverte !", boss: "le Roi Crabe", decor: "plage", couleur: "#2E9BC0", texte: "#F5F7FA",
-      crabes: true, depart: 5, bossPlus: 1 },
+    { nom: "La Plage", du: "de la Plage", ouverte: "La Plage est ouverte !", boss: "le Roi Crabe", insigne: "👑", decor: "plage", couleur: "#2E9BC0", texte: "#F5F7FA",
+      themes: PLAGE, crabes: true, depart: 5, bossPlus: 1 },
     { nom: "La Forêt", du: "de la Forêt", ouverte: "La Forêt est ouverte !", boss: "le Vieux Chêne", insigne: "🌳", decor: "foret", couleur: "#3E8E4F", texte: "#F5F7FA",
       themes: FORET, vent: true, depart: 6, bossPlus: 1.5 },
     { nom: "L'Espace", du: "de l'Espace", ouverte: "L'Espace est ouvert !", boss: "la Soucoupe Mère", insigne: "🛸", decor: "espace", couleur: "#6A4BC4", texte: "#F5F7FA",
-      themes: ESPACE, teleport: true, depart: 8, bossPlus: 2 },
+      themes: ESPACE_VAGUES.map(i => ESPACE[i]), teleport: true, depart: 8, bossPlus: 2 },
   ];
-  const themeCourant = () => {
+  const themeDe = vague => {
     const m = J && MONDES[J.monde];
-    if (!m || !m.themes || J.vague < 1) return null;
-    const i = Math.floor((J.vague - 1) / 3) - (m.themesDes || 0);
+    if (!m || !m.themes || vague < 1) return null;
+    const i = Math.floor((vague - 1) / 3) - (m.themesDes || 0);
     return i < 0 ? null : m.themes[Math.min(m.themes.length - 1, i)];
   };
+  const themeCourant = () => J && themeDe(J.vague);
   let mondesOuverts = 1, mondeDepart = 0, demo = /^#monde\d$/.test(location.hash);
   try { mondesOuverts = Math.min(MONDES.length, Math.max(1, +localStorage.getItem("hs-invaders-mondes") || 1)); } catch (e) {}
   // un bouton par monde ouvert ; « Essayer tous les mondes » les montre tous (démo seulement)
@@ -299,7 +310,7 @@ canvas { display: block; width: 100%; height: 100%; }
         : { titre: `Vague ${n}/${VAGUES_PAR_MONDE}`, sous: `${J.resteVague} signes`, vie: 1 };
       if (n === 1) J.pause = 2500;
       const th = themeCourant();
-      if (th && n % 3 === 1) {
+      if (th && (n === 1 || th !== themeDe(n - 1))) {
         // nouveaux objets : on présente qui joue quel rôle
         const ic = o => o.e || (o.croix ? o.croix + o.croix : "");
         J.bandeau = { titre: n === 1 ? m.nom : th.nom, sous: `${ic(th.pierre)} ${th.pierre.nom} = Pierre · ${ic(th.feuille)} ${th.feuille.nom} = Feuille · ${ic(th.ciseaux)} ${th.ciseaux.nom} = Ciseaux`, vie: 2.4, petit: true };
@@ -327,13 +338,15 @@ canvas { display: block; width: 100%; height: 100%; }
   }
 
   function faireApparaitre(x = R + Math.random() * (W - 2 * R), y = -R, v = vitesse()) {
-    // sur la plage, des crabes ✌️ qui avancent en biais et rebondissent sur les bords
-    if (MONDES[J.monde].crabes && Math.random() < 0.3) {
+    const m = MONDES[J.monde], th = themeCourant();
+    // balles de tennis et de baseball, etc. : plus petites ; la météorite : plus grosse
+    const taille = signe => (th?.petit ? 0.72 : 1) * (th?.[signe].taille || 1);
+    // sur la plage, des crabes (les ciseaux) qui avancent en biais et rebondissent sur les bords
+    if (m.crabes && Math.random() < 0.3) {
       const vx = (Math.random() < 0.5 ? -1 : 1) * (45 + 45 * niveau());
-      return J.ennemis.push({ x, x0: x, y, v: v * 0.85, signe: "ciseaux", crabe: true, vx, phase: 0, bond: 0 });
+      return J.ennemis.push({ x, x0: x, y, v: v * 0.85, signe: "ciseaux", crabe: true, vx, phase: 0, bond: 0, t: taille("ciseaux") });
     }
-    const m = MONDES[J.monde], signe = SIGNES[Math.random() * 3 | 0];
-    const t = themeCourant()?.petit ? 0.72 : 1; // balles de tennis et de baseball, etc. : plus petites
+    const signe = SIGNES[Math.random() * 3 | 0], t = taille(signe);
     // dans la Forêt, les feuilles tombent en se balançant au vent
     if (m.vent && signe === "feuille") {
       const x0 = Math.min(W - R - W * 0.13, Math.max(R + W * 0.13, x));
@@ -709,7 +722,7 @@ canvas { display: block; width: 100%; height: 100%; }
     if (o.e) return emoji(o.e, x, y, taille);
     if (o.croix) {
       for (const sens of [-1, 1]) {
-        ctx.save(); ctx.translate(x + sens * taille * 0.16, y); ctx.scale(sens, 1); ctx.rotate(-0.38);
+        ctx.save(); ctx.translate(x + sens * taille * 0.16, y); ctx.scale(sens, o.retourne ? -1 : 1); ctx.rotate(-0.38);
         emoji(o.croix, 0, 0, taille); ctx.restore();
       }
       return;
@@ -850,48 +863,91 @@ canvas { display: block; width: 100%; height: 100%; }
       ctx.restore();
       ctx.beginPath(); ctx.ellipse(x, y, s * 0.26, s * 0.4, 0, 0, Math.PI * 2);
       ctx.strokeStyle = "#3D2510"; ctx.lineWidth = s * 0.03; ctx.stroke();
-    } else if (o.dessin === "asteroide") {
-      // un astéroïde : caillou gris bosselé avec des cratères
+    } else if (o.dessin === "galet") {
+      // un galet : caillou plat et lisse, gris-beige, avec un reflet
+      const g = ctx.createRadialGradient(x - s * 0.12, y - s * 0.1, s * 0.05, x, y, s * 0.42);
+      g.addColorStop(0, "#D9D4C7"); g.addColorStop(1, "#8F887A");
+      ctx.fillStyle = g; ctx.strokeStyle = "#5E584C"; ctx.lineWidth = s * 0.03;
+      ctx.beginPath(); ctx.ellipse(x, y + s * 0.04, s * 0.42, s * 0.3, -0.15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "rgba(94, 88, 76, .5)";
+      for (const [a, b] of [[0.14, 0.1], [-0.18, 0.14], [0.05, -0.08], [0.24, -0.04]]) {
+        ctx.beginPath(); ctx.arc(x + s * a, y + s * b, s * 0.022, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.fillStyle = "rgba(255, 255, 255, .45)";
+      ctx.beginPath(); ctx.ellipse(x - s * 0.14, y - s * 0.08, s * 0.12, s * 0.05, -0.3, 0, Math.PI * 2); ctx.fill();
+    } else if (o.dessin === "algue") {
+      // une algue : trois longues lanières vertes qui ondulent
+      const t = performance.now() / 400;
+      for (const [dx, h, c] of [[-0.14, 0.86, "#2E8B57"], [0.14, 0.8, "#3FA463"], [0, 1, "#56C27A"]]) {
+        ctx.strokeStyle = c; ctx.lineWidth = s * 0.16;
+        ctx.beginPath(); ctx.moveTo(x + s * dx, y + s * 0.48);
+        for (let k = 1; k <= 6; k++) {
+          const f = k / 6;
+          ctx.lineTo(x + s * dx + Math.sin(f * 4 + t + dx * 9) * s * 0.09 * f, y + s * 0.48 - f * s * h * 0.95);
+        }
+        ctx.stroke();
+      }
+    } else if (o.dessin === "meduse") {
+      // une méduse : un dôme rose transparent et ses filaments qui ondulent
+      const t = performance.now() / 300;
+      ctx.strokeStyle = "rgba(255, 170, 220, .9)"; ctx.lineWidth = s * 0.045;
+      for (const dx of [-0.24, -0.12, 0, 0.12, 0.24]) {
+        ctx.beginPath(); ctx.moveTo(x + s * dx, y);
+        for (let k = 1; k <= 5; k++) ctx.lineTo(x + s * dx + Math.sin(k * 1.3 + t + dx * 10) * s * 0.05, y + k * s * 0.1);
+        ctx.stroke();
+      }
+      const g = ctx.createRadialGradient(x, y - s * 0.12, s * 0.04, x, y - s * 0.05, s * 0.36);
+      g.addColorStop(0, "rgba(255, 220, 245, .95)"); g.addColorStop(1, "rgba(214, 110, 200, .85)");
+      ctx.fillStyle = g; ctx.strokeStyle = "#A64A9B"; ctx.lineWidth = s * 0.03;
+      ctx.beginPath(); ctx.ellipse(x, y + s * 0.02, s * 0.36, s * 0.34, 0, Math.PI, Math.PI * 2);
+      ctx.quadraticCurveTo(x, y + s * 0.12, x - s * 0.36, y + s * 0.02); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "rgba(255, 255, 255, .5)";
+      ctx.beginPath(); ctx.ellipse(x - s * 0.13, y - s * 0.16, s * 0.07, s * 0.04, -0.5, 0, Math.PI * 2); ctx.fill();
+    } else if (o.dessin === "meteorite") {
+      // une météorite : un gros caillou qui tombe, avec sa traînée de feu au-dessus
+      const g = ctx.createLinearGradient(x, y - s * 0.75, x, y);
+      g.addColorStop(0, "rgba(255, 200, 60, 0)"); g.addColorStop(0.6, "rgba(255, 150, 40, .75)"); g.addColorStop(1, "rgba(255, 90, 30, .95)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.moveTo(x - s * 0.36, y); ctx.quadraticCurveTo(x - s * 0.28, y - s * 0.5, x, y - s * 0.8);
+      ctx.quadraticCurveTo(x + s * 0.28, y - s * 0.5, x + s * 0.36, y); ctx.closePath(); ctx.fill();
       const bosses = [1, 0.86, 0.97, 0.8, 0.95, 0.88, 1, 0.83, 0.92, 0.9];
       ctx.beginPath();
       bosses.forEach((k, i) => {
         const a = i / bosses.length * Math.PI * 2;
-        ctx.lineTo(x + Math.cos(a) * s * 0.44 * k, y + Math.sin(a) * s * 0.4 * k);
+        ctx.lineTo(x + Math.cos(a) * s * 0.38 * k, y + s * 0.08 + Math.sin(a) * s * 0.36 * k);
       });
-      ctx.closePath(); ctx.fillStyle = "#8E8A93"; ctx.fill();
-      ctx.strokeStyle = "#4E4A55"; ctx.lineWidth = s * 0.03; ctx.stroke();
-      ctx.fillStyle = "#68646F";
-      for (const [a, b, r] of [[-0.14, -0.1, 0.1], [0.16, 0.08, 0.08], [-0.04, 0.2, 0.06], [0.18, -0.18, 0.05]]) {
+      ctx.closePath(); ctx.fillStyle = "#7A6A62"; ctx.fill();
+      ctx.strokeStyle = "#FF8A3D"; ctx.lineWidth = s * 0.04; ctx.stroke(); // bord rougeoyant
+      ctx.fillStyle = "#544640";
+      for (const [a, b, r] of [[-0.12, 0, 0.09], [0.15, 0.16, 0.07], [-0.02, 0.27, 0.05], [0.16, -0.08, 0.05]]) {
         ctx.beginPath(); ctx.arc(x + s * a, y + s * b, s * r, 0, Math.PI * 2); ctx.fill();
       }
-    } else if (o.dessin === "voile") {
-      // une voile solaire : grande feuille dorée tendue en losange
-      ctx.translate(x, y); ctx.rotate(Math.PI / 4);
-      const c = s * 0.32;
-      const g = ctx.createLinearGradient(-c, -c, c, c);
-      g.addColorStop(0, "#FFE38A"); g.addColorStop(1, "#C9962E");
-      ctx.fillStyle = g; ctx.fillRect(-c, -c, 2 * c, 2 * c);
-      ctx.strokeStyle = "rgba(90, 60, 10, .7)"; ctx.lineWidth = s * 0.02;
-      for (const k of [-0.5, 0, 0.5]) {
-        ctx.beginPath(); ctx.moveTo(-c, k * c); ctx.lineTo(c, k * c); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(k * c, -c); ctx.lineTo(k * c, c); ctx.stroke();
+    } else if (o.dessin === "mainAlien" || o.dessin === "vAlien") {
+      // une main d'extraterrestre verte, aux longs doigts terminés par des boules
+      // ouverte (5 doigts écartés) pour la feuille, deux doigts en V pour les ciseaux
+      const peau = "#6FD35B", bord = "#2F7A2A";
+      const doigts = o.dessin === "mainAlien"
+        ? [[-1.05, 0.48], [-0.42, 0.64], [0, 0.7], [0.42, 0.64], [0.85, 0.56]]
+        : [[-0.36, 0.7], [0.36, 0.7]];
+      const py = y + s * 0.3;
+      ctx.lineWidth = s * 0.16; ctx.strokeStyle = bord;
+      for (const [a, l] of doigts) { // contour
+        ctx.beginPath(); ctx.moveTo(x, py); ctx.lineTo(x + Math.sin(a) * s * l, py - Math.cos(a) * s * l); ctx.stroke();
       }
-      ctx.lineWidth = s * 0.03; ctx.strokeRect(-c, -c, 2 * c, 2 * c);
-      ctx.fillStyle = "#D7DEE8"; ctx.fillRect(-s * 0.06, -s * 0.06, s * 0.12, s * 0.12);
-    } else if (o.dessin === "vaisseau") {
-      // un vaisseau en V : le nez pointe vers le bas, les deux ailes s'écartent vers le haut
-      ctx.fillStyle = "#F28C28";
-      for (const sens of [-1, 1]) { // flammes des réacteurs, au bout des ailes
-        ctx.beginPath(); ctx.moveTo(x + sens * s * 0.36, y - s * 0.36); ctx.lineTo(x + sens * s * 0.46, y - s * 0.6); ctx.lineTo(x + sens * s * 0.48, y - s * 0.34); ctx.closePath(); ctx.fill();
+      ctx.lineWidth = s * 0.11; ctx.strokeStyle = peau;
+      for (const [a, l] of doigts) {
+        ctx.beginPath(); ctx.moveTo(x, py); ctx.lineTo(x + Math.sin(a) * s * l, py - Math.cos(a) * s * l); ctx.stroke();
       }
-      ctx.beginPath();
-      ctx.moveTo(x, y + s * 0.48); ctx.lineTo(x + s * 0.5, y - s * 0.38); ctx.lineTo(x + s * 0.32, y - s * 0.4);
-      ctx.lineTo(x, y + s * 0.02); ctx.lineTo(x - s * 0.32, y - s * 0.4); ctx.lineTo(x - s * 0.5, y - s * 0.38); ctx.closePath();
-      ctx.fillStyle = "#C9D3E0"; ctx.fill(); ctx.strokeStyle = "#5E6B7D"; ctx.lineWidth = s * 0.03; ctx.stroke();
-      ctx.strokeStyle = "#E8574A"; ctx.lineWidth = s * 0.05;
-      for (const sens of [-1, 1]) { ctx.beginPath(); ctx.moveTo(x + sens * s * 0.1, y + s * 0.14); ctx.lineTo(x + sens * s * 0.33, y - s * 0.26); ctx.stroke(); }
-      ctx.beginPath(); ctx.arc(x, y + s * 0.24, s * 0.08, 0, Math.PI * 2);
-      ctx.fillStyle = "#5FD4F4"; ctx.fill();
+      ctx.fillStyle = peau; ctx.strokeStyle = bord; ctx.lineWidth = s * 0.025;
+      for (const [a, l] of doigts) {
+        ctx.beginPath(); ctx.arc(x + Math.sin(a) * s * l, py - Math.cos(a) * s * l, s * 0.1, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      }
+      if (o.dessin === "vAlien") { // les autres doigts repliés
+        ctx.beginPath(); ctx.ellipse(x, py - s * 0.2, s * 0.2, s * 0.11, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      }
+      ctx.beginPath(); ctx.ellipse(x, py, s * 0.27, s * 0.23, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); // la paume
+      ctx.fillStyle = "rgba(255, 255, 255, .35)";
+      ctx.beginPath(); ctx.ellipse(x - s * 0.06, py - s * 0.04, s * 0.06, s * 0.035, -0.4, 0, Math.PI * 2); ctx.fill();
     }
     ctx.restore();
   }
@@ -913,7 +969,7 @@ canvas { display: block; width: 100%; height: 100%; }
     ctx.lineWidth = 6; ctx.strokeStyle = alerte ? COUL.line : COUL.bot; ctx.stroke();
     const th = themeCourant();
     if (th) objet(th[b.signe], b.x, b.y, r * 1.25); else emoji(EMOJI[b.signe], b.x, b.y, r * 1.2);
-    const insigne = MONDES[J.monde].insigne; // le Vieux Chêne, la Soucoupe Mère
+    const insigne = MONDES[J.monde].insigne; // le Roi Crabe, le Vieux Chêne, la Soucoupe Mère
     if (insigne) emoji(insigne, b.x + r * 0.85, b.y + r * 0.7, r * 0.7);
     // barre de vie du boss
     const l = W - 112, part = Math.max(0, b.pv / b.pvMax);
@@ -1035,7 +1091,6 @@ canvas { display: block; width: 100%; height: 100%; }
       objet(th[n.signe], 0, 0, r * 1.55);
     } else pastille(0, 0, n.signe, COUL.bot, R, n.bond);
     ctx.restore();
-    if (n.crabe) emoji("🦀", n.x + R * 0.8, n.y - R * 0.8, R * 0.75);
     ctx.globalAlpha = 1;
   }
 

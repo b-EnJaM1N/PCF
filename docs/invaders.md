@@ -16,10 +16,10 @@ Prototype jouable du 18 octobre, validé (« amusant, prometteur »). Des signes
 - **Objets qui tombent** (9 % des signes battus) : ❤️ vie (5 au plus), 🛡️ bouclier 10 s, ⏱️ ralenti 6 s, 🔁 tir triple 8 s, ⚡ éclair (efface l'écran, 2 dégâts au boss).
 - **Mondes** (19 octobre) : 15 vagues et 5 boss chacun (vagues 3, 6, 9, 12, 15). Battre le boss de la vague 9 ouvre le monde suivant (retenu sur le téléphone), mais la partie continue dans le même monde jusqu'à la vague 15 pour battre son record (idée du porteur du projet : choisir entre améliorer son record sur le monde 1 ou passer au monde 2) ; un record par monde. Après le boss de la vague 15 : écran « Victoire ! ».
   - Monde 1 **« Le Gymnase »** (boss : la Main de Fer).
-  - Monde 2 **« La Plage »** : mer et sable animés, crabes ✌️ qui avancent en biais et rebondissent sur les bords, boss : le Roi Crabe ; difficulté de départ ≈ vague 6 du monde 1, boss plus forts.
+  - Monde 2 **« La Plage »** : mer et sable animés, boss : le Roi Crabe 👑 ; des objets dès la vague 1 (demande du porteur du projet, 20 octobre) : galet (dessiné) = pierre, 🦀 crabe = ciseaux, et pour la feuille une algue (vagues 1-3, 7-9, 13-15) ou une méduse (4-6, 10-12), dessinées, plus petits à partir de la vague 10 ; un crabe sur trois avance en biais et rebondit sur les bords ; difficulté de départ ≈ vague 6 du monde 1, boss plus forts.
 - **Objets de sport dans le Gymnase** (idée du porteur du projet, 19 octobre) : vagues 1 à 3 avec les mains, puis toutes les 3 vagues de nouveaux objets jouent les rôles (forme reconnaissable et vraies couleurs, pas de code couleur pour l'instant ; à revoir après test si c'est trop dur) :
   - vagues 4-6, basket et athlé : 🏀 ballon orange = pierre, dossard = feuille, javelots en V pointes vers le bas = ciseaux ;
-  - 7-9, foot et hockey : ⚽ = pierre, drapeau de corner = feuille, crosses croisées = ciseaux ;
+  - 7-9, foot et hockey : ⚽ = pierre, drapeau de corner = feuille, crosses croisées, réunies en haut et ouvertes vers le bas (retournées le 20 octobre) = ciseaux ;
   - 10-12, tennis, objets plus petits : 🎾 balle jaune = pierre, raquette de tennis = feuille, raquettes croisées = ciseaux ;
   - 13-15, baseball, plus petits : ⚾ balle blanche = pierre, gant de baseball = feuille, battes croisées = ciseaux.
 
@@ -38,12 +38,7 @@ Le porteur du projet trouvait 2 mondes légers pour le lancement : on passe à 4
   - 13-15, la forêt profonde, plus petits : 🌰 châtaigne = pierre, ☘️ trèfle = feuille.
 
   **Spécialité** : les feuilles tombent en se balançant au vent (il faut les suivre).
-- **Monde 4 « L'Espace »** (boss : la Soucoupe Mère 🛸) : ciel noir et violet, étoiles qui défilent, une grosse planète pâle au loin. Les ciseaux sont toujours le vaisseau en V (dessiné), nez vers le bas :
-  - vagues 1-3, les astéroïdes : astéroïde (dessiné) = pierre, 🛰️ satellite = feuille ;
-  - 4-6, la Lune : 🌕 Lune = pierre, voile solaire (dessinée) = feuille ;
-  - 7-9, les planètes : 🪐 planète = pierre, 🛰️ satellite = feuille ;
-  - 10-12, les comètes, plus petits : ☄️ comète = pierre, voile solaire = feuille ;
-  - 13-15, le bout de la galaxie, plus petits : astéroïde = pierre, 🛰️ satellite = feuille.
+- **Monde 4 « L'Espace »** (boss : la Soucoupe Mère 🛸) : ciel noir et violet, étoiles qui défilent, une grosse planète pâle au loin. Revu le 20 octobre (le satellite, la voile solaire et le vaisseau ne se reconnaissaient pas) : des extraterrestres qui jouent avec leurs mains vertes aux longs doigts. Météorite (grosse, avec sa traînée de feu) = pierre, main d'alien ouverte = feuille, doigts d'alien en V = ciseaux, tous dessinés ; les mêmes objets jusqu'à la vague 9, plus petits ensuite.
 
   **Spécialité** : un ennemi sur trois se téléporte un peu plus loin ; il clignote juste avant, et jamais près du gant.
 - **Difficulté** : la vague 1 de la Forêt est au niveau de la vague 7 du Gymnase, celle de l'Espace au niveau de la vague 9 ; les boss sont un peu plus forts à chaque monde. Un record par monde.
