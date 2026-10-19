@@ -201,10 +201,10 @@ canvas { display: block; width: 100%; height: 100%; }
   // Gymnase : vagues 1 à 3 avec les mains, puis toutes les 3 vagues des objets de sport changent de rôle.
   // "e" : un emoji ; "croix" : deux emojis croisés en V ; "dessin" : dessiné à la main.
   const THEMES = [
-    { nom: "Basket et athlé", pierre: { e: "🏀", nom: "Ballon" }, feuille: { e: "🎽", nom: "Chasuble" }, ciseaux: { dessin: "javelots", nom: "Javelots" } },
-    { nom: "Foot et hockey", pierre: { e: "⚽", nom: "Ballon" }, feuille: { e: "🟨", nom: "Carton" }, ciseaux: { croix: "🏒", nom: "Crosses" } },
-    { nom: "Tennis", petit: true, pierre: { e: "🎾", nom: "Balle" }, feuille: { e: "🏓", nom: "Raquette" }, ciseaux: { croix: "🏸", nom: "Raquettes croisées" } },
-    { nom: "Baseball", petit: true, pierre: { e: "⚾", nom: "Balle" }, feuille: { dessin: "base", nom: "Base" }, ciseaux: { croix: "🏏", nom: "Battes" } },
+    { nom: "Basket et athlé", pierre: { e: "🏀", nom: "Ballon" }, feuille: { dessin: "dossard", nom: "Dossard" }, ciseaux: { dessin: "javelots", nom: "Javelots" } },
+    { nom: "Foot et hockey", pierre: { e: "⚽", nom: "Ballon" }, feuille: { dessin: "drapeau", nom: "Drapeau de corner" }, ciseaux: { croix: "🏒", nom: "Crosses" } },
+    { nom: "Tennis", petit: true, pierre: { e: "🎾", nom: "Balle" }, feuille: { dessin: "raquette", nom: "Raquette" }, ciseaux: { croix: "🏸", nom: "Raquettes croisées" } },
+    { nom: "Baseball", petit: true, pierre: { e: "⚾", nom: "Balle" }, feuille: { dessin: "gant", nom: "Gant" }, ciseaux: { croix: "🏏", nom: "Battes" } },
   ];
   const themeCourant = () => (J && J.monde === 0 && J.vague >= 4 ? THEMES[Math.min(THEMES.length - 1, Math.floor((J.vague - 1) / 3) - 1)] : null);
   let mondesOuverts = 1, mondeDepart = 0;
@@ -654,28 +654,89 @@ canvas { display: block; width: 100%; height: 100%; }
       }
       return;
     }
+    const s = taille;
+    ctx.save();
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
     if (o.dessin === "javelots") {
-      // deux javelots en V, pointes métalliques en haut
+      // deux javelots en V, réunis en haut, pointes métalliques vers le bas
       for (const sens of [-1, 1]) {
-        const x1 = x + sens * taille * 0.06, y1 = y + taille * 0.5, x2 = x + sens * taille * 0.42, y2 = y - taille * 0.5;
-        ctx.lineCap = "round"; ctx.lineWidth = taille * 0.08; ctx.strokeStyle = "#D9A441";
-        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-        ctx.lineWidth = taille * 0.1; ctx.strokeStyle = "#E6ECF2";
-        ctx.beginPath(); ctx.moveTo(x1 + (x2 - x1) * 0.8, y1 + (y2 - y1) * 0.8); ctx.lineTo(x2, y2); ctx.stroke();
-        ctx.lineWidth = taille * 0.11; ctx.strokeStyle = "#3B2A1A";
-        ctx.beginPath(); ctx.moveTo(x1 + (x2 - x1) * 0.4, y1 + (y2 - y1) * 0.4); ctx.lineTo(x1 + (x2 - x1) * 0.52, y1 + (y2 - y1) * 0.52); ctx.stroke();
+        const x1 = x + sens * s * 0.06, y1 = y - s * 0.5, x2 = x + sens * s * 0.42, y2 = y + s * 0.5;
+        const pt = f => [x1 + (x2 - x1) * f, y1 + (y2 - y1) * f];
+        ctx.lineWidth = s * 0.08; ctx.strokeStyle = "#D9A441";
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(...pt(0.8)); ctx.stroke();
+        // pointe métallique effilée
+        const [bx, by] = pt(0.76), dx = (x2 - x1), dy = (y2 - y1), l = Math.hypot(dx, dy);
+        const nx = -dy / l * s * 0.07, ny = dx / l * s * 0.07;
+        ctx.beginPath(); ctx.moveTo(bx + nx, by + ny); ctx.lineTo(x2 + dx / l * s * 0.06, y2 + dy / l * s * 0.06); ctx.lineTo(bx - nx, by - ny); ctx.closePath();
+        ctx.fillStyle = "#E6ECF2"; ctx.fill();
+        ctx.lineWidth = s * 0.11; ctx.strokeStyle = "#3B2A1A";
+        ctx.beginPath(); ctx.moveTo(...pt(0.4)); ctx.lineTo(...pt(0.52)); ctx.stroke();
       }
-      return;
+    } else if (o.dessin === "dossard") {
+      // un dossard de course : feuille blanche, bandeau rouge, numéro, 4 épingles
+      const w = s * 0.86, h = s * 0.66;
+      ctx.translate(x, y); ctx.rotate(-0.07);
+      ctx.fillStyle = "#FFFFFF"; ctx.strokeStyle = "#9AA6B4"; ctx.lineWidth = s * 0.03;
+      ctx.beginPath(); ctx.roundRect(-w / 2, -h / 2, w, h, s * 0.06); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#E8574A"; ctx.fillRect(-w / 2 + s * 0.03, -h / 2 + s * 0.03, w - s * 0.06, h * 0.2);
+      ctx.fillStyle = "#14243A"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.font = `800 ${Math.round(h * 0.56)}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+      ctx.fillText("23", 0, h * 0.14);
+      ctx.fillStyle = "#7D8896";
+      for (const [a, b] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+        ctx.beginPath(); ctx.arc(a * (w / 2 - s * 0.08), b * (h / 2 - s * 0.08), s * 0.035, 0, Math.PI * 2); ctx.fill();
+      }
+    } else if (o.dessin === "drapeau") {
+      // un drapeau de corner : mât blanc, tissu jaune qui flotte
+      const px = x - s * 0.28, haut = y - s * 0.5;
+      ctx.strokeStyle = "#F5F7FA"; ctx.lineWidth = s * 0.07;
+      ctx.beginPath(); ctx.moveTo(px, y + s * 0.5); ctx.lineTo(px, haut); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(px, haut + s * 0.02);
+      ctx.bezierCurveTo(px + s * 0.25, haut - s * 0.08, px + s * 0.4, haut + s * 0.14, px + s * 0.66, haut + s * 0.08);
+      ctx.lineTo(px + s * 0.6, haut + s * 0.5);
+      ctx.bezierCurveTo(px + s * 0.38, haut + s * 0.56, px + s * 0.22, haut + s * 0.36, px, haut + s * 0.46);
+      ctx.closePath();
+      ctx.fillStyle = "#FFD23F"; ctx.fill(); ctx.lineWidth = s * 0.03; ctx.strokeStyle = "#B8860B"; ctx.stroke();
+    } else if (o.dessin === "raquette") {
+      // une raquette de tennis : tamis ovale cordé et manche
+      const cy = y - s * 0.14, rx = s * 0.3, ry = s * 0.36;
+      ctx.strokeStyle = "#1E1E24"; ctx.lineWidth = s * 0.1;
+      ctx.beginPath(); ctx.moveTo(x, cy + ry); ctx.lineTo(x, y + s * 0.52); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(x, cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(245, 247, 250, .2)"; ctx.fill();
+      ctx.save(); ctx.clip();
+      ctx.strokeStyle = "rgba(245, 247, 250, .85)"; ctx.lineWidth = s * 0.018;
+      for (let i = -4; i <= 4; i++) {
+        ctx.beginPath(); ctx.moveTo(x + i * rx / 4.5, cy - ry); ctx.lineTo(x + i * rx / 4.5, cy + ry); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x - rx, cy + i * ry / 4.5); ctx.lineTo(x + rx, cy + i * ry / 4.5); ctx.stroke();
+      }
+      ctx.restore();
+      ctx.beginPath(); ctx.ellipse(x, cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = "#E8574A"; ctx.lineWidth = s * 0.07; ctx.stroke();
+    } else if (o.dessin === "gant") {
+      // un gant de baseball : la main ouverte en cuir
+      const cuir = "#A8662E", bord = "#5E3716";
+      ctx.fillStyle = cuir; ctx.strokeStyle = bord; ctx.lineWidth = s * 0.03;
+      const capsule = (ang, long, larg, ox, oy) => {
+        ctx.save(); ctx.translate(ox, oy); ctx.rotate(ang);
+        ctx.beginPath(); ctx.roundRect(-larg / 2, -long, larg, long, larg / 2); ctx.fill(); ctx.stroke();
+        ctx.restore();
+      };
+      const bx = x + s * 0.04, by = y + s * 0.22;
+      capsule(-1.05, s * 0.42, s * 0.19, bx - s * 0.12, by); // pouce
+      for (const [i, a] of [-0.32, -0.11, 0.1, 0.31].entries()) capsule(a, s * (0.66 - Math.abs(i - 1.5) * 0.05), s * 0.17, bx, by);
+      ctx.beginPath(); ctx.ellipse(bx, by, s * 0.27, s * 0.24, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(bx, by - s * 0.06, s * 0.15, s * 0.12, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "#C98A4B"; ctx.fill();
+      ctx.strokeStyle = "#E9D3A6"; ctx.lineWidth = s * 0.025; // le laçage entre pouce et index
+      for (let k = 0; k < 3; k++) {
+        const yy = by - s * (0.12 + k * 0.1);
+        ctx.beginPath(); ctx.moveTo(bx - s * 0.28, yy); ctx.lineTo(bx - s * 0.14, yy - s * 0.05); ctx.stroke();
+      }
     }
-    if (o.dessin === "base") {
-      // la base du marbre : un pentagone blanc
-      const d = taille * 0.42;
-      ctx.beginPath();
-      ctx.moveTo(x - d, y - d * 0.7); ctx.lineTo(x + d, y - d * 0.7); ctx.lineTo(x + d, y + d * 0.2);
-      ctx.lineTo(x, y + d); ctx.lineTo(x - d, y + d * 0.2); ctx.closePath();
-      ctx.fillStyle = "#F5F7FA"; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = "#8A97A8"; ctx.stroke();
-    }
+    ctx.restore();
   }
+
 
   function pastille(x, y, signe, couleur, rayon, bond = 0) {
     const r = rayon * (1 + bond * 0.15);
