@@ -356,6 +356,13 @@ Même manipulation avec [`etape-45-bots-panaches.sql`](etape-45-bots-panaches.sq
 Sans mise, à 50 et à 100 jetons (et au freeroll), les bots qui complètent une salle sont panachés : débutants, moyens,
 forts et redoutables à tour de rôle. Le jour où les grosses mises reviennent, relancer l'étape 29 remet l'échelle d'origine.
 
+## 1 quadragies sexies. 8 secondes par coup (étape 46)
+
+Même manipulation avec [`etape-46-huit-secondes.sql`](etape-46-huit-secondes.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-46-huit-secondes.sql).
+**À coller avant de valider la version de l'appli à 8 secondes** : sinon, en ligne, le serveur jouerait un coup au hasard
+au bout de 5 secondes alors que la barre de l'appli n'est pas finie.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

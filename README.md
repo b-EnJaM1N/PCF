@@ -23,7 +23,7 @@ puis « Sur l'écran d'accueil » / « Installer l'application ». Le détail es
 | Points par set | 11, avec 2 points d'écart, point décisif à 14 partout (options : 7 avec 2 points d'écart, point décisif à 9 partout ; 3 ou 1 sans écart, le premier au total gagne le set) |
 | Égalités (même signe) | Ne comptent pas, le point est rejoué |
 | Nombre de sets | 2 ou 3 sets gagnants, choisi avant le match (ou un match en 1 set). En duel, les formats courts (1 set, sets de 3 ou 1 point) sont toujours amicaux |
-| Temps par coup | 5 secondes, sinon un signe est joué au hasard |
+| Temps par coup | 8 secondes, sinon un signe est joué au hasard |
 | Historique | Visible pendant tout le match |
 | Pendant l'échange | Aucune animation : révélation immédiate des signes |
 
@@ -58,7 +58,7 @@ Réglages du projet Supabase : [`supabase/LISEZMOI.md`](supabase/LISEZMOI.md).
 **Jouer › Défier un ami** (compte nécessaire) : chercher un joueur par pseudo (`Benji` ou `Benji#4821`) et le défier,
 ou envoyer un lien d'invitation (WhatsApp, SMS…). Le serveur arbitre : chaque signe reste secret jusqu'à ce
 que les deux aient joué, le score est calculé par la base de données (mêmes règles que l'application, vérifié
-par un test qui compare 40 matchs), 5 secondes par coup. Si un joueur perd la connexion : pause, puis forfait
+par un test qui compare 40 matchs), 8 secondes par coup. Si un joueur perd la connexion : pause, puis forfait
 après 60 secondes. Les duels comptent dans la fiche (statistiques, historique, titres) mais pas dans le niveau.
 
 ## Niveau officiel, amis et cercles (étape 4)

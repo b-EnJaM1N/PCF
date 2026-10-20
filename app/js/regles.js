@@ -6,7 +6,7 @@
 export const PIERRE = 0, CISEAUX = 1, FEUILLE = 2;
 export const EMOJI = ["🪨", "✂️", "📄"];
 export const NOM = ["Pierre", "Ciseaux", "Feuille"];
-export const DUREE_COUP_MS = 5000;
+export const DUREE_COUP_MS = 8000;
 // Un set se gagne en 11 points (format officiel), 7, 3 ou 1. À 7 et 11, il faut 2 points d'écart,
 // mais pas sans fin : à 14 partout (sets de 11) ou 9 partout (sets de 7), point décisif, le premier à 15 (ou 10) gagne le set.
 // À 3 et 1, un point d'écart suffit (3–2 gagne ; à 1 point, le premier point gagne le set).

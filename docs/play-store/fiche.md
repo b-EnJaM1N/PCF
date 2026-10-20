@@ -26,11 +26,11 @@ Autres possibilités : « HandSlam », « HandSlam : le Chifoumi sport ». Le no
 >
 > UN VRAI MATCH
 > • Des sets de 11 points, des balles de set et de match, un arbitre et deux commentateurs, Roland et Monique, qui ne laissent rien passer.
-> • 5 secondes pour choisir ton coup : pas le temps de réfléchir trop longtemps.
+> • 8 secondes pour choisir ton coup : le temps de réfléchir, pas celui de tergiverser.
 > • À la fin de chaque match, ta Une de « L'Écho du HandSlam » à partager.
 >
 > LIS TON ADVERSAIRE
-> • L'encadré « Lire l'adversaire » te montre ses signes préférés et ses réflexes, par exemple « Après une défaite, il change de signe (6 fois sur 7) ».
+> • Avant le match, son dossier te montre ses signes préférés et ses réflexes, par exemple « Après une défaite, il change de signe (6 fois sur 7) ». Pendant le match, à toi de le lire, sans aide.
 > • L'appli te dit aussi quand c'est toi qui deviens prévisible.
 >
 > DES ADVERSAIRES POUR TOUS LES NIVEAUX

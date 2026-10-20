@@ -128,3 +128,16 @@ test("formats et signes invalides refusés", () => {
   assert.throws(() => nouveauMatch({ setsGagnants: 4 }));
   assert.throws(() => jouerCoup(nouveauMatch(), 3, 0));
 });
+
+test("le temps pour jouer un coup est le même dans l'appli et sur le serveur (dernière étape SQL qui le fixe)", async () => {
+  const { readdirSync, readFileSync } = await import("node:fs");
+  const { DUREE_COUP_MS } = await import("../app/js/regles.js");
+  const dossier = new URL("../supabase/", import.meta.url), num = f => +f.match(/etape-(\d+)/)[1];
+  const etapes = readdirSync(dossier).filter(f => /^etape-\d+[a-z]?-.*\.sql$/.test(f)).sort((a, b) => num(a) - num(b));
+  let secondes = null;
+  for (const f of etapes) {
+    const m = readFileSync(new URL(f, dossier), "utf8").match(/function public\._duree_coup\(\)[^$]*\$\$ select interval '(\d+) seconds' \$\$/);
+    if (m) secondes = +m[1];
+  }
+  assert.equal(secondes * 1000, DUREE_COUP_MS);
+});
