@@ -19,7 +19,7 @@ export const FAMILLES = [
   { id: "duels", nom: "Duels", icone: "⚔️" },
 ];
 export const TITRES = [
-  { id: "gentleman", famille: "fairplay", nom: "Gentleman", desc: "Serrer la main franchement ou normalement 10 fois." },
+  { id: "gentleman", famille: "fairplay", nom: "Gentleman", desc: "Serrer la main franchement ou normalement 10 fois.", debloque: "le geste du check à l'adversaire", objet: ["geste", "check"] },
   { id: "main_tendue", famille: "fairplay", nom: "Main tendue", desc: "Serrer chaleureusement la main après 10 défaites." },
   { id: "glacon", famille: "fairplay", nom: "Glaçon", desc: "Serrer la main froidement 10 fois. Monique approuve." },
   { id: "fairplay", famille: "fairplay", nom: "Fair-play", desc: "Serrer chaleureusement la main 50 fois.", debloque: "le gant bicolore", objet: ["gantMotif", "bicolore"] },
@@ -27,7 +27,7 @@ export const TITRES = [
 
   { id: "sangfroid", famille: "remontees", nom: "Sang-froid", desc: "Sauver une balle de match.", debloque: "le poignet or", objet: ["poignet", "or"] },
   { id: "remontada", famille: "remontees", nom: "Remontada", desc: "Gagner après avoir perdu le premier set.", debloque: "le motif étoile", objet: ["motif", "etoile"] },
-  { id: "phenix", famille: "remontees", nom: "Phénix", desc: "Gagner un match après avoir sauvé une balle de match." },
+  { id: "phenix", famille: "remontees", nom: "Phénix", desc: "Gagner un match après avoir sauvé une balle de match.", debloque: "le geste du doigt « non, non, non »", objet: ["geste", "non_non"] },
   { id: "lazare", famille: "remontees", nom: "Lazare", desc: "Gagner un set après avoir eu 5 points de retard." },
   { id: "houdini", famille: "remontees", nom: "Houdini", desc: "Sauver 10 balles de match au total.", debloque: "le poignet argent", objet: ["poignet", "argent"] },
 
