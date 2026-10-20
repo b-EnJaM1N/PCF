@@ -32,11 +32,11 @@ end $$;
 
 do $$
 declare t public.tournois; k int; m int; lo int; hi int;
-  attendu int[][] := array[[50, 850, 1050], [100, 1000, 1200], [200, 1150, 1350], [500, 1300, 1500], [1000, 1450, 99999]];
+  attendu int[][] := array[[200, 1150, 1350], [500, 1300, 1500], [1000, 1450, 99999]];   -- (50 et 100 : bots panachés depuis l'étape 45)
 begin
   perform _assurer_bots(0);
   -- Une salle de 8 par mise, chacune avec un joueur seul depuis 3 minutes : 7 bots du bon niveau.
-  for k in 1 .. 5 loop
+  for k in 1 .. 3 loop
     m := attendu[k][1]; lo := attendu[k][2]; hi := attendu[k][3];
     t := pg_temp.salle_seul(k, 8, m);
     perform pg_temp.verifier(t.phase = 'en_cours' and (select bool_and(b.elo between lo and hi) and count(*) = 7
@@ -46,7 +46,7 @@ begin
   end loop;
   -- Plus la mise monte, plus le niveau moyen des bots monte.
   perform pg_temp.verifier((select bool_and(lower(_niveaux_bots_mise(x)) < lower(_niveaux_bots_mise(y)))
-    from (values (50, 100), (100, 200), (200, 500), (500, 1000)) v(x, y)), 'chaque mise a des bots plus forts que la précédente');
+    from (values (200, 500), (500, 1000)) v(x, y)), 'chaque mise a des bots plus forts que la précédente');
   perform pg_temp.verifier(_niveaux_bots_mise(0) is null, 'sans mise : n''importe lesquels');
 
   -- Sans le minuteur du serveur : c'est l'écran Sit & Go du joueur (toutes les 4 s) qui fait venir les bots.

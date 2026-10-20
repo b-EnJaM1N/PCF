@@ -216,7 +216,7 @@ function ouvrirPanneau({ kick = "", big = "", bigCls = "", sc = "", tally = "", 
 $("iGo").addEventListener("click", () => panneauGo && panneauGo());
 function fermerPanneau() { $("inter").classList.remove("show"); panneauOuvert = null; panneauGo = null; }
 
-// ---------------------------------------------------------------- minuteur (5 s par coup)
+// ---------------------------------------------------------------- minuteur (8 s par coup)
 let raf = 0, tDebut = 0;
 function lancerMinuteur() {
   cancelAnimationFrame(raf); tDebut = performance.now(); $("timer").classList.remove("urgent");
@@ -456,11 +456,12 @@ function renderHistorique() {
   const t = $("tape"); t.scrollLeft = t.scrollWidth;
 }
 
-// Lire l'adversaire : sa répartition, ses réflexes, et la piste pour le prochain coup (d'après l'historique).
-// En match officiel (il compte pour le niveau), c'est au joueur de lire seul : l'encadré n'apparaît qu'à la fin.
+// Lire l'adversaire : sa répartition et ses réflexes (d'après l'historique). Pendant le match, c'est au joueur de lire
+// seul, sans aide (décision du porteur du projet, 20 octobre) : l'encadré n'apparaît qu'à la fin. Avant le match,
+// son dossier reste consultable.
 function renderLectureAdversaire() {
-  const cache = !!(S.duel && D?.duel?.classe) && !S.match.termine;
-  $("lecture").hidden = cache; $("lectureOff").hidden = !cache;
+  const cache = !S.match.termine;
+  $("lecture").hidden = cache; $("lectureOff").hidden = true;
   if (cache) return;
   const c = S.match.coups, n = c.length, r = repartition(c);
   $("lectureRep").innerHTML = [0, 2, 1].map(s => `<div><b>${EMOJIS[s]}</b>${n ? Math.round(100 * r[s] / n) : 0} %<i><span style="width:${n ? Math.round(100 * r[s] / n) : 0}%"></span></i></div>`).join("");

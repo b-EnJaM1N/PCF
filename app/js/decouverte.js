@@ -26,7 +26,7 @@ export const PREMIER_MATCH = { bot: "bambi", pointsParSet: 7, setsGagnants: 1 };
 // Le conseil affiché pendant le premier match, selon le nombre de coups joués et le résultat du dernier
 // (gagnant : 0 = moi, 1 = le bot, null = égalité).
 export function conseil(coups, gagnant) {
-  if (coups === 0) return "👉 Touche Pierre, Feuille ou Ciseaux avant la fin de la barre (5 secondes). Pierre bat Ciseaux, Ciseaux bat Feuille, Feuille bat Pierre.";
+  if (coups === 0) return "👉 Touche Pierre, Feuille ou Ciseaux avant la fin de la barre (8 secondes). Pierre bat Ciseaux, Ciseaux bat Feuille, Feuille bat Pierre.";
   if (coups <= 3) {
     if (gagnant === null) return "🤝 Égalité : même signe des deux côtés, le coup est rejoué.";
     return `${gagnant === 0 ? "✅ Point pour toi !" : "❌ Point pour Bambi."} Le premier à 7 points, avec 2 points d'écart, gagne le set.`;
