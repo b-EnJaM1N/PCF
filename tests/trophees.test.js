@@ -5,8 +5,9 @@ import { compterPoignee } from "../app/js/poignee.js";
 import { nouvellesStats, suivreCoup } from "../app/js/stats-match.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX } from "../app/js/regles.js";
 import { FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, SYMBOLES, avatarSVG } from "../app/js/avatar.js";
+import { GESTES } from "../app/js/catalogue.js";
 
-const TABLES = { fond: FONDS, gant: GANTS, poignet: POIGNETS, motif: MOTIFS, gantMotif: MOTIFS_GANT, symbole: SYMBOLES };
+const TABLES = { fond: FONDS, gant: GANTS, poignet: POIGNETS, motif: MOTIFS, gantMotif: MOTIFS_GANT, symbole: SYMBOLES, geste: GESTES };
 
 // Un match joué : "a" = point pour moi, "b" = pour l'adversaire.
 // Un seul point : match en 1 set de 1 point (sinon, 1 set de 11 points).
