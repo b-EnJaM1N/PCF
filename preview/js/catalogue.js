@@ -34,7 +34,7 @@ export const ARTICLES = [
   a("geste", "salut", "Le salut de la main", "rare", "geste"), a("geste", "v_victoire", "Le V de la victoire", "epique", "geste"),
   a("geste", "pouce_leve", "Le pouce levé", "epique", "geste"), a("geste", "doigt_leve", "Le doigt levé (numéro 1)", "epique", "geste"),
   a("geste", "uppercut", "L'uppercut", "legendaire", "geste"),
-  a("geste", "coeur", "Le poing sur le cœur", "rare", "geste"), a("geste", "shaka", "Le shaka", "epique", "geste"),
+  a("geste", "coeur", "Le poing sur le cœur", "rare", "geste"), a("geste", "salut_militaire", "Le salut militaire", "epique", "geste"),
   a("geste", "micro", "Le micro qui tombe", "legendaire", "geste"),
   a("celebration", "etoiles", "Pluie d'étoiles", "epique", "celebration"), a("celebration", "coeurs", "Pluie de cœurs", "epique", "celebration"),
   a("celebration", "eclairs", "Éclairs", "epique", "celebration"), a("celebration", "feu", "Feu d'artifice", "epique", "celebration"),
@@ -63,7 +63,7 @@ export const GESTES = {
   doigt_leve: { nom: "Le doigt levé", symbole: "index" },
   uppercut: { nom: "L'uppercut", symbole: "pierre" },
   coeur: { nom: "Le poing sur le cœur", symbole: "pierre" },
-  shaka: { nom: "Le shaka", symbole: "shaka" },
+  salut_militaire: { nom: "Le salut militaire", symbole: "feuille" },
   micro: { nom: "Le micro qui tombe", symbole: "feuille" },
   // Gagnés avec un trophée (profil.js), pas à la boutique.
   check: { nom: "Le check à l'adversaire", symbole: "pierre" },
