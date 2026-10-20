@@ -54,6 +54,7 @@ canvas { display: block; width: 100%; height: 100%; }
 .boutons button .n { font-family: var(--display); font-weight: 700; font-size: .68rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
 .boutons button:active, .boutons button.appuye { background: var(--me); color: var(--court-deep); transform: translateY(2px); box-shadow: none; }
 .boutons button:active .n, .boutons button.appuye .n { color: var(--court-deep); }
+.boutons.attente button { opacity: .45; } /* un tir est en vol, ou le gant est bloqué */
 .boutons button:focus-visible, .ecran button:focus-visible { outline: 3px solid var(--me); outline-offset: 2px; }
 .ecran {
   position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -498,8 +499,12 @@ canvas { display: block; width: 100%; height: 100%; }
   }
 
   // ---------- Tirs ----------
+  // Contre le « mode rafale » (tirer tous les signes au hasard) : un seul tir à la fois, comme dans
+  // Space Invaders (on ne peut retirer qu'une fois le tir arrivé), et un mauvais signe bloque le gant un instant.
+  const BLOCAGE_RATE = 650, BLOCAGE_EGALITE = 300; // millisecondes
+  const peutTirer = () => enCours && !enPause && J.recharge <= 0 && J.tirs.length === 0;
   function tirer(signe) {
-    if (!enCours || J.recharge > 0) return;
+    if (!peutTirer()) return;
     J.recharge = 170;
     const y = H - R * 2.6;
     if (J.effets.triple > 0) for (const vx of [-130, 0, 130]) J.tirs.push({ x: J.x, y, vx, signe });
@@ -676,7 +681,7 @@ canvas { display: block; width: 100%; height: 100%; }
     } else if (!J.boss && (J.ennemis.length === 0 || sansCoupure())) vagueFinie();
     if (J.boss) majBoss(J.boss, dt);
 
-    for (const t of J.tirs) { t.y -= 520 * dt; t.x += t.vx * dt; }
+    for (const t of J.tirs) { t.y -= 800 * dt; t.x += t.vx * dt; } // tirs rapides : un seul à la fois
     for (const n of J.ennemis) {
       n.y += n.v * lent() * dt;
       if (n.crabe) {
@@ -714,10 +719,12 @@ canvas { display: block; width: 100%; height: 100%; }
           bip(520, 0.1, "sawtooth", 0.06, -200);
           if (b.pv <= 0) bossBattu(b);
         } else if (t.signe === b.signe) {
+          J.recharge = Math.max(J.recharge, BLOCAGE_EGALITE);
           texte(t.x, t.y, "Égalité", COUL.muted); bip(330, 0.07, "square", 0.04);
         } else {
-          J.combo = 0; J.rates++; if (b.phase === "calme" && b.k >= 2) b.tir = Math.min(b.tir, 900);
-          texte(t.x, t.y, b.k >= 2 ? "Raté ! Il riposte" : "Raté !", COUL.bot); bip(200, 0.12, "square", 0.05, -60);
+          J.combo = 0; J.rates++; J.recharge = Math.max(J.recharge, BLOCAGE_RATE);
+          if (b.phase === "calme" && b.k >= 2) b.tir = Math.min(b.tir, 900);
+          texte(t.x, t.y, b.k >= 2 ? "Raté ! Il riposte" : "Raté ! Gant bloqué", COUL.bot); bip(200, 0.12, "square", 0.05, -60);
         }
         continue;
       }
@@ -737,13 +744,13 @@ canvas { display: block; width: 100%; height: 100%; }
           majCompteurs();
         } else if (t.signe === n.signe) {
           // égalité : le signe recule un peu
-          n.y -= R * 1.2; n.bond = 1;
+          n.y -= R * 1.2; n.bond = 1; J.recharge = Math.max(J.recharge, BLOCAGE_EGALITE);
           texte(n.x, n.y, "Égalité", COUL.muted);
           bip(330, 0.07, "square", 0.04);
         } else {
-          // mauvais signe : l'ennemi accélère
-          n.v *= 1.25; n.bond = 1; J.combo = 0; J.rates++;
-          texte(n.x, n.y, "Raté !", COUL.bot);
+          // mauvais signe : l'ennemi accélère et le gant est bloqué un instant
+          n.v *= 1.25; n.bond = 1; J.combo = 0; J.rates++; J.recharge = Math.max(J.recharge, BLOCAGE_RATE);
+          texte(n.x, n.y, "Raté ! Gant bloqué", COUL.bot);
           bip(200, 0.12, "square", 0.05, -60);
         }
         break;
@@ -1314,9 +1321,13 @@ canvas { display: block; width: 100%; height: 100%; }
     if (J.flashBlanc > 0) { ctx.fillStyle = `rgba(245, 247, 250, ${J.flashBlanc * 0.5})`; ctx.fillRect(0, 0, W, H); }
   }
 
+  const boutons = document.querySelector(".boutons");
+  let boutonsEnAttente = false;
   function boucle(t) {
     const dt = Math.min(0.05, (t - dernier) / 1000); dernier = t;
     if (enCours && !enPause) maj(dt);
+    const attente = enCours && !peutTirer();
+    if (attente !== boutonsEnAttente) { boutonsEnAttente = attente; boutons.classList.toggle("attente", attente); }
     dessiner();
     requestAnimationFrame(boucle);
   }
