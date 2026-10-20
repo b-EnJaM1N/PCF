@@ -328,6 +328,7 @@
           <div id="aStats"><p class="hint">Chargement…</p></div>
         </section>
         <button class="btn" id="aDefier">Défier</button>
+        <button class="btn alt" id="aCarte">🃏 Voir sa carte</button>
         <p class="locknote" id="aMsg" role="status"></p>
       </div>
 
@@ -551,6 +552,7 @@
       <p class="hint">Sans compte, rien ne quitte ton téléphone. Avec un compte, ta fiche est gardée en Europe ; ton adresse e-mail n'est jamais montrée aux autres joueurs.</p>
       <p class="hint"><a href="mentions.html#confidentialite" style="color:var(--me)">Tout savoir sur tes données</a> · <a href="mentions.html#mentions" style="color:var(--me)">Mentions légales</a> · <a href="suppression-compte.html" style="color:var(--me)">Supprimer mon compte, mode d'emploi</a> · Contact : contact.handslam@gmail.com</p>
       <label class="sound" id="presenceZone" style="align-items:flex-start;margin-top:10px" hidden><input type="checkbox" id="presenceVisible" checked> <span>Montrer à mes amis et à mes cercles quand je suis en ligne (point vert 🟢, ou orange 🟠 pendant un match)</span></label>
+      <label class="sound" id="carteCacheeZone" style="align-items:flex-start;margin-top:10px" hidden><input type="checkbox" id="carteCachee"> <span>Ne pas montrer ma carte de joueur aux autres joueurs</span></label>
       <button class="btn alt danger" id="supprimerCompte" style="margin-top:12px" hidden>Supprimer mon compte</button>
     </details>
     <p class="record" id="version"></p>
@@ -768,6 +770,7 @@
     <div class="fa-tete"><span class="fa-av" id="faAv"></span><div><h2 id="faNom"></h2><p class="hint" id="faInfo"></p></div></div>
     <div id="faCorps"></div>
     <button class="btn" id="faJouer" hidden>Jouer contre lui</button>
+    <button class="btn alt" id="faCarte" hidden>🃏 Voir sa carte</button>
     <button class="btn alt" id="faFermer">Fermer</button>
   </div>
 </div>
