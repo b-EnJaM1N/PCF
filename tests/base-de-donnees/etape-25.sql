@@ -31,12 +31,12 @@ begin
   perform pg_temp.interdit('select jouer_bot_rapide(''officiel'', 5000)', 'mise plus grosse que le solde refusée');
   perform pg_temp.interdit('select jouer_bot_rapide(''inconnu'', 50)', 'format inconnu refusé');
 
-  -- 2. Mise de 50 : un bot faible ; la mise est prélevée tout de suite ; le bot ne paie rien.
+  -- 2. Mise de 50 : un bot de n'importe quel niveau (étape 45) ; la mise est prélevée tout de suite ; le bot ne paie rien.
   d := jouer_bot_rapide('officiel', 50);
   execute 'reset role';
   bot := d.j1;
   perform pg_temp.verifier(d.phase = 'presentation' and d.rapide and not d.classe and d.mise = 50 and d.mise_payee, 'duel à 50 contre un bot, amical, mise prélevée');
-  perform pg_temp.verifier((select elo from bots_en_ligne where joueur = bot) <= 1100, 'mise de 50 : un bot faible');
+  perform pg_temp.verifier((select elo from bots_en_ligne where joueur = bot) is not null, 'mise de 50 : un bot de n''importe quel niveau (étape 45)');
   perform pg_temp.verifier(pg_temp.solde(1) = 950, 'le joueur a payé 50');
   perform pg_temp.verifier(not exists (select 1 from mouvements_jetons where joueur = bot), 'le bot ne paie rien');
   perform pg_temp.en_tant_que(pg_temp.u(1)::text);
