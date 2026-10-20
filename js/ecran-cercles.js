@@ -212,6 +212,13 @@ export function installerCercles(ctx) {
     if (origineAmi) { const o = origineAmi; origineAmi = null; montrer("socListe"); ctx.aller(o); return; }
     montrer("socListe"); rafraichir();
   });
+  $("aCarte").addEventListener("click", async () => {
+    if (!amiOuvert) return;
+    $("aCarte").disabled = true;
+    const msg = await ctx.voirCarte(amiOuvert);
+    $("aCarte").disabled = false;
+    if (msg) dire("aMsg", msg);
+  });
   $("aDefier").addEventListener("click", async () => {
     const a = amis.find(x => x.id === amiOuvert); if (!a) return;
     $("aDefier").disabled = true;
