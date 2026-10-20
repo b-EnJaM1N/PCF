@@ -129,6 +129,13 @@ function main(symbole, gant, ink) {
     ${paume(44, gant, ink)}
     ${ongle(30, 23.5, ink, "-20 35 54")}${ongle(40.5, 18.5, ink, "-7 45 54")}${ongle(50.5, 19.5, ink, "7 55 54")}${ongle(60, 26.5, ink, "20 65 54")}
     ${dosDeMain(ink)}`;
+  // Le shaka 🤙 : le pouce et le petit doigt sortis sur les côtés (derrière la paume), les trois autres repliés devant.
+  if (symbole === "shaka") return `
+    ${doigt(62, 10, 36, gant, ink, "24 67 46")}
+    <rect x="4" y="38" width="34" height="12" rx="6" fill="${gant}" stroke="${ink}" stroke-width="1.5" transform="rotate(-32 36 46)"/>
+    ${paume(40, gant, ink)}
+    ${[0, 1, 2].map(i => doigt(29 + i * 10.5, 28 + (i === 0 ? 3 : 0), 18, gant, ink)).join("")}
+    <path d="M38 60 q8 3.5 16 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
   if (symbole === "ciseaux") return `
     ${doigt(31, 10, 40, gant, ink, "-14 36 50")}${doigt(44, 10, 40, gant, ink, "12 49 50")}
     ${paume(40, gant, ink)}
