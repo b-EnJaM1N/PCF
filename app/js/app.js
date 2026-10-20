@@ -1203,7 +1203,7 @@ function renderSurnom() {
   document.querySelectorAll("#segPoignee button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === P.poignee)));
   // Les cris gratuits, et ceux achetés à la boutique ; de même pour le geste, la célébration et le cadre.
   $("inCri").innerHTML = CRIS.filter(c => possede(P, "cri", c.id)).map(c => `<option value="${c.id}"${c.id === P.cri ? " selected" : ""}>${esc(libelleCri(c.id))}${c.boutique ? " 🛍️" : ""}</option>`).join("");
-  const options = (type, table, actuel) => Object.keys(table).filter(k => possede(P, type, k)).map(k => `<option value="${k}"${k === actuel ? " selected" : ""}>${esc(table[k].nom)}</option>`).join("");
+  const options = (type, table, actuel) => Object.keys(table).filter(k => !estVerrouille(P, type, k)).map(k => `<option value="${k}"${k === actuel ? " selected" : ""}>${esc(table[k].nom)}</option>`).join("");
   $("inGeste").innerHTML = options("geste", GESTES, P.geste);
   $("inCelebration").innerHTML = options("celebration", CELEBRATIONS, P.celebration);
   $("inCadre").innerHTML = options("cadre", CADRES, P.cadre);
