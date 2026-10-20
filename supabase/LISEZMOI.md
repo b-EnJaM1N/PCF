@@ -367,7 +367,7 @@ au bout de 5 secondes alors que la barre de l'appli n'est pas finie.
 
 Même manipulation avec [`etape-47-nouveaux-gestes.sql`](etape-47-nouveaux-gestes.sql)
 (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-47-nouveaux-gestes.sql).
-Ajoute au catalogue de la boutique le poing sur le cœur, le shaka et le micro qui tombe. **À coller avant de valider
+Ajoute au catalogue de la boutique le poing sur le cœur, le salut militaire et le micro qui tombe. **À coller avant de valider
 l'appli** : sinon, ces trois gestes s'afficheraient dans la boutique mais l'achat serait refusé.
 
 ## 2. Adresses du site (connexion par lien)

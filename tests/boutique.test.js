@@ -50,7 +50,7 @@ test("la fiche garde les achats et les choix, même après une remise à zéro",
 
 test("nouveaux gestes : trois à la boutique, deux gagnés avec un trophée", () => {
   const P = profilParDefaut();
-  for (const g of ["coeur", "shaka", "micro"]) { assert.ok(articleDe("geste", g), g); assert.ok(estVerrouille(P, "geste", g), g); }
+  for (const g of ["coeur", "salut_militaire", "micro"]) { assert.ok(articleDe("geste", g), g); assert.ok(estVerrouille(P, "geste", g), g); }
   for (const g of ["check", "non_non"]) { assert.equal(articleDe("geste", g), null, g); assert.ok(estVerrouille(P, "geste", g), `${g} : verrouillé sans le trophée`); }
   P.titres = { gentleman: 1, phenix: 1 };
   assert.ok(!estVerrouille(P, "geste", "check") && !estVerrouille(P, "geste", "non_non"));

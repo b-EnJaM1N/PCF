@@ -2,7 +2,7 @@
 -- À coller dans Supabase : « SQL Editor » → « New query » → coller → « Run ». Nécessite l'étape 17. Peut être relancé sans risque.
 --
 -- Décision du porteur du projet (21 octobre) : cinq nouveaux gestes. Trois s'achètent avec des jetons (le poing sur le cœur,
--- le shaka, le micro qui tombe) ; les deux autres se gagnent avec un trophée (le check : « Gentleman » ; le doigt
+-- le salut militaire, le micro qui tombe) ; les deux autres se gagnent avec un trophée (le check : « Gentleman » ; le doigt
 -- « non, non, non » : « Phénix ») et ne passent donc pas par la boutique.
 -- Le catalogue complet (remplace celui de l'étape 17) ; un test vérifie qu'il correspond à app/js/catalogue.js.
 
@@ -19,5 +19,5 @@ create or replace function public._catalogue() returns table (id text, prix int)
          ('geste:uppercut', 5000), ('celebration:etoiles', 2000), ('celebration:coeurs', 2000), ('celebration:eclairs', 2000),
          ('celebration:feu', 2000), ('celebration:or', 5000), ('cadre:bronze', 300), ('cadre:argent', 800),
          ('cadre:neon', 2000), ('cadre:or', 5000),
-         ('geste:coeur', 800), ('geste:shaka', 2000), ('geste:micro', 5000)
+         ('geste:coeur', 800), ('geste:salut_militaire', 2000), ('geste:micro', 5000)
 $$;
