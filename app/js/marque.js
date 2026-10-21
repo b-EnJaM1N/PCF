@@ -3,5 +3,5 @@ export const MARQUE = {
   nom: "HandSlam",
   journal: "L'Écho du HandSlam",   // le journal de « La Une »
   commentateur: "Roland Pignon",     // il vit chaque point comme une finale
-  commentatrice: "Monique Latouffe", // glaciale, championne de 1997
+  commentatrice: "Monique Latour", // glaciale, championne de 1997
 };
