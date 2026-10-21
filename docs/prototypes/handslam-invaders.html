@@ -1126,11 +1126,53 @@ canvas { display: block; width: 100%; height: 100%; }
     ctx.beginPath(); ctx.moveTo(J.x - 7, H + 3); ctx.lineTo(J.x + 7, H + 3); ctx.lineTo(J.x, H + 11); ctx.closePath(); ctx.fill();
   }
 
+  // des spectateurs dans les gradins, placés une fois pour toutes (couleurs de maillots)
+  const PUBLIC = Array.from({ length: 60 }, (_, i) => ({ x: Math.random(), rang: i % 3, c: ["#E8574A", "#F4C542", "#F5F7FA", "#5BD69A", "#2E9BC0", "#C792EA"][Math.random() * 6 | 0] }));
   function dessinerGymnase() {
-    // lignes du terrain (façon parquet de salle)
-    ctx.strokeStyle = "rgba(245, 247, 250, .08)"; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(0, H * 0.5); ctx.lineTo(W, H * 0.5); ctx.stroke();
-    ctx.beginPath(); ctx.arc(W / 2, H * 0.5, Math.min(W, H) * 0.16, 0, Math.PI * 2); ctx.stroke();
+    // une salle de sport vue d'en haut : gradins et public au fond, sol bleu de compétition,
+    // lignes blanches, raquette peinte devant le joueur ; couleurs froides pour que les cercles des ennemis ressortent
+    const t = performance.now() / 1000, mur = Math.round(H * 0.13);
+    let g = ctx.createLinearGradient(0, mur, 0, H);
+    g.addColorStop(0, "#1B4A86"); g.addColorStop(1, "#163C6E");
+    ctx.fillStyle = g; ctx.fillRect(0, mur, W, H - mur);
+    // les lames du sol, très discrètes
+    ctx.fillStyle = "rgba(255, 255, 255, .025)";
+    for (let x = 0; x < W; x += 28) if ((x / 28) % 2 === 0) ctx.fillRect(x, mur, 14, H - mur);
+    // les gradins et le public
+    g = ctx.createLinearGradient(0, 0, 0, mur);
+    g.addColorStop(0, "#0A1A33"); g.addColorStop(1, "#13294D");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, mur);
+    for (let r = 0; r < 3; r++) {
+      ctx.fillStyle = `rgba(255, 255, 255, ${0.04 + r * 0.02})`;
+      ctx.fillRect(0, mur * (0.28 + r * 0.24), W, 2);
+    }
+    for (const p of PUBLIC) {
+      const y = mur * (0.2 + p.rang * 0.24) + Math.sin(t * 3 + p.x * 30) * 1.2; // le public bouge un peu
+      ctx.fillStyle = p.c; ctx.globalAlpha = 0.55;
+      ctx.beginPath(); ctx.arc(p.x * W, y, 3.2, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    // le bord du terrain : une bande jaune HandSlam
+    ctx.fillStyle = "#F4C542"; ctx.fillRect(0, mur, W, 3);
+    // lignes du terrain
+    ctx.strokeStyle = "rgba(245, 247, 250, .28)"; ctx.lineWidth = 2;
+    const cx = W / 2, cy = mur + (H - mur) * 0.42, rc = Math.min(W, H) * 0.15;
+    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, rc, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = "rgba(244, 197, 66, .12)";
+    ctx.beginPath(); ctx.arc(cx, cy, rc * 0.4, 0, Math.PI * 2); ctx.fill();
+    // la raquette peinte devant le joueur, avec son cercle de lancer franc
+    const lr = W * 0.42, haut = H - R * 3.4 - H * 0.2;
+    ctx.fillStyle = "rgba(232, 87, 74, .14)"; ctx.fillRect(cx - lr / 2, haut, lr, H - haut);
+    ctx.strokeRect(cx - lr / 2, haut, lr, H - haut);
+    ctx.beginPath(); ctx.arc(cx, haut, lr / 2, Math.PI, 0); ctx.stroke();
+    // la ligne à trois points, en arc
+    ctx.beginPath(); ctx.ellipse(cx, H, W * 0.46, H * 0.36, 0, Math.PI, 0); ctx.stroke();
+    // le nom au centre, très pâle
+    ctx.fillStyle = "rgba(245, 247, 250, .07)";
+    ctx.font = `800 ${Math.round(rc * 0.42)}px "Barlow Condensed", sans-serif`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("HANDSLAM", cx, cy + rc * 1.45);
   }
 
   function dessinerPlage() {
@@ -1267,8 +1309,10 @@ canvas { display: block; width: 100%; height: 100%; }
     ctx.font = `800 ${Math.round(R * 0.7)}px "Barlow Condensed", sans-serif`;
     ctx.textAlign = "left"; ctx.textBaseline = "top"; ctx.fillStyle = COUL.muted;
     if (J.vague) {
-      ctx.fillStyle = MONDES[J.monde].decor === "gymnase" ? COUL.muted : COUL.line;
-      ctx.fillText(`MONDE ${J.monde + 1} · ${tour() > 1 ? `TOUR ${tour()} · ` : ""}VAGUE ${J.vague}/${VAGUES_PAR_MONDE}`, 12, yHaut);
+      ctx.fillStyle = COUL.line;
+      const haut = `MONDE ${J.monde + 1} · ${tour() > 1 ? `TOUR ${tour()} · ` : ""}VAGUE ${J.vague}/${VAGUES_PAR_MONDE}`;
+      ctx.lineWidth = 4; ctx.lineJoin = "round"; ctx.strokeStyle = "rgba(6, 16, 34, .85)"; // contour : lisible sur le public du Gymnase
+      ctx.strokeText(haut, 12, yHaut); ctx.fillText(haut, 12, yHaut);
     }
     if (J.combo >= 5) { ctx.fillStyle = COUL.me; ctx.fillText(`SÉRIE ×${J.combo}`, 12, yHaut + R * 0.8); }
     let xb = W - 26;
