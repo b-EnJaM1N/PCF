@@ -7,7 +7,8 @@ import { CRIS } from "../app/js/celebrations.js";
 import { profilParDefaut, normaliserProfil, estVerrouille, remettreAZero } from "../app/js/profil.js";
 
 test("les prix de l'appli et du serveur correspondent", () => {
-  const sql = readFileSync(new URL("../supabase/etape-17-boutique.sql", import.meta.url), "utf8");
+  // le catalogue le plus récent du serveur (étape 47, qui remplace celui de l'étape 17)
+  const sql = readFileSync(new URL("../supabase/etape-47-nouveaux-gestes.sql", import.meta.url), "utf8");
   const serveur = new Map([...sql.matchAll(/\('([a-zA-Z]+:[a-z_]+)', (\d+)\)/g)].map(m => [m[1], +m[2]]));
   assert.equal(serveur.size, ARTICLES.length);
   for (const x of ARTICLES) assert.equal(serveur.get(x.id), x.prix, x.id);
@@ -45,4 +46,13 @@ test("la fiche garde les achats et les choix, même après une remise à zéro",
   assert.deepEqual(N.achats, ["gant:rose", "celebration:or"]);
   assert.equal(N.av.gant, "rose", "un article acheté reste équipé");
   assert.equal(N.celebration, "or");
+});
+
+test("nouveaux gestes : trois à la boutique, deux gagnés avec un trophée", () => {
+  const P = profilParDefaut();
+  for (const g of ["coeur", "salut_militaire", "micro"]) { assert.ok(articleDe("geste", g), g); assert.ok(estVerrouille(P, "geste", g), g); }
+  for (const g of ["check", "non_non"]) { assert.equal(articleDe("geste", g), null, g); assert.ok(estVerrouille(P, "geste", g), `${g} : verrouillé sans le trophée`); }
+  P.titres = { gentleman: 1, phenix: 1 };
+  assert.ok(!estVerrouille(P, "geste", "check") && !estVerrouille(P, "geste", "non_non"));
+  assert.ok(!estVerrouille(P, "geste", "poing"), "le poing serré reste libre");
 });

@@ -31,7 +31,8 @@ import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
 import { installerDuels } from "./ecran-duel.js";
 import { installerCercles, renderFaceAFace } from "./ecran-cercles.js";
-import { duelsAvec } from "./duel-serveur.js";
+import { duelsAvec, profils as profilsEnLigne } from "./duel-serveur.js";
+import { profilDepuisLigne } from "./synchro.js";
 import { installerSng } from "./ecran-sng.js";
 import { installerJetons } from "./ecran-jetons.js";
 import { installerFreeroll } from "./ecran-freeroll.js";
@@ -216,7 +217,7 @@ function ouvrirPanneau({ kick = "", big = "", bigCls = "", sc = "", tally = "", 
 $("iGo").addEventListener("click", () => panneauGo && panneauGo());
 function fermerPanneau() { $("inter").classList.remove("show"); panneauOuvert = null; panneauGo = null; }
 
-// ---------------------------------------------------------------- minuteur (5 s par coup)
+// ---------------------------------------------------------------- minuteur (8 s par coup)
 let raf = 0, tDebut = 0;
 function lancerMinuteur() {
   cancelAnimationFrame(raf); tDebut = performance.now(); $("timer").classList.remove("urgent");
@@ -456,11 +457,12 @@ function renderHistorique() {
   const t = $("tape"); t.scrollLeft = t.scrollWidth;
 }
 
-// Lire l'adversaire : sa répartition, ses réflexes, et la piste pour le prochain coup (d'après l'historique).
-// En match officiel (il compte pour le niveau), c'est au joueur de lire seul : l'encadré n'apparaît qu'à la fin.
+// Lire l'adversaire : sa répartition et ses réflexes (d'après l'historique). Pendant le match, c'est au joueur de lire
+// seul, sans aide (décision du porteur du projet, 20 octobre) : l'encadré n'apparaît qu'à la fin. Avant le match,
+// son dossier reste consultable.
 function renderLectureAdversaire() {
-  const cache = !!(S.duel && D?.duel?.classe) && !S.match.termine;
-  $("lecture").hidden = cache; $("lectureOff").hidden = !cache;
+  const cache = !S.match.termine;
+  $("lecture").hidden = cache; $("lectureOff").hidden = true;
   if (cache) return;
   const c = S.match.coups, n = c.length, r = repartition(c);
   $("lectureRep").innerHTML = [0, 2, 1].map(s => `<div><b>${EMOJIS[s]}</b>${n ? Math.round(100 * r[s] / n) : 0} %<i><span style="width:${n ? Math.round(100 * r[s] / n) : 0}%"></span></i></div>`).join("");
@@ -746,6 +748,7 @@ async function ouvrirFicheAdv(id, nom, { jouer = true } = {}) {
     $("faNom").textContent = court || "Adversaire";
     $("faInfo").textContent = /🤖/.test(nom) ? "Bot en ligne" : "Joueur en ligne";
     const uid = String(id).replace(/^h:/, ""), moi = compteUI?.session()?.user?.id;
+    $("faCarte").hidden = !moi || /🤖/.test(nom); $("faCarte").dataset.uid = uid;
     const v = f?.v || 0, d = f?.d || 0;
     const local = v + d ? `<div class="ff-tete"><span>Toi</span><b>${v} – ${d}</b><span>${esc(court)}</span></div>` : `<p class="hint">Pas encore de duel enregistré contre ${esc(court)}.</p>`;
     $("faCorps").innerHTML = moi ? `<p class="hint">Chargement…</p>` : local;
@@ -757,6 +760,12 @@ async function ouvrirFicheAdv(id, nom, { jouer = true } = {}) {
   $("ficheAdv").classList.add("show");
 }
 $("lastBody").addEventListener("click", e => { const x = e.target.closest(".nom-adv"); if (x) ouvrirFicheAdv(x.dataset.adv, x.dataset.nom); });
+$("faCarte").addEventListener("click", async () => {
+  const b = $("faCarte"); b.disabled = true;
+  const msg = await voirCarteDe(b.dataset.uid);
+  b.disabled = false;
+  if (msg) $("faInfo").textContent = msg; else $("ficheAdv").classList.remove("show");
+});
 $("faFermer").addEventListener("click", () => $("ficheAdv").classList.remove("show"));
 $("faJouer").addEventListener("click", () => {
   const id = $("faJouer").dataset.bot; $("ficheAdv").classList.remove("show");
@@ -779,6 +788,26 @@ function renderCarte() {
     await preparerPartage(canvas, { img: $("carteImg"), partager: $("cartePartager"), enregistrer: $("carteEnregistrer"), msg: $("carteMsg"),
       fichier: "ma-carte.png", alt: `Carte de joueur de ${nomAffiche(P)} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
   }, 250);
+}
+
+// La carte d'un autre joueur (page d'un ami, derniers matchs), d'après sa fiche en ligne ; sauf s'il a choisi de la cacher.
+// Renvoie un message si elle ne peut pas être montrée.
+async function voirCarteDe(uid) {
+  let ligne;
+  try { [ligne] = await profilsEnLigne([uid]); } catch { return "Impossible de charger sa carte. Vérifie ta connexion."; }
+  if (!ligne) return "Ce joueur n'existe plus.";
+  const J = profilDepuisLigne(ligne);
+  if (J.carteCachee) return "🙈 Ce joueur a choisi de ne pas montrer sa carte.";
+  let cl = null;
+  try { cl = (await classements([uid])).get(uid) || null; } catch { /* sans niveau officiel */ }
+  const nom = `${ligne.pseudo}${ligne.numero ? `#${ligne.numero}` : ""}`;
+  const c = carteDe(J, { niveauOfficiel: cl ? cl.points : null, provisoire: !!cl && provisoire(cl.joues), surnom: surnomDe(J).texte, titre: J.matchs ? dernierTitre(J) : "" });
+  $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
+  $("une").classList.add("show");
+  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG(J.av), cadre: CADRES[J.cadre]?.couleur });
+  await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
+    fichier: "carte-de-joueur.png", alt: `Carte de joueur de ${nom} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
+  return null;
 }
 
 // ---------------------------------------------------------------- interview d'après-finale
@@ -1174,7 +1203,7 @@ function renderSurnom() {
   document.querySelectorAll("#segPoignee button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === P.poignee)));
   // Les cris gratuits, et ceux achetés à la boutique ; de même pour le geste, la célébration et le cadre.
   $("inCri").innerHTML = CRIS.filter(c => possede(P, "cri", c.id)).map(c => `<option value="${c.id}"${c.id === P.cri ? " selected" : ""}>${esc(libelleCri(c.id))}${c.boutique ? " 🛍️" : ""}</option>`).join("");
-  const options = (type, table, actuel) => Object.keys(table).filter(k => possede(P, type, k)).map(k => `<option value="${k}"${k === actuel ? " selected" : ""}>${esc(table[k].nom)}</option>`).join("");
+  const options = (type, table, actuel) => Object.keys(table).filter(k => !estVerrouille(P, type, k)).map(k => `<option value="${k}"${k === actuel ? " selected" : ""}>${esc(table[k].nom)}</option>`).join("");
   $("inGeste").innerHTML = options("geste", GESTES, P.geste);
   $("inCelebration").innerHTML = options("celebration", CELEBRATIONS, P.celebration);
   $("inCadre").innerHTML = options("cadre", CADRES, P.cadre);
@@ -1760,6 +1789,7 @@ cerclesUI = installerCercles({
   ouvrirOnglet,
   defier: p => duelsUI.defier(p),
   dejaDefie: id => !!duelsUI?.dejaDefie(id),
+  voirCarte: id => voirCarteDe(id),
   lancerDuel,
   trophees: donnees => gagnerTrophees(accorderTitres(P, titresEnLigne(donnees))),
   surClassement: (points, joues = 0, division = null) => {
@@ -1856,13 +1886,15 @@ function signalerPresence() {
 setInterval(signalerPresence, 60000);
 document.addEventListener("visibilitychange", signalerPresence);
 function surSessionPresence(session) {
-  $("presenceZone").hidden = !session?.user;
+  $("presenceZone").hidden = !session?.user; $("carteCacheeZone").hidden = !session?.user;
+  $("carteCachee").checked = !!P.carteCachee;
   if (!session?.user) return;
   signalerPresence();
   maPresenceVisible().then(v => { $("presenceVisible").checked = v !== false; }).catch(() => {});
 }
 compteUI.surConnexion(surSessionPresence);
 surSessionPresence(compteUI.session());
+$("carteCachee").addEventListener("change", e => { P.carteCachee = e.target.checked; sauverP(); });   // gardé dans la fiche en ligne
 $("presenceVisible").addEventListener("change", async e => {
   try { await reglerPresence(e.target.checked); }
   catch { e.target.checked = !e.target.checked; }

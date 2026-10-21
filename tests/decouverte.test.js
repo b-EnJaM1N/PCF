@@ -23,7 +23,7 @@ test("les nouveautés s'annoncent une seule fois, au bon match", () => {
 test("le premier match : contre Bambi, un set de 7 points, avec des conseils", () => {
   assert.equal(botParId(PREMIER_MATCH.bot).nom, "Bambi");
   assert.deepEqual([PREMIER_MATCH.pointsParSet, PREMIER_MATCH.setsGagnants], [7, 1]);
-  assert.match(conseil(0, null), /5 secondes/);
+  assert.match(conseil(0, null), /8 secondes/);
   assert.match(conseil(1, 0), /Point pour toi/);
   assert.match(conseil(2, 1), /Point pour Bambi/);
   assert.match(conseil(3, null), /Égalité/);

@@ -92,7 +92,7 @@ test("les surnoms d'exploit : gagnés avec un trophée précis", async () => {
   assert.equal(surnomDe(P).texte, "Le Phénix du Cercle");
   assert.deepEqual(surnomsDuTrophee("legende"), ["L'Invaincu"]);
   assert.equal(texteDeblocage(TITRES.find(t => t.id === "legende")), "les coutures dorées et le surnom « L'Invaincu »");
-  assert.equal(texteDeblocage(TITRES.find(t => t.id === "phenix")), "le surnom « Le Phénix »");
+  assert.equal(texteDeblocage(TITRES.find(t => t.id === "phenix")), "le geste du doigt « non, non, non » et le surnom « Le Phénix »");
   assert.equal(texteDeblocage(TITRES.find(t => t.id === "habitue")), "");
   for (const x of [...NOMS, ...QUALIFICATIFS].filter(v => v.famille === "exploit")) assert.ok(TITRES.some(t => t.id === x.trophee), x.id);
 });

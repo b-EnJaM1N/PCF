@@ -319,8 +319,8 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_avant_match_03.mp3` | Un pronostic, Madame ? |
 | `commentateur_dialogue_avant_match_04.mp3` | Vous le sentez comment, ce match ? |
 | `commentateur_dialogue_avant_match_05.mp3` | La Pierre, c'est la base, Madame ! |
-| `commentateur_dialogue_avant_match_06.mp3` | Bonsoir à tous ! Roland Pignon, en direct du court central, aux côtés de la légendaire Monique Latouffe ! |
-| `commentateur_dialogue_avant_match_07.mp3` | Monique Latouffe, la finale de 1997, les trois Ciseaux… |
+| `commentateur_dialogue_avant_match_06.mp3` | Bonsoir à tous ! Roland Pignon, en direct du court central, aux côtés de la légendaire Monique Latour ! |
+| `commentateur_dialogue_avant_match_07.mp3` | Monique Latour, la finale de 1997, les trois Ciseaux… |
 | `commentateur_dialogue_avant_match_08.mp3` | Monique, votre pronostic pour ce soir ? |
 | `commentateur_dialogue_avant_match_09.mp3` | Quelle ambiance, Madame ! Le public est chaud bouillant ! |
 | `commentateur_dialogue_avant_match_10.mp3` | On m'annonce un match historique ! |
@@ -916,7 +916,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_cri_03.mp3` | La prochaine fois, prévoyez les boules Quies. |
 | `commentatrice_dialogue_cri_04.mp3` | C'est Ronaldo sans les abdos. |
 
-## Speaker — voix de salle, voyelles étirées (191 répliques)
+## Speaker — voix de salle, voyelles étirées (192 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1006,6 +1006,7 @@ restent lus par la voix de synthèse.
 | `speaker_surnom_le_dindon_01.mp3` | Le Dindon… |
 | `speaker_surnom_le_pigeon_01.mp3` | Le Pigeon… |
 | `speaker_surnom_la_morue_01.mp3` | La Morue… |
+| `speaker_surnom_la_girafe_01.mp3` | La Girafe… |
 | `speaker_surnom_le_cobra_01.mp3` | Le Cobra… |
 | `speaker_surnom_le_scorpion_01.mp3` | Le Scorpion… |
 | `speaker_surnom_le_requin_01.mp3` | Le Requin… |
