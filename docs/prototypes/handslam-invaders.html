@@ -824,7 +824,7 @@ canvas { display: block; width: 100%; height: 100%; }
         ctx.beginPath(); ctx.moveTo(...pt(0.4)); ctx.lineTo(...pt(0.52)); ctx.stroke();
       }
     } else if (o.dessin === "maillot") {
-      // un maillot de basket à plat : débardeur jaune HandSlam, encolure et emmanchures bleues, numéro 7
+      // un maillot de basket à plat : débardeur jaune HandSlam, encolure et emmanchures bleues, numéro 23
       const P = (a, b) => [x + s * a, y + s * b];
       ctx.beginPath();
       ctx.moveTo(...P(-0.28, -0.48)); ctx.lineTo(...P(-0.14, -0.48));
@@ -839,8 +839,8 @@ canvas { display: block; width: 100%; height: 100%; }
       ctx.fillStyle = "#0F2C52"; // bandes sur les côtés
       ctx.fillRect(...P(-0.37, -0.08), s * 0.05, s * 0.56); ctx.fillRect(...P(0.32, -0.08), s * 0.05, s * 0.56);
       ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      ctx.font = `800 ${Math.round(s * 0.5)}px "Barlow Condensed", "Arial Narrow", sans-serif`;
-      ctx.fillText("7", x, y + s * 0.16);
+      ctx.font = `800 ${Math.round(s * 0.42)}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+      ctx.fillText("23", x, y + s * 0.16);
     } else if (o.dessin === "drapeau") {
       // un drapeau de corner : mât blanc, tissu jaune qui flotte
       const px = x - s * 0.28, haut = y - s * 0.5;
