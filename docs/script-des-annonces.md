@@ -319,8 +319,8 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_avant_match_03.mp3` | Un pronostic, Madame ? |
 | `commentateur_dialogue_avant_match_04.mp3` | Vous le sentez comment, ce match ? |
 | `commentateur_dialogue_avant_match_05.mp3` | La Pierre, c'est la base, Madame ! |
-| `commentateur_dialogue_avant_match_06.mp3` | Bonsoir à tous ! Roland Pignon, en direct du court central, aux côtés de la légendaire Monique Latouffe ! |
-| `commentateur_dialogue_avant_match_07.mp3` | Monique Latouffe, la finale de 1997, les trois Ciseaux… |
+| `commentateur_dialogue_avant_match_06.mp3` | Bonsoir à tous ! Roland Pignon, en direct du court central, aux côtés de la légendaire Monique Latour ! |
+| `commentateur_dialogue_avant_match_07.mp3` | Monique Latour, la finale de 1997, les trois Ciseaux… |
 | `commentateur_dialogue_avant_match_08.mp3` | Monique, votre pronostic pour ce soir ? |
 | `commentateur_dialogue_avant_match_09.mp3` | Quelle ambiance, Madame ! Le public est chaud bouillant ! |
 | `commentateur_dialogue_avant_match_10.mp3` | On m'annonce un match historique ! |

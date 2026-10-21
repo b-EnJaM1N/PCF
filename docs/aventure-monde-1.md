@@ -11,7 +11,7 @@ Le héros traverse la forêt, affronte ses habitants un par un, et gagne en forc
 
 ## Monique, la mentore (idée du 13 octobre)
 
-C'est **Monique Latouffe**, la commentatrice glaciale, championne de 1997, qui ouvre l'aventure et donne les missions.
+C'est **Monique Latour**, la commentatrice glaciale, championne de 1997, qui ouvre l'aventure et donne les missions.
 Elle garde son caractère : sèche, exigeante, un compliment par monde au maximum. Sa voix existe déjà (ElevenLabs).
 
 **Introduction** (au premier lancement du mode Aventure) :

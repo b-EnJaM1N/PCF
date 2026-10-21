@@ -27,7 +27,7 @@ et sans nom de personnalité.
 
 **Noms à choisir** — pistes :
 - Commentateur : **Roland Pignon** (il l'appelle toujours « Madame »)
-- Commentatrice : **Monique Latouffe** (elle l'appelle « Roland »)
+- Commentatrice : **Monique Latour** (elle l'appelle « Roland »)
 - Speaker : « Big » Tony Castel · Maxime Rolland
 
 ## La fausse histoire de la discipline

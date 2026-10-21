@@ -13,7 +13,7 @@ et la journaliste (8) attendront qu'il y ait du monde dans l'appli ; leurs répl
 
 | Rôle | Voix | Voice ID | Réglages | Indication |
 |---|---|---|---|---|
-| Monique Latouffe (commentatrice) | **Camille Martin** ✅ | `hFgOzpmS0CMtL2to8sAl` | Stability haute (70-80 %), Style bas (≈ 0) | `[deadpan]` |
+| Monique Latour (commentatrice) | **Camille Martin** ✅ | `hFgOzpmS0CMtL2to8sAl` | Stability haute (70-80 %), Style bas (≈ 0) | `[deadpan]` |
 | Roland Pignon (commentateur) | ✅ (nom à préciser) | `pwONJQic3ZwHTFG8D6uM` | Stability basse, Style plus haut | `[excited]` |
 | Speaker | ⏸ plus tard (quand il y aura du monde et des finales) | | Stability moyenne, un peu lent | `[shouting]` ou rien |
 | Arbitre | ✅ | `lm3gOYJiClKJc7YaR3r1` | Stability haute, Style 0 | aucune |
