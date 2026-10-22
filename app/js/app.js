@@ -19,7 +19,8 @@ import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
-import { CIRCUITS, JOURNEES, QUALIFIES, NOMS_TOURS, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere } from "./carriere-logique.js";
+import { CIRCUITS, JOURNEES, QUALIFIES, NOMS_TOURS, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine } from "./carriere-logique.js";
+import { coupeSVG, bouclierSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
@@ -535,6 +536,8 @@ function finir() {
   // Le premier gant : offert après le premier match (avant, la main nue).
   const premierGant = matchsAvant === 0 && P.matchs > 0 && P.av.gant === "nu" && !P.premierGant;
   if (premierGant) { P.av.gant = "blanc"; P.premierGant = true; }
+  // Champion de l'Élite : le trophée, qui débloque le gant de l'Élite.
+  if (enCarriere && C.phase === "fin" && phaseAvant !== "fin" && C.bilan.titre === "champion") nouveaux.push(...accorderTitres(P, ["champion_elite"]));
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("coach").hidden = true;
   if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
@@ -1240,6 +1243,7 @@ $("inCadre").addEventListener("change", e => { P.cadre = e.target.value in CADRE
 
 function renderFiche() {
   renderSurnom(); renderCarte();
+  $("vitrineFiche").innerHTML = vitrineHTML() + (C ? "" : `<p class="hint">Gagne-les dans Jouer › 🏅 Ma carrière.</p>`);
   $("pAv").innerHTML = avatarSVG(P.av);
   afficherNomFiche();
   $("pTitle").textContent = dernierTitre(P);
@@ -1520,8 +1524,17 @@ const ligneMatch = (m, gagnant = m.v) => {
   const A = infoJoueur(m.a), B = infoJoueur(m.b), cls = x => (gagnant === x ? "win" : gagnant ? "lose" : ""), mien = m.a === "moi" || m.b === "moi" ? " mine" : "";
   return `<div class="bm${mien}"><div class="bp ${cls(m.a)}"><span class="mini">${avatarSVG(A.av)}</span><span class="bn">${esc(A.nom)}</span></div><div class="bs">${m.score || "vs"}</div><div class="bp r ${cls(m.b)}"><span class="bn">${esc(B.nom)}</span><span class="mini">${avatarSVG(B.av)}</span></div></div>`;
 };
+// Ma vitrine : les 5 coupes (vainqueur des playoffs) et les 5 boucliers (1er de la saison), en gris tant qu'ils ne sont pas gagnés.
+function vitrineHTML() {
+  const v = vitrine(C), saisons = l => (l.length ? `${l.length > 1 ? `×${l.length} · ` : ""}saison${l.length > 1 ? "s" : ""} ${l.join(", ")}` : "–");
+  const rangee = (titre, f, cle) => `<p class="vitrine-titre">${titre}</p><div class="vitrine">` + CIRCUITS.map((nom, k) => {
+    const l = v[k][cle];
+    return `<div class="vitrine-case${l.length ? " gagnee" : ""}">${f(k, l.length > 0)}<b>${nom.replace("Circuit ", "")}</b><small>${saisons(l)}</small></div>`;
+  }).join("") + `</div>`;
+  return rangee("🏆 Les coupes · vainqueur des playoffs", coupeSVG, "coupes") + rangee("🛡️ Les boucliers · 1er de la saison régulière", bouclierSVG, "boucliers");
+}
 function renderCarriere() {
-  $("carRecommencer").hidden = !C; $("carTableau").innerHTML = ""; $("carCalendrier").innerHTML = ""; $("carClassement").innerHTML = ""; $("carPalmares").innerHTML = "";
+  $("carRecommencer").hidden = !C; $("carTableau").innerHTML = ""; $("carCalendrier").innerHTML = ""; $("carVitrine").innerHTML = ""; $("carClassement").innerHTML = ""; $("carPalmares").innerHTML = "";
   if (!C) {
     $("carEntete").textContent = "Saison 1 · Circuit Amateur";
     $("carMsg").textContent = "Tu commences en Circuit Amateur, avec 11 bots. Gagne ta place en playoffs, monte de circuit en circuit… jusqu'à l'Élite et ses 12 terreurs.";
@@ -1556,6 +1569,7 @@ function renderCarriere() {
       const A = infoJoueur(l.id), d = l.pm - l.pc, cls = [l.id === "moi" ? "moi" : "", i < QUALIFIES ? "zone-po" : zones ? "zone-bas" : ""].join(" ").trim();
       return `<tr class="${cls}"><td>${i + 1}</td><td><span class="mini">${avatarSVG(A.av)}</span><span>${esc(A.nom)}</span></td><td>${l.j}</td><td>${l.v}</td><td>${l.d}</td><td>${d > 0 ? "+" : ""}${d}</td><td>${l.pts}</td></tr>`;
     }).join("") + `</tbody></table><p class="car-legende">🟩 Places 1 à 8 : playoffs, le vainqueur monte.${zones ? " 🟥 Places 9 à 12 : le maintien." : ""}</p>`;
+  $("carVitrine").innerHTML = `<div class="rnd">Ma vitrine</div>${vitrineHTML()}`;
   // Le palmarès.
   if (C.palmares.length) {
     const b = bilanCarriere(C);

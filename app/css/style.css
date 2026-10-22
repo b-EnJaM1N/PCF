@@ -314,6 +314,14 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .car-saison { margin-top: 10px; }
 .car-saison-circuit { padding: 8px 2px; border-top: 1px solid rgba(255, 255, 255, .08); font-size: .88rem; line-height: 1.5; }
 .car-saison-circuit .car-sec { color: var(--muted); }
+.vitrine-titre { font-size: .85rem; color: var(--muted); margin: 10px 0 4px; }
+.vitrine { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.vitrine-case { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; }
+.vitrine-case .coupe { width: 100%; max-width: 56px; height: auto; opacity: .45; }
+.vitrine-case.gagnee .coupe { opacity: 1; filter: drop-shadow(0 0 6px rgba(255, 215, 90, .45)); }
+.vitrine-case b { font-size: .72rem; margin-top: 2px; }
+.vitrine-case small { font-size: .66rem; color: var(--muted); line-height: 1.2; }
+.vitrine-case.gagnee small { color: var(--line); }
 .car-palmares { margin: 12px 0 0; padding-left: 18px; font-size: .9rem; }
 .bs { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--muted); min-width: 2.6rem; text-align: center; }
 .tmsg { font-weight: 600; margin: 14px 0 12px; line-height: 1.4; }

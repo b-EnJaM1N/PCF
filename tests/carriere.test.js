@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   CIRCUITS, TAILLE, JOURNEES, compositionDeDepart, calendrier, nouvelleCarriere, prochainMatch, enregistrerMonMatch,
-  classement, saisonSuivante, texteBilan, circuitDuJoueur, chances, simulerCircuit,
+  classement, saisonSuivante, texteBilan, circuitDuJoueur, chances, simulerCircuit, vitrine,
 } from "../app/js/carriere-logique.js";
 import { botParId, TOUS_LES_BOTS, choisirCoup } from "../app/js/bots.js";
 import { hasardGraine } from "../app/js/match-du-jour.js";
@@ -148,4 +148,16 @@ test("le palmarès de la saison : champion de chaque circuit, montées et descen
   assert.equal(p.circuits[4].montes.length, 0); assert.equal(p.circuits[0].descendus.length, 0);
   for (let k = 0; k < 4; k++) assert.equal(p.circuits[k].montes.length, p.circuits[k + 1].descendus.length);
   p.circuits.forEach(c => assert.ok(c.champion && c.finaliste));
+});
+
+test("la vitrine : coupe et bouclier, dès qu'ils sont acquis, puis gardés au palmarès", () => {
+  const C = nouvelleCarriere(hasardGraine(9));
+  assert.deepEqual(vitrine(C)[0], { coupes: [], boucliers: [] });
+  for (let j = 0; j < JOURNEES; j++) gagner(C, true);
+  assert.deepEqual(vitrine(C)[0], { coupes: [], boucliers: [1] });   // 1er de la saison : le bouclier tout de suite
+  for (let i = 0; i < 3; i++) gagner(C, true);
+  assert.deepEqual(vitrine(C)[0], { coupes: [1], boucliers: [1] });
+  saisonSuivante(C, rng);
+  assert.deepEqual(vitrine(C)[0], { coupes: [1], boucliers: [1] });
+  assert.deepEqual(vitrine(C)[1], { coupes: [], boucliers: [] });
 });

@@ -237,7 +237,8 @@ export function saisonSuivante(C, rng = Math.random) {
   if (C.phase !== "fin") return C;
   // Le palmarès de la saison : mon parcours, et pour chaque circuit son champion, son finaliste, qui monte et qui descend.
   const resume = C.circuits.map((_, k) => ({ champion: C.issues[k].champion, finaliste: C.issues[k].finaliste, montes: [], descendus: [] }));
-  C.palmares.push({ saison: C.saison, circuit: C.ou, place: C.place, texte: texteBilan(C), mouvement: C.bilan.mouvement, titre: C.bilan.titre, circuits: resume });
+  C.palmares.push({ saison: C.saison, circuit: C.ou, place: C.place, texte: texteBilan(C), mouvement: C.bilan.mouvement, titre: C.bilan.titre, circuits: resume,
+    coupe: resume[C.ou].champion === "moi", bouclier: C.place === 1 });
   const N = C.circuits.map(c => [...c]);
   const deplacer = (id, de, vers) => { N[de].splice(N[de].indexOf(id), 1); N[vers].push(id); resume[de][vers > de ? "montes" : "descendus"].push(id); };
   for (let k = 0; k < DERNIER; k++) {
@@ -256,4 +257,15 @@ export function saisonSuivante(C, rng = Math.random) {
 export function bilanCarriere(C) {
   const atteints = [C.ou, ...C.palmares.map(p => p.circuit + (p.mouvement || 0))];
   return { meilleur: Math.max(...atteints), titres: C.palmares.filter(p => p.titre === "champion").length };
+}
+
+// La vitrine : pour chaque circuit, les saisons où j'ai gagné la coupe (vainqueur des playoffs) et le bouclier
+// (1er de la saison régulière). La saison en cours compte dès que c'est acquis.
+export function vitrine(C) {
+  const v = CIRCUITS.map(() => ({ coupes: [], boucliers: [] }));
+  if (!C) return v;
+  for (const p of C.palmares) { if (p.coupe) v[p.circuit].coupes.push(p.saison); if (p.bouclier) v[p.circuit].boucliers.push(p.saison); }
+  if (C.issues?.[C.ou]?.champion === "moi" && C.phase === "fin") v[C.ou].coupes.push(C.saison);
+  if (C.place === 1) v[C.ou].boucliers.push(C.saison);
+  return v;
 }
