@@ -136,3 +136,16 @@ test("un circuit de bots donne un champion, un finaliste, un relégué et un bar
   const ids = compositionDeDepart()[2], r = simulerCircuit(ids, 2, rng);
   assert.equal(new Set([r.champion, r.finaliste, r.relegue, r.barragiste]).size, 4);
 });
+
+test("le palmarès de la saison : champion de chaque circuit, montées et descentes", () => {
+  const C = nouvelleCarriere(hasardGraine(8));
+  for (let j = 0; j < JOURNEES; j++) gagner(C, true); for (let i = 0; i < 3; i++) gagner(C, true);
+  saisonSuivante(C, rng);
+  const p = C.palmares[0];
+  assert.equal(p.circuits.length, CIRCUITS.length);
+  assert.equal(p.circuits[0].champion, "moi");
+  assert.ok(p.circuits[0].montes.includes("moi"));
+  assert.equal(p.circuits[4].montes.length, 0); assert.equal(p.circuits[0].descendus.length, 0);
+  for (let k = 0; k < 4; k++) assert.equal(p.circuits[k].montes.length, p.circuits[k + 1].descendus.length);
+  p.circuits.forEach(c => assert.ok(c.champion && c.finaliste));
+});
