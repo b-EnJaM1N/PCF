@@ -50,7 +50,6 @@ export const TITRES = [
   { id: "finaliste", famille: "tournois", nom: "Finaliste", desc: "Jouer la finale d'un tournoi en ligne." },
   { id: "roi_sng", famille: "tournois", nom: "Roi du Sit & Go", desc: "Remporter un Sit & Go." },
   { id: "champion_dimanche", famille: "tournois", nom: "Champion du dimanche", desc: "Remporter le Grand Chelem du dimanche soir." },
-  { id: "champion_elite", famille: "tournois", nom: "Champion de l'Élite", desc: "Remporter les playoffs du Circuit Élite en carrière.", debloque: "le gant de l'Élite", objet: ["gant", "elite"] },
   { id: "organisateur", famille: "tournois", nom: "Organisateur", desc: "Organiser un tournoi de cercle joué jusqu'au bout." },
 
   { id: "fondateur", famille: "cercles", nom: "Fondateur", desc: "Créer un cercle." },
@@ -89,14 +88,12 @@ export function titresEnLigne({ cercles = [], tournois = [], duelsCercle = 0, cr
 // Titre qui débloque un élément d'avatar (ou undefined si l'élément est libre).
 export const verrouDe = (type, cle) => TITRES.find(t => t.objet && t.objet[0] === type && t.objet[1] === cle);
 // Verrouillé : réservé à un trophée pas encore obtenu, ou article de la boutique pas encore acheté.
-// Les gants : après le premier match (avant, la main nue).
-export const gantAttendPremierMatch = (P, type, cle) => type === "gant" && cle !== "nu" && !(P.matchs > 0);
-export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); return (!!t && !P.titres[t.id]) || !possede(P, type, cle) || gantAttendPremierMatch(P, type, cle); };
+export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); return (!!t && !P.titres[t.id]) || !possede(P, type, cle); };
 
 export function profilParDefaut() {
   return {
     v: 1, pseudo: "", drapeau: "🇫🇷",
-    av: { symbole: "pierre", fond: "court", gant: "nu", peau: "neutre", ongles: "aucun", bracelet: "aucun", bague: "aucune", poignet: "rouge", motif: "uni", gantMotif: "uni" },   // main nue jusqu'au premier gant
+    av: { symbole: "pierre", fond: "court", gant: "blanc", poignet: "rouge", motif: "uni", gantMotif: "uni" },
     elo: ELO_DEPART, historiqueElo: [ELO_DEPART],
     matchs: 0, victoires: 0, serieEnCours: 0, meilleureSerieVictoires: 0,
     sets: [0, 0], coups: 0, signes: [0, 0, 0], signesAdv: [0, 0, 0],
