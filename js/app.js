@@ -28,7 +28,7 @@ import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS } from "./voix/scr
 import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
-import { messagesPossibles, momentApres, texteMessage } from "./messages-rapides.js";
+import { messagesPossibles, momentApres, texteMessage, erreurMessageLibre, nettoyerMessage, PREFIXE_LIBRE, MESSAGE_LIBRE_MAX } from "./messages-rapides.js";
 import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
 import { installerDuels } from "./ecran-duel.js";
@@ -658,10 +658,35 @@ async function verifierAmi() {
   catch { /* sans la liste, pas de chambrage */ }
 }
 const momentAvecMoi = duel => (duel.phase === "presentation" ? "avant" : duel.phase === "termine" && duel.vainqueur !== null && duel.vainqueur !== undefined ? momentApres(duel.vainqueur === D.moi) : null);
+// Un seul bouton à l'écran ; il ouvre la fenêtre des messages (décision du 22 octobre : les rangées de puces encombraient).
 function puces(zone, moment) {
-  zone.innerHTML = messagesPossibles(moment, !!D.ami).map(m => `<button class="${m.amis ? "amis" : ""}" data-msg="${m.id}">${esc(m.texte)}</button>`).join("");
+  zone.innerHTML = `<button class="btn alt msg-ouvrir" data-moment="${moment}">💬 Envoyer un message à ${esc(OPP.nom)}</button>`;
 }
+// La fenêtre : les phrases fair-play, puis, entre amis, le chambrage et le message écrit soi-même.
+function ouvrirMessages(moment) {
+  if (!D) return;
+  const ami = !!D.ami, liste = messagesPossibles(moment, ami), rubrique = (titre, l) => `<p class="msg-rubrique">${titre}</p><div class="msg-puces">`
+    + l.map(m => `<button class="${m.amis ? "amis" : ""}" data-msg="${m.id}">${esc(m.texte)}</button>`).join("") + `</div>`;
+  $("msgFenetreTitre").textContent = `💬 Un mot pour ${OPP.nom}`;
+  $("msgFenetreCorps").innerHTML = rubrique("😊 Fair-play", liste.filter(m => !m.amis))
+    + (ami ? rubrique("😈 Chambrage, entre amis", liste.filter(m => m.amis))
+      + `<p class="msg-rubrique">✍️ Écrire mon message</p><div class="msg-libre"><input type="text" id="msgLibre" maxlength="${MESSAGE_LIBRE_MAX}" placeholder="Ton message (${MESSAGE_LIBRE_MAX} max.)" autocomplete="off"><button class="btn" id="msgLibreEnvoyer">Envoyer</button></div>`
+      : `<p class="hint">Le chambrage et les messages écrits, c'est entre amis : ajoute ${esc(OPP.nom)} à tes amis pour en profiter.</p>`);
+  $("msgFenetre").dataset.moment = moment;
+  $("msgFenetreErreur").hidden = true; $("msgFenetre").hidden = false;
+  // L'adversaire voit que j'écris ; avant le match, le départ automatique attend un peu (étape 48).
+  const d = D; serveur.jEcris(d.id).then(duel => { if (D === d) { d.duel = { ...d.duel, ...duel }; } }).catch(() => {});
+}
+// Fermée : si un match de tournoi attendait derrière, il peut s'ouvrir.
+const fermerMessages = () => { $("msgFenetre").hidden = true; if (D?.finVue) setTimeout(() => duelsUI?.rafraichir(), 800); };
 function bulle(el, texte) { el.hidden = !texte; el.textContent = texte || ""; }
+// Au début du match, les messages d'avant-match sortent des avatars, dans le tableau des scores (6 secondes).
+function bullesDepart(duel) {
+  const moi = D.moi, adv = 1 - moi;
+  bulle($("bulleSideMe"), texteMessage("avant", duel[`message_avant${moi}`]));
+  bulle($("bulleSideAdv"), masquerMessages() ? null : texteMessage("avant", duel[`message_avant${adv}`]));
+  setTimeout(() => { $("bulleSideMe").hidden = true; $("bulleSideAdv").hidden = true; }, 6000);
+}
 function afficherMessages(duel) {
   if (!D || !duel || duel.id !== D.id) return;
   const moi = D.moi, adv = 1 - moi, cache = masquerMessages();
@@ -673,6 +698,10 @@ function afficherMessages(duel) {
   const avant = duel.phase === "presentation" && !avMoi;
   $("foMsg").hidden = !avant;
   if (avant && D.pucesAvant !== !!D.ami) { puces($("foMsgPuces"), "avant"); D.pucesAvant = !!D.ami; }
+  // « Julie t'écrit un message… » (étape 48) : tant qu'elle n'a rien envoyé, et pendant une minute au plus.
+  const ecrit = envoye => !cache && !envoye && Date.now() - Date.parse(duel[`ecrit${adv}`] || 0) < 60000;
+  const signalEcrit = (el, oui) => { el.hidden = !oui; el.textContent = oui ? `✍️ ${OPP.nom} t'écrit un message…` : ""; };
+  signalEcrit($("foEcrit"), duel.phase === "presentation" && ecrit(avAdv));
   // Après le match (écran de fin)
   if (duel.phase !== "termine" || duel.vainqueur === null || duel.vainqueur === undefined) return;
   const apMoi = duel[`message_apres${moi}`], apAdv = duel[`message_apres${adv}`];
@@ -680,23 +709,38 @@ function afficherMessages(duel) {
   bulle($("finBulleMoi"), texteMessage(momentApres(!advGagne), apMoi));
   bulle($("finBulleAdv"), cache ? null : apAdv && `${OPP.nom} : ${texteMessage(momentApres(advGagne), apAdv) || "…"}`);
   $("finMsgZone").hidden = !!apMoi;
+  signalEcrit($("finEcrit"), ecrit(apAdv));
   if (!apMoi && D.pucesApres !== !!D.ami) { puces($("finMsgPuces"), momentApres(!advGagne)); D.pucesApres = !!D.ami; }
 }
-async function envoyerMessage(zone, bouton) {
+async function envoyerMessage(message) {
   if (!D) return;
-  const d = D;
-  zone.querySelectorAll("button").forEach(b => { b.disabled = true; });
-  try { const duel = await serveur.envoyerMessage(d.id, bouton.dataset.msg); if (D === d) { d.duel = { ...d.duel, ...duel }; afficherMessages(d.duel); } }
-  catch { zone.querySelectorAll("button").forEach(b => { b.disabled = false; }); }
+  const d = D, zone = $("msgFenetre"), erreur = t => { $("msgFenetreErreur").textContent = t; $("msgFenetreErreur").hidden = false; };
+  zone.querySelectorAll("button, input").forEach(b => { b.disabled = true; });
+  try {
+    const duel = await serveur.envoyerMessage(d.id, message);
+    fermerMessages();
+    if (D === d) { d.duel = { ...d.duel, ...duel }; afficherMessages(d.duel); }
+  } catch (e) { erreur(e?.message || "Le message n'est pas parti. Réessaie."); }
+  zone.querySelectorAll("button, input").forEach(b => { b.disabled = false; });
 }
-$("foMsgPuces").addEventListener("click", e => { const b = e.target.closest("button[data-msg]"); if (b) envoyerMessage($("foMsgPuces"), b); });
-$("finMsgPuces").addEventListener("click", e => { const b = e.target.closest("button[data-msg]"); if (b) envoyerMessage($("finMsgPuces"), b); });
+for (const id of ["foMsgPuces", "finMsgPuces"]) $(id).addEventListener("click", e => { const b = e.target.closest("button[data-moment]"); if (b) ouvrirMessages(b.dataset.moment); });
+$("msgFenetre").addEventListener("click", e => {
+  if (e.target === $("msgFenetre") || e.target.id === "msgFenetreFermer") { fermerMessages(); return; }
+  const b = e.target.closest("button[data-msg]"); if (b) { envoyerMessage(b.dataset.msg); return; }
+  if (e.target.id === "msgLibreEnvoyer") {
+    const t = nettoyerMessage($("msgLibre").value), refus = erreurMessageLibre(t);
+    if (refus) { $("msgFenetreErreur").textContent = refus; $("msgFenetreErreur").hidden = false; return; }
+    envoyerMessage(PREFIXE_LIBRE + t);
+  }
+});
+$("msgFenetre").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "msgLibre") $("msgLibreEnvoyer").click(); if (e.key === "Escape") fermerMessages(); });
 // Après le match, l'écoute en direct est arrêtée : on regarde de temps en temps si l'adversaire a écrit (une minute au plus).
 function guetterMessageFin() {
   const d = D;
   if (!d || d.guetteFin) return;
   d.guetteFin = setInterval(async () => {
-    if (D !== d || (d.toursGuet = (d.toursGuet || 0) + 1) > 20 || d.duel?.[`message_apres${1 - d.moi}`]) { clearInterval(d.guetteFin); return; }
+    // Trois minutes au plus (l'adversaire peut prendre le temps d'écrire son message).
+    if (D !== d || (d.toursGuet = (d.toursGuet || 0) + 1) > 60 || d.duel?.[`message_apres${1 - d.moi}`]) { clearInterval(d.guetteFin); return; }
     try { const duel = await serveur.lireDuel(d.id); if (D === d) { d.duel = duel; afficherMessages(duel); } } catch { /* on réessaiera */ }
   }, 3000);
   d.toursGuet = 0;
@@ -1760,7 +1804,8 @@ function majDuel(duel) {
   if (duel.phase === "presentation") {
     if (!D.presente) { D.presente = true; ouvrirFaceAFace(); }
   } else if (duel.phase === "jeu") {
-    if (faceAFaceOuvert) { fermerFaceAFace(); montrerSignes(); annoncer([annonceDebutSet(S.match)]); }
+    if (faceAFaceOuvert) { fermerFaceAFace(); montrerSignes(); annoncer([annonceDebutSet(S.match)]); bullesDepart(duel); }
+    if (!$("msgFenetre").hidden && $("msgFenetre").dataset.moment === "avant") fermerMessages();   // le match commence : trop tard pour le mot d'avant-match
     // Set suivant lancé par le serveur : on ferme le panneau et on reprend la main tout de suite
     // (sinon le premier coup du set pouvait partir au hasard).
     const reprise = !!panneauOuvert;
@@ -1880,7 +1925,7 @@ function afficherEtatDuel() {
 
 // Un duel est-il encore en cours ? Un duel fini compte encore tant que sa fin (célébration, poignée de main, écran de fin)
 // se déroule sur l'écran de match ; si on a quitté cet écran, il ne bloque plus rien.
-const duelOccupe = () => !!D && (!D.fini || (!D.finVue && vueCourante === "viewMatch"));
+const duelOccupe = () => !!D && (!D.fini || (!D.finVue && vueCourante === "viewMatch") || !$("msgFenetre").hidden);   // (on finit d'écrire son message)
 function terminerDuel(duel) {
   if (D.fini) return;
   D.fini = true;
