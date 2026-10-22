@@ -1560,7 +1560,14 @@ function renderCarriere() {
   if (C.palmares.length) {
     const b = bilanCarriere(C);
     $("carPalmares").innerHTML = `<div class="rnd">Mon palmarès</div><p class="hint" style="margin:0">Meilleur circuit atteint : ${CIRCUITS[b.meilleur]}${b.titres ? ` · 🏆 ${b.titres} titre${b.titres > 1 ? "s" : ""} de champion de l'Élite` : ""}</p>`
-      + `<ul class="car-palmares">${[...C.palmares].reverse().map(p => `<li>Saison ${p.saison} · ${CIRCUITS[p.circuit]} : ${esc(p.texte)}</li>`).join("")}</ul>`;
+      + `<ul class="car-palmares">${[...C.palmares].reverse().map(p => `<li>Saison ${p.saison} · ${CIRCUITS[p.circuit]} : ${esc(p.texte)}</li>`).join("")}</ul>`
+      // Le palmarès de chaque saison : les champions, qui monte et qui descend, du haut vers le bas.
+      + [...C.palmares].reverse().filter(p => p.circuits).map((p, i) => `<details class="regles car-saison"${i === 0 ? " open" : ""}><summary>🏆 Palmarès de la saison ${p.saison}</summary>`
+        + [...p.circuits.keys()].reverse().map(k => {
+          const c = p.circuits[k], nom = id => esc(infoJoueur(id).nom), liste = ids => ids.map(nom).join(", ");
+          return `<div class="car-saison-circuit"><b>${CIRCUITS[k]}</b><br>🏆 ${nom(c.champion)} <span class="car-sec">(finaliste : ${nom(c.finaliste)})</span>`
+            + (c.montes.length ? `<br>⬆️ Montent : ${liste(c.montes)}` : "") + (c.descendus.length ? `<br>⬇️ Descendent : ${liste(c.descendus)}` : "") + `</div>`;
+        }).join("") + `</details>`).join("");
   }
 }
 $("carJouer").addEventListener("click", () => {

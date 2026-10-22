@@ -235,9 +235,11 @@ export function texteBilan(C) {
 // le barrage (le joueur l'a joué s'il y était ; sinon, simulé).
 export function saisonSuivante(C, rng = Math.random) {
   if (C.phase !== "fin") return C;
-  C.palmares.push({ saison: C.saison, circuit: C.ou, place: C.place, texte: texteBilan(C), mouvement: C.bilan.mouvement, titre: C.bilan.titre });
+  // Le palmarès de la saison : mon parcours, et pour chaque circuit son champion, son finaliste, qui monte et qui descend.
+  const resume = C.circuits.map((_, k) => ({ champion: C.issues[k].champion, finaliste: C.issues[k].finaliste, montes: [], descendus: [] }));
+  C.palmares.push({ saison: C.saison, circuit: C.ou, place: C.place, texte: texteBilan(C), mouvement: C.bilan.mouvement, titre: C.bilan.titre, circuits: resume });
   const N = C.circuits.map(c => [...c]);
-  const deplacer = (id, de, vers) => { N[de].splice(N[de].indexOf(id), 1); N[vers].push(id); };
+  const deplacer = (id, de, vers) => { N[de].splice(N[de].indexOf(id), 1); N[vers].push(id); resume[de][vers > de ? "montes" : "descendus"].push(id); };
   for (let k = 0; k < DERNIER; k++) {
     const bas = C.issues[k], haut = C.issues[k + 1];
     deplacer(bas.champion, k, k + 1);
