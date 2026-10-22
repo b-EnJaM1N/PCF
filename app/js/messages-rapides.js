@@ -1,7 +1,9 @@
 // Les messages rapides : un mot à l'adversaire avant le duel (pendant la présentation) et un après (sur l'écran de fin).
-// Des phrases toutes faites, rien à écrire : pas de modération nécessaire.
+// Des phrases toutes faites ; entre amis seulement, on peut aussi écrire le sien (décision du 22 octobre, étape 48),
+// avec les garde-fous de l'enjeu : court, sans gros mots, sans argent, sans lien.
 // « tous » : avec n'importe quel joueur ; « amis » (le chambrage) : seulement si l'adversaire est un ami dans l'appli.
 // Les mêmes identifiants sont vérifiés par le serveur (supabase/etape-22-messages-rapides.sql ; un test vérifie qu'ils sont identiques).
+import { MOTS_INTERDITS, ARGENT, LIEN, sansAccents } from "./enjeux.js";
 
 export const MESSAGES = {
   avant: {
@@ -48,8 +50,23 @@ export function messagesPossibles(moment, ami = false) {
 // Le moment d'un message après le match, selon le résultat.
 export const momentApres = gagne => (gagne ? "vainqueur" : "vaincu");
 
+// Le message écrit soi-même (entre amis) : il voyage avec ce préfixe (« libre:Rendez-vous dimanche ! »).
+export const PREFIXE_LIBRE = "libre:", MESSAGE_LIBRE_MAX = 60;
+export const nettoyerMessage = t => String(t ?? "").replace(/\s+/g, " ").trim();
+// null si le message écrit est accepté, sinon la raison du refus (mêmes règles que le serveur, étape 48).
+export function erreurMessageLibre(brut) {
+  const t = nettoyerMessage(brut);
+  if (t.length < 2) return "Le message est trop court.";
+  if (t.length > MESSAGE_LIBRE_MAX) return `Le message est trop long (${MESSAGE_LIBRE_MAX} caractères au plus).`;
+  if (ARGENT.test(sansAccents(t))) return "Pas d'argent dans un message.";
+  if (LIEN.test(t)) return "Pas de lien dans un message.";
+  if (sansAccents(t).toLowerCase().split(/[^a-z0-9]+/).some(m => MOTS_INTERDITS.includes(m))) return "Ce message contient un mot interdit.";
+  return null;
+}
+
 // Le texte d'un message reçu (null s'il est inconnu : version de l'appli plus ancienne que celle de l'adversaire).
 export function texteMessage(moment, id) {
+  if (typeof id === "string" && id.startsWith(PREFIXE_LIBRE)) return id.slice(PREFIXE_LIBRE.length);
   const m = MESSAGES[moment];
   const x = m && [...m.tous, ...m.amis].find(([i]) => i === id);
   return x ? x[1] : null;
