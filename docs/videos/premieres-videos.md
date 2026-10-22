@@ -8,7 +8,7 @@ Même vidéo sur TikTok, Instagram (Reels) et YouTube Shorts.
 Ordre conseillé : vidéo 3 (l'histoire) en premier, puis 1, puis 2, à 2 ou 3 jours d'intervalle.
 
 ## Vidéo 1 — « Monique a dit » (`v1-monique-a-dit.mp4`, 23 s)
-Monique, Roland, Monique pendant un vrai match (« Quel mental de chips. », « Houston, on a un problème ! », « Muscle ton jeu, Robert. Muscle ton jeu. »), puis le logo. Voix à la même vitesse que dans l'appli (Monique × 1,65, Roland × 1,4).
+Monique, Roland, Monique pendant un vrai match (« Quel mental de chips. », « Mesdames et mesdames… quelle main ! », « Muscle ton jeu, Robert. Muscle ton jeu. »), puis le logo. Voix à la même vitesse que dans l'appli (Monique × 1,65, Roland × 1,4).
 
 **Légende** :
 > Lui s'enflamme. Elle ne pardonne rien. 🎙️🧊
