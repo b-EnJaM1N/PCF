@@ -1,6 +1,7 @@
 // Les coupes et les boucliers de la carrière (décision du porteur du projet, 22 octobre) : à exposer, pas à utiliser.
 // Une coupe par circuit (vainqueur des playoffs), de plus en plus belle : bronze, argent, or, cristal, et la Coupe HandSlam
-// de l'Élite. Le bouclier : 1er de la saison régulière. Pas encore gagnés : en ombre grise.
+// de l'Élite ; la Coupe Monique-Latour (toutes divisions confondues), en rubis. Le bouclier : 1er de la saison régulière.
+// Pas encore gagnés : en ombre grise.
 
 // Les matières : [corps, reflet, ombre].
 export const MATIERES = [
@@ -9,9 +10,10 @@ export const MATIERES = [
   { nom: "or", couleurs: ["#E9C046", "#FFE89A", "#A9821A"] },
   { nom: "cristal", couleurs: ["#8FDDF5", "#E6FAFF", "#4A9FC4"] },
   { nom: "or et diamants", couleurs: ["#F2C230", "#FFF1B0", "#A57A0E"] },
+  { nom: "rubis", couleurs: ["#C2183A", "#F47C95", "#6E0B20"] },   // la Coupe Monique-Latour
 ];
 const GRIS = ["#4A5468", "#5E6880", "#353D4D"];
-export const NOMS_COUPES = ["Coupe de bronze", "Coupe d'argent", "Coupe d'or", "Coupe de cristal", "Coupe HandSlam"];
+export const NOMS_COUPES = ["Coupe de bronze", "Coupe d'argent", "Coupe d'or", "Coupe de cristal", "Coupe HandSlam", "Coupe Monique-Latour"];
 
 let n = 0;
 // La coupe du circuit k (0 : Amateur … 4 : Élite).

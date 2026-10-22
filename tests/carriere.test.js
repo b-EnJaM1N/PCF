@@ -2,13 +2,15 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   CIRCUITS, TAILLE, JOURNEES, compositionDeDepart, calendrier, nouvelleCarriere, prochainMatch, enregistrerMonMatch,
-  classement, saisonSuivante, texteBilan, circuitDuJoueur, chances, simulerCircuit, vitrine,
+  classement, saisonSuivante, texteBilan, circuitDuJoueur, chances, simulerCircuit, vitrine, TOURS_COUPE, texteCoupe, coupesML, coupeEnCours,
 } from "../app/js/carriere-logique.js";
 import { botParId, TOUS_LES_BOTS, choisirCoup } from "../app/js/bots.js";
 import { hasardGraine } from "../app/js/match-du-jour.js";
 
 const rng = hasardGraine(42);
-const gagner = (C, oui, r = rng) => enregistrerMonMatch(C, oui, prochainMatch(C).format.setsGagnants === 1 ? [oui ? [11, 6] : [6, 11]] : [oui ? [11, 6] : [6, 11], oui ? [11, 8] : [8, 11]], r);
+// Le championnat : les matchs de coupe qui se présentent sont perdus d'abord (la coupe se joue ensuite sans moi).
+const perdreCoupe = (C, r = rng) => { while (prochainMatch(C)?.coupe) enregistrerMonMatch(C, false, prochainMatch(C).format.setsGagnants === 1 ? [[6, 11]] : [[6, 11], [8, 11]], r); };
+const gagner = (C, oui, r = rng) => perdreCoupe(C, r) || enregistrerMonMatch(C, oui, prochainMatch(C).format.setsGagnants === 1 ? [oui ? [11, 6] : [6, 11]] : [oui ? [11, 6] : [6, 11], oui ? [11, 8] : [8, 11]], r);
 
 test("64 bots dans l'appli, tous différents, et chacun sait jouer", () => {
   assert.equal(TOUS_LES_BOTS.length, 64);
@@ -160,4 +162,40 @@ test("la vitrine : coupe et bouclier, dès qu'ils sont acquis, puis gardés au p
   saisonSuivante(C, rng);
   assert.deepEqual(vitrine(C)[0], { coupes: [1], boucliers: [1] });
   assert.deepEqual(vitrine(C)[1], { coupes: [], boucliers: [] });
+});
+
+test("la Coupe Monique-Latour : 64 joueurs, un tour toutes les deux journées, la finale avant les playoffs", () => {
+  const C = nouvelleCarriere(hasardGraine(10));
+  assert.equal(C.coupe.tours[0].length, 32);
+  assert.equal(new Set(C.coupe.tours[0].flatMap(m => [m.a, m.b])).size, 64);
+  // Tout gagner, la coupe comprise.
+  const joues = [];
+  while (C.phase !== "fin" || coupeEnCours(C)) {
+    const pm = prochainMatch(C); joues.push(pm.coupe ? "C" : "S");
+    enregistrerMonMatch(C, true, pm.format.setsGagnants === 1 ? [[11, 5]] : [[11, 5], [11, 7]], rng);
+  }
+  // 11 journées et 3 tours de playoffs, et 6 tours de coupe glissés après les journées 2, 4, 6, 8, 10 et 11.
+  assert.equal(joues.join(""), "SSCSSCSSCSSCSSCSCSSS");
+  assert.equal(C.coupe.vainqueur, "moi");
+  assert.match(texteCoupe(C), /Vainqueur/);
+  assert.deepEqual(coupesML(C), [1]);
+  saisonSuivante(C, rng);
+  assert.deepEqual(coupesML(C), [1]);
+  assert.equal(C.coupe.tour, 0); assert.equal(C.coupe.vainqueur, null);
+});
+
+test("éliminé de la coupe : elle va au bout sans moi, au rythme des journées", () => {
+  const C = nouvelleCarriere(hasardGraine(11));
+  gagner(C, true); gagner(C, true);
+  assert.ok(prochainMatch(C).coupe);
+  assert.equal(prochainMatch(C).etape, "Coupe Monique-Latour · 32e de finale");
+  enregistrerMonMatch(C, false, [[8, 11]], rng);
+  assert.equal(C.coupe.elimine, 0); assert.match(texteCoupe(C), /32e de finale/);
+  assert.equal(C.coupe.tour, 1);                       // les 16es sont tirés, ils attendent la 4e journée
+  assert.ok(C.coupe.tours[1].every(m => !m.v));
+  gagner(C, true); gagner(C, true);
+  assert.equal(C.coupe.tour, 2);
+  for (let j = 4; j < JOURNEES; j++) gagner(C, true);
+  assert.ok(C.coupe.vainqueur && C.coupe.vainqueur !== "moi");
+  assert.equal(C.coupe.tours.length, TOURS_COUPE.length);
 });
