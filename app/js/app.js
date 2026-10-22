@@ -19,7 +19,7 @@ import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
-import { CIRCUITS, JOURNEES, QUALIFIES, NOMS_TOURS, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere } from "./carriere-logique.js";
+import { CIRCUITS, QUALIFIES, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
@@ -105,6 +105,7 @@ const sauverT = () => ecrire("tournoi", T);
 // (Avant le 22 octobre, elle n'était que sur le téléphone : on la reprend.)
 if (!P.carriere && lire("carriere")) { P.carriere = lire("carriere"); sauverLocal(); ecrire("carriere", null); }
 let C = P.carriere || null;
+if (migrerCarriere(C)) { P.carriere = C; sauverLocal(); }   // (une saison d'Amateur commencée avant les poules repart en poules)
 const sauverC = () => { P.carriere = C; sauverP(); };
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
@@ -1612,7 +1613,7 @@ function renderCarriere() {
   $("carTableau").innerHTML = h;
   // La Coupe Monique-Latour : mon parcours et les tableaux, tour par tour.
   const K = C.coupe;
-  $("carCoupe").innerHTML = !K ? "" : `<div class="rnd">🏆 Coupe Monique-Latour</div><p class="hint" style="margin:0 0 6px">${esc(texteCoupe(C))}${K.vainqueur && K.vainqueur !== "moi" ? ` Vainqueur : ${esc(infoJoueur(K.vainqueur).nom)}.` : ""}${!K.vainqueur && !pm?.coupe && K.elimine === null ? ` Prochain tour après la journée ${TOURS_COUPE[K.tour].apres}.` : ""}</p>`
+  $("carCoupe").innerHTML = !K ? "" : `<div class="rnd">🏆 Coupe Monique-Latour</div><p class="hint" style="margin:0 0 6px">${esc(texteCoupe(C))}${K.vainqueur && K.vainqueur !== "moi" ? ` Vainqueur : ${esc(infoJoueur(K.vainqueur).nom)}.` : ""}${!K.vainqueur && !pm?.coupe && K.elimine === null ? ` Prochain tour après la journée ${coupeApres(C, K.tour)}.` : ""}</p>`
     + K.tours.map((R, i) => `<details class="regles car-coupe-tour"${i === K.tours.length - 1 ? " open" : ""}><summary>${TOURS_COUPE[i].nom}${R.some(m => m.v) ? "" : " · tirage"}</summary>`
       + [...R].sort((x, y) => (y.a === "moi" || y.b === "moi") - (x.a === "moi" || x.b === "moi")).map(m => ligneMatch(m, m.v, true)).join("") + `</details>`).join("");
   // Mon calendrier : mes 11 journées, jouées (avec le score) ou à venir, et les tours de la Coupe Monique-Latour glissés entre elles.
@@ -1624,7 +1625,7 @@ function renderCarriere() {
     if (!m) { const elimine = K.elimine !== null && K.elimine < r; return ligneCal(elimine ? "eliminee" : "", null, titre, elimine ? "Éliminé" : "Tirage à venir", true); }
     const adv = botParId(m.a === "moi" ? m.b : m.a), prochain = pm?.coupe && K.tour === r;
     const score = m.score ? (m.a === "moi" ? m.score : m.score.split("–").reverse().join("–")) : "";
-    const etat = m.v ? resultat(m.v === "moi", score) : prochain ? "👉 Prochain match" : `Après la J${T.apres}`;
+    const etat = m.v ? resultat(m.v === "moi", score) : prochain ? "👉 Prochain match" : `Après la J${coupeApres(C, r)}`;
     return ligneCal(m.v ? "jouee" : prochain ? "prochain" : "", adv, `🏆 ${titre}<br><span class="car-cal-adv">${esc(adv.nom)} <small>(${adv.elo})</small></span>`, etat, true);
   };
   $("carCalendrier").innerHTML = `<details class="regles car-calendrier"${C.phase === "saison" ? " open" : ""}><summary>📅 Mon calendrier</summary><ol>`
@@ -1633,16 +1634,20 @@ function renderCarriere() {
       const prochain = i === C.journee && C.phase === "saison" && !pm?.coupe;
       const etat = r ? resultat(r.v === "moi", r.scores.map(x => x.join("–")).join(", ")) : prochain ? "👉 Prochain match" : "À jouer";
       return ligneCal(r ? "jouee" : prochain ? "prochain" : "", b, `J${i + 1} · ${esc(b.nom)} <small>(${b.elo})</small>`, etat)
-        + (C.coupe ? TOURS_COUPE.map((T, t) => (T.apres === i + 1 ? ligneCoupe(t) : "")).join("") : "");
+        + (C.coupe ? TOURS_COUPE.map((T, t) => (coupeApres(C, t) === i + 1 ? ligneCoupe(t) : "")).join("") : "");
     }).join("") + `</ol></details>`;
-  // Le classement de la saison.
-  const zones = k > 0;
-  $("carClassement").innerHTML = `<div class="rnd">Classement · ${C.journee} journée${C.journee > 1 ? "s" : ""} sur ${JOURNEES}</div>`
+  // Le classement de la saison (en Amateur : les 2 poules).
+  const zones = k > 0, qualifies = C.poules ? 4 : QUALIFIES, nbJ = C.journees.length;
+  const tableau = (lignes, titre) => (titre ? `<p class="car-poule">${titre}</p>` : "")
     + `<table class="car-classement"><thead><tr><th>#</th><th>Joueur</th><th>J</th><th>V</th><th>D</th><th>+/−</th><th>Pts</th></tr></thead><tbody>`
-    + classementCarriere(C).map((l, i) => {
-      const A = infoJoueur(l.id), d = l.pm - l.pc, cls = [l.id === "moi" ? "moi" : "", i < QUALIFIES ? "zone-po" : zones ? "zone-bas" : ""].join(" ").trim();
+    + lignes.map((l, i) => {
+      const A = infoJoueur(l.id), d = l.pm - l.pc, cls = [l.id === "moi" ? "moi" : "", i < qualifies ? "zone-po" : zones ? "zone-bas" : ""].join(" ").trim();
       return `<tr class="${cls}"><td>${i + 1}</td><td><span class="mini">${avatarSVG(A.av)}</span><span>${esc(A.nom)}</span></td><td>${l.j}</td><td>${l.v}</td><td>${l.d}</td><td>${d > 0 ? "+" : ""}${d}</td><td>${l.pts}</td></tr>`;
-    }).join("") + `</tbody></table><p class="car-legende">🟩 Places 1 à 8 : playoffs, le vainqueur monte.${zones ? " 🟥 Places 9 à 12 : le maintien." : ""}</p>`;
+    }).join("") + `</tbody></table>`;
+  $("carClassement").innerHTML = `<div class="rnd">Classement · ${C.journee} journée${C.journee > 1 ? "s" : ""} sur ${nbJ}</div>`
+    + (C.poules ? tableau(classementCarriere(C, 0), "Ma poule (A)") + tableau(classementCarriere(C, 1), "Poule B")
+      + `<p class="car-legende">🟩 Les 4 premiers de chaque poule : quarts de finale croisés (1er A – 4e B…), le vainqueur monte.</p>`
+      : tableau(classementCarriere(C)) + `<p class="car-legende">🟩 Places 1 à 8 : playoffs, le vainqueur monte.${zones ? " 🟥 Places 9 à 12 : le maintien." : ""}</p>`);
   $("carVitrine").innerHTML = `<details class="regles car-vitrine"><summary>🏆 Ma vitrine</summary>${vitrineHTML()}</details>`;   // repliée : on la déplie pour l'admirer
   // Le palmarès.
   if (C.palmares.length) {
