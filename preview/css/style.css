@@ -301,6 +301,7 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .car-classement tr.moi td { font-weight: 800; color: var(--me); }
 .car-classement tr.zone-po td:first-child { box-shadow: inset 3px 0 0 #3fbf74; }
 .car-classement tr.zone-bas td:first-child { box-shadow: inset 3px 0 0 #e0524b; }
+.car-poule { margin: 10px 0 0; font-size: .85rem; font-weight: 700; color: var(--muted); }
 .car-legende { font-size: .78rem; color: var(--muted); margin: 0 0 10px; }
 .car-calendrier ol { list-style: none; padding: 0; margin: 8px 0 0; }
 .car-calendrier li { display: flex; align-items: center; gap: 8px; padding: 6px 4px; border-top: 1px solid rgba(255, 255, 255, .08); font-size: .88rem; }
