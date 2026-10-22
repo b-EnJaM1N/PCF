@@ -152,6 +152,8 @@ Trois règles d'or : **jamais d'achat de jetons avec de l'argent réel ni de rev
 
 ## Modèle économique (proposé le 16 octobre, rien de décidé ni de mis en place)
 
+Plan de communication du lancement et idées pour l'abonnement premium (22 octobre, rien de décidé) : [`communication-et-premium.md`](communication-et-premium.md).
+
 **Règles à ne jamais casser** : jamais de vente de jetons (et aucun achat n'en donne : sinon, avec les mises, ce serait un jeu d'argent) ; jamais d'avantage en match à vendre (apparence, confort, spectacle seulement) ; pas de « boîtes à surprise » payantes.
 
 **Coûts actuels** : nom de domaine ~10 € par an, ElevenLabs Starter ~5 € par mois, Supabase gratuit puis ~25 $ par mois au-delà de quelques centaines de joueurs simultanés (compte Google Play déjà payé) : environ **10 à 35 € par mois** pour être à l'équilibre.
