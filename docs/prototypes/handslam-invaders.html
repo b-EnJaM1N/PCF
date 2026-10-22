@@ -2,7 +2,7 @@
 <html lang="fr">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>HandSlam Invaders</title>
+<title>Chifoumania – Riposte</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@700;800&display=swap">
@@ -78,9 +78,11 @@ canvas { display: block; width: 100%; height: 100%; }
 .mondes .go small { display: block; font-size: .72rem; opacity: .85; letter-spacing: .06em; }
 .ecran .gros { font-family: var(--display); font-size: 3.4rem; font-weight: 800; color: var(--me); line-height: 1; font-variant-numeric: tabular-nums; }
 .colonne .pause { /* entre le score et les signes, loin du terrain */
-  flex: none; height: 40px; border: 0; border-radius: 12px; background: var(--panel); color: var(--line);
-  font-size: 1.1rem; cursor: pointer; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .25);
+  flex: none; height: 58px; border: 0; border-radius: 12px; background: var(--panel); color: var(--line);
+  cursor: pointer; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .25);
+  display: flex; align-items: center; justify-content: center; gap: 7px;
 }
+.colonne .pause span { width: 7px; height: 24px; border-radius: 2px; background: var(--line); } /* les deux barres du symbole pause */
 .son { position: absolute; top: 8px; right: 8px; border: 0; background: var(--panel); color: var(--line); border-radius: 999px; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .boutons button:active { transform: none; } }
 </style>
@@ -88,13 +90,13 @@ canvas { display: block; width: 100%; height: 100%; }
 <div class="jeu">
   <div class="zone" id="zone">
   <div class="colonne">
-    <div class="titre">HAND<br><b>SLAM</b></div>
+    <div class="titre">CHIFOU<br><b>MANIA</b></div>
     <div class="compteurs">
       <div><span>Score</span><strong id="score">0</strong></div>
       <div><span>Record</span><strong id="record">0</strong></div>
       <div id="vies" aria-label="Vies">❤️❤️❤️</div>
     </div>
-    <button class="pause" id="pause" aria-label="Mettre en pause">⏸</button>
+    <button class="pause" id="pause" aria-label="Mettre en pause"><span></span><span></span></button>
   <div class="boutons">
     <button id="bPierre" data-signe="pierre"><span class="e">✊</span><span class="n">Pierre</span></button>
     <button id="bFeuille" data-signe="feuille"><span class="e">✋</span><span class="n">Feuille</span></button>
@@ -107,7 +109,7 @@ canvas { display: block; width: 100%; height: 100%; }
     <button class="son" id="son" aria-label="Couper le son">🔊</button>
 
     <div class="ecran" id="accueil">
-      <h1>HAND<b>SLAM</b><br>Invaders</h1>
+      <h1>CHIFOU<b>MANIA</b><br>Riposte</h1>
       <p>Les signes tombent. Place-toi dessous et tire celui qui les bat.</p>
       <div class="regles">
         <span class="e">✌️</span><span class="fl">→ tire</span><span class="e">✊</span>
@@ -223,19 +225,14 @@ canvas { display: block; width: 100%; height: 100%; }
     // vagues 13 à 15 : les deux séries mélangées
     { nom: "Le grand mélange", pierre: [BASKET.pierre, FOOT.pierre], feuille: [BASKET.feuille, FOOT.feuille], ciseaux: [BASKET.ciseaux, FOOT.ciseaux] },
   ];
-  // Forêt : le lucane (ses pinces) est toujours les ciseaux ; toutes les 3 vagues, gland et trèfle,
-  // ou pomme et feuille d'érable ; les deux séries mélangées aux vagues 13 à 15.
+  // Forêt : la taille des objets suit leur taille réelle (idée du porteur du projet) : les grands objets
+  // d'abord (pomme, érable, corbeau), puis les petits quand tout rétrécit (gland, trèfle, lucane).
   const LUCANE = { dessin: "lucane", nom: "Lucane", taille: 1.15 }, CORBEAU = { dessin: "corbeau", nom: "Corbeau", taille: 1.4 };
   const GLAND = { dessin: "gland", nom: "Gland", taille: 1.15 }, POMME = { e: "🍎", nom: "Pomme", taille: 1.1 };
   const TREFLE = { e: "☘️", nom: "Trèfle", taille: 1.1 }, ERABLE = { e: "🍁", nom: "Feuille d'érable", taille: 1.1 };
-  const FORET = [
-    { nom: "Les chênes", pierre: GLAND, feuille: TREFLE, ciseaux: LUCANE },
-    { nom: "Le verger", pierre: POMME, feuille: ERABLE, ciseaux: LUCANE },
-    { nom: "La clairière", pierre: GLAND, feuille: TREFLE, ciseaux: LUCANE },
-    { nom: "L'automne", petit: true, pierre: POMME, feuille: ERABLE, ciseaux: LUCANE },
-    // vagues 13 à 15 : les deux séries mélangées
-    { nom: "Le grand mélange", petit: true, pierre: [GLAND, POMME], feuille: [TREFLE, ERABLE], ciseaux: LUCANE },
-  ];
+  const GRANDS = { nom: "Le verger", pierre: POMME, feuille: ERABLE, ciseaux: CORBEAU };
+  const PETITS = { nom: "Le sous-bois", petit: true, pierre: GLAND, feuille: TREFLE, ciseaux: LUCANE };
+  const FORET = [GRANDS, GRANDS, GRANDS, PETITS, PETITS]; // vagues 1 à 9 les grands, 10 à 15 les petits
   // Plage : des galets ; toutes les 3 vagues, palmier et crabe, ou serviette et lunettes de soleil.
   // La moitié des ciseaux bougent : des crabes qui avancent en biais (avec les palmiers),
   // ou des mouettes qui planent de gauche à droite, bec ouvert (avec les serviettes).
@@ -399,9 +396,9 @@ canvas { display: block; width: 100%; height: 100%; }
       const vx = (Math.random() < 0.5 ? -1 : 1) * (45 + 45 * niveau());
       return J.ennemis.push({ x, x0: x, y, v: v * 0.85, signe, crabe: true, vx, phase: 0, bond: 0, t: (th?.petit ? 0.72 : 1) });
     }
-    // dans la Forêt, la moitié des ciseaux sont des corbeaux qui planent de gauche à droite, bec ouvert
-    if (m.vent && signe === "ciseaux" && Math.random() < 0.5)
-      return J.ennemis.push({ x, x0: x, y, v: v * 0.9, signe, corbeau: true, zigzag: true, phase: Math.random() * 6, bond: 0, t: (th?.petit ? 0.72 : 1) * CORBEAU.taille });
+    // dans la Forêt, les corbeaux (vagues 1 à 9) : la moitié plane de gauche à droite, bec ouvert
+    if (m.vent && signe === "ciseaux" && th && choix(th.ciseaux, serie) === CORBEAU)
+      return J.ennemis.push({ x, x0: x, y, v: v * 0.9, signe, corbeau: true, zigzag: Math.random() < 0.5, phase: Math.random() * 6, bond: 0, t });
     // dans la Forêt, les feuilles tombent en se balançant au vent
     if (m.vent && signe === "feuille") {
       const x0 = Math.min(W - R - W * 0.13, Math.max(R + W * 0.13, x));
@@ -1218,7 +1215,7 @@ canvas { display: block; width: 100%; height: 100%; }
     ctx.fillStyle = "rgba(245, 247, 250, .07)";
     ctx.font = `800 ${Math.round(rc * 0.42)}px "Barlow Condensed", sans-serif`;
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText("HANDSLAM", cx, cy + rc * 1.45);
+    ctx.fillText("CHIFOUMANIA", cx, cy + rc * 1.45);
   }
 
   function dessinerPlage() {
