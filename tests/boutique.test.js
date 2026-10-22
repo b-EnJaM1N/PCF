@@ -29,7 +29,9 @@ test("chaque article existe vraiment dans l'appli", () => {
 test("un article de la boutique est verrouillé tant qu'il n'est pas acheté", () => {
   const P = profilParDefaut();
   assert.ok(estVerrouille(P, "gant", "rose"));
-  assert.ok(!estVerrouille(P, "gant", "rouge"), "les couleurs de base restent libres");
+  assert.ok(estVerrouille(P, "gant", "rouge") && !estVerrouille(P, "gant", "nu"), "avant le premier match : la main nue seulement");
+  P.matchs = 1;
+  assert.ok(!estVerrouille(P, "gant", "rouge"), "les couleurs de base restent libres (après le premier match)");
   assert.ok(!possede(P, "cri", "qui_le_patron") && possede(P, "cri", "vamos"));
   P.achats = ["gant:rose", "geste:uppercut"];
   assert.ok(!estVerrouille(P, "gant", "rose") && possede(P, "geste", "uppercut"));
@@ -55,4 +57,18 @@ test("nouveaux gestes : trois à la boutique, deux gagnés avec un trophée", ()
   P.titres = { gentleman: 1, phenix: 1 };
   assert.ok(!estVerrouille(P, "geste", "check") && !estVerrouille(P, "geste", "non_non"));
   assert.ok(!estVerrouille(P, "geste", "poing"), "le poing serré reste libre");
+});
+
+test("main nue : toutes les peaux et les petits accessoires sont gratuits, et se dessinent", async () => {
+  const { PEAUX, ONGLES, BRACELETS, BAGUES } = await import("../app/js/avatar.js");
+  const P = profilParDefaut();
+  assert.equal(P.av.gant, "nu", "un nouveau joueur commence main nue");
+  for (const [type, table] of [["peau", PEAUX], ["ongles", ONGLES], ["bracelet", BRACELETS], ["bague", BAGUES]])
+    for (const k of Object.keys(table)) { assert.ok(!estVerrouille(P, type, k), `${type} ${k} : gratuit`); assert.equal(articleDe(type, k), null, `${type} ${k} : pas à la boutique`); }
+  for (const symbole of ["pierre", "feuille", "ciseaux", "index", "pouce", "dos", "ciseaux-dos", "feuille-dos"]) {
+    const svg = avatarSVG({ ...P.av, symbole, peau: "brune", ongles: "rouge", bracelet: "perles", bague: "rubis" });
+    assert.match(svg, /#7A4A2A/, `${symbole} : la peau`); assert.match(svg, /#C2183A/, `${symbole} : la bague`);
+  }
+  assert.match(avatarSVG({ ...P.av, symbole: "feuille", ongles: "rouge" }), /#D7263D/, "le vernis sur la main nue");
+  assert.doesNotMatch(avatarSVG({ ...P.av, gant: "blanc", symbole: "feuille", ongles: "rouge" }), /#D7263D/, "pas de vernis sur un gant");
 });
