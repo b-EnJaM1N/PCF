@@ -182,7 +182,10 @@ const grandMoment = m => !!balle(m) || pointDecisif(m);
 // Pendant l'échange (enJeu), les commentateurs ne disent que des répliques courtes, et pas deux points de suite :
 // une réplique longue déborderait sur les coups suivants. Les longues sont dites dans les pauses
 // (avant le match, fin de set, fin de match).
-const REPLIQUE_COURTE = 32;   // caractères : environ 2 secondes
+// Pendant l'échange, seules les répliques assez courtes pour tenir entre deux coups sont dites (8 secondes par coup
+// depuis le 20 octobre : 55 caractères, environ 3 secondes à la vitesse des voix ; à 32, une centaine de répliques
+// enregistrées n'étaient jamais entendues).
+const REPLIQUE_COURTE = 55;
 // Le dialogue après un cri de victoire : un qu'on n'a pas entendu récemment (au hasard), sinon le plus ancien.
 function dialogueCriAuChoix(hasard = Math.random) {
   const recents = commentairesRecents(), n = nbDialogues("cri");
@@ -198,16 +201,17 @@ function commentairesRecents() { try { return lire("commentairesRecents", []) ||
 const HUEES_ECART_MS = 12 * 60 * 60 * 1000;
 let matchsDepuisOuverture = 0;
 function hueesPermises() { if (matchsDepuisOuverture < 1) return false; try { return Date.now() - (Number(lire("hueesLe", 0)) || 0) > HUEES_ECART_MS; } catch { return true; } }
+// (seulement les répliques vraiment dites : une réplique écartée faute de temps n'est pas « déjà entendue »)
 function retenirCommentaires(lignes) {
   const ids = lignes.filter(l => l.role === "commentateur" || l.role === "commentatrice").map(l => baseDe(l.id));
   if (ids.length) try { ecrire("commentairesRecents", [...new Set([...ids, ...commentairesRecents()])].slice(0, 120)); } catch { /* rien */ }
 }
 function annoncer(lignes, silencieux = false, { enJeu = false, coup = 0 } = {}) {
   if (!lignes.length || silencieux) return;
-  retenirCommentaires(lignes);
-  if (!enJeu) { voix.dire(lignes); return; }
+  if (!enJeu) { retenirCommentaires(lignes); voix.dire(lignes); return; }
   const recent = S && coup - (S.commentaireAuCoup ?? -9) < 2;
   const dites = lignes.filter(l => l.role === "arbitre" || (!recent && l.texte.length <= REPLIQUE_COURTE));
+  retenirCommentaires(dites);
   if (S && dites.some(l => l.role !== "arbitre")) S.commentaireAuCoup = coup;
   voix.dire(dites);
 }
