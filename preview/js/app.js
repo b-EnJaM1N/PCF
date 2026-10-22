@@ -20,7 +20,7 @@ import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { CIRCUITS, JOURNEES, QUALIFIES, NOMS_TOURS, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine, TOURS_COUPE, texteCoupe, coupesML } from "./carriere-logique.js";
-import { coupeSVG, bouclierSVG } from "./coupes.js";
+import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
@@ -1537,7 +1537,7 @@ function vitrineHTML() {
   }).join("") + `</div>`;
   const ml = coupesML(C);
   return rangee("🏆 Les coupes · vainqueur des playoffs", coupeSVG, "coupes")
-    + `<p class="vitrine-titre">🏆 La Coupe Monique-Latour · toutes divisions confondues</p><div class="vitrine"><div class="vitrine-case${ml.length ? " gagnee" : ""}">${coupeSVG(5, ml.length > 0)}<small>${saisons(ml)}</small></div></div>`
+    + `<p class="vitrine-titre">🏆 La Coupe Monique-Latour · toutes divisions confondues</p><div class="vitrine"><div class="vitrine-case${ml.length ? " gagnee" : ""}">${coupeMLSVG(ml.length > 0)}<small>${saisons(ml)}</small></div></div>`
     + rangee("🛡️ Les boucliers · 1er de la saison régulière", bouclierSVG, "boucliers");
 }
 function renderCarriere() {
