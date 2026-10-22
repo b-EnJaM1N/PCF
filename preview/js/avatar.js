@@ -33,21 +33,55 @@ export const MOTIFS_GANT = { uni: "Uni", rayures: "Rayé", pois: "À pois", bico
 export const PAYS = [["🇫🇷", "France"], ["🇧🇪", "Belgique"], ["🇨🇭", "Suisse"], ["🇨🇦", "Canada"], ["🇱🇺", "Luxembourg"], ["🇲🇦", "Maroc"], ["🇩🇿", "Algérie"], ["🇹🇳", "Tunisie"], ["🇸🇳", "Sénégal"], ["🇨🇮", "Côte d'Ivoire"], ["🇪🇸", "Espagne"], ["🇮🇹", "Italie"], ["🇩🇪", "Allemagne"], ["🇬🇧", "Royaume-Uni"], ["🇺🇸", "États-Unis"], ["🇧🇷", "Brésil"], ["🇯🇵", "Japon"], ["🌍", "Autre"]];
 
 let n = 0;
-let vernis = null;   // la couleur du vernis pendant le dessin d'une main nue (voir doigt)
 function dessinerMain(a, fill, ink, nue) {
-  vernis = nue ? (ONGLES[a.ongles] || [])[1] || null : null;
-  try { return main(a.symbole, fill, ink); } finally { vernis = null; }
+  if (nue) return mainNue(a.symbole, (PEAUX[a.peau] || PEAUX.neutre)[1], (ONGLES[a.ongles] || [])[1] || null, (BAGUES[a.bague] || [])[1] || null, a.bague === "rubis");
+  return main(a.symbole, fill, ink);
 }
-// La bague : sur le doigt du milieu, à sa base (là où il sort de la paume), selon la forme de la main.
+
+// ---------------------------------------------------------------- la vraie main (main nue), style « cartoon fin »
+// Des doigts fins de longueurs différentes, des ongles, les plis des articulations, un vrai poignet ;
+// le contour est la couleur de la peau, en plus foncé.
+const rvb = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16));
+const melange = (a, b, t) => "#" + rvb(a).map((v, i) => Math.round(v + (rvb(b)[i] - v) * t).toString(16).padStart(2, "0")).join("");
+function mainNue(symbole, peau, vernis, bague, rubis) {
+  const tr = melange(peau, "#2a1608", .45), ongle = vernis || melange(melange(peau, "#ffffff", .55), "#F3B7B0", .35), T = 1.4;
+  const anneau = (x, y, w) => bague ? `<rect x="${x - .6}" y="${y}" width="${w + 1.2}" height="4" rx="1.6" fill="${bague}" stroke="rgba(0,0,0,.3)" stroke-width=".8"/>${rubis ? `<circle cx="${x + w / 2}" cy="${y + 2}" r="2" fill="#C2183A" stroke="#fff" stroke-width=".5"/>` : ""}` : "";
+  // un doigt tendu, de sa base (bx, by) vers le haut, longueur L, tourné de rot degrés ; avecBague : la bague à sa base
+  const doigt = (bx, by, L, rot, { avecBague = false, sansOngle = false } = {}) => `<g transform="rotate(${rot} ${bx} ${by})">
+    <path d="M${bx - 4.5} ${by} L${bx - 4.5} ${by - L + 4.5} A4.5 4.5 0 0 1 ${bx + 4.5} ${by - L + 4.5} L${bx + 4.5} ${by} Z" fill="${peau}" stroke="${tr}" stroke-width="${T}" stroke-linejoin="round"/>
+    ${sansOngle ? "" : `<rect x="${bx - 2.9}" y="${by - L + 1.6}" width="5.8" height="${Math.min(7, L * .2)}" rx="2.7" fill="${ongle}"/>`}
+    <path d="M${bx - 2.9} ${by - L * .42} q2.9 1.6 5.8 0" fill="none" stroke="${tr}" stroke-width=".8" stroke-linecap="round" opacity=".55"/>
+    ${avecBague ? anneau(bx - 4.5, by - 9, 9) : ""}</g>`;
+  // la paume (ou le dos de la main) et le poignet, jusqu'en bas
+  const paume = (y0, pli = true) => `<path d="M28 ${y0 + 6} Q28 ${y0} 34 ${y0} L66 ${y0} Q72 ${y0} 72 ${y0 + 6} L71 72 Q69 81 61 83 L61 100 L39 100 L39 83 Q31 81 29 72 Z" fill="${peau}" stroke="${tr}" stroke-width="${T}" stroke-linejoin="round"/>
+    ${pli ? `<path d="M40 76 q10 4 20 0" fill="none" stroke="${tr}" stroke-width=".85" stroke-linecap="round" opacity=".45"/>` : ""}`;
+  // un doigt replié vu de face (ou une jointure vue de dos)
+  const replie = (x, y, w, h, { avecBague = false, pli = true } = {}) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${w / 2.2}" fill="${peau}" stroke="${tr}" stroke-width="${T}"/>
+    ${pli ? `<path d="M${x + 2} ${y + h * .55} q${w / 2 - 2} 1.5 ${w - 4} 0" fill="none" stroke="${tr}" stroke-width=".8" opacity=".5" stroke-linecap="round"/>` : ""}
+    ${avecBague ? anneau(x, y + h - 7, w) : ""}`;
+  const tendons = `<g stroke="${tr}" stroke-width=".8" stroke-linecap="round" opacity=".3" fill="none">${[0, 1, 2].map(i => `<path d="M${40 + i * 10} 50 l-${1 + i} 15"/>`).join("")}</g>`;
+  if (symbole === "feuille") return doigt(33, 70, 27, -52) + paume(46) + doigt(33.5, 52, 30, -6) + doigt(44, 50, 36, -2, { avecBague: true }) + doigt(54.5, 50, 34, 2) + doigt(64.5, 53, 26, 7);
+  if (symbole === "feuille-dos") return doigt(33, 52, 30, -14) + doigt(43.5, 50, 35, -5, { avecBague: true }) + doigt(54, 50, 34, 5) + doigt(64, 53, 27, 14) + paume(46, false) + tendons;
+  if (symbole === "ciseaux") return doigt(37, 52, 38, -14) + doigt(50, 50, 40, 9, { avecBague: true }) + paume(46) + replie(54, 42, 9, 18) + replie(62, 45, 8, 16) + doigt(33, 66, 26, 74);
+  if (symbole === "ciseaux-dos") return doigt(30, 70, 18, -25, { sansOngle: true }) + doigt(37, 52, 38, -14) + doigt(50, 50, 40, 9, { avecBague: true }) + paume(46, false) + replie(54, 43, 9, 12, { pli: false }) + replie(62, 45, 8, 11, { pli: false }) + tendons;
+  if (symbole === "index") return doigt(41, 50, 40, -4, { avecBague: true }) + paume(46) + replie(46.5, 42, 9.5, 18) + replie(55.5, 43, 9, 17) + replie(64.5, 46, 8, 15) + doigt(33, 66, 26, 74);
+  if (symbole === "dos") return doigt(29, 68, 20, -20, { sansOngle: true }) + paume(42, false) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [36, 34, 35, 37][i], 10.5, 14, { pli: false, avecBague: i === 2 })).join("") + tendons;
+  const poing = paume(42) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [38, 35, 36, 39][i], 10.5, 22, { avecBague: i === 2 })).join("");
+  if (symbole === "pouce") return poing + doigt(33, 50, 30, -10);
+  return poing + doigt(31, 61, 28, 80);   // pierre : le pouce replié devant les doigts
+}
+// La bague sur un gant : sur le doigt du milieu, à sa base (là où il sort de la paume), selon la forme de la main.
+// (Sur la main nue, elle est dessinée avec la main : voir mainNue.)
 const PLACE_BAGUE = { feuille: [50.5, 38], index: [29.5, 37], pouce: [43, 57.5], dos: [50, 33], "ciseaux-dos": [50, 35.5], "feuille-dos": [50.5, 37, "7 55 54"], ciseaux: [50, 39], pierre: [50, 39.5] };
-function accessoires(a) {
+function accessoires(a, nue = false) {
   let s = "";
+  const yb = nue ? 84 : 68;   // le bracelet : au poignet (plus bas sur la main nue, juste au-dessus du bandeau)
   const br = (BRACELETS[a.bracelet] || [])[1];
   if (br) s += a.bracelet === "perles"
-    ? [0, 1, 2, 3, 4, 5].map(i => `<circle cx="${39 + i * 4.4}" cy="70.5" r="2.3" fill="${br}" stroke="rgba(0,0,0,.25)" stroke-width=".8"/>`).join("")
-    : `<rect x="35.5" y="68" width="29" height="5" rx="2.5" fill="${br}" stroke="rgba(0,0,0,.25)" stroke-width="1"/><rect x="37" y="69" width="26" height="1.2" rx=".6" fill="rgba(255,255,255,.5)"/>`;
+    ? [0, 1, 2, 3, 4, 5].map(i => `<circle cx="${nue ? 39.5 + i * 4.2 : 39 + i * 4.4}" cy="${yb + 2.5}" r="2.3" fill="${br}" stroke="rgba(0,0,0,.25)" stroke-width=".8"/>`).join("")
+    : `<rect x="${nue ? 37.5 : 35.5}" y="${yb}" width="${nue ? 25 : 29}" height="5" rx="2.5" fill="${br}" stroke="rgba(0,0,0,.25)" stroke-width="1"/><rect x="${nue ? 39 : 37}" y="${yb + 1}" width="${nue ? 22 : 26}" height="1.2" rx=".6" fill="rgba(255,255,255,.5)"/>`;
   const bg = (BAGUES[a.bague] || [])[1];
-  if (bg) {
+  if (bg && !nue) {
     const [x, y, rot] = PLACE_BAGUE[a.symbole] || PLACE_BAGUE.pierre;
     s += `<g${rot ? ` transform="rotate(${rot})"` : ""}><rect x="${x - .5}" y="${y}" width="11.5" height="4.2" rx="1.6" fill="${bg}" stroke="rgba(0,0,0,.3)" stroke-width=".9"/>`
       + (a.bague === "rubis" ? `<circle cx="${x + 5.25}" cy="${y + 2.1}" r="2.2" fill="#C2183A" stroke="#fff" stroke-width=".6"/>` : "") + `</g>`;
@@ -104,15 +138,13 @@ export function avatarSVG(a) {
     <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath>${remplissage}${poignetDef}${fondDef}</defs>
     ${a.sansFond ? "" : `<circle cx="50" cy="50" r="48" fill="${fillFond}"/>${decorFond}${motif}
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
-    <rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
-    <rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>
-    ${dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a)}
+    ${nue ? "" : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
+    <rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}
+    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${dessinerMain(a, fillGant, ink, nue)}${deco}${nue ? `<rect x="37.5" y="89" width="25" height="11" rx="2.5" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.3"/><rect x="37.5" y="93" width="25" height="2.5" fill="rgba(255,255,255,.5)"/>` : ""}${accessoires(a, nue)}${nue ? "</g>" : ""}
   </svg>`;
 }
 
-// Un doigt ; sur une main nue vernie, l'ongle des doigts tendus prend la couleur du vernis.
-const doigt = (x, y, h, gant, ink, rot = "") => `<rect x="${x}" y="${y}" width="10.5" height="${h}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"${rot ? ` transform="rotate(${rot})"` : ""}/>`
-  + (vernis && h >= 26 ? `<rect x="${x + 2.4}" y="${y + 1.6}" width="5.7" height="7" rx="2.7" fill="${vernis}"${rot ? ` transform="rotate(${rot})"` : ""}/>` : "");
+const doigt = (x, y, h, gant, ink, rot = "") => `<rect x="${x}" y="${y}" width="10.5" height="${h}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"${rot ? ` transform="rotate(${rot})"` : ""}/>`;
 const paume = (y, gant, ink) => `<rect x="29" y="${y}" width="42" height="${76 - y}" rx="11" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`;
 // Vu de dos : l'ongle au bout d'un doigt, et les tendons sur le dos de la main.
 const ongle = (x, y, ink, rot = "") => `<rect x="${x + 2.6}" y="${y}" width="5.3" height="5.5" rx="2.4" fill="none" stroke="${ink}" stroke-width="1.1" opacity=".5"${rot ? ` transform="rotate(${rot})"` : ""}/>`;
