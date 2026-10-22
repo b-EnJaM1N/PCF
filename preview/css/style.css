@@ -322,6 +322,9 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .vitrine-case b { font-size: .72rem; margin-top: 2px; }
 .vitrine-case small { font-size: .66rem; color: var(--muted); line-height: 1.2; }
 .vitrine-case.gagnee small { color: var(--line); }
+.car-coupe-tour { margin-top: 6px; }
+.car-coupe-tour .bm { margin-top: 6px; }
+.car-circ { color: var(--muted); font-size: .72rem; font-weight: 400; }
 .car-palmares { margin: 12px 0 0; padding-left: 18px; font-size: .9rem; }
 .bs { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--muted); min-width: 2.6rem; text-align: center; }
 .tmsg { font-weight: 600; margin: 14px 0 12px; line-height: 1.4; }

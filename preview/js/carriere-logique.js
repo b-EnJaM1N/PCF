@@ -4,6 +4,8 @@
 //   un joueur du circuit du dessus qui joue son maintien ;
 // - places 9 à 12 (pas en Amateur) : les playoffs du maintien, à 4. Les vainqueurs des demi-finales sont maintenus ;
 //   les deux perdants se rencontrent : le perdant descend, le gagnant joue un barrage contre le finaliste du circuit du dessous.
+// - la Coupe Monique-Latour (décision du 22 octobre) : 64 joueurs toutes divisions confondues (toi et 63 bots), tirage au sort
+//   intégral à chaque tour, sans avantage pour le petit poucet ; un tour toutes les deux journées, la finale avant les playoffs.
 // Les matchs entre bots sont simulés selon leur niveau. Ici, seulement les règles (testées automatiquement) ; l'écran est dans app.js.
 import { TOUS_LES_BOTS, botParId } from "./bots.js";
 
@@ -129,14 +131,62 @@ export function demarrerSaison(C, rng = Math.random) {
   // Les autres circuits se jouent pendant ce temps (on en connaît l'issue d'avance, on la révèle à la fin).
   C.issues = {};
   C.circuits.forEach((ids, j) => { if (j !== k) C.issues[j] = simulerCircuit(ids, j, rng); });
+  C.coupe = nouvelleCoupe(rng);
   return C;
 }
+
+// ---------------------------------------------------------------- la Coupe Monique-Latour
+export const TOURS_COUPE = [
+  { nom: "32es de finale", singulier: "32e de finale", cle: null, apres: 2 },
+  { nom: "16es de finale", singulier: "16e de finale", cle: null, apres: 4 },
+  { nom: "8es de finale", singulier: "8e de finale", cle: null, apres: 6 },
+  { nom: "Quarts de finale", singulier: "Quart de finale", cle: "quarts", apres: 8 },
+  { nom: "Demi-finales", singulier: "Demi-finale", cle: "demis", apres: 10 },
+  { nom: "Finale", singulier: "Finale", cle: "finale", apres: JOURNEES },   // (apres : le tour se joue une fois ce nombre de journées joué)
+];
+export const formatCoupe = tour => (tour >= 3 ? FORMAT_FINALES : FORMAT_SAISON);
+function melanger(t, rng) { for (let i = t.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [t[i], t[j]] = [t[j], t[i]]; } return t; }
+const tirage = (ids, rng) => { const t = melanger([...ids], rng), R = []; for (let i = 0; i < t.length; i += 2) R.push({ a: t[i], b: t[i + 1], v: null, score: "" }); return R; };
+// 64 joueurs : toi et 63 des 64 bots (un bot tiré au sort reste au repos).
+function nouvelleCoupe(rng) {
+  const bots = melanger(TOUS_LES_BOTS.map(b => b.id), rng).slice(0, 63);
+  return { tour: 0, tours: [tirage(["moi", ...bots], rng)], elimine: null, vainqueur: null, finaliste: null };
+}
+const monMatchCoupe = K => K?.tours[K.tour]?.find(m => (m.a === "moi" || m.b === "moi") && !m.v) || null;
+const journeesJouees = C => C.journee;
+// Fait avancer la coupe : les tours dus sont joués (simulés) tant que je n'y ai pas de match en attente.
+function avancerCoupe(C, rng) {
+  const K = C.coupe; if (!K) return;
+  while (!K.vainqueur && journeesJouees(C) >= TOURS_COUPE[K.tour].apres && !monMatchCoupe(K)) {
+    const sets = formatCoupe(K.tour).setsGagnants;
+    for (const m of K.tours[K.tour]) if (!m.v) { const r = simuler(m.a, m.b, sets, rng); m.v = r.v; m.score = scoreTexte(r, sets); }
+    if (K.tour === TOURS_COUPE.length - 1) { const f = K.tours[K.tour][0]; K.vainqueur = f.v; K.finaliste = perdantDe(f); return; }
+    K.tours.push(tirage(K.tours[K.tour].map(m => m.v), rng)); K.tour++;
+  }
+}
+// Mon match de coupe, s'il est dû (sinon null).
+export function matchDeCoupe(C) {
+  const K = C?.coupe; if (!K || K.vainqueur) return null;
+  const m = monMatchCoupe(K);
+  if (!m || journeesJouees(C) < TOURS_COUPE[K.tour].apres) return null;
+  return { adv: m.a === "moi" ? m.b : m.a, format: formatCoupe(K.tour), etape: `Coupe Monique-Latour · ${TOURS_COUPE[K.tour].singulier}`, cle: TOURS_COUPE[K.tour].cle, coupe: true };
+}
+// Mon parcours en coupe, en une phrase.
+export function texteCoupe(C) {
+  const K = C?.coupe; if (!K) return "";
+  if (K.vainqueur === "moi") return "🏆 Vainqueur de la Coupe Monique-Latour !";
+  if (K.elimine !== null) return K.elimine === TOURS_COUPE.length - 1 ? "🥈 Finaliste de la Coupe Monique-Latour." : `Éliminé en ${TOURS_COUPE[K.elimine].singulier.toLowerCase()} de la Coupe Monique-Latour.`;
+  return `Qualifié pour les ${TOURS_COUPE[K.tour].nom.toLowerCase()} de la Coupe Monique-Latour.`;
+}
+// La saison ne peut se terminer qu'une fois la coupe jouée jusqu'au bout.
+export const coupeEnCours = C => !!(C?.coupe && !C.coupe.vainqueur);
 
 export const classement = C => classementDe(C.circuits[C.ou], C.resultats);
 
 // Le prochain match du joueur : { adv, format, etape, cle } (cle : "quarts", "demis", "finale" ou null), ou null.
 export function prochainMatch(C) {
   if (!C) return null;
+  const mc = matchDeCoupe(C); if (mc) return mc;   // le match de coupe passe avant le reste
   if (C.phase === "saison") {
     const m = C.journees[C.journee].find(p => p.includes("moi"));
     return { adv: m[0] === "moi" ? m[1] : m[0], format: FORMAT_SAISON, etape: `Journée ${C.journee + 1} sur ${JOURNEES}`, cle: null };
@@ -155,11 +205,19 @@ export function prochainMatch(C) {
 export function enregistrerMonMatch(C, gagne, scores, rng = Math.random) {
   const pm = prochainMatch(C); if (!pm) return C;
   const v = gagne ? "moi" : pm.adv;
+  if (pm.coupe) {
+    const K = C.coupe, m = monMatchCoupe(K), s = [0, 0]; scores.forEach(([x, y]) => s[x > y ? 0 : 1]++);
+    m.v = v; m.score = pm.format.setsGagnants === 1 ? (m.a === "moi" ? scores[0] : [scores[0][1], scores[0][0]]).join("–") : (m.a === "moi" ? s : [s[1], s[0]]).join("–");
+    if (!gagne) K.elimine = K.tour;
+    avancerCoupe(C, rng);
+    return C;
+  }
   if (C.phase === "saison") {
     C.resultats.push({ a: "moi", b: pm.adv, v, scores });
     for (const [a, b] of C.journees[C.journee]) if (a !== "moi" && b !== "moi") C.resultats.push(simuler(a, b, 1, rng));
     C.journee++;
     if (C.journee === JOURNEES) finDeSaisonReguliere(C, rng);
+    avancerCoupe(C, rng);
     return C;
   }
   if (C.phase === "barrage") {
@@ -234,11 +292,12 @@ export function texteBilan(C) {
 // Entre k et k+1 : le champion de k monte, le relégué de k+1 descend ; le finaliste de k et le barragiste de k+1 jouent
 // le barrage (le joueur l'a joué s'il y était ; sinon, simulé).
 export function saisonSuivante(C, rng = Math.random) {
-  if (C.phase !== "fin") return C;
+  if (C.phase !== "fin" || coupeEnCours(C)) return C;
   // Le palmarès de la saison : mon parcours, et pour chaque circuit son champion, son finaliste, qui monte et qui descend.
   const resume = C.circuits.map((_, k) => ({ champion: C.issues[k].champion, finaliste: C.issues[k].finaliste, montes: [], descendus: [] }));
   C.palmares.push({ saison: C.saison, circuit: C.ou, place: C.place, texte: texteBilan(C), mouvement: C.bilan.mouvement, titre: C.bilan.titre, circuits: resume,
-    coupe: resume[C.ou].champion === "moi", bouclier: C.place === 1 });
+    coupe: resume[C.ou].champion === "moi", bouclier: C.place === 1,
+    coupeML: C.coupe ? { vainqueur: C.coupe.vainqueur, finaliste: C.coupe.finaliste, texte: texteCoupe(C) } : null });
   const N = C.circuits.map(c => [...c]);
   const deplacer = (id, de, vers) => { N[de].splice(N[de].indexOf(id), 1); N[vers].push(id); resume[de][vers > de ? "montes" : "descendus"].push(id); };
   for (let k = 0; k < DERNIER; k++) {
@@ -268,4 +327,12 @@ export function vitrine(C) {
   if (C.issues?.[C.ou]?.champion === "moi" && C.phase === "fin") v[C.ou].coupes.push(C.saison);
   if (C.place === 1) v[C.ou].boucliers.push(C.saison);
   return v;
+}
+
+// Les saisons où j'ai gagné la Coupe Monique-Latour.
+export function coupesML(C) {
+  if (!C) return [];
+  const l = C.palmares.filter(p => p.coupeML?.vainqueur === "moi").map(p => p.saison);
+  if (C.coupe?.vainqueur === "moi") l.push(C.saison);
+  return l;
 }
