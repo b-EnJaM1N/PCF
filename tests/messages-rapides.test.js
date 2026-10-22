@@ -1,7 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { MESSAGES, LONGUEUR_MAX, messagesPossibles, momentApres, texteMessage } from "../app/js/messages-rapides.js";
+import { MESSAGES, LONGUEUR_MAX, messagesPossibles, momentApres, texteMessage, erreurMessageLibre, PREFIXE_LIBRE } from "../app/js/messages-rapides.js";
+import { MOTS_INTERDITS } from "../app/js/enjeux.js";
 
 test("chaque message tient dans une bulle et chaque identifiant est unique à son moment", () => {
   for (const [moment, m] of Object.entries(MESSAGES)) {
@@ -34,4 +35,17 @@ test("après le match, le vainqueur et le vaincu n'ont pas les mêmes messages",
   assert.equal(texteMessage("vainqueur", "deculottee"), "Déculottée !");
   assert.equal(texteMessage("vaincu", "deculottee"), null);
   assert.equal(texteMessage("vaincu", "chatoune"), "Quelle chatoune !");
+});
+
+test("le message écrit entre amis : les garde-fous de l'enjeu, et le même préfixe que le serveur", () => {
+  assert.equal(erreurMessageLibre("Rendez-vous dimanche !"), null);
+  assert.match(erreurMessageLibre("a"), /trop court/);
+  assert.match(erreurMessageLibre("a".repeat(61)), /trop long/);
+  assert.match(erreurMessageLibre("Tu me dois 10 euros"), /argent/);
+  assert.match(erreurMessageLibre("va sur www.exemple.com"), /lien/);
+  assert.match(erreurMessageLibre("Espèce d'ENCULÉ"), /interdit/);
+  assert.equal(texteMessage("vaincu", PREFIXE_LIBRE + "Revanche demain !"), "Revanche demain !");
+  const sql = readFileSync(new URL("../supabase/etape-48-message-ecrit.sql", import.meta.url), "utf8");
+  assert.ok(sql.includes(`p_message like '${PREFIXE_LIBRE}%'`) && sql.includes("> 60") && sql.includes("_mots_interdits_enjeu()"));
+  assert.ok(MOTS_INTERDITS.length > 10);
 });

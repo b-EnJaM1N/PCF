@@ -370,6 +370,13 @@ Même manipulation avec [`etape-47-nouveaux-gestes.sql`](etape-47-nouveaux-geste
 Ajoute au catalogue de la boutique le poing sur le cœur, le salut militaire et le micro qui tombe. **À coller avant de valider
 l'appli** : sinon, ces trois gestes s'afficheraient dans la boutique mais l'achat serait refusé.
 
+## 1 quadragies octies. Écrire son message à un ami (étape 48)
+
+Même manipulation avec [`etape-48-message-ecrit.sql`](etape-48-message-ecrit.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-48-message-ecrit.sql).
+Entre amis, avant ou après un duel, on peut écrire son propre message (60 caractères au plus, sans gros mots, sans argent,
+sans lien). **À coller avant de valider l'appli** : sinon, le message écrit est refusé (les phrases toutes faites marchent).
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
