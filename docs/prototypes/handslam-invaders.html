@@ -225,19 +225,14 @@ canvas { display: block; width: 100%; height: 100%; }
     // vagues 13 à 15 : les deux séries mélangées
     { nom: "Le grand mélange", pierre: [BASKET.pierre, FOOT.pierre], feuille: [BASKET.feuille, FOOT.feuille], ciseaux: [BASKET.ciseaux, FOOT.ciseaux] },
   ];
-  // Forêt : le lucane (ses pinces) est toujours les ciseaux ; toutes les 3 vagues, gland et trèfle,
-  // ou pomme et feuille d'érable ; les deux séries mélangées aux vagues 13 à 15.
+  // Forêt : la taille des objets suit leur taille réelle (idée du porteur du projet) : les grands objets
+  // d'abord (pomme, érable, corbeau), puis les petits quand tout rétrécit (gland, trèfle, lucane).
   const LUCANE = { dessin: "lucane", nom: "Lucane", taille: 1.15 }, CORBEAU = { dessin: "corbeau", nom: "Corbeau", taille: 1.4 };
   const GLAND = { dessin: "gland", nom: "Gland", taille: 1.15 }, POMME = { e: "🍎", nom: "Pomme", taille: 1.1 };
   const TREFLE = { e: "☘️", nom: "Trèfle", taille: 1.1 }, ERABLE = { e: "🍁", nom: "Feuille d'érable", taille: 1.1 };
-  const FORET = [
-    { nom: "Les chênes", pierre: GLAND, feuille: TREFLE, ciseaux: LUCANE },
-    { nom: "Le verger", pierre: POMME, feuille: ERABLE, ciseaux: LUCANE },
-    { nom: "La clairière", pierre: GLAND, feuille: TREFLE, ciseaux: LUCANE },
-    { nom: "L'automne", petit: true, pierre: POMME, feuille: ERABLE, ciseaux: LUCANE },
-    // vagues 13 à 15 : les deux séries mélangées
-    { nom: "Le grand mélange", petit: true, pierre: [GLAND, POMME], feuille: [TREFLE, ERABLE], ciseaux: LUCANE },
-  ];
+  const GRANDS = { nom: "Le verger", pierre: POMME, feuille: ERABLE, ciseaux: CORBEAU };
+  const PETITS = { nom: "Le sous-bois", petit: true, pierre: GLAND, feuille: TREFLE, ciseaux: LUCANE };
+  const FORET = [GRANDS, GRANDS, GRANDS, PETITS, PETITS]; // vagues 1 à 9 les grands, 10 à 15 les petits
   // Plage : des galets ; toutes les 3 vagues, palmier et crabe, ou serviette et lunettes de soleil.
   // La moitié des ciseaux bougent : des crabes qui avancent en biais (avec les palmiers),
   // ou des mouettes qui planent de gauche à droite, bec ouvert (avec les serviettes).
@@ -401,9 +396,9 @@ canvas { display: block; width: 100%; height: 100%; }
       const vx = (Math.random() < 0.5 ? -1 : 1) * (45 + 45 * niveau());
       return J.ennemis.push({ x, x0: x, y, v: v * 0.85, signe, crabe: true, vx, phase: 0, bond: 0, t: (th?.petit ? 0.72 : 1) });
     }
-    // dans la Forêt, la moitié des ciseaux sont des corbeaux qui planent de gauche à droite, bec ouvert
-    if (m.vent && signe === "ciseaux" && Math.random() < 0.5)
-      return J.ennemis.push({ x, x0: x, y, v: v * 0.9, signe, corbeau: true, zigzag: true, phase: Math.random() * 6, bond: 0, t: (th?.petit ? 0.72 : 1) * CORBEAU.taille });
+    // dans la Forêt, les corbeaux (vagues 1 à 9) : la moitié plane de gauche à droite, bec ouvert
+    if (m.vent && signe === "ciseaux" && th && choix(th.ciseaux, serie) === CORBEAU)
+      return J.ennemis.push({ x, x0: x, y, v: v * 0.9, signe, corbeau: true, zigzag: Math.random() < 0.5, phase: Math.random() * 6, bond: 0, t });
     // dans la Forêt, les feuilles tombent en se balançant au vent
     if (m.vent && signe === "feuille") {
       const x0 = Math.min(W - R - W * 0.13, Math.max(R + W * 0.13, x));
