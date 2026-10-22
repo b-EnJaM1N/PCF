@@ -64,8 +64,6 @@ export async function dessinerCarte(canvas, c, j) {
   ctx.restore();
   // Le liseré : la couleur du rang, ou celle du cadre acheté à la boutique (j.cadre).
   if (j.cadre) { ctx.save(); ctx.shadowColor = j.cadre; ctx.shadowBlur = 30; ctx.lineWidth = 16; ctx.strokeStyle = j.cadre; arrondi(ctx, 30, 30, L - 60, H - 60, 50); ctx.stroke(); ctx.restore(); }
-  // Cadre à deux couleurs (le cadre Élite : or et noir) : un filet intérieur.
-  if (j.cadre && j.cadreInterieur) { ctx.save(); ctx.lineWidth = 6; ctx.strokeStyle = j.cadreInterieur; arrondi(ctx, 30, 30, L - 60, H - 60, 50); ctx.stroke(); ctx.restore(); }
   else { ctx.lineWidth = 10; ctx.strokeStyle = T.lisere; arrondi(ctx, 34, 34, L - 68, H - 68, 48); ctx.stroke(); }
   if (T.eclat) {
     // Des étincelles, toujours au même endroit (la carte ne change pas d'un affichage à l'autre).

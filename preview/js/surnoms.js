@@ -63,7 +63,6 @@ export const NOMS = [
   exploit("le_marathonien", "Le Marathonien", "pilier"),
   exploit("le_gentleman", "Le Gentleman", "gentleman"),
   exploit("l_invaincu", "L'Invaincu", "legende"),
-  exploit("le_patron", "Le Patron", "leader"),
   ...famille("titre", [["le_boss", "Le Boss"], ["le_taulier", "Le Taulier"], ["le_maitre", "Le Maître"], ["le_champion", "Le Champion"], ["le_crack", "Le Crack"], ["la_machine", "La Machine"]]),
 ];
 
@@ -76,7 +75,6 @@ export const QUALIFICATIFS = [
   ...famille("ombre", [["de_la_nuit", "de la Nuit"], ["de_l_ombre", "de l'Ombre"], ["du_chaos", "du Chaos"]]),
   exploit("du_dimanche_soir", "du Dimanche Soir", "champion_dimanche"),
   exploit("du_cercle", "du Cercle", "champion_cercle"),
-  exploit("du_circuit", "du Circuit", "leader"),
   ...famille("prestige", [["des_titans", "des Titans"], ["des_legendes", "des Légendes"], ["des_immortels", "des Immortels"], ["des_champions", "des Champions"], ["de_l_eternite", "de l'Éternité"], ["de_la_gloire", "de la Gloire"], ["du_destin", "du Destin"], ["de_l_empire", "de l'Empire"]]),
 ];
 

@@ -19,8 +19,6 @@ import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
-import { CIRCUITS, JOURNEES, QUALIFIES, NOMS_TOURS, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere } from "./carriere-logique.js";
-import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
@@ -101,8 +99,6 @@ let compteUI = null;
 // Chaque changement de la fiche est gardé sur le téléphone, puis envoyé en ligne si on est connecté.
 const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier(); };
 const sauverT = () => ecrire("tournoi", T);
-let C = lire("carriere");   // la carrière contre les bots (carriere-logique.js)
-const sauverC = () => ecrire("carriere", C);
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
 let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, programmesUI = null, defisUI = null, boutiqueUI = null;
@@ -520,9 +516,6 @@ function finir() {
 
   const enTournoi = !!(S.tour !== null && T && !S.duel);
   if (enTournoi) { enregistrerMonMatch(T, gagne, m.sets); sauverT(); }
-  const enCarriere = !!(S.carriere && C && n && !special);   // un match de carrière quitté avant la fin ne compte pas
-  const phaseAvant = C?.phase;
-  if (enCarriere) { enregistrerCarriere(C, gagne, m.scoresSets); sauverC(); }
   // Un duel compte dans la fiche (statistiques, historique, titres) mais pas dans le niveau.
   const matchsAvant = P.matchs;
   matchsDepuisOuverture++;
@@ -536,8 +529,6 @@ function finir() {
   // Le premier gant : offert après le premier match (avant, la main nue).
   const premierGant = matchsAvant === 0 && P.matchs > 0 && P.av.gant === "nu" && !P.premierGant;
   if (premierGant) { P.av.gant = "blanc"; P.premierGant = true; }
-  // Les trophées de la carrière (montées, coupe, bouclier, Élite) : ils débloquent des objets et des surnoms.
-  if (enCarriere) nouveaux.push(...accorderTitres(P, titresCarriere(C)));
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("coach").hidden = true;
   if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
@@ -546,7 +537,7 @@ function finir() {
   if (matchsAvant < 3 && P.matchs >= 3) compterTroisMatchs(envoyerTroisMatchs);   // pour savoir si les nouveaux joueurs accrochent (anonyme)
   // « La Une » : on garde de quoi raconter ce match.
   S.pourUne = n && !special ? {
-    etape: S.carriere ? S.carriere.coupe ? S.carriere.etape.replace(" · ", ", ") : `${CIRCUITS[S.carriere.circuit]}, ${S.carriere.etape.charAt(0).toLowerCase()}${S.carriere.etape.slice(1)}` : S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.direct ? (D.tourVoix === "finale" && D.nbTours > 1 ? "Finale de Sit & Go" : "Sit & Go") : D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
+    etape: S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.direct ? (D.tourVoix === "finale" && D.nbTours > 1 ? "Finale de Sit & Go" : "Sit & Go") : D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
       : enTournoi ? `${tourDe(T, S.tour).singulier} du HandSlam Open` : "Match d'entraînement",
     finale: !!S.annonces.finale, numero: P.matchs,
   } : null;
@@ -557,8 +548,7 @@ function finir() {
   $("revanche").hidden = !S.duel || !!tournoiId; $("retourDuels").hidden = !S.duel || !!tournoiId || rapide; $("revanche").disabled = false;
   $("revanche").textContent = D?.duel?.enjeu ? "🔁 Revanche, même enjeu" : "🔁 Revanche";   // en un geste, avec le même format et le même enjeu
   $("encoreRapide").hidden = !rapide;
-  if (S.contreBotRapide || S.matchJour || S.carriere) $("again").hidden = true;
-  $("carSuite").hidden = !S.carriere;
+  if (S.contreBotRapide || S.matchJour) $("again").hidden = true;
   $("mdjPartagerFin").hidden = !S.matchJour;
   $("voirTournoi").hidden = !tournoiId;
   $("signalerZone").hidden = !(S.duel && OPP.humain);
@@ -569,8 +559,6 @@ function finir() {
   const paliers = retenirRang();
   if (paliers.length) $("news").textContent = `${$("news").textContent} ${paliers.join(" ")}`.trim();
   if (ouvert.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${ouvert.join(" ")} ${$("news").textContent}`.trim();
-  if (enCarriere && S.carriere.coupe) $("news").textContent = `🏆 ${gagne ? texteCoupe(C) : `Éliminé de la Coupe Monique-Latour.`} ${$("news").textContent}`.trim();
-  else if (enCarriere && C.phase !== phaseAvant) $("news").textContent = `🏅 ${C.phase === "fin" ? `Fin de saison : ${texteBilan(C)}` : C.phase === "barrage" ? `Direction le barrage contre ${botParId(C.barrage.adv).nom} !` : phaseAvant === "saison" ? `Saison terminée à la ${C.place}${C.place === 1 ? "re" : "e"} place : ${C.phase === "playoffs" ? "qualifié pour les playoffs !" : "place au maintien."}` : ""} ${$("news").textContent}`.trim();
   if (premierGant) $("news").textContent = `🧤 Ton premier gant t'est offert ! Change sa couleur (ou garde ta main nue) dans Ma fiche › Mon avatar. ${$("news").textContent}`.trim();
   // Défi avec enjeu (entre amis) : qui s'y colle, en grand.
   $("endEnjeu").hidden = !(S.duel && D?.duel?.enjeu);
@@ -797,7 +785,7 @@ function renderCarte() {
   carteT = setTimeout(async () => {
     const jeton = ++carteJeton;
     const c = carteDe(P, { niveauOfficiel: monClassement, provisoire: monClassement !== null && provisoire(mesDuelsOfficiels), surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
-    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(P.av), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur });
+    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(P.av), cadre: CADRES[P.cadre]?.couleur });
     if (jeton !== carteJeton) return;
     $("carteRarete").textContent = texteRang(c.rang);
     $("carteNotes").innerHTML = notesDe(P).map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
@@ -820,7 +808,7 @@ async function voirCarteDe(uid) {
   const c = carteDe(J, { niveauOfficiel: cl ? cl.points : null, provisoire: !!cl && provisoire(cl.joues), surnom: surnomDe(J).texte, titre: J.matchs ? dernierTitre(J) : "" });
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
   $("une").classList.add("show");
-  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG(J.av), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur });
+  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG(J.av), cadre: CADRES[J.cadre]?.couleur });
   await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
     fichier: "carte-de-joueur.png", alt: `Carte de joueur de ${nom} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
   return null;
@@ -883,7 +871,7 @@ function preparerEcranMatch() {
   render(); $("status").textContent = "Choisis ton premier coup";
   boutons(false); afficherBilan(); window.scrollTo(0, 0);
   $("revanche").hidden = true; $("retourDuels").hidden = true; $("encoreRapide").hidden = true; $("abandonDuelZone").hidden = true; $("signalerZone").hidden = true;
-  $("coach").hidden = true; $("mdjPartagerFin").hidden = true; $("carSuite").hidden = true;
+  $("coach").hidden = true; $("mdjPartagerFin").hidden = true;
   $("finMsg").hidden = true; $("foMsg").hidden = true; $("foBulleMoi").hidden = true; $("foBulleAdv").hidden = true;
   if (S?.match) renderLectureAdversaire();
 }
@@ -922,8 +910,7 @@ function ouvrirFaceAFace() {
   $("foStage").textContent = pr.bandeau; $("foFmt").textContent = pr.format;
   if (D?.duel?.mise) $("foFmt").textContent += ` · 🪙 mise de ${D.duel.mise} jetons, le gagnant en remporte ${gainDuel(D.duel.mise)}`;
   if (D?.duel?.enjeu) $("foFmt").textContent += ` · 🎯 Enjeu : « ${D.duel.enjeu} »`;
-  if (S.carriere) $("foStage").textContent = S.carriere.coupe ? `🏆 ${S.carriere.etape}` : `🏅 ${CIRCUITS[S.carriere.circuit]} · ${S.carriere.etape}`;
-  else if (S.contreBotRapide) $("foStage").textContent = "Partie rapide · 🤖 contre un bot";
+  if (S.contreBotRapide) $("foStage").textContent = "Partie rapide · 🤖 contre un bot";
   else if (D?.duel?.rapide) $("foStage").textContent = /🤖$/.test(OPP.nom || "") ? "Partie rapide · 🤖 contre un bot" : `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}`;
   $("foAvMe").innerHTML = avatarSVG(P.av); $("foAvBot").innerHTML = avatarSVG(OPP.av);
   $("foNameMe").textContent = pr.joueur.nom; $("foSubMe").textContent = pr.joueur.sous; $("foRecMe").textContent = pr.joueur.bilan;
@@ -939,10 +926,6 @@ function ouvrirFaceAFace() {
     S.annonces.enjeu = niveauEnjeu({ tour: S.tour !== null && T ? tourDe(T, S.tour).cle : null });
     // Les dialogues d'avant et d'après match : l'entraînement contre un bot, ou un tour du HandSlam Open (petit tournoi).
     S.annonces.jeu = S.tour !== null && T ? contexteJeu({ tournoi: "petit", tour: tourDe(T, S.tour).cle }) : contexteJeu({ entrainement: true });
-    if (S.carriere) {   // la carrière : commentée comme un tournoi (playoffs, maintien et barrages comme les grands tours)
-      S.annonces.finale = S.carriere.cle === "finale"; S.annonces.enjeu = niveauEnjeu({ tour: S.carriere.cle });
-      S.annonces.jeu = contexteJeu({ tournoi: "petit", tour: S.carriere.cle });
-    }
   }
   presenterSpeaker();
 
@@ -1068,9 +1051,7 @@ $("foPasser").addEventListener("click", () => {
 $("foBack").addEventListener("click", () => {
   if (S.duel) { abandonnerDuel(); return; }
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false; minuteriesIntro.forEach(clearTimeout);
-  const carriere = !!S.carriere;
   S.tour = null; nouvelleSeance();
-  if (carriere) aller("viewCarriere");
 });
 
 // ---------------------------------------------------------------- fiche joueur
@@ -1244,7 +1225,6 @@ $("inCadre").addEventListener("change", e => { P.cadre = e.target.value in CADRE
 
 function renderFiche() {
   renderSurnom(); renderCarte();
-  $("vitrineFiche").innerHTML = vitrineHTML() + (C ? "" : `<p class="hint">Gagne-les dans Jouer › 🏅 Ma carrière.</p>`);
   $("pAv").innerHTML = avatarSVG(P.av);
   afficherNomFiche();
   $("pTitle").textContent = dernierTitre(P);
@@ -1363,8 +1343,8 @@ $("resetProfile").addEventListener("click", () => {
 // ---------------------------------------------------------------- navigation
 // Trois onglets (Jouer, Cercles, Ma fiche) et la roue des Options. L'onglet « Jouer » est un menu
 // qui mène aux pages Partie rapide, Défier un ami, Tournois (Programmés, Sit & Go, Mes tournois) et Entraînement.
-const VUES = ["viewJouer", "viewCompet", "viewCarriere", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewBoutique", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
-const ONGLET_DE = { viewJouer: "jouer", viewCompet: "jouer", viewCarriere: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewBoutique: "profile", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
+const VUES = ["viewJouer", "viewCompet", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewBoutique", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
+const ONGLET_DE = { viewJouer: "jouer", viewCompet: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewBoutique: "profile", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
 let vueCourante = "viewJouer", avantOptions = "viewJouer";
 function aller(vue) {
   if (!VUES.includes(vue)) return;
@@ -1377,8 +1357,7 @@ function aller(vue) {
   if (onglet || vue === "viewOptions") document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === onglet)));
   $("lenLock").hidden = true;
   if (vue === "viewProfile") renderFiche();
-  if (vue === "viewMatch") majDossierBot();
-  if (vue === "viewCarriere") renderCarriere();   // le bilan en bref sous le bot choisi (à jour après un match)
+  if (vue === "viewMatch") majDossierBot();   // le bilan en bref sous le bot choisi (à jour après un match)
   if (vue === "viewDuel") duelsUI?.rafraichir();
   if (vue === "viewCercles" || vue === "viewTournois") cerclesUI?.rafraichir();
   if (vue === "viewSng") sngUI?.rafraichir();
@@ -1421,9 +1400,7 @@ function majModeMatch() {
 }
 $("quitterSolo").addEventListener("click", () => {
   if (!confirm("Quitter le match ? Il ne sera pas compté.")) return;
-  const carriere = !!S.carriere;
   nouvelleSeance();
-  if (carriere) aller("viewCarriere");
 });
 
 // ---------------------------------------------------------------- choix de l'adversaire
@@ -1502,127 +1479,6 @@ $("tNext").addEventListener("click", () => {
   sauverT(); nouvelleSeance();
 });
 
-// ---------------------------------------------------------------- la carrière
-// 5 circuits de 12 joueurs contre les bots (règles : carriere-logique.js). Autant de matchs qu'on veut, quand on veut.
-function jouerCarriere() {
-  if (D && !D.fini) return;
-  const pm = prochainMatch(C); if (!pm) return;
-  voix.arreter(); arreterMinuteur(); if (S) clearTimeout(S.decompte);
-  OPP = botParId(pm.adv); WIN = pm.format.setsGagnants;
-  S = {
-    match: nouveauMatch(pm.format),
-    stats: nouvellesStats(), annonces: avecAudible(nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre })), suivi: new Suivi(),
-    tour: null, occupe: false, enJeu: false, carriere: { circuit: C.ou, etape: pm.etape, cle: pm.cle, coupe: !!pm.coupe },
-  };
-  preparerEcranMatch();
-  $("startCard").hidden = true; $("tourCard").hidden = true;
-  $("ruleTxt").textContent = `${CIRCUITS[C.ou]} · ${pm.etape} · ${texteFormat(pm.format)}`;
-  rafraichirAvatars(); render();
-  aller("viewMatch");
-  ouvrirFaceAFace();
-}
-// Le circuit d'un joueur de la carrière (pour la coupe, toutes divisions confondues).
-const circuitDe = id => { const k = C?.circuits.findIndex(c => c.includes(id)); return k >= 0 ? CIRCUITS[k].replace("Circuit ", "") : "invité"; };   // (les bots qui ne jouent pas en carrière)
-const ligneMatch = (m, gagnant = m.v, avecCircuit = false) => {
-  const nomDe = (id, J) => esc(J.nom) + (avecCircuit && id !== "moi" ? ` <small class="car-circ">${circuitDe(id)}</small>` : "");
-  const A = infoJoueur(m.a), B = infoJoueur(m.b), cls = x => (gagnant === x ? "win" : gagnant ? "lose" : ""), mien = m.a === "moi" || m.b === "moi" ? " mine" : "";
-  return `<div class="bm${mien}"><div class="bp ${cls(m.a)}"><span class="mini">${avatarSVG(A.av)}</span><span class="bn">${nomDe(m.a, A)}</span></div><div class="bs">${m.score || "vs"}</div><div class="bp r ${cls(m.b)}"><span class="bn">${nomDe(m.b, B)}</span><span class="mini">${avatarSVG(B.av)}</span></div></div>`;
-};
-// Ma vitrine : les 5 coupes (vainqueur des playoffs) et les 5 boucliers (1er de la saison), en gris tant qu'ils ne sont pas gagnés.
-function vitrineHTML() {
-  const v = vitrine(C), saisons = l => (l.length ? `${l.length > 1 ? `×${l.length} · ` : ""}saison${l.length > 1 ? "s" : ""} ${l.join(", ")}` : "–");
-  const rangee = (titre, f, cle) => `<p class="vitrine-titre">${titre}</p><div class="vitrine">` + CIRCUITS.map((nom, k) => {
-    const l = v[k][cle];
-    return `<div class="vitrine-case${l.length ? " gagnee" : ""}">${f(k, l.length > 0)}<b>${nom.replace("Circuit ", "")}</b><small>${saisons(l)}</small></div>`;
-  }).join("") + `</div>`;
-  const ml = coupesML(C);
-  return rangee("🏆 Les coupes · vainqueur des playoffs", coupeSVG, "coupes")
-    + `<p class="vitrine-titre">🏆 La Coupe Monique-Latour · toutes divisions confondues</p><div class="vitrine"><div class="vitrine-case${ml.length ? " gagnee" : ""}">${coupeMLSVG(ml.length > 0)}<small>${saisons(ml)}</small></div></div>`
-    + rangee("🛡️ Les boucliers · 1er de la saison régulière", bouclierSVG, "boucliers");
-}
-function renderCarriere() {
-  $("carRecommencer").hidden = !C; $("carTableau").innerHTML = ""; $("carCalendrier").innerHTML = ""; $("carVitrine").innerHTML = ""; $("carCoupe").innerHTML = ""; $("carClassement").innerHTML = ""; $("carPalmares").innerHTML = "";
-  if (!C) {
-    $("carEntete").textContent = "Saison 1 · Circuit Amateur";
-    $("carMsg").textContent = "Tu commences en Circuit Amateur, avec 11 bots. Gagne ta place en playoffs, monte de circuit en circuit… jusqu'à l'Élite et ses 12 terreurs.";
-    $("carJouer").textContent = "Commencer ma carrière"; return;
-  }
-  const k = C.ou, pm = prochainMatch(C), adv = pm ? botParId(pm.adv) : null;
-  $("carEntete").textContent = `Saison ${C.saison} · ${CIRCUITS[k]} (${k + 1}/${CIRCUITS.length})`;
-  const place = C.place ? `${C.place}${C.place === 1 ? "re" : "e"} de la saison. ` : "";
-  const sets = pm?.format.setsGagnants === 1 ? "Un set de 11 points." : "2 sets gagnants.";
-  $("carMsg").textContent = pm?.coupe ? `${pm.etape} contre ${adv.nom} (niveau ${adv.elo}, ${circuitDe(adv.id)}). ${sets}`
-    : C.phase === "fin" ? texteBilan(C)
-    : C.phase === "saison" ? `${pm.etape} : contre ${adv.nom} (niveau ${adv.elo}), ${adv.style.charAt(0).toLowerCase()}${adv.style.slice(1)}. Un set de 11 points.`
-    : C.phase === "barrage" ? (C.barrage.haut ? `Finaliste des playoffs ! Barrage d'accession contre ${adv.nom}, qui joue son maintien en ${CIRCUITS[k + 1]} : gagne, et tu montes. 2 sets gagnants.`
-      : `Barrage du maintien contre ${adv.nom}, finaliste du ${CIRCUITS[k - 1]} : gagne, et tu restes en ${CIRCUITS[k]}. 2 sets gagnants.`)
-    : `${place}${pm.etape} contre ${adv.nom} (niveau ${adv.elo}). 2 sets gagnants.`;
-  $("carJouer").textContent = pm?.coupe ? `Jouer : ${TOURS_COUPE[C.coupe.tour].singulier.toLowerCase()} de la coupe` : C.phase === "fin" ? `Commencer la saison ${C.saison + 1}` : C.phase === "saison" ? `Jouer la journée ${C.journee + 1}` : `Jouer : ${pm.etape.charAt(0).toLowerCase()}${pm.etape.slice(1)}`;
-  // Le tableau des playoffs (ou du maintien), et le barrage.
-  let h = "";
-  if (C.tableau) C.tableau.tours.forEach((R, i) => { h += `<div class="rnd">${NOMS_TOURS[C.tableau.type][i].nom}</div>` + R.map(m => ligneMatch(m)).join(""); });
-  if (C.barrage) h += `<div class="rnd">${C.barrage.haut ? "Barrage d'accession" : "Barrage du maintien"}</div>` + ligneMatch({ a: "moi", b: C.barrage.adv, v: C.barrage.v });
-  $("carTableau").innerHTML = h;
-  // La Coupe Monique-Latour : mon parcours et les tableaux, tour par tour.
-  const K = C.coupe;
-  $("carCoupe").innerHTML = !K ? "" : `<div class="rnd">🏆 Coupe Monique-Latour</div><p class="hint" style="margin:0 0 6px">${esc(texteCoupe(C))}${K.vainqueur && K.vainqueur !== "moi" ? ` Vainqueur : ${esc(infoJoueur(K.vainqueur).nom)}.` : ""}${!K.vainqueur && !pm?.coupe && K.elimine === null ? ` Prochain tour après la journée ${TOURS_COUPE[K.tour].apres}.` : ""}</p>`
-    + K.tours.map((R, i) => `<details class="regles car-coupe-tour"${i === K.tours.length - 1 ? " open" : ""}><summary>${TOURS_COUPE[i].nom}${R.some(m => m.v) ? "" : " · tirage"}</summary>`
-      + [...R].sort((x, y) => (y.a === "moi" || y.b === "moi") - (x.a === "moi" || x.b === "moi")).map(m => ligneMatch(m, m.v, true)).join("") + `</details>`).join("");
-  // Mon calendrier : mes 11 journées, jouées (avec le score) ou à venir, et les tours de la Coupe Monique-Latour glissés entre elles.
-  const ligneCal = (cls, b, nom, etat, coupe = false) => `<li class="${cls}${coupe ? " coupe" : ""}">${b ? `<span class="mini">${avatarSVG(b.av)}</span>` : `<span class="mini car-cal-trophee">🏆</span>`}<span class="car-cal-nom">${nom}</span><span class="car-cal-etat">${etat}</span></li>`;
-  const resultat = (v, scores) => `${v ? "✅ Victoire" : "❌ Défaite"} ${scores}`;
-  const ligneCoupe = r => {
-    const K = C.coupe, T = TOURS_COUPE[r], titre = `Coupe · ${T.nom}`;
-    const m = K.tours[r]?.find(x => x.a === "moi" || x.b === "moi");
-    if (!m) { const elimine = K.elimine !== null && K.elimine < r; return ligneCal(elimine ? "eliminee" : "", null, titre, elimine ? "Éliminé" : "Tirage à venir", true); }
-    const adv = botParId(m.a === "moi" ? m.b : m.a), prochain = pm?.coupe && K.tour === r;
-    const score = m.score ? (m.a === "moi" ? m.score : m.score.split("–").reverse().join("–")) : "";
-    const etat = m.v ? resultat(m.v === "moi", score) : prochain ? "👉 Prochain match" : `Après la J${T.apres}`;
-    return ligneCal(m.v ? "jouee" : prochain ? "prochain" : "", adv, `🏆 ${titre}<br><span class="car-cal-adv">${esc(adv.nom)} <small>(${adv.elo})</small></span>`, etat, true);
-  };
-  $("carCalendrier").innerHTML = `<details class="regles car-calendrier"${C.phase === "saison" ? " open" : ""}><summary>📅 Mon calendrier</summary><ol>`
-    + C.journees.map((j, i) => {
-      const adv = j.find(p => p.includes("moi")).find(x => x !== "moi"), b = botParId(adv), r = C.resultats.find(x => x.a === "moi" && x.b === adv);
-      const prochain = i === C.journee && C.phase === "saison" && !pm?.coupe;
-      const etat = r ? resultat(r.v === "moi", r.scores.map(x => x.join("–")).join(", ")) : prochain ? "👉 Prochain match" : "À jouer";
-      return ligneCal(r ? "jouee" : prochain ? "prochain" : "", b, `J${i + 1} · ${esc(b.nom)} <small>(${b.elo})</small>`, etat)
-        + (C.coupe ? TOURS_COUPE.map((T, t) => (T.apres === i + 1 ? ligneCoupe(t) : "")).join("") : "");
-    }).join("") + `</ol></details>`;
-  // Le classement de la saison.
-  const zones = k > 0;
-  $("carClassement").innerHTML = `<div class="rnd">Classement · ${C.journee} journée${C.journee > 1 ? "s" : ""} sur ${JOURNEES}</div>`
-    + `<table class="car-classement"><thead><tr><th>#</th><th>Joueur</th><th>J</th><th>V</th><th>D</th><th>+/−</th><th>Pts</th></tr></thead><tbody>`
-    + classementCarriere(C).map((l, i) => {
-      const A = infoJoueur(l.id), d = l.pm - l.pc, cls = [l.id === "moi" ? "moi" : "", i < QUALIFIES ? "zone-po" : zones ? "zone-bas" : ""].join(" ").trim();
-      return `<tr class="${cls}"><td>${i + 1}</td><td><span class="mini">${avatarSVG(A.av)}</span><span>${esc(A.nom)}</span></td><td>${l.j}</td><td>${l.v}</td><td>${l.d}</td><td>${d > 0 ? "+" : ""}${d}</td><td>${l.pts}</td></tr>`;
-    }).join("") + `</tbody></table><p class="car-legende">🟩 Places 1 à 8 : playoffs, le vainqueur monte.${zones ? " 🟥 Places 9 à 12 : le maintien." : ""}</p>`;
-  $("carVitrine").innerHTML = `<details class="regles car-vitrine"><summary>🏆 Ma vitrine</summary>${vitrineHTML()}</details>`;   // repliée : on la déplie pour l'admirer
-  // Le palmarès.
-  if (C.palmares.length) {
-    const b = bilanCarriere(C);
-    $("carPalmares").innerHTML = `<div class="rnd">Mon palmarès</div><p class="hint" style="margin:0">Meilleur circuit atteint : ${CIRCUITS[b.meilleur]}${b.titres ? ` · 🏆 ${b.titres} titre${b.titres > 1 ? "s" : ""} de champion de l'Élite` : ""}</p>`
-      + `<ul class="car-palmares">${[...C.palmares].reverse().map(p => `<li>Saison ${p.saison} · ${CIRCUITS[p.circuit]} : ${esc(p.texte)}${p.coupeML ? ` ${esc(p.coupeML.texte)}` : ""}</li>`).join("")}</ul>`
-      // Le palmarès de chaque saison : les champions, qui monte et qui descend, du haut vers le bas.
-      + [...C.palmares].reverse().filter(p => p.circuits).map((p, i) => `<details class="regles car-saison"${i === 0 ? " open" : ""}><summary>🏆 Palmarès de la saison ${p.saison}</summary>`
-        + (p.coupeML?.vainqueur ? `<div class="car-saison-circuit"><b>Coupe Monique-Latour</b><br>🏆 ${esc(infoJoueur(p.coupeML.vainqueur).nom)} <span class="car-sec">(finaliste : ${esc(infoJoueur(p.coupeML.finaliste).nom)})</span></div>` : "")
-        + [...p.circuits.keys()].reverse().map(k => {
-          const c = p.circuits[k], nom = id => esc(infoJoueur(id).nom), liste = ids => ids.map(nom).join(", ");
-          return `<div class="car-saison-circuit"><b>${CIRCUITS[k]}</b><br>🏆 ${nom(c.champion)} <span class="car-sec">(finaliste : ${nom(c.finaliste)})</span>`
-            + (c.montes.length ? `<br>⬆️ Montent : ${liste(c.montes)}` : "") + (c.descendus.length ? `<br>⬇️ Descendent : ${liste(c.descendus)}` : "") + `</div>`;
-        }).join("") + `</details>`).join("");
-  }
-}
-$("carJouer").addEventListener("click", () => {
-  if (!C) { C = nouvelleCarriere(); sauverC(); renderCarriere(); return; }
-  if (C.phase === "fin" && !prochainMatch(C)) { saisonSuivante(C); sauverC(); renderCarriere(); window.scrollTo(0, 0); return; }
-  jouerCarriere();
-});
-$("carRecommencer").addEventListener("click", () => {
-  if (!confirm("Recommencer ta carrière depuis le Circuit Amateur ? Ton palmarès sera effacé.")) return;
-  C = null; sauverC(); renderCarriere();
-});
-$("carSuite").addEventListener("click", () => { nouvelleSeance(); aller("viewCarriere"); });
-
 // ---------------------------------------------------------------- clavier (ordinateur)
 document.querySelectorAll("#moves button").forEach(b => b.addEventListener("click", () => jouer(+b.dataset.m)));
 document.addEventListener("keydown", e => {
@@ -1633,7 +1489,7 @@ document.addEventListener("keydown", e => {
 
 // ---------------------------------------------------------------- application installable
 $("version").textContent = `Version ${VERSION}`;
-setTimeout(() => $("demarrage")?.remove(), 2600);   // l'écran de démarrage a fini de s'effacer
+setTimeout(() => $("demarrage")?.remove(), 1600);   // l'écran de démarrage a fini de s'effacer
 let invitation = null;
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); invitation = e; $("installBtn").hidden = false; });
 $("installBtn").addEventListener("click", async () => { if (!invitation) return; invitation.prompt(); await invitation.userChoice; invitation = null; $("installBtn").hidden = true; });
