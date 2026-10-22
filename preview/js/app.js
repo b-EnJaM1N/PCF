@@ -1521,7 +1521,7 @@ const ligneMatch = (m, gagnant = m.v) => {
   return `<div class="bm${mien}"><div class="bp ${cls(m.a)}"><span class="mini">${avatarSVG(A.av)}</span><span class="bn">${esc(A.nom)}</span></div><div class="bs">${m.score || "vs"}</div><div class="bp r ${cls(m.b)}"><span class="bn">${esc(B.nom)}</span><span class="mini">${avatarSVG(B.av)}</span></div></div>`;
 };
 function renderCarriere() {
-  $("carRecommencer").hidden = !C; $("carTableau").innerHTML = ""; $("carClassement").innerHTML = ""; $("carPalmares").innerHTML = "";
+  $("carRecommencer").hidden = !C; $("carTableau").innerHTML = ""; $("carCalendrier").innerHTML = ""; $("carClassement").innerHTML = ""; $("carPalmares").innerHTML = "";
   if (!C) {
     $("carEntete").textContent = "Saison 1 · Circuit Amateur";
     $("carMsg").textContent = "Tu commences en Circuit Amateur, avec 11 bots. Gagne ta place en playoffs, monte de circuit en circuit… jusqu'à l'Élite et ses 12 terreurs.";
@@ -1541,6 +1541,13 @@ function renderCarriere() {
   if (C.tableau) C.tableau.tours.forEach((R, i) => { h += `<div class="rnd">${NOMS_TOURS[C.tableau.type][i].nom}</div>` + R.map(m => ligneMatch(m)).join(""); });
   if (C.barrage) h += `<div class="rnd">${C.barrage.haut ? "Barrage d'accession" : "Barrage du maintien"}</div>` + ligneMatch({ a: "moi", b: C.barrage.adv, v: C.barrage.v });
   $("carTableau").innerHTML = h;
+  // Mon calendrier : mes 11 journées, jouées (avec le score) ou à venir.
+  $("carCalendrier").innerHTML = `<details class="regles car-calendrier"${C.phase === "saison" ? " open" : ""}><summary>📅 Mon calendrier</summary><ol>`
+    + C.journees.map((j, i) => {
+      const adv = j.find(p => p.includes("moi")).find(x => x !== "moi"), b = botParId(adv), r = C.resultats.find(x => x.a === "moi" && x.b === adv);
+      const etat = r ? `${r.v === "moi" ? "✅ Victoire" : "❌ Défaite"} ${r.scores.map(x => x.join("–")).join(", ")}` : i === C.journee && C.phase === "saison" ? "👉 Prochain match" : "À jouer";
+      return `<li class="${r ? "jouee" : i === C.journee && C.phase === "saison" ? "prochain" : ""}"><span class="mini">${avatarSVG(b.av)}</span><span class="car-cal-nom">J${i + 1} · ${esc(b.nom)} <small>(${b.elo})</small></span><span class="car-cal-etat">${etat}</span></li>`;
+    }).join("") + `</ol></details>`;
   // Le classement de la saison.
   const zones = k > 0;
   $("carClassement").innerHTML = `<div class="rnd">Classement · ${C.journee} journée${C.journee > 1 ? "s" : ""} sur ${JOURNEES}</div>`
