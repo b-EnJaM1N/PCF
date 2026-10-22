@@ -916,7 +916,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_cri_03.mp3` | La prochaine fois, prévoyez les boules Quies. |
 | `commentatrice_dialogue_cri_04.mp3` | C'est Ronaldo sans les abdos. |
 
-## Speaker — voix de salle, voyelles étirées (192 répliques)
+## Speaker — voix de salle, voyelles étirées (194 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1041,6 +1041,7 @@ restent lus par la voix de synthèse.
 | `speaker_surnom_le_marathonien_01.mp3` | Le Marathonien… |
 | `speaker_surnom_le_gentleman_01.mp3` | Le Gentleman… |
 | `speaker_surnom_l_invaincu_01.mp3` | L'Invaincu… |
+| `speaker_surnom_le_patron_01.mp3` | Le Patron… |
 | `speaker_surnom_le_boss_01.mp3` | Le Boss… |
 | `speaker_surnom_le_taulier_01.mp3` | Le Taulier… |
 | `speaker_surnom_le_maitre_01.mp3` | Le Maître… |
@@ -1104,6 +1105,7 @@ restent lus par la voix de synthèse.
 | `speaker_surnom_du_chaos_01.mp3` | du Chaos… |
 | `speaker_surnom_du_dimanche_soir_01.mp3` | du Dimanche Soir… |
 | `speaker_surnom_du_cercle_01.mp3` | du Cercle… |
+| `speaker_surnom_du_circuit_01.mp3` | du Circuit… |
 | `speaker_surnom_des_titans_01.mp3` | des Titans… |
 | `speaker_surnom_des_legendes_01.mp3` | des Légendes… |
 | `speaker_surnom_des_immortels_01.mp3` | des Immortels… |
