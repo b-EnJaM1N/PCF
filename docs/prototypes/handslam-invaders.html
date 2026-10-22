@@ -77,7 +77,10 @@ canvas { display: block; width: 100%; height: 100%; }
 .mondes .go { font-size: 1.02rem; padding: 10px 8px; line-height: 1.05; }
 .mondes .go small { display: block; font-size: .72rem; opacity: .85; letter-spacing: .06em; }
 .ecran .gros { font-family: var(--display); font-size: 3.4rem; font-weight: 800; color: var(--me); line-height: 1; font-variant-numeric: tabular-nums; }
-.son.pause { right: 52px; }
+.colonne .pause { /* entre le score et les signes, loin du terrain */
+  flex: none; height: 40px; border: 0; border-radius: 12px; background: var(--panel); color: var(--line);
+  font-size: 1.1rem; cursor: pointer; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .25);
+}
 .son { position: absolute; top: 8px; right: 8px; border: 0; background: var(--panel); color: var(--line); border-radius: 999px; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .boutons button:active { transform: none; } }
 </style>
@@ -91,6 +94,7 @@ canvas { display: block; width: 100%; height: 100%; }
       <div><span>Record</span><strong id="record">0</strong></div>
       <div id="vies" aria-label="Vies">❤️❤️❤️</div>
     </div>
+    <button class="pause" id="pause" aria-label="Mettre en pause">⏸</button>
   <div class="boutons">
     <button id="bPierre" data-signe="pierre"><span class="e">✊</span><span class="n">Pierre</span></button>
     <button id="bFeuille" data-signe="feuille"><span class="e">✋</span><span class="n">Feuille</span></button>
@@ -101,7 +105,6 @@ canvas { display: block; width: 100%; height: 100%; }
   <div class="terrain" id="terrain">
     <canvas id="toile"></canvas>
     <button class="son" id="son" aria-label="Couper le son">🔊</button>
-    <button class="son pause" id="pause" aria-label="Mettre en pause">⏸</button>
 
     <div class="ecran" id="accueil">
       <h1>HAND<b>SLAM</b><br>Invaders</h1>
@@ -214,7 +217,7 @@ canvas { display: block; width: 100%; height: 100%; }
   // Gymnase : vagues 1 à 3 avec les mains (pour apprendre), puis basket et foot qui alternent toutes les 3 vagues,
   // et les deux mélangés aux vagues 13 à 15. Le tennis et le baseball, qu'on ne reconnaissait pas, ont été retirés.
   const BASKET = { nom: "Basket et athlé", pierre: { e: "🏀", nom: "Ballon de basket", taille: 1.1 }, feuille: { dessin: "maillot", nom: "Maillot", taille: 1.1 }, ciseaux: { dessin: "javelots", nom: "Javelots" } };
-  const FOOT = { nom: "Foot et hockey", pierre: { e: "⚽", nom: "Ballon de foot", taille: 1.1 }, feuille: { dessin: "drapeau", nom: "Drapeau de corner" }, ciseaux: { croix: "🏒", retourne: true, nom: "Crosses" } };
+  const FOOT = { nom: "Foot", pierre: { e: "⚽", nom: "Ballon de foot", taille: 1.1 }, feuille: { dessin: "drapeau", nom: "Drapeau de corner" }, ciseaux: { dessin: "crampons", nom: "Crampons", taille: 1.15 } };
   const GYMNASE = [
     BASKET, FOOT, { ...BASKET, nom: "Retour au basket" },
     // vagues 13 à 15 : les deux séries mélangées
@@ -234,9 +237,10 @@ canvas { display: block; width: 100%; height: 100%; }
     { nom: "Le grand mélange", petit: true, pierre: [GLAND, POMME], feuille: [TREFLE, ERABLE], ciseaux: LUCANE },
   ];
   // Plage : des galets ; toutes les 3 vagues, palmier et crabe, ou serviette et lunettes de soleil.
-  // Les crabes qui avancent en biais restent des crabes.
+  // La moitié des ciseaux bougent : des crabes qui avancent en biais (avec les palmiers),
+  // ou des mouettes qui planent de gauche à droite, bec ouvert (avec les serviettes).
   const GALET = { dessin: "galet", nom: "Galet", taille: 1.15 }, CRABE = { e: "🦀", retourne: true, nom: "Crabe" };
-  const LUNETTES = { dessin: "lunettes", nom: "Lunettes de soleil" };
+  const LUNETTES = { dessin: "lunettes", nom: "Lunettes de soleil" }, MOUETTE = { dessin: "mouette", nom: "Mouette", taille: 1.4 };
   const PALME = { dessin: "palme", nom: "Feuille de palmier" }, SERVIETTE = { dessin: "serviette", nom: "Serviette de plage" };
   const PLAGE = [
     { nom: "Les palmiers", pierre: GALET, feuille: PALME, ciseaux: CRABE },
@@ -386,9 +390,12 @@ canvas { display: block; width: 100%; height: 100%; }
     const serie = Math.random() * 2 | 0;
     const taille = signe => (th?.petit ? 0.72 : 1) * ((th && choix(th[signe], serie).taille) || 1);
     const signe = SIGNES[Math.random() * 3 | 0], t = taille(signe);
-    // sur la plage, la moitié des ciseaux sont des crabes qui avancent en biais et rebondissent sur les bords
-    // (tirés parmi les ciseaux : il n'y a pas plus de ciseaux que de pierres ou de feuilles)
+    // sur la plage, la moitié des ciseaux bougent (tirés parmi les ciseaux : il n'y a pas plus de ciseaux
+    // que de pierres ou de feuilles) : avec les serviettes, des mouettes qui planent de gauche à droite ;
+    // avec les palmiers, des crabes qui avancent en biais et rebondissent sur les bords
     if (m.crabes && signe === "ciseaux" && Math.random() < 0.5) {
+      if (choix(th.ciseaux, serie) === LUNETTES)
+        return J.ennemis.push({ x, x0: x, y, v: v * 0.9, signe, mouette: true, zigzag: true, phase: Math.random() * 6, bond: 0, t });
       const vx = (Math.random() < 0.5 ? -1 : 1) * (45 + 45 * niveau());
       return J.ennemis.push({ x, x0: x, y, v: v * 0.85, signe, crabe: true, vx, phase: 0, bond: 0, t: (th?.petit ? 0.72 : 1) });
     }
@@ -815,8 +822,31 @@ canvas { display: block; width: 100%; height: 100%; }
         ctx.lineWidth = s * 0.11; ctx.strokeStyle = "#3B2A1A";
         ctx.beginPath(); ctx.moveTo(...pt(0.4)); ctx.lineTo(...pt(0.52)); ctx.stroke();
       }
+    } else if (o.dessin === "crampons") {
+      // une paire de chaussures à crampons pendues par les lacets à un clou : lacets en V,
+      // chaussures pointe en bas, semelles vers l'extérieur (le côté ouvert vers le joueur)
+      const chaussure = k => { // de profil, pointe vers la droite, semelle en bas (centrée sur 0,0)
+        ctx.fillStyle = "#111"; ctx.beginPath();
+        ctx.moveTo(-k * 0.36, -k * 0.2); ctx.lineTo(-k * 0.12, -k * 0.2);
+        ctx.quadraticCurveTo(-k * 0.02, -k * 0.02, k * 0.22, -k * 0.04); // le coup de pied
+        ctx.quadraticCurveTo(k * 0.42, -k * 0.02, k * 0.4, k * 0.08);   // le bout
+        ctx.lineTo(-k * 0.38, k * 0.08); ctx.quadraticCurveTo(-k * 0.42, -k * 0.06, -k * 0.36, -k * 0.2); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = "#F4C542"; ctx.lineWidth = k * 0.045; // la virgule jaune
+        ctx.beginPath(); ctx.moveTo(-k * 0.28, 0); ctx.quadraticCurveTo(-k * 0.02, k * 0.06, k * 0.22, -k * 0.02); ctx.stroke();
+        ctx.fillStyle = "#F5F7FA"; ctx.fillRect(-k * 0.4, k * 0.08, k * 0.8, k * 0.05); // semelle
+        for (const dx of [-0.32, -0.2, 0.08, 0.2, 0.32]) ctx.fillRect(k * dx - k * 0.025, k * 0.13, k * 0.05, k * 0.07); // crampons
+      };
+      const clou = [x, y - s * 0.46];
+      for (const sens of [-1, 1]) {
+        const bx = x + sens * s * 0.24, by = y + s * 0.06;
+        ctx.save(); ctx.translate(bx, by); ctx.rotate(sens * (Math.PI / 2 - 0.22)); ctx.scale(1, -1); chaussure(s * 0.78); ctx.restore();
+        ctx.strokeStyle = "#F5F7FA"; ctx.lineWidth = s * 0.025; // le lacet
+        ctx.beginPath(); ctx.moveTo(...clou); ctx.lineTo(bx - sens * s * 0.04, by - s * 0.26); ctx.stroke();
+      }
+      ctx.fillStyle = "#9AA6B4"; ctx.beginPath(); ctx.arc(...clou, s * 0.04, 0, Math.PI * 2); ctx.fill();
     } else if (o.dessin === "maillot") {
-      // un maillot de basket à plat : débardeur jaune HandSlam, encolure et emmanchures bleues, numéro 23
+      // un maillot de basket à plat : débardeur rouge, encolure et emmanchures noires, numéro 23 blanc
+      // (un clin d'œil à Michael Jordan)
       const P = (a, b) => [x + s * a, y + s * b];
       ctx.beginPath();
       ctx.moveTo(...P(-0.28, -0.48)); ctx.lineTo(...P(-0.14, -0.48));
@@ -826,12 +856,12 @@ canvas { display: block; width: 100%; height: 100%; }
       ctx.lineTo(...P(0.4, 0.5)); ctx.lineTo(...P(-0.4, 0.5)); ctx.lineTo(...P(-0.42, -0.12));
       ctx.quadraticCurveTo(...P(-0.3, -0.16), ...P(-0.28, -0.48)); // l'emmanchure gauche
       ctx.closePath();
-      ctx.fillStyle = "#F4C542"; ctx.fill();
-      ctx.strokeStyle = "#0F2C52"; ctx.lineWidth = s * 0.06; ctx.stroke();
-      ctx.fillStyle = "#0F2C52"; // bandes sur les côtés
+      ctx.fillStyle = "#CE1141"; ctx.fill();
+      ctx.strokeStyle = "#111111"; ctx.lineWidth = s * 0.06; ctx.stroke();
+      ctx.fillStyle = "#111111"; // bandes sur les côtés
       ctx.fillRect(...P(-0.37, -0.08), s * 0.05, s * 0.56); ctx.fillRect(...P(0.32, -0.08), s * 0.05, s * 0.56);
       ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      ctx.font = `800 ${Math.round(s * 0.42)}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+      ctx.fillStyle = "#FFFFFF"; ctx.font = `800 ${Math.round(s * 0.42)}px "Barlow Condensed", "Arial Narrow", sans-serif`;
       ctx.fillText("23", x, y + s * 0.16);
     } else if (o.dessin === "drapeau") {
       // un drapeau de corner : mât blanc, tissu jaune qui flotte
@@ -902,17 +932,46 @@ canvas { display: block; width: 100%; height: 100%; }
       ctx.beginPath(); ctx.ellipse(x, y, s * 0.26, s * 0.4, 0, 0, Math.PI * 2);
       ctx.strokeStyle = "#3D2510"; ctx.lineWidth = s * 0.03; ctx.stroke();
     } else if (o.dessin === "galet") {
-      // un galet : gros caillou lisse et rond, gris-beige, avec un reflet
-      const g = ctx.createRadialGradient(x - s * 0.16, y - s * 0.14, s * 0.06, x, y, s * 0.58);
+      // un galet : caillou lisse, bien arrondi dessous mais plus plat dessus, un peu de travers, comme un vrai
+      const g = ctx.createRadialGradient(x - s * 0.16, y - s * 0.08, s * 0.06, x, y + s * 0.04, s * 0.6);
       g.addColorStop(0, "#DED9CC"); g.addColorStop(1, "#8F887A");
       ctx.fillStyle = g; ctx.strokeStyle = "#5E584C"; ctx.lineWidth = s * 0.035;
-      ctx.beginPath(); ctx.ellipse(x, y, s * 0.56, s * 0.48, -0.15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x - s * 0.6, y + s * 0.04);
+      ctx.bezierCurveTo(x - s * 0.58, y + s * 0.56, x + s * 0.52, y + s * 0.58, x + s * 0.6, y + s * 0.08); // dessous bien arrondi
+      ctx.bezierCurveTo(x + s * 0.62, y - s * 0.26, x + s * 0.26, y - s * 0.4, x - s * 0.06, y - s * 0.38); // dessus moins bombé
+      ctx.bezierCurveTo(x - s * 0.42, y - s * 0.36, x - s * 0.62, y - s * 0.22, x - s * 0.6, y + s * 0.04);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.fillStyle = "rgba(94, 88, 76, .5)";
       for (const [a, b] of [[0.2, 0.14], [-0.24, 0.2], [0.06, -0.1], [0.32, -0.06], [-0.08, 0.28]]) {
         ctx.beginPath(); ctx.arc(x + s * a, y + s * b, s * 0.03, 0, Math.PI * 2); ctx.fill();
       }
       ctx.fillStyle = "rgba(255, 255, 255, .45)";
-      ctx.beginPath(); ctx.ellipse(x - s * 0.2, y - s * 0.16, s * 0.16, s * 0.07, -0.3, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x - s * 0.2, y - s * 0.18, s * 0.17, s * 0.06, -0.12, 0, Math.PI * 2); ctx.fill();
+    } else if (o.dessin === "mouette") {
+      // une mouette qui plonge vers le joueur : ailes en M, bout des ailes noir, bec jaune grand ouvert vers le bas
+      const bat = Math.sin(performance.now() / 120) * s * 0.08; // les ailes battent
+      ctx.fillStyle = "#F5F7FA"; ctx.strokeStyle = "#6B7685"; ctx.lineWidth = s * 0.03;
+      for (const sens of [-1, 1]) {
+        ctx.beginPath(); ctx.moveTo(x + sens * s * 0.08, y - s * 0.06);
+        ctx.quadraticCurveTo(x + sens * s * 0.3, y - s * 0.42 - bat, x + sens * s * 0.62, y - s * 0.2 - bat);
+        ctx.quadraticCurveTo(x + sens * s * 0.36, y - s * 0.16, x + sens * s * 0.1, y + s * 0.1);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = "#2A2E36"; // le bout noir des ailes
+        ctx.beginPath(); ctx.moveTo(x + sens * s * 0.62, y - s * 0.2 - bat);
+        ctx.lineTo(x + sens * s * 0.46, y - s * 0.3 - bat * 0.8); ctx.lineTo(x + sens * s * 0.48, y - s * 0.18 - bat * 0.6); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "#F5F7FA";
+      }
+      ctx.beginPath(); ctx.ellipse(x, y, s * 0.13, s * 0.22, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); // le corps
+      ctx.beginPath(); ctx.arc(x, y + s * 0.2, s * 0.12, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); // la tête
+      ctx.fillStyle = "#111";
+      for (const sens of [-1, 1]) { ctx.beginPath(); ctx.arc(x + sens * s * 0.05, y + s * 0.18, s * 0.022, 0, Math.PI * 2); ctx.fill(); }
+      ctx.fillStyle = "#F4B400"; ctx.strokeStyle = "#B57F00"; ctx.lineWidth = s * 0.02;
+      for (const sens of [-1, 1]) { // le bec ouvert : deux pointes qui s'écartent vers le bas
+        ctx.beginPath(); ctx.moveTo(x + sens * s * 0.01, y + s * 0.27); ctx.lineTo(x + sens * s * 0.11, y + s * 0.27);
+        ctx.lineTo(x + sens * s * 0.24, y + s * 0.56); ctx.closePath(); ctx.fill(); ctx.stroke();
+      }
+      ctx.fillStyle = "#E8574A"; // la tache rouge du bec
+      ctx.beginPath(); ctx.arc(x + s * 0.15, y + s * 0.44, s * 0.03, 0, Math.PI * 2); ctx.fill();
     } else if (o.dessin === "palme") {
       // une feuille de palmier : une nervure courbe et ses longues folioles de chaque côté
       const pt = f => [x - s * 0.18 + f * s * 0.36 + Math.sin(f * Math.PI) * s * 0.12, y + s * 0.5 - f * s * 1.0];
@@ -1241,7 +1300,7 @@ canvas { display: block; width: 100%; height: 100%; }
       ctx.beginPath(); ctx.arc(0, 0, r * 1.08, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(245, 247, 250, .16)"; ctx.fill(); // fond clair : les objets sombres restent visibles
       ctx.lineWidth = 3.5; ctx.strokeStyle = COUL_ROLE[n.signe]; ctx.stroke();
-      objet(n.crabe ? CRABE : choix(th[n.signe], n.serie), 0, 0, r * 1.55);
+      objet(n.crabe ? CRABE : n.mouette ? MOUETTE : choix(th[n.signe], n.serie), 0, 0, r * 1.55);
     } else pastille(0, 0, n.signe, COUL_ROLE[n.signe], R, n.bond);
     ctx.restore();
     ctx.globalAlpha = 1;
