@@ -68,6 +68,7 @@ export const GESTES = {
   // Gagnés avec un trophée (profil.js), pas à la boutique.
   check: { nom: "Le check à l'adversaire", symbole: "pierre" },
   non_non: { nom: "Le doigt « non, non, non »", symbole: "index" },
+  brandir_coupe: { nom: "Brandir la coupe", symbole: "pierre" },   // (carrière : trophée « Professionnel »)
 };
 export const gesteValide = g => (GESTES[g] ? g : "poing");
 
@@ -83,5 +84,6 @@ export const CELEBRATIONS = {
 export const celebrationValide = c => (CELEBRATIONS[c] ? c : "confettis");
 
 // Les cadres de la carte de joueur : la couleur du liseré.
-export const CADRES = { aucun: { nom: "Selon le rang" }, bronze: { nom: "Bronze", couleur: "#C27A3A" }, argent: { nom: "Argent", couleur: "#D3D9E2" }, neon: { nom: "Néon", couleur: "#FF3EA5" }, or: { nom: "Or", couleur: "#FFD34D" } };
+export const CADRES = { aucun: { nom: "Selon le rang" }, bronze: { nom: "Bronze", couleur: "#C27A3A" }, argent: { nom: "Argent", couleur: "#D3D9E2" }, neon: { nom: "Néon", couleur: "#FF3EA5" }, or: { nom: "Or", couleur: "#FFD34D" },
+  elite: { nom: "Élite (or et noir)", couleur: "#E9C046", interieur: "#14121F" } };   // (carrière : trophée « Élite »)
 export const cadreValide = c => (CADRES[c] ? c : "aucun");

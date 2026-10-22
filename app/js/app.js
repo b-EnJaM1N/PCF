@@ -19,7 +19,7 @@ import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
-import { CIRCUITS, JOURNEES, QUALIFIES, NOMS_TOURS, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine, TOURS_COUPE, texteCoupe, coupesML } from "./carriere-logique.js";
+import { CIRCUITS, JOURNEES, QUALIFIES, NOMS_TOURS, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
@@ -536,8 +536,8 @@ function finir() {
   // Le premier gant : offert après le premier match (avant, la main nue).
   const premierGant = matchsAvant === 0 && P.matchs > 0 && P.av.gant === "nu" && !P.premierGant;
   if (premierGant) { P.av.gant = "blanc"; P.premierGant = true; }
-  // Champion de l'Élite : le trophée, qui débloque le gant de l'Élite.
-  if (enCarriere && C.phase === "fin" && phaseAvant !== "fin" && C.bilan.titre === "champion") nouveaux.push(...accorderTitres(P, ["champion_elite"]));
+  // Les trophées de la carrière (montées, coupe, bouclier, Élite) : ils débloquent des objets et des surnoms.
+  if (enCarriere) nouveaux.push(...accorderTitres(P, titresCarriere(C)));
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("coach").hidden = true;
   if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
@@ -797,7 +797,7 @@ function renderCarte() {
   carteT = setTimeout(async () => {
     const jeton = ++carteJeton;
     const c = carteDe(P, { niveauOfficiel: monClassement, provisoire: monClassement !== null && provisoire(mesDuelsOfficiels), surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
-    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(P.av), cadre: CADRES[P.cadre]?.couleur });
+    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(P.av), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur });
     if (jeton !== carteJeton) return;
     $("carteRarete").textContent = texteRang(c.rang);
     $("carteNotes").innerHTML = notesDe(P).map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
@@ -820,7 +820,7 @@ async function voirCarteDe(uid) {
   const c = carteDe(J, { niveauOfficiel: cl ? cl.points : null, provisoire: !!cl && provisoire(cl.joues), surnom: surnomDe(J).texte, titre: J.matchs ? dernierTitre(J) : "" });
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
   $("une").classList.add("show");
-  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG(J.av), cadre: CADRES[J.cadre]?.couleur });
+  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG(J.av), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur });
   await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
     fichier: "carte-de-joueur.png", alt: `Carte de joueur de ${nom} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
   return null;

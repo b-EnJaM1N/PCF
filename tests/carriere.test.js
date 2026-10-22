@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   CIRCUITS, TAILLE, JOURNEES, compositionDeDepart, calendrier, nouvelleCarriere, prochainMatch, enregistrerMonMatch,
-  classement, saisonSuivante, texteBilan, circuitDuJoueur, chances, simulerCircuit, vitrine, TOURS_COUPE, texteCoupe, coupesML, coupeEnCours,
+  classement, saisonSuivante, texteBilan, circuitDuJoueur, chances, simulerCircuit, vitrine, TOURS_COUPE, texteCoupe, coupesML, coupeEnCours, titresCarriere,
 } from "../app/js/carriere-logique.js";
 import { botParId, TOUS_LES_BOTS, choisirCoup } from "../app/js/bots.js";
 import { hasardGraine } from "../app/js/match-du-jour.js";
@@ -198,4 +198,17 @@ test("éliminé de la coupe : elle va au bout sans moi, au rythme des journées"
   for (let j = 4; j < JOURNEES; j++) gagner(C, true);
   assert.ok(C.coupe.vainqueur && C.coupe.vainqueur !== "moi");
   assert.equal(C.coupe.tours.length, TOURS_COUPE.length);
+});
+
+test("les trophées de la carrière : une montée, le bouclier, la coupe, puis l'Élite", () => {
+  const C = nouvelleCarriere(hasardGraine(12));
+  assert.deepEqual(titresCarriere(C), []);
+  for (let j = 0; j < JOURNEES; j++) gagner(C, true);
+  assert.deepEqual(titresCarriere(C), ["leader"]);
+  for (let i = 0; i < 3; i++) gagner(C, true);
+  assert.deepEqual(titresCarriere(C), ["promu", "leader"]);   // promu dès les playoffs gagnés
+  saisonSuivante(C, rng);
+  for (let s = 0; s < 3; s++) { for (let j = 0; j < JOURNEES; j++) gagner(C, true); for (let i = 0; i < 3; i++) gagner(C, true); saisonSuivante(C, rng); }
+  assert.equal(C.ou, 4);
+  assert.deepEqual(titresCarriere(C), ["promu", "national", "professionnel", "elite", "leader"]);
 });

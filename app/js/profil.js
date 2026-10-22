@@ -17,6 +17,7 @@ export const FAMILLES = [
   { id: "tournois", nom: "Tournois", icone: "🏆" },
   { id: "cercles", nom: "Cercles", icone: "👥" },
   { id: "duels", nom: "Duels", icone: "⚔️" },
+  { id: "carriere", nom: "Carrière", icone: "🏅" },
 ];
 export const TITRES = [
   { id: "gentleman", famille: "fairplay", nom: "Gentleman", desc: "Serrer la main franchement ou normalement 10 fois.", debloque: "le geste du check à l'adversaire", objet: ["geste", "check"] },
@@ -50,7 +51,6 @@ export const TITRES = [
   { id: "finaliste", famille: "tournois", nom: "Finaliste", desc: "Jouer la finale d'un tournoi en ligne." },
   { id: "roi_sng", famille: "tournois", nom: "Roi du Sit & Go", desc: "Remporter un Sit & Go." },
   { id: "champion_dimanche", famille: "tournois", nom: "Champion du dimanche", desc: "Remporter le Grand Chelem du dimanche soir." },
-  { id: "champion_elite", famille: "tournois", nom: "Champion de l'Élite", desc: "Remporter les playoffs du Circuit Élite en carrière.", debloque: "le gant de l'Élite", objet: ["gant", "elite"] },
   { id: "organisateur", famille: "tournois", nom: "Organisateur", desc: "Organiser un tournoi de cercle joué jusqu'au bout." },
 
   { id: "fondateur", famille: "cercles", nom: "Fondateur", desc: "Créer un cercle." },
@@ -61,6 +61,14 @@ export const TITRES = [
 
   { id: "imprevisible", famille: "duels", nom: "Imprévisible", desc: "Gagner un match en étant prévisible moins de 30 % du temps.", debloque: "le gant or", objet: ["gant", "or"] },
   { id: "tueur_geant", famille: "duels", nom: "Tueur de géant", desc: "Gagner un duel officiel contre un joueur qui a 200 points de niveau de plus que toi.", debloque: "le fond rubis", objet: ["fond", "rubis"] },
+  // La carrière contre les bots (carriere-logique.js, titresCarriere) : des récompenses à montrer, jamais de jetons.
+  { id: "promu", famille: "carriere", nom: "Promu", desc: "Monter pour la première fois en Circuit Régional.", debloque: "le poignet bronze", objet: ["poignet", "bronze"] },
+  { id: "national", famille: "carriere", nom: "Joueur national", desc: "Monter en Circuit National.", debloque: "le fond tribunes", objet: ["fond", "tribunes"] },
+  { id: "professionnel", famille: "carriere", nom: "Professionnel", desc: "Monter en Circuit Pro.", debloque: "le geste « brandir la coupe »", objet: ["geste", "brandir_coupe"] },
+  { id: "elite", famille: "carriere", nom: "Élite", desc: "Monter en Circuit Élite.", debloque: "le cadre Élite", objet: ["cadre", "elite"] },
+  { id: "vainqueur_coupe", famille: "carriere", nom: "Vainqueur de la Coupe", desc: "Remporter la Coupe Monique-Latour.", debloque: "le motif de gant lauriers", objet: ["gantMotif", "lauriers"] },
+  { id: "leader", famille: "carriere", nom: "Leader", desc: "Finir 1er d'une saison régulière en carrière." },
+  { id: "champion_elite", famille: "carriere", nom: "Champion de l'Élite", desc: "Remporter les playoffs du Circuit Élite en carrière.", debloque: "le gant de l'Élite", objet: ["gant", "elite"] },
   { id: "revanche", famille: "duels", nom: "Revanche", desc: "Battre un joueur juste après avoir perdu contre lui." },
 ];
 export const titreParId = id => TITRES.find(t => t.id === id) || null;

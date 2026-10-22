@@ -5,9 +5,9 @@ import { compterPoignee } from "../app/js/poignee.js";
 import { nouvellesStats, suivreCoup } from "../app/js/stats-match.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX } from "../app/js/regles.js";
 import { FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, SYMBOLES, avatarSVG } from "../app/js/avatar.js";
-import { GESTES } from "../app/js/catalogue.js";
+import { GESTES, CADRES } from "../app/js/catalogue.js";
 
-const TABLES = { fond: FONDS, gant: GANTS, poignet: POIGNETS, motif: MOTIFS, gantMotif: MOTIFS_GANT, symbole: SYMBOLES, geste: GESTES };
+const TABLES = { fond: FONDS, gant: GANTS, poignet: POIGNETS, motif: MOTIFS, gantMotif: MOTIFS_GANT, symbole: SYMBOLES, geste: GESTES, cadre: CADRES };
 
 // Un match joué : "a" = point pour moi, "b" = pour l'adversaire.
 // Un seul point : match en 1 set de 1 point (sinon, 1 set de 11 points).
@@ -18,9 +18,9 @@ function match(suite) {
 }
 const fin = (P, suite, extra = {}) => enregistrerMatch(P, { ...match(suite), devines: 0, lisibles: 0, adversaire: { id: "rocky", elo: 850, nom: "Rocky" }, date: 1, ...extra }).map(t => t.id);
 
-test("37 trophées en 7 familles, chaque élément à débloquer existe dans l'avatar", () => {
-  assert.equal(TITRES.length, 37);
-  assert.equal(new Set(TITRES.map(t => t.id)).size, 37);
+test("43 trophées en 8 familles, chaque élément à débloquer existe dans l'avatar", () => {
+  assert.equal(TITRES.length, 43);
+  assert.equal(new Set(TITRES.map(t => t.id)).size, 43);
   for (const t of TITRES) assert.ok(FAMILLES.some(f => f.id === t.famille), t.id);
   for (const t of TITRES.filter(x => x.objet)) assert.ok(TABLES[t.objet[0]]?.[t.objet[1]], `${t.id} : ${t.objet}`);
   // chaque famille a au moins un trophée qui débloque quelque chose

@@ -336,3 +336,14 @@ export function coupesML(C) {
   if (C.coupe?.vainqueur === "moi") l.push(C.saison);
   return l;
 }
+
+// Les trophées de la carrière (profil.js, famille « carriere ») déjà mérités : chaque montée, la coupe, le bouclier, le titre de l'Élite.
+export function titresCarriere(C) {
+  if (!C) return [];
+  const atteint = Math.max(C.ou + (C.phase === "fin" ? Math.max(0, C.bilan?.mouvement || 0) : 0), ...C.palmares.map(p => p.circuit + Math.max(0, p.mouvement || 0)));
+  const v = vitrine(C), ids = ["promu", "national", "professionnel", "elite"].filter((_, i) => atteint > i);
+  if (coupesML(C).length) ids.push("vainqueur_coupe");
+  if (v.some(x => x.boucliers.length)) ids.push("leader");
+  if (v[CIRCUITS.length - 1].coupes.length) ids.push("champion_elite");
+  return ids;
+}
