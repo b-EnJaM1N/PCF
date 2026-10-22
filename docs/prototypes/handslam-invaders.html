@@ -225,7 +225,7 @@ canvas { display: block; width: 100%; height: 100%; }
   ];
   // Forêt : le lucane (ses pinces) est toujours les ciseaux ; toutes les 3 vagues, gland et trèfle,
   // ou pomme et feuille d'érable ; les deux séries mélangées aux vagues 13 à 15.
-  const LUCANE = { dessin: "lucane", nom: "Lucane", taille: 1.15 };
+  const LUCANE = { dessin: "lucane", nom: "Lucane", taille: 1.15 }, CORBEAU = { dessin: "corbeau", nom: "Corbeau", taille: 1.4 };
   const GLAND = { dessin: "gland", nom: "Gland", taille: 1.15 }, POMME = { e: "🍎", nom: "Pomme", taille: 1.1 };
   const TREFLE = { e: "☘️", nom: "Trèfle", taille: 1.1 }, ERABLE = { e: "🍁", nom: "Feuille d'érable", taille: 1.1 };
   const FORET = [
@@ -395,10 +395,13 @@ canvas { display: block; width: 100%; height: 100%; }
     // avec les palmiers, des crabes qui avancent en biais et rebondissent sur les bords
     if (m.crabes && signe === "ciseaux" && Math.random() < 0.5) {
       if (choix(th.ciseaux, serie) === LUNETTES)
-        return J.ennemis.push({ x, x0: x, y, v: v * 0.9, signe, mouette: true, zigzag: true, phase: Math.random() * 6, bond: 0, t });
+        return J.ennemis.push({ x, x0: x, y, v: v * 0.9, signe, mouette: true, zigzag: true, phase: Math.random() * 6, bond: 0, t: (th?.petit ? 0.72 : 1) * MOUETTE.taille });
       const vx = (Math.random() < 0.5 ? -1 : 1) * (45 + 45 * niveau());
       return J.ennemis.push({ x, x0: x, y, v: v * 0.85, signe, crabe: true, vx, phase: 0, bond: 0, t: (th?.petit ? 0.72 : 1) });
     }
+    // dans la Forêt, la moitié des ciseaux sont des corbeaux qui planent de gauche à droite, bec ouvert
+    if (m.vent && signe === "ciseaux" && Math.random() < 0.5)
+      return J.ennemis.push({ x, x0: x, y, v: v * 0.9, signe, corbeau: true, zigzag: true, phase: Math.random() * 6, bond: 0, t: (th?.petit ? 0.72 : 1) * CORBEAU.taille });
     // dans la Forêt, les feuilles tombent en se balançant au vent
     if (m.vent && signe === "feuille") {
       const x0 = Math.min(W - R - W * 0.13, Math.max(R + W * 0.13, x));
@@ -947,31 +950,36 @@ canvas { display: block; width: 100%; height: 100%; }
       }
       ctx.fillStyle = "rgba(255, 255, 255, .45)";
       ctx.beginPath(); ctx.ellipse(x - s * 0.2, y - s * 0.18, s * 0.17, s * 0.06, -0.12, 0, Math.PI * 2); ctx.fill();
-    } else if (o.dessin === "mouette") {
-      // une mouette qui plonge vers le joueur : ailes en M, bout des ailes noir, bec jaune grand ouvert vers le bas
+    } else if (o.dessin === "mouette" || o.dessin === "corbeau") {
+      // un oiseau qui plonge vers le joueur : ailes en M qui battent, long bec grand ouvert vers le bas
+      // la mouette : blanche, bout des ailes noir, bec jaune taché de rouge ; le corbeau : tout noir, bec gris
+      const c = o.dessin === "mouette"
+        ? { plume: "#F5F7FA", trait: "#6B7685", bout: "#2A2E36", oeil: "#111", bec: "#F4B400", becTrait: "#B57F00", tache: "#E8574A" }
+        : { plume: "#1C1F2A", trait: "#8A94A6", bout: "#07080C", oeil: "#F5F7FA", bec: "#7A808C", becTrait: "#D5DCE6", tache: null };
       const bat = Math.sin(performance.now() / 120) * s * 0.08; // les ailes battent
-      ctx.fillStyle = "#F5F7FA"; ctx.strokeStyle = "#6B7685"; ctx.lineWidth = s * 0.03;
+      ctx.fillStyle = c.plume; ctx.strokeStyle = c.trait; ctx.lineWidth = s * 0.03;
       for (const sens of [-1, 1]) {
         ctx.beginPath(); ctx.moveTo(x + sens * s * 0.08, y - s * 0.06);
         ctx.quadraticCurveTo(x + sens * s * 0.3, y - s * 0.42 - bat, x + sens * s * 0.62, y - s * 0.2 - bat);
         ctx.quadraticCurveTo(x + sens * s * 0.36, y - s * 0.16, x + sens * s * 0.1, y + s * 0.1);
         ctx.closePath(); ctx.fill(); ctx.stroke();
-        ctx.fillStyle = "#2A2E36"; // le bout noir des ailes
+        ctx.fillStyle = c.bout; // le bout des ailes
         ctx.beginPath(); ctx.moveTo(x + sens * s * 0.62, y - s * 0.2 - bat);
         ctx.lineTo(x + sens * s * 0.46, y - s * 0.3 - bat * 0.8); ctx.lineTo(x + sens * s * 0.48, y - s * 0.18 - bat * 0.6); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = "#F5F7FA";
+        ctx.fillStyle = c.plume;
       }
       ctx.beginPath(); ctx.ellipse(x, y, s * 0.13, s * 0.22, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); // le corps
       ctx.beginPath(); ctx.arc(x, y + s * 0.2, s * 0.12, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); // la tête
-      ctx.fillStyle = "#111";
+      ctx.fillStyle = c.oeil;
       for (const sens of [-1, 1]) { ctx.beginPath(); ctx.arc(x + sens * s * 0.05, y + s * 0.18, s * 0.022, 0, Math.PI * 2); ctx.fill(); }
-      ctx.fillStyle = "#F4B400"; ctx.strokeStyle = "#B57F00"; ctx.lineWidth = s * 0.02;
-      for (const sens of [-1, 1]) { // le bec ouvert : deux pointes qui s'écartent vers le bas
+      ctx.fillStyle = c.bec; ctx.strokeStyle = c.becTrait; ctx.lineWidth = s * 0.02;
+      for (const sens of [-1, 1]) { // le bec ouvert : deux longues pointes qui s'écartent vers le bas
         ctx.beginPath(); ctx.moveTo(x + sens * s * 0.01, y + s * 0.27); ctx.lineTo(x + sens * s * 0.11, y + s * 0.27);
-        ctx.lineTo(x + sens * s * 0.24, y + s * 0.56); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.lineTo(x + sens * s * 0.3, y + s * 0.76); ctx.closePath(); ctx.fill(); ctx.stroke();
       }
-      ctx.fillStyle = "#E8574A"; // la tache rouge du bec
-      ctx.beginPath(); ctx.arc(x + s * 0.15, y + s * 0.44, s * 0.03, 0, Math.PI * 2); ctx.fill();
+      if (c.tache) { // la tache rouge du bec de la mouette
+        ctx.fillStyle = c.tache; ctx.beginPath(); ctx.arc(x + s * 0.19, y + s * 0.56, s * 0.03, 0, Math.PI * 2); ctx.fill();
+      }
     } else if (o.dessin === "palme") {
       // une feuille de palmier : une nervure courbe et ses longues folioles de chaque côté
       const pt = f => [x - s * 0.18 + f * s * 0.36 + Math.sin(f * Math.PI) * s * 0.12, y + s * 0.5 - f * s * 1.0];
@@ -1300,7 +1308,7 @@ canvas { display: block; width: 100%; height: 100%; }
       ctx.beginPath(); ctx.arc(0, 0, r * 1.08, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(245, 247, 250, .16)"; ctx.fill(); // fond clair : les objets sombres restent visibles
       ctx.lineWidth = 3.5; ctx.strokeStyle = COUL_ROLE[n.signe]; ctx.stroke();
-      objet(n.crabe ? CRABE : n.mouette ? MOUETTE : choix(th[n.signe], n.serie), 0, 0, r * 1.55);
+      objet(n.crabe ? CRABE : n.mouette ? MOUETTE : n.corbeau ? CORBEAU : choix(th[n.signe], n.serie), 0, 0, r * 1.55);
     } else pastille(0, 0, n.signe, COUL_ROLE[n.signe], R, n.bond);
     ctx.restore();
     ctx.globalAlpha = 1;
