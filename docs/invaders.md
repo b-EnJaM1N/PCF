@@ -66,7 +66,14 @@ Le porteur du projet trouvait 2 mondes légers pour le lancement : on passe à 4
   **Spécialité** : un ennemi sur trois se téléporte un peu plus loin ; il clignote juste avant, et jamais près du gant.
 - **Difficulté** : la vague 1 de la Forêt est au niveau de la vague 7 du Gymnase, celle de l'Espace au niveau de la vague 9 ; les boss sont un peu plus forts à chaque monde. Un record par monde.
 
-## Idées pour l'étoffer (18 octobre, rien de décidé)
+## Jouer contre un ami (réflexion du 22 octobre, rien de décidé)
+Du plus simple au plus ambitieux :
+1. **Le défi par lien** (conseillé pour commencer ; sans serveur ni compte) : à la fin d'une partie, un bouton « Défier un ami » envoie un lien (SMS, WhatsApp) qui contient la partie exacte (mêmes signes, mêmes objets, mêmes boss, dans le même ordre) et le score à battre. L'ami joue la même partie ; à la fin, l'écran compare : « Tu bats Benji : 2 340 contre 1 980 ! ». Il peut renvoyer le défi. À faire : un hasard « rejouable » (tiré d'un numéro de partie) à la place du hasard actuel. Le **défi du jour** (même partie pour tout le monde chaque jour) en découle presque gratuitement.
+2. **Le duel sur un seul téléphone** : chacun son tour sur la même partie, on se passe le téléphone, puis le comparatif. Très simple une fois le point 1 fait.
+3. **Le duel en direct, en ligne** : les deux joueurs jouent en même temps la même partie, le score de l'autre s'affiche en haut ; chaque série ×5 envoie un ennemi en plus chez l'adversaire (comme dans Tetris à deux). Le plus excitant, mais il faut un serveur (celui de HandSlam pourrait servir, à décider) et des comptes ; plusieurs jours de travail.
+4. **Le classement entre amis** : les meilleurs scores de ses amis, monde par monde ; demande aussi des comptes et un serveur.
+
+
 - **Difficulté** : vitesse ; taille des cibles (plus petites = viser plus juste) ; ennemis qui bougent : zigzag, téléporteur, caméléon (change de signe en tombant), costaud (2 ou 3 bons tirs), diviseur (se coupe en deux petits), masqué ❓ (signe révélé au dernier moment) ; vagues avec un boss à la fin (main géante qui change de signe et lance des rafales).
 - **Mondes** (décor, musique, ennemi spécial) : Gymnase (décor HandSlam), Plage (crabes ✌️ en biais), Montagne (avalanches de ✊), Forêt (feuilles ✋ au vent), Espace. Le monde suivant se débloque avec un score ou en battant le boss.
 - **Pièces et boutique** : des pièces à chaque partie ; acheter son gant ou sa main (gant de boxe, de chantier, main robot, squelette, dorée, couleurs de peau), des effets de tir (feu, étoiles, éclairs), des explosions (confettis, pixels). Règle : de l'apparence seulement, jamais d'avantage pour gagner.
