@@ -291,14 +291,14 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .bp .mini { width: 24px; height: 24px; }
 /* La carrière : l'en-tête, le classement de la saison, le palmarès */
 .car-entete { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.1rem; margin: 0 0 6px; }
-.car-classement { width: 100%; border-collapse: collapse; font-size: .85rem; margin: 6px 0 4px; }
+.car-classement { width: 100%; border-collapse: collapse; font-size: .95rem; font-weight: 700; margin: 6px 0 4px; }   /* en gras : le classement saute aux yeux */
 .car-classement th { color: var(--muted); font-weight: 600; text-align: right; padding: 4px 3px; }
 .car-classement td { text-align: right; padding: 4px 3px; border-top: 1px solid rgba(255, 255, 255, .08); }
 .car-classement th:nth-child(2), .car-classement td:nth-child(2) { text-align: left; }
 .car-classement td:nth-child(2) { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .car-classement td:nth-child(2) span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 9.5em; }
 .car-classement .mini { width: 22px; height: 22px; flex: none; }
-.car-classement tr.moi td { font-weight: 700; color: var(--me); }
+.car-classement tr.moi td { font-weight: 800; color: var(--me); }
 .car-classement tr.zone-po td:first-child { box-shadow: inset 3px 0 0 #3fbf74; }
 .car-classement tr.zone-bas td:first-child { box-shadow: inset 3px 0 0 #e0524b; }
 .car-legende { font-size: .78rem; color: var(--muted); margin: 0 0 10px; }
