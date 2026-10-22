@@ -8,6 +8,13 @@
 -- seulement entre amis (amitié acceptée). Mêmes garde-fous que l'enjeu (étape 34) : 60 caractères au plus, sans argent,
 -- sans lien, sans gros mots (mêmes règles que app/js/messages-rapides.js). Il voyage avec le préfixe « libre: ».
 -- L'adversaire peut toujours masquer les messages (option de l'appli) et signaler un joueur.
+-- Et le temps d'écrire (même jour) : ouvrir la fenêtre des messages prévient l'adversaire (« … t'écrit un message ») ;
+-- avant le match, ça repousse le départ automatique de 40 secondes (3 fois au plus par duel, et seulement tant qu'on
+-- n'a pas encore envoyé son message). Le match ne commence de toute façon que quand les deux sont prêts.
+
+alter table public.duels add column if not exists ecrit0 timestamptz;
+alter table public.duels add column if not exists ecrit1 timestamptz;
+alter table public.duels add column if not exists rallonges smallint not null default 0;
 
 -- Le message écrit, rangé (espaces en trop retirés), ou une erreur claire.
 create or replace function public._message_libre_propre(p_texte text) returns text
@@ -58,6 +65,27 @@ begin
   return d;
 end $$;
 
+-- « J'écris un message » : l'adversaire le voit ; avant le match, un peu plus de temps avant le départ automatique.
+create or replace function public.j_ecris(p_id uuid) returns public.duels
+language plpgsql security definer set search_path = public as $$
+declare d public.duels; moi smallint;
+begin
+  select * into d from duels where id = p_id for update;
+  if d.id is null then raise exception 'Duel introuvable'; end if;
+  moi := _ma_place(d);
+  if d.phase = 'presentation' then
+    if (case when moi = 0 then d.message_avant0 else d.message_avant1 end) is null and d.rallonges < 3 then
+      update duels set echeance = greatest(echeance, now() + interval '40 seconds'), rallonges = rallonges + 1 where id = p_id;
+    end if;
+  elsif d.phase <> 'termine' then raise exception 'Les messages s''envoient avant ou après le match';
+  end if;
+  if moi = 0 then update duels set ecrit0 = now(), maj_le = now() where id = p_id returning * into d;
+  else update duels set ecrit1 = now(), maj_le = now() where id = p_id returning * into d; end if;
+  return d;
+end $$;
+
 revoke all on function public._message_libre_propre(text) from public, anon, authenticated;
+revoke all on function public.j_ecris(uuid) from public, anon;
+grant execute on function public.j_ecris(uuid) to authenticated;
 revoke all on function public.envoyer_message(uuid, text) from public, anon;
 grant execute on function public.envoyer_message(uuid, text) to authenticated;
