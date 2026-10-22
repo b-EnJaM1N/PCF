@@ -249,3 +249,16 @@ test("une saison d'Amateur commencée en 11 journées repart en poules", () => {
   assert.equal(C.saison, 1); assert.equal(C.journees.length, 5); assert.equal(C.journee, 0);
   assert.equal(migrerCarriere(C), false);
 });
+
+test("les commentaires d'avant et d'après match collent à la situation", () => {
+  const C = nouvelleCarriere(hasardGraine(16));
+  assert.equal(prochainMatch(C).voix, null);                          // une journée de championnat : pas de « premier tour »
+  gagner(C, true);
+  const mc = prochainMatch(C);
+  assert.ok(mc.coupe); assert.equal(mc.voix, "premiers");            // le 1er tour de coupe
+  enregistrerMonMatch(C, true, [[7, 3]], rng);
+  gagner(C, true);
+  assert.equal(prochainMatch(C).coupe && prochainMatch(C).voix, null);   // 16es : ni premier tour, ni quart
+  const M = nouvelleCarriere(hasardGraine(17)); M.phase = "maintien"; M.tableau = { type: "maintien", tour: 0, tours: [[{ a: "moi", b: "rocky", v: null, score: "" }]] }; M.coupe = null;
+  assert.equal(prochainMatch(M).voix, null);                          // le maintien : pas les répliques d'une demi-finale de tournoi
+});
