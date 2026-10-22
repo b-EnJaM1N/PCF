@@ -134,8 +134,8 @@
     </section>
 
     <section class="board">
-      <div class="side me"><div class="name"><span class="mini" id="miniAv"></span><span id="pseudoMe">Toi</span></div><div class="score" id="sMe">0</div><div class="sets" id="setsMe"></div></div>
-      <div class="side bot"><div class="name"><span class="mini" id="miniBot"></span><span id="botName">Le bot</span></div><div class="score" id="sBot">0</div><div class="sets" id="setsBot"></div></div>
+      <div class="side me"><div class="bulle-side" id="bulleSideMe" hidden></div><div class="name"><span class="mini" id="miniAv"></span><span id="pseudoMe">Toi</span></div><div class="score" id="sMe">0</div><div class="sets" id="setsMe"></div></div>
+      <div class="side bot"><div class="bulle-side adv" id="bulleSideAdv" hidden></div><div class="name"><span class="mini" id="miniBot"></span><span id="botName">Le bot</span></div><div class="score" id="sBot">0</div><div class="sets" id="setsBot"></div></div>
       <div class="status" id="status">Choisis ton premier coup</div>
       <div class="done-sets" id="doneSets"></div>
     </section>
@@ -170,6 +170,7 @@
       <p class="news" id="endClassement" hidden></p>
       <div class="msg-fin" id="finMsg" hidden>
         <p class="bulle-msg adv" id="finBulleAdv" hidden></p>
+        <p class="msg-ecrit" id="finEcrit" hidden></p>
         <p class="bulle-msg" id="finBulleMoi" hidden></p>
         <div class="msg-zone" id="finMsgZone"><div class="msg-puces" id="finMsgPuces"></div></div>
       </div>
@@ -731,6 +732,7 @@
     <div class="fo-rows" id="foRows"></div>
     <details class="fo-dossier" id="foDossier" open hidden><summary>📁 Son dossier</summary><div id="foDossierCorps"></div></details>
     <p class="fo-key" id="foKey"></p>
+    <p class="msg-ecrit" id="foEcrit" hidden></p>
     <div class="msg-zone" id="foMsg" hidden><div class="msg-puces" id="foMsgPuces"></div></div>
     <div class="fo-end">
       <p class="fo-attente" id="foAttente" role="status" hidden></p>
