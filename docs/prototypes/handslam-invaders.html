@@ -217,7 +217,7 @@ canvas { display: block; width: 100%; height: 100%; }
   // Gymnase : vagues 1 à 3 avec les mains (pour apprendre), puis basket et foot qui alternent toutes les 3 vagues,
   // et les deux mélangés aux vagues 13 à 15. Le tennis et le baseball, qu'on ne reconnaissait pas, ont été retirés.
   const BASKET = { nom: "Basket et athlé", pierre: { e: "🏀", nom: "Ballon de basket", taille: 1.1 }, feuille: { dessin: "maillot", nom: "Maillot", taille: 1.1 }, ciseaux: { dessin: "javelots", nom: "Javelots" } };
-  const FOOT = { nom: "Foot et hockey", pierre: { e: "⚽", nom: "Ballon de foot", taille: 1.1 }, feuille: { dessin: "drapeau", nom: "Drapeau de corner" }, ciseaux: { croix: "🏒", retourne: true, nom: "Crosses" } };
+  const FOOT = { nom: "Foot", pierre: { e: "⚽", nom: "Ballon de foot", taille: 1.1 }, feuille: { dessin: "drapeau", nom: "Drapeau de corner" }, ciseaux: { dessin: "crampons", nom: "Crampons", taille: 1.15 } };
   const GYMNASE = [
     BASKET, FOOT, { ...BASKET, nom: "Retour au basket" },
     // vagues 13 à 15 : les deux séries mélangées
@@ -822,6 +822,28 @@ canvas { display: block; width: 100%; height: 100%; }
         ctx.lineWidth = s * 0.11; ctx.strokeStyle = "#3B2A1A";
         ctx.beginPath(); ctx.moveTo(...pt(0.4)); ctx.lineTo(...pt(0.52)); ctx.stroke();
       }
+    } else if (o.dessin === "crampons") {
+      // une paire de chaussures à crampons pendues par les lacets à un clou : lacets en V,
+      // chaussures pointe en bas, semelles vers l'extérieur (le côté ouvert vers le joueur)
+      const chaussure = k => { // de profil, pointe vers la droite, semelle en bas (centrée sur 0,0)
+        ctx.fillStyle = "#111"; ctx.beginPath();
+        ctx.moveTo(-k * 0.36, -k * 0.2); ctx.lineTo(-k * 0.12, -k * 0.2);
+        ctx.quadraticCurveTo(-k * 0.02, -k * 0.02, k * 0.22, -k * 0.04); // le coup de pied
+        ctx.quadraticCurveTo(k * 0.42, -k * 0.02, k * 0.4, k * 0.08);   // le bout
+        ctx.lineTo(-k * 0.38, k * 0.08); ctx.quadraticCurveTo(-k * 0.42, -k * 0.06, -k * 0.36, -k * 0.2); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = "#F4C542"; ctx.lineWidth = k * 0.045; // la virgule jaune
+        ctx.beginPath(); ctx.moveTo(-k * 0.28, 0); ctx.quadraticCurveTo(-k * 0.02, k * 0.06, k * 0.22, -k * 0.02); ctx.stroke();
+        ctx.fillStyle = "#F5F7FA"; ctx.fillRect(-k * 0.4, k * 0.08, k * 0.8, k * 0.05); // semelle
+        for (const dx of [-0.32, -0.2, 0.08, 0.2, 0.32]) ctx.fillRect(k * dx - k * 0.025, k * 0.13, k * 0.05, k * 0.07); // crampons
+      };
+      const clou = [x, y - s * 0.46];
+      for (const sens of [-1, 1]) {
+        const bx = x + sens * s * 0.24, by = y + s * 0.06;
+        ctx.save(); ctx.translate(bx, by); ctx.rotate(sens * (Math.PI / 2 - 0.22)); ctx.scale(1, -1); chaussure(s * 0.78); ctx.restore();
+        ctx.strokeStyle = "#F5F7FA"; ctx.lineWidth = s * 0.025; // le lacet
+        ctx.beginPath(); ctx.moveTo(...clou); ctx.lineTo(bx - sens * s * 0.04, by - s * 0.26); ctx.stroke();
+      }
+      ctx.fillStyle = "#9AA6B4"; ctx.beginPath(); ctx.arc(...clou, s * 0.04, 0, Math.PI * 2); ctx.fill();
     } else if (o.dessin === "maillot") {
       // un maillot de basket à plat : débardeur rouge, encolure et emmanchures noires, numéro 23 blanc
       // (un clin d'œil à Michael Jordan)
