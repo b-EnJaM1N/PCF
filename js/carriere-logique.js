@@ -7,12 +7,27 @@
 // - la Coupe Monique-Latour (décision du 22 octobre) : 64 joueurs toutes divisions confondues (toi et 63 bots), tirage au sort
 //   intégral à chaque tour, sans avantage pour le petit poucet ; un tour toutes les deux journées, la finale avant les playoffs.
 // Les matchs entre bots sont simulés selon leur niveau. Ici, seulement les règles (testées automatiquement) ; l'écran est dans app.js.
-import { TOUS_LES_BOTS, botParId } from "./bots.js";
+import { TOUS_LES_BOTS, botParId, choisirCoup } from "./bots.js";
+import { contre } from "./regles.js";
 
 export const CIRCUITS = ["Circuit Amateur", "Circuit Régional", "Circuit National", "Circuit Pro", "Circuit Élite"];
 export const TAILLE = 12, QUALIFIES = 8;
 export const JOURNEES = TAILLE - 1;
 export const FORMAT_SAISON = { pointsParSet: 11, setsGagnants: 1 };
+// En Amateur, la saison se joue en un set de 7 (décision du 22 octobre : contre les bots faibles, un set de 11 traînait).
+export const formatSaison = k => (k === 0 ? { pointsParSet: 7, setsGagnants: 1 } : FORMAT_SAISON);
+
+// Le renfort des bots faibles, en carrière seulement (décision du 22 octobre : « rehausser un poil » les plus faibles).
+// De temps en temps, ils repèrent ton signe préféré sur tes 6 derniers coups et jouent ce qui le bat :
+// 25 % des coups sous le niveau 1 000, 12 % sous 1 150, rien au-dessus. Leur jeu habituel (Rocky et sa Pierre…) reste le même.
+export const renfort = bot => (bot.elo < 1000 ? 0.25 : bot.elo < 1150 ? 0.12 : 0);
+export function coupCarriere(bot, hist, rng = Math.random, ctx = null) {
+  if (hist.length >= 3 && rng() < renfort(bot)) {
+    const c = [0, 0, 0]; hist.slice(-6).forEach(h => c[h.adv]++);
+    return contre(c.indexOf(Math.max(...c)));
+  }
+  return choisirCoup(bot, hist, rng, ctx);
+}
 export const FORMAT_FINALES = { pointsParSet: 11, setsGagnants: 2 };   // playoffs, maintien et barrages
 const DERNIER = CIRCUITS.length - 1;
 
@@ -21,11 +36,11 @@ const niveau = id => (id === "moi" ? 0 : botParId(id)?.elo ?? 1000);
 export const chances = (a, b) => 1 / (1 + 10 ** ((niveau(b) - niveau(a)) / 400));
 
 // Un match entre deux bots : { a, b, v (le vainqueur), scores: [[pa, pb]…] }.
-export function simuler(a, b, setsGagnants = 1, rng = Math.random) {
+export function simuler(a, b, setsGagnants = 1, rng = Math.random, pts = 11) {
   const p = chances(a, b), sets = [0, 0], scores = [];
   while (Math.max(...sets) < setsGagnants) {
-    const g = rng() < p ? 0 : 1, perdant = 2 + Math.floor(rng() * 8);
-    scores.push(g === 0 ? [11, perdant] : [perdant, 11]); sets[g]++;
+    const g = rng() < p ? 0 : 1, perdant = pts === 7 ? 1 + Math.floor(rng() * 5) : 2 + Math.floor(rng() * 8);
+    scores.push(g === 0 ? [pts, perdant] : [perdant, pts]); sets[g]++;
   }
   return { a, b, v: sets[0] > sets[1] ? a : b, scores };
 }
@@ -110,7 +125,7 @@ function issueDe(tab) {
 // Un circuit entièrement joué par des bots : sa saison, ses playoffs et son maintien.
 export function simulerCircuit(ids, k, rng = Math.random) {
   const resultats = [];
-  for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) resultats.push(simuler(ids[i], ids[j], 1, rng));
+  for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) resultats.push(simuler(ids[i], ids[j], 1, rng, formatSaison(k).pointsParSet));
   const cl = classementDe(ids, resultats).map(l => l.id);
   const issue = issueDe(finirTableau(nouveauTableau("playoffs", cl.slice(0, QUALIFIES)), rng));
   if (k > 0) Object.assign(issue, issueDe(finirTableau(nouveauTableau("maintien", cl.slice(QUALIFIES)), rng)));
@@ -189,7 +204,7 @@ export function prochainMatch(C) {
   const mc = matchDeCoupe(C); if (mc) return mc;   // le match de coupe passe avant le reste
   if (C.phase === "saison") {
     const m = C.journees[C.journee].find(p => p.includes("moi"));
-    return { adv: m[0] === "moi" ? m[1] : m[0], format: FORMAT_SAISON, etape: `Journée ${C.journee + 1} sur ${JOURNEES}`, cle: null };
+    return { adv: m[0] === "moi" ? m[1] : m[0], format: formatSaison(C.ou), etape: `Journée ${C.journee + 1} sur ${JOURNEES}`, cle: null };
   }
   if (C.phase === "playoffs" || C.phase === "maintien") {
     const m = C.tableau.tours[C.tableau.tour].find(x => (x.a === "moi" || x.b === "moi") && !x.v);
@@ -214,7 +229,7 @@ export function enregistrerMonMatch(C, gagne, scores, rng = Math.random) {
   }
   if (C.phase === "saison") {
     C.resultats.push({ a: "moi", b: pm.adv, v, scores });
-    for (const [a, b] of C.journees[C.journee]) if (a !== "moi" && b !== "moi") C.resultats.push(simuler(a, b, 1, rng));
+    for (const [a, b] of C.journees[C.journee]) if (a !== "moi" && b !== "moi") C.resultats.push(simuler(a, b, 1, rng, formatSaison(C.ou).pointsParSet));
     C.journee++;
     if (C.journee === JOURNEES) finDeSaisonReguliere(C, rng);
     avancerCoupe(C, rng);
