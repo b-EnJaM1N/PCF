@@ -78,9 +78,11 @@ canvas { display: block; width: 100%; height: 100%; }
 .mondes .go small { display: block; font-size: .72rem; opacity: .85; letter-spacing: .06em; }
 .ecran .gros { font-family: var(--display); font-size: 3.4rem; font-weight: 800; color: var(--me); line-height: 1; font-variant-numeric: tabular-nums; }
 .colonne .pause { /* entre le score et les signes, loin du terrain */
-  flex: none; height: 40px; border: 0; border-radius: 12px; background: var(--panel); color: var(--line);
-  font-size: 1.1rem; cursor: pointer; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .25);
+  flex: none; height: 58px; border: 0; border-radius: 12px; background: var(--panel); color: var(--line);
+  cursor: pointer; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .25);
+  display: flex; align-items: center; justify-content: center; gap: 7px;
 }
+.colonne .pause span { width: 7px; height: 24px; border-radius: 2px; background: var(--line); } /* les deux barres du symbole pause */
 .son { position: absolute; top: 8px; right: 8px; border: 0; background: var(--panel); color: var(--line); border-radius: 999px; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .boutons button:active { transform: none; } }
 </style>
@@ -94,7 +96,7 @@ canvas { display: block; width: 100%; height: 100%; }
       <div><span>Record</span><strong id="record">0</strong></div>
       <div id="vies" aria-label="Vies">❤️❤️❤️</div>
     </div>
-    <button class="pause" id="pause" aria-label="Mettre en pause">⏸</button>
+    <button class="pause" id="pause" aria-label="Mettre en pause"><span></span><span></span></button>
   <div class="boutons">
     <button id="bPierre" data-signe="pierre"><span class="e">✊</span><span class="n">Pierre</span></button>
     <button id="bFeuille" data-signe="feuille"><span class="e">✋</span><span class="n">Feuille</span></button>
