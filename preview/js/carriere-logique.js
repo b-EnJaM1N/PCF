@@ -206,7 +206,8 @@ export function matchDeCoupe(C) {
   const K = C?.coupe; if (!K || K.vainqueur) return null;
   const m = monMatchCoupe(K);
   if (!m || journeesJouees(C) < coupeApres(C, K.tour)) return null;
-  return { adv: m.a === "moi" ? m.b : m.a, format: formatCoupe(K.tour), etape: `Coupe Monique-Latour · ${TOURS_COUPE[K.tour].singulier}`, cle: TOURS_COUPE[K.tour].cle, coupe: true };
+  return { adv: m.a === "moi" ? m.b : m.a, format: formatCoupe(K.tour), etape: `Coupe Monique-Latour · ${TOURS_COUPE[K.tour].singulier}`, cle: TOURS_COUPE[K.tour].cle, coupe: true,
+    voix: K.tour === 0 ? "premiers" : TOURS_COUPE[K.tour].cle };
 }
 // Mon parcours en coupe, en une phrase.
 export function texteCoupe(C) {
@@ -220,21 +221,25 @@ export const coupeEnCours = C => !!(C?.coupe && !C.coupe.vainqueur);
 
 export const classement = (C, poule = 0) => classementDe(C.poules ? C.poules[poule] : C.circuits[C.ou], C.resultats);
 
-// Le prochain match du joueur : { adv, format, etape, cle } (cle : "quarts", "demis", "finale" ou null), ou null.
+// Le prochain match du joueur : { adv, format, etape, cle, voix }, ou null.
+// cle : "quarts", "demis", "finale" ou null (l'enjeu, pour la tension des commentaires) ;
+// voix : le tour de tournoi que Roland et Monique peuvent commenter avant et après le match (annonces.js, contexteJeu) :
+// seulement quand leurs répliques collent (« premier tour » au 1er tour de coupe, quarts, demies et finales) ;
+// null pour le championnat, le maintien et les barrages (sinon : « il gagne son premier tour » à chaque journée).
 export function prochainMatch(C) {
   if (!C) return null;
   const mc = matchDeCoupe(C); if (mc) return mc;   // le match de coupe passe avant le reste
   if (C.phase === "saison") {
     const m = C.journees[C.journee].find(p => p.includes("moi"));
-    return { adv: m[0] === "moi" ? m[1] : m[0], format: formatSaison(C.ou), etape: `Journée ${C.journee + 1} sur ${C.journees.length}`, cle: null };
+    return { adv: m[0] === "moi" ? m[1] : m[0], format: formatSaison(C.ou), etape: `Journée ${C.journee + 1} sur ${C.journees.length}`, cle: null, voix: null };
   }
   if (C.phase === "playoffs" || C.phase === "maintien") {
     const m = C.tableau.tours[C.tableau.tour].find(x => (x.a === "moi" || x.b === "moi") && !x.v);
     if (!m) return null;
     const t = NOMS_TOURS[C.tableau.type][C.tableau.tour];
-    return { adv: m.a === "moi" ? m.b : m.a, format: FORMAT_FINALES, etape: t.singulier, cle: t.cle };
+    return { adv: m.a === "moi" ? m.b : m.a, format: FORMAT_FINALES, etape: t.singulier, cle: t.cle, voix: C.tableau.type === "playoffs" ? t.cle : null };
   }
-  if (C.phase === "barrage") return { adv: C.barrage.adv, format: FORMAT_FINALES, etape: C.barrage.haut ? "Barrage d'accession" : "Barrage du maintien", cle: "finale" };
+  if (C.phase === "barrage") return { adv: C.barrage.adv, format: FORMAT_FINALES, etape: C.barrage.haut ? "Barrage d'accession" : "Barrage du maintien", cle: "finale", voix: null };
   return null;
 }
 

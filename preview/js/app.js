@@ -988,8 +988,9 @@ function ouvrirFaceAFace() {
     // Les dialogues d'avant et d'après match : l'entraînement contre un bot, ou un tour du HandSlam Open (petit tournoi).
     S.annonces.jeu = S.tour !== null && T ? contexteJeu({ tournoi: "petit", tour: tourDe(T, S.tour).cle }) : contexteJeu({ entrainement: true });
     if (S.carriere) {   // la carrière : commentée comme un tournoi (playoffs, maintien et barrages comme les grands tours)
-      S.annonces.finale = S.carriere.cle === "finale"; S.annonces.enjeu = niveauEnjeu({ tour: S.carriere.cle });
-      S.annonces.jeu = contexteJeu({ tournoi: "petit", tour: S.carriere.cle });
+      // L'enjeu d'après le tour vraiment commenté ; maintien et barrages : un match décisif, sans « titre » ni « tableau ».
+      S.annonces.finale = S.carriere.voix === "finale"; S.annonces.enjeu = S.carriere.voix ? niveauEnjeu({ tour: S.carriere.voix }) : S.carriere.cle ? "decisif" : null;
+      S.annonces.jeu = S.carriere.voix ? contexteJeu({ tournoi: "petit", tour: S.carriere.voix }) : null;   // (pas de « premier tour » à chaque journée)
     }
   }
   presenterSpeaker();
@@ -1560,7 +1561,7 @@ function jouerCarriere() {
   S = {
     match: nouveauMatch(pm.format),
     stats: nouvellesStats(), annonces: avecAudible(nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre })), suivi: new Suivi(),
-    tour: null, occupe: false, enJeu: false, carriere: { circuit: C.ou, etape: pm.etape, cle: pm.cle, coupe: !!pm.coupe },
+    tour: null, occupe: false, enJeu: false, carriere: { circuit: C.ou, etape: pm.etape, cle: pm.cle, coupe: !!pm.coupe, voix: pm.voix },
   };
   preparerEcranMatch();
   $("startCard").hidden = true; $("tourCard").hidden = true;
