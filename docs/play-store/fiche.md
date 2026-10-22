@@ -12,9 +12,9 @@ Tout ce qu'il faut copier dans la Play Console (Croissance › Présence sur le 
 
 **Description courte** (80 caractères au plus, choisie le 22 octobre) :
 
-> Le Pierre-Feuille-Ciseaux devient un sport : duels et tournois commentés en direct.
+> Pierre-Feuille-Ciseaux devient un sport : duels et tournois commentés en direct.
 
-(Ancienne, du 3 octobre : « Le hasard n'existe pas : lis ton adversaire et deviens champion de Chifoumi. »)
+(80 caractères tout juste, d'où l'absence de « Le » au début. Ancienne, du 3 octobre : « Le hasard n'existe pas : lis ton adversaire et deviens champion de Chifoumi. »)
 
 **Description complète** (4 000 caractères au plus ; le texte seul, prêt à copier, est dans `description.txt`) :
 
