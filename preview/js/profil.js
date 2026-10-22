@@ -50,7 +50,6 @@ export const TITRES = [
   { id: "finaliste", famille: "tournois", nom: "Finaliste", desc: "Jouer la finale d'un tournoi en ligne." },
   { id: "roi_sng", famille: "tournois", nom: "Roi du Sit & Go", desc: "Remporter un Sit & Go." },
   { id: "champion_dimanche", famille: "tournois", nom: "Champion du dimanche", desc: "Remporter le Grand Chelem du dimanche soir." },
-  { id: "champion_elite", famille: "tournois", nom: "Champion de l'Élite", desc: "Remporter les playoffs du Circuit Élite en carrière.", debloque: "le gant de l'Élite", objet: ["gant", "elite"] },
   { id: "organisateur", famille: "tournois", nom: "Organisateur", desc: "Organiser un tournoi de cercle joué jusqu'au bout." },
 
   { id: "fondateur", famille: "cercles", nom: "Fondateur", desc: "Créer un cercle." },

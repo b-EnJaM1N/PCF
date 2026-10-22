@@ -22,62 +22,7 @@ export const BOTS = [
   { id: "titan", nom: "Titan", style: "Le boss final", desc: "change complètement de stratégie à chaque set.", elo: 1600, specialite: "Tout", imprevisibilite: 95, av: { symbole: "pierre", fond: "or", gant: "or", poignet: "noir", motif: "etoile" } },
 ];
 
-// Les 49 autres bots (ceux des tournois en ligne, supabase/etape-33-64-bots.sql) : ils jouent selon leur niveau, comme sur le
-// serveur (voir choisirCoup). Ils servent dans la carrière (carriere-logique.js), pas à l'entraînement.
-export const AUTRES_BOTS = [
-  { id: "pantoufle", nom: "Pantoufle", style: "Le casanier", desc: "ne quitte jamais sa Feuille. Ou presque.", elo: 800, specialite: "La Feuille", imprevisibilite: 15, favori: 2, av: { symbole: "feuille", fond: "violet", gant: "rose", poignet: "blanc", motif: "uni" } },
-  { id: "tamagotchi", nom: "Tamagotchi", style: "Le capricieux", desc: "réclame ses Ciseaux toutes les deux minutes.", elo: 850, specialite: "Les Ciseaux", imprevisibilite: 15, favori: 1, av: { symbole: "ciseaux", fond: "gazon", gant: "jaune", poignet: "bleu", motif: "uni" } },
-  { id: "flanby", nom: "Flanby", style: "Le tremblotant", desc: "se cache derrière sa Feuille.", elo: 900, specialite: "La Feuille", imprevisibilite: 18, favori: 2, av: { symbole: "feuille", fond: "or", gant: "jaune", poignet: "blanc", motif: "uni" } },
-  { id: "gaston", nom: "Gaston", style: "Le gaffeur", desc: "sort la Pierre sans réfléchir.", elo: 950, specialite: "La Pierre", imprevisibilite: 23, favori: 0, av: { symbole: "pierre", fond: "court", gant: "rouge", poignet: "blanc", motif: "uni" } },
-  { id: "mollasson", nom: "Mollasson", style: "Le paresseux", desc: "garde la Pierre : ça fatigue moins.", elo: 1000, specialite: "La Pierre", imprevisibilite: 27, favori: 0, av: { symbole: "pierre", fond: "violet", gant: "bleu", poignet: "jaune", motif: "rayures" } },
-  { id: "rubik", nom: "Rubik", style: "Le cube", desc: "combine, combine… et finit aux Ciseaux.", elo: 1080, specialite: "Les Ciseaux", imprevisibilite: 35, favori: 1, av: { symbole: "ciseaux", fond: "court", gant: "rouge", poignet: "jaune", motif: "rayures" } },
-  { id: "origami", nom: "Origami", style: "Le plieur", desc: "plie le match à coups de Feuille, et commence à te lire.", elo: 1130, specialite: "La Feuille", imprevisibilite: 39, favori: 2, av: { symbole: "feuille", fond: "gazon", gant: "blanc", poignet: "bleu", motif: "etoile" } },
-  { id: "silex", nom: "Silex", style: "Le tranchant", desc: "aime la Pierre et commence à lire ton jeu.", elo: 1180, specialite: "La Pierre", imprevisibilite: 44, favori: 0, av: { symbole: "pierre", fond: "terre", gant: "argent", poignet: "noir", motif: "rayures" } },
-  { id: "tondeuse", nom: "Tondeuse", style: "La coupe rase", desc: "tond aux Ciseaux, puis contre ton signe préféré.", elo: 1230, specialite: "La lecture", imprevisibilite: 48, favori: 1, av: { symbole: "ciseaux", fond: "gazon", gant: "vert", poignet: "noir", motif: "rayures" } },
-  { id: "comete", nom: "Comète", style: "La filante", desc: "passe vite, Feuille en tête, l'œil sur tes habitudes.", elo: 1280, specialite: "La lecture", imprevisibilite: 53, favori: 2, av: { symbole: "feuille", fond: "minuit", gant: "jaune", poignet: "bleu", motif: "etoile" } },
-  { id: "shuriken", nom: "Shuriken", style: "Le ninja", desc: "lit ton jeu dans l'ombre.", elo: 1330, specialite: "La lecture", imprevisibilite: 57, favori: 1, av: { symbole: "ciseaux", fond: "ardoise", gant: "noir", poignet: "rouge", motif: "eclair" } },
-  { id: "sphinx", nom: "Le Sphinx", style: "L'énigme", desc: "pose des questions et lit tes réponses.", elo: 1420, specialite: "La lecture", imprevisibilite: 65, favori: 2, av: { symbole: "feuille", fond: "or", gant: "jaune", poignet: "noir", motif: "eclair" } },
-  { id: "oracle", nom: "L'Oracle", style: "Le visionnaire", desc: "voit tes habitudes avant toi.", elo: 1480, specialite: "La lecture", imprevisibilite: 71, favori: 0, av: { symbole: "pierre", fond: "galaxie", gant: "blanc", poignet: "or", motif: "etoile" } },
-  { id: "glacon97", nom: "Glaçon 97", style: "Le sang-froid", desc: "lit ton jeu sans trembler.", elo: 1510, specialite: "La lecture", imprevisibilite: 74, favori: 1, av: { symbole: "ciseaux", fond: "minuit", gant: "argent", poignet: "blanc", motif: "etoile" } },
-  { id: "mentaliste", nom: "Mentaliste", style: "Le liseur de pensées", desc: "sait ce que tu vas jouer.", elo: 1550, specialite: "La lecture", imprevisibilite: 77, favori: 2, av: { symbole: "feuille", fond: "ardoise", gant: "violet", poignet: "or", motif: "etoile" } },
-  { id: "kaiser", nom: "Le Kaiser", style: "L'empereur", desc: "règne en lisant ton jeu.", elo: 1650, specialite: "La lecture", imprevisibilite: 86, favori: 0, av: { symbole: "pierre", fond: "ardoise", gant: "rouge", poignet: "or", motif: "eclair" } },
-  { id: "boss", nom: "Boss Final", style: "Le boss final", desc: "le dernier obstacle. Il lit tout.", elo: 1700, specialite: "La lecture", imprevisibilite: 91, favori: 1, av: { symbole: "ciseaux", fond: "stade", gant: "noir", poignet: "or", motif: "eclair" } },
-  { id: "doudou", nom: "Doudou", style: "Le câlin", desc: "joue la Feuille pour faire des bisous.", elo: 820, specialite: "La Feuille", imprevisibilite: 15, favori: 2, av: { symbole: "feuille", fond: "violet", gant: "rose", poignet: "blanc", motif: "uni" } },
-  { id: "chamalou", nom: "Chamalou", style: "Le tout mou", desc: "se rabat sur la Pierre dès qu'il a peur.", elo: 860, specialite: "La Pierre", imprevisibilite: 15, favori: 0, av: { symbole: "pierre", fond: "coucher", gant: "rose", poignet: "blanc", motif: "uni" } },
-  { id: "biscotte", nom: "Biscotte", style: "Le friable", desc: "coupe tout aux Ciseaux, puis s'effrite.", elo: 880, specialite: "Les Ciseaux", imprevisibilite: 16, favori: 1, av: { symbole: "ciseaux", fond: "terre", gant: "jaune", poignet: "rouge", motif: "uni" } },
-  { id: "scarabee", nom: "Petit Scarabée", style: "L'apprenti", desc: "répète la Pierre, comme son maître le lui a appris.", elo: 920, specialite: "La Pierre", imprevisibilite: 20, favori: 0, av: { symbole: "pierre", fond: "gazon", gant: "vert", poignet: "jaune", motif: "uni" } },
-  { id: "guimauve", nom: "Guimauve", style: "La douceur", desc: "glisse une Feuille dès qu'elle peut.", elo: 960, specialite: "La Feuille", imprevisibilite: 24, favori: 2, av: { symbole: "feuille", fond: "neon", gant: "rose", poignet: "bleu", motif: "uni" } },
-  { id: "croquette", nom: "Croquette", style: "La gourmande", desc: "croque tout aux Ciseaux.", elo: 990, specialite: "Les Ciseaux", imprevisibilite: 26, favori: 1, av: { symbole: "ciseaux", fond: "terre", gant: "or", poignet: "noir", motif: "rayures" } },
-  { id: "brindille", nom: "Brindille", style: "La fragile", desc: "plie, mais garde sa Feuille.", elo: 1020, specialite: "La Feuille", imprevisibilite: 29, favori: 2, av: { symbole: "feuille", fond: "gazon", gant: "vert", poignet: "blanc", motif: "rayures" } },
-  { id: "toupie", nom: "Toupie", style: "La virevoltante", desc: "tourne autour de la Pierre.", elo: 1040, specialite: "La Pierre", imprevisibilite: 31, favori: 0, av: { symbole: "pierre", fond: "court", gant: "turquoise", poignet: "jaune", motif: "etoile" } },
-  { id: "zigzag", nom: "Zigzag", style: "Le slalomeur", desc: "zigzague, mais revient toujours aux Ciseaux.", elo: 1060, specialite: "Les Ciseaux", imprevisibilite: 33, favori: 1, av: { symbole: "ciseaux", fond: "neon", gant: "jaune", poignet: "noir", motif: "eclair" } },
-  { id: "galet", nom: "Galet", style: "Le roc", desc: "ne lâche pas sa Pierre facilement.", elo: 1090, specialite: "La Pierre", imprevisibilite: 35, favori: 0, av: { symbole: "pierre", fond: "ardoise", gant: "argent", poignet: "bleu", motif: "uni" } },
-  { id: "pivert", nom: "Pivert", style: "Le têtu", desc: "tape et retape aux Ciseaux.", elo: 1120, specialite: "Les Ciseaux", imprevisibilite: 38, favori: 1, av: { symbole: "ciseaux", fond: "gazon", gant: "rouge", poignet: "noir", motif: "rayures" } },
-  { id: "ricochet", nom: "Ricochet", style: "Le rebondissant", desc: "rebondit sur la Pierre et guette tes habitudes.", elo: 1160, specialite: "La Pierre", imprevisibilite: 42, favori: 0, av: { symbole: "pierre", fond: "court", gant: "bleu", poignet: "blanc", motif: "etoile" } },
-  { id: "sardine", nom: "Sardine", style: "La serrée", desc: "se faufile à la Feuille et lit parfois ton jeu.", elo: 1190, specialite: "La Feuille", imprevisibilite: 45, favori: 2, av: { symbole: "feuille", fond: "court", gant: "argent", poignet: "bleu", motif: "rayures" } },
-  { id: "pistache", nom: "Pistache", style: "La croquante", desc: "aime les Ciseaux, et repère tes habitudes.", elo: 1220, specialite: "La lecture", imprevisibilite: 47, favori: 1, av: { symbole: "ciseaux", fond: "gazon", gant: "vert", poignet: "rouge", motif: "etoile" } },
-  { id: "lasso", nom: "Lasso", style: "Le cow-boy", desc: "attrape ton signe préféré au lasso.", elo: 1260, specialite: "La lecture", imprevisibilite: 51, favori: 2, av: { symbole: "feuille", fond: "terre", gant: "or", poignet: "rouge", motif: "rayures" } },
-  { id: "moustique", nom: "Moustique", style: "Le piqueur", desc: "pique là où tu as l'habitude d'aller.", elo: 1290, specialite: "La lecture", imprevisibilite: 54, favori: 1, av: { symbole: "ciseaux", fond: "minuit", gant: "noir", poignet: "jaune", motif: "eclair" } },
-  { id: "scorpion", nom: "Scorpion", style: "Le venimeux", desc: "attend ton signe préféré, puis pique.", elo: 1310, specialite: "La lecture", imprevisibilite: 55, favori: 1, av: { symbole: "ciseaux", fond: "terre", gant: "noir", poignet: "rouge", motif: "eclair" } },
-  { id: "vautour", nom: "Vautour", style: "Le charognard", desc: "tourne au-dessus de tes habitudes.", elo: 1340, specialite: "La lecture", imprevisibilite: 58, favori: 0, av: { symbole: "pierre", fond: "ardoise", gant: "noir", poignet: "blanc", motif: "eclair" } },
-  { id: "mirage", nom: "Mirage", style: "Le trompeur", desc: "te montre une Feuille, puis te lit.", elo: 1370, specialite: "La lecture", imprevisibilite: 61, favori: 2, av: { symbole: "feuille", fond: "coucher", gant: "or", poignet: "blanc", motif: "etoile" } },
-  { id: "sablier", nom: "Sablier", style: "Le patient", desc: "laisse filer le temps et repère tes manies.", elo: 1390, specialite: "La lecture", imprevisibilite: 63, favori: 0, av: { symbole: "pierre", fond: "or", gant: "or", poignet: "noir", motif: "rayures" } },
-  { id: "faucon", nom: "Faucon", style: "Le rapace", desc: "fond sur ton signe préféré.", elo: 1430, specialite: "La lecture", imprevisibilite: 66, favori: 1, av: { symbole: "ciseaux", fond: "minuit", gant: "argent", poignet: "or", motif: "eclair" } },
-  { id: "typhon", nom: "Typhon", style: "Le tourbillon", desc: "emporte tout ce que tu répètes.", elo: 1460, specialite: "La lecture", imprevisibilite: 69, favori: 2, av: { symbole: "feuille", fond: "minuit", gant: "turquoise", poignet: "blanc", motif: "eclair" } },
-  { id: "sorciere", nom: "La Sorcière", style: "La sorcière", desc: "devine ton prochain signe dans sa boule.", elo: 1470, specialite: "La lecture", imprevisibilite: 70, favori: 1, av: { symbole: "ciseaux", fond: "galaxie", gant: "violet", poignet: "noir", motif: "etoile" } },
-  { id: "notaire", nom: "Le Notaire", style: "Le méticuleux", desc: "note chacun de tes coups.", elo: 1490, specialite: "La lecture", imprevisibilite: 72, favori: 2, av: { symbole: "feuille", fond: "ardoise", gant: "blanc", poignet: "noir", motif: "uni" } },
-  { id: "devin", nom: "Le Devin", style: "Le devin", desc: "lit ton jeu comme un livre ouvert.", elo: 1520, specialite: "La lecture", imprevisibilite: 75, favori: 0, av: { symbole: "pierre", fond: "galaxie", gant: "argent", poignet: "or", motif: "etoile" } },
-  { id: "baron", nom: "Le Baron", style: "L'aristocrate", desc: "contre tes habitudes avec élégance.", elo: 1560, specialite: "La lecture", imprevisibilite: 78, favori: 2, av: { symbole: "feuille", fond: "rubis", gant: "blanc", poignet: "or", motif: "rayures" } },
-  { id: "minotaure", nom: "Minotaure", style: "Le colosse", desc: "t'enferme dans ton propre labyrinthe.", elo: 1590, specialite: "La lecture", imprevisibilite: 81, favori: 0, av: { symbole: "pierre", fond: "terre", gant: "rouge", poignet: "or", motif: "eclair" } },
-  { id: "comtesse", nom: "La Comtesse", style: "La redoutable", desc: "ne laisse rien passer de tes manies.", elo: 1620, specialite: "La lecture", imprevisibilite: 84, favori: 2, av: { symbole: "feuille", fond: "rubis", gant: "violet", poignet: "or", motif: "etoile" } },
-  { id: "pharaon", nom: "Le Pharaon", style: "L'éternel", desc: "a tout vu, surtout tes habitudes.", elo: 1660, specialite: "La lecture", imprevisibilite: 87, favori: 1, av: { symbole: "ciseaux", fond: "or", gant: "or", poignet: "bleu", motif: "etoile" } },
-  { id: "hydre", nom: "Hydre", style: "L'insaisissable", desc: "coupe une de tes habitudes, il en repousse deux.", elo: 1690, specialite: "La lecture", imprevisibilite: 90, favori: 1, av: { symbole: "ciseaux", fond: "stade", gant: "vert", poignet: "noir", motif: "eclair" } },
-  { id: "bigbang", nom: "Big Bang", style: "L'explosif", desc: "fait exploser tes habitudes.", elo: 1720, specialite: "La lecture", imprevisibilite: 93, favori: 0, av: { symbole: "pierre", fond: "galaxie", gant: "or", poignet: "noir", motif: "eclair" } },
-  { id: "reinemere", nom: "La Reine Mère", style: "La souveraine", desc: "la plus forte de toutes. Respect.", elo: 1750, specialite: "La lecture", imprevisibilite: 95, favori: 2, av: { symbole: "feuille", fond: "stade", gant: "or", poignet: "or", motif: "etoile" } },
-];
-export const TOUS_LES_BOTS = [...BOTS, ...AUTRES_BOTS];
-
-export const botParId = id => TOUS_LES_BOTS.find(b => b.id === id) || null;
+export const botParId = id => BOTS.find(b => b.id === id) || null;
 
 // Cycle de Cyclo : Pierre, Feuille, Ciseaux.
 const CYCLE = [PIERRE, FEUILLE, CISEAUX];
@@ -179,18 +124,5 @@ export function choisirCoup(bot, hist, rng = Math.random, ctx = null) {
     case "stratege": return lecteur(hist, 0.12, rng);
     case "professeur": return lecteur(hist, 0.04, rng);
   }
-  if (bot.favori !== undefined) return selonNiveau(bot, hist, rng);
   return signeAuHasard(rng);
-}
-
-// Les autres bots jouent comme sur le serveur (supabase/etape-24-bots-par-niveau.sql, _coup_bot) : les faibles jouent
-// très souvent leur signe favori ; à partir du niveau 1 150, ils repèrent parfois ton signe préféré sur tes 6 derniers
-// coups et jouent ce qui le bat (jusqu'à 45 % du temps pour les plus forts).
-export function selonNiveau(bot, hist, rng = Math.random) {
-  const lecture = Math.max(0, Math.min(0.45, (bot.elo - 1150) / 1100)), biais = Math.max(0.05, Math.min(0.6, (1500 - bot.elo) / 1200));
-  if (hist.length >= 3 && rng() < lecture) {
-    const c = [0, 0, 0]; hist.slice(-6).forEach(h => c[h.adv]++);
-    return contre(c.indexOf(Math.max(...c)));
-  }
-  return rng() < biais ? bot.favori : signeAuHasard(rng);
 }
