@@ -189,10 +189,11 @@ canvas { display: block; width: 100%; height: 100%; }
 
   // ---------- Record ----------
   // un record par monde (le monde 1 garde l'ancienne clé)
-  const CLES_RECORD = ["hs-invaders-record", "hs-invaders-record-2", "hs-invaders-record-3", "hs-invaders-record-4"];
+  // un record par monde ; nouvelles clés depuis l'arrivée de l'École en monde 1 (les anciens records repartent à zéro)
+  const CLES_RECORD = [1, 2, 3, 4, 5].map(i => `hs-riposte-record-${i}`);
   const records = CLES_RECORD.map(cle => { try { return +localStorage.getItem(cle) || 0; } catch (e) { return 0; } });
   // le meilleur pourcentage accompli dans chaque monde (100 % = les 15 vagues, 200 % = deux tours…)
-  const CLES_POURCENT = CLES_RECORD.map((_, i) => `hs-invaders-pourcent-${i + 1}`);
+  const CLES_POURCENT = CLES_RECORD.map((_, i) => `hs-riposte-pourcent-${i + 1}`);
   const pourcents = CLES_POURCENT.map(cle => { try { return +localStorage.getItem(cle) || 0; } catch (e) { return 0; } });
   $("record").textContent = records[0];
 
@@ -220,11 +221,14 @@ canvas { display: block; width: 100%; height: 100%; }
   // et les deux mélangés aux vagues 13 à 15. Le tennis et le baseball, qu'on ne reconnaissait pas, ont été retirés.
   const BASKET = { nom: "Basket et athlé", pierre: { e: "🏀", nom: "Ballon de basket", taille: 1.1 }, feuille: { dessin: "maillot", nom: "Maillot", taille: 1.1 }, ciseaux: { dessin: "javelots", nom: "Javelots" } };
   const FOOT = { nom: "Foot", pierre: { e: "⚽", nom: "Ballon de foot", taille: 1.1 }, feuille: { dessin: "drapeau", nom: "Drapeau de corner" }, ciseaux: { dessin: "crampons", nom: "Crampons", taille: 1.15 } };
-  const GYMNASE = [
-    BASKET, FOOT, { ...BASKET, nom: "Retour au basket" },
-    // vagues 13 à 15 : les deux séries mélangées
-    { nom: "Le grand mélange", pierre: [BASKET.pierre, FOOT.pierre], feuille: [BASKET.feuille, FOOT.feuille], ciseaux: [BASKET.ciseaux, FOOT.ciseaux] },
-  ];
+  // Gymnase (monde 2) : des ballons dès la vague 1 ; basket et foot alternent, mélangés aux vagues 13 à 15
+  const MELANGE_SPORT = { nom: "Le grand mélange", pierre: [BASKET.pierre, FOOT.pierre], feuille: [BASKET.feuille, FOOT.feuille], ciseaux: [BASKET.ciseaux, FOOT.ciseaux] };
+  const GYMNASE = [BASKET, FOOT, BASKET, FOOT, MELANGE_SPORT];
+  // École (monde 1) : les vrais objets. Vagues 1 à 3 avec les mains (pour apprendre), puis deux séries :
+  // caillou, feuille de cours, ciseaux d'écolier ; bille, cahier ouvert, compas ; mélangées aux vagues 13 à 15.
+  const COURS = { nom: "La classe", pierre: { dessin: "caillou", nom: "Caillou", taille: 1.15 }, feuille: { dessin: "feuilleCours", nom: "Feuille de cours", taille: 1.1 }, ciseaux: { dessin: "ciseauxEcole", nom: "Ciseaux", taille: 1.15 } };
+  const TROUSSE = { nom: "La trousse", pierre: { dessin: "bille", nom: "Bille" }, feuille: { dessin: "cahier", nom: "Cahier", taille: 1.15 }, ciseaux: { dessin: "compas", nom: "Compas", taille: 1.15 } };
+  const ECOLE = [COURS, TROUSSE, COURS, { nom: "La récré", pierre: [COURS.pierre, TROUSSE.pierre], feuille: [COURS.feuille, TROUSSE.feuille], ciseaux: [COURS.ciseaux, TROUSSE.ciseaux] }];
   // Forêt : la taille des objets suit leur taille réelle (idée du porteur du projet) : les grands objets
   // d'abord (pomme, érable, corbeau), puis les petits quand tout rétrécit (gland, trèfle, lucane).
   const LUCANE = { dessin: "lucane", nom: "Lucane", taille: 1.15 }, CORBEAU = { dessin: "corbeau", nom: "Corbeau", taille: 1.4 };
@@ -262,8 +266,10 @@ canvas { display: block; width: 100%; height: 100%; }
   ];
   // depart : la difficulté de la vague 1 (en vagues du Gymnase) ; bossPlus : les boss sont plus forts.
   const MONDES = [
-    { nom: "Le Gymnase", du: "du Gymnase", boss: "la Main de Fer", decor: "gymnase", couleur: "#F4C542", texte: "#0F2C52",
-      themes: GYMNASE, themesDes: 1, depart: 0, bossPlus: 0 },
+    { nom: "L'École", du: "de l'École", boss: "la Maîtresse", insigne: "🔔", decor: "ecole", couleur: "#E8574A", texte: "#F5F7FA",
+      themes: ECOLE, themesDes: 1, depart: 0, bossPlus: 0 },
+    { nom: "Le Gymnase", du: "du Gymnase", ouverte: "Le Gymnase est ouvert !", boss: "la Main de Fer", decor: "gymnase", couleur: "#F4C542", texte: "#0F2C52",
+      themes: GYMNASE, depart: 3, bossPlus: 0.5 },
     { nom: "La Plage", du: "de la Plage", ouverte: "La Plage est ouverte !", boss: "le Roi Crabe", insigne: "👑", decor: "plage", couleur: "#2E9BC0", texte: "#F5F7FA",
       themes: PLAGE, crabes: true, depart: 5, bossPlus: 1 },
     { nom: "La Forêt", du: "de la Forêt", ouverte: "La Forêt est ouverte !", boss: "le Vieux Chêne", insigne: "🌳", decor: "foret", couleur: "#3E8E4F", texte: "#F5F7FA",
@@ -281,7 +287,7 @@ canvas { display: block; width: 100%; height: 100%; }
   // un rôle peut avoir plusieurs objets (le mélange) : chaque ennemi garde le sien (n.serie)
   const choix = (o, serie = 0) => (Array.isArray(o) ? o[serie % o.length] : o);
   let mondesOuverts = 1, mondeDepart = 0, demo = /^#monde\d$/.test(location.hash);
-  try { mondesOuverts = Math.min(MONDES.length, Math.max(1, +localStorage.getItem("hs-invaders-mondes") || 1)); } catch (e) {}
+  try { mondesOuverts = Math.min(MONDES.length, Math.max(1, +localStorage.getItem("hs-riposte-mondes") || 1)); } catch (e) {}
   // un bouton par monde ouvert ; « Essayer tous les mondes » les montre tous (démo seulement)
   function majAccueil() {
     const visibles = demo ? MONDES.length : mondesOuverts;
@@ -324,7 +330,7 @@ canvas { display: block; width: 100%; height: 100%; }
   // Après les 15 vagues, le monde recommence (tour 2, 3…) : plus rapide, jusqu'à un plafond ;
   // au-delà, c'est le nombre de signes par vague qui augmente.
   const tour = () => J.tour || 1;
-  // dans le Gymnase, ça accélère un peu à partir de la vague 4 (quand les objets de sport arrivent)
+  // dans le premier monde (l'École), ça accélère un peu à partir de la vague 4, quand les objets arrivent
   const accel = () => Math.min(1.6, 1 + 0.2 * (tour() - 1)) * (J.monde === 0 && J.vague >= 4 ? 1.15 : 1);
   const vitesse = () => (55 + 115 * niveau() + Math.random() * 25) * accel();        // pixels par seconde
   const intervalle = () => (1750 - 900 * niveau() + Math.random() * 450) / accel(); // millisecondes
@@ -375,7 +381,7 @@ canvas { display: block; width: 100%; height: 100%; }
     // après le boss de la vague 9 : le monde suivant s'ouvre, et on continue ici pour le record
     if (J.vague === VAGUE_DEBLOCAGE + 1 && J.monde + 1 < MONDES.length && mondesOuverts < J.monde + 2) {
       mondesOuverts = J.monde + 2; majAccueil();
-      try { localStorage.setItem("hs-invaders-mondes", mondesOuverts); } catch (e) {}
+      try { localStorage.setItem("hs-riposte-mondes", mondesOuverts); } catch (e) {}
       J.bandeau = { titre: MONDES[J.monde + 1].ouverte, sous: "Continue ici pour battre ton record", vie: 1.6 };
       J.pause = 2600;
     }
@@ -579,7 +585,7 @@ canvas { display: block; width: 100%; height: 100%; }
   // Pause automatique quand on quitte l'appli (appel, notification…). La partie est aussi gardée
   // sur le téléphone : si le navigateur ferme la page entre-temps, l'accueil propose de la reprendre.
   let enPause = false;
-  const CLE_PARTIE = "hs-invaders-partie";
+  const CLE_PARTIE = "hs-riposte-partie";
   function sauver() {
     try { localStorage.setItem(CLE_PARTIE, JSON.stringify({ J, mondeDepart, W })); } catch (e) {}
   }
@@ -822,6 +828,80 @@ canvas { display: block; width: 100%; height: 100%; }
         ctx.lineWidth = s * 0.11; ctx.strokeStyle = "#3B2A1A";
         ctx.beginPath(); ctx.moveTo(...pt(0.4)); ctx.lineTo(...pt(0.52)); ctx.stroke();
       }
+    } else if (o.dessin === "caillou") {
+      // un caillou de la cour : gris, anguleux, avec des facettes
+      const pts = [[-0.5, 0.05], [-0.36, -0.32], [-0.02, -0.44], [0.34, -0.3], [0.52, 0.02], [0.38, 0.36], [0.02, 0.44], [-0.38, 0.34]];
+      ctx.beginPath(); pts.forEach(([a, b]) => ctx.lineTo(x + s * a, y + s * b)); ctx.closePath();
+      ctx.fillStyle = "#9A9A9E"; ctx.fill(); ctx.strokeStyle = "#4E4E54"; ctx.lineWidth = s * 0.035; ctx.stroke();
+      ctx.fillStyle = "#B9B9BE"; // la face éclairée
+      ctx.beginPath(); ctx.moveTo(x - s * 0.36, y - s * 0.32); ctx.lineTo(x - s * 0.02, y - s * 0.44); ctx.lineTo(x + s * 0.1, y - s * 0.06); ctx.lineTo(x - s * 0.3, y); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#7C7C82"; // la face dans l'ombre
+      ctx.beginPath(); ctx.moveTo(x + s * 0.1, y - s * 0.06); ctx.lineTo(x + s * 0.52, y + s * 0.02); ctx.lineTo(x + s * 0.38, y + s * 0.36); ctx.lineTo(x + s * 0.02, y + s * 0.44); ctx.closePath(); ctx.fill();
+    } else if (o.dessin === "bille") {
+      // une bille en verre : bleue transparente, avec sa torsade de couleur et un reflet
+      const g = ctx.createRadialGradient(x - s * 0.12, y - s * 0.14, s * 0.04, x, y, s * 0.42);
+      g.addColorStop(0, "#BFE8FF"); g.addColorStop(0.6, "#3D9BE0"); g.addColorStop(1, "#1A5C99");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, s * 0.4, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "#E8574A"; ctx.lineWidth = s * 0.09; // la torsade
+      ctx.beginPath(); ctx.moveTo(x - s * 0.3, y + s * 0.18); ctx.bezierCurveTo(x - s * 0.1, y - s * 0.2, x + s * 0.1, y + s * 0.25, x + s * 0.3, y - s * 0.16); ctx.stroke();
+      ctx.strokeStyle = "#F4C542"; ctx.lineWidth = s * 0.05;
+      ctx.beginPath(); ctx.moveTo(x - s * 0.28, y + s * 0.06); ctx.bezierCurveTo(x - s * 0.08, y - s * 0.28, x + s * 0.12, y + s * 0.14, x + s * 0.3, y - s * 0.26); ctx.stroke();
+      ctx.fillStyle = "rgba(255, 255, 255, .8)"; ctx.beginPath(); ctx.ellipse(x - s * 0.15, y - s * 0.18, s * 0.09, s * 0.05, -0.6, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "#123E66"; ctx.lineWidth = s * 0.03; ctx.beginPath(); ctx.arc(x, y, s * 0.4, 0, Math.PI * 2); ctx.stroke();
+    } else if (o.dessin === "feuilleCours") {
+      // une feuille de cours à grands carreaux : lignes bleues, marge rouge, trous sur le côté
+      const w = s * 0.74, h = s * 0.92;
+      ctx.translate(x, y); ctx.rotate(-0.08);
+      ctx.fillStyle = "#FFFFFF"; ctx.fillRect(-w / 2, -h / 2, w, h);
+      ctx.strokeStyle = "rgba(70, 130, 220, .6)"; ctx.lineWidth = s * 0.014;
+      for (let k = 1; k < 9; k++) { ctx.beginPath(); ctx.moveTo(-w / 2, -h / 2 + k * h / 9); ctx.lineTo(w / 2, -h / 2 + k * h / 9); ctx.stroke(); }
+      for (let k = 1; k < 7; k++) { ctx.beginPath(); ctx.moveTo(-w / 2 + k * w / 7, -h / 2); ctx.lineTo(-w / 2 + k * w / 7, h / 2); ctx.stroke(); }
+      ctx.strokeStyle = "#E8574A"; ctx.lineWidth = s * 0.03; // la marge
+      ctx.beginPath(); ctx.moveTo(-w / 2 + w * 0.24, -h / 2); ctx.lineTo(-w / 2 + w * 0.24, h / 2); ctx.stroke();
+      ctx.fillStyle = "#5A6472"; // les trous de la feuille perforée
+      for (const k of [-0.3, 0, 0.3]) { ctx.beginPath(); ctx.arc(-w / 2 + w * 0.1, h * k, s * 0.035, 0, Math.PI * 2); ctx.fill(); }
+      ctx.strokeStyle = "#9AA6B4"; ctx.lineWidth = s * 0.02; ctx.strokeRect(-w / 2, -h / 2, w, h);
+    } else if (o.dessin === "cahier") {
+      // un cahier ouvert : deux pages lignées, la reliure au milieu, la couverture bleue qui dépasse
+      const w = s * 0.92, h = s * 0.66;
+      ctx.translate(x, y); ctx.rotate(-0.06);
+      ctx.fillStyle = "#2E6FD0"; ctx.fillRect(-w / 2 - s * 0.03, -h / 2 - s * 0.03, w + s * 0.06, h + s * 0.06);
+      ctx.fillStyle = "#FFFFFF"; ctx.fillRect(-w / 2, -h / 2, w, h);
+      ctx.strokeStyle = "rgba(70, 130, 220, .6)"; ctx.lineWidth = s * 0.014;
+      for (let k = 1; k < 7; k++) { ctx.beginPath(); ctx.moveTo(-w / 2, -h / 2 + k * h / 7); ctx.lineTo(w / 2, -h / 2 + k * h / 7); ctx.stroke(); }
+      ctx.strokeStyle = "#E8574A"; ctx.lineWidth = s * 0.02;
+      for (const m of [-w / 2 + w * 0.1, w * 0.1]) { ctx.beginPath(); ctx.moveTo(m, -h / 2); ctx.lineTo(m, h / 2); ctx.stroke(); }
+      ctx.strokeStyle = "#7A8696"; ctx.lineWidth = s * 0.03; // la reliure
+      ctx.beginPath(); ctx.moveTo(0, -h / 2); ctx.lineTo(0, h / 2); ctx.stroke();
+    } else if (o.dessin === "ciseauxEcole") {
+      // des ciseaux d'écolier : anneaux de couleur en haut, vis au milieu, lames ouvertes vers le bas, bouts ronds
+      ctx.lineCap = "round";
+      for (const sens of [-1, 1]) {
+        ctx.strokeStyle = "#C9D3E0"; ctx.lineWidth = s * 0.1; // la lame
+        ctx.beginPath(); ctx.moveTo(x, y - s * 0.02); ctx.lineTo(x + sens * s * 0.3, y + s * 0.5); ctx.stroke();
+        ctx.strokeStyle = "#7E8A99"; ctx.lineWidth = s * 0.02;
+        ctx.beginPath(); ctx.moveTo(x, y - s * 0.02); ctx.lineTo(x + sens * s * 0.3, y + s * 0.5); ctx.stroke();
+        ctx.strokeStyle = sens < 0 ? "#E8574A" : "#2E6FD0"; ctx.lineWidth = s * 0.08; // l'anneau en plastique
+        ctx.beginPath(); ctx.ellipse(x - sens * s * 0.17, y - s * 0.3, s * 0.12, s * 0.16, sens * 0.4, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x - sens * s * 0.08, y - s * 0.18); ctx.lineTo(x, y - s * 0.02); ctx.stroke();
+      }
+      ctx.fillStyle = "#4E4E54"; ctx.beginPath(); ctx.arc(x, y - s * 0.02, s * 0.045, 0, Math.PI * 2); ctx.fill(); // la vis
+    } else if (o.dessin === "compas") {
+      // un compas ouvert : la molette en haut, deux branches en V vers le bas, une pointe et une mine
+      ctx.lineCap = "round";
+      for (const sens of [-1, 1]) {
+        ctx.strokeStyle = "#B8C2CE"; ctx.lineWidth = s * 0.085;
+        ctx.beginPath(); ctx.moveTo(x, y - s * 0.3); ctx.lineTo(x + sens * s * 0.3, y + s * 0.42); ctx.stroke();
+        ctx.strokeStyle = "#6E7A8A"; ctx.lineWidth = s * 0.02;
+        ctx.beginPath(); ctx.moveTo(x, y - s * 0.3); ctx.lineTo(x + sens * s * 0.3, y + s * 0.42); ctx.stroke();
+      }
+      ctx.strokeStyle = "#3A3A40"; ctx.lineWidth = s * 0.03; // la pointe, à gauche
+      ctx.beginPath(); ctx.moveTo(x - s * 0.3, y + s * 0.42); ctx.lineTo(x - s * 0.34, y + s * 0.56); ctx.stroke();
+      ctx.fillStyle = "#F4C542"; // le crayon, à droite
+      ctx.beginPath(); ctx.moveTo(x + s * 0.27, y + s * 0.36); ctx.lineTo(x + s * 0.37, y + s * 0.36); ctx.lineTo(x + s * 0.34, y + s * 0.56); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#3A3A40"; ctx.beginPath(); ctx.arc(x + s * 0.34, y + s * 0.55, s * 0.02, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#E8574A"; ctx.beginPath(); ctx.roundRect(x - s * 0.06, y - s * 0.5, s * 0.12, s * 0.16, s * 0.03); ctx.fill(); // la molette
+      ctx.fillStyle = "#4E4E54"; ctx.beginPath(); ctx.arc(x, y - s * 0.3, s * 0.06, 0, Math.PI * 2); ctx.fill();
     } else if (o.dessin === "crampons") {
       // une paire de chaussures à crampons pendues par les lacets à un clou : lacets en V,
       // chaussures pointe en bas, semelles vers l'extérieur (le côté ouvert vers le joueur)
@@ -1161,7 +1241,8 @@ canvas { display: block; width: 100%; height: 100%; }
     if (decor === "plage") dessinerPlage();
     else if (decor === "foret") dessinerForet();
     else if (decor === "espace") dessinerEspace();
-    else dessinerGymnase();
+    else if (decor === "gymnase") dessinerGymnase();
+    else dessinerEcole();
     ctx.strokeStyle = "rgba(232, 87, 74, .35)"; ctx.setLineDash([6, 8]);
     ctx.beginPath(); ctx.moveTo(0, H - R * 3.4); ctx.lineTo(W, H - R * 3.4); ctx.stroke(); ctx.setLineDash([]);
     if (J) dessinerJeu();
@@ -1186,6 +1267,30 @@ canvas { display: block; width: 100%; height: 100%; }
     ctx.fillStyle = COUL.me;
     ctx.beginPath(); ctx.roundRect(J.x - R * 0.9, y - 6, R * 1.8, 12, 6); ctx.fill();
     ctx.beginPath(); ctx.moveTo(J.x - 7, H + 3); ctx.lineTo(J.x + 7, H + 3); ctx.lineTo(J.x, H + 11); ctx.closePath(); ctx.fill();
+  }
+
+  function dessinerEcole() {
+    // la cour de récréation vue d'en haut : bitume, marelle et rond peints, un arbre et son ombre
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#5A6472"); g.addColorStop(1, "#4A535F");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(255, 255, 255, .035)"; // le grain du bitume
+    for (let i = 0; i < 160; i++) ctx.fillRect((i * 97.3) % W, (i * 57.7) % H, 2, 2);
+    // la marelle, peinte en blanc, sur la gauche
+    ctx.strokeStyle = "rgba(245, 247, 250, .35)"; ctx.lineWidth = 2.5;
+    ctx.fillStyle = "rgba(245, 247, 250, .35)"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    const c = Math.min(W * 0.11, 40), mx = W * 0.16, bas = H * 0.72;
+    ctx.font = `700 ${Math.round(c * 0.5)}px "Barlow Condensed", sans-serif`;
+    const cases = [[0, 0, "1"], [0, 1, "2"], [0, 2, "3"], [-0.5, 3, "4"], [0.5, 3, "5"], [0, 4, "6"], [-0.5, 5, "7"], [0.5, 5, "8"]];
+    for (const [dx, dy, n] of cases) { ctx.strokeRect(mx + dx * c - c / 2, bas - dy * c - c, c, c); ctx.fillText(n, mx + dx * c, bas - dy * c - c / 2); }
+    ctx.beginPath(); ctx.arc(mx, bas - 6 * c, c * 0.75, Math.PI, 0); ctx.stroke(); ctx.fillText("CIEL", mx, bas - 6 * c - c * 0.3);
+    // un grand rond de jeu, peint en jaune, au milieu
+    ctx.strokeStyle = "rgba(244, 197, 66, .3)"; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(W * 0.6, H * 0.42, Math.min(W, H) * 0.2, 0, Math.PI * 2); ctx.stroke();
+    // un arbre en haut à droite, avec son ombre
+    ctx.fillStyle = "rgba(0, 0, 0, .18)"; ctx.beginPath(); ctx.arc(W * 0.92, H * 0.1, W * 0.2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#3E7A45"; ctx.beginPath(); ctx.arc(W * 0.88, H * 0.07, W * 0.17, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#4F9156"; ctx.beginPath(); ctx.arc(W * 0.84, H * 0.05, W * 0.1, 0, Math.PI * 2); ctx.fill();
   }
 
   function dessinerGymnase() {
