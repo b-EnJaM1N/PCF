@@ -62,8 +62,8 @@ function mainNue(symbole, peau, vernis, bague, rubis) {
   const tendons = `<g stroke="${tr}" stroke-width=".8" stroke-linecap="round" opacity=".3" fill="none">${[0, 1, 2].map(i => `<path d="M${40 + i * 10} 50 l-${1 + i} 15"/>`).join("")}</g>`;
   if (symbole === "feuille") return doigt(33, 70, 27, -52) + paume(46) + doigt(33.5, 52, 30, -6) + doigt(44, 50, 36, -2, { avecBague: true }) + doigt(54.5, 50, 34, 2) + doigt(64.5, 53, 26, 7);
   if (symbole === "feuille-dos") return doigt(33, 52, 30, -14) + doigt(43.5, 50, 35, -5, { avecBague: true }) + doigt(54, 50, 34, 5) + doigt(64, 53, 27, 14) + paume(46, false) + tendons;
-  if (symbole === "ciseaux") return doigt(37, 52, 38, -14) + doigt(50, 50, 40, 9, { avecBague: true }) + paume(46) + replie(54, 42, 9, 18) + replie(62, 45, 8, 16) + doigt(33, 66, 26, 74);
-  if (symbole === "ciseaux-dos") return doigt(30, 70, 18, -25, { sansOngle: true }) + doigt(37, 52, 38, -14) + doigt(50, 50, 40, 9, { avecBague: true }) + paume(46, false) + replie(54, 43, 9, 12, { pli: false }) + replie(62, 45, 8, 11, { pli: false }) + tendons;
+  // les ciseaux : toujours vus de dos (choix du porteur du projet), l'annulaire et l'auriculaire repliés restent cachés derrière la main
+  if (symbole === "ciseaux" || symbole === "ciseaux-dos") return doigt(30, 70, 18, -25, { sansOngle: true }) + doigt(37, 52, 38, -14) + doigt(50, 50, 40, 9, { avecBague: true }) + paume(46, false) + tendons;
   if (symbole === "index") return doigt(41, 50, 40, -4, { avecBague: true }) + paume(46) + replie(46.5, 42, 9.5, 18) + replie(55.5, 43, 9, 17) + replie(64.5, 46, 8, 15) + doigt(33, 66, 26, 74);
   if (symbole === "dos") return doigt(29, 68, 20, -20, { sansOngle: true }) + paume(42, false) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [36, 34, 35, 37][i], 10.5, 14, { pli: false, avecBague: i === 2 })).join("") + tendons;
   const poing = paume(42) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [38, 35, 36, 39][i], 10.5, 22, { avecBague: i === 2 })).join("");
@@ -140,7 +140,7 @@ export function avatarSVG(a) {
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
     ${nue ? "" : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     <rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}
-    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${dessinerMain(a, fillGant, ink, nue)}${deco}${nue ? `<rect x="37.5" y="89" width="25" height="11" rx="2.5" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.3"/><rect x="37.5" y="93" width="25" height="2.5" fill="rgba(255,255,255,.5)"/>` : ""}${accessoires(a, nue)}${nue ? "</g>" : ""}
+    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${nue ? "</g>" : ""}
   </svg>`;
 }
 
