@@ -177,6 +177,7 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .sw button[aria-pressed=true] { border-color: var(--line); box-shadow: 0 0 0 2px var(--court-deep) inset; }
 .sw button.locked { opacity: .4; }
 .sw button.locked::after { content: "🔒"; position: absolute; right: -6px; bottom: -6px; font-size: .75rem; }
+.sw button[data-k="nu"] { font-size: 1.15rem; line-height: 1; display: grid; place-items: center; }   /* la main nue se reconnaît à sa main */
 .sw button.txt { width: auto; border-radius: 10px; padding: 0 12px; background: var(--panel); color: var(--line); border-color: rgba(255, 255, 255, .2); }
 .sw button.txt[aria-pressed=true] { border-color: var(--me); }
 .id .pseudo .num { color: var(--muted); font-size: .6em; font-weight: 700; margin-left: 2px; }
@@ -288,6 +289,43 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .bp.win .bn { font-weight: 700; }
 .bp.lose { opacity: .45; }
 .bp .mini { width: 24px; height: 24px; }
+/* La carrière : l'en-tête, le classement de la saison, le palmarès */
+.car-entete { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.1rem; margin: 0 0 6px; }
+.car-classement { width: 100%; border-collapse: collapse; font-size: .95rem; font-weight: 700; margin: 6px 0 4px; }   /* en gras : le classement saute aux yeux */
+.car-classement th { color: var(--muted); font-weight: 600; text-align: right; padding: 4px 3px; }
+.car-classement td { text-align: right; padding: 4px 3px; border-top: 1px solid rgba(255, 255, 255, .08); }
+.car-classement th:nth-child(2), .car-classement td:nth-child(2) { text-align: left; }
+.car-classement td:nth-child(2) { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.car-classement td:nth-child(2) span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 9.5em; }
+.car-classement .mini { width: 22px; height: 22px; flex: none; }
+.car-classement tr.moi td { font-weight: 800; color: var(--me); }
+.car-classement tr.zone-po td:first-child { box-shadow: inset 3px 0 0 #3fbf74; }
+.car-classement tr.zone-bas td:first-child { box-shadow: inset 3px 0 0 #e0524b; }
+.car-legende { font-size: .78rem; color: var(--muted); margin: 0 0 10px; }
+.car-calendrier ol { list-style: none; padding: 0; margin: 8px 0 0; }
+.car-calendrier li { display: flex; align-items: center; gap: 8px; padding: 6px 4px; border-top: 1px solid rgba(255, 255, 255, .08); font-size: .88rem; }
+.car-calendrier li .mini { width: 22px; height: 22px; flex: none; }
+.car-cal-nom { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.car-cal-nom small { color: var(--muted); }
+.car-cal-etat { white-space: nowrap; color: var(--muted); font-size: .82rem; }
+.car-calendrier li.jouee .car-cal-etat { color: var(--line); }
+.car-calendrier li.prochain { outline: 2px solid var(--me); border-radius: 8px; }
+.car-calendrier li.prochain .car-cal-etat { color: var(--me); font-weight: 700; }
+.car-saison { margin-top: 10px; }
+.car-saison-circuit { padding: 8px 2px; border-top: 1px solid rgba(255, 255, 255, .08); font-size: .88rem; line-height: 1.5; }
+.car-saison-circuit .car-sec { color: var(--muted); }
+.vitrine-titre { font-size: .85rem; color: var(--muted); margin: 10px 0 4px; }
+.vitrine { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.vitrine-case { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; }
+.vitrine-case .coupe { width: 100%; max-width: 56px; height: auto; opacity: .45; }
+.vitrine-case.gagnee .coupe { opacity: 1; filter: drop-shadow(0 0 6px rgba(255, 215, 90, .45)); }
+.vitrine-case b { font-size: .72rem; margin-top: 2px; }
+.vitrine-case small { font-size: .66rem; color: var(--muted); line-height: 1.2; }
+.vitrine-case.gagnee small { color: var(--line); }
+.car-coupe-tour, .car-vitrine { margin-top: 6px; }
+.car-coupe-tour .bm { margin-top: 6px; }
+.car-circ { color: var(--muted); font-size: .72rem; font-weight: 400; }
+.car-palmares { margin: 12px 0 0; padding-left: 18px; font-size: .9rem; }
 .bs { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--muted); min-width: 2.6rem; text-align: center; }
 .tmsg { font-weight: 600; margin: 14px 0 12px; line-height: 1.4; }
 
@@ -739,11 +777,11 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 
 /* L'écran de démarrage : le logo, une seconde, puis il s'efface tout seul (sans bloquer l'appli). */
 .demarrage { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: radial-gradient(ellipse at 50% 45%, #1A5A40, #0F3D2B 70%);
-  animation: demarrage-fin .45s ease-in 1s forwards; pointer-events: none; }
-.demarrage img { width: min(62vw, 300px); height: auto; animation: demarrage-logo .6s cubic-bezier(.2, 1.2, .4, 1) both; }
+  animation: demarrage-fin .45s ease-in 2s forwards; pointer-events: none; }   /* 2 s : le temps de lire le logo */
+.demarrage img { width: min(92vw, 75vh, 560px); height: auto; animation: demarrage-logo .6s cubic-bezier(.2, 1.2, .4, 1) both; }
 @keyframes demarrage-fin { to { opacity: 0; visibility: hidden; } }
 @keyframes demarrage-logo { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .demarrage { animation-delay: .5s; } .demarrage img { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .demarrage { animation-delay: 1s; } .demarrage img { animation: none; } }
 /* À propos (Options) */
 .a-propos { text-align: center; }
 .a-propos img { display: block; width: 170px; height: 170px; margin: 4px auto 10px; }
