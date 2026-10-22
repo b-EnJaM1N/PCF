@@ -212,3 +212,17 @@ test("les trophées de la carrière : une montée, le bouclier, la coupe, puis l
   assert.equal(C.ou, 4);
   assert.deepEqual(titresCarriere(C), ["promu", "national", "professionnel", "elite", "leader"]);
 });
+
+test("en Amateur, la saison se joue en un set de 7 ; les bots faibles sont un peu renforcés en carrière", async () => {
+  const { formatSaison, renfort, coupCarriere } = await import("../app/js/carriere-logique.js");
+  const C = nouvelleCarriere(hasardGraine(13));
+  assert.deepEqual(prochainMatch(C).format, { pointsParSet: 7, setsGagnants: 1 });
+  assert.deepEqual(formatSaison(1), { pointsParSet: 11, setsGagnants: 1 });
+  gagner(C, true);
+  C.resultats.filter(m => m.a !== "moi").forEach(m => assert.equal(Math.max(...m.scores[0]), 7));
+  assert.equal(renfort(botParId("pantoufle")), 0.25); assert.equal(renfort(botParId("cyclo")), 0.12); assert.equal(renfort(botParId("titan")), 0);
+  // Renforcé, Rocky (qui adore la Pierre) contre celui qui joue toujours Pierre : il joue Feuille bien plus souvent.
+  const hist = Array.from({ length: 6 }, () => ({ moi: 1, adv: 0, res: "p" }));
+  let feuilles = 0; for (let i = 0; i < 2000; i++) if (coupCarriere(botParId("rocky"), hist, Math.random) === 2) feuilles++;
+  assert.ok(feuilles > 2000 * 0.3);
+});

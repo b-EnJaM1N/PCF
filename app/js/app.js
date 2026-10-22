@@ -19,7 +19,7 @@ import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
-import { CIRCUITS, JOURNEES, QUALIFIES, NOMS_TOURS, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere } from "./carriere-logique.js";
+import { CIRCUITS, JOURNEES, QUALIFIES, NOMS_TOURS, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
@@ -271,7 +271,7 @@ function jouer(signe, auto = false) {
   const m = S.match;
   // Le bot choisit sans connaître le coup du joueur.
   const histBot = m.coups.map(c => ({ moi: c.b, adv: c.a, res: c.gagnant === null ? "e" : c.gagnant === 1 ? "g" : "p" }));
-  const signeBot = choisirCoup(OPP, histBot, S.hasard || Math.random, contexteBot(m));   // (match du jour : le même tirage pour tout le monde)
+  const signeBot = (S.carriere ? coupCarriere : choisirCoup)(OPP, histBot, S.hasard || Math.random, contexteBot(m));   // (carrière : les bots faibles renforcés)   // (match du jour : le même tirage pour tout le monde)
   const reveler = () => { ambiance.raquette(signe, grandMoment(m)); afficherCoup(signe, signeBot, [auto, false]); };
   if (reduitMouvement()) { reveler(); return; }
   // Comme au chifoumi : les deux poings se secouent, puis les deux signes s'ouvrent ensemble (pareil en duel).
@@ -1553,10 +1553,10 @@ function renderCarriere() {
   const k = C.ou, pm = prochainMatch(C), adv = pm ? botParId(pm.adv) : null;
   $("carEntete").textContent = `Saison ${C.saison} · ${CIRCUITS[k]} (${k + 1}/${CIRCUITS.length})`;
   const place = C.place ? `${C.place}${C.place === 1 ? "re" : "e"} de la saison. ` : "";
-  const sets = pm?.format.setsGagnants === 1 ? "Un set de 11 points." : "2 sets gagnants.";
+  const sets = pm?.format.setsGagnants === 1 ? `Un set de ${pm.format.pointsParSet} points.` : "2 sets gagnants.";
   $("carMsg").textContent = pm?.coupe ? `${pm.etape} contre ${adv.nom} (niveau ${adv.elo}, ${circuitDe(adv.id)}). ${sets}`
     : C.phase === "fin" ? texteBilan(C)
-    : C.phase === "saison" ? `${pm.etape} : contre ${adv.nom} (niveau ${adv.elo}), ${adv.style.charAt(0).toLowerCase()}${adv.style.slice(1)}. Un set de 11 points.`
+    : C.phase === "saison" ? `${pm.etape} : contre ${adv.nom} (niveau ${adv.elo}), ${adv.style.charAt(0).toLowerCase()}${adv.style.slice(1)}. ${sets}`
     : C.phase === "barrage" ? (C.barrage.haut ? `Finaliste des playoffs ! Barrage d'accession contre ${adv.nom}, qui joue son maintien en ${CIRCUITS[k + 1]} : gagne, et tu montes. 2 sets gagnants.`
       : `Barrage du maintien contre ${adv.nom}, finaliste du ${CIRCUITS[k - 1]} : gagne, et tu restes en ${CIRCUITS[k]}. 2 sets gagnants.`)
     : `${place}${pm.etape} contre ${adv.nom} (niveau ${adv.elo}). 2 sets gagnants.`;
