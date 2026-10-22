@@ -10,6 +10,8 @@ Tout ce qu'il faut copier dans la Play Console (Croissance › Présence sur le 
 
 (29 caractères ; choisi le 22 octobre à la place de « HandSlam : Chifoumi en duel ».)
 
+**Envoyé pour examen le 22 octobre** : le nom, la description courte et la description complète (avec la Carrière solo).
+
 **Description courte** (80 caractères au plus, choisie le 22 octobre) :
 
 > Pierre-Feuille-Ciseaux devient un sport : duels et tournois commentés en direct.
