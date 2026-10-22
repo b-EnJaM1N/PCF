@@ -6,13 +6,15 @@ Tout ce qu'il faut copier dans la Play Console (Croissance › Présence sur le 
 
 **Nom de l'appli** (30 caractères au plus) :
 
-> HandSlam : Chifoumi en duel
+> HandSlam : temple du chifoumi
 
-Autres possibilités : « HandSlam », « HandSlam : le Chifoumi sport ». Le nom pourra être changé plus tard.
+(29 caractères ; choisi le 22 octobre à la place de « HandSlam : Chifoumi en duel ».)
 
-**Description courte** (80 caractères au plus, choisie le 3 octobre) :
+**Description courte** (80 caractères au plus, choisie le 22 octobre) :
 
-> Le hasard n'existe pas : lis ton adversaire et deviens champion de Chifoumi.
+> Le Pierre-Feuille-Ciseaux devient un sport : duels et tournois commentés en direct.
+
+(Ancienne, du 3 octobre : « Le hasard n'existe pas : lis ton adversaire et deviens champion de Chifoumi. »)
 
 **Description complète** (4 000 caractères au plus ; le texte seul, prêt à copier, est dans `description.txt`) :
 
