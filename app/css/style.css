@@ -177,6 +177,7 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .sw button[aria-pressed=true] { border-color: var(--line); box-shadow: 0 0 0 2px var(--court-deep) inset; }
 .sw button.locked { opacity: .4; }
 .sw button.locked::after { content: "🔒"; position: absolute; right: -6px; bottom: -6px; font-size: .75rem; }
+.sw button[data-k="nu"] { font-size: 1.15rem; line-height: 1; display: grid; place-items: center; }   /* la main nue se reconnaît à sa main */
 .sw button.txt { width: auto; border-radius: 10px; padding: 0 12px; background: var(--panel); color: var(--line); border-color: rgba(255, 255, 255, .2); }
 .sw button.txt[aria-pressed=true] { border-color: var(--me); }
 .id .pseudo .num { color: var(--muted); font-size: .6em; font-weight: 700; margin-left: 2px; }
