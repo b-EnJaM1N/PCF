@@ -1,4 +1,13 @@
-# HandSlam Invaders
+# Chifoumania – Riposte (anciennement « HandSlam Invaders »)
+
+## Nom (décision du porteur du projet, 22 octobre)
+- **Famille d'applications : « Chifoumania »**, à la française (avec « ch », comme « chifoumi » s'écrit le plus souvent en France). Elle pourra accueillir d'autres modes : Aventure, plateforme, arcade…
+- **Ce jeu : « Riposte »**, soit « Chifoumania – Riposte ». On riposte au signe qui tombe avec celui qui le bat ; le mot existe aussi en anglais (escrime).
+- Le mot « HandSlam » est retiré du jeu (accueil, colonne de gauche, onglet du navigateur, sol du Gymnase). Le mot « Invaders » est évité aussi : « Space Invaders » est une marque de Taito.
+- Le nom du fichier du prototype (`prototypes/handslam-invaders.html`) et les clés de sauvegarde sur le téléphone (`hs-invaders-…`) ne changent pas, pour ne pas casser les liens ni effacer les records.
+- **Description de la fiche Play Store en anglais**, avec « rock, paper, scissors » (le mot « chifoumi » n'est pas connu à l'étranger). Premier jet : « Chifoumania – Riposte: rock, paper, scissors… falling from the sky! Shoot the sign that beats each one: rock smashes scissors, scissors cut paper, paper wraps rock. Four worlds, bosses, endless rounds. Quick reflexes and a cool head. »
+- **À vérifier par le porteur du projet avant de s'y attacher** (payant ou difficile à changer ensuite) : la marque sur l'INPI (data.inpi.fr ; dépôt payant, environ 190 € pour une classe), le nom sur le Play Store, et le nom de domaine chez OVH (chifoumania.fr / .com).
+
 
 Jeu à part, prévu **après le lancement de HandSlam** (voir « Seconde appli » dans [`feuille-de-route.md`](feuille-de-route.md)). Ce fichier regroupe tout ce qui concerne Invaders ; la feuille de route de HandSlam n'y renvoie que par un lien.
 

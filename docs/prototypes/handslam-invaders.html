@@ -2,7 +2,7 @@
 <html lang="fr">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>HandSlam Invaders</title>
+<title>Chifoumania – Riposte</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@700;800&display=swap">
@@ -90,7 +90,7 @@ canvas { display: block; width: 100%; height: 100%; }
 <div class="jeu">
   <div class="zone" id="zone">
   <div class="colonne">
-    <div class="titre">HAND<br><b>SLAM</b></div>
+    <div class="titre">CHIFOU<br><b>MANIA</b></div>
     <div class="compteurs">
       <div><span>Score</span><strong id="score">0</strong></div>
       <div><span>Record</span><strong id="record">0</strong></div>
@@ -109,7 +109,7 @@ canvas { display: block; width: 100%; height: 100%; }
     <button class="son" id="son" aria-label="Couper le son">🔊</button>
 
     <div class="ecran" id="accueil">
-      <h1>HAND<b>SLAM</b><br>Invaders</h1>
+      <h1>CHIFOU<b>MANIA</b><br>Riposte</h1>
       <p>Les signes tombent. Place-toi dessous et tire celui qui les bat.</p>
       <div class="regles">
         <span class="e">✌️</span><span class="fl">→ tire</span><span class="e">✊</span>
@@ -1220,7 +1220,7 @@ canvas { display: block; width: 100%; height: 100%; }
     ctx.fillStyle = "rgba(245, 247, 250, .07)";
     ctx.font = `800 ${Math.round(rc * 0.42)}px "Barlow Condensed", sans-serif`;
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText("HANDSLAM", cx, cy + rc * 1.45);
+    ctx.fillText("CHIFOUMANIA", cx, cy + rc * 1.45);
   }
 
   function dessinerPlage() {
