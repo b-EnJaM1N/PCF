@@ -1313,6 +1313,7 @@ function renderEditeur() {
     }));
   };
   mk($("swSymbole"), "symbole", SYMBOLES, true); mk($("swBg"), "fond", FONDS); mk($("swGlove"), "gant", GANTS); mk($("swWrist"), "poignet", POIGNETS); mk($("swMotif"), "motif", MOTIFS, true); mk($("swGantMotif"), "gantMotif", MOTIFS_GANT, true);
+  $("choixPoignet").hidden = P.av.gant === "nu";   // pas de bandeau sur la main nue
   mk($("swPeau"), "peau", PEAUX); mk($("swOngles"), "ongles", ONGLES); mk($("swBracelet"), "bracelet", BRACELETS); mk($("swBague"), "bague", BAGUES);
 }
 $("inFlag").innerHTML = PAYS.map(([f, n]) => `<option value="${f}">${f} ${n}</option>`).join("");
