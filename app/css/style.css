@@ -302,6 +302,15 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .car-classement tr.zone-po td:first-child { box-shadow: inset 3px 0 0 #3fbf74; }
 .car-classement tr.zone-bas td:first-child { box-shadow: inset 3px 0 0 #e0524b; }
 .car-legende { font-size: .78rem; color: var(--muted); margin: 0 0 10px; }
+.car-calendrier ol { list-style: none; padding: 0; margin: 8px 0 0; }
+.car-calendrier li { display: flex; align-items: center; gap: 8px; padding: 6px 4px; border-top: 1px solid rgba(255, 255, 255, .08); font-size: .88rem; }
+.car-calendrier li .mini { width: 22px; height: 22px; flex: none; }
+.car-cal-nom { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.car-cal-nom small { color: var(--muted); }
+.car-cal-etat { white-space: nowrap; color: var(--muted); font-size: .82rem; }
+.car-calendrier li.jouee .car-cal-etat { color: var(--line); }
+.car-calendrier li.prochain { outline: 2px solid var(--me); border-radius: 8px; }
+.car-calendrier li.prochain .car-cal-etat { color: var(--me); font-weight: 700; }
 .car-palmares { margin: 12px 0 0; padding-left: 18px; font-size: .9rem; }
 .bs { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--muted); min-width: 2.6rem; text-align: center; }
 .tmsg { font-weight: 600; margin: 14px 0 12px; line-height: 1.4; }
