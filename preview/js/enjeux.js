@@ -17,9 +17,9 @@ export const SUGGESTIONS = [
 export const MOTS_INTERDITS = ["connard", "connasse", "conasse", "salope", "pute", "putain", "encule", "enculer", "nique", "niquer", "ntm",
   "fdp", "batard", "pd", "pede", "tapette", "gouine", "negre", "bougnoule", "youpin", "salaud", "pouffiasse", "petasse"];
 
-const sansAccents = t => t.normalize("NFD").replace(/[̀-ͯ]/g, "");
-const ARGENT = /€|\$|£|\beuros?\b|\bdollars?\b|\d+\s*(?:balles|e)\b/i;
-const LIEN = /https?:|www\.|\.(?:com|fr|net|org)\b/i;
+export const sansAccents = t => t.normalize("NFD").replace(/[̀-ͯ]/g, "");
+export const ARGENT = /€|\$|£|\beuros?\b|\bdollars?\b|\d+\s*(?:balles|e)\b/i;
+export const LIEN = /https?:|www\.|\.(?:com|fr|net|org)\b/i;
 
 // Le texte rangé : espaces en trop retirés.
 export const nettoyerEnjeu = t => String(t ?? "").replace(/\s+/g, " ").trim();
