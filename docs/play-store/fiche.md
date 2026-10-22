@@ -28,12 +28,18 @@ Tout ce qu'il faut copier dans la Play Console (Croissance › Présence sur le 
 >
 > UN VRAI MATCH
 > • Des sets de 11 points, des balles de set et de match, un arbitre et deux commentateurs, Roland et Monique, qui ne laissent rien passer.
-> • 8 secondes pour choisir ton coup : le temps de réfléchir, pas celui de tergiverser.
+> • 8 secondes pour choisir ton coup : de quoi réfléchir, pas de quoi hésiter.
 > • À la fin de chaque match, ta Une de « L'Écho du HandSlam » à partager.
 >
 > LIS TON ADVERSAIRE
-> • Avant le match, son dossier te montre ses signes préférés et ses réflexes, par exemple « Après une défaite, il change de signe (6 fois sur 7) ». Pendant le match, à toi de le lire, sans aide.
+> • L'encadré « Lire l'adversaire » te montre ses signes préférés et ses réflexes, par exemple « Après une défaite, il change de signe (6 fois sur 7) ».
 > • L'appli te dit aussi quand c'est toi qui deviens prévisible.
+>
+> TA CARRIÈRE EN SOLO
+> • Pars du Circuit Amateur et grimpe jusqu'à l'Élite : 5 circuits de 12 joueurs, contre 64 bots qui ont chacun leur caractère.
+> • Une saison de 11 journées, puis les playoffs pour monter, ou le maintien pour ne pas descendre, avec barrages à la clé.
+> • La Coupe Monique-Latour : 64 joueurs, toutes divisions confondues, tirage au sort à chaque tour. Le petit poucet peut faire tomber le roi.
+> • Coupes, boucliers et trophées à collectionner dans ta vitrine, et des récompenses qui ne s'achètent pas : il faut les gagner.
 >
 > DES ADVERSAIRES POUR TOUS LES NIVEAUX
 > • Entraîne-toi contre des bots au caractère bien trempé : Bambi le débutant, Chaos l'imprévisible, Rancune, le Professeur, Titan…
@@ -41,13 +47,13 @@ Tout ce qu'il faut copier dans la Play Console (Croissance › Présence sur le 
 > • Défie tes amis en direct, par pseudo ou par lien, ou lance une partie rapide contre un joueur de ton niveau.
 >
 > DES TOURNOIS CHAQUE JOUR
-> • Le HandSlam Open contre les bots, à 8 ou 16 joueurs.
-> • En ligne : Sit & Go qui démarrent dès que la salle est pleine, freeroll chaque soir à 20 h, Grand Chelem le dimanche.
-> • Un niveau officiel, des divisions de Bronze à Diamant et des classements.
+> • Le freeroll gratuit chaque soir à 20 h.
+> • Des heads-up et des Sit & Go qui démarrent dès que la salle est pleine.
+> • Des tournois et des championnats entre amis, avec un niveau officiel et des classements.
 >
 > TON STYLE
 > • Ta carte de joueur, de Bois à Légende, avec tes notes et ton surnom.
-> • Ton avatar, ton cri de victoire, ta poignée de main, et 35 trophées à débloquer.
+> • Ton avatar, ton cri de victoire, ta poignée de main, et plus de 40 trophées à débloquer.
 > • Crée des cercles avec tes amis et affrontez-vous dans leur classement.
 >
 > BON À SAVOIR
