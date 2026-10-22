@@ -1482,6 +1482,7 @@ document.addEventListener("keydown", e => {
 
 // ---------------------------------------------------------------- application installable
 $("version").textContent = `Version ${VERSION}`;
+setTimeout(() => $("demarrage")?.remove(), 1600);   // l'écran de démarrage a fini de s'effacer
 let invitation = null;
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); invitation = e; $("installBtn").hidden = false; });
 $("installBtn").addEventListener("click", async () => { if (!invitation) return; invitation.prompt(); await invitation.userChoice; invitation = null; $("installBtn").hidden = true; });

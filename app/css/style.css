@@ -604,7 +604,7 @@ body[data-decouverte="0"] [data-palier="1"], body[data-decouverte="0"] [data-pal
 body[data-decouverte="1"] [data-palier="3"], body[data-decouverte="1"] [data-palier="5"],
 body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .accueil { text-align: center; margin-bottom: 14px; border-color: #F2C14E; }
-.accueil-mains { font-size: 2.4rem; letter-spacing: 8px; margin-bottom: 6px; }
+.accueil-logo { display: block; width: 190px; height: 190px; margin: 0 auto 6px; }
 .accueil p { margin: 8px 0; line-height: 1.4; }
 .accueil .btn { margin: 8px 0 4px; }
 .coach { margin: 8px 0 0; padding: 10px 12px; border-radius: 8px; background: rgba(242, 193, 78, .14); border: 1px solid #F2C14E; font-size: .92rem; line-height: 1.4; }
@@ -736,3 +736,14 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .defis-groupe:first-of-type h3 { margin-top: 4px; }
 /* Ma fiche : les 3 sous-onglets */
 .sous-onglets { margin: 4px 0 12px; }
+
+/* L'écran de démarrage : le logo, une seconde, puis il s'efface tout seul (sans bloquer l'appli). */
+.demarrage { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: radial-gradient(ellipse at 50% 45%, #1A5A40, #0F3D2B 70%);
+  animation: demarrage-fin .45s ease-in 1s forwards; pointer-events: none; }
+.demarrage img { width: min(62vw, 300px); height: auto; animation: demarrage-logo .6s cubic-bezier(.2, 1.2, .4, 1) both; }
+@keyframes demarrage-fin { to { opacity: 0; visibility: hidden; } }
+@keyframes demarrage-logo { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .demarrage { animation-delay: .5s; } .demarrage img { animation: none; } }
+/* À propos (Options) */
+.a-propos { text-align: center; }
+.a-propos img { display: block; width: 170px; height: 170px; margin: 4px auto 10px; }
