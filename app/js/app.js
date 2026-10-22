@@ -101,8 +101,11 @@ let compteUI = null;
 // Chaque changement de la fiche est gardé sur le téléphone, puis envoyé en ligne si on est connecté.
 const sauverP = () => { P.majLe = Date.now(); sauverLocal(); compteUI?.planifier(); };
 const sauverT = () => ecrire("tournoi", T);
-let C = lire("carriere");   // la carrière contre les bots (carriere-logique.js)
-const sauverC = () => ecrire("carriere", C);
+// La carrière solo contre les bots (carriere-logique.js) : gardée dans la fiche, donc sauvegardée sur le compte avec elle.
+// (Avant le 22 octobre, elle n'était que sur le téléphone : on la reprend.)
+if (!P.carriere && lire("carriere")) { P.carriere = lire("carriere"); sauverLocal(); ecrire("carriere", null); }
+let C = P.carriere || null;
+const sauverC = () => { P.carriere = C; sauverP(); };
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
 let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, programmesUI = null, defisUI = null, boutiqueUI = null;
@@ -1244,7 +1247,7 @@ $("inCadre").addEventListener("change", e => { P.cadre = e.target.value in CADRE
 
 function renderFiche() {
   renderSurnom(); renderCarte();
-  $("vitrineFiche").innerHTML = vitrineHTML() + (C ? "" : `<p class="hint">Gagne-les dans Jouer › 🏅 Ma carrière.</p>`);
+  $("vitrineFiche").innerHTML = vitrineHTML() + (C ? "" : `<p class="hint">Gagne-les dans Jouer › 🏅 Carrière solo.</p>`);
   $("pAv").innerHTML = avatarSVG(P.av);
   afficherNomFiche();
   $("pTitle").textContent = dernierTitre(P);
@@ -1357,7 +1360,7 @@ $("okNomFin").addEventListener("click", () => {
 $("inNomFin").addEventListener("keydown", e => { if (e.key === "Enter") $("okNomFin").click(); });
 $("resetProfile").addEventListener("click", () => {
   if (!confirm("Remettre ta fiche à zéro ? Tes statistiques et titres seront effacés.")) return;
-  P = remettreAZero(P); sauverP(); renderFiche(); rafraichirAvatars(); afficherBilan();
+  P = remettreAZero(P); C = null; sauverP(); renderFiche(); rafraichirAvatars(); afficherBilan();
 });
 
 // ---------------------------------------------------------------- navigation
@@ -1650,8 +1653,9 @@ compteUI = installerCompte({
   rafraichir: () => { afficherNomFiche(); rafraichirAvatars(); },
   ouvrirFiche: () => aller("viewProfile"),
   remplacerP: fiche => {
-    P = normaliserProfil(fiche); sauverLocal();
+    P = normaliserProfil(fiche); sauverLocal(); C = P.carriere || null;
     if (assurerSurnom()) sauverP();
+    if (vueCourante === "viewCarriere") renderCarriere();
     $("inPseudo").value = P.pseudo; $("inFlag").value = P.drapeau;
     renderFiche(); rafraichirAvatars(); afficherBilan();
   },

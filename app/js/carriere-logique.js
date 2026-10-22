@@ -298,6 +298,8 @@ export function saisonSuivante(C, rng = Math.random) {
   C.palmares.push({ saison: C.saison, circuit: C.ou, place: C.place, texte: texteBilan(C), mouvement: C.bilan.mouvement, titre: C.bilan.titre, circuits: resume,
     coupe: resume[C.ou].champion === "moi", bouclier: C.place === 1,
     coupeML: C.coupe ? { vainqueur: C.coupe.vainqueur, finaliste: C.coupe.finaliste, texte: texteCoupe(C) } : null });
+  // La carrière voyage dans la fiche en ligne (taille limitée) : le détail des circuits n'est gardé que pour les 10 dernières saisons.
+  C.palmares.slice(0, -10).forEach(p => delete p.circuits);
   const N = C.circuits.map(c => [...c]);
   const deplacer = (id, de, vers) => { N[de].splice(N[de].indexOf(id), 1); N[vers].push(id); resume[de][vers > de ? "montes" : "descendus"].push(id); };
   for (let k = 0; k < DERNIER; k++) {
