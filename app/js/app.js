@@ -1583,7 +1583,7 @@ function renderCarriere() {
       const A = infoJoueur(l.id), d = l.pm - l.pc, cls = [l.id === "moi" ? "moi" : "", i < QUALIFIES ? "zone-po" : zones ? "zone-bas" : ""].join(" ").trim();
       return `<tr class="${cls}"><td>${i + 1}</td><td><span class="mini">${avatarSVG(A.av)}</span><span>${esc(A.nom)}</span></td><td>${l.j}</td><td>${l.v}</td><td>${l.d}</td><td>${d > 0 ? "+" : ""}${d}</td><td>${l.pts}</td></tr>`;
     }).join("") + `</tbody></table><p class="car-legende">🟩 Places 1 à 8 : playoffs, le vainqueur monte.${zones ? " 🟥 Places 9 à 12 : le maintien." : ""}</p>`;
-  $("carVitrine").innerHTML = `<div class="rnd">Ma vitrine</div>${vitrineHTML()}`;
+  $("carVitrine").innerHTML = `<details class="regles car-vitrine"><summary>🏆 Ma vitrine</summary>${vitrineHTML()}</details>`;   // repliée : on la déplie pour l'admirer
   // Le palmarès.
   if (C.palmares.length) {
     const b = bilanCarriere(C);
@@ -1620,7 +1620,7 @@ document.addEventListener("keydown", e => {
 
 // ---------------------------------------------------------------- application installable
 $("version").textContent = `Version ${VERSION}`;
-setTimeout(() => $("demarrage")?.remove(), 1600);   // l'écran de démarrage a fini de s'effacer
+setTimeout(() => $("demarrage")?.remove(), 2600);   // l'écran de démarrage a fini de s'effacer
 let invitation = null;
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); invitation = e; $("installBtn").hidden = false; });
 $("installBtn").addEventListener("click", async () => { if (!invitation) return; invitation.prompt(); await invitation.userChoice; invitation = null; $("installBtn").hidden = true; });
