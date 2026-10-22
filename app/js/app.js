@@ -17,10 +17,10 @@ import { etatNotifications, activerNotifications, desactiverNotifications, ratta
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
-import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
+import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { presentation, etatPasser } from "./presentation.js";
-import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS } from "./avatar.js";
+import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS } from "./voix/script.js";
 import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint } from "./ambiance.js";
@@ -526,6 +526,9 @@ function finir() {
     abandon: !!special && !gagne, officiel: !!(S.duel && D?.duel?.classe), niveauMoi: monClassement ?? 1200, niveauAdv: OPP.classement ?? 1200,
     finaleEnLigne: !!(S.duel && D?.tourVoix === "finale"), sitAndGo: !!(S.duel && D?.direct), grandChelem: !!(S.duel && D?.grandChelem),
   }) : [];
+  // Le premier gant : offert après le premier match (avant, la main nue).
+  const premierGant = matchsAvant === 0 && P.matchs > 0 && P.av.gant === "nu" && !P.premierGant;
+  if (premierGant) { P.av.gant = "blanc"; P.premierGant = true; }
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("coach").hidden = true;
   if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
@@ -556,6 +559,7 @@ function finir() {
   const paliers = retenirRang();
   if (paliers.length) $("news").textContent = `${$("news").textContent} ${paliers.join(" ")}`.trim();
   if (ouvert.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${ouvert.join(" ")} ${$("news").textContent}`.trim();
+  if (premierGant) $("news").textContent = `🧤 Ton premier gant t'est offert ! Change sa couleur (ou garde ta main nue) dans Ma fiche › Mon avatar. ${$("news").textContent}`.trim();
   // Défi avec enjeu (entre amis) : qui s'y colle, en grand.
   $("endEnjeu").hidden = !(S.duel && D?.duel?.enjeu);
   if (S.duel && D?.duel?.enjeu) $("endEnjeu").textContent = annonceEnjeu(D.duel.enjeu, gagne, OPP.nom);
@@ -1300,7 +1304,8 @@ function renderEditeur() {
       const k = b.dataset.k, t = verrouDe(type, k);
       if (estVerrouille(P, type, k)) {
         const x = articleDe(type, k);
-        $("lockNote").innerHTML = t ? `Verrouillé. Obtiens le titre « ${esc(t.nom)} » : ${esc(t.desc.charAt(0).toLowerCase() + t.desc.slice(1))}`
+        $("lockNote").innerHTML = gantAttendPremierMatch(P, type, k) ? "🧤 Les gants se débloquent après ton premier match. En attendant : la main nue !"
+          : t ? `Verrouillé. Obtiens le titre « ${esc(t.nom)} » : ${esc(t.desc.charAt(0).toLowerCase() + t.desc.slice(1))}`
           : `🛍️ « ${esc(x.nom)} » est en vente à la boutique : ${x.prix} jetons. <button class="linkbtn" data-aller="viewBoutique">Voir la boutique</button>`;
         return;
       }
@@ -1308,6 +1313,7 @@ function renderEditeur() {
     }));
   };
   mk($("swSymbole"), "symbole", SYMBOLES, true); mk($("swBg"), "fond", FONDS); mk($("swGlove"), "gant", GANTS); mk($("swWrist"), "poignet", POIGNETS); mk($("swMotif"), "motif", MOTIFS, true); mk($("swGantMotif"), "gantMotif", MOTIFS_GANT, true);
+  mk($("swPeau"), "peau", PEAUX); mk($("swOngles"), "ongles", ONGLES); mk($("swBracelet"), "bracelet", BRACELETS); mk($("swBague"), "bague", BAGUES);
 }
 $("inFlag").innerHTML = PAYS.map(([f, n]) => `<option value="${f}">${f} ${n}</option>`).join("");
 $("inFlag").value = P.drapeau;

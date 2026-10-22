@@ -1,7 +1,7 @@
 // Les célébrations : le cri du joueur à la fin d'un set gagné (une bulle et le poing serré)
 // et à la fin du match (en grand, avec des confettis aux couleurs du gant).
 // Ici, seulement les règles (testées automatiquement) ; l'écran est dans app.js.
-import { GANTS, POIGNETS } from "./avatar.js";
+import { POIGNETS, couleurMain } from "./avatar.js";
 
 // t : ce qui s'affiche ; le dernier est un poing serré, sans un mot.
 export const CRIS = [
@@ -55,6 +55,6 @@ export function commenterCri(dejaCommente, c, rng = Math.random) {
 
 // Les confettis : aux couleurs du gant et du poignet, un peu de blanc pour l'éclat.
 export function couleursConfettis(av = {}) {
-  const gant = (GANTS[av.gant] || GANTS.blanc)[1], poignet = (POIGNETS[av.poignet] || POIGNETS.rouge)[1];
+  const gant = couleurMain(av), poignet = (POIGNETS[av.poignet] || POIGNETS.rouge)[1];
   return [gant, gant, poignet, "#FFFFFF"];
 }

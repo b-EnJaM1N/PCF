@@ -7,12 +7,24 @@ export const FONDS = { court: ["Court", "#1F5FA8"], gazon: ["Gazon", "#2E8B57"],
   roland: ["Terre de Roland", "#C8643B"], londres: ["Gazon de Londres", "#3E9B4F", "repeating-linear-gradient(90deg,#3E9B4F 0 6px,#358A44 6px 12px)"],
   neon: ["Néon", "#1A0B33", "radial-gradient(circle,#1A0B33 55%,#FF3EA5 60%,#22D3EE 70%)"], coucher: ["Coucher de soleil", "#F2784B", "linear-gradient(#FFB347,#F2784B,#8E3B8E)"],
   stade: ["Stade de nuit", "#0B1B33", "radial-gradient(circle at 50% 0,#FFF6C8,#0B1B33 60%)"], galaxie: ["Galaxie", "#120A2A", "radial-gradient(circle at 30% 30%,#5B2A86,#120A2A 70%)"] };
-export const GANTS = { blanc: ["Blanc", "#F5F7FA"], jaune: ["Jaune", "#F4C542"], rouge: ["Rouge", "#E8574A"], bleu: ["Bleu", "#4DA3FF"], vert: ["Vert", "#6BD49A"], or: ["Or", "#FFD34D"], argent: ["Argent", "#C9CED6"],
+// La main nue (« nu ») prend la couleur de peau choisie ; c'est la main des nouveaux joueurs, jusqu'à leur premier gant.
+export const GANTS = { nu: ["Main nue", null, "linear-gradient(90deg,#FFCC4D 0 25%,#F7D9C4 25% 50%,#A86B42 50% 75%,#4A2C1A 75%)"], blanc: ["Blanc", "#F5F7FA"], jaune: ["Jaune", "#F4C542"], rouge: ["Rouge", "#E8574A"], bleu: ["Bleu", "#4DA3FF"], vert: ["Vert", "#6BD49A"], or: ["Or", "#FFD34D"], argent: ["Argent", "#C9CED6"],
   rose: ["Rose", "#F28DB2"], violet: ["Violet", "#9B6BD6"], noir: ["Noir mat", "#33363D"], turquoise: ["Turquoise", "#2EC4B6"] };
 export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], blanc: ["Blanc", "#F5F7FA"], bleu: ["Bleu", "#2C6FD1"], jaune: ["Jaune", "#F4C542"], noir: ["Noir", "#23262B"], or: ["Or", "#E0B12A"], argent: ["Argent", "#AEB6C2"],
   tricolore: ["Tricolore", "#F5F7FA", "linear-gradient(90deg,#2C5CC5 33%,#F5F7FA 33% 66%,#E1342B 66%)"],
   arcenciel: ["Arc-en-ciel", "#F4C542", "linear-gradient(90deg,#E8574A,#F4C542,#6BD49A,#4DA3FF,#9B6BD6)"],
   leopard: ["Léopard", "#E2A74B", "radial-gradient(circle at 30% 40%,#3A2A1A 18%,transparent 20%),radial-gradient(circle at 70% 65%,#3A2A1A 18%,transparent 20%),#E2A74B"] };
+// Les couleurs de peau de la main nue : toutes gratuites, toujours.
+export const PEAUX = { neutre: ["Neutre (comme les emojis)", "#FFCC4D"], claire: ["Claire", "#F7D9C4"], rosee: ["Rosée", "#EDB894"], doree: ["Dorée", "#D49A6A"],
+  mate: ["Mate", "#A86B42"], brune: ["Brune", "#7A4A2A"], ebene: ["Ébène", "#4A2C1A"] };
+// Les petits accessoires (gratuits) : le vernis (sur la main nue), le bracelet et la bague.
+const AUCUN = "repeating-linear-gradient(45deg,rgba(255,255,255,.35) 0 3px,transparent 3px 7px)";
+export const ONGLES = { aucun: ["Sans vernis", null, AUCUN], rouge: ["Vernis rouge", "#D7263D"], rose: ["Vernis rose", "#F28DB2"], noir: ["Vernis noir", "#1E1E24"],
+  bleu: ["Vernis bleu", "#2C6FD1"], or: ["Vernis or", "#E0B12A"] };
+export const BRACELETS = { aucun: ["Sans bracelet", null, AUCUN], cuir: ["Bracelet en cuir", "#7A4A2A"], perles: ["Bracelet de perles", "#EFE9DA"], argent: ["Bracelet argent", "#C9CED6"], or: ["Bracelet or", "#E0B12A"] };
+export const BAGUES = { aucune: ["Sans bague", null, AUCUN], argent: ["Bague argent", "#D5DAE1"], or: ["Bague or", "#E9C046"], rubis: ["Bague au rubis", "#E9C046", "radial-gradient(circle,#C2183A 35%,#E9C046 40%)"] };
+// La couleur de la main (gant ou peau), pour les dessins qui en ont besoin (confettis…).
+export const couleurMain = a => a.gant === "nu" ? (PEAUX[a.peau] || PEAUX.neutre)[1] : (GANTS[a.gant] || GANTS.blanc)[1];
 export const SYMBOLES = { pierre: "✊ Pierre", feuille: "✋ Feuille", ciseaux: "✌️ Ciseaux" };
 export const MOTIFS = { uni: "Uni", rayures: "Rayures", etoile: "Étoile", eclair: "Éclair" };
 // Le motif du gant (la seconde couleur est celle du poignet).
@@ -21,11 +33,32 @@ export const MOTIFS_GANT = { uni: "Uni", rayures: "Rayé", pois: "À pois", bico
 export const PAYS = [["🇫🇷", "France"], ["🇧🇪", "Belgique"], ["🇨🇭", "Suisse"], ["🇨🇦", "Canada"], ["🇱🇺", "Luxembourg"], ["🇲🇦", "Maroc"], ["🇩🇿", "Algérie"], ["🇹🇳", "Tunisie"], ["🇸🇳", "Sénégal"], ["🇨🇮", "Côte d'Ivoire"], ["🇪🇸", "Espagne"], ["🇮🇹", "Italie"], ["🇩🇪", "Allemagne"], ["🇬🇧", "Royaume-Uni"], ["🇺🇸", "États-Unis"], ["🇧🇷", "Brésil"], ["🇯🇵", "Japon"], ["🌍", "Autre"]];
 
 let n = 0;
+let vernis = null;   // la couleur du vernis pendant le dessin d'une main nue (voir doigt)
+function dessinerMain(a, fill, ink, nue) {
+  vernis = nue ? (ONGLES[a.ongles] || [])[1] || null : null;
+  try { return main(a.symbole, fill, ink); } finally { vernis = null; }
+}
+// La bague : sur le doigt du milieu, à sa base (là où il sort de la paume), selon la forme de la main.
+const PLACE_BAGUE = { feuille: [50.5, 38], index: [29.5, 37], pouce: [43, 57.5], dos: [50, 33], "ciseaux-dos": [50, 35.5], "feuille-dos": [50.5, 37, "7 55 54"], ciseaux: [50, 39], pierre: [50, 39.5] };
+function accessoires(a) {
+  let s = "";
+  const br = (BRACELETS[a.bracelet] || [])[1];
+  if (br) s += a.bracelet === "perles"
+    ? [0, 1, 2, 3, 4, 5].map(i => `<circle cx="${39 + i * 4.4}" cy="70.5" r="2.3" fill="${br}" stroke="rgba(0,0,0,.25)" stroke-width=".8"/>`).join("")
+    : `<rect x="35.5" y="68" width="29" height="5" rx="2.5" fill="${br}" stroke="rgba(0,0,0,.25)" stroke-width="1"/><rect x="37" y="69" width="26" height="1.2" rx=".6" fill="rgba(255,255,255,.5)"/>`;
+  const bg = (BAGUES[a.bague] || [])[1];
+  if (bg) {
+    const [x, y, rot] = PLACE_BAGUE[a.symbole] || PLACE_BAGUE.pierre;
+    s += `<g${rot ? ` transform="rotate(${rot})"` : ""}><rect x="${x - .5}" y="${y}" width="11.5" height="4.2" rx="1.6" fill="${bg}" stroke="rgba(0,0,0,.3)" stroke-width=".9"/>`
+      + (a.bague === "rubis" ? `<circle cx="${x + 5.25}" cy="${y + 2.1}" r="2.2" fill="#C2183A" stroke="#fff" stroke-width=".6"/>` : "") + `</g>`;
+  }
+  return s;
+}
 // sansFond : seulement le gant et le poignet (le poing qui se secoue pendant un coup).
 export function avatarSVG(a) {
-  const fond = (FONDS[a.fond] || FONDS.court)[1], gant = (GANTS[a.gant] || GANTS.blanc)[1], poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
+  const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
   const cle = a.poignet in POIGNETS ? a.poignet : "rouge";
-  const id = "av" + (++n), ink = "rgba(0,0,0,.22)", gm = a.gantMotif;
+  const id = "av" + (++n), ink = "rgba(0,0,0,.22)", gm = nue ? "uni" : a.gantMotif;   // (pas de motif de gant sur la peau)
   // Gant rayé, à pois ou bicolore : on le remplit avec un motif SVG.
   const remplissage = {
     rayures: `<pattern id="${id}g" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="8" height="8" fill="${gant}"/><rect width="3" height="8" fill="${poignet}"/></pattern>`,
@@ -73,11 +106,13 @@ export function avatarSVG(a) {
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
     <rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     <rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>
-    ${main(a.symbole, fillGant, ink)}${deco}
+    ${dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a)}
   </svg>`;
 }
 
-const doigt = (x, y, h, gant, ink, rot = "") => `<rect x="${x}" y="${y}" width="10.5" height="${h}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"${rot ? ` transform="rotate(${rot})"` : ""}/>`;
+// Un doigt ; sur une main nue vernie, l'ongle des doigts tendus prend la couleur du vernis.
+const doigt = (x, y, h, gant, ink, rot = "") => `<rect x="${x}" y="${y}" width="10.5" height="${h}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"${rot ? ` transform="rotate(${rot})"` : ""}/>`
+  + (vernis && h >= 26 ? `<rect x="${x + 2.4}" y="${y + 1.6}" width="5.7" height="7" rx="2.7" fill="${vernis}"${rot ? ` transform="rotate(${rot})"` : ""}/>` : "");
 const paume = (y, gant, ink) => `<rect x="29" y="${y}" width="42" height="${76 - y}" rx="11" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`;
 // Vu de dos : l'ongle au bout d'un doigt, et les tendons sur le dos de la main.
 const ongle = (x, y, ink, rot = "") => `<rect x="${x + 2.6}" y="${y}" width="5.3" height="5.5" rx="2.4" fill="none" stroke="${ink}" stroke-width="1.1" opacity=".5"${rot ? ` transform="rotate(${rot})"` : ""}/>`;
