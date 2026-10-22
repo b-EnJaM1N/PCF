@@ -48,6 +48,10 @@ const CONDITIONS = {
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
 };
 
+// La part des matchs où l'on dit un dialogue d'avant ou d'après match propre à l'enjeu : 8 fois sur 10 au plus,
+// moins s'il n'y en a que quelques-uns (sinon les mêmes reviennent sans cesse).
+const partDialogue = moment => Math.min(0.8, DIALOGUES_IDS[moment].length / 12);
+
 // Le contexte des commentaires d'avant et d'après match (les dialogues « avant_… » et « apres_… ») :
 // "entrainement" (contre un bot, hors tournoi), "tournoi_premiers|quarts|demis|finale" (petit tournoi),
 // "majeur_quarts|demis|finale" (gros tournoi : le Grand Chelem ; ses premiers tours prennent ceux d'un petit tournoi), sinon null.
@@ -179,13 +183,13 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
         moment = g === 0 ? "serie_pour" : "serie_contre"; ctx.serie6 = etat.serie.n === 6;
       } else if (auto && peutCommenter(4) && rng() < 0.6) {
         moment = "temps_ecoule"; ctx.balleMatch = evt.balleAvant?.type === "match";
-      } else if (etat.obstine && c[n - 1].a !== c[n - 2].a && peutCommenter(2) && rng() < 0.5) {
+      } else if (etat.obstine && c[n - 1].a !== c[n - 2].a && peutCommenter(2) && rng() < 0.2) {   // (une seule réplique : pas trop souvent)
         moment = "changement"; etat.obstine = false;
       } else if (obstination && !etat.dejaSet.has("obstination") && peutCommenter(4) && rng() < 0.4) {   // (une fois par set au plus)
         moment = "obstination"; etat.obstine = true; etat.dejaSet.add("obstination");
       } else if (g === 1 && recents.length >= 8 && recents.filter(Boolean).length >= 6 && peutCommenter(6) && rng() < 0.5) {
         moment = "lecture_subie";
-      } else if (lectureReussie(c) && peutCommenter(5) && rng() < 0.5) {
+      } else if (lectureReussie(c) && peutCommenter(5) && rng() < 0.3) {   // (6 répliques seulement : « Pleine lucarne ! » revenait trop)
         moment = "lecture_reussie"; ctx.serie4 = etat.serie.joueur === 0 && etat.serie.n >= 4;
       } else if (h && h.type === "match" && peutCommenter(3, 0.5) && rng() < 0.5) {
         moment = "tension"; ctx.balleContre = h.joueur === 1;
@@ -270,9 +274,11 @@ function finDeSet(match, evt, etat, ctx, rng) {
 // les phrases pendant qu'on regarde l'écran de fin (décision du porteur du projet).
 function finDeMatch(match, evt, etat, ctx, rng) {
   const un = x => (x ? (Array.isArray(x) ? x : [x]) : []);
-  // Selon l'enjeu (entraînement, tour d'un tournoi) : un dialogue adapté, 8 fois sur 10 (toujours en finale).
+  // Selon l'enjeu (entraînement, tour d'un tournoi) : un dialogue adapté (toujours en finale). Les petites listes passent
+  // moins souvent (2 dialogues après une défaite à l'entraînement : on les entendait à chaque fois), pour laisser venir
+  // les répliques de victoire et de défaite habituelles.
   const jeu = etat.jeu && `apres_${etat.jeu}_${evt.gagnant === 0 ? "victoire" : "defaite"}`;
-  if (jeu && DIALOGUES_IDS[jeu] && (/finale/.test(jeu) || rng() < 0.8)) {
+  if (jeu && DIALOGUES_IDS[jeu] && (/finale/.test(jeu) || rng() < partDialogue(jeu))) {
     const d = dialogue(etat, jeu, rng);
     if (d) return d;
   }
@@ -287,7 +293,8 @@ function finDeMatch(match, evt, etat, ctx, rng) {
     if (troisZero || rng() < 0.5) return un(choisir(etat, "balle_match_convertie", { ...ctx, troisZero }, rng));
     return un(choisir(etat, "victoire", ctx, rng));
   }
-  if (rng() < 0.3) return un(dialogue(etat, "fin_match", rng));
+  // (un seul dialogue de fin de match : pas s'il a été entendu aux derniers matchs)
+  if (rng() < 0.3 && !DIALOGUES_IDS.fin_match.every(d => etat.anciens?.has(baseDe(d[0])))) return un(dialogue(etat, "fin_match", rng));
   return un(choisir(etat, "defaite", ctx, rng));
 }
 
@@ -405,7 +412,7 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
   dialoguesRecents.forEach(id => { const m = /_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
   // Un dialogue selon la situation (une fois sur deux), s'il n'a pas été entendu aux derniers matchs.
   // Selon l'enjeu (entraînement, tour d'un tournoi) : un dialogue adapté, 8 fois sur 10 (toujours en finale).
-  if (jeu && DIALOGUES_IDS[`avant_${jeu}`] && (/finale/.test(jeu) || rng() < 0.8)) {
+  if (jeu && DIALOGUES_IDS[`avant_${jeu}`] && (/finale/.test(jeu) || rng() < partDialogue(`avant_${jeu}`))) {
     const recentsJeu = recents.filter(id => id.startsWith(`commentateur_dialogue_avant_${jeu}_`)).slice(0, 4);
     recentsJeu.forEach(id => { const m = /_(\d\d)(_f)?$/.exec(id); if (m) etat.dialoguesDits.add(`avant_${jeu}_${+m[1] - 1}`); });
     const d = dialogue(etat, `avant_${jeu}`, rng);
