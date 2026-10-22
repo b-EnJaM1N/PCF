@@ -309,6 +309,11 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .car-cal-nom small { color: var(--muted); }
 .car-cal-etat { white-space: nowrap; color: var(--muted); font-size: .82rem; }
 .car-calendrier li.jouee .car-cal-etat { color: var(--line); }
+.car-calendrier li.coupe { background: rgba(194, 24, 58, .22); border-left: 3px solid #E9C046; border-radius: 6px; margin: 3px 0; }   /* la coupe, à part du championnat */
+.car-calendrier li.coupe .car-cal-nom { font-weight: 700; white-space: normal; line-height: 1.3; }
+.car-cal-adv { font-weight: 400; }
+.car-calendrier li.eliminee { opacity: .55; }
+.car-cal-trophee { display: grid; place-items: center; font-size: .9rem; }
 .car-calendrier li.prochain { outline: 2px solid var(--me); border-radius: 8px; }
 .car-calendrier li.prochain .car-cal-etat { color: var(--me); font-weight: 700; }
 .car-saison { margin-top: 10px; }

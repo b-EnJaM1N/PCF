@@ -1568,12 +1568,25 @@ function renderCarriere() {
   $("carCoupe").innerHTML = !K ? "" : `<div class="rnd">🏆 Coupe Monique-Latour</div><p class="hint" style="margin:0 0 6px">${esc(texteCoupe(C))}${K.vainqueur && K.vainqueur !== "moi" ? ` Vainqueur : ${esc(infoJoueur(K.vainqueur).nom)}.` : ""}${!K.vainqueur && !pm?.coupe && K.elimine === null ? ` Prochain tour après la journée ${TOURS_COUPE[K.tour].apres}.` : ""}</p>`
     + K.tours.map((R, i) => `<details class="regles car-coupe-tour"${i === K.tours.length - 1 ? " open" : ""}><summary>${TOURS_COUPE[i].nom}${R.some(m => m.v) ? "" : " · tirage"}</summary>`
       + [...R].sort((x, y) => (y.a === "moi" || y.b === "moi") - (x.a === "moi" || x.b === "moi")).map(m => ligneMatch(m, m.v, true)).join("") + `</details>`).join("");
-  // Mon calendrier : mes 11 journées, jouées (avec le score) ou à venir.
+  // Mon calendrier : mes 11 journées, jouées (avec le score) ou à venir, et les tours de la Coupe Monique-Latour glissés entre elles.
+  const ligneCal = (cls, b, nom, etat, coupe = false) => `<li class="${cls}${coupe ? " coupe" : ""}">${b ? `<span class="mini">${avatarSVG(b.av)}</span>` : `<span class="mini car-cal-trophee">🏆</span>`}<span class="car-cal-nom">${nom}</span><span class="car-cal-etat">${etat}</span></li>`;
+  const resultat = (v, scores) => `${v ? "✅ Victoire" : "❌ Défaite"} ${scores}`;
+  const ligneCoupe = r => {
+    const K = C.coupe, T = TOURS_COUPE[r], titre = `Coupe · ${T.nom}`;
+    const m = K.tours[r]?.find(x => x.a === "moi" || x.b === "moi");
+    if (!m) { const elimine = K.elimine !== null && K.elimine < r; return ligneCal(elimine ? "eliminee" : "", null, titre, elimine ? "Éliminé" : "Tirage à venir", true); }
+    const adv = botParId(m.a === "moi" ? m.b : m.a), prochain = pm?.coupe && K.tour === r;
+    const score = m.score ? (m.a === "moi" ? m.score : m.score.split("–").reverse().join("–")) : "";
+    const etat = m.v ? resultat(m.v === "moi", score) : prochain ? "👉 Prochain match" : `Après la J${T.apres}`;
+    return ligneCal(m.v ? "jouee" : prochain ? "prochain" : "", adv, `🏆 ${titre}<br><span class="car-cal-adv">${esc(adv.nom)} <small>(${adv.elo})</small></span>`, etat, true);
+  };
   $("carCalendrier").innerHTML = `<details class="regles car-calendrier"${C.phase === "saison" ? " open" : ""}><summary>📅 Mon calendrier</summary><ol>`
     + C.journees.map((j, i) => {
       const adv = j.find(p => p.includes("moi")).find(x => x !== "moi"), b = botParId(adv), r = C.resultats.find(x => x.a === "moi" && x.b === adv);
-      const etat = r ? `${r.v === "moi" ? "✅ Victoire" : "❌ Défaite"} ${r.scores.map(x => x.join("–")).join(", ")}` : i === C.journee && C.phase === "saison" ? "👉 Prochain match" : "À jouer";
-      return `<li class="${r ? "jouee" : i === C.journee && C.phase === "saison" ? "prochain" : ""}"><span class="mini">${avatarSVG(b.av)}</span><span class="car-cal-nom">J${i + 1} · ${esc(b.nom)} <small>(${b.elo})</small></span><span class="car-cal-etat">${etat}</span></li>`;
+      const prochain = i === C.journee && C.phase === "saison" && !pm?.coupe;
+      const etat = r ? resultat(r.v === "moi", r.scores.map(x => x.join("–")).join(", ")) : prochain ? "👉 Prochain match" : "À jouer";
+      return ligneCal(r ? "jouee" : prochain ? "prochain" : "", b, `J${i + 1} · ${esc(b.nom)} <small>(${b.elo})</small>`, etat)
+        + (C.coupe ? TOURS_COUPE.map((T, t) => (T.apres === i + 1 ? ligneCoupe(t) : "")).join("") : "");
     }).join("") + `</ol></details>`;
   // Le classement de la saison.
   const zones = k > 0;
