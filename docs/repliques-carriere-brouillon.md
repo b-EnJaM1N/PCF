@@ -1,6 +1,6 @@
 # Répliques de la Carrière solo (brouillon à valider)
 
-Proposées le 22 octobre 2026. **Rien n'est enregistré** : à valider (ou retoucher) par le porteur du projet, puis à enregistrer
+Proposées le 22 octobre 2026 (retouchées le 23 ; liste numérotée de 1 à 50 envoyée au porteur du projet dans la conversation). **Rien n'est enregistré** : à valider (ou retoucher) par le porteur du projet, puis à enregistrer
 avec ElevenLabs au renouvellement des crédits, en même temps que les surnoms.
 
 Le format habituel : **Roland** s'enflamme, **Monique** le ramène sur terre. Quand une réplique parle du joueur, elle existe
@@ -8,7 +8,7 @@ au masculin et au féminin (*il / elle*). Ce sont des répliques d'avant et d'ap
 
 ## 1. Avant une journée de championnat (avant_carriere_journee)
 
-1. R : « Une nouvelle journée de championnat ! » — M : « Une de plus. Il y en a onze. »
+1. R : « Une nouvelle journée de championnat ! » — M : « Une de plus. Le championnat est long. »
 2. R : « Chaque point compte au classement ! » — M : « Deux points la victoire. C'est tout. »
 3. R : « Le championnat ne pardonne pas ! » — M : « Le championnat, non. Le classement, encore moins. »
 4. R : « Ce soir, on joue pour les playoffs ! » — M : « On joue d'abord pour ce match. »
@@ -25,7 +25,7 @@ au masculin et au féminin (*il / elle*). Ce sont des répliques d'avant et d'ap
 
 **Défaite**
 1. R : « Zéro point ce soir… » — M : « C'est le tarif d'une défaite. »
-2. R : « Il faudra se rattraper la semaine prochaine ! » — M : « À la journée suivante, plutôt. »
+2. R : « Il faudra se rattraper à la prochaine journée ! » — M : « Le championnat est encore long. »
 3. R : « Un coup d'arrêt ! » — M : « Un match perdu. Le championnat continue. »
 4. R : « Le classement va faire mal ! » — M : « Le classement ne fait rien. Il compte. »
 
@@ -56,7 +56,7 @@ au masculin et au féminin (*il / elle*). Ce sont des répliques d'avant et d'ap
 **Match pour le maintien (avant_carriere_maintien)**
 1. R : « Un match pour sauver sa saison ! » — M : « Ça sent la sueur. »
 2. R : « Le maintien ! Le mot qui fait trembler ! » — M : « Le mot qui fait réfléchir, surtout. »
-3. R : « Pas le droit à l'erreur ! » — M : « Il n'y a jamais droit, Roland. Ici, ça se voit. »
+3. R : « Pas le droit à l'erreur ! » — M : « On ne l'a jamais, Roland. Ici, ça se voit. »
 
 **La descente (apres_carriere_descente)**
 1. R : « C'est la descente… » — M : « Un étage plus bas. Le temps de reprendre son souffle. »
@@ -64,7 +64,7 @@ au masculin et au féminin (*il / elle*). Ce sont des répliques d'avant et d'ap
 
 **Le barrage (avant_carriere_barrage)**
 1. R : « LE BARRAGE ! Un match, deux destins ! » — M : « Deux joueurs, un circuit. C'est plus simple. »
-2. R : « L'un monte, l'autre descend ! » — M : « Ou l'un reste, et l'autre aussi. Ça dépend du point de vue. »
+2. R : « L'un monte, l'autre descend ! » — M : « Ou chacun reste chez soi. Ça arrive aussi. »
 3. R : « Le match le plus cruel du HandSlam ! » — M : « Le plus utile, surtout. »
 
 ## 6. La Coupe Monique-Latour

@@ -97,6 +97,46 @@
     "public_rires_02": {
       "texte": "Large tennis crowd laughing together at a funny moment, friendly giggles and chuckles fading out",
       "duree": 2.5
+    },
+    "stade_charge_01": {
+      "texte": "Stadium trumpet playing the classic short \"charge\" bugle call, then a big crowd shouting \"Charge!\", arena reverb",
+      "duree": 4
+    },
+    "stade_orgue_montee_01": {
+      "texte": "Basketball arena organ playing a short rising chromatic build-up, tension, arena reverb, no crowd voices",
+      "duree": 4
+    },
+    "stade_orgue_defense_01": {
+      "texte": "Arena organ riff followed by a big crowd chanting \"De-fense! De-fense!\" rhythmically, basketball arena",
+      "duree": 4
+    },
+    "stade_corne_01": {
+      "texte": "Loud deep stadium air horn blast, single long blast, arena reverb",
+      "duree": 2.5
+    },
+    "stade_tambour_01": {
+      "texte": "Stadium crowd stomping on bleachers and clapping, big drum, \"boom boom clap\" rhythm three times, arena reverb",
+      "duree": 5
+    },
+    "stade_orgue_entree_01": {
+      "texte": "Upbeat cheerful arena organ jingle, short, catchy, sports arena",
+      "duree": 5
+    },
+    "stade_vuvuzela_01": {
+      "texte": "A few vuvuzelas blowing together in a stadium, short, slightly comical",
+      "duree": 3
+    },
+    "stade_ole_01": {
+      "texte": "Football stadium crowd chanting \"Olé! Olé! Olé!\", short",
+      "duree": 4
+    },
+    "stade_fanfare_victoire_01": {
+      "texte": "Short triumphant brass fanfare, stadium celebration, bright and joyful",
+      "duree": 5
+    },
+    "stade_sifflet_01": {
+      "texte": "Stadium crowd playful whistling and light good-natured booing, short",
+      "duree": 3
     }
   }
 }
