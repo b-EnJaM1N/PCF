@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   PAR_SIGNE, MONTRE, PAQUET_VU, CARACTERES, bat, resultat, compte, force, tirages, nouvelleDonne, inconnues, forceEstimee,
-  iaOuvre, iaRepond, iaDevoile, iaJoue, strategie, repartitions,
+  iaDecide, bornesRelance, blindsDe, JETONS_DEPART, iaDevoile, iaJoue, strategie, repartitions,
 } from "../docs/prototypes/bluff/logique.js";
 
 test("le paquet : 21 cartes, 7 de chaque ; 5 cartes chacun, 11 dans le paquet", () => {
@@ -40,13 +40,25 @@ test("les probabilités des tirages font 1, et la force estimée tient compte de
   assert.deepEqual(inconnues({ main: [2, 2, 1], vuAdverse: [1, 1, 0], paquetVu: [3, 0, 2] }), [1, 4, 4]);
 });
 
-test("l'ordinateur mise avec une bonne main, se couche face à une grosse mise avec une mauvaise", () => {
+test("les mises « no limit » : 100 jetons, blinds 1-2 qui montent toutes les 8 donnes, relance bornée par les tapis", () => {
+  assert.equal(JETONS_DEPART, 100);
+  assert.deepEqual(blindsDe(1), [1, 2]); assert.deepEqual(blindsDe(8), [1, 2]); assert.deepEqual(blindsDe(9), [2, 4]);
+  assert.deepEqual(blindsDe(500), [50, 100]);
+  assert.equal(bornesRelance({ aPayer: 10, min: 20, max: 10 }), null);            // tapis trop court : suivre seulement
+  assert.deepEqual(bornesRelance({ aPayer: 4, min: 8, max: 6 }), { min: 6, max: 6 });   // relance = tapis
+  assert.deepEqual(bornesRelance({ aPayer: 0, min: 2, max: 98 }), { min: 2, max: 98 });
+});
+
+test("l'ordinateur relance avec une bonne main, se couche face à une grosse mise avec une mauvaise, et respecte les bornes", () => {
   const c = CARACTERES.prudent, rien = () => 0.99;
-  assert.ok(iaOuvre(c, 0.7, 3, rien) >= 2);
-  assert.equal(iaOuvre(c, -0.5, 3, rien), 0);
-  assert.equal(iaRepond(c, -0.8, 3, 10, true, rien), -1);
-  assert.equal(iaRepond(c, 0.1, 1, 6, true, rien), 0);
-  assert.ok(iaRepond(c, 0.9, 1, 6, true, rien) > 0);
+  const r = iaDecide(c, 0.8, { aPayer: 0, pot: 10, min: 2, max: 90 }, rien);
+  assert.equal(r.action, "relance"); assert.ok(r.montant >= 2 && r.montant <= 90);
+  assert.equal(iaDecide(c, -0.5, { aPayer: 0, pot: 10, min: 2, max: 90 }, rien).action, "parole");
+  assert.equal(iaDecide(c, -0.8, { aPayer: 30, pot: 40, min: 60, max: 90 }, rien).action, "couche");
+  assert.equal(iaDecide(c, 0.1, { aPayer: 2, pot: 8, min: 4, max: 90 }, rien).action, "suit");
+  const gros = iaDecide(c, 0.9, { aPayer: 2, pot: 8, min: 4, max: 5 }, rien);
+  assert.equal(gros.action, "relance"); assert.equal(gros.montant, 5);           // jamais plus que son tapis
+  assert.equal(iaDecide(c, 0.9, { aPayer: 2, pot: 8, min: 4, max: 90, relances: 2 }, rien).action, "suit");   // 2 relances au plus
   assert.equal(iaDevoile([0, 1, 2, 0, 1]).length, 5);
 });
 

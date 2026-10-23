@@ -51,18 +51,18 @@ button { font: inherit; cursor: pointer; }
 .role.ouvert { background: var(--bleu); }
 /* ---- les cartes ---- */
 .rang { display: flex; gap: 5px; justify-content: center; position: relative; z-index: 2; }
-.carte { width: 50px; height: 70px; border-radius: 8px; background: #fffdf7; color: #222; display: grid; place-items: center; font-size: 1.75rem; position: relative;
+.carte { width: 50px; height: 70px; border-radius: 8px; background: radial-gradient(circle at 30% 22%, rgba(255, 255, 255, .5), rgba(255, 255, 255, 0) 60%), var(--c); color: #222; display: grid; place-items: center; font-size: 1.75rem; position: relative;
   border: 0; box-shadow: 0 3px 0 rgba(0, 0, 0, .35); padding: 0; flex: none; transition: transform .15s; }
-.carte::after { content: ""; position: absolute; inset: 4px; border-radius: 5px; border: 3px solid var(--c); pointer-events: none; }
+.carte::after { content: ""; position: absolute; inset: 4px; border-radius: 5px; border: 3px solid rgba(255, 255, 255, .85); pointer-events: none; }
 .carte.s1::after { border-style: dashed; }
 .carte.s2::after { border-style: double; border-width: 5px; }
-.carte.dos { background: repeating-linear-gradient(45deg, #5b2a91 0 6px, #4a1f7a 6px 12px); color: rgba(255, 255, 255, .8); font-size: 1.2rem; }
+.carte.dos { background: repeating-linear-gradient(45deg, #2a2440 0 6px, #1f1a33 6px 12px); color: rgba(255, 255, 255, .8); font-size: 1.2rem; }
 .carte.dos::after { border-color: rgba(255, 255, 255, .45); }
-.carte.montree { box-shadow: 0 0 0 3px var(--bleu), 0 3px 0 rgba(0, 0, 0, .35); }
+.carte.montree { box-shadow: 0 0 0 3px #fff, 0 3px 0 rgba(0, 0, 0, .35); }
 .carte.choisie { transform: translateY(-10px); box-shadow: 0 0 0 3px var(--or), 0 8px 0 rgba(0, 0, 0, .35); }
 .carte.jouee { opacity: .22; }
 .carte:disabled { cursor: default; }
-.carte .badge { position: absolute; top: -7px; right: -7px; font-size: .58rem; font-weight: 700; background: var(--bleu); color: #fff; border-radius: 999px; padding: 1px 5px; z-index: 1; }
+.carte .badge { position: absolute; top: -7px; right: -7px; font-size: .58rem; font-weight: 700; background: #fff; color: #222; border-radius: 999px; padding: 1px 5px; z-index: 1; }
 .carte.petite { width: 34px; height: 48px; font-size: 1.15rem; border-radius: 6px; }
 .carte.petite::after { inset: 3px; border-width: 2px; }
 .carte.petite.s2::after { border-width: 4px; }
@@ -77,7 +77,7 @@ button { font: inherit; cursor: pointer; }
 .centre { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2; }
 .paquet-zone { display: flex; align-items: center; gap: 10px; }
 .pioche { position: relative; width: 36px; height: 50px; flex: none; }
-.pioche i { position: absolute; inset: 0; border-radius: 6px; background: repeating-linear-gradient(45deg, #5b2a91 0 5px, #4a1f7a 5px 10px); border: 2px solid rgba(255, 255, 255, .4); }
+.pioche i { position: absolute; inset: 0; border-radius: 6px; background: repeating-linear-gradient(45deg, #2a2440 0 5px, #1f1a33 5px 10px); border: 2px solid rgba(255, 255, 255, .4); }
 .pioche i:nth-child(1) { transform: translate(-4px, 4px); } .pioche i:nth-child(2) { transform: translate(-2px, 2px); }
 .pioche b { position: absolute; bottom: -16px; left: 0; right: 0; text-align: center; font-size: .7rem; color: var(--discret); }
 .dev { display: flex; gap: 4px; }
@@ -97,6 +97,13 @@ button { font: inherit; cursor: pointer; }
 .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--violet); }
 .btn.rouge { background: #ffb3a8; } .btn.gris { background: #e7e1f0; }
 .btn:disabled { opacity: .45; }
+.montant { display: flex; flex-direction: column; gap: 8px; width: 100%; align-items: center; }
+.montant .reglage { display: flex; align-items: center; gap: 10px; }
+.montant .reglage output { font-family: var(--titre); font-size: 1.6rem; color: var(--or); min-width: 3.2em; text-align: center; }
+.montant .pas { width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .3); background: rgba(255, 255, 255, .08); color: var(--texte); font-size: 1.4rem; }
+.montant .presets { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.montant .presets button { border: 2px solid rgba(255, 255, 255, .25); background: rgba(255, 255, 255, .06); color: var(--texte); border-radius: 999px; padding: 5px 12px; font-size: .85rem; }
+.montant .ligne-btn { display: flex; gap: 8px; }
 .btn:focus-visible, .carte:focus-visible, .lien:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
 /* ---- accueil, règles, fin ---- */
 .ecran { position: fixed; inset: 0; z-index: 5; overflow-y: auto; background: rgba(8, 22, 15, .97); display: flex; }
@@ -164,11 +171,7 @@ button { font: inherit; cursor: pointer; }
     <input class="pseudo" id="pseudo" maxlength="14" placeholder="Toi" autocomplete="nickname">
     <h2>Ton adversaire</h2>
     <div class="choix" id="choixIa"></div>
-    <h2>Mise d'entrée</h2>
-    <div class="choix" id="choixMise">
-      <button data-mise="2-1" aria-pressed="true">Caché 2 jetons, Ouvert 1<small>Celui qui garde ses cartes fermées paie plus cher.</small></button>
-      <button data-mise="1-1" aria-pressed="false">1 jeton chacun</button>
-    </div>
+    <p>Mises <b>« no limit »</b>, comme au Texas Hold'em : <b>100 jetons</b> chacun, <b>blinds 1 et 2</b> (elles montent toutes les 8 donnes), et on peut miser jusqu'à son tapis.</p>
     <button class="btn" id="commencer">▶ S'asseoir à la table</button>
     <button class="lien" id="voirRegles">Lire les règles</button>
   </div>
@@ -178,12 +181,13 @@ button { font: inherit; cursor: pointer; }
   <div class="page">
     <h1>Les règles</h1>
     <ol>
-      <li><b>Le paquet</b> : 21 cartes (7 pierres, 7 feuilles, 7 ciseaux). 5 cartes chacun, 20 jetons chacun.</li>
+      <li><b>Le paquet</b> : 21 cartes (7 pierres, 7 feuilles, 7 ciseaux). 5 cartes chacun, <b>100 jetons</b> chacun.</li>
       <li><b>Les rôles</b> changent à chaque donne : <b>le Caché</b> garde ses cartes fermées et parle en premier ; <b>l'Ouvert</b> montre 2 cartes de son choix, puis une 3ᵉ, puis une 4ᵉ. Il en garde une cachée.</li>
       <li><b>Le paquet</b> dévoile 3 cartes, puis 2, puis 1, au milieu du tapis : elles ne sont dans aucune main. Compte-les pour deviner la main de l'autre (la ligne « Tu ne vois pas » le fait pour toi).</li>
-      <li><b>Les mises</b>, après chaque dévoilement : le Caché passe ou mise 1 à 3 jetons. L'Ouvert suit, relance (+2, une fois) ou se couche. Si le Caché passe, l'Ouvert peut miser à son tour. Celui qui se couche perd ce qu'il a misé.</li>
+      <li><b>Les blinds</b> : à chaque donne, l'Ouvert paie la petite blind (1) et le Caché la grosse (2). Elles montent toutes les 8 donnes (2-4, 3-6, 5-10…).</li>
+      <li><b>Les mises « no limit »</b>, après chaque dévoilement, comme au Texas Hold'em : au 1er tour, l'Ouvert parle en premier (il doit au moins compléter la grosse blind) ; ensuite, c'est le Caché. On peut parler (si personne n'a misé), suivre, miser, relancer (au moins autant que la dernière relance) ou se coucher, et miser jusqu'à son tapis. Celui qui se couche perd ce qu'il a misé.</li>
       <li><b>L'abattage</b> : si personne ne s'est couché, duel en 3 coups. Chacun joue 3 de ses 5 cartes, une par une, en même temps. Le plus de coups gagnés prend tout ; égalité : on partage (le jeton impair va à l'Ouvert).</li>
-      <li><b>La fin</b> : quand un joueur n'a plus de jetons, ou après 16 donnes (le plus de jetons gagne).</li>
+      <li><b>La fin</b> : quand un joueur n'a plus de jetons.</li>
     </ol>
     <button class="btn" id="fermerRegles">J'ai compris</button>
   </div>
@@ -200,18 +204,18 @@ button { font: inherit; cursor: pointer; }
 
 <script type="module">
 import {
-  NOMS, MONTRE, PAQUET_VU, MISE_MAX, RELANCE, CARACTERES, compte, resultat, nouvelleDonne, inconnues, forceEstimee,
-  iaOuvre, iaRepond, iaDevoile, iaJoue,
+  NOMS, MONTRE, PAQUET_VU, JETONS_DEPART, CARACTERES, blindsDe, bornesRelance, compte, resultat, nouvelleDonne, inconnues, forceEstimee,
+  iaDecide, iaDevoile, iaJoue,
 } from "./logique.js";
 
 const $ = id => document.getElementById(id);
 const EMOJI = ["✊", "✋", "✌️"], COUL = ["var(--pierre)", "var(--feuille)", "var(--ciseaux)"];
 const pause = ms => new Promise(r => setTimeout(r, ms));
-const DONNES = 16, JETONS = 20;
+const JETONS = JETONS_DEPART;
 const lire = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
 const ecrire = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* tant pis */ } };
 
-let car = lire("chifoumania:bluff-adversaire", "malin"), mise = lire("chifoumania:bluff-mise", "2-1");
+let car = lire("chifoumania:bluff-adversaire", "malin");
 if (!CARACTERES[car]) car = "malin";
 let pseudo = lire("chifoumania:pseudo", "");
 let J;      // la partie : { jetons:{moi,ia}, donne }
@@ -222,13 +226,11 @@ let dejaVues = new Set();   // cartes déjà retournées (pour n'animer que les 
 $("pseudo").value = pseudo;
 $("choixIa").innerHTML = Object.entries(CARACTERES).map(([k, c]) =>
   `<button data-car="${k}" aria-pressed="${k === car}">${c.emoji} ${c.nom}<small>${c.desc}</small></button>`).join("");
-marquer("choixMise", document.querySelector(`#choixMise [data-mise="${mise}"]`));
 $("choixIa").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; car = b.dataset.car; marquer("choixIa", b); });
-$("choixMise").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; mise = b.dataset.mise; marquer("choixMise", b); });
 function marquer(id, b) { if (b) $(id).querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); }
 $("commencer").addEventListener("click", () => {
   pseudo = $("pseudo").value.trim().slice(0, 14);
-  ecrire("chifoumania:pseudo", pseudo); ecrire("chifoumania:bluff-adversaire", car); ecrire("chifoumania:bluff-mise", mise);
+  ecrire("chifoumania:pseudo", pseudo); ecrire("chifoumania:bluff-adversaire", car);
   $("accueil").hidden = true; partie();
 });
 $("voirRegles").addEventListener("click", () => { $("regles").hidden = false; });
@@ -259,7 +261,8 @@ function afficher() {
   }
   // les mises devant chacun, et le pot (ce qu'il y a en tout au milieu)
   $("miseIa").innerHTML = jetonsPoses(D.mis.ia); $("miseMoi").innerHTML = jetonsPoses(D.mis.moi);
-  $("pot").innerHTML = `<small>Pot</small> ${D.mis.moi + D.mis.ia} 🪙 <small>· donne ${J.donne}/${DONNES}</small>`;
+  const [pb, gb] = blindsDe(J.donne);
+  $("pot").innerHTML = `<small>Pot</small> ${D.mis.moi + D.mis.ia} 🪙 <small>· donne ${J.donne} · blinds ${pb}/${gb}</small>`;
   // le paquet : la pile (cartes restantes) et les 6 places des cartes dévoilées (3, puis 2, puis 1)
   $("pioche").textContent = `${D.paquet.length - D.paquetVu}`;
   const places = [[0, 1, 2], [3, 4], [5]];
@@ -319,7 +322,7 @@ function choisirCartes(n, mode) {
 async function partie() {
   J = { jetons: { moi: JETONS, ia: JETONS }, donne: 0 }; dejaVues = new Set();
   let cache = Math.random() < 0.5 ? "moi" : "ia";
-  while (J.donne < DONNES && J.jetons.moi > 0 && J.jetons.ia > 0) {
+  while (J.jetons.moi > 0 && J.jetons.ia > 0) {
     J.donne++;
     await donne(cache);
     cache = cache === "moi" ? "ia" : "moi";
@@ -334,13 +337,13 @@ async function partie() {
 async function donne(cache) {
   const ouvert = cache === "moi" ? "ia" : "moi";
   const d = nouvelleDonne();
-  const [ec, eo] = mise === "2-1" ? [2, 1] : [1, 1];
+  const [eo, ec] = blindsDe(J.donne);   // petite blind pour l'Ouvert, grosse pour le Caché
   D = { cache, ouvert, mains: { [cache]: d.cache, [ouvert]: d.ouvert }, paquet: d.paquet, paquetVu: 0, montrees: [],
     mis: { [cache]: Math.min(ec, J.jetons[cache]), [ouvert]: Math.min(eo, J.jetons[ouvert]) }, tour: null, choix: [], selection: null,
     joueesIdx: { moi: [], ia: [] } };
   $("duel").hidden = true; $("duel").innerHTML = "";
   const ordreIa = ouvert === "ia" ? iaDevoile(D.mains.ia) : null;
-  dire(cache === "moi" ? "Tu es le Caché : tes cartes restent fermées, tu parles en premier." : "Tu es l'Ouvert : tu vas montrer tes cartes peu à peu.");
+  dire(cache === "moi" ? `Tu es le Caché : tes cartes restent fermées. Grosse blind : ${ec}.` : `Tu es l'Ouvert : tu vas montrer tes cartes peu à peu. Petite blind : ${eo}.`);
   afficher(); await pause(1300);
   let couche = null;
   for (let t = 0; t < 3 && !couche; t++) {
@@ -354,7 +357,7 @@ async function donne(cache) {
       D.montrees = ordreIa.slice(0, MONTRE[t]); dire(`${CARACTERES[car].nom} montre ${n > 1 ? `${n} cartes` : "une carte"}.`);
     }
     D.tour = null; afficher(); await pause(800);
-    couche = await tourDeMises();
+    couche = await tourDeMises(t);
   }
   if (couche) {
     const g = couche === "moi" ? "ia" : "moi";
@@ -363,58 +366,93 @@ async function donne(cache) {
   await pause(1700);
 }
 
-// un tour de mises ; renvoie qui s'est couché (ou null)
-async function tourDeMises() {
+// un tour de mises « no limit » ; renvoie qui s'est couché (ou null)
+async function tourDeMises(t) {
   const { cache, ouvert } = D, nomIa = CARACTERES[car].nom, c = CARACTERES[car];
   const reste = q => J.jetons[q] - D.mis[q];
-  const maxMise = () => Math.min(MISE_MAX, reste(cache), reste(ouvert));
-  const pot = () => D.mis.moi + D.mis.ia;
-  const estIa = () => {
-    const main = compte(D.mains.ia), pv = compte(D.paquet.slice(0, D.paquetVu));
-    return forceEstimee(main, cache === "ia" ? compte(D.montrees.map(i => D.mains.moi[i])) : [0, 0, 0], pv);
-  };
-  const ouvre = async qui => {        // 0 ou le montant misé
-    const m = maxMise();
-    if (m <= 0) return 0;
-    if (qui === "ia") { D.tour = "ia"; afficher(); await pause(850); const v = iaOuvre(c, estIa(), m); dire(v ? `${nomIa} mise ${v}.` : `${nomIa} passe.`); return v; }
-    D.tour = "moi"; afficher();
-    return demander([{ t: "Passer", v: 0, cls: "gris" }, ...[1, 2, 3].map(v => ({ t: `Miser ${v}`, v, off: v > m }))]);
-  };
-  const repond = async (qui, montant, peutRelancer) => {   // -1, 0 ou relance
-    if (qui === "ia") { D.tour = "ia"; afficher(); await pause(950); return iaRepond(c, estIa(), montant, pot(), peutRelancer); }
-    D.tour = "moi"; afficher();
-    const rel = Math.min(RELANCE, reste("moi") - montant, reste("ia") - montant);
-    return demander([{ t: "Se coucher", v: -1, cls: "rouge" }, { t: `Suivre (${montant})`, v: 0 },
-      ...(peutRelancer && rel > 0 ? [{ t: `Relancer (+${rel})`, v: rel }] : [])]);
-  };
-  const payer = (qui, n) => { D.mis[qui] += n; afficher(); };
-  const suit = qui => dire(qui === "ia" ? `${nomIa} suit.` : "Tu suis.");
-  if (cache === "moi") dire("À toi de parler."); else dire(`${nomIa} réfléchit…`);
-  const m = await ouvre(cache);
-  if (m) {
-    payer(cache, m);
-    const r = await repond(ouvert, m, true);
-    if (r < 0) return ouvert;
-    payer(ouvert, m);
-    if (r > 0) {
-      const rel = Math.min(r, reste(ouvert), reste(cache));
-      if (rel <= 0) { suit(ouvert); D.tour = null; afficher(); await pause(700); return null; }
-      payer(ouvert, rel); dire(ouvert === "ia" ? `${nomIa} relance de ${rel} !` : `Tu relances de ${rel}.`);
-      const r2 = await repond(cache, rel, false);
-      if (r2 < 0) return cache;
-      payer(cache, rel); suit(cache);
-    } else suit(ouvert);
-  } else {
-    const m2 = await ouvre(ouvert);
-    if (m2) {
-      payer(ouvert, m2);
-      const r = await repond(cache, m2, false);
-      if (r < 0) return cache;
-      payer(cache, m2); suit(cache);
-    } else dire("Personne ne mise.");
+  const autreDe = q => (q === "moi" ? "ia" : "moi");
+  if (reste(cache) === 0 || reste(ouvert) === 0) return null;     // quelqu'un est à tapis : on va jusqu'au bout sans miser
+  const gb = blindsDe(J.donne)[1];
+  const tour = { moi: 0, ia: 0 };                                  // ce que chacun a mis pendant ce tour
+  if (t === 0) { tour[cache] = D.mis[cache]; tour[ouvert] = D.mis[ouvert]; }   // les blinds comptent pour le 1er tour
+  let qui = t === 0 ? ouvert : cache, derniereRelance = gb, relancesIa = 0;
+  const agi = { moi: false, ia: false };
+  const estIa = () => forceEstimee(compte(D.mains.ia), cache === "ia" ? compte(D.montrees.map(i => D.mains.moi[i])) : [0, 0, 0], compte(D.paquet.slice(0, D.paquetVu)));
+  dire(qui === "moi" ? "À toi de parler." : `${nomIa} réfléchit…`);
+  for (let garde = 0; garde < 60; garde++) {
+    const autre = autreDe(qui);
+    if (reste(qui) > 0) {
+      const aPayer = Math.max(0, tour[autre] - tour[qui]);
+      const max = Math.min(reste(qui), aPayer + reste(autre));    // jamais plus que ce que l'autre peut suivre
+      const etat = { aPayer, pot: D.mis.moi + D.mis.ia, min: aPayer + derniereRelance, max, relances: relancesIa, deja: tour[qui], pas: gb };
+      D.tour = qui; afficher();
+      let dec;
+      if (qui === "ia") { await pause(900); dec = iaDecide(c, estIa(), etat); }
+      else dec = await demanderMise(etat);
+      if (dec.action === "couche") { D.tour = null; return qui; }
+      const ajout = dec.action === "parole" ? 0 : dec.action === "suit" ? Math.min(aPayer, reste(qui)) : Math.min(dec.montant, max);
+      if (dec.action === "relance" && ajout - aPayer > 0) {
+        derniereRelance = Math.max(derniereRelance, ajout - aPayer); agi[autre] = false;
+        if (qui === "ia") relancesIa++;
+      }
+      tour[qui] += ajout; D.mis[qui] += ajout;
+      const tapis = reste(qui) === 0 && ajout > 0 ? " Tapis !" : "";
+      if (dec.action === "parole") dire(qui === "ia" ? `${nomIa} parle.` : "Tu parles.");
+      else if (dec.action === "suit") dire(`${qui === "ia" ? `${nomIa} suit` : "Tu suis"} (${ajout}).${tapis}`);
+      else if (aPayer === 0) dire(`${qui === "ia" ? `${nomIa} mise` : "Tu mises"} ${ajout}.${tapis}`);
+      else dire(`${qui === "ia" ? `${nomIa} relance` : "Tu relances"} à ${tour[qui]}.${tapis}`);
+      afficher();
+    }
+    agi[qui] = true;
+    if (agi.moi && agi.ia && (tour.moi === tour.ia || reste("moi") === 0 || reste("ia") === 0)) break;
+    qui = autre;
   }
-  D.tour = null; afficher(); await pause(700);
+  // si un joueur à court de jetons n'a pas pu tout suivre, on rend à l'autre ce qui dépasse
+  const diff = tour.moi - tour.ia;
+  if (diff > 0 && reste("ia") === 0) D.mis.moi -= diff;
+  if (diff < 0 && reste("moi") === 0) D.mis.ia += diff;
+  D.tour = null; afficher(); await pause(800);
   return null;
+}
+
+// les boutons de mise du joueur ; renvoie { action, montant (jetons ajoutés) }
+function demanderMise({ aPayer, pot, min, max, deja, pas }) {
+  return new Promise(ok => {
+    const bornes = bornesRelance({ aPayer, min, max });
+    const fin = r => { $("actions").innerHTML = ""; $("actions").onclick = null; ok(r); };
+    const principal = () => {
+      const opts = [];
+      if (aPayer > 0) opts.push({ t: "Se coucher", cls: "rouge", f: () => fin({ action: "couche", montant: 0 }) });
+      if (aPayer === 0) opts.push({ t: "Parole", cls: "gris", f: () => fin({ action: "parole", montant: 0 }) });
+      else opts.push({ t: max <= aPayer ? `Suivre à tapis (${max})` : `Suivre (${aPayer})`, f: () => fin({ action: "suit", montant: aPayer }) });
+      if (bornes) opts.push({ t: aPayer === 0 ? "Miser…" : "Relancer…", f: choisir });
+      $("actions").innerHTML = opts.map((o, k) => `<button class="btn ${o.cls || ""}" data-k="${k}">${o.t}</button>`).join("");
+      $("actions").onclick = e => { const b = e.target.closest("[data-k]"); if (b) opts[+b.dataset.k].f(); };
+    };
+    let v;
+    const choisir = () => {
+      v = v ?? bornes.min;
+      const borne = x => Math.max(bornes.min, Math.min(bornes.max, Math.round(x)));
+      const presets = [["Min", bornes.min], ["½ pot", aPayer + pot / 2], ["Pot", aPayer + pot], ["Tapis", bornes.max]];
+      const dessin = () => {
+        const total = deja + v, tapis = v === bornes.max;
+        $("actions").innerHTML = `<div class="montant">
+          <div class="reglage"><button class="pas" data-pas="-1" aria-label="Moins">−</button><output>${aPayer === 0 ? v : total}</output><button class="pas" data-pas="1" aria-label="Plus">+</button></div>
+          <div class="presets">${presets.map(([t, x], k) => `<button data-preset="${k}">${t}</button>`).join("")}</div>
+          <div class="ligne-btn"><button class="btn gris" data-retour="1">Retour</button>
+          <button class="btn" data-ok="1">${tapis ? "Tapis" : aPayer === 0 ? "Miser" : "Relancer à"} ${aPayer === 0 ? v : total}</button></div></div>`;
+      };
+      dessin();
+      $("actions").onclick = e => {
+        const b = e.target.closest("button"); if (!b) return;
+        if (b.dataset.pas) { v = borne(v + Number(b.dataset.pas) * pas); dessin(); }
+        else if (b.dataset.preset) { v = borne(presets[+b.dataset.preset][1]); dessin(); }
+        else if (b.dataset.retour) principal();
+        else if (b.dataset.ok) fin({ action: "relance", montant: v });
+      };
+    };
+    principal();
+  });
 }
 
 function regler(gagnant, texte) {

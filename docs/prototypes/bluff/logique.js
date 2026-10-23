@@ -2,13 +2,18 @@
 // Signes : 0 Pierre, 1 Feuille, 2 Ciseaux. Une main = [pierres, feuilles, ciseaux].
 // Règles des essais (docs/mini-jeux.md) : paquet de 21 cartes (7 de chaque), 5 cartes chacun ; le Caché garde ses cartes
 // fermées et parle en premier ; l'Ouvert montre 2, puis 3, puis 4 cartes de son choix ; le paquet dévoile 3, puis 2, puis 1 carte ;
-// après chaque dévoilement, un tour de mises ; abattage : duel en 3 coups.
+// après chaque dévoilement, un tour de mises « no limit » façon Texas Hold'em (100 jetons chacun ; blinds 1 et 2 :
+// l'Ouvert paie la petite, le Caché la grosse ; au 1er tour l'Ouvert parle en premier, ensuite le Caché) ; abattage : duel en 3 coups.
 import { FORCE, STRAT } from "./tables.js";
 
 export const PAR_SIGNE = 7, CARTES = 5;
 export const MONTRE = [2, 3, 4];            // cartes de l'Ouvert visibles après chaque tour
 export const PAQUET_VU = [3, 5, 6];         // cartes du paquet dévoilées (3, puis 2, puis 1)
-export const MISE_MAX = 3, RELANCE = 2;
+export const JETONS_DEPART = 100;
+// les blinds montent toutes les DONNES_PAR_NIVEAU donnes (comme en tournoi), pour qu'une partie finisse
+export const BLINDS = [[1, 2], [2, 4], [3, 6], [5, 10], [10, 20], [15, 30], [25, 50], [50, 100]];
+export const DONNES_PAR_NIVEAU = 8;
+export const blindsDe = donne => BLINDS[Math.min(BLINDS.length - 1, Math.floor((donne - 1) / DONNES_PAR_NIVEAU))];
 export const NOMS = ["Pierre", "Feuille", "Ciseaux"];
 export const bat = (a, b) => (a === 0 && b === 2) || (a === 2 && b === 1) || (a === 1 && b === 0);
 export const resultat = (a, b) => (a === b ? 0 : bat(a, b) ? 1 : -1);
@@ -70,20 +75,28 @@ export const CARACTERES = {
   malin: { nom: "Le Malin", emoji: "🦊", bluff: 0.2, seuil: 0.2, desc: "Mise selon sa main et bluffe de temps en temps." },
   bluffeur: { nom: "Le Bluffeur", emoji: "🃏", bluff: 0.45, seuil: 0.15, desc: "Mise souvent, bluffe beaucoup." },
 };
-// Ouvrir (parler en premier, ou après un « je passe ») : 0 = passer, sinon le montant misé.
-export function iaOuvre(car, e, max, rng = Math.random) {
-  if (max <= 0) return 0;
-  if (e > car.seuil) return Math.min(max, 1 + (e > car.seuil + 0.2 ? 1 : 0) + (e > car.seuil + 0.4 ? 1 : 0));
-  if (rng() < car.bluff) return Math.min(max, rng() < 0.5 ? 1 : 2);
-  return 0;
+// ---------------------------------------------------------------- les mises « no limit »
+// Les montants sont en jetons ajoutés maintenant.
+// aPayer : ce qu'il faut ajouter pour suivre ; pot : tout ce qu'il y a au milieu ; min : le minimum à ajouter pour relancer
+// (suivre + la dernière relance, ou la grosse blind) ; max : le maximum qu'on peut ajouter (son tapis, limité au tapis de l'autre).
+export function bornesRelance({ aPayer, min, max }) {
+  if (max <= aPayer) return null;                 // on ne peut que suivre (ou se coucher)
+  return { min: Math.min(min, max), max };        // si le minimum dépasse le tapis : tapis
 }
-// Répondre à une mise : -1 se coucher, 0 suivre, >0 relancer. pot : ce qu'il y a au milieu, mise comprise.
-export function iaRepond(car, e, mise, pot, peutRelancer, rng = Math.random) {
-  const p = (1 + e) / 2;
-  if (peutRelancer && e > car.seuil + 0.25) return RELANCE;
-  if (p * pot - (1 - p) * mise > 0) return 0;               // la cote est bonne : suivre
-  if (peutRelancer && rng() < car.bluff * 0.5) return RELANCE; // relance de bluff
-  return -1;
+// L'ordinateur décide : { action: "couche" | "parole" | "suit" | "relance", montant (jetons ajoutés) }.
+// relances : combien de fois il a déjà relancé dans ce tour (au plus 2).
+export function iaDecide(car, e, { aPayer, pot, min, max, relances = 0 }, rng = Math.random) {
+  const p = (1 + e) / 2, bornes = relances < 2 ? bornesRelance({ aPayer, min, max }) : null;
+  const relance = combien => ({ action: "relance", montant: Math.round(Math.max(bornes.min, Math.min(bornes.max, combien))) });
+  if (aPayer === 0) {
+    if (bornes && e > car.seuil) return relance(pot * (e > car.seuil + 0.4 ? 1 : e > car.seuil + 0.2 ? 0.75 : 0.5));
+    if (bornes && rng() < car.bluff) return relance(pot * 0.5);
+    return { action: "parole", montant: 0 };
+  }
+  if (bornes && e > car.seuil + 0.3) return relance(aPayer + pot);            // grosse main : relance de la taille du pot
+  if (p * pot - (1 - p) * aPayer > 0) return { action: "suit", montant: Math.min(aPayer, max) };   // la cote est bonne
+  if (bornes && rng() < car.bluff * 0.4) return relance(aPayer + pot * 0.75); // relance de bluff
+  return { action: "couche", montant: 0 };
 }
 // L'ordinateur Ouvert choisit la carte qu'il garde cachée et l'ordre dans lequel il montre les autres.
 export function iaDevoile(main, rng = Math.random) {
