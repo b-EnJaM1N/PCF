@@ -2,10 +2,10 @@
 <html lang="fr">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Chifoumania – Riposte</title>
+<title>Chifoumania</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@700;800&family=Lilita+One&display=swap">
 <style>
 /* Écran d'arcade unique (thème sombre assumé) : barre de score, terrain, 3 gros boutons de tir. */
 :root {
@@ -86,6 +86,71 @@ canvas { display: block; width: 100%; height: 100%; }
 .reglages { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
 .son { position: absolute; top: 8px; right: 8px; border: 0; background: var(--panel); color: var(--line); border-radius: 999px; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .boutons button:active { transform: none; } }
+/* ---------- Accueil Chifoumania : le menu de la famille de jeux ---------- */
+.hub {
+  position: fixed; inset: 0; z-index: 10; overflow-y: auto; overflow-x: hidden;
+  background: radial-gradient(120% 70% at 50% 0%, #FFD45C 0%, #FF8A3D 38%, #E0457B 70%, #6A3BC4 100%);
+  color: #fff; font-family: var(--body);
+}
+.hub-fond { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.hub-fond span { position: absolute; font-size: 2.2rem; opacity: .22; animation: flotter 14s linear infinite; }
+@keyframes flotter { from { transform: translateY(110vh) rotate(0deg); } to { transform: translateY(-15vh) rotate(360deg); } }
+.hub-page {
+  position: relative; max-width: 480px; margin: 0 auto; box-sizing: border-box; min-height: 100%;
+  padding: max(14px, env(safe-area-inset-top, 0px)) 16px max(18px, env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.logo { width: min(64vw, 230px, 30vh); height: auto; animation: rebond 3.2s ease-in-out infinite; filter: drop-shadow(0 6px 0 rgba(60, 20, 80, .35)); }
+@keyframes rebond { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+.titre-hub {
+  margin: -6px 0 0; font-family: "Lilita One", var(--display); font-weight: 400; letter-spacing: .02em; line-height: 1;
+  font-size: clamp(2.5rem, 13.5vw, 3.6rem); white-space: nowrap;
+}
+.titre-hub span {
+  display: inline-block; -webkit-text-stroke: 7px #3A1660; paint-order: stroke fill;
+  text-shadow: 0 5px 0 #3A1660;
+}
+.titre-hub span:nth-child(4n+1) { color: #FFD23F; transform: rotate(-5deg); }
+.titre-hub span:nth-child(4n+2) { color: #FF9500; transform: rotate(4deg) translateY(2px); }
+.titre-hub span:nth-child(4n+3) { color: #00D7B0; transform: rotate(-3deg) translateY(-2px); }
+.titre-hub span:nth-child(4n+4) { color: #E9B8FF; transform: rotate(5deg); }
+.devise { margin: 0; font-family: "Lilita One", var(--display); font-size: 1.05rem; color: #3A1660; background: rgba(255, 255, 255, .75); padding: 4px 14px; border-radius: 999px; }
+.onglets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; margin-top: 4px; }
+.onglets button {
+  font: inherit; border: 3px solid #3A1660; border-radius: 16px 16px 10px 10px; padding: 8px 2px 7px; cursor: pointer;
+  background: rgba(255, 255, 255, .55); color: #3A1660; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  box-shadow: 0 4px 0 #3A1660; transition: transform .1s;
+}
+.onglets button .i { font-size: 1.5rem; line-height: 1; }
+.onglets button .t { font-family: "Lilita One", var(--display); font-size: .82rem; line-height: 1.05; }
+.onglets button[aria-selected="true"] { background: var(--teinte); color: #fff; transform: translateY(-3px); box-shadow: 0 7px 0 #3A1660; }
+.onglets button[aria-selected="true"] .t { -webkit-text-stroke: 3px #3A1660; paint-order: stroke fill; }
+.onglets button:focus-visible, .carte button:focus-visible, .carte a:focus-visible, .retour:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.carte {
+  width: 100%; box-sizing: border-box; background: #FFFDF7; color: #2A1745; border: 3px solid #3A1660; border-radius: 22px;
+  box-shadow: 0 6px 0 #3A1660; overflow: hidden;
+}
+.carte .bandeau-carte { background: var(--teinte); padding: 12px 16px 10px; display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #3A1660; }
+.carte .bandeau-carte .gros-i { font-size: 2.6rem; line-height: 1; filter: drop-shadow(0 3px 0 rgba(0, 0, 0, .25)); }
+.carte h2 { margin: 0; font-family: "Lilita One", var(--display); font-weight: 400; font-size: 1.9rem; line-height: 1; color: #fff; -webkit-text-stroke: 5px #3A1660; paint-order: stroke fill; }
+.carte .etiquette { display: inline-block; margin-top: 4px; font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; background: #3A1660; color: #fff; padding: 2px 8px; border-radius: 999px; }
+.carte .corps { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+.carte p { margin: 0; line-height: 1.4; }
+.puces { display: flex; flex-wrap: wrap; gap: 6px; }
+.puces span { background: #F1E9FF; border: 2px solid #D9C7F7; border-radius: 999px; padding: 3px 9px; font-size: .82rem; font-weight: 600; }
+.puces span b { color: #6A3BC4; }
+.carte .jouer {
+  font-family: "Lilita One", var(--display); font-weight: 400; font-size: 1.5rem; letter-spacing: .03em; text-decoration: none; text-align: center;
+  border: 3px solid #3A1660; border-radius: 999px; padding: 10px 20px; background: #FFD23F; color: #3A1660; cursor: pointer;
+  box-shadow: 0 5px 0 #3A1660; display: block;
+}
+.carte .jouer:active { transform: translateY(4px); box-shadow: 0 1px 0 #3A1660; }
+.carte .bientot { text-align: center; font-family: "Lilita One", var(--display); font-size: 1.2rem; color: #6A3BC4; border: 3px dashed #C9B3F2; border-radius: 16px; padding: 10px; }
+.idees { margin: 0; padding-left: 1.2em; line-height: 1.45; }
+.retour { position: absolute; top: 8px; left: 8px; z-index: 2; border: 0; background: var(--panel); color: var(--line); border-radius: 999px; padding: 8px 12px; font: inherit; font-size: .85rem; cursor: pointer; }
+.ecran h1 small { display: block; font-size: .42em; letter-spacing: .14em; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .logo, .hub-fond span { animation: none; } }
+
 </style>
 
 <div class="jeu">
@@ -110,7 +175,8 @@ canvas { display: block; width: 100%; height: 100%; }
     <button class="son" id="son" aria-label="Couper le son">🔊</button>
 
     <div class="ecran" id="accueil">
-      <h1>CHIFOU<b>MANIA</b><br>Riposte</h1>
+      <button class="retour" id="retourHub" aria-label="Revenir au menu Chifoumania">‹ Menu</button>
+      <h1><small>CHIFOUMANIA</small>Riposte</h1>
       <p>Les signes tombent. Place-toi dessous et tire celui qui les bat.</p>
       <div class="regles">
         <span class="e">✌️</span><span class="fl">→ tire</span><span class="e">✊</span>
@@ -146,6 +212,71 @@ canvas { display: block; width: 100%; height: 100%; }
       <button class="cote" id="menu">Choisir le monde</button>
     </div>
   </div>
+  </div>
+</div>
+
+<!-- Le menu de Chifoumania : un logo, puis un onglet par jeu de la famille -->
+<div class="hub" id="hub">
+  <div class="hub-fond" aria-hidden="true">
+    <span style="left:6%;animation-delay:-2s">✊</span><span style="left:24%;animation-delay:-9s;font-size:1.6rem">✌️</span>
+    <span style="left:44%;animation-delay:-5s">✋</span><span style="left:63%;animation-delay:-12s;font-size:1.7rem">✊</span>
+    <span style="left:80%;animation-delay:-1s">✌️</span><span style="left:90%;animation-delay:-7s;font-size:1.5rem">✋</span>
+  </div>
+  <div class="hub-page">
+    <!-- le logo : pierre, feuille, ciseaux dans un cercle de flèches (chacun bat le suivant) -->
+    <svg class="logo" viewBox="0 0 240 230" role="img" aria-label="Logo : pierre, feuille, ciseaux">
+      <defs><marker id="pointe" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3A1660"/></marker></defs>
+      <circle cx="120" cy="122" r="98" fill="#fff" stroke="#3A1660" stroke-width="6"/>
+      <g fill="none" stroke="#3A1660" stroke-width="7" stroke-linecap="round" marker-end="url(#pointe)">
+        <path d="M150 62 Q196 92 186 136"/><path d="M160 186 Q120 206 80 186"/><path d="M54 136 Q44 92 90 62"/>
+      </g>
+      <g stroke="#3A1660" stroke-width="5">
+        <circle cx="120" cy="56" r="38" fill="#FF9500"/><circle cx="182" cy="168" r="38" fill="#C24DFF"/><circle cx="58" cy="168" r="38" fill="#00D7B0"/>
+      </g>
+      <g font-size="42" text-anchor="middle" dominant-baseline="central" font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif">
+        <text x="120" y="58">✊</text><text x="182" y="170">✌️</text><text x="58" y="170">✋</text>
+      </g>
+    </svg>
+    <h1 class="titre-hub" aria-label="Chifoumania"><span>C</span><span>H</span><span>I</span><span>F</span><span>O</span><span>U</span><span>M</span><span>A</span><span>N</span><span>I</span><span>A</span></h1>
+    <p class="devise">Pierre, feuille, ciseaux… et réflexes !</p>
+
+    <div class="onglets" role="tablist" aria-label="Les jeux">
+      <button role="tab" id="oRiposte" aria-controls="pRiposte" style="--teinte:#FF9500"><span class="i">🎯</span><span class="t">Riposte</span></button>
+      <button role="tab" id="oAventure" aria-controls="pAventure" style="--teinte:#2EAA5C"><span class="i">🗺️</span><span class="t">Aventure</span></button>
+      <button role="tab" id="oMini" aria-controls="pMini" style="--teinte:#C24DFF"><span class="i">🎲</span><span class="t">Mini-jeux</span></button>
+      <button role="tab" id="oPlateforme" aria-controls="pPlateforme" style="--teinte:#2E9BC0"><span class="i">🦘</span><span class="t">Plateforme</span></button>
+    </div>
+
+    <section class="carte" role="tabpanel" id="pRiposte" aria-labelledby="oRiposte" style="--teinte:#FF9500">
+      <div class="bandeau-carte"><span class="gros-i">🎯</span><div><h2>Riposte</h2><span class="etiquette">Jouable</span></div></div>
+      <div class="corps">
+        <p>Les signes tombent du ciel : place-toi dessous et tire celui qui les bat. 5 mondes, des boss, et ça ne s'arrête jamais.</p>
+        <div class="puces" id="pucesRiposte"></div>
+        <button class="jouer" id="jouerRiposte">▶ Jouer</button>
+      </div>
+    </section>
+    <section class="carte" role="tabpanel" id="pAventure" aria-labelledby="oAventure" style="--teinte:#2EAA5C" hidden>
+      <div class="bandeau-carte"><span class="gros-i">🗺️</span><div><h2>Aventure</h2><span class="etiquette">Version d'essai</span></div></div>
+      <div class="corps">
+        <p><b>La Forêt des Ombres.</b> Grok, le Roi des Gobelins, a volé le Gant d'Or. Traverse la forêt, devine les manies de chaque adversaire et gagne en force à chaque victoire, jusqu'au duel final.</p>
+        <div class="puces"><span>🦌 Bambi</span><span>👺 Gobelin</span><span>🦇 Pipistrelle</span><span>🍄 Amanite</span><span>🐺 Loup gris</span><span>👑 Grok</span></div>
+        <a class="jouer" href="https://handslam.fr/aventure/aventure.html" target="_blank" rel="noopener">▶ Jouer</a>
+      </div>
+    </section>
+    <section class="carte" role="tabpanel" id="pMini" aria-labelledby="oMini" style="--teinte:#C24DFF" hidden>
+      <div class="bandeau-carte"><span class="gros-i">🎲</span><div><h2>Mini-jeux</h2><span class="etiquette">À venir</span></div></div>
+      <div class="corps">
+        <p>Des parties express, à jouer seul ou à plusieurs sur le même téléphone, façon fête entre amis.</p>
+        <div class="bientot">Bientôt !</div>
+      </div>
+    </section>
+    <section class="carte" role="tabpanel" id="pPlateforme" aria-labelledby="oPlateforme" style="--teinte:#2E9BC0" hidden>
+      <div class="bandeau-carte"><span class="gros-i">🦘</span><div><h2>Plateforme</h2><span class="etiquette">À créer</span></div></div>
+      <div class="corps">
+        <p>Saute de main en main ! Renvoie les pierres d'une Feuille, saute par-dessus les ciseaux ou lance-leur une pierre.</p>
+        <div class="bientot">Bientôt !</div>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -571,6 +702,45 @@ canvas { display: block; width: 100%; height: 100%; }
   $("essai").addEventListener("click", () => { demo = true; majAccueil(); });
   majAccueil();
   const premierBouton = () => document.querySelector("#mondes button")?.focus();
+
+  // ---------- Menu Chifoumania (onglets) ----------
+  // l'onglet ouvert est retenu sur le téléphone ; « Jouer » ouvre l'accueil de Riposte (choix du monde)
+  const ONGLETS = ["Riposte", "Aventure", "Mini", "Plateforme"];
+  function ouvrirOnglet(nom, focus = false) {
+    for (const o of ONGLETS) {
+      const actif = o === nom;
+      $("o" + o).setAttribute("aria-selected", actif); $("o" + o).tabIndex = actif ? 0 : -1;
+      $("p" + o).hidden = !actif;
+    }
+    if (focus) $("o" + nom).focus();
+    try { localStorage.setItem("hs-chifoumania-onglet", nom); } catch (e) {}
+  }
+  ONGLETS.forEach((o, i) => {
+    $("o" + o).addEventListener("click", () => ouvrirOnglet(o));
+    $("o" + o).addEventListener("keydown", e => { // flèches gauche / droite entre les onglets
+      const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (d) { e.preventDefault(); ouvrirOnglet(ONGLETS[(i + d + ONGLETS.length) % ONGLETS.length], true); }
+    });
+  });
+  let ongletGarde = null;
+  try { ongletGarde = localStorage.getItem("hs-chifoumania-onglet"); } catch (e) {}
+  ouvrirOnglet(ONGLETS.includes(ongletGarde) ? ongletGarde : "Riposte");
+  // les mondes de Riposte et le meilleur pourcentage de chacun
+  function majPucesRiposte() {
+    const icones = ["🏫", "🏀", "🏖️", "🌲", "🚀"];
+    $("pucesRiposte").replaceChildren(...MONDES.map((m, i) => {
+      const e = document.createElement("span");
+      e.textContent = `${icones[i]} ${m.nom.replace(/^(L'|Le |La )/, "")}${i < mondesOuverts ? "" : " 🔒"}`;
+      if (pourcents[i]) { const b = document.createElement("b"); b.textContent = ` ${pourcents[i]} %`; e.append(b); }
+      return e;
+    }));
+  }
+  majPucesRiposte();
+  const montrerHub = () => { majPucesRiposte(); $("hub").hidden = false; $("jouerRiposte").focus(); };
+  $("jouerRiposte").addEventListener("click", () => { $("hub").hidden = true; premierBouton(); });
+  $("retourHub").addEventListener("click", montrerHub);
+  // pour les essais : « #monde3 », « #boss »… vont droit dans Riposte
+  if (location.hash) $("hub").hidden = true;
 
   // ---------- État de la partie ----------
   let J = null, enCours = false, dernier = 0;

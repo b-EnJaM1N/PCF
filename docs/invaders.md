@@ -24,6 +24,14 @@ Décision du porteur du projet, après l'audit du 20 octobre : Invaders est mis 
 5. ~~Daltonisme~~ : fait le 23 octobre (couleurs revues et un trait de cercle par rôle, voir « Une couleur par rôle » plus bas).
 6. Avant une sortie publique : retirer le bouton « Essayer tous les mondes (démo) » et les raccourcis (#vague, #tour, #boss, #monde) ; transformer le fichier unique en vraie appli (comme HandSlam : icône, hors ligne, tests, fiche Play Store).
 
+## Le menu Chifoumania (23 octobre, demande du porteur du projet)
+Au lancement, un **menu d'accueil « Chifoumania »**, coloré, façon jeu de divertissement : fond dégradé jaune, orange, rose et violet avec des mains qui flottent ; un **logo** (pierre, feuille et ciseaux dans un cercle de flèches, chacun bat le suivant, aux couleurs des rôles), le titre en grosses lettres de couleur (police Lilita One) et « Pierre, feuille, ciseaux… et réflexes ! ». Puis **4 onglets**, chacun avec sa carte :
+- **Riposte** (jouable) : la règle, les 5 mondes avec leur meilleur pourcentage (🔒 s'ils sont fermés), et « Jouer », qui ouvre l'accueil de Riposte (choix du monde). Cet accueil a un bouton « ‹ Menu » pour revenir.
+- **Aventure** (version d'essai) : la Forêt des Ombres et ses 6 adversaires ; « Jouer » ouvre la version déjà programmée (https://handslam.fr/aventure/aventure.html, voir [`aventure-monde-1.md`](aventure-monde-1.md)) dans un nouvel onglet.
+- **Mini-jeux** (à venir) et **Plateforme** (à créer) : une courte description et « Bientôt ! ».
+
+L'onglet ouvert est retenu sur le téléphone. Les raccourcis d'essai (#boss, #monde3…) vont droit dans Riposte. L'onglet du navigateur s'appelle maintenant « Chifoumania ».
+
 ## Le principe
 Prototype jouable du 18 octobre, validé (« amusant, prometteur »). Des signes tombent ; on se place dessous et on tire celui qui les bat (contre ✌️ tirer ✊, contre ✋ tirer ✌️, contre ✊ tirer ✋).
 
