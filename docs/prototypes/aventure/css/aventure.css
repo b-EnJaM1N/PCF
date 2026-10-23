@@ -298,3 +298,14 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .scene.eclair { animation: eclair-sp .35s steps(3); }
 @keyframes eclair-sp { 50% { filter: brightness(1.8) saturate(1.4); } }
 @media (prefers-reduced-motion: reduce) { #btnSpecial.pret, .signe-bulle.apparait, .scene.eclair { animation: none; } }
+
+/* Bulles et pancartes plus petites (23 octobre) : on voit le paysage derrière. */
+.bulle-parole { max-width: 46%; font-size: .7rem; line-height: 1.1; padding: 4px 8px; border-width: 2px; border-radius: 6px; box-shadow: 0 3px 0 rgba(0, 0, 0, .3); }
+.bulle-parole::after { bottom: -8px; border-width: 6px; }
+.statut { max-width: 82%; padding: 3px 10px; font-size: .72rem; background: rgba(22, 24, 42, .78); border-width: 2px;
+  box-shadow: 0 0 0 2px var(--brun), 0 3px 0 2px rgba(0, 0, 0, .3); }
+.signe-bulle { top: -48px; width: 40px; height: 40px; border-width: 2px; }
+.signe-bulle .pix { width: 26px; height: 26px; }
+.signe-bulle .q { width: 17px; height: 17px; font-size: .65rem; right: -6px; top: -8px; }
+.pancarte.petite { padding: 1px 8px 2px; border-width: 2px; box-shadow: 0 2px 0 rgba(0, 0, 0, .4); text-shadow: 1px 1px 0 var(--brun); opacity: .92; }
+.pancarte.petite b { font-size: .58rem; } .pancarte.petite span { font-size: .55rem; }
