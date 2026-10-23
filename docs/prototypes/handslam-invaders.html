@@ -593,7 +593,9 @@ canvas { display: block; width: 100%; height: 100%; }
   // au-delà, c'est le nombre de signes par vague qui augmente.
   const tour = () => J.tour || 1;
   // dans le premier monde (l'École), ça accélère un peu à partir de la vague 4, quand les objets arrivent
-  const accel = () => Math.min(1.6, 1 + 0.2 * (tour() - 1)) * (J.monde === 0 && J.vague >= 4 ? 1.15 : 1);
+  // tout va 15 % plus vite, dans tous les mondes et toutes les vagues (demande du porteur du projet, 23 octobre)
+  const VITESSE_JEU = 1.15;
+  const accel = () => VITESSE_JEU * Math.min(1.6, 1 + 0.2 * (tour() - 1)) * (J.monde === 0 && J.vague >= 4 ? 1.15 : 1);
   const vitesse = () => (55 + 115 * niveau() + Math.random() * 25) * accel();        // pixels par seconde
   const intervalle = () => (1750 - 900 * niveau() + Math.random() * 450) / accel(); // millisecondes
   // part du monde accomplie : chaque vague réussie compte, 15 vagues = 100 %
@@ -684,9 +686,11 @@ canvas { display: block; width: 100%; height: 100%; }
     const k = J.vague / 3 + MONDES[J.monde].bossPlus + (tour() - 1);
     const pv = Math.round(3 + 2 * k);
     // yCible : assez bas pour laisser lisibles, en haut, le nom du boss, le monde et la vague
+    // il arrive sur un côté (pas au-dessus du gant, qui part du milieu) et part aussitôt vers l'autre
+    const cote = Math.random() < 0.5 ? -1 : 1;
     J.boss = {
-      x: W / 2, y: -R * 3, yCible: R * 6, r: R * 2.1, pv, pvMax: pv, k,
-      signe: SIGNES[Math.random() * 3 | 0], serie: Math.random() * 2 | 0, change: 4000, tir: 2400, phase: "calme", phaseT: 6000, salves: 0, dir: Math.random() < 0.5 ? -1 : 1, v: 85 + 20 * k, virage: 1500, bond: 0,
+      x: W / 2 + cote * W * 0.28, y: -R * 3, yCible: R * 6, r: R * 2.1, pv, pvMax: pv, k,
+      signe: SIGNES[Math.random() * 3 | 0], serie: Math.random() * 2 | 0, change: 4000, tir: 1400, phase: "calme", phaseT: 6000, salves: 0, dir: -cote, v: 85 + 20 * k, virage: 900, bond: 0, esquive: 0,
     };
     J.bossAVenir = false;
     lancerMusique(J.monde, true);
@@ -697,14 +701,15 @@ canvas { display: block; width: 100%; height: 100%; }
     const ms = dt * 1000;
     if (b.y < b.yCible) { b.y += 160 * dt; return; } // il arrive vite, et on ne peut pas le toucher avant
     // il se déplace vite et change de sens au hasard, pour qu'on ne puisse pas le toucher sans viser ;
-    // au repos, il ralentit (sans s'arrêter)
+    // au repos, il ralentit un peu (sans s'arrêter) ; touché, il esquive : il file d'un coup de côté
     b.virage -= dt * 1000 * lent();
     if (b.virage <= 0) { if (Math.random() < 0.6) b.dir *= -1; b.virage = 700 + Math.random() * 1500; }
-    b.x += b.dir * b.v * (b.phase === "repos" ? 0.35 : 1) * lent() * dt;
+    b.esquive = Math.max(0, (b.esquive || 0) - ms);
+    b.x += b.dir * b.v * (b.esquive > 0 ? 2.4 : b.phase === "repos" ? 0.7 : 1) * lent() * dt;
     if (b.x < b.r) { b.x = b.r; b.dir = 1; }
     if (b.x > W - b.r) { b.x = W - b.r; b.dir = -1; }
     b.bond = Math.max(0, b.bond - dt * 4);
-    if (b.phase !== "repos") b.change -= ms * lent();
+    b.change -= ms * lent(); // il change de signe même au repos
     if (b.change <= 0) {
       const autres = SIGNES.filter(s => s !== b.signe);
       b.signe = autres[Math.random() * 2 | 0]; b.serie = Math.random() * 2 | 0;
@@ -732,7 +737,7 @@ canvas { display: block; width: 100%; height: 100%; }
         b.bond = 1; texte(b.x, b.y + b.r, "Salve !", COUL.bot); son("bossSalve");
         b.rafale = b.k === 1 ? 2 : 3; b.tir = 400;
       }
-      if (b.salves <= 0 && b.rafale === 0) { b.phase = "repos"; b.phaseT = 4000; setTimeout(() => J.boss === b && texte(b.x, b.y + b.r * 1.6, "Il fatigue : frappe !", COUL.good), 1200); }
+      if (b.salves <= 0 && b.rafale === 0) { b.phase = "repos"; b.phaseT = 2200; setTimeout(() => J.boss === b && texte(b.x, b.y + b.r * 1.6, "Il fatigue : frappe !", COUL.good), 300); }
     } else if (b.phaseT <= 0) { b.phase = "calme"; b.phaseT = Math.max(4000, 6000 - 500 * b.k); b.tir = 600; }
   }
 
@@ -989,6 +994,8 @@ canvas { display: block; width: 100%; height: 100%; }
         t.mort = true;
         if (BAT[t.signe] === b.signe) {
           b.pv--; b.bond = 1; J.combo++; J.touches++;
+          // il esquive : il file vers le côté où il y a le plus de place, on ne peut pas le toucher deux fois de suite sans bouger
+          b.esquive = 650; b.dir = b.x < W / 2 ? 1 : -1; b.virage = 650 + Math.random() * 900;
           J.meilleurCombo = Math.max(J.meilleurCombo, J.combo);
           J.score += 15 * tour(); majCompteurs();
           eclater(t.x, t.y, COUL.me, 8); texte(t.x, t.y, `+${15 * tour()}`, COUL.me);
