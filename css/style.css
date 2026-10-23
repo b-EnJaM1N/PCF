@@ -291,6 +291,12 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .bp .mini { width: 24px; height: 24px; }
 /* La carrière : l'en-tête, le classement de la saison, le palmarès */
 .car-entete { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.1rem; margin: 0 0 6px; }
+.car-resume { margin: -4px 0 10px; font-size: .9rem; color: var(--muted); }
+.car-resume:empty { display: none; }
+.car-onglets { margin: 14px 0 4px; }
+.car-onglets button { font-size: .82rem; padding-left: 4px; padding-right: 4px; }
+.car-volet { margin-top: 10px; }
+.car-volet[hidden] { display: none; }
 .car-classement { width: 100%; border-collapse: collapse; font-size: .95rem; font-weight: 700; margin: 6px 0 4px; }   /* en gras : le classement saute aux yeux */
 .car-classement th { color: var(--muted); font-weight: 600; text-align: right; padding: 4px 3px; }
 .car-classement td { text-align: right; padding: 4px 3px; border-top: 1px solid rgba(255, 255, 255, .08); }
