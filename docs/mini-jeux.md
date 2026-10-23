@@ -122,3 +122,29 @@ Un mini-jeu pensé pour **jouer contre un humain** : repérer ses habitudes et m
 
 ### Pour l'ordinateur
 Il ne doit pas jouer parfaitement au hasard (impossible à lire) : lui donner des **habitudes humaines** repérables (rejouer le signe qui vient de gagner, changer après une défaite, préférer la pierre sous pression, sortir ses coups doubles quand il est mené…), avec des niveaux selon qu'il les cache plus ou moins bien.
+
+## Dégaine ! (idée du porteur du projet, 23 octobre ; nom proposé par Claude)
+
+Un mini-jeu **de hasard et de lecture**, rapide, dans un **décor de Far West** : le joueur rencontre des adversaires l'un après l'autre et les affronte en **un seul coup** de pierre-feuille-ciseaux. Le but : **aller le plus loin possible** et battre son record. Facile à programmer : un bon premier mini-jeu pour lancer l'onglet.
+
+### Les règles
+1. **Un duel = un coup** : chacun dégaine un signe en même temps. **Égalité : on rejoue.**
+2. **Gagné** : l'adversaire est éliminé et un nouveau se présente. **Perdu** : on perd une vie.
+3. **3 vies** (3 chapeaux) ; la partie s'arrête quand on n'en a plus. Bonus possible : « un verre au saloon » rend une vie tous les 5 adversaires battus.
+4. **Le score** : le nombre d'adversaires battus ; le record est gardé sur le téléphone.
+5. **L'historique visible des deux côtés** (idée du porteur du projet) : quand un nouvel adversaire arrive, on voit les signes qu'il a joués dans ses derniers duels ; et lui voit les tiens. C'est ce qui transforme le hasard en lecture.
+
+### Les maths (Claude, 23 octobre)
+- Contre un adversaire qui joue au hasard (égalité rejouée), chaque duel se gagne **1 fois sur 2**. Avec une seule vie : la moitié des parties s'arrêtent au premier duel, 1 adversaire battu en moyenne, 5 d'affilée dans 3 % des parties, 10 d'affilée dans 1 partie sur 1 000 (de vrais exploits à partager, mais des parties très courtes).
+- **Avec 3 vies** : 3 adversaires battus en moyenne par partie, moins décourageant.
+
+### Les adversaires (l'ordinateur)
+- Chacun a **une habitude** qu'on peut deviner en regardant son historique : le Shérif rejoue toujours son signe gagnant, la Joueuse de poker change après chaque victoire, le Bandit préfère la pierre quand il est pressé, etc. Plus on avance, mieux ils cachent leurs habitudes.
+- Ils **lisent aussi ton historique** : si tu joues toujours pierre, les suivants finiront par sortir la feuille. Il faut varier.
+
+### Pour plus tard
+- **Les « fantômes »** (en ligne) : l'adversaire rencontré est la vraie partie enregistrée d'un autre joueur, avec ses vrais coups. Du multijoueur sans être connectés en même temps ; il faudra un serveur (à décider le moment venu).
+- **Le duel à mort** (idée tirée des trois portes, facultative) : avant certains duels, choisir entre un duel normal (égalité = on rejoue) et un duel à mort (égalité = perdu) qui compte double pour le record.
+
+## Idée écartée : les trois portes (23 octobre)
+Trois portes (pierre, feuille, ciseaux), on choisit une porte et un signe ; si on gagne, porte suivante ; le premier échec arrête la partie. **Écartée d'un commun accord** : si on voit le signe des portes, on gagne à tous les coups ; s'il est caché, choisir la porte ne sert à rien (1 chance sur 3 quelle que soit la porte) ; un indice (« ce n'est pas la pierre ») laisse toujours un signe qui ne peut pas perdre. Corrigée (portes bois, fer et or, de risques différents mais de même gain moyen), elle devient surtout un jeu de prise de risque, et elle ferait doublon avec Dégaine !. Seule l'idée du choix du risque est gardée, comme option de Dégaine ! (le duel à mort).
