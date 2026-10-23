@@ -88,3 +88,37 @@ Stratégie parfaite calculée exactement (théorie des jeux), arsenal 3-3-3 :
 - **Le trophée maudit** (idée tirée de *Raj*) : un trophée de **−3 points**, que prend **le perdant du coup**. Pour une fois, tout le monde veut perdre : la logique s'inverse.
 - **L'ordinateur** : le jeu est assez petit pour calculer la stratégie parfaite exacte, d'où de vrais niveaux : facile (au hasard), moyen (mélange), expert (stratégie parfaite, imbattable sur la durée mais battable sur une partie).
 - Comme pour l'Arène : contre l'ordinateur d'abord ; le jeu en ligne plus tard.
+
+## Le Duel à mises (idée du porteur du projet, 23 octobre)
+
+Un mini-jeu pensé pour **jouer contre un humain** : repérer ses habitudes et miser gros quand on est presque sûr de ce qu'il va jouer.
+
+### Les règles retenues (23 octobre)
+1. **Un match en 15 points**, en un seul set : chaque coup gagné rapporte **1 point** ; le premier à 15 gagne.
+2. **3 coups doubles** par joueur pour tout le match : en même temps que son signe, on peut annoncer un **×2** (révélé avec les signes).
+3. **Avec risque** : un coup où au moins un joueur a annoncé un ×2 vaut **2 points pour celui qui le gagne**, même si c'est l'adversaire qui avait sorti le jeton. Se tromper coûte cher.
+4. **Égalité** : personne ne marque, et un ×2 annoncé est rendu (il n'est pas perdu).
+5. **À l'écran** : les coups doubles qui restent à chacun, et l'historique des derniers signes de l'adversaire (c'est ce qui permet de le « lire »).
+
+### Comment on en est arrivé là (analyse de Claude, 23 octobre)
+- **La première idée** (signe + mise de 1, 2 ou 3 à chaque manche, premier à 10) : contre un adversaire qui varie ses signes au hasard, on a toujours 1 chance sur 3 de gagner, quelle que soit la mise ; la mise ne change que la taille des gains et des pertes. Le calcul exact montre qu'il y a presque toujours une seule bonne mise selon le score (mené : 3 ; en tête : 2 ; proche de 0 : 1) : plus de vraie décision. Testé sans succès : « égalité de signe, la plus grosse mise gagne » (tout le monde mise 3), mises de 3 limitées (change à peine les chances), mises avec un arsenal limité (tout le monde mise 3).
+- **La bonne direction** (idée du porteur du projet) : le jeu sert à **lire un humain**, et **limiter les grosses mises** oblige à choisir ses moments de certitude.
+- **Le choix de la formule** (simulation de 120 000 matchs entre deux joueurs aussi bons lecteurs l'un que l'autre, l'un plaçant ses jetons sur ses moments de certitude, l'autre au hasard ; modèle simplifié, pour comparer les formules entre elles) :
+
+| Formule (match en 11) | Le joueur qui place bien ses jetons gagne | Remontées (vainqueur mené de 3 ou plus) | Coups décidés |
+|---|---|---|---|
+| aucun jeton | 50 % | 19 % | 18 |
+| ×2 + ×3 | 60 % | 26 % | 13 |
+| **×2 ×2 ×2** | **61 %** | 23 % | 14 |
+| ×2 ×2 ×2 ×2 | 63 % | 24 % | 13 |
+| ×3 ×3 | 63 % | 28 % | 12 |
+
+  Plus il y a de jetons, plus leur bon usage paie, mais plus le match raccourcit et plus les jetons écrasent les coups normaux. **3 jetons de 2** : aussi bien que ×2 + ×3, plus simple (tous pareils : la seule question est *quand*), et le match reste un vrai match.
+- **Match en 15 plutôt qu'en 11** (choix du porteur du projet, pour un match un peu plus long) : avec 3 coups doubles, environ **21 coups décidés** (14 en 11 points), le bon usage des jetons rapporte toujours (**59 %** contre 50 %), et il y a plus de remontées (**30 %**).
+
+### Variantes possibles
+- **Mode « Folie »** : ×2 ×2 ×3 (plus de suspense, matchs plus courts).
+- **Version courte** : 5 manches, départ à 10 points, 2 « jetons d'or » (mise 3), les autres manches à 2 ; le plus de points gagne (un bon lecteur passe de 56 % à 66 % de victoires en gardant ses jetons pour ses moments de certitude).
+
+### Pour l'ordinateur
+Il ne doit pas jouer parfaitement au hasard (impossible à lire) : lui donner des **habitudes humaines** repérables (rejouer le signe qui vient de gagner, changer après une défaite, préférer la pierre sous pression, sortir ses coups doubles quand il est mené…), avec des niveaux selon qu'il les cache plus ou moins bien.
