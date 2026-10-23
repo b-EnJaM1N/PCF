@@ -59,3 +59,32 @@ Calcul exact de la meilleure façon de jouer (théorie des jeux), pour chaque ar
 - Équitable (mêmes signes pour les deux), simple à expliquer, et chaque partie est différente.
 - Le **défi du jour** en découle naturellement : le même arsenal pour tout le monde, chaque jour.
 - Comme pour l'Arène : contre l'ordinateur d'abord ; le jeu en ligne plus tard.
+
+## La Conquête (proposition de Claude, 23 octobre ; retenue par le porteur du projet)
+
+Un mini-jeu de logique et de stratégie inspiré du **Goofspiel** (« jeu de stratégie pure », étudié par le mathématicien Merrill Flood dans les années 1950 ; le jeu de société *Raj* / *Hol's der Geier* d'Alex Randolph en est une version connue). Les deux joueurs se disputent des trophées de valeurs différentes : la question n'est plus seulement « quel signe jouer ? », mais **« quand jouer quel signe »**.
+
+### Les règles
+1. **L'arsenal** : les deux joueurs reçoivent **le même arsenal de 9 signes**, tiré au sort (au moins un de chaque), comme dans le Duel à découvert. Tout est connu : chacun sait ce qu'il reste à l'autre.
+2. **Les trophées** : **7 trophées de 1 à 7 points**, mélangés. À chaque tour, on retourne celui du dessus : tout le monde voit sa valeur avant de jouer.
+3. **Le coup** : chacun choisit un signe en même temps ; le gagnant prend le trophée. Un signe joué est dépensé (7 coups, 2 signes restent).
+4. **La cagnotte** : en cas d'égalité, le trophée reste en jeu et **s'ajoute au suivant** (égalité sur le 3, puis le 6 est retourné : le coup suivant vaut 9). Au dernier tour, une égalité fait perdre le trophée.
+5. **La victoire** : 28 points en tout ; **le premier à 15 points gagne**, même avant la fin. À 14 partout : départage comme dans l'Arène (avec les signes restants, puis pierre-feuille-ciseaux classique).
+
+### Ce qui en fait un jeu de logique
+- **Le signe imprenable** : quand l'adversaire n'a plus de ciseaux, ta feuille ne peut plus perdre (seulement gagner ou faire égalité). Il faut provoquer ces situations et les garder pour les gros trophées.
+- **Le sacrifice** : perdre exprès un petit trophée avec un signe peu utile, pour garder ses bons signes.
+- **La cagnotte** : faire égalité exprès pour faire grossir le coup suivant, quand on sera mieux placé ensuite.
+- **La course aux 15** : à 12 points, un trophée de 3 suffit ; l'écart au score change la bonne façon de jouer.
+
+### Ce que disent les calculs (Claude, 23 octobre)
+Stratégie parfaite calculée exactement (théorie des jeux), arsenal 3-3-3 :
+- **Avec 7 trophées de 1 à 7** : un joueur parfait gagne **70 %** des parties contre un joueur qui joue au hasard (65 % avec 5 trophées ; 64 % dans le Duel à découvert sans trophées, même arsenal). Les trophées ajoutent donc de la stratégie. Entre deux joueurs parfaits : 50/50, le jeu est équitable.
+- Au premier coup, la stratégie parfaite joue chaque signe une fois sur trois (les deux joueurs ont exactement les mêmes signes) ; les vraies décisions arrivent dès que les arsenaux restants diffèrent.
+- **La bonne décision dépend du trophée en jeu** (exemple calculé sur la version à 5 trophées) : l'adversaire n'a plus de ciseaux, ta feuille est imprenable ; sur un trophée de 1, la stratégie parfaite joue la pierre à 100 % (elle garde la feuille) ; sur un trophée de 5, la feuille à 75 %.
+- **Elle dépend aussi du score** : dans une même position, avec le même trophée de 5, on ne joue pas pareil selon qu'on mène ou qu'on est mené de 4 points.
+
+### Pour plus tard
+- **Le trophée maudit** (idée tirée de *Raj*) : un trophée de **−3 points**, que prend **le perdant du coup**. Pour une fois, tout le monde veut perdre : la logique s'inverse.
+- **L'ordinateur** : le jeu est assez petit pour calculer la stratégie parfaite exacte, d'où de vrais niveaux : facile (au hasard), moyen (mélange), expert (stratégie parfaite, imbattable sur la durée mais battable sur une partie).
+- Comme pour l'Arène : contre l'ordinateur d'abord ; le jeu en ligne plus tard.
