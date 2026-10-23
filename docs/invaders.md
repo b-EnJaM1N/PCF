@@ -26,7 +26,7 @@ Décision du porteur du projet, après l'audit du 20 octobre : Invaders est mis 
 
 ## Le menu Chifoumania (23 octobre, demande du porteur du projet)
 Au lancement, un **menu d'accueil « Chifoumania »**, coloré, façon jeu de divertissement : fond dégradé jaune, orange, rose et violet avec des mains qui flottent ; un **logo** (pierre, feuille et ciseaux dans un cercle de flèches, chacun bat le suivant, aux couleurs des rôles), le titre en grosses lettres de couleur (police Lilita One) et « Pierre, feuille, ciseaux… et réflexes ! ». Puis **4 onglets**, chacun avec sa carte :
-- **Riposte** (jouable) : la règle, les 5 mondes avec leur meilleur pourcentage (🔒 s'ils sont fermés), et « Jouer », qui ouvre l'accueil de Riposte (choix du monde). Cet accueil a un bouton « ‹ Menu » pour revenir.
+- **Riposte** (jouable) : seulement la règle en une phrase et « Jouer », qui ouvre l'accueil de Riposte (choix du monde). Les pourcentages des mondes, d'abord affichés ici, ont été retirés le 23 octobre (demande du porteur du projet) : ils sont sur les cartes des mondes, dans l'accueil de Riposte. Cet accueil a un bouton « ‹ Menu » pour revenir.
 - **Aventure** (version d'essai) : la Forêt des Ombres et ses 6 adversaires ; « Jouer » ouvre la version déjà programmée (https://handslam.fr/aventure/aventure.html, voir [`aventure-monde-1.md`](aventure-monde-1.md)) dans un nouvel onglet.
 - **Mini-jeux** (à venir) et **Plateforme** (à créer) : une courte description et « Bientôt ! ».
 

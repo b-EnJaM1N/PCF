@@ -111,7 +111,7 @@ canvas { display: block; width: 100%; height: 100%; }
 .titre-hub span:nth-child(4n+2) { color: #FF9500; transform: rotate(4deg) translateY(2px); }
 .titre-hub span:nth-child(4n+3) { color: #00D7B0; transform: rotate(-3deg) translateY(-2px); }
 .titre-hub span:nth-child(4n+4) { color: #E9B8FF; transform: rotate(5deg); }
-.devise { margin: 0; font-family: "Lilita One", var(--display); font-size: 1.05rem; color: #3A1660; background: rgba(255, 255, 255, .75); padding: 4px 14px; border-radius: 999px; }
+.devise { margin: 0; text-align: center; font-family: "Lilita One", var(--display); font-size: 1.05rem; color: #3A1660; background: rgba(255, 255, 255, .75); padding: 4px 14px; border-radius: 999px; }
 .onglets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; margin-top: 4px; }
 .onglets button {
   font: inherit; border: 3px solid #3A1660; border-radius: 16px 16px 10px 10px; padding: 8px 2px 7px; cursor: pointer;
@@ -302,7 +302,7 @@ canvas { display: block; width: 100%; height: 100%; }
       </g>
     </svg>
     <h1 class="titre-hub" aria-label="Chifoumania"><span>C</span><span>H</span><span>I</span><span>F</span><span>O</span><span>U</span><span>M</span><span>A</span><span>N</span><span>I</span><span>A</span></h1>
-    <p class="devise">Pierre, feuille, ciseaux… et réflexes !</p>
+    <p class="devise">Pierre, feuille, ciseaux… et réflexes&nbsp;!</p>
 
     <div class="onglets" role="tablist" aria-label="Les jeux">
       <button role="tab" id="oRiposte" aria-controls="pRiposte" style="--teinte:#FF9500"><span class="i">🎯</span><span class="t">Riposte</span></button>
@@ -314,8 +314,7 @@ canvas { display: block; width: 100%; height: 100%; }
     <section class="carte" role="tabpanel" id="pRiposte" aria-labelledby="oRiposte" style="--teinte:#FF9500">
       <div class="bandeau-carte"><span class="gros-i">🎯</span><div><h2>Riposte</h2><span class="etiquette">Jouable</span></div></div>
       <div class="corps">
-        <p>Les signes tombent du ciel : place-toi dessous et tire celui qui les bat. 5 mondes, des boss, et ça ne s'arrête jamais.</p>
-        <div class="puces" id="pucesRiposte"></div>
+        <p>Les signes tombent du ciel : place-toi dessous et tire celui qui les bat.</p>
         <button class="jouer" id="jouerRiposte">▶ Jouer</button>
       </div>
     </section>
@@ -807,17 +806,7 @@ canvas { display: block; width: 100%; height: 100%; }
   let ongletGarde = null;
   try { ongletGarde = localStorage.getItem("hs-chifoumania-onglet"); } catch (e) {}
   ouvrirOnglet(ONGLETS.includes(ongletGarde) ? ongletGarde : "Riposte");
-  // les mondes de Riposte et le meilleur pourcentage de chacun
-  function majPucesRiposte() {
-    $("pucesRiposte").replaceChildren(...MONDES.map((m, i) => {
-      const e = document.createElement("span");
-      e.textContent = `${ICONES_MONDES[i]} ${m.nom.replace(/^(L'|Le |La )/, "")}${i < mondesOuverts ? "" : " 🔒"}`;
-      if (pourcents[i]) { const b = document.createElement("b"); b.textContent = ` ${pourcents[i]} %`; e.append(b); }
-      return e;
-    }));
-  }
-  majPucesRiposte();
-  const montrerHub = () => { majPucesRiposte(); $("hub").hidden = false; $("jouerRiposte").focus(); };
+  const montrerHub = () => { $("hub").hidden = false; $("jouerRiposte").focus(); };
   $("jouerRiposte").addEventListener("click", () => { $("hub").hidden = true; premierBouton(); });
   $("retourHub").addEventListener("click", montrerHub);
   // pour les essais : « #monde3 », « #boss »… vont droit dans Riposte
