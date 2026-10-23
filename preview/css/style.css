@@ -554,6 +554,10 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
   text-transform: uppercase; animation: cer-titre .6s cubic-bezier(.2, 1.3, .4, 1) .5s both; }
 .cer-sous { margin: 0 0 8px; font-size: 1.1rem; font-weight: 600; color: var(--line); animation: fade .5s .9s both; }
 .ceremonie .btn { width: auto; padding: 12px 32px; animation: fade .4s 1.2s both; }
+.ceremonie.triste { background: radial-gradient(ellipse at 50% 40%, #2E3A52, #0A0F1A 75%); }
+.ceremonie.triste .cer-titre { color: #E8574A; }
+.ceremonie.triste .cer-coupe::before { display: none; }
+.ceremonie.triste .cer-coupe svg { filter: none; opacity: .5; }
 .ceremonie.enjeu .cer-titre { font-size: clamp(2.6rem, 13vw, 4rem); }
 @keyframes cer-coupe { from { transform: translateY(40px) scale(.3); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes cer-titre { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
