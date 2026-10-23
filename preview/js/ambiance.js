@@ -37,13 +37,6 @@ export const FICHIERS_RAQUETTE_SIGNE = [
   ["raquette_feuille_01", "raquette_feuille_fort_01"],
 ];
 export const FICHIERS_RAQUETTE = FICHIERS_RAQUETTE_SIGNE.flat();
-// Les sons de stade, entre les points (décision du 23 octobre ; brouillon : docs/sons-stade-brouillon.md). En essai : les quatre
-// premiers générés (orgue qui monte, corne, fanfare, sifflets) ; ils ne sont pas encore joués par l'appli.
-export const FICHIERS_STADE = {
-  charge: "stade_charge_01", orgueMontee: "stade_orgue_montee_01", orgueDefense: "stade_orgue_defense_01", corne: "stade_corne_01",
-  tambour: "stade_tambour_01", orgueEntree: "stade_orgue_entree_01", vuvuzela: "stade_vuvuzela_01", ole: "stade_ole_01",
-  fanfare: "stade_fanfare_victoire_01", sifflets: "stade_sifflet_01",
-};
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
