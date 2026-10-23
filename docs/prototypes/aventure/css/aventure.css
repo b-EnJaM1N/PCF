@@ -114,7 +114,8 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .titre-petit { font-size: 2.2rem; letter-spacing: .06em; }
 .titre-du { font-size: 1.3rem; color: #fff3c4; margin: 2px 0; }
 .titre-grand { font-size: 3.4rem; letter-spacing: .04em; }
-.titre-heros { position: absolute; left: 6%; bottom: 17%; width: min(40%, 210px); z-index: 1; animation: respire 1.2s steps(2) infinite; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .35)); }
+/* le héros sur le chemin, entre le titre et les boutons (plus jamais sous le bouton « Commencer ») */
+.titre-heros { position: relative; align-self: flex-start; margin: auto 0 14px 6%; width: min(40%, 210px, 22vh); z-index: 1; animation: respire 1.2s steps(2) infinite; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .35)); }
 .titre-bas { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2; width: min(100%, 320px); }
 .titre-commencer { font-size: 1.5rem; padding: 10px; animation: pulse 1.2s steps(2) infinite; }
 .titre-lien { color: #fff3c4; text-shadow: 2px 2px 0 #000; font-size: .85rem; }
@@ -193,7 +194,7 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
   background: #fff; border: 3px solid var(--brun); border-radius: 50%; opacity: 0; transition: opacity .15s; }
 .signe-bulle.vue { opacity: 1; }
 .signe-bulle .pix { width: 36px; height: 36px; }
-.bulle-parole { position: absolute; right: 4%; top: 168px; max-width: 62%; margin: 0; z-index: 4; background: #fff; color: #1a1a1a; font-weight: 400; font-size: .95rem;
+.bulle-parole { position: absolute; right: 4%; top: 8px; /* placée au-dessus des têtes par placerParole() */ max-width: 62%; margin: 0; z-index: 4; background: #fff; color: #1a1a1a; font-weight: 400; font-size: .95rem;
   padding: 8px 12px; border: 3px solid var(--brun); border-radius: 8px; box-shadow: 0 4px 0 rgba(0, 0, 0, .35); }
 .bulle-parole::after { content: ""; position: absolute; bottom: -12px; right: 34%; border: 9px solid transparent; border-top-color: #fff; border-bottom: 0; }
 .bulle-parole[hidden] { display: none; }
@@ -298,3 +299,14 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
 .scene.eclair { animation: eclair-sp .35s steps(3); }
 @keyframes eclair-sp { 50% { filter: brightness(1.8) saturate(1.4); } }
 @media (prefers-reduced-motion: reduce) { #btnSpecial.pret, .signe-bulle.apparait, .scene.eclair { animation: none; } }
+
+/* Bulles et pancartes plus petites (23 octobre) : on voit le paysage derrière. */
+.bulle-parole { max-width: 46%; font-size: .7rem; line-height: 1.1; padding: 4px 8px; border-width: 2px; border-radius: 6px; box-shadow: 0 3px 0 rgba(0, 0, 0, .3); }
+.bulle-parole::after { bottom: -8px; border-width: 6px; }
+.statut { max-width: 82%; padding: 3px 10px; font-size: .72rem; background: rgba(22, 24, 42, .78); border-width: 2px;
+  box-shadow: 0 0 0 2px var(--brun), 0 3px 0 2px rgba(0, 0, 0, .3); }
+.signe-bulle { top: -48px; width: 40px; height: 40px; border-width: 2px; }
+.signe-bulle .pix { width: 26px; height: 26px; }
+.signe-bulle .q { width: 17px; height: 17px; font-size: .65rem; right: -6px; top: -8px; }
+.pancarte.petite { padding: 1px 8px 2px; border-width: 2px; box-shadow: 0 2px 0 rgba(0, 0, 0, .4); text-shadow: 1px 1px 0 var(--brun); opacity: .92; }
+.pancarte.petite b { font-size: .58rem; } .pancarte.petite span { font-size: .55rem; }
