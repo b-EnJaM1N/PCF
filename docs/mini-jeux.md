@@ -25,3 +25,37 @@ Un duel de réflexion : on prépare son arsenal en secret, on en montre une part
 - **Montrer l'arsenal connu de l'adversaire** à l'écran : ses 3 signes révélés, les signes qu'il a déjà joués (barrés) et le nombre de signes encore inconnus. Le jeu doit être une affaire de réflexion, pas de mémoire.
 - **L'ordinateur** : lui donner plusieurs caractères, par exemple le prudent (3-3-3), le bourrin (beaucoup de pierres), le bluffeur (il révèle exprès ses signes les plus nombreux, ou au contraire les plus rares), le compteur (il joue ce qui bat les signes qu'il te reste).
 - Plus tard, on pourra ajouter d'autres pouvoirs que la loupe.
+
+## Le Duel à découvert (idée du porteur du projet, 23 octobre ; nom provisoire)
+
+Un mini-jeu à part, de la même famille que l'Arène : **les deux joueurs reçoivent le même arsenal de 9 signes, imposé et tiré au sort à chaque partie** (par exemple 6 pierres, 2 feuilles et 1 ciseau pour les deux). Pas de phase de préparation : on joue tout de suite.
+
+### Les règles de base
+1. **L'arsenal** : le jeu tire au sort une répartition de 9 signes (au moins un de chaque) et la donne aux deux joueurs.
+2. **Le combat** : 7 coups, comme dans l'Arène. Un signe joué est dépensé ; 2 signes restent à la fin.
+3. **La victoire et l'égalité** : comme dans l'Arène (1 point par coup gagné ; en cas d'égalité, départage avec les signes restants, puis pierre-feuille-ciseaux classique).
+4. **Tout est connu** : chacun sait exactement ce qu'il reste à l'autre à chaque coup. Il n'y a ni révélation ni loupe : c'est un pur duel de calcul et de lecture de l'adversaire.
+
+### Variante proposée : 2 signes écartés en secret
+Pour retrouver le bluff et la loupe : au début, **chaque joueur écarte en secret 2 de ses 9 signes**, puis joue les 7 autres. L'adversaire ne sait pas lesquels ont été écartés. Une fois par partie, la **loupe** révèle un des signes écartés par l'autre. Pas encore calculé (les informations cachées rendent le calcul exact beaucoup plus lourd), mais c'est la version qui semble la plus stratégique.
+
+### Ce que disent les calculs (Claude, 23 octobre)
+Calcul exact de la meilleure façon de jouer (théorie des jeux), pour chaque arsenal imposé :
+
+| Arsenal imposé (P-F-C) | Un joueur parfait gagne contre un joueur qui pioche au hasard… |
+|---|---|
+| 7-1-1 | 80 % des parties |
+| 6-2-1 | 73 % |
+| 5-2-2 | 70 % |
+| 4-4-1 et 5-3-1 | 69 % |
+| 4-3-2 | 66 % |
+| 3-3-3 | 64 % |
+
+- **Plus l'arsenal est déséquilibré, plus la réflexion compte** (avec 7 pierres sur 9, chacun doit en jouer au moins 5 en 7 coups : savoir quand placer sa feuille et son ciseau devient une énigme). Les tirages déséquilibrés donnent les parties les plus riches.
+- **Être prévisible est puni** : un joueur qui suit une règle fixe (par exemple « je joue toujours ce qui bat son signe le plus nombreux ») perd toutes ses parties contre un joueur qui l'a compris.
+- Entre deux joueurs parfaits, c'est 50/50 (mêmes signes des deux côtés) : le jeu est parfaitement équitable.
+
+### Points forts
+- Équitable (mêmes signes pour les deux), simple à expliquer, et chaque partie est différente.
+- Le **défi du jour** en découle naturellement : le même arsenal pour tout le monde, chaque jour.
+- Comme pour l'Arène : contre l'ordinateur d'abord ; le jeu en ligne plus tard.
