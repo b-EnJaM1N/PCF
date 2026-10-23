@@ -83,6 +83,7 @@ canvas { display: block; width: 100%; height: 100%; }
   display: flex; align-items: center; justify-content: center; gap: 7px;
 }
 .colonne .pause span { width: 7px; height: 24px; border-radius: 2px; background: var(--line); } /* les deux barres du symbole pause */
+.reglages { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
 .son { position: absolute; top: 8px; right: 8px; border: 0; background: var(--panel); color: var(--line); border-radius: 999px; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .boutons button:active { transform: none; } }
 </style>
@@ -128,6 +129,11 @@ canvas { display: block; width: 100%; height: 100%; }
       <h1>Pause</h1>
       <p id="detailPause"></p>
       <button class="go" id="reprendre">Reprendre</button>
+      <div class="reglages">
+        <button class="cote" id="rMusique"></button>
+        <button class="cote" id="rBruitages"></button>
+        <button class="cote" id="rVibrations"></button>
+      </div>
       <button class="cote" id="abandonner">Abandonner la partie</button>
     </div>
 
@@ -169,23 +175,279 @@ canvas { display: block; width: 100%; height: 100%; }
     if (J) J.x = Math.min(Math.max(J.x, R), W - R);
   }
 
-  // ---------- Son (petits bips, aucun fichier) ----------
-  let audio = null, sonActif = true;
-  function bip(freq, duree = 0.08, type = "square", vol = 0.06, glisse = 0) {
-    if (!sonActif) return;
+  // ---------- Son, musique et vibrations (tout est joué par le téléphone, aucun fichier) ----------
+  // Réglages gardés sur le téléphone : le bouton 🔊 coupe tout ; l'écran de pause règle
+  // séparément la musique, les bruitages et les vibrations.
+  const CLE_REGLAGES = "hs-riposte-reglages";
+  const reglages = { son: true, musique: true, bruitages: true, vibrations: true };
+  try { Object.assign(reglages, JSON.parse(localStorage.getItem(CLE_REGLAGES)) || {}); } catch (e) {}
+  const garderReglages = () => { try { localStorage.setItem(CLE_REGLAGES, JSON.stringify(reglages)); } catch (e) {} };
+  const mouvementReduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let audio = null, busBruit = null, busMusique = null, bruitBlanc = null;
+  // le téléphone n'accepte le son qu'après un toucher : on prépare tout au premier
+  function assurerAudio() {
     try {
-      audio ||= new (window.AudioContext || window.webkitAudioContext)();
-      const t = audio.currentTime, o = audio.createOscillator(), g = audio.createGain();
+      if (!audio) {
+        audio = new (window.AudioContext || window.webkitAudioContext)();
+        // un compresseur à la sortie : les sons qui se superposent ne saturent pas
+        const comp = audio.createDynamicsCompressor();
+        comp.threshold.value = -16; comp.ratio.value = 4;
+        comp.connect(audio.destination);
+        busBruit = audio.createGain(); busBruit.connect(comp);
+        busMusique = audio.createGain(); busMusique.gain.value = 0; busMusique.connect(comp);
+        bruitBlanc = audio.createBuffer(1, audio.sampleRate, audio.sampleRate);
+        const d = bruitBlanc.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      }
+      if (audio.state === "suspended") audio.resume();
+    } catch (e) { audio = null; }
+    return audio;
+  }
+  addEventListener("pointerdown", assurerAudio, true);
+  addEventListener("keydown", assurerAudio, true);
+  const bruitagesOn = () => reglages.son && reglages.bruitages && assurerAudio();
+
+  // une note : fréquence, durée, forme d'onde, volume, glissement de fréquence, décalage (s)
+  function ton(freq, duree = 0.08, type = "square", vol = 0.06, glisse = 0, quand = 0, bus = busBruit) {
+    try {
+      const t = audio.currentTime + quand, o = audio.createOscillator(), g = audio.createGain();
       o.type = type; o.frequency.setValueAtTime(freq, t);
-      if (glisse) o.frequency.exponentialRampToValueAtTime(Math.max(40, freq + glisse), t + duree);
-      g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + duree);
-      o.connect(g).connect(audio.destination); o.start(t); o.stop(t + duree + 0.02);
+      if (glisse) o.frequency.exponentialRampToValueAtTime(Math.max(30, freq + glisse), t + duree);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.004);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + duree);
+      o.connect(g).connect(bus); o.start(t); o.stop(t + duree + 0.02);
     } catch (e) { /* pas de son, tant pis */ }
   }
-  $("son").addEventListener("click", () => {
-    sonActif = !sonActif; $("son").textContent = sonActif ? "🔊" : "🔇";
-    $("son").setAttribute("aria-label", sonActif ? "Couper le son" : "Remettre le son");
-  });
+  // un souffle (explosions, caisse claire…) : filtré, avec une fréquence de filtre qui peut glisser
+  function souffle(duree, vol, filtre = "lowpass", f1 = 1000, f2 = f1, quand = 0, bus = busBruit, q = 1) {
+    try {
+      const t = audio.currentTime + quand, s = audio.createBufferSource(), f = audio.createBiquadFilter(), g = audio.createGain();
+      s.buffer = bruitBlanc; f.type = filtre; f.Q.value = q;
+      f.frequency.setValueAtTime(f1, t); if (f2 !== f1) f.frequency.exponentialRampToValueAtTime(f2, t + duree);
+      g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + duree);
+      s.connect(f).connect(g).connect(bus); s.start(t, Math.random() * 0.5); s.stop(t + duree + 0.02);
+    } catch (e) {}
+  }
+  const hz = midi => 440 * 2 ** ((midi - 69) / 12);
+  const GAMME_JOIE = [72, 74, 76, 79, 81, 84, 86, 88, 91, 93, 96, 98, 100]; // do majeur sans les demi-tons : la série monte
+
+  const SON = {
+    tir() { ton(1250, 0.07, "square", 0.022, -700); ton(620, 0.08, "triangle", 0.05, -300); },
+    touche(serie) {
+      souffle(0.16, 0.16, "bandpass", 2600, 500, 0, busBruit, 1.2);
+      const f = hz(GAMME_JOIE[Math.min(serie, GAMME_JOIE.length) - 1] || 72);
+      ton(f, 0.12, "triangle", 0.07); ton(f * 2, 0.08, "sine", 0.025, 0, 0.02);
+    },
+    palier(mult) { // la série passe à ×2, ×3…
+      [0, 4, 7, 12].forEach((d, i) => ton(hz(72 + 2 * mult + d), 0.1, "square", 0.03, 0, 0.1 + i * 0.055));
+    },
+    rate() { ton(150, 0.18, "sawtooth", 0.05, -50); ton(156, 0.18, "square", 0.025, -50); },
+    egalite() { ton(320, 0.07, "triangle", 0.06, -120); souffle(0.04, 0.06, "bandpass", 1500); },
+    vie() { // une vie perdue : un gros boum
+      souffle(0.6, 0.35, "lowpass", 1400, 60);
+      ton(170, 0.45, "sawtooth", 0.06, -120); ton(85, 0.55, "sine", 0.18, -45);
+    },
+    bouclier() { souffle(0.3, 0.12, "highpass", 3500, 3500); ton(1600, 0.3, "sine", 0.05, -900); ton(440, 0.2, "sine", 0.06, 200, 0.05); },
+    bonus() { [1319, 1568, 2093, 2637].forEach((f, i) => ton(f, 0.12, "sine", 0.05, 0, i * 0.05)); },
+    eclair() { ton(2400, 0.35, "sawtooth", 0.04, -2250); souffle(0.25, 0.18, "highpass", 6000, 800); souffle(0.9, 0.3, "lowpass", 900, 50, 0.08); },
+    tele() { ton(1300, 0.06, "sine", 0.035, -700); ton(600, 0.06, "sine", 0.035, 700, 0.06); },
+    vague() { ton(784, 0.09, "triangle", 0.05); ton(1047, 0.12, "triangle", 0.05, 0, 0.09); },
+    alerteBoss() { // un boss arrive : grondement et deux coups de cor
+      souffle(1.4, 0.2, "lowpass", 220, 90);
+      ton(110, 0.32, "sawtooth", 0.07, 0, 0.05); ton(104, 0.5, "sawtooth", 0.07, 0, 0.42);
+      ton(55, 0.9, "sine", 0.14, 0, 0.05);
+    },
+    bossChange() { ton(700, 0.08, "sine", 0.03, 400); },
+    bossSalve() { ton(160, 0.2, "sawtooth", 0.06, 40); ton(240, 0.2, "sawtooth", 0.04, 60); },
+    bossTouche() { ton(240, 0.16, "square", 0.05, -140); ton(1480, 0.22, "sine", 0.035); souffle(0.1, 0.14, "bandpass", 1800, 900); },
+    bossBattu() {
+      souffle(1.3, 0.4, "lowpass", 3000, 50); ton(70, 1, "sine", 0.2, -40);
+      [60, 64, 67, 72, 76, 79, 84].forEach((m, i) => { ton(hz(m + 12), 0.16, "square", 0.03, 0, 0.4 + i * 0.08); ton(hz(m), 0.18, "triangle", 0.05, 0, 0.4 + i * 0.08); });
+    },
+    fanfare() { // nouveau tour, monde ouvert
+      [[67, 0], [72, 0.12], [76, 0.24], [79, 0.36], [84, 0.6]].forEach(([m, q]) => { ton(hz(m), 0.2, "square", 0.03, 0, q); ton(hz(m - 12), 0.22, "triangle", 0.05, 0, q); });
+    },
+    fin(record) {
+      const notes = record ? [[72, 0], [76, 0.14], [79, 0.28], [84, 0.42], [88, 0.7]] : [[67, 0], [64, 0.22], [60, 0.44], [55, 0.7]];
+      notes.forEach(([m, q], i) => ton(hz(m), i === notes.length - 1 ? 0.6 : 0.2, "triangle", 0.07, 0, q));
+    },
+  };
+  // joue un bruitage s'ils sont allumés
+  const son = (nom, ...args) => { if (bruitagesOn()) SON[nom](...args); };
+
+  function vibrer(motif) {
+    if (!reglages.vibrations || !navigator.vibrate) return;
+    try { navigator.vibrate(motif); } catch (e) {}
+  }
+
+  // ---------- Musique : une petite boucle par monde, et une version plus nerveuse pendant les boss ----------
+  // Chaque monde a sa gamme, ses accords (un par mesure), sa batterie, sa basse et son instrument ;
+  // la mélodie est composée une fois pour toutes à partir d'un numéro (la même à chaque partie).
+  // Batterie et basse : 16 cases par mesure ; « x » = un coup ; un chiffre = une note de l'accord
+  // (0 la fondamentale, 1 la tierce, 2 la quinte, 3 l'octave), « . » = rien.
+  const GAMMES = { majeur: [0, 2, 4, 5, 7, 9, 11], mineur: [0, 2, 3, 5, 7, 8, 10], dorien: [0, 2, 3, 5, 7, 9, 10] };
+  const MUSIQUES = [
+    { // l'École : sautillante, en do majeur
+      bpm: 124, tonique: 60, gamme: "majeur", accords: [0, 4, 5, 3], lead: "carre", basse: "triangle", graine: 7,
+      grosse: "x.......x.......", caisse: "....x.......x...", charley: "x.x.x.x.x.x.x.x.", bois: "",
+      basseMotif: "0...0.2.0...2.0.", arpege: "", tenue: 3,
+      rythmes: ["x.x.x...x.x.x...", "x...x.x.x...x...", "x.x.x.x.x...x.x."],
+    },
+    { // le Gymnase : funky, en la mineur
+      bpm: 132, tonique: 57, gamme: "mineur", accords: [0, 5, 2, 6], lead: "scie", basse: "sawtooth", graine: 21,
+      grosse: "x..x....x.x.....", caisse: "....x.......x...", charley: "xxxxxxxxxxxxxxxx", bois: "",
+      basseMotif: "0..0..0.3..0.2..", arpege: "", tenue: 3,
+      rythmes: ["x..x..x.x.x.x...", "x.x..x..x..x.x..", "x...x.xxx...x..."],
+    },
+    { // la Plage : tranquille, en fa majeur, avec un ukulélé et un shaker
+      bpm: 100, tonique: 65, gamme: "majeur", accords: [0, 5, 1, 4], lead: "pince", basse: "triangle", graine: 5,
+      grosse: "x.........x.....", caisse: "", charley: "xxxxxxxxxxxxxxxx", bois: "............x...",
+      basseMotif: "0.....2.0.....2.", arpege: "0.1.2.1.0.1.2.1.", tenue: 4,
+      rythmes: ["x.....x.x...x...", "x...x...x.....x.", "x.x...x.x......."],
+    },
+    { // la Forêt : mystérieuse, en ré dorien, avec une flûte
+      bpm: 92, tonique: 62, gamme: "dorien", accords: [0, 3, 0, 6], lead: "flute", basse: "triangle", graine: 13,
+      grosse: "x...............", caisse: "", charley: "......x.......x.", bois: "....x.......x..x",
+      basseMotif: "0.......2.......", arpege: "0...1...2...1...", tenue: 8,
+      rythmes: ["x.......x...x...", "x...........x...", "x.....x.x......."],
+    },
+    { // l'Espace : synthé, en mi mineur
+      bpm: 112, tonique: 64, gamme: "mineur", accords: [0, 5, 3, 6], lead: "synth", basse: "sawtooth", graine: 42,
+      grosse: "x...x...x...x...", caisse: "....x.......x...", charley: "..x...x...x...x.", bois: "",
+      basseMotif: "0.0.0.0.0.0.0.0.", arpege: "0123012301230123", tenue: 3,
+      rythmes: ["x..x..x.x..x..x.", "x.x.x.x.x...x...", "x..x..x...x.x..."],
+    },
+  ];
+  const BOSS = { grosse: "x...x...x...x.x.", caisse: "....x.......x...", charley: "xxxxxxxxxxxxxxxx", basseMotif: "0.0.0.0.2.2.3.2." };
+
+  // hasard « rejouable » : le même numéro donne toujours la même mélodie
+  function hasardFixe(graine) {
+    return () => { graine = (graine + 0x6D2B79F5) | 0; let t = Math.imul(graine ^ (graine >>> 15), 1 | graine); t ^= t + Math.imul(t ^ (t >>> 7), 61 | t); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+  // 8 mesures : 4 composées, les 3 premières reprises, et une fin qui retombe sur la tonique
+  function composer(m) {
+    const h = hasardFixe(m.graine), mesures = [];
+    let deg = 7;
+    const ecrire = (mesure, derniere) => {
+      const r = m.rythmes[h() * m.rythmes.length | 0], notes = [], accord = m.accords[mesure % m.accords.length];
+      for (let p = 0; p < 16; p++) {
+        if (r[p] !== "x") continue;
+        if (p % 8 === 0) { // temps forts : une note de l'accord, la plus proche
+          const proches = [];
+          for (let o = 0; o < 3; o++) for (const d of [0, 2, 4]) proches.push(accord + d + 7 * o);
+          deg = proches.filter(d => d >= 2 && d <= 13).sort((a, b) => Math.abs(a - deg) - Math.abs(b - deg))[h() < 0.7 ? 0 : 1];
+        } else deg = Math.min(13, Math.max(2, deg + [-2, -1, -1, 1, 1, 2][h() * 6 | 0]));
+        notes.push({ p, deg });
+      }
+      if (derniere && notes.length) notes[notes.length - 1].deg = 7;
+      return notes.map((n, i) => ({ ...n, duree: Math.min(m.tenue, (notes[i + 1]?.p ?? 16) - n.p) }));
+    };
+    for (let i = 0; i < 4; i++) mesures.push(ecrire(i, false));
+    mesures.push(mesures[0], mesures[1], mesures[2], ecrire(3, true));
+    return mesures;
+  }
+  const MELODIES = MUSIQUES.map(composer);
+  const noteDe = (m, deg) => { const g = GAMMES[m.gamme]; return m.tonique + 12 * Math.floor(deg / 7) + g[((deg % 7) + 7) % 7]; };
+  const noteAccord = (m, accord, i) => noteDe(m, accord + [0, 2, 4, 7][i]);
+
+  // les instruments de la mélodie
+  function jouerLead(nom, freq, t, d, vol) {
+    try {
+      const g = audio.createGain(), f = audio.createBiquadFilter();
+      f.type = "lowpass"; f.frequency.value = nom === "scie" ? 1900 : nom === "synth" ? 3000 : 2400; f.Q.value = nom === "scie" ? 4 : 1;
+      g.connect(f).connect(busMusique);
+      const oscs = [];
+      const osc = (type, fr) => { const o = audio.createOscillator(); o.type = type; o.frequency.value = fr; o.connect(g); oscs.push(o); return o; };
+      if (nom === "carre") osc("square", freq);
+      else if (nom === "scie") osc("sawtooth", freq);
+      else if (nom === "pince") { osc("triangle", freq); osc("sine", freq * 2); }
+      else if (nom === "synth") { osc("square", freq).detune.value = -7; osc("square", freq).detune.value = 7; }
+      else { // la flûte : un son doux qui ondule
+        const o = osc("sine", freq), lfo = audio.createOscillator(), prof = audio.createGain();
+        lfo.frequency.value = 5; prof.gain.value = freq * 0.008; lfo.connect(prof).connect(o.frequency);
+        lfo.start(t); lfo.stop(t + d + 0.3);
+      }
+      const attaque = nom === "flute" ? 0.06 : 0.005;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + attaque);
+      if (nom === "pince") g.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(0.25, d * 1.4));
+      else { g.gain.setValueAtTime(vol * 0.7, t + Math.max(attaque, d * 0.8)); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.08); }
+      for (const o of oscs) { o.start(t); o.stop(t + d + 0.3); }
+    } catch (e) {}
+  }
+
+  let musique = null, minuterieMusique = 0;
+  function jouerPas(mu, t) {
+    const m = MUSIQUES[mu.monde], pas = mu.pas % 16, mesure = Math.floor(mu.pas / 16) % 8;
+    const accord = m.accords[mesure % m.accords.length], b = mu.boss ? { ...m, ...BOSS } : m;
+    const coup = (motif) => motif[pas] && motif[pas] !== ".";
+    if (coup(b.grosse)) { ton(150, 0.14, "sine", 0.5, -110, t - audio.currentTime, busMusique); }
+    if (coup(b.caisse)) { souffle(0.13, 0.22, "highpass", 1400, 1400, t - audio.currentTime, busMusique); ton(190, 0.06, "triangle", 0.12, -60, t - audio.currentTime, busMusique); }
+    if (coup(b.charley)) souffle(0.03, pas % 2 ? 0.04 : 0.07, "highpass", 7500, 7500, t - audio.currentTime, busMusique);
+    if (b.bois && coup(b.bois)) ton(820, 0.05, "sine", 0.12, -200, t - audio.currentTime, busMusique);
+    const nb = b.basseMotif[pas];
+    if (nb && nb !== ".") {
+      const d = 60 / mu.bpm / 4 * (mu.boss || m.basse === "sawtooth" ? 1.6 : 3);
+      const f = hz(noteAccord(m, accord, +nb) - 24);
+      if (m.basse === "sawtooth") jouerLead("scie", f, t, d, 0.13);
+      else ton(f, d, "triangle", 0.22, 0, t - audio.currentTime, busMusique);
+    }
+    const na = m.arpege[pas];
+    if (na && na !== ".") jouerLead(m.lead === "synth" ? "carre" : "pince", hz(noteAccord(m, accord, +na) - 12), t, 0.12, 0.03);
+    for (const n of MELODIES[mu.monde][mesure]) {
+      if (n.p !== pas) continue;
+      jouerLead(m.lead, hz(noteDe(m, n.deg)), t, n.duree * 60 / mu.bpm / 4 * 0.92, m.lead === "flute" ? 0.09 : 0.055);
+    }
+  }
+  function planifier() {
+    if (!musique || !audio) return;
+    while (musique.prochaine < audio.currentTime + 0.12) {
+      jouerPas(musique, musique.prochaine);
+      musique.pas++; musique.prochaine += 60 / musique.bpm / 4;
+    }
+  }
+  // lance (ou change) la musique : le monde, et si un boss est là
+  function lancerMusique(monde, boss = false) {
+    if (!reglages.son || !reglages.musique || !assurerAudio()) return arreterMusique();
+    const bpm = MUSIQUES[monde].bpm * (boss ? 1.12 : 1) * Math.min(1.15, 1 + 0.05 * ((J?.tour || 1) - 1));
+    if (musique && musique.monde === monde && musique.boss === boss) return;
+    const t = audio.currentTime;
+    // on garde la place dans la mesure quand on passe en mode boss, pour que ça s'enchaîne
+    musique = { monde, boss, bpm, pas: musique && musique.monde === monde ? musique.pas : 0, prochaine: t + 0.08 };
+    busMusique.gain.cancelScheduledValues(t);
+    busMusique.gain.setValueAtTime(Math.max(0.0001, busMusique.gain.value), t);
+    busMusique.gain.linearRampToValueAtTime(0.5, t + 0.4);
+    clearInterval(minuterieMusique); minuterieMusique = setInterval(planifier, 30);
+  }
+  function arreterMusique() {
+    clearInterval(minuterieMusique); musique = null;
+    if (!audio) return;
+    const t = audio.currentTime;
+    busMusique.gain.cancelScheduledValues(t);
+    busMusique.gain.setValueAtTime(busMusique.gain.value, t);
+    busMusique.gain.linearRampToValueAtTime(0, t + 0.25);
+  }
+  // la musique qui va avec le moment de la partie
+  const musiqueDuMoment = () => { if (enCours && !enPause) lancerMusique(J.monde, !!J.boss); else arreterMusique(); };
+
+  function majBoutonSon() {
+    $("son").textContent = reglages.son ? "🔊" : "🔇";
+    $("son").setAttribute("aria-label", reglages.son ? "Couper le son" : "Remettre le son");
+    for (const [id, cle, nom] of [["rMusique", "musique", "🎵 Musique"], ["rBruitages", "bruitages", "💥 Bruitages"], ["rVibrations", "vibrations", "📳 Vibrations"]]) {
+      $(id).textContent = `${nom} : ${reglages[cle] ? "oui" : "non"}`;
+      $(id).setAttribute("aria-pressed", reglages[cle]);
+    }
+  }
+  $("son").addEventListener("click", () => { reglages.son = !reglages.son; garderReglages(); majBoutonSon(); musiqueDuMoment(); });
+  for (const [id, cle] of [["rMusique", "musique"], ["rBruitages", "bruitages"], ["rVibrations", "vibrations"]]) {
+    $(id).addEventListener("click", () => {
+      reglages[cle] = !reglages[cle];
+      if (reglages[cle] && cle !== "vibrations") reglages.son = true; // rallumer la musique rallume le son
+      garderReglages(); majBoutonSon();
+      if (cle === "vibrations") vibrer(40);
+    });
+  }
+  majBoutonSon();
 
   // ---------- Record ----------
   // un record par monde (le monde 1 garde l'ancienne clé)
@@ -316,7 +578,7 @@ canvas { display: block; width: 100%; height: 100%; }
   function nouvellePartie() {
     J = {
       x: W / 2, cible: W / 2, vies: 3, score: 0, combo: 0, meilleurCombo: 0, touches: 0, rates: 0, bossBattus: 0,
-      ennemis: [], tirs: [], eclats: [], textes: [], bonus: [], prochain: 0, temps: 0, recharge: 0, flash: 0, flashBlanc: 0,
+      ennemis: [], tirs: [], eclats: [], textes: [], bonus: [], prochain: 0, temps: 0, recharge: 0, flash: 0, flashBlanc: 0, secousse: 0,
       monde: 0, vague: 0, tour: 1, faites: 0, resteVague: 0, pause: 0, bossAVenir: false, boss: null, bandeau: null,
       effets: { bouclier: 0, ralenti: 0, triple: 0 },
     };
@@ -331,7 +593,9 @@ canvas { display: block; width: 100%; height: 100%; }
   // au-delà, c'est le nombre de signes par vague qui augmente.
   const tour = () => J.tour || 1;
   // dans le premier monde (l'École), ça accélère un peu à partir de la vague 4, quand les objets arrivent
-  const accel = () => Math.min(1.6, 1 + 0.2 * (tour() - 1)) * (J.monde === 0 && J.vague >= 4 ? 1.15 : 1);
+  // tout va 15 % plus vite, dans tous les mondes et toutes les vagues (demande du porteur du projet, 23 octobre)
+  const VITESSE_JEU = 1.15;
+  const accel = () => VITESSE_JEU * Math.min(1.6, 1 + 0.2 * (tour() - 1)) * (J.monde === 0 && J.vague >= 4 ? 1.15 : 1);
   const vitesse = () => (55 + 115 * niveau() + Math.random() * 25) * accel();        // pixels par seconde
   const intervalle = () => (1750 - 900 * niveau() + Math.random() * 450) / accel(); // millisecondes
   // part du monde accomplie : chaque vague réussie compte, 15 vagues = 100 %
@@ -344,14 +608,14 @@ canvas { display: block; width: 100%; height: 100%; }
     if (n % 3 === 0) {
       J.bossAVenir = true;
       J.bandeau = { titre: `Vague ${n}`, vie: 1, discret: true }; // seulement « Vague 3 », comme les autres vagues
-      bip(220, 0.25, "sawtooth", 0.06); setTimeout(() => bip(180, 0.35, "sawtooth", 0.06), 260);
+      son("alerteBoss");
     } else {
       J.resteVague = 6 + n + 2 * (tour() - 1);
       // pas de titre ni de légende : juste « Vague 2 » en haut, et le jeu continue sans coupure
       // (un court temps pour se préparer seulement au début de la partie)
       J.bandeau = { titre: `Vague ${n}`, vie: 1, discret: true };
       J.pause = n === 1 ? 1500 : 0;
-      bip(520, 0.1, "triangle", 0.06); setTimeout(() => bip(780, 0.12, "triangle", 0.06), 110);
+      son("vague");
     }
   }
 
@@ -374,7 +638,7 @@ canvas { display: block; width: 100%; height: 100%; }
       J.vies = Math.min(VIES_MAX, J.vies + 1); majCompteurs();
       lancerVague(1);
       J.bandeau = { titre: `Tour ${J.tour} !`, sous: `Plus rapide · points ×${J.tour} · +1 vie`, vie: 1.8 };
-      [523, 659, 784, 1047, 1319].forEach((f, i) => setTimeout(() => bip(f, 0.14, "triangle", 0.07), i * 110));
+      son("fanfare"); lancerMusique(J.monde); // le tempo suit le tour
       return;
     }
     lancerVague(J.vague + 1);
@@ -383,7 +647,7 @@ canvas { display: block; width: 100%; height: 100%; }
       mondesOuverts = J.monde + 2; majAccueil();
       try { localStorage.setItem("hs-riposte-mondes", mondesOuverts); } catch (e) {}
       J.bandeau = { titre: MONDES[J.monde + 1].ouverte, sous: "Continue ici pour battre ton record", vie: 1.6 };
-      J.pause = 2600;
+      J.pause = 2600; son("fanfare");
     }
   }
 
@@ -422,11 +686,14 @@ canvas { display: block; width: 100%; height: 100%; }
     const k = J.vague / 3 + MONDES[J.monde].bossPlus + (tour() - 1);
     const pv = Math.round(3 + 2 * k);
     // yCible : assez bas pour laisser lisibles, en haut, le nom du boss, le monde et la vague
+    // il arrive sur un côté (pas au-dessus du gant, qui part du milieu) et part aussitôt vers l'autre
+    const cote = Math.random() < 0.5 ? -1 : 1;
     J.boss = {
-      x: W / 2, y: -R * 3, yCible: R * 6, r: R * 2.1, pv, pvMax: pv, k,
-      signe: SIGNES[Math.random() * 3 | 0], serie: Math.random() * 2 | 0, change: 4000, tir: 2400, phase: "calme", phaseT: 6000, salves: 0, dir: Math.random() < 0.5 ? -1 : 1, v: 85 + 20 * k, virage: 1500, bond: 0,
+      x: W / 2 + cote * W * 0.28, y: -R * 3, yCible: R * 6, r: R * 2.1, pv, pvMax: pv, k,
+      signe: SIGNES[Math.random() * 3 | 0], serie: Math.random() * 2 | 0, change: 4000, tir: 1400, phase: "calme", phaseT: 6000, salves: 0, dir: -cote, v: 85 + 20 * k, virage: 900, bond: 0, esquive: 0,
     };
     J.bossAVenir = false;
+    lancerMusique(J.monde, true);
     J.bonus.push({ x: W / 2, y: -R, type: "bouclier" }); // un coup de pouce pour commencer
   }
 
@@ -434,19 +701,20 @@ canvas { display: block; width: 100%; height: 100%; }
     const ms = dt * 1000;
     if (b.y < b.yCible) { b.y += 160 * dt; return; } // il arrive vite, et on ne peut pas le toucher avant
     // il se déplace vite et change de sens au hasard, pour qu'on ne puisse pas le toucher sans viser ;
-    // au repos, il ralentit (sans s'arrêter)
+    // au repos, il ralentit un peu (sans s'arrêter) ; touché, il esquive : il file d'un coup de côté
     b.virage -= dt * 1000 * lent();
     if (b.virage <= 0) { if (Math.random() < 0.6) b.dir *= -1; b.virage = 700 + Math.random() * 1500; }
-    b.x += b.dir * b.v * (b.phase === "repos" ? 0.35 : 1) * lent() * dt;
+    b.esquive = Math.max(0, (b.esquive || 0) - ms);
+    b.x += b.dir * b.v * (b.esquive > 0 ? 2.4 : b.phase === "repos" ? 0.7 : 1) * lent() * dt;
     if (b.x < b.r) { b.x = b.r; b.dir = 1; }
     if (b.x > W - b.r) { b.x = W - b.r; b.dir = -1; }
     b.bond = Math.max(0, b.bond - dt * 4);
-    if (b.phase !== "repos") b.change -= ms * lent();
+    b.change -= ms * lent(); // il change de signe même au repos
     if (b.change <= 0) {
       const autres = SIGNES.filter(s => s !== b.signe);
       b.signe = autres[Math.random() * 2 | 0]; b.serie = Math.random() * 2 | 0;
       b.change = Math.max(1800, 4500 - 500 * b.k);
-      bip(300, 0.06, "square", 0.03);
+      son("bossChange");
     }
     // Rythme en 3 temps : calme (tirs isolés, jamais plus de 2 + k signes à l'écran),
     // salve (2 ou 3 signes l'un après l'autre, seulement quand l'écran est vide), repos (aucun tir).
@@ -466,10 +734,10 @@ canvas { display: block; width: 100%; height: 100%; }
         b.rafale--; b.tir = b.k === 1 ? 900 : 650;
         if (b.rafale === 0) { b.salves--; b.tir = 2500; }
       } else if (b.rafale === 0 && b.salves > 0 && b.tir <= 0 && J.ennemis.length === 0) {
-        b.bond = 1; texte(b.x, b.y + b.r, "Salve !", COUL.bot); bip(160, 0.2, "sawtooth", 0.06);
+        b.bond = 1; texte(b.x, b.y + b.r, "Salve !", COUL.bot); son("bossSalve");
         b.rafale = b.k === 1 ? 2 : 3; b.tir = 400;
       }
-      if (b.salves <= 0 && b.rafale === 0) { b.phase = "repos"; b.phaseT = 4000; setTimeout(() => J.boss === b && texte(b.x, b.y + b.r * 1.6, "Il fatigue : frappe !", COUL.good), 1200); }
+      if (b.salves <= 0 && b.rafale === 0) { b.phase = "repos"; b.phaseT = 2200; setTimeout(() => J.boss === b && texte(b.x, b.y + b.r * 1.6, "Il fatigue : frappe !", COUL.good), 300); }
     } else if (b.phaseT <= 0) { b.phase = "calme"; b.phaseT = Math.max(4000, 6000 - 500 * b.k); b.tir = 600; }
   }
 
@@ -480,7 +748,10 @@ canvas { display: block; width: 100%; height: 100%; }
     texte(b.x, b.y, `Boss battu ! +${pts}`, COUL.me);
     J.bonus.push({ x: b.x, y: b.y, type: "vie" });
     J.boss = null; J.flashBlanc = 1;
-    [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => bip(f, 0.16, "triangle", 0.07), i * 120));
+    son("bossBattu"); vibrer([60, 40, 140]); secouer(1);
+    // la musique du monde revient après la fanfare
+    setTimeout(() => { if (!J.boss) musiqueDuMoment(); }, 1300);
+    arreterMusique();
     majCompteurs();
   }
 
@@ -493,10 +764,10 @@ canvas { display: block; width: 100%; height: 100%; }
   function prendreBonus(o) {
     const noms = { vie: "+1 vie", bouclier: "Bouclier", ralenti: "Ralenti", triple: "Tir triple", eclair: "Éclair !" };
     texte(J.x, H - R * 3, noms[o.type], COUL.good);
-    [880, 1175].forEach((f, i) => setTimeout(() => bip(f, 0.08, "sine", 0.07), i * 70));
+    son(o.type === "eclair" ? "eclair" : "bonus"); vibrer(o.type === "eclair" ? 80 : 15);
     if (o.type === "vie") { J.vies = Math.min(VIES_MAX, J.vies + 1); majCompteurs(); }
     else if (o.type === "eclair") {
-      J.flashBlanc = 1;
+      J.flashBlanc = 1; secouer(0.6);
       for (const n of J.ennemis) { n.mort = true; J.score += 5; eclater(n.x, n.y, COUL.line, 8); }
       if (J.boss) { J.boss.pv -= 2; J.boss.bond = 1; if (J.boss.pv <= 0) bossBattu(J.boss); }
       majCompteurs();
@@ -514,7 +785,7 @@ canvas { display: block; width: 100%; height: 100%; }
     const y = H - R * 2.6;
     if (J.effets.triple > 0) for (const vx of [-130, 0, 130]) J.tirs.push({ x: J.x, y, vx, signe });
     else J.tirs.push({ x: J.x, y, vx: 0, signe });
-    bip(660, 0.06, "square", 0.04, 300);
+    son("tir");
   }
 
   function eclater(x, y, couleur, n = 12) {
@@ -524,17 +795,18 @@ canvas { display: block; width: 100%; height: 100%; }
     }
   }
   const texte = (x, y, t, couleur) => J.textes.push({ x, y, t, couleur, vie: 1 });
+  // l'écran tremble (1 = une vie perdue) ; moins fort si le téléphone demande moins d'animations
+  const secouer = force => { J.secousse = Math.max(J.secousse || 0, force * (mouvementReduit ? 0.3 : 1)); };
 
   function perdreVie(x, y) {
     if (J.effets.bouclier > 0) {
       J.effets.bouclier = 0; eclater(x, y, COUL.good, 16);
-      texte(J.x, H - R * 3, "Bouclier !", COUL.good); bip(440, 0.2, "sine", 0.07, 200);
+      texte(J.x, H - R * 3, "Bouclier !", COUL.good); son("bouclier"); vibrer(50); secouer(0.4);
       return;
     }
     J.vies--; J.combo = 0; J.flash = 1;
     eclater(x, y, COUL.bot, 18);
-    bip(140, 0.35, "sawtooth", 0.08, -90);
-    if (navigator.vibrate) try { navigator.vibrate(120); } catch (e) {}
+    son("vie"); vibrer([90, 50, 160]); secouer(1.3);
     majCompteurs();
     if (J.vies <= 0) finir();
   }
@@ -546,7 +818,7 @@ canvas { display: block; width: 100%; height: 100%; }
   }
 
   function finir() {
-    enCours = false; effacerSauvegarde();
+    enCours = false; effacerSauvegarde(); arreterMusique();
     const pc = pourcent(), mieux = pc > pourcents[J.monde];
     if (mieux) { pourcents[J.monde] = pc; try { localStorage.setItem(CLES_POURCENT[J.monde], pc); } catch (e) {} majAccueil(); }
     $("titreFin").textContent = pc >= 100 ? "Bravo !" : "Fin de partie";
@@ -561,6 +833,7 @@ canvas { display: block; width: 100%; height: 100%; }
       `Monde ${J.monde + 1}, ${tour() > 1 ? `tour ${tour()}, ` : ""}vague ${J.vague} · ${J.bossBattus} boss battu${J.bossBattus > 1 ? "s" : ""} · ${J.touches} signes battus · meilleure série ×${J.meilleurCombo} · précision ${precision} %`;
     $("fin").hidden = false;
     $("rejouer").focus();
+    setTimeout(() => son("fin", nouveau), 500);
   }
 
   function demarrer(monde = mondeDepart) {
@@ -577,6 +850,7 @@ canvas { display: block; width: 100%; height: 100%; }
     const depart = location.hash === "#boss" ? 3 : essai ? Math.min(VAGUES_PAR_MONDE, Math.max(1, +essai[1])) : 1;
     J.faites = (J.tour - 1) * VAGUES_PAR_MONDE + depart - 1;
     lancerVague(depart);
+    musiqueDuMoment();
   }
   $("rejouer").addEventListener("click", () => demarrer());
   $("menu").addEventListener("click", () => { $("fin").hidden = true; $("accueil").hidden = false; premierBouton(); });
@@ -599,14 +873,15 @@ canvas { display: block; width: 100%; height: 100%; }
     $("detailPause").textContent = `Monde ${J.monde + 1} · ${tour() > 1 ? `tour ${tour()} · ` : ""}vague ${J.vague}/${VAGUES_PAR_MONDE} · ${pourcent()} % · score ${J.score}`;
     $("ecranPause").hidden = false;
     $("reprendre").focus();
-    sauver();
+    sauver(); arreterMusique();
   }
   function reprendre() {
     enPause = false; $("ecranPause").hidden = true;
     dernier = performance.now();
+    musiqueDuMoment();
   }
   function abandonner() {
-    enCours = false; enPause = false; effacerSauvegarde();
+    enCours = false; enPause = false; effacerSauvegarde(); arreterMusique();
     $("ecranPause").hidden = true; $("accueil").hidden = false; premierBouton();
   }
   $("pause").addEventListener("click", mettreEnPause);
@@ -667,6 +942,7 @@ canvas { display: block; width: 100%; height: 100%; }
     J.recharge = Math.max(0, J.recharge - ms);
     J.flash = Math.max(0, J.flash - dt * 2.5);
     J.flashBlanc = Math.max(0, J.flashBlanc - dt * 3);
+    J.secousse = (J.secousse || 0) * Math.exp(-dt * 9);
     for (const k in J.effets) J.effets[k] = Math.max(0, J.effets[k] - ms);
     if (J.bandeau) { J.bandeau.vie -= dt / 1.8; if (J.bandeau.vie <= 0) J.bandeau = null; }
 
@@ -702,7 +978,7 @@ canvas { display: block; width: 100%; height: 100%; }
         if (n.tele <= 0 && n.y < H * 0.55) {
           eclater(n.x, n.y, "#B9A7FF", 8);
           n.x = n.x0 = R + Math.random() * (W - 2 * R);
-          eclater(n.x, n.y, "#B9A7FF", 8); bip(1200, 0.08, "sine", 0.04, -700);
+          eclater(n.x, n.y, "#B9A7FF", 8); son("tele");
           n.tele = 1600 + Math.random() * 600;
         }
       }
@@ -718,18 +994,20 @@ canvas { display: block; width: 100%; height: 100%; }
         t.mort = true;
         if (BAT[t.signe] === b.signe) {
           b.pv--; b.bond = 1; J.combo++; J.touches++;
+          // il esquive : il file vers le côté où il y a le plus de place, on ne peut pas le toucher deux fois de suite sans bouger
+          b.esquive = 650; b.dir = b.x < W / 2 ? 1 : -1; b.virage = 650 + Math.random() * 900;
           J.meilleurCombo = Math.max(J.meilleurCombo, J.combo);
           J.score += 15 * tour(); majCompteurs();
           eclater(t.x, t.y, COUL.me, 8); texte(t.x, t.y, `+${15 * tour()}`, COUL.me);
-          bip(520, 0.1, "sawtooth", 0.06, -200);
+          son("bossTouche"); vibrer(25); secouer(0.25);
           if (b.pv <= 0) bossBattu(b);
         } else if (t.signe === b.signe) {
           J.recharge = Math.max(J.recharge, BLOCAGE_EGALITE);
-          texte(t.x, t.y, "Égalité", COUL.muted); bip(330, 0.07, "square", 0.04);
+          texte(t.x, t.y, "Égalité", COUL.muted); son("egalite");
         } else {
           J.combo = 0; J.rates++; J.recharge = Math.max(J.recharge, BLOCAGE_RATE);
           if (b.phase === "calme" && b.k >= 2) b.tir = Math.min(b.tir, 900);
-          texte(t.x, t.y, b.k >= 2 ? "Raté ! Il riposte" : "Raté ! Gant bloqué", COUL.bot); bip(200, 0.12, "square", 0.05, -60);
+          texte(t.x, t.y, b.k >= 2 ? "Raté ! Il riposte" : "Raté ! Gant bloqué", COUL.bot); son("rate"); vibrer(35);
         }
         continue;
       }
@@ -744,19 +1022,20 @@ canvas { display: block; width: 100%; height: 100%; }
           J.score += pts;
           eclater(n.x, n.y, COUL.me);
           texte(n.x, n.y, mult > 1 ? `+${pts} ×${mult}` : `+${pts}`, COUL.me);
-          bip(880 + Math.min(J.combo, 12) * 40, 0.09, "triangle", 0.07);
+          son("touche", J.combo); vibrer(12);
+          if (J.combo % 5 === 0 && J.combo <= 20) { son("palier", mult); vibrer([15, 30, 15]); }
           if (Math.random() < 0.09) lacherBonus(n.x, n.y);
           majCompteurs();
         } else if (t.signe === n.signe) {
           // égalité : le signe recule un peu
           n.y -= R * 1.2; n.bond = 1; J.recharge = Math.max(J.recharge, BLOCAGE_EGALITE);
           texte(n.x, n.y, "Égalité", COUL.muted);
-          bip(330, 0.07, "square", 0.04);
+          son("egalite");
         } else {
           // mauvais signe : l'ennemi accélère et le gant est bloqué un instant
           n.v *= 1.25; n.bond = 1; J.combo = 0; J.rates++; J.recharge = Math.max(J.recharge, BLOCAGE_RATE);
           texte(n.x, n.y, "Raté ! Gant bloqué", COUL.bot);
-          bip(200, 0.12, "square", 0.05, -60);
+          son("rate"); vibrer(35);
         }
         break;
       }
@@ -1236,6 +1515,13 @@ canvas { display: block; width: 100%; height: 100%; }
 
   function dessiner() {
     ctx.clearRect(0, 0, W, H + Z);
+    // l'écran qui tremble : le décor et le jeu bougent un peu (la bande du doigt reste fixe)
+    const s = J && enCours && J.secousse > 0.03 ? J.secousse * R * 0.45 : 0;
+    if (s) {
+      ctx.save();
+      ctx.translate(W / 2 + (Math.random() * 2 - 1) * s, H / 2 + (Math.random() * 2 - 1) * s);
+      ctx.scale(1 + 2.2 * s / W, 1 + 2.2 * s / H); ctx.translate(-W / 2, -H / 2); // un peu plus grand : pas de bord vide
+    }
 
     const decor = J && MONDES[J.monde].decor;
     if (decor === "plage") dessinerPlage();
@@ -1246,6 +1532,7 @@ canvas { display: block; width: 100%; height: 100%; }
     ctx.strokeStyle = "rgba(232, 87, 74, .35)"; ctx.setLineDash([6, 8]);
     ctx.beginPath(); ctx.moveTo(0, H - R * 3.4); ctx.lineTo(W, H - R * 3.4); ctx.stroke(); ctx.setLineDash([]);
     if (J) dessinerJeu();
+    if (s) ctx.restore();
     dessinerBandeDoigt(); // par-dessus : ce qui sort du terrain passe dessous
   }
 
