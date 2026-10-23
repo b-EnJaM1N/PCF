@@ -841,7 +841,7 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 
 /* L'écran de démarrage : le logo, une seconde, puis il s'efface tout seul (sans bloquer l'appli). */
 .demarrage { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: radial-gradient(ellipse at 50% 45%, #1A5A40, #0F3D2B 70%);
-  animation: demarrage-fin .45s ease-in 2s forwards; pointer-events: none; }   /* 2 s : le temps de lire le logo */
+  animation: demarrage-fin .45s ease-in 3s forwards; pointer-events: none; }   /* 3 s : le temps de lire le logo */
 .demarrage img { width: min(92vw, 75vh, 560px); height: auto; animation: demarrage-logo .6s cubic-bezier(.2, 1.2, .4, 1) both; }
 @keyframes demarrage-fin { to { opacity: 0; visibility: hidden; } }
 @keyframes demarrage-logo { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
