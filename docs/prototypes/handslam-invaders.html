@@ -327,10 +327,11 @@ canvas { display: block; width: 100%; height: 100%; }
       </div>
     </section>
     <section class="carte" role="tabpanel" id="pMini" aria-labelledby="oMini" style="--teinte:#C24DFF" hidden>
-      <div class="bandeau-carte"><span class="gros-i">🎲</span><div><h2>Mini-jeux</h2><span class="etiquette">À venir</span></div></div>
+      <div class="bandeau-carte"><span class="gros-i">🎲</span><div><h2>Mini-jeux</h2><span class="etiquette">Version d'essai</span></div></div>
       <div class="corps">
-        <p>Des parties express, à jouer seul ou à plusieurs sur le même téléphone, façon fête entre amis.</p>
-        <div class="bientot">Bientôt !</div>
+        <p>Des parties express, de réflexion ou de hasard. Premier essai : <b>Le Bluff</b>, un face-à-face façon poker avec des cartes pierre, feuille et ciseaux, contre l'ordinateur.</p>
+        <a class="jouer" href="bluff/index.html">▶ Le Bluff</a>
+        <div class="bientot">Les autres mini-jeux arrivent bientôt !</div>
       </div>
     </section>
     <section class="carte" role="tabpanel" id="pPlateforme" aria-labelledby="oPlateforme" style="--teinte:#2E9BC0" hidden>
@@ -811,6 +812,8 @@ canvas { display: block; width: 100%; height: 100%; }
   $("retourHub").addEventListener("click", montrerHub);
   // pour les essais : « #monde3 », « #boss »… vont droit dans Riposte
   if (location.hash) $("hub").hidden = true;
+  // la page « Riposte seul » (partagée à des amis) : pas de menu Chifoumania, on arrive droit sur Riposte
+  if (window.RIPOSTE_SEUL) { $("hub").hidden = true; $("retourHub").hidden = true; document.querySelector(".acc-haut").style.justifyContent = "flex-end"; }
   // le titre CHIFOUMANIA tient toujours dans la largeur de l'écran : on réduit la police s'il dépasse
   // (petits téléphones, ou texte agrandi dans les réglages du téléphone)
   function ajusterTitre() {

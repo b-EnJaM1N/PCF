@@ -190,6 +190,14 @@ Dévoiler aussi des cartes du paquet répond au défaut trouvé plus haut : l'Ou
 - Les cartes dévoilées aident surtout l'Ouvert : dans ces essais, la mise obligatoire 2/1 penche un peu vers lui (le Caché perd environ 0,3 à 0,4 jeton par donne). Ces réglages dépendent de la façon de jouer : à ajuster en vraies parties (peut-être revenir à 1 et 1).
 - Exemple de déduction (paquet de 18 pour simplifier) : l'Ouvert a pierre, pierre, feuille, ciseaux, ciseaux ; le paquet dévoile 4 feuilles et 1 pierre ; il ne reste qu'une seule feuille parmi les cartes qu'il ne voit pas, donc le Caché a au plus une feuille : jouer pierre devient beaucoup moins risqué.
 
+### La version jouable (23 octobre)
+`prototypes/bluff/` : une version d'essai jouable **contre l'ordinateur**, ouverte depuis l'onglet **Mini-jeux** du menu Chifoumania (bouton « Le Bluff »), avec les règles ci-dessus (21 cartes, dévoilement du paquet 3-2-1, relance de +2, abattage en 3 coups, 16 donnes ou jusqu'à ce qu'un joueur n'ait plus de jetons ; mise d'entrée au choix : 2/1 ou 1/1).
+- **Trois adversaires** : la Prudente 🦉 (bluffe très peu), le Malin 🦊 (bluffe de temps en temps), le Bluffeur 🃏 (bluffe beaucoup). Ils misent selon la force estimée de leur main (calculée avec ce qu'ils voient : ta main montrée s'ils sont Caché, les cartes du paquet).
+- **Au duel**, l'ordinateur joue la stratégie exacte (tables calculées par théorie des jeux, `bluff/tables.js`), en faisant la moyenne sur toutes les mains que tu peux avoir.
+- **Une table de poker** (demande du porteur du projet) : les deux joueurs assis face à face (un rond avec l'avatar, le pseudo et les jetons), chacun avec ses 5 cartes devant lui (l'adversaire en haut, toi en bas) ; les cartes se retournent quand elles sont dévoilées ; au milieu du tapis, la pile du paquet et les 6 places des cartes qu'il dévoile (3, puis 2, puis 1), le pot, et le duel en 3 coups ; les mises posées devant chacun ; les boutons d'action sous la table, jamais dessus. Le pseudo est choisi à l'accueil.
+- **Aide à l'écran** : le cadre « Tu ne vois pas » compte les cartes que tu ne vois pas (et combien sont dans la main adverse), pour faciliter la déduction.
+- Règles et ordinateur dans `bluff/logique.js`, testés par `tests/bluff.test.js`.
+
 ### Pour tester sans programmer
 Un jeu de cartes classique (par exemple cœur = pierre, carreau = feuille, pique = ciseaux, 7 de chaque) et des allumettes pour les jetons : quelques parties entre amis diront vite si le jeu fonctionne, si le bluff marche et combien de temps dure une partie.
 
