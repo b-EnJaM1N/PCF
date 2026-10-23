@@ -1,4 +1,19 @@
-# Mode Aventure — Monde 1 : la Forêt des Ombres (projet)
+# Aventure — Monde 1 : la Forêt des Ombres (Chifoumania)
+
+## Où on en est (23 octobre) : l'Aventure entre dans Chifoumania
+Décision du porteur du projet (23 octobre) : l'Aventure fait partie de **Chifoumania** (famille de jeux à part de HandSlam), et elle est retravaillée.
+- **Le jeu** : `docs/prototypes/aventure/` (page `index.html`, règles dans `js/aventure-logique.js`, testées par `tests/aventure.test.js`). Repris de la branche `aventure-experimentale` (13 octobre, à ne plus utiliser) ; il ne dépend plus de l'appli HandSlam (règles, stockage et police copiés dans le dossier). On l'ouvre depuis l'onglet **Aventure** du menu Chifoumania (bouton « Jouer ») ; « ‹ Menu Chifoumania » sur l'écran titre pour revenir. Il est publié avec le menu sur la page privée Claude (voir [`invaders.md`](invaders.md)).
+- **Ce qui existait déjà** (13 octobre) : écran titre « La Quête du Gant d'Or », choix du héros (Héros ou Héroïne) et personnalisation (peau, cheveux, yeux), carte du monde où le héros marche, 6 adversaires dessinés en pixel art avec leur manie (Bambi, le Gobelin, Pipistrelle, l'Amanite, le Loup gris, et le boss **le Gardien de la Forêt**, golem de bois et de pierre, à la place de Grok), 4 pouvoirs (Œil de Lynx, Écorce de Chêne, Frappe du Sanglier, Sève de Vie), étoiles, sons 8 bits.
+- **L'Enchanteresse 🔮 remplace Monique** (choix du porteur du projet, 23 octobre : un nom mystérieux façon RPG, sans prénom ; essais écartés : « Maître Hibou », puis « Tante Pia ») : une magicienne de la forêt qui lit les signes dans sa boule de cristal, voix douce et un peu énigmatique. Elle appelle le héros « jeune âme » et donne un indice sur la manie de chaque adversaire. Plus aucune trace de HandSlam dans les textes (ni Monique, ni 1997, ni « trophée du HandSlam ») : le Gant d'Or est « celui qui donne la maîtrise du chifoumi ».
+- **Des combats plus vivants** (choix du porteur du projet : « les deux ») :
+  - **L'intention** : avant chaque coup, l'adversaire annonce ce qu'il prépare (une bulle avec le signe et un « ? »), mais il peut **bluffer**. Franchise : Bambi ne ment jamais, le Gobelin 80 %, Pipistrelle 70 %, l'Amanite 60 %, le Loup 50 %, le Gardien 65 % (40 % en rage). L'**Œil de Lynx** dit maintenant, pendant 3 coups, si l'intention est vraie ou du bluff.
+  - **Le temps limité** : une barre de temps se vide ; trop lent, le coup est perdu. Bambi 5 s, le Gobelin 4,5 s, Pipistrelle et l'Amanite 4 s, le Loup et le Gardien 3,5 s (2,6 s en rage) ; jamais moins de 1,8 s. Le temps s'arrête si on quitte l'appli.
+  - **L'énergie et les coups spéciaux** : chaque coup gagné remplit la jauge (3 cases). Pleine, on peut **armer un coup spécial** ; s'il gagne : Pierre = **Coup de massue** (×2 dégâts), Feuille = **Tornade de feuilles** (dégâts et +20 de vie), Ciseaux = **Lame étourdissante** (dégâts, et la prochaine intention de l'adversaire est forcément vraie). Perdu ou égalité : l'énergie est perdue (un pari).
+- **À faire ensuite** : régler les chiffres en jouant ; mettre l'Aventure aux couleurs de Chifoumania (pas demandé pour l'instant) ; le monde 2.
+
+*Ce qui suit est le scénario d'origine (13 octobre, époque HandSlam), gardé pour mémoire : Monique, Grok et certains chiffres ont changé depuis (voir ci-dessus et `js/aventure-logique.js`).*
+
+## Le projet d'origine (13 octobre)
 
 Idée du porteur du projet (13 octobre), *rien de programmé pour l'instant*. Un mode solo façon RPG, contre l'ordinateur,
 sans serveur (jouable sans compte). 5 ou 6 mondes à terme ; on commence par un seul monde pour voir si les joueurs accrochent.
