@@ -154,10 +154,11 @@ Trois portes (pierre, feuille, ciseaux), on choisit une porte et un signe ; si o
 Un face-à-face façon poker (« heads-up ») avec des cartes pierre, feuille et ciseaux : un joueur garde ses cartes fermées, l'autre doit les dévoiler peu à peu, et on mise à chaque étape. Le plus riche des mini-jeux, mais aussi le plus dur à équilibrer : à tester avant de le programmer pour de bon.
 
 ### Les règles pour les premiers essais
-1. **Le paquet** : 30 cartes (10 pierres, 10 feuilles, 10 ciseaux), mélangées à chaque donne ; **5 cartes chacun**.
-2. **Les jetons** : 20 chacun au départ. Mise obligatoire à chaque donne : **2 jetons pour le Caché, 1 pour l'Ouvert** (celui qui a l'information paie plus cher ; voir les essais).
+1. **Le paquet** : **21 cartes** (7 pierres, 7 feuilles, 7 ciseaux), mélangées à chaque donne ; **5 cartes chacun** (au départ, 30 cartes ; passé à 21 avec le dévoilement du paquet, voir plus bas).
+2. **Les jetons** : 20 chacun au départ. Mise obligatoire à chaque donne : **à régler pendant les essais**, en partant de 2 jetons pour le Caché et 1 pour l'Ouvert (celui qui a l'information paie plus cher), ou 1 et 1 (le dévoilement du paquet aide l'Ouvert ; voir les essais).
 3. **Les rôles**, inversés à chaque donne : **le Caché** garde ses 5 cartes fermées et parle en premier à chaque tour de mise ; **l'Ouvert** dévoile ses cartes.
 4. **Le dévoilement** : l'Ouvert montre **2 cartes de son choix**, puis une **3ᵉ**, puis une **4ᵉ** ; il choisit lui-même **la carte qui reste cachée** (son arme de bluff).
+   **En même temps, on dévoile des cartes du paquet** (idée du porteur du projet) : **3**, puis **2**, puis **1**. Elles ne sont dans aucune main : en les comptant, chacun peut déduire peu à peu la main adverse.
 5. **Les mises** (après chaque dévoilement) : le Caché passe ou mise (1 à 3 jetons) ; l'Ouvert **suit, relance une fois, ou se couche** ; si le Caché a passé, l'Ouvert peut miser à son tour. Celui qui se couche perd ce qu'il a misé.
 6. **L'abattage** : si personne ne s'est couché, **duel en 3 coups** : chacun joue 3 de ses 5 cartes, une par une, face cachée et en même temps ; celui qui gagne le plus de coups prend les mises ; égalité : on partage.
 7. **La fin** : quand un joueur n'a plus de jetons, ou après un nombre de donnes fixé (le plus de jetons gagne).
@@ -173,8 +174,24 @@ Des milliers de parties entre joueurs virtuels : un « stratège » (il mise sel
 - **Ce que la simulation ne sait pas mesurer** : le bluff et la lecture de l'adversaire. Les joueurs virtuels se couchent rarement (3 % des donnes), parce que l'Ouvert ne sait presque rien de la main du Caché et suit donc selon la cote des mises ; du coup, le bluff ne rapporte rien entre eux. Entre humains, ce sera différent : c'est ce qu'il faut tester en vrai. Si l'Ouvert manque d'indices, une piste : **le Caché montre 1 carte** au début (abandons doublés dans la simulation ; il faudra alors revoir les mises obligatoires).
 - Quelle carte l'Ouvert a intérêt à garder cachée : pas de conclusion fiable (la simulation ne modélise pas assez finement l'abattage).
 
+### Le dévoilement du paquet (idée du porteur du projet, essais du 23 octobre)
+Dévoiler aussi des cartes du paquet répond au défaut trouvé plus haut : l'Ouvert ne savait presque rien de la main du Caché. Tout dépend de la taille du paquet (essais entre joueurs virtuels, mêmes règles par ailleurs) :
+
+| Paquet | Cartes du paquet dévoilées | Abandons entre stratèges | Le stratège contre celui qui suit toujours |
+|---|---|---|---|
+| 30 cartes | aucune | 3 % | 60 % |
+| 30 cartes | 3, puis 1, puis 1 | 3 % | 62 % |
+| 21 cartes | 3, puis 1, puis 1 | 4 % | 59 % |
+| **21 cartes** | **3, puis 2, puis 1** | **5 %** | **62 %** |
+| 18 cartes | 3, puis 1, puis 1 | 6 % | 62 % |
+
+- Avec 30 cartes, dévoiler le paquet apprend peu (il reste trop de cartes inconnues).
+- **Retenu (choix du porteur du projet) : 21 cartes, dévoilement 3-2-1.** Autant de déduction qu'avec 18 cartes, mais il reste plus d'inconnu à la fin (pour l'Ouvert : les 5 cartes du Caché et 5 autres, contre 3 avec 18 cartes) : le meilleur équilibre entre compter les cartes et bluffer. (18 cartes en 3-1-1 donnerait plutôt un jeu de déduction, où l'on reconstitue presque la main adverse.)
+- Les cartes dévoilées aident surtout l'Ouvert : dans ces essais, la mise obligatoire 2/1 penche un peu vers lui (le Caché perd environ 0,3 à 0,4 jeton par donne). Ces réglages dépendent de la façon de jouer : à ajuster en vraies parties (peut-être revenir à 1 et 1).
+- Exemple de déduction (paquet de 18 pour simplifier) : l'Ouvert a pierre, pierre, feuille, ciseaux, ciseaux ; le paquet dévoile 4 feuilles et 1 pierre ; il ne reste qu'une seule feuille parmi les cartes qu'il ne voit pas, donc le Caché a au plus une feuille : jouer pierre devient beaucoup moins risqué.
+
 ### Pour tester sans programmer
-Un jeu de cartes classique (par exemple cœur = pierre, carreau = feuille, pique = ciseaux, 10 de chaque) et des allumettes pour les jetons : quelques parties entre amis diront vite si le jeu fonctionne, si le bluff marche et combien de temps dure une partie.
+Un jeu de cartes classique (par exemple cœur = pierre, carreau = feuille, pique = ciseaux, 7 de chaque) et des allumettes pour les jetons : quelques parties entre amis diront vite si le jeu fonctionne, si le bluff marche et combien de temps dure une partie.
 
 ### Plus tard
 - Contre l'ordinateur : difficile (un ordinateur qui bluffe intelligemment est complexe) ; commencer par des caractères simples (prudent, bluffeur, agressif). Le vrai plaisir viendra entre humains, en ligne.
