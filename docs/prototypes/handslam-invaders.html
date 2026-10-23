@@ -73,9 +73,6 @@ canvas { display: block; width: 100%; height: 100%; }
 }
 .ecran .petit { font-size: .82rem; }
 .ecran .pourcent { font-family: var(--display); font-weight: 800; font-size: 1.3rem; color: var(--line); }
-.mondes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 340px; }
-.mondes .go { font-size: 1.02rem; padding: 10px 8px; line-height: 1.05; }
-.mondes .go small { display: block; font-size: .72rem; opacity: .85; letter-spacing: .06em; }
 .ecran .gros { font-family: var(--display); font-size: 3.4rem; font-weight: 800; color: var(--me); line-height: 1; font-variant-numeric: tabular-nums; }
 .colonne .pause { /* entre le score et les signes, loin du terrain */
   flex: none; height: 58px; border: 0; border-radius: 12px; background: var(--panel); color: var(--line);
@@ -149,6 +146,61 @@ canvas { display: block; width: 100%; height: 100%; }
 .idees { margin: 0; padding-left: 1.2em; line-height: 1.45; }
 .retour { position: absolute; top: 8px; left: 8px; z-index: 2; border: 0; background: var(--panel); color: var(--line); border-radius: 999px; padding: 8px 12px; font: inherit; font-size: .85rem; cursor: pointer; }
 .ecran h1 small { display: block; font-size: .42em; letter-spacing: .14em; color: var(--muted); }
+
+/* ---------- Accueil de Riposte : plein écran, dans le style du menu Chifoumania ---------- */
+#accueil.accueil {
+  position: fixed; inset: 0; z-index: 9; display: block; padding: 0; backdrop-filter: none; text-align: left;
+  background: radial-gradient(120% 60% at 50% 0%, #FFB347 0%, #FF6B3D 35%, #C2305E 68%, #3E2A8E 100%);
+}
+.acc-page {
+  max-width: 480px; margin: 0 auto; box-sizing: border-box; min-height: 100%;
+  padding: max(10px, env(safe-area-inset-top, 0px)) 16px max(18px, env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 12px;
+}
+.acc-haut { display: flex; justify-content: space-between; }
+#accueil .retour { position: static; background: rgba(58, 22, 96, .55); color: #fff; font-size: .95rem; padding: 8px 14px; }
+.reglages-acc { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.reglages-acc .cote { background: rgba(58, 22, 96, .55); border-color: rgba(255, 255, 255, .5); }
+.acc-titre {
+  margin: 0; text-align: center; font-family: "Lilita One", var(--display); font-weight: 400; line-height: .95;
+  font-size: clamp(3rem, 17vw, 4.2rem); color: #FFD23F; -webkit-text-stroke: 8px #3A1660; paint-order: stroke fill; text-shadow: 0 6px 0 #3A1660;
+}
+.acc-titre small { display: block; font-size: .3em; letter-spacing: .18em; color: #fff; -webkit-text-stroke: 4px #3A1660; text-shadow: none; margin-bottom: 4px; }
+.acc-regle { background: rgba(255, 253, 247, .95); color: #3A1660; border: 3px solid #3A1660; border-radius: 20px; box-shadow: 0 5px 0 #3A1660; padding: 10px 12px 12px; }
+.acc-regle p { margin: 0 0 8px; text-align: center; font-family: "Lilita One", var(--display); font-size: 1.1rem; color: #3A1660; max-width: none; }
+.duos { display: flex; justify-content: space-around; gap: 6px; }
+.duo { display: flex; align-items: center; gap: 3px; font-weight: 700; color: #3A1660; }
+.duo i { font-style: normal; width: clamp(28px, 8.6vw, 40px); height: clamp(28px, 8.6vw, 40px); border-radius: 50%; display: grid; place-items: center; font-size: clamp(1rem, 4.6vw, 1.35rem); background: #0F2C52; }
+.duo .role { box-shadow: 0 0 0 4px var(--c); }
+.duo .tir { box-shadow: 0 0 0 3px var(--me); }
+#accueil .jouer {
+  font-family: "Lilita One", var(--display); font-size: 1.4rem; border: 3px solid #3A1660; border-radius: 999px; padding: 10px 18px;
+  background: #FFD23F; color: #3A1660; box-shadow: 0 5px 0 #3A1660; cursor: pointer;
+}
+.liste-mondes { display: flex; flex-direction: column; gap: 10px; }
+.monde-carte {
+  font: inherit; text-align: left; display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 12px;
+  background: #FFFDF7; color: #2A1745; border: 3px solid #3A1660; border-radius: 18px; box-shadow: 0 5px 0 #3A1660;
+  padding: 8px 12px 8px 8px; cursor: pointer; width: 100%; box-sizing: border-box;
+}
+.monde-carte:active { transform: translateY(4px); box-shadow: 0 1px 0 #3A1660; }
+.monde-carte:focus-visible, .acc-page button:focus-visible, .aide summary:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.monde-carte .ico { width: 56px; height: 56px; border-radius: 14px; background: var(--c); border: 3px solid #3A1660; display: grid; place-items: center; font-size: 1.8rem; box-sizing: border-box; }
+.monde-carte .num { display: block; font-size: .7rem; font-weight: 600; letter-spacing: .1em; color: #7A6A93; }
+.monde-carte .nom { display: block; font-family: "Lilita One", var(--display); font-size: 1.3rem; line-height: 1.05; }
+.monde-carte .barre { display: block; height: 7px; border-radius: 99px; background: #EDE4FA; margin-top: 5px; overflow: hidden; }
+.monde-carte .barre b { display: block; height: 100%; background: var(--c); border-radius: 99px; }
+.monde-carte .score { text-align: right; font-family: var(--display); font-weight: 800; font-size: 1.05rem; line-height: 1.1; color: #3A1660; }
+.monde-carte .score small { display: block; font-family: var(--body); font-weight: 600; font-size: .7rem; color: #7A6A93; }
+.monde-carte.ferme { background: rgba(255, 253, 247, .55); cursor: default; box-shadow: 0 5px 0 rgba(58, 22, 96, .6); border-color: rgba(58, 22, 96, .6); }
+.monde-carte.ferme:active { transform: none; box-shadow: 0 5px 0 rgba(58, 22, 96, .6); }
+.monde-carte.ferme .ico { filter: grayscale(1); opacity: .6; }
+.monde-carte.ferme .nom { color: #5A4A73; }
+.monde-carte .indice { display: block; font-size: .78rem; color: #5A4A73; margin-top: 2px; }
+.aide { color: #fff; text-align: center; }
+.aide summary { cursor: pointer; font-weight: 600; display: inline-block; padding: 6px 14px; border-radius: 999px; background: rgba(58, 22, 96, .55); list-style: none; }
+.aide summary::-webkit-details-marker { display: none; }
+.aide p { margin: 10px auto 0; color: #fff; max-width: 36ch; text-align: left; background: rgba(58, 22, 96, .55); padding: 10px 14px; border-radius: 14px; line-height: 1.45; }
 @media (prefers-reduced-motion: reduce) { .logo, .hub-fond span { animation: none; } }
 
 </style>
@@ -174,21 +226,33 @@ canvas { display: block; width: 100%; height: 100%; }
     <canvas id="toile"></canvas>
     <button class="son" id="son" aria-label="Couper le son">🔊</button>
 
-    <div class="ecran" id="accueil">
-      <button class="retour" id="retourHub" aria-label="Revenir au menu Chifoumania">‹ Menu</button>
-      <h1><small>CHIFOUMANIA</small>Riposte</h1>
-      <p>Les signes tombent. Place-toi dessous et tire celui qui les bat.</p>
-      <div class="regles">
-        <span class="e">✌️</span><span class="fl">→ tire</span><span class="e">✊</span>
-        <span class="e">✋</span><span class="fl">→ tire</span><span class="e">✌️</span>
-        <span class="e">✊</span><span class="fl">→ tire</span><span class="e">✋</span>
+    <!-- l'accueil de Riposte : la règle en 3 pastilles, puis un gros bouton par monde -->
+    <div class="ecran accueil" id="accueil">
+      <div class="acc-page">
+        <div class="acc-haut">
+          <button class="retour" id="retourHub" aria-label="Revenir au menu Chifoumania">‹ Menu</button>
+          <button class="retour" id="ouvrirReglages" aria-expanded="false" aria-controls="reglagesAccueil" aria-label="Réglages">⚙️</button>
+        </div>
+        <div class="reglages-acc" id="reglagesAccueil" hidden>
+          <button class="cote" id="cote">Mettre les signes à droite</button>
+          <button class="cote" id="essai">Essayer tous les mondes (démo)</button>
+        </div>
+        <h1 class="acc-titre"><small>CHIFOUMANIA</small>Riposte</h1>
+        <div class="acc-regle">
+          <p>Il tombe… tire ce qui le bat !</p>
+          <div class="duos">
+            <span class="duo"><i class="role" style="--c:#C24DFF">✌️</i>➜<i class="tir">✊</i></span>
+            <span class="duo"><i class="role" style="--c:#00D7B0">✋</i>➜<i class="tir">✌️</i></span>
+            <span class="duo"><i class="role" style="--c:#FF9500">✊</i>➜<i class="tir">✋</i></span>
+          </div>
+        </div>
+        <button class="jouer" id="reprise" hidden>▶ Reprendre la partie</button>
+        <div class="liste-mondes" id="mondes"></div>
+        <details class="aide">
+          <summary>Comment jouer ?</summary>
+          <p>Une main choisit le signe sur le côté, l'autre glisse dans la bande du bas pour bouger. Un mauvais signe bloque ton gant un instant. Chaque monde : 15 vagues et 5 boss, puis ça recommence en plus rapide. Attrape les objets qui tombent : ❤️ vie, 🛡️ bouclier, ⏱️ ralenti, 🔁 tir triple, ⚡ éclair.</p>
+        </details>
       </div>
-      <p class="petit">Une main choisit le signe sur le côté, l'autre glisse sur le terrain pour bouger. Un mauvais signe fait accélérer l'ennemi. Chaque monde : 15 vagues et 5 boss, puis ça recommence en plus rapide. Attrape les objets qui tombent : ❤️ 🛡️ ⏱️ 🔁 ⚡</p>
-      <button class="go" id="reprise" hidden>▶ Reprendre la partie</button>
-      <div class="mondes" id="mondes"></div>
-      <p class="petit" id="verrou"></p>
-      <button class="cote" id="essai">Essayer tous les mondes (démo)</button>
-      <button class="cote" id="cote">Mettre les signes à droite</button>
     </div>
 
     <div class="ecran" id="ecranPause" hidden>
@@ -685,20 +749,38 @@ canvas { display: block; width: 100%; height: 100%; }
   let mondesOuverts = 1, mondeDepart = 0, demo = /^#monde\d$/.test(location.hash);
   try { mondesOuverts = Math.min(MONDES.length, Math.max(1, +localStorage.getItem("hs-riposte-mondes") || 1)); } catch (e) {}
   // un bouton par monde ouvert ; « Essayer tous les mondes » les montre tous (démo seulement)
+  // une carte par monde : ouvert (record, meilleur pourcentage) ou fermé (ce qu'il faut faire pour l'ouvrir)
+  const ICONES_MONDES = ["🏫", "🏀", "🏖️", "🌲", "🚀"];
   function majAccueil() {
-    const visibles = demo ? MONDES.length : mondesOuverts;
-    $("mondes").replaceChildren(...MONDES.slice(0, visibles).map((m, i) => {
-      const b = document.createElement("button");
-      b.className = "go"; b.style.background = m.couleur; b.style.color = m.texte;
-      b.innerHTML = `<small>MONDE ${i + 1}${pourcents[i] ? ` · ${pourcents[i]} %` : ""}</small>${m.nom}`;
-      b.addEventListener("click", () => demarrer(i));
+    $("mondes").replaceChildren(...MONDES.map((m, i) => {
+      const ouvert = demo || i < mondesOuverts;
+      const b = document.createElement(ouvert ? "button" : "div");
+      b.className = "monde-carte" + (ouvert ? "" : " ferme"); b.style.setProperty("--c", m.couleur);
+      const ico = document.createElement("span"); ico.className = "ico"; ico.textContent = ouvert ? ICONES_MONDES[i] : "🔒";
+      const milieu = document.createElement("span");
+      milieu.innerHTML = `<span class="num">MONDE ${i + 1}</span><span class="nom"></span>`;
+      milieu.querySelector(".nom").textContent = m.nom;
+      if (ouvert) {
+        const barre = document.createElement("span"); barre.className = "barre";
+        barre.innerHTML = `<b style="width:${Math.min(100, pourcents[i])}%"></b>`;
+        milieu.append(barre);
+      } else {
+        const indice = document.createElement("span"); indice.className = "indice";
+        indice.textContent = `Bats le 3e boss ${MONDES[i - 1].du}`;
+        milieu.append(indice);
+      }
+      const score = document.createElement("span"); score.className = "score";
+      if (ouvert) score.innerHTML = `${pourcents[i]} %<small>🏆 ${records[i]}</small>`;
+      b.append(ico, milieu, score);
+      if (ouvert) { b.addEventListener("click", () => demarrer(i)); b.setAttribute("aria-label", `Monde ${i + 1}, ${m.nom}, ${pourcents[i]} %, record ${records[i]}`); }
       return b;
     }));
-    const suivant = MONDES[mondesOuverts];
-    $("verrou").hidden = !suivant;
-    if (suivant) $("verrou").textContent = `🔒 Monde ${mondesOuverts + 1} : ${suivant.nom}, après le 3e boss ${MONDES[mondesOuverts - 1].du} (vague 9)`;
-    $("essai").hidden = demo || !suivant;
+    $("essai").hidden = demo || mondesOuverts >= MONDES.length;
   }
+  $("ouvrirReglages").addEventListener("click", () => {
+    const ouvrir = $("reglagesAccueil").hidden;
+    $("reglagesAccueil").hidden = !ouvrir; $("ouvrirReglages").setAttribute("aria-expanded", ouvrir);
+  });
   $("essai").addEventListener("click", () => { demo = true; majAccueil(); });
   majAccueil();
   const premierBouton = () => document.querySelector("#mondes button")?.focus();
@@ -727,10 +809,9 @@ canvas { display: block; width: 100%; height: 100%; }
   ouvrirOnglet(ONGLETS.includes(ongletGarde) ? ongletGarde : "Riposte");
   // les mondes de Riposte et le meilleur pourcentage de chacun
   function majPucesRiposte() {
-    const icones = ["🏫", "🏀", "🏖️", "🌲", "🚀"];
     $("pucesRiposte").replaceChildren(...MONDES.map((m, i) => {
       const e = document.createElement("span");
-      e.textContent = `${icones[i]} ${m.nom.replace(/^(L'|Le |La )/, "")}${i < mondesOuverts ? "" : " 🔒"}`;
+      e.textContent = `${ICONES_MONDES[i]} ${m.nom.replace(/^(L'|Le |La )/, "")}${i < mondesOuverts ? "" : " 🔒"}`;
       if (pourcents[i]) { const b = document.createElement("b"); b.textContent = ` ${pourcents[i]} %`; e.append(b); }
       return e;
     }));
@@ -997,6 +1078,7 @@ canvas { display: block; width: 100%; height: 100%; }
     $("titreFin").textContent = pc >= 100 ? "Bravo !" : "Fin de partie";
     const nouveau = J.score > records[J.monde];
     if (nouveau) { records[J.monde] = J.score; try { localStorage.setItem(CLES_RECORD[J.monde], J.score); } catch (e) {} }
+    majAccueil(); // le record et le pourcentage sur la carte du monde
     $("record").textContent = records[J.monde];
     $("scoreFin").textContent = J.score;
     const precision = J.touches + J.rates ? Math.round(100 * J.touches / (J.touches + J.rates)) : 0;

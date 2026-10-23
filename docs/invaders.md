@@ -30,6 +30,8 @@ Au lancement, un **menu d'accueil « Chifoumania »**, coloré, façon jeu de di
 - **Aventure** (version d'essai) : la Forêt des Ombres et ses 6 adversaires ; « Jouer » ouvre la version déjà programmée (https://handslam.fr/aventure/aventure.html, voir [`aventure-monde-1.md`](aventure-monde-1.md)) dans un nouvel onglet.
 - **Mini-jeux** (à venir) et **Plateforme** (à créer) : une courte description et « Bientôt ! ».
 
+**Accueil de Riposte simplifié** (23 octobre, demande du porteur du projet) : plein écran, dans le même style coloré que le menu. En haut « ‹ Menu » et ⚙️ (qui montre « Mettre les signes à droite » et « Essayer tous les mondes (démo) ») ; le titre « Riposte » ; la règle en 3 pastilles (le signe qui tombe, dans la couleur et le trait de son rôle ➜ celui à tirer) ; « Reprendre la partie » s'il y en a une ; puis **une grande carte par monde** : icône, nom, barre du meilleur pourcentage, pourcentage et record ; les mondes fermés restent visibles, grisés avec 🔒 et ce qu'il faut faire pour les ouvrir (« Bats le 3e boss de la Plage »). Le long texte d'explication est replié sous « Comment jouer ? ».
+
 L'onglet ouvert est retenu sur le téléphone. Les raccourcis d'essai (#boss, #monde3…) vont droit dans Riposte. L'onglet du navigateur s'appelle maintenant « Chifoumania ».
 
 ## Le principe
