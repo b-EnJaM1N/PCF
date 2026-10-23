@@ -8,110 +8,151 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Lilita+One&display=swap">
 <style>
-/* Le Bluff, version d'essai : une table de jeu, l'ordinateur en haut, toi en bas. */
+/* Le Bluff, version d'essai : une table de poker. L'adversaire assis en haut, toi en bas, chacun avec ses 5 cartes devant lui ;
+   au milieu du tapis, le paquet et les cartes qu'il dévoile ; les actions sous la table, jamais dessus. */
 :root {
-  --feutre: #14603f; --feutre-fonce: #0b3d28; --bois: #6b3d1f; --texte: #fffdf7; --discret: #cfe6d8;
-  --or: #ffd23f; --violet: #3a1660; --pierre: #ff9500; --feuille: #00d7b0; --ciseaux: #c24dff; --rouge: #e8574a;
+  --fond: #0e1a14; --bois: #5a3216; --bois-clair: #8a5226; --feutre: #17734b; --feutre-fonce: #0d4a30; --texte: #fffdf7; --discret: #cfe6d8;
+  --or: #ffd23f; --violet: #3a1660; --pierre: #ff9500; --feuille: #00d7b0; --ciseaux: #c24dff; --rouge: #e8574a; --bleu: #2e9bc0;
   --titre: "Lilita One", "Arial Rounded MT Bold", sans-serif; --corps: "Barlow", system-ui, sans-serif;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-body { background: radial-gradient(120% 80% at 50% 40%, var(--feutre) 0%, var(--feutre-fonce) 85%); color: var(--texte); font-family: var(--corps); -webkit-tap-highlight-color: transparent; }
+body { background: radial-gradient(120% 70% at 50% 35%, #1f3529 0%, var(--fond) 80%); color: var(--texte); font-family: var(--corps); -webkit-tap-highlight-color: transparent; }
 [hidden] { display: none !important; }
 button { font: inherit; cursor: pointer; }
-.table { max-width: 480px; margin: 0 auto; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; gap: 8px;
-  padding: max(8px, env(safe-area-inset-top, 0px)) 16px max(12px, env(safe-area-inset-bottom, 0px)); }
+.jeu { max-width: 480px; margin: 0 auto; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; gap: 6px;
+  padding: max(6px, env(safe-area-inset-top, 0px)) 12px max(10px, env(safe-area-inset-bottom, 0px)); }
 .haut { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.lien { background: rgba(0, 0, 0, .25); border: 0; color: var(--texte); border-radius: 999px; padding: 6px 12px; font-size: .9rem; }
-.titre { font-family: var(--titre); font-size: 1.35rem; letter-spacing: .02em; color: var(--or); text-shadow: 0 2px 0 var(--violet); }
-/* un joueur : son nom, son rôle, ses jetons, ses cartes */
-.joueur { background: rgba(0, 0, 0, .18); border-radius: 16px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
-.joueur.actif { box-shadow: 0 0 0 3px var(--or); }
-.ligne { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.nom { font-weight: 700; display: flex; align-items: center; gap: 6px; }
-.role { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: var(--violet); }
-.role.ouvert { background: #2e9bc0; }
-.jetons { font-family: var(--titre); font-size: 1.15rem; color: var(--or); }
-.main { display: flex; gap: 6px; justify-content: center; min-height: 78px; }
-/* une carte : le signe, sa couleur, et son trait (plein, tirets, double) comme dans Riposte */
-.carte { width: 54px; height: 76px; border-radius: 9px; background: #fffdf7; color: #222; display: grid; place-items: center; font-size: 1.9rem; position: relative;
-  border: 0; box-shadow: 0 3px 0 rgba(0, 0, 0, .35); padding: 0; flex: none; transition: transform .12s; }
-.carte::after { content: ""; position: absolute; inset: 4px; border-radius: 6px; border: 3px solid var(--c); }
+.lien { background: rgba(255, 255, 255, .1); border: 0; color: var(--texte); border-radius: 999px; padding: 6px 12px; font-size: .9rem; }
+.titre { font-family: var(--titre); font-size: 1.3rem; color: var(--or); text-shadow: 0 2px 0 var(--violet); }
+
+/* ---- la table : bordure en bois, tapis vert ---- */
+.table { position: relative; flex: 1 0 auto; min-height: 500px; margin: 34px 4px; border-radius: 150px / 120px;
+  background: linear-gradient(var(--bois-clair), var(--bois)); padding: 12px; box-shadow: 0 10px 24px rgba(0, 0, 0, .55), inset 0 2px 0 rgba(255, 255, 255, .2); }
+.tapis { position: relative; height: 100%; min-height: 476px; border-radius: 140px / 110px; overflow: hidden;
+  background: radial-gradient(90% 70% at 50% 50%, var(--feutre) 0%, var(--feutre-fonce) 100%);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .12), inset 0 0 30px rgba(0, 0, 0, .45);
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 46px 10px 46px; }
+.tapis::before { content: "LE BLUFF"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: var(--titre); font-size: 2.6rem;
+  color: rgba(255, 255, 255, .06); letter-spacing: .1em; pointer-events: none; white-space: nowrap; }
+/* ---- les sièges : un rond avec l'avatar, le pseudo, les jetons ---- */
+.siege { position: absolute; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 8px; z-index: 3; }
+.siege.haut-table { top: 0; }
+.siege.bas-table { top: 100%; }
+.avatar { width: 62px; height: 62px; border-radius: 50%; display: grid; place-items: center; font-size: 1.9rem; background: radial-gradient(circle at 35% 30%, #4a2a7a, var(--violet));
+  border: 3px solid var(--or); box-shadow: 0 4px 10px rgba(0, 0, 0, .5); flex: none; }
+.siege.actif .avatar { box-shadow: 0 0 0 4px rgba(255, 210, 63, .5), 0 0 18px var(--or); }
+.plaque { background: rgba(10, 20, 15, .88); border: 2px solid rgba(255, 255, 255, .15); border-radius: 12px; padding: 3px 10px; min-width: 96px; line-height: 1.15; }
+.plaque b { display: block; font-size: .95rem; max-width: 9.5em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plaque .jetons { font-family: var(--titre); color: var(--or); font-size: 1rem; }
+.role { font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 1px 6px; border-radius: 999px; background: var(--violet); margin-left: 4px; vertical-align: 2px; }
+.role.ouvert { background: var(--bleu); }
+/* ---- les cartes ---- */
+.rang { display: flex; gap: 5px; justify-content: center; position: relative; z-index: 2; }
+.carte { width: 50px; height: 70px; border-radius: 8px; background: #fffdf7; color: #222; display: grid; place-items: center; font-size: 1.75rem; position: relative;
+  border: 0; box-shadow: 0 3px 0 rgba(0, 0, 0, .35); padding: 0; flex: none; transition: transform .15s; }
+.carte::after { content: ""; position: absolute; inset: 4px; border-radius: 5px; border: 3px solid var(--c); pointer-events: none; }
 .carte.s1::after { border-style: dashed; }
 .carte.s2::after { border-style: double; border-width: 5px; }
-.carte.dos { background: repeating-linear-gradient(45deg, #5b2a91 0 6px, #4a1f7a 6px 12px); color: #fff; font-size: 1.3rem; }
-.carte.dos::after { border-color: rgba(255, 255, 255, .5); }
-.carte.montree { box-shadow: 0 0 0 3px #2e9bc0, 0 3px 0 rgba(0, 0, 0, .35); }
-.carte.choisie { transform: translateY(-8px); box-shadow: 0 0 0 3px var(--or), 0 6px 0 rgba(0, 0, 0, .35); }
-.carte.jouee { opacity: .25; }
+.carte.dos { background: repeating-linear-gradient(45deg, #5b2a91 0 6px, #4a1f7a 6px 12px); color: rgba(255, 255, 255, .8); font-size: 1.2rem; }
+.carte.dos::after { border-color: rgba(255, 255, 255, .45); }
+.carte.montree { box-shadow: 0 0 0 3px var(--bleu), 0 3px 0 rgba(0, 0, 0, .35); }
+.carte.choisie { transform: translateY(-10px); box-shadow: 0 0 0 3px var(--or), 0 8px 0 rgba(0, 0, 0, .35); }
+.carte.jouee { opacity: .22; }
 .carte:disabled { cursor: default; }
-.carte .badge { position: absolute; top: -7px; right: -7px; font-size: .62rem; font-weight: 700; background: #2e9bc0; color: #fff; border-radius: 999px; padding: 1px 5px; }
-/* le milieu de la table */
-.milieu { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; text-align: center; }
-.pot { font-family: var(--titre); font-size: 1.5rem; color: var(--or); text-shadow: 0 2px 0 var(--violet); }
-.pot small { display: block; font-family: var(--corps); font-size: .75rem; color: var(--discret); letter-spacing: .08em; text-transform: uppercase; text-shadow: none; }
-.paquet { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.paquet .cartes { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; min-height: 52px; }
-.paquet .carte { width: 36px; height: 50px; font-size: 1.25rem; }
-.etiquette { font-size: .72rem; color: var(--discret); letter-spacing: .08em; text-transform: uppercase; }
-.compte { font-size: .85rem; background: rgba(0, 0, 0, .22); border-radius: 12px; padding: 6px 10px; }
-.compte b { font-weight: 700; }
-.message { min-height: 2.6em; font-weight: 600; font-size: 1rem; display: grid; place-items: center; }
-.duel { display: flex; justify-content: center; gap: 8px; }
-.duel .coup { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: .75rem; color: var(--discret); }
-.duel .coup .carte { width: 36px; height: 50px; font-size: 1.25rem; }
-.duel .coup.g b { color: var(--or); } .duel .coup.p b { color: var(--rouge); }
-/* les boutons d'action */
-.actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 52px; }
-.btn { border: 3px solid var(--violet); border-radius: 999px; padding: 10px 16px; background: var(--or); color: var(--violet); font-family: var(--titre); font-size: 1.1rem;
-  box-shadow: 0 4px 0 var(--violet); }
+.carte .badge { position: absolute; top: -7px; right: -7px; font-size: .58rem; font-weight: 700; background: var(--bleu); color: #fff; border-radius: 999px; padding: 1px 5px; z-index: 1; }
+.carte.petite { width: 34px; height: 48px; font-size: 1.15rem; border-radius: 6px; }
+.carte.petite::after { inset: 3px; border-width: 2px; }
+.carte.petite.s2::after { border-width: 4px; }
+.vient { animation: retourne .4s ease-out; }
+@keyframes retourne { from { transform: rotateY(90deg) scale(.9); } to { transform: rotateY(0) scale(1); } }
+.case { width: 34px; height: 48px; border-radius: 6px; border: 2px dashed rgba(255, 255, 255, .18); flex: none; }
+/* ---- les mises posées devant chaque joueur ---- */
+.mise { min-height: 24px; font-family: var(--titre); font-size: .95rem; color: var(--or); display: flex; align-items: center; gap: 4px; z-index: 2; }
+.mise:empty { visibility: hidden; }
+.jeton { width: 18px; height: 18px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffe680, #d9a400); border: 2px dashed #8a6500; display: inline-block; }
+/* ---- le milieu du tapis : le paquet, les cartes dévoilées, le pot, le duel ---- */
+.centre { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2; }
+.paquet-zone { display: flex; align-items: center; gap: 10px; }
+.pioche { position: relative; width: 36px; height: 50px; flex: none; }
+.pioche i { position: absolute; inset: 0; border-radius: 6px; background: repeating-linear-gradient(45deg, #5b2a91 0 5px, #4a1f7a 5px 10px); border: 2px solid rgba(255, 255, 255, .4); }
+.pioche i:nth-child(1) { transform: translate(-4px, 4px); } .pioche i:nth-child(2) { transform: translate(-2px, 2px); }
+.pioche b { position: absolute; bottom: -16px; left: 0; right: 0; text-align: center; font-size: .7rem; color: var(--discret); }
+.dev { display: flex; gap: 4px; }
+.dev .groupe { display: flex; gap: 3px; padding-right: 4px; }
+.pot { display: flex; align-items: center; gap: 6px; background: rgba(0, 0, 0, .3); border-radius: 999px; padding: 3px 12px; font-family: var(--titre); color: var(--or); font-size: 1.05rem; }
+.pot small { font-family: var(--corps); font-size: .68rem; color: var(--discret); letter-spacing: .06em; text-transform: uppercase; }
+.duel { display: grid; grid-template-columns: repeat(3, auto); gap: 4px 10px; justify-items: center; background: rgba(0, 0, 0, .22); border-radius: 12px; padding: 6px 10px; }
+.duel .res { font-size: .7rem; font-weight: 700; color: var(--discret); }
+.duel .res.g { color: var(--or); } .duel .res.p { color: #ff9c90; }
+/* ---- sous la table : le message, l'aide, les actions ---- */
+.panneau { display: flex; flex-direction: column; gap: 6px; background: rgba(0, 0, 0, .3); border-radius: 16px; padding: 8px 10px; }
+.message { min-height: 2.4em; font-weight: 700; text-align: center; display: grid; place-items: center; }
+.compte { font-size: .82rem; text-align: center; color: var(--discret); }
+.compte b { color: var(--texte); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 50px; }
+.btn { border: 3px solid var(--violet); border-radius: 999px; padding: 9px 14px; background: var(--or); color: var(--violet); font-family: var(--titre); font-size: 1.05rem; box-shadow: 0 4px 0 var(--violet); }
 .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--violet); }
 .btn.rouge { background: #ffb3a8; } .btn.gris { background: #e7e1f0; }
 .btn:disabled { opacity: .45; }
 .btn:focus-visible, .carte:focus-visible, .lien:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
-/* écrans d'accueil, d'aide et de fin */
-.ecran { position: fixed; inset: 0; z-index: 5; overflow-y: auto; background: rgba(8, 40, 26, .96); display: flex; }
-.ecran .page { max-width: 480px; margin: auto; padding: 24px 16px; display: flex; flex-direction: column; gap: 14px; text-align: center; }
+/* ---- accueil, règles, fin ---- */
+.ecran { position: fixed; inset: 0; z-index: 5; overflow-y: auto; background: rgba(8, 22, 15, .97); display: flex; }
+.ecran .page { max-width: 480px; margin: auto; padding: 24px 16px; display: flex; flex-direction: column; gap: 14px; text-align: center; width: 100%; }
 .ecran h1 { margin: 0; font-family: var(--titre); font-weight: 400; font-size: 2.6rem; color: var(--or); text-shadow: 0 4px 0 var(--violet); }
-.ecran h2 { margin: 0; font-family: var(--titre); font-weight: 400; font-size: 1.3rem; }
+.ecran h2 { margin: 0; font-family: var(--titre); font-weight: 400; font-size: 1.25rem; }
 .ecran p, .ecran li { line-height: 1.45; color: var(--discret); margin: 0; text-align: left; }
 .ecran ol { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
 .choix { display: flex; flex-direction: column; gap: 8px; }
-.choix button { border: 2px solid rgba(255, 255, 255, .25); background: rgba(0, 0, 0, .25); color: var(--texte); border-radius: 14px; padding: 10px 12px; text-align: left; }
+.choix button { border: 2px solid rgba(255, 255, 255, .25); background: rgba(255, 255, 255, .05); color: var(--texte); border-radius: 14px; padding: 10px 12px; text-align: left; }
 .choix button[aria-pressed="true"] { border-color: var(--or); background: rgba(255, 210, 63, .14); }
 .choix small { display: block; color: var(--discret); }
+.pseudo { font: inherit; font-size: 1.05rem; padding: 10px 14px; border-radius: 12px; border: 2px solid rgba(255, 255, 255, .25); background: rgba(255, 255, 255, .06); color: var(--texte); text-align: center; }
 .essai { font-size: .8rem; background: var(--violet); color: #fff; border-radius: 999px; padding: 3px 10px; align-self: center; }
-@media (prefers-reduced-motion: reduce) { .carte { transition: none; } }
+@media (max-height: 760px) { .carte { width: 44px; height: 62px; font-size: 1.5rem; } .table { min-height: 440px; } .tapis { min-height: 416px; } }
+@media (prefers-reduced-motion: reduce) { .carte { transition: none; } .vient { animation: none; } }
 </style>
 </head>
 <body>
-<div class="table">
+<div class="jeu">
   <div class="haut">
     <button class="lien" id="menu">‹ Menu</button>
     <span class="titre">Le Bluff</span>
     <button class="lien" id="aide" aria-label="Les règles">?</button>
   </div>
 
-  <section class="joueur" id="zoneIa" aria-label="L'ordinateur">
-    <div class="ligne"><span class="nom"><span id="iaEmoji"></span><span id="iaNom"></span><span class="role" id="iaRole"></span></span><span class="jetons" id="iaJetons"></span></div>
-    <div class="main" id="iaMain"></div>
-  </section>
+  <div class="table">
+    <div class="siege haut-table" id="siegeIa">
+      <div class="avatar" id="iaEmoji"></div>
+      <div class="plaque"><b><span id="iaNom"></span><span class="role" id="iaRole"></span></b><span class="jetons" id="iaJetons"></span></div>
+    </div>
+    <div class="tapis">
+      <div class="rang" id="iaMain" aria-label="Les cartes de l'adversaire"></div>
+      <div class="mise" id="miseIa"></div>
+      <div class="centre">
+        <div class="paquet-zone">
+          <div class="pioche" aria-hidden="true"><i></i><i></i><i></i><b id="pioche"></b></div>
+          <div class="dev" id="paquet" aria-label="Cartes du paquet dévoilées"></div>
+        </div>
+        <div class="pot" id="pot"></div>
+        <div class="duel" id="duel" hidden></div>
+      </div>
+      <div class="mise" id="miseMoi"></div>
+      <div class="rang" id="maMain" aria-label="Tes cartes"></div>
+    </div>
+    <div class="siege bas-table" id="siegeMoi">
+      <div class="avatar" id="monEmoji">🙂</div>
+      <div class="plaque"><b><span id="monNom"></span><span class="role" id="monRole"></span></b><span class="jetons" id="mesJetons"></span></div>
+    </div>
+  </div>
 
-  <section class="milieu">
-    <div class="pot" id="pot"></div>
-    <div class="paquet"><span class="etiquette">Cartes du paquet dévoilées</span><div class="cartes" id="paquet"></div></div>
-    <div class="duel" id="duel" hidden></div>
-    <div class="compte" id="compte"></div>
+  <div class="panneau">
     <div class="message" id="message" aria-live="polite"></div>
-  </section>
-
-  <section class="joueur" id="zoneMoi" aria-label="Toi">
-    <div class="main" id="maMain"></div>
-    <div class="ligne"><span class="nom">Toi <span class="role" id="monRole"></span></span><span class="jetons" id="mesJetons"></span></div>
-  </section>
-  <div class="actions" id="actions"></div>
+    <div class="compte" id="compte"></div>
+    <div class="actions" id="actions"></div>
+  </div>
 </div>
 
 <div class="ecran" id="accueil">
@@ -119,6 +160,8 @@ button { font: inherit; cursor: pointer; }
     <span class="essai">Version d'essai</span>
     <h1>Le Bluff</h1>
     <p>Un face-à-face façon poker avec des cartes pierre, feuille et ciseaux. À chaque donne, l'un garde ses cartes <b>fermées</b> (le Caché), l'autre doit en <b>montrer</b> peu à peu (l'Ouvert). On mise, on bluffe, on se couche… et si personne ne lâche, duel en 3 coups.</p>
+    <h2>Ton pseudo</h2>
+    <input class="pseudo" id="pseudo" maxlength="14" placeholder="Toi" autocomplete="nickname">
     <h2>Ton adversaire</h2>
     <div class="choix" id="choixIa"></div>
     <h2>Mise d'entrée</h2>
@@ -126,7 +169,7 @@ button { font: inherit; cursor: pointer; }
       <button data-mise="2-1" aria-pressed="true">Caché 2 jetons, Ouvert 1<small>Celui qui garde ses cartes fermées paie plus cher.</small></button>
       <button data-mise="1-1" aria-pressed="false">1 jeton chacun</button>
     </div>
-    <button class="btn" id="commencer">▶ Commencer</button>
+    <button class="btn" id="commencer">▶ S'asseoir à la table</button>
     <button class="lien" id="voirRegles">Lire les règles</button>
   </div>
 </div>
@@ -137,7 +180,7 @@ button { font: inherit; cursor: pointer; }
     <ol>
       <li><b>Le paquet</b> : 21 cartes (7 pierres, 7 feuilles, 7 ciseaux). 5 cartes chacun, 20 jetons chacun.</li>
       <li><b>Les rôles</b> changent à chaque donne : <b>le Caché</b> garde ses cartes fermées et parle en premier ; <b>l'Ouvert</b> montre 2 cartes de son choix, puis une 3ᵉ, puis une 4ᵉ. Il en garde une cachée.</li>
-      <li><b>Le paquet</b> dévoile 3 cartes, puis 2, puis 1 : elles ne sont dans aucune main. Compte-les pour deviner la main de l'autre (le cadre « Tu ne vois pas » le fait pour toi).</li>
+      <li><b>Le paquet</b> dévoile 3 cartes, puis 2, puis 1, au milieu du tapis : elles ne sont dans aucune main. Compte-les pour deviner la main de l'autre (la ligne « Tu ne vois pas » le fait pour toi).</li>
       <li><b>Les mises</b>, après chaque dévoilement : le Caché passe ou mise 1 à 3 jetons. L'Ouvert suit, relance (+2, une fois) ou se couche. Si le Caché passe, l'Ouvert peut miser à son tour. Celui qui se couche perd ce qu'il a misé.</li>
       <li><b>L'abattage</b> : si personne ne s'est couché, duel en 3 coups. Chacun joue 3 de ses 5 cartes, une par une, en même temps. Le plus de coups gagnés prend tout ; égalité : on partage (le jeton impair va à l'Ouvert).</li>
       <li><b>La fin</b> : quand un joueur n'a plus de jetons, ou après 16 donnes (le plus de jetons gagne).</li>
@@ -165,46 +208,70 @@ const $ = id => document.getElementById(id);
 const EMOJI = ["✊", "✋", "✌️"], COUL = ["var(--pierre)", "var(--feuille)", "var(--ciseaux)"];
 const pause = ms => new Promise(r => setTimeout(r, ms));
 const DONNES = 16, JETONS = 20;
+const lire = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
+const ecrire = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* tant pis */ } };
 
-let car = "malin", mise = "2-1";
-let J;      // la partie : { jetons:{moi,ia}, donne, ... }
+let car = lire("chifoumania:bluff-adversaire", "malin"), mise = lire("chifoumania:bluff-mise", "2-1");
+if (!CARACTERES[car]) car = "malin";
+let pseudo = lire("chifoumania:pseudo", "");
+let J;      // la partie : { jetons:{moi,ia}, donne }
 let D;      // la donne en cours
+let dejaVues = new Set();   // cartes déjà retournées (pour n'animer que les nouvelles)
 
 // ---------------------------------------------------------------- l'accueil
+$("pseudo").value = pseudo;
 $("choixIa").innerHTML = Object.entries(CARACTERES).map(([k, c]) =>
   `<button data-car="${k}" aria-pressed="${k === car}">${c.emoji} ${c.nom}<small>${c.desc}</small></button>`).join("");
+marquer("choixMise", document.querySelector(`#choixMise [data-mise="${mise}"]`));
 $("choixIa").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; car = b.dataset.car; marquer("choixIa", b); });
 $("choixMise").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; mise = b.dataset.mise; marquer("choixMise", b); });
-function marquer(id, b) { $(id).querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); }
-$("commencer").addEventListener("click", () => { $("accueil").hidden = true; partie(); });
+function marquer(id, b) { if (b) $(id).querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); }
+$("commencer").addEventListener("click", () => {
+  pseudo = $("pseudo").value.trim().slice(0, 14);
+  ecrire("chifoumania:pseudo", pseudo); ecrire("chifoumania:bluff-adversaire", car); ecrire("chifoumania:bluff-mise", mise);
+  $("accueil").hidden = true; partie();
+});
 $("voirRegles").addEventListener("click", () => { $("regles").hidden = false; });
 $("aide").addEventListener("click", () => { $("regles").hidden = false; });
 $("fermerRegles").addEventListener("click", () => { $("regles").hidden = true; });
 $("rejouer").addEventListener("click", () => { $("fin").hidden = true; partie(); });
 $("changer").addEventListener("click", () => { $("fin").hidden = true; $("accueil").hidden = false; });
 $("menu").addEventListener("click", () => { if (history.length > 1) history.back(); else location.href = "../"; });
+const monNom = () => pseudo || "Toi";
 
 // ---------------------------------------------------------------- l'affichage
-function carte(s, { dos = false, cls = "", attrs = "", badge = "" } = {}) {
+// une carte face visible (bouton, pour pouvoir la toucher) ou de dos ; « cle » : pour animer celle qu'on vient de retourner
+function carte(s, { dos = false, cls = "", attrs = "", badge = "", cle = "" } = {}) {
   if (dos) return `<span class="carte dos ${cls}" aria-label="carte cachée">?</span>`;
-  return `<button class="carte s${s} ${cls}" style="--c:${COUL[s]}" aria-label="${NOMS[s]}" ${attrs}>${EMOJI[s]}${badge ? `<span class="badge">${badge}</span>` : ""}</button>`;
+  let vient = "";
+  if (cle && !dejaVues.has(cle)) { dejaVues.add(cle); vient = "vient"; }
+  return `<button class="carte s${s} ${cls} ${vient}" style="--c:${COUL[s]}" aria-label="${NOMS[s]}" ${attrs}>${EMOJI[s]}${badge ? `<span class="badge">${badge}</span>` : ""}</button>`;
 }
+const jetonsPoses = n => (n > 0 ? `<span class="jeton"></span>${n}` : "");
 function afficher() {
   const c = CARACTERES[car];
-  $("iaEmoji").textContent = c.emoji; $("iaNom").textContent = c.nom;
-  $("iaJetons").textContent = `${J.jetons.ia - (D ? D.mis.ia : 0)} 🪙`;
-  $("mesJetons").textContent = `${J.jetons.moi - (D ? D.mis.moi : 0)} 🪙`;
-  if (!D) return;
+  $("iaEmoji").textContent = c.emoji; $("iaNom").textContent = c.nom; $("monNom").textContent = monNom();
+  $("iaJetons").textContent = `${J ? J.jetons.ia - (D ? D.mis.ia : 0) : JETONS} 🪙`;
+  $("mesJetons").textContent = `${J ? J.jetons.moi - (D ? D.mis.moi : 0) : JETONS} 🪙`;
+  if (!D) { ["iaMain", "maMain", "paquet", "miseIa", "miseMoi", "pot", "compte"].forEach(id => { $(id).innerHTML = ""; }); return; }
   for (const [id, qui] of [["iaRole", "ia"], ["monRole", "moi"]]) {
     $(id).textContent = D.cache === qui ? "Caché" : "Ouvert"; $(id).classList.toggle("ouvert", D.cache !== qui);
   }
-  $("pot").innerHTML = `${D.mis.moi + D.mis.ia} 🪙<small>Donne ${J.donne} / ${DONNES} · au milieu</small>`;
-  $("paquet").innerHTML = D.paquet.slice(0, D.paquetVu).map(s => carte(s, { attrs: "disabled tabindex=-1" })).join("");
-  // l'ordinateur : ses cartes montrées (s'il est Ouvert) ; le reste de dos
+  // les mises devant chacun, et le pot (ce qu'il y a en tout au milieu)
+  $("miseIa").innerHTML = jetonsPoses(D.mis.ia); $("miseMoi").innerHTML = jetonsPoses(D.mis.moi);
+  $("pot").innerHTML = `<small>Pot</small> ${D.mis.moi + D.mis.ia} 🪙 <small>· donne ${J.donne}/${DONNES}</small>`;
+  // le paquet : la pile (cartes restantes) et les 6 places des cartes dévoilées (3, puis 2, puis 1)
+  $("pioche").textContent = `${D.paquet.length - D.paquetVu}`;
+  const places = [[0, 1, 2], [3, 4], [5]];
+  $("paquet").innerHTML = places.map(g => `<div class="groupe">${g.map(k => (k < D.paquetVu
+    ? carte(D.paquet[k], { cls: "petite", attrs: "disabled tabindex=-1", cle: `p${J.donne}-${k}` })
+    : `<span class="case"></span>`)).join("")}</div>`).join("");
+  // l'adversaire : ses cartes montrées (s'il est l'Ouvert), jouées au duel, le reste de dos
   const iaMontre = D.cache === "ia" ? [] : D.montrees;
   $("iaMain").innerHTML = D.mains.ia.map((s, i) => {
     if (D.joueesIdx.ia.includes(i)) return carte(s, { cls: "jouee", attrs: "disabled tabindex=-1" });
-    return iaMontre.includes(i) ? carte(s, { cls: "montree", attrs: "disabled tabindex=-1" }) : carte(s, { dos: true });
+    if (iaMontre.includes(i)) return carte(s, { cls: "montree", attrs: "disabled tabindex=-1", badge: "vue", cle: `i${J.donne}-${i}` });
+    return carte(s, { dos: true });
   }).join("");
   // ma main
   const mesMontrees = D.cache === "moi" ? [] : D.montrees;
@@ -217,11 +284,11 @@ function afficher() {
   const vuAdv = D.cache === "ia" ? compte(D.joueesIdx.ia.map(i => D.mains.ia[i])) : compte([...new Set([...D.montrees, ...D.joueesIdx.ia])].map(i => D.mains.ia[i]));
   const inc = inconnues({ main: compte(D.mains.moi), vuAdverse: vuAdv, paquetVu: compte(D.paquet.slice(0, D.paquetVu)) });
   const nAdv = 5 - vuAdv.reduce((a, b) => a + b, 0);
-  $("compte").innerHTML = `Tu ne vois pas : ${inc.map((n, s) => `${EMOJI[s]} <b>${n}</b>`).join(" · ")}<br><small>dont ${nAdv} carte${nAdv > 1 ? "s" : ""} encore inconnue${nAdv > 1 ? "s" : ""} dans la main de l'adversaire</small>`;
-  $("zoneIa").classList.toggle("actif", D.tour === "ia"); $("zoneMoi").classList.toggle("actif", D.tour === "moi");
+  $("compte").innerHTML = `Tu ne vois pas : ${inc.map((n, s) => `${EMOJI[s]} <b>${n}</b>`).join(" · ")} · dont <b>${nAdv}</b> dans sa main`;
+  $("siegeIa").classList.toggle("actif", D.tour === "ia"); $("siegeMoi").classList.toggle("actif", D.tour === "moi");
 }
 const dire = t => { $("message").textContent = t; };
-// des boutons ; renvoie la valeur choisie
+// des boutons sous la table ; renvoie la valeur choisie
 function demander(options) {
   return new Promise(ok => {
     $("actions").innerHTML = options.map((o, k) => `<button class="btn ${o.cls || ""}" data-k="${k}" ${o.off ? "disabled" : ""}>${o.t}</button>`).join("");
@@ -232,7 +299,7 @@ function demander(options) {
 function choisirCartes(n, mode) {
   return new Promise(ok => {
     D.selection = mode; D.choix = []; afficher();
-    const valider = async () => {
+    const valider = () => {
       $("actions").innerHTML = `<button class="btn" id="ok" ${D.choix.length === n ? "" : "disabled"}>${mode === "montrer" ? `Montrer ${n > 1 ? "ces cartes" : "cette carte"}` : "Jouer cette carte"}</button>`;
       $("ok").onclick = () => { const c = D.choix; D.selection = null; D.choix = []; $("actions").innerHTML = ""; afficher(); ok(c); };
     };
@@ -250,17 +317,17 @@ function choisirCartes(n, mode) {
 
 // ---------------------------------------------------------------- une partie
 async function partie() {
-  J = { jetons: { moi: JETONS, ia: JETONS }, donne: 0 };
+  J = { jetons: { moi: JETONS, ia: JETONS }, donne: 0 }; dejaVues = new Set();
   let cache = Math.random() < 0.5 ? "moi" : "ia";
   while (J.donne < DONNES && J.jetons.moi > 0 && J.jetons.ia > 0) {
     J.donne++;
     await donne(cache);
     cache = cache === "moi" ? "ia" : "moi";
   }
-  D = null; afficher();
+  D = null; afficher(); dire("");
   const g = J.jetons.moi > J.jetons.ia, nul = J.jetons.moi === J.jetons.ia;
   $("finTitre").textContent = nul ? "Égalité !" : g ? "Gagné !" : "Perdu…";
-  $("finTexte").textContent = `Toi ${J.jetons.moi} jetons, ${CARACTERES[car].nom} ${J.jetons.ia} jetons, après ${J.donne} donne${J.donne > 1 ? "s" : ""}.`;
+  $("finTexte").textContent = `${monNom()} : ${J.jetons.moi} jetons · ${CARACTERES[car].nom} : ${J.jetons.ia} jetons, après ${J.donne} donne${J.donne > 1 ? "s" : ""}.`;
   $("fin").hidden = false;
 }
 
@@ -271,28 +338,29 @@ async function donne(cache) {
   D = { cache, ouvert, mains: { [cache]: d.cache, [ouvert]: d.ouvert }, paquet: d.paquet, paquetVu: 0, montrees: [],
     mis: { [cache]: Math.min(ec, J.jetons[cache]), [ouvert]: Math.min(eo, J.jetons[ouvert]) }, tour: null, choix: [], selection: null,
     joueesIdx: { moi: [], ia: [] } };
+  $("duel").hidden = true; $("duel").innerHTML = "";
   const ordreIa = ouvert === "ia" ? iaDevoile(D.mains.ia) : null;
   dire(cache === "moi" ? "Tu es le Caché : tes cartes restent fermées, tu parles en premier." : "Tu es l'Ouvert : tu vas montrer tes cartes peu à peu.");
-  afficher(); await pause(1200);
+  afficher(); await pause(1300);
   let couche = null;
   for (let t = 0; t < 3 && !couche; t++) {
-    D.paquetVu = PAQUET_VU[t];
+    D.paquetVu = PAQUET_VU[t]; afficher(); await pause(600);
     // l'Ouvert montre ses cartes
     const n = MONTRE[t] - D.montrees.length;
     if (ouvert === "moi") {
-      dire(`Choisis ${n > 1 ? `${n} cartes` : "1 carte"} à montrer.`); D.tour = "moi";
+      dire(`Touche ${n > 1 ? `${n} cartes` : "1 carte"} à montrer.`); D.tour = "moi";
       D.montrees.push(...await choisirCartes(n, "montrer"));
     } else {
       D.montrees = ordreIa.slice(0, MONTRE[t]); dire(`${CARACTERES[car].nom} montre ${n > 1 ? `${n} cartes` : "une carte"}.`);
     }
-    D.tour = null; afficher(); await pause(700);
+    D.tour = null; afficher(); await pause(800);
     couche = await tourDeMises();
   }
   if (couche) {
     const g = couche === "moi" ? "ia" : "moi";
     regler(g, couche === "moi" ? "Tu te couches." : `${CARACTERES[car].nom} se couche : tu prends le pot !`);
   } else await abattage();
-  await pause(1600);
+  await pause(1700);
 }
 
 // un tour de mises ; renvoie qui s'est couché (ou null)
@@ -308,18 +376,19 @@ async function tourDeMises() {
   const ouvre = async qui => {        // 0 ou le montant misé
     const m = maxMise();
     if (m <= 0) return 0;
-    if (qui === "ia") { D.tour = "ia"; afficher(); await pause(800); const v = iaOuvre(c, estIa(), m); dire(v ? `${nomIa} mise ${v}.` : `${nomIa} passe.`); return v; }
+    if (qui === "ia") { D.tour = "ia"; afficher(); await pause(850); const v = iaOuvre(c, estIa(), m); dire(v ? `${nomIa} mise ${v}.` : `${nomIa} passe.`); return v; }
     D.tour = "moi"; afficher();
     return demander([{ t: "Passer", v: 0, cls: "gris" }, ...[1, 2, 3].map(v => ({ t: `Miser ${v}`, v, off: v > m }))]);
   };
   const repond = async (qui, montant, peutRelancer) => {   // -1, 0 ou relance
-    if (qui === "ia") { D.tour = "ia"; afficher(); await pause(900); return iaRepond(c, estIa(), montant, pot(), peutRelancer); }
+    if (qui === "ia") { D.tour = "ia"; afficher(); await pause(950); return iaRepond(c, estIa(), montant, pot(), peutRelancer); }
     D.tour = "moi"; afficher();
     const rel = Math.min(RELANCE, reste("moi") - montant, reste("ia") - montant);
     return demander([{ t: "Se coucher", v: -1, cls: "rouge" }, { t: `Suivre (${montant})`, v: 0 },
       ...(peutRelancer && rel > 0 ? [{ t: `Relancer (+${rel})`, v: rel }] : [])]);
   };
   const payer = (qui, n) => { D.mis[qui] += n; afficher(); };
+  const suit = qui => dire(qui === "ia" ? `${nomIa} suit.` : "Tu suis.");
   if (cache === "moi") dire("À toi de parler."); else dire(`${nomIa} réfléchit…`);
   const m = await ouvre(cache);
   if (m) {
@@ -329,19 +398,19 @@ async function tourDeMises() {
     payer(ouvert, m);
     if (r > 0) {
       const rel = Math.min(r, reste(ouvert), reste(cache));
-      if (rel <= 0) { dire(ouvert === "ia" ? `${nomIa} suit.` : "Tu suis."); D.tour = null; afficher(); await pause(700); return null; }
+      if (rel <= 0) { suit(ouvert); D.tour = null; afficher(); await pause(700); return null; }
       payer(ouvert, rel); dire(ouvert === "ia" ? `${nomIa} relance de ${rel} !` : `Tu relances de ${rel}.`);
       const r2 = await repond(cache, rel, false);
       if (r2 < 0) return cache;
-      payer(cache, rel); dire(cache === "ia" ? `${nomIa} suit.` : "Tu suis.");
-    } else dire(ouvert === "ia" ? `${nomIa} suit.` : "Tu suis.");
+      payer(cache, rel); suit(cache);
+    } else suit(ouvert);
   } else {
     const m2 = await ouvre(ouvert);
     if (m2) {
       payer(ouvert, m2);
       const r = await repond(cache, m2, false);
       if (r < 0) return cache;
-      payer(cache, m2); dire(cache === "ia" ? `${nomIa} suit.` : "Tu suis.");
+      payer(cache, m2); suit(cache);
     } else dire("Personne ne mise.");
   }
   D.tour = null; afficher(); await pause(700);
@@ -355,15 +424,29 @@ function regler(gagnant, texte) {
   dire(`${texte} (${pot} 🪙)`);
 }
 
-// ---------------------------------------------------------------- l'abattage : duel en 3 coups
+// ---------------------------------------------------------------- l'abattage : duel en 3 coups, au milieu du tapis
 async function abattage() {
   const nomIa = CARACTERES[car].nom;
   dire("Personne ne lâche : duel en 3 coups !");
-  $("duel").hidden = false; $("duel").innerHTML = ""; await pause(900);
+  // 3 places pour l'adversaire en haut, les résultats au milieu, 3 places pour moi en bas
+  const places = () => {
+    const ligne = qui => [0, 1, 2].map(k => {
+      const i = D.joueesIdx[qui][k];
+      return i === undefined ? `<span class="case"></span>` : carte(D.mains[qui][i], { cls: "petite", attrs: "disabled tabindex=-1", cle: `d${J.donne}-${qui}-${k}` });
+    }).join("");
+    const res = [0, 1, 2].map(k => {
+      const a = D.joueesIdx.moi[k], b = D.joueesIdx.ia[k];
+      if (a === undefined || b === undefined) return `<span class="res">coup ${k + 1}</span>`;
+      const r = resultat(D.mains.moi[a], D.mains.ia[b]);
+      return `<span class="res ${r > 0 ? "g" : r < 0 ? "p" : ""}">${r > 0 ? "gagné" : r < 0 ? "perdu" : "égalité"}</span>`;
+    }).join("");
+    $("duel").innerHTML = ligne("ia") + res + ligne("moi");
+  };
+  $("duel").hidden = false; places(); await pause(900);
   let ecart = 0;   // de mon point de vue
   const connuParIa = D.cache === "ia" ? compte(D.montrees.map(i => D.mains.moi[i])) : [0, 0, 0];
   for (let k = 0; k < 3; k++) {
-    dire(`Coup ${k + 1} sur 3 : choisis ta carte.`); D.tour = "moi";
+    dire(`Coup ${k + 1} sur 3 : touche la carte à jouer.`); D.tour = "moi";
     const [i] = await choisirCartes(1, "jouer");
     const moi = D.mains.moi[i];
     const resteIa = compte(D.mains.ia.filter((_, j) => !D.joueesIdx.ia.includes(j)));
@@ -372,8 +455,7 @@ async function abattage() {
     const j = D.mains.ia.findIndex((s, x) => s === lui && !D.joueesIdx.ia.includes(x));
     D.joueesIdx.moi.push(i); D.joueesIdx.ia.push(j);
     const r = resultat(moi, lui); ecart += r;
-    $("duel").insertAdjacentHTML("beforeend", `<div class="coup ${r > 0 ? "g" : r < 0 ? "p" : ""}">${carte(lui, { attrs: "disabled tabindex=-1" })}${carte(moi, { attrs: "disabled tabindex=-1" })}<b>${r > 0 ? "gagné" : r < 0 ? "perdu" : "égalité"}</b></div>`);
-    D.tour = null; afficher();
+    D.tour = null; afficher(); places();
     dire(`${EMOJI[moi]} contre ${EMOJI[lui]} : ${r > 0 ? "coup gagné !" : r < 0 ? "coup perdu." : "égalité."}`);
     await pause(1200);
   }
@@ -388,8 +470,9 @@ async function abattage() {
     dire(`Duel nul : on partage (${pot} 🪙).`);
   }
   await pause(1400);
-  $("duel").hidden = true;
 }
+
+J = null; D = null; afficher();
 </script>
 </body>
 </html>
