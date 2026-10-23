@@ -36,14 +36,14 @@ const UNIFORME = [1 / 3, 1 / 3, 1 / 3];
 // Chaque adversaire a une manie : probabilites(c) donne ses chances de jouer Pierre, Ciseaux, Feuille au prochain coup
 // (c : le combat en cours, avec c.coups = [{ moi, lui, gagnant }]). L'Œil de Lynx montre le signe le plus probable.
 export const MONDES = [{
-  id: "foret", numero: 1, nom: "La Forêt des Ombres", emoji: "🌲", surnom: "jeune pousse",
-  intro: "Hou hou ! Bienvenue dans la Forêt des Ombres, jeune pousse. Je suis Maître Hibou, le gardien des énigmes. Le Gant d'Or, celui qui donne la maîtrise du chifoumi, a disparu : le Gardien de la Forêt, un vieux golem de bois et de pierre, l'a trouvé et ne veut plus le rendre. Traverse la forêt et observe bien chaque adversaire : avant chaque coup, il annonce ce qu'il prépare… mais certains mentent ! Et ne traîne pas : tu as peu de temps pour répondre. Hou hou !",
+  id: "foret", numero: 1, nom: "La Forêt des Ombres", emoji: "🌲", surnom: "mon lapin",
+  intro: "Te voilà enfin, mon lapin ! C'est moi, Tante Pia. Tu sais, quand j'avais ton âge, j'étais la reine du chifoumi de la cour de récré : personne ne me battait. Mais j'ai une mauvaise nouvelle : le Gant d'Or, celui qui donne la maîtrise du chifoumi, a disparu. Le Gardien de la Forêt, un vieux golem de bois et de pierre, l'a trouvé et ne veut plus le rendre. Traverse la Forêt des Ombres et observe bien chaque adversaire : avant chaque coup, il annonce ce qu'il prépare… mais certains mentent ! Et ne traîne pas : tu as peu de temps pour répondre. Allez, je compte sur toi !",
   adversaires: [
     {
       id: "bambi", nom: "Bambi", titre: "le faon timide", emoji: "🦌", image: "img/aventure/bambi.png", vie: 30, force: 12, recompense: "loupe", franchise: 1, temps: 5000,
       replique: "Euh… on peut faire ami-ami ?",
-      mission: "Une énigme pour commencer : qui garde la même idée tant qu'on ne l'a pas battu deux fois de suite ? Bambi, pardi ! Et il est trop gentil pour mentir : ce qu'il annonce, il le joue.",
-      bravo: "Hou hou, bien joué ! Tiens, un Œil de Lynx : il te dit si l'adversaire bluffe. Garde-le pour les menteurs.",
+      mission: "Bambi est têtu comme ton oncle : il garde le même signe tant qu'on ne l'a pas battu deux fois de suite. Et il est trop gentil pour mentir : ce qu'il annonce, il le joue. Tu vas voir, c'est facile.",
+      bravo: "Bravo, mon lapin ! Tiens, je te donne mon Œil de Lynx : il te dit si l'adversaire bluffe. Garde-le pour les menteurs.",
       // Même signe tant qu'il n'a pas perdu deux fois de suite ; ensuite, un autre signe.
       probabilites(c) {
         if (!c.coups.length) return UNIFORME;
@@ -60,24 +60,24 @@ export const MONDES = [{
     {
       id: "gobelin", nom: "Le Gobelin", titre: "à la massue", emoji: "👺", image: "img/aventure/gobelin.png", vie: 50, force: 18, recompense: "bouclier", franchise: 0.8, temps: 4500,
       replique: "Hé hé… tu ne vas pas gagner si facilement !",
-      mission: "Devinette : lourde, dure, et toujours dans la main du Gobelin ? Sa massue, voyons ! Pense à ce qu'elle cache… Il bluffe un peu, mais pas souvent.",
-      bravo: "Hou hou ! Prends cette Écorce de Chêne, elle te protégera d'un mauvais coup.",
+      mission: "Le Gobelin ne lâche jamais sa massue. Réfléchis deux secondes à ce que ça veut dire… Il bluffe un peu, mais pas souvent.",
+      bravo: "Pas mal du tout ! Prends cette Écorce de Chêne : elle te protégera d'un mauvais coup.",
       // La Pierre (sa massue) un coup sur deux.
       probabilites: () => somme(unSur(PIERRE, 0.5), repartir(0.5, PIERRE)),
     },
     {
       id: "pipistrelle", nom: "Pipistrelle", titre: "la chauve-souris", feminin: true, emoji: "🦇", image: "img/aventure/pipistrelle.png", vie: 60, force: 20, recompense: "double", franchise: 0.7, temps: 4000,
       replique: "Tu ne me vois pas venir !",
-      mission: "Qui ne se pose jamais deux fois sur la même branche ? Pipistrelle ! Elle ne rejoue jamais le signe d'avant. Si elle annonce le même… méfie-toi !",
-      bravo: "Bravo ! Voici la Frappe du Sanglier : ton prochain coup gagnant frappera deux fois plus fort.",
+      mission: "Pipistrelle ne tient pas en place : elle ne rejoue jamais le signe d'avant. Si elle annonce le même… méfie-toi !",
+      bravo: "Je suis fière de toi ! Voici la Frappe du Sanglier : ton prochain coup gagnant frappera deux fois plus fort.",
       // Jamais deux fois de suite le même signe.
       probabilites: c => (c.coups.length ? repartir(1, c.coups.at(-1).lui) : UNIFORME),
     },
     {
       id: "amanite", nom: "L'Amanite", titre: "champignon vénéneux", feminin: true, emoji: "🍄", image: "img/aventure/amanite.png", vie: 70, force: 20, recompense: "potion", poison: POISON, franchise: 0.6, temps: 4000,
       replique: "Approche… je ne suis pas si toxique.",
-      mission: "Je suis ton reflet, mais pas dans un miroir : qui suis-je ? L'Amanite ! Elle copie ton coup d'avant. Et attention : avec elle, les égalités empoisonnent.",
-      bravo: "Hou hou, tu tiens encore debout ! Un peu de Sève de Vie, au cas où.",
+      mission: "L'Amanite copie ton coup d'avant, comme un mauvais élève qui regarde sur sa voisine. Et attention : avec elle, les égalités empoisonnent.",
+      bravo: "Tu tiens encore debout ? Ouf ! Un peu de Sève de Vie, au cas où.",
       // Copie ton coup précédent (presque toujours).
       probabilites: c => (c.coups.length ? somme(unSur(c.coups.at(-1).moi, 0.85), repartir(0.15, c.coups.at(-1).moi)) : UNIFORME),
     },
@@ -85,7 +85,7 @@ export const MONDES = [{
       id: "loup", nom: "Le Loup gris", titre: "le rusé", emoji: "🐺", image: "img/aventure/loup.png", vie: 90, force: 22, recompense: "choix", morsure: true, franchise: 0.5, temps: 3500,
       replique: "Je sens ta peur d'ici.",
       mission: "Le Loup est rusé : quand il gagne, il insiste ; quand il perd, il prend le signe qui t'aurait battu. Et il bluffe une fois sur deux ! Ne lui laisse pas deux victoires de suite : sa morsure fait mal.",
-      bravo: "Hou hou ! Tu as été plus malin que le Loup. Choisis ton pouvoir.",
+      bravo: "Plus malin que le Loup ! Même moi, je n'aurais pas fait mieux. Choisis ton pouvoir.",
       // Gagne : il rejoue le même signe. Perd : il prend le signe qui bat le tien. Égalité : au hasard.
       probabilites(c) {
         const d = c.coups.at(-1);
@@ -96,8 +96,8 @@ export const MONDES = [{
     {
       id: "gardien", nom: "Le Gardien de la Forêt", court: "Le Gardien", titre: "golem de bois et de pierre", emoji: "🌳", image: "img/aventure/gardien.png", vie: 160, force: 24, recompense: "gant", boss: true, rage: true, racines: true, franchise: 0.65, temps: 3500,
       replique: "Nul ne quitte ma forêt avec le Gant d'Or.", repliqueRage: "LA FORÊT SE RÉVEILLE !",
-      mission: "Dernière énigme : des poings de pierre, des branches qui coupent comme des ciseaux… Le Gardien ! Quand son cœur s'allume, il devine ton jeu, ment plus souvent et te presse. Garde ton énergie pour ce moment-là.",
-      bravo: "Hou hou hou ! Le Gant d'Or est à toi, jeune pousse. Je l'avais deviné depuis le début… enfin, presque.",
+      mission: "Le Gardien de la Forêt… Des poings de pierre, des branches qui coupent comme des ciseaux. Quand son cœur s'allume, il devine ton jeu, ment plus souvent et te presse. Garde ton énergie pour ce moment-là. Je crois en toi !",
+      bravo: "Tu l'as fait ! Le Gant d'Or est à toi, mon lapin. Attends que je raconte ça à toute la famille !",
       // Calme : surtout Pierre (ses poings) et Ciseaux (ses branches). En rage : le signe qui bat ton dernier coup (le plus souvent).
       probabilites(c) {
         if (c.enRage && c.coups.length) return somme(unSur(contre(c.coups.at(-1).moi), 0.7), [0.1, 0.1, 0.1]);
@@ -107,14 +107,14 @@ export const MONDES = [{
   ],
 }];
 
-// Ce que dit Maître Hibou après une défaite.
+// Ce que dit Tante Pia après une défaite.
 export const PIQUES = [
-  "Hou hou… Une chouette ne chasse pas les yeux fermés. Regarde ses coups !",
-  "Tombé ? Une plume, ça se ramasse. Recommence !",
-  "Énigme : qu'est-ce qui gagne à la fin ? Celui qui observe. Allez, encore une fois !",
-  "Il a bluffé et tu l'as cru ? Hou hou, ça arrive aux meilleurs.",
-  "Trop lent, peut-être ? Le temps file comme un mulot.",
-];
+  "Oh, mon lapin… Ce n'est rien, on se relève et on recommence !",
+  "À la récré, je regardais toujours les mains des autres. Regarde ses coups !",
+  "Il a bluffé et tu l'as cru ? Ne t'en fais pas, ça m'arrivait aussi.",
+  "Trop lent, peut-être ? Respire, et fais-toi confiance.",
+  "Même les reines perdent parfois. Allez, encore une fois !",
+]
 
 export const monde = id => MONDES.find(m => m.id === id);
 export const adversaire = (m, id) => m.adversaires.find(a => a.id === id);

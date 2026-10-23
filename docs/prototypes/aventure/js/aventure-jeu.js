@@ -1,5 +1,5 @@
 // L'Aventure de Chifoumania, en pixel art (ouverte depuis le menu Chifoumania).
-// La carte du monde, la mission de Maître Hibou, le combat animé sur le décor de la forêt, la fin du combat.
+// La carte du monde, la mission de Tante Pia, le combat animé sur le décor de la forêt, la fin du combat.
 // Le combat : l'adversaire annonce son intention (parfois du bluff), on a peu de temps pour répondre,
 // et la jauge d'énergie permet un coup spécial.
 // Les règles sont dans aventure-logique.js (testées) ; la progression est gardée sur le téléphone (« aventure »).
@@ -41,7 +41,7 @@ let P = normaliser(lire("aventure"));
 const sauver = () => ecrire("aventure", P);
 
 // ---------------------------------------------------------------- les émojis, dessinés en gros pixels
-// (les adversaires sans dessin, les signes, Maître Hibou) : l'émoji est dessiné tout petit, puis agrandi sans lissage.
+// (les adversaires sans dessin, les signes, Tante Pia) : l'émoji est dessiné tout petit, puis agrandi sans lissage.
 const cachePix = new Map();
 function pix(emoji, taille = 18) {
   const k = emoji + taille;
@@ -114,8 +114,8 @@ function son(nom) {
 // ---------------------------------------------------------------- les petits morceaux d'écran
 const etoiles = n => `<span class="etoiles" aria-label="${n} étoile${n > 1 ? "s" : ""} sur 3">${"★".repeat(n)}<i>${"★".repeat(3 - n)}</i></span>`;
 const pv = (vie, max) => `<div class="pv"><span class="coeur">${imgPix("❤️", "", 12)}</span><div class="pv-barre"><i style="width:${(100 * vie) / max}%"></i><b>${vie} / ${max}</b></div></div>`;
-// Maître Hibou parle dans une boîte de dialogue, lettre par lettre (toucher la boîte affiche tout).
-const dialogue = texte => `<div class="dialogue" data-texte="${esc(texte)}"><div class="dia-nom">Maître Hibou</div><div class="dia-corps">${imgPix("🦉", "dia-av", 16)}<p class="dia-texte"></p></div><span class="dia-suite">▼</span></div>`;
+// Tante Pia parle dans une boîte de dialogue, lettre par lettre (toucher la boîte affiche tout).
+const dialogue = texte => `<div class="dialogue" data-texte="${esc(texte)}"><div class="dia-nom">Tante Pia</div><div class="dia-corps">${imgPix("👩", "dia-av", 16)}<p class="dia-texte"></p></div><span class="dia-suite">▼</span></div>`;
 function animerDialogues() {
   document.querySelectorAll(".dialogue:not(.anime)").forEach(d => {
     d.classList.add("anime");
@@ -259,7 +259,7 @@ function carte({ allerVers = null } = {}) {
     ${termine(P, M) ? `<div class="cadre gant">${imgPix("🏆", "", 16)} Tu as repris le Gant d'Or ! Le Monde 2 arrive bientôt. Rejoue les combats pour avoir 3 étoiles partout.</div>` : ""}
     <details class="cadre regles"><summary>Comment ça marche ?</summary>
       <p>Chaque combat se joue à la barre de vie. Coup gagné : l'adversaire perd ta force. Coup perdu : tu perds la sienne. Égalité : rien ne se passe.</p>
-      <p>Chaque adversaire a une manie : observe ses coups pour la deviner. Maître Hibou te donne un indice (une petite énigme) avant le combat.</p>
+      <p>Chaque adversaire a une manie : observe ses coups pour la deviner. Tante Pia te donne un indice avant le combat.</p>
       <p>Avant chaque coup, l'adversaire annonce ce qu'il prépare… mais il peut bluffer. Et tu as peu de temps pour répondre : trop lent, le coup est perdu.</p>
       <p>⚡ Chaque coup gagné remplit ta jauge d'énergie (${ENERGIE_MAX} au plus). Pleine, arme un coup spécial : s'il gagne, ${SPECIAUX.map((x, s) => `${["Pierre", "Ciseaux", "Feuille"][s]} : ${x.nom} (${x.court})`).join(", ")}. S'il perd, l'énergie est perdue.</p>
       <p>Un adversaire battu pour la première fois te rend plus fort (+${GAIN.vie} de vie, +${GAIN.force} de force). Chaque victoire rapporte un pouvoir (${MAX_POUVOIRS} au plus, chacun ne sert qu'une fois).</p>
