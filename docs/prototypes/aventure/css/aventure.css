@@ -193,7 +193,7 @@ b, strong, h2, summary { font-weight: 400; }   /* une seule graisse : pas de gra
   background: #fff; border: 3px solid var(--brun); border-radius: 50%; opacity: 0; transition: opacity .15s; }
 .signe-bulle.vue { opacity: 1; }
 .signe-bulle .pix { width: 36px; height: 36px; }
-.bulle-parole { position: absolute; right: 4%; top: 168px; max-width: 62%; margin: 0; z-index: 4; background: #fff; color: #1a1a1a; font-weight: 400; font-size: .95rem;
+.bulle-parole { position: absolute; right: 4%; top: 8px; /* placée au-dessus des têtes par placerParole() */ max-width: 62%; margin: 0; z-index: 4; background: #fff; color: #1a1a1a; font-weight: 400; font-size: .95rem;
   padding: 8px 12px; border: 3px solid var(--brun); border-radius: 8px; box-shadow: 0 4px 0 rgba(0, 0, 0, .35); }
 .bulle-parole::after { content: ""; position: absolute; bottom: -12px; right: 34%; border: 9px solid transparent; border-top-color: #fff; border-bottom: 0; }
 .bulle-parole[hidden] { display: none; }

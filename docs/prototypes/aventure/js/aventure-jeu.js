@@ -303,13 +303,24 @@ function mission() {
   const i = M.adversaires.indexOf(adv);
   afficher(`<div class="page">
     ${pancarte(adv.boss ? "Le boss" : `Combat ${i + 1} / ${M.adversaires.length}`, esc(adv.nom))}
-    ${scene(adv, `<p class="bulle-parole">${esc(adv.replique)}</p>`)}
+    ${scene(adv, `<p class="bulle-parole" id="parole">${esc(adv.replique)}</p>`)}
     <p class="fiche-adv">${esc(adv.nom)}, ${esc(adv.titre)} · vie ${adv.vie} · force ${adv.force}</p>
     ${dialogue(adv.mission)}
     <button class="pbtn rouge large" data-av="combattre">⚔️ Combattre</button>
     <button class="pbtn bois large" data-av="carte">🗺️ La carte</button>
   </div>`);
+  // la bulle se place au-dessus de la tête la plus haute, une fois les dessins chargés
+  document.querySelectorAll("#scene .sprite").forEach(i => { if (!i.complete) i.addEventListener("load", placerParole); });
+  placerParole();
 }
+// La réplique de l'adversaire, en bulle au-dessus des personnages (jamais sur eux).
+function placerParole() {
+  const sc = $("scene"), b = $("parole");
+  if (!sc || !b || ecran !== "mission") return;
+  const haut = Math.min(...[...sc.querySelectorAll(".combattant .sprite")].map(i => i.getBoundingClientRect().top)) - sc.getBoundingClientRect().top;
+  b.style.top = `${Math.max(8, Math.round(haut - b.offsetHeight - 16))}px`;
+}
+addEventListener("resize", placerParole);
 
 // ---------------------------------------------------------------- le combat
 function combat() {
@@ -323,8 +334,7 @@ function combat() {
         <div class="cadre hud-j">${tete(adv)}<div><b>${esc(adv.court || adv.nom)}</b><small id="forceLui"></small><div id="pvLui"></div></div></div>
       </div>
       <div class="pancarte petite"><b>Monde ${M.numero}</b><span>${adv.boss ? "Le boss" : `Combat ${i + 1} / ${M.adversaires.length}`}</span></div>
-      <p class="bulle-parole" id="parole">${esc(adv.replique)}</p>
-      <div class="cadre statut" id="statut" aria-live="polite">Choisis ton coup !</div>`)}
+      <div class="cadre statut" id="statut" aria-live="polite">« ${esc(adv.replique)} »</div>`)}
     <div class="commandes">
       <div class="chrono" aria-hidden="true"><i id="chrono"></i></div>
       <p class="info" id="info"></p>
@@ -344,7 +354,6 @@ function nouveauTour() {
   if (ecran !== "combat" || !C || C.fin) return;
   const lui = signeAdversaire(adv, C);
   T = { lui, intention: intentionDe(adv, C, lui), duree: tempsDe(adv, C) };
-  $("parole").hidden = true;   // sa réplique cacherait son intention
   $("bMoi").classList.remove("vue");
   $("bLui").innerHTML = `${imgPix(EMO[T.intention], "", 16)}<b class="q">?</b>`;
   $("bLui").classList.add("vue", "intention");
@@ -424,7 +433,6 @@ async function jouerCoup(moi) {
   const lui = T.lui; T = null;
   occupe = true; majCombat();
   son("clic");
-  $("parole").hidden = true;
   $("bLui").classList.remove("intention");
   // « Pierre… feuille… ciseaux ! » : les deux poings tremblent, puis les signes apparaissent.
   bulle("bMoi", null); bulle("bLui", null);
@@ -470,9 +478,8 @@ async function jouerCoup(moi) {
   majCombat();
   if (k.effets.includes("rage")) {
     await pause(450);
-    $("parole").textContent = adv.repliqueRage; $("parole").hidden = false;
     anime($("scene"), "tremble"); son("rage");
-    $("statut").textContent = k.effets.includes("racines") ? `Son cœur s'allume : force ${C.force[1]} ! Ses racines bloquent tes pouvoirs.` : `${adv.nom} enrage !`;
+    $("statut").textContent = `« ${adv.repliqueRage} » ` + (k.effets.includes("racines") ? `Son cœur s'allume : force ${C.force[1]} ! Ses racines bloquent tes pouvoirs.` : `${adv.nom} enrage !`);
     await pause(1300);   // le temps de lire avant le coup suivant
   }
   await pause(450);
