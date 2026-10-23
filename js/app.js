@@ -586,6 +586,11 @@ function finir() {
     const seance = S;
     if (ceremonie) setTimeout(() => { if (S === seance) ouvrirCeremonie(ceremonie); }, 1400);
   }
+  // Une élimination (ou une descente) dans un match décisif : un écran sobre, pour marquer le coup aussi (23 octobre).
+  if (enCarriere && !gagne) {
+    const e = eliminationCarriere(phaseAvant), seance = S;
+    if (e) setTimeout(() => { if (S === seance) ouvrirCeremonie({ ...e, triste: true }); }, 1400);
+  }
   if (enCarriere && S.carriere.coupe) $("news").textContent = `🏆 ${gagne ? texteCoupe(C) : `Éliminé de la Coupe Monique-Latour.`} ${$("news").textContent}`.trim();
   else if (enCarriere && C.phase !== phaseAvant) $("news").textContent = `🏅 ${C.phase === "fin" ? `Fin de saison : ${texteBilan(C)}` : C.phase === "barrage" ? `Direction le barrage contre ${botParId(C.barrage.adv).nom} !` : phaseAvant === "saison" ? `Saison terminée à la ${C.place}${C.place === 1 ? "re" : "e"} place : ${C.phase === "playoffs" ? "qualifié pour les playoffs !" : "place au maintien."}` : ""} ${$("news").textContent}`.trim();
   if (premierGant) $("news").textContent = `🧤 Ton premier gant t'est offert ! Change sa couleur (ou garde ta main nue) dans Ma fiche › Mon avatar. ${$("news").textContent}`.trim();
@@ -1601,17 +1606,31 @@ function enjeuCarriere(pm) {
     : { sur: "Barrage du maintien", titre: "Barrage", sous: `Gagne, et tu restes en ${CIRCUITS[k]}.` };
   return null;
 }
+// Après une défaite dans un match décisif : ce qu'elle veut dire (ou null pour un match de championnat ou un petit tour de coupe).
+function eliminationCarriere(phaseAvant) {
+  const k = C.ou, tour = S.carriere.etape.replace(/^Coupe Monique-Latour · /, ""), e = P.genre === "f" ? "e" : "";   // (Éliminée, Reléguée)
+  if (S.carriere.coupe) return S.carriere.cle ? { sur: "Coupe Monique-Latour", titre: `Éliminé${e}`, sous: `Ton parcours en coupe s'arrête en ${tour.toLowerCase()}.`, coupe: coupeMLSVG(false) } : null;
+  if (phaseAvant === "playoffs") {
+    if (C.phase === "barrage") return { sur: `Playoffs · ${CIRCUITS[k]}`, titre: "Finale perdue", sous: `Il reste une chance : le barrage, pour monter en ${CIRCUITS[k + 1]} !`, coupe: coupeSVG(k, false) };
+    return { sur: `Playoffs · ${CIRCUITS[k]}`, titre: `Éliminé${e}`, sous: `Défaite en ${tour.toLowerCase()}. ${k === CIRCUITS.length - 1 && /^Finale/.test(tour) ? `Vice-champion${e ? "ne" : ""} de l'Élite.` : `Tu restes en ${CIRCUITS[k]} : rendez-vous la saison prochaine !`}`, coupe: coupeSVG(k, false) };
+  }
+  if (phaseAvant === "maintien") return C.bilan?.mouvement === -1 ? { sur: `Maintien · ${CIRCUITS[k]}`, titre: `Relégué${e}`, sous: `Direction le ${CIRCUITS[k - 1]}. On remonte plus fort !` }
+    : C.phase === "maintien" ? { sur: `Maintien · ${CIRCUITS[k]}`, titre: "Demi-finale perdue", sous: "Encore un match pour sauver ta place." } : null;
+  if (phaseAvant === "barrage") return C.barrage?.haut ? { sur: "Barrage d'accession", titre: "Barrage perdu", sous: `Tu restes en ${CIRCUITS[k]}. Ce n'est que partie remise !` }
+    : { sur: "Barrage du maintien", titre: `Relégué${e}`, sous: `Direction le ${CIRCUITS[k - 1]}. On remonte plus fort !` };
+  return null;
+}
 // L'écran en grand : l'enjeu (avant le match) ou la cérémonie de la coupe (après un titre). apres : à la fermeture.
-function ouvrirCeremonie({ sur = "", titre, sous = "", coupe = "", voix: ligne = null, enjeu = false }, apres = () => {}) {
+function ouvrirCeremonie({ sur = "", titre, sous = "", coupe = "", voix: ligne = null, enjeu = false, triste = false }, apres = () => {}) {
   const ov = $("ceremonie"), vite = reduitMouvement();
-  ov.classList.toggle("enjeu", enjeu);
+  ov.classList.toggle("enjeu", enjeu); ov.classList.toggle("triste", triste);
   $("cerSur").textContent = sur; $("cerTitre").textContent = titre; $("cerSous").textContent = sous; $("cerCoupe").innerHTML = coupe;
   $("cerOk").textContent = enjeu ? "Au match !" : "Continuer";
   const hasard = (a, b) => a + Math.random() * (b - a), couleurs = ["#FFD34D", "#F4C542", "#FFFFFF", "#E8574A", "#4DA3FF"];
-  $("cerConfettis").innerHTML = enjeu || vite ? "" : Array.from({ length: 80 }, (_, i) =>
+  $("cerConfettis").innerHTML = enjeu || triste || vite ? "" : Array.from({ length: 80 }, (_, i) =>
     `<i style="left:${hasard(0, 100).toFixed(1)}%;background:${couleurs[i % couleurs.length]};--d:${hasard(2.2, 3.6).toFixed(2)}s;--r:${hasard(0, 1.2).toFixed(2)}s;--x:${Math.round(hasard(-80, 80))}px;--t:${Math.round(hasard(360, 900))}deg"></i>`).join("");
   ov.hidden = false; $("cerOk").focus();
-  try { ambiance.initialiser(); if (!enjeu) ambiance.public("ovation", 0.6); } catch { /* sans son */ }
+  try { ambiance.initialiser(); if (triste) ambiance.reagir("ohDecu"); else if (!enjeu) ambiance.public("ovation", 0.6); } catch { /* sans son */ }
   if (ligne && CATALOGUE.has(ligne)) setTimeout(() => { if (!ov.hidden) voix.dire([CATALOGUE.get(ligne)]); }, 400);
   let fini = false;
   const fermer = () => { if (fini) return; fini = true; ov.hidden = true; $("cerConfettis").innerHTML = ""; apres(); };
