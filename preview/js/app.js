@@ -577,15 +577,6 @@ function finir() {
   const paliers = retenirRang();
   if (paliers.length) $("news").textContent = `${$("news").textContent} ${paliers.join(" ")}`.trim();
   if (ouvert.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${ouvert.join(" ")} ${$("news").textContent}`.trim();
-  // Un titre : la cérémonie de la coupe, peu après l'écran de fin.
-  if (enCarriere && gagne) {
-    let ceremonie = null;
-    if (S.carriere.coupe && C.coupe?.vainqueur === "moi") ceremonie = { sur: "Coupe Monique-Latour", titre: "Vainqueur !", sous: "Ton nom est gravé sur la Coupe Monique-Latour.", coupe: coupeMLSVG(true), voix: "speaker_champion_01" };
-    else if (!S.carriere.coupe && phaseAvant === "playoffs" && C.issues?.[C.ou]?.champion === "moi") ceremonie = { sur: CIRCUITS[C.ou], titre: "Champion !",
-      sous: C.ou < CIRCUITS.length - 1 ? `Tu montes en ${CIRCUITS[C.ou + 1]} !` : "Champion de l'Élite : le sommet du HandSlam !", coupe: coupeSVG(C.ou, true), voix: "speaker_champion_01" };
-    const seance = S;
-    if (ceremonie) setTimeout(() => { if (S === seance) ouvrirCeremonie(ceremonie); }, 1400);
-  }
   if (enCarriere && S.carriere.coupe) $("news").textContent = `🏆 ${gagne ? texteCoupe(C) : `Éliminé de la Coupe Monique-Latour.`} ${$("news").textContent}`.trim();
   else if (enCarriere && C.phase !== phaseAvant) $("news").textContent = `🏅 ${C.phase === "fin" ? `Fin de saison : ${texteBilan(C)}` : C.phase === "barrage" ? `Direction le barrage contre ${botParId(C.barrage.adv).nom} !` : phaseAvant === "saison" ? `Saison terminée à la ${C.place}${C.place === 1 ? "re" : "e"} place : ${C.phase === "playoffs" ? "qualifié pour les playoffs !" : "place au maintien."}` : ""} ${$("news").textContent}`.trim();
   if (premierGant) $("news").textContent = `🧤 Ton premier gant t'est offert ! Change sa couleur (ou garde ta main nue) dans Ma fiche › Mon avatar. ${$("news").textContent}`.trim();
@@ -1581,41 +1572,7 @@ function jouerCarriere() {
   $("ruleTxt").textContent = `${CIRCUITS[C.ou]} · ${pm.etape} · ${texteFormat(pm.format)}`;
   rafraichirAvatars(); render();
   aller("viewMatch");
-  const e = enjeuCarriere(pm);
-  if (e) ouvrirCeremonie({ ...e, enjeu: true }, () => ouvrirFaceAFace()); else ouvrirFaceAFace();
-}
-// L'enjeu d'un match décisif, annoncé en grand avant la présentation (quarts, demies, finales, maintien, barrages).
-function enjeuCarriere(pm) {
-  const k = C.ou, monte = k < CIRCUITS.length - 1 ? `Gagne, et tu montes en ${CIRCUITS[k + 1]} !` : "Gagne, et tu es champion de l'Élite !";
-  if (pm.coupe) {
-    if (!pm.cle) return null;
-    return { sur: "Coupe Monique-Latour", titre: { quarts: "Quart de finale", demis: "Demi-finale", finale: "Finale" }[pm.cle],
-      sous: { quarts: "Gagne, et tu es en demi-finale.", demis: "Gagne, et tu joues la finale.", finale: "Gagne, et la coupe est à toi !" }[pm.cle], voix: `speaker_${pm.cle}_01` };
-  }
-  if (C.phase === "playoffs") return { sur: `Playoffs · ${CIRCUITS[k]}`, titre: { quarts: "Quart de finale", demis: "Demi-finale", finale: "Finale" }[pm.cle],
-    sous: { quarts: "Gagne, et tu es en demi-finale.", demis: "Gagne, et tu joues la finale.", finale: monte }[pm.cle], voix: `speaker_${pm.cle}_01` };
-  if (C.phase === "maintien") return pm.cle === "finale"
-    ? { sur: `Maintien · ${CIRCUITS[k]}`, titre: "Match pour le maintien", sous: `Perds, et tu descends en ${CIRCUITS[k - 1]}.` }
-    : { sur: `Maintien · ${CIRCUITS[k]}`, titre: "Demi-finale du maintien", sous: `Gagne, et tu restes en ${CIRCUITS[k]}.` };
-  if (C.phase === "barrage") return C.barrage.haut ? { sur: "Barrage d'accession", titre: "Barrage", sous: `Gagne, et tu montes en ${CIRCUITS[k + 1]} !` }
-    : { sur: "Barrage du maintien", titre: "Barrage", sous: `Gagne, et tu restes en ${CIRCUITS[k]}.` };
-  return null;
-}
-// L'écran en grand : l'enjeu (avant le match) ou la cérémonie de la coupe (après un titre). apres : à la fermeture.
-function ouvrirCeremonie({ sur = "", titre, sous = "", coupe = "", voix: ligne = null, enjeu = false }, apres = () => {}) {
-  const ov = $("ceremonie"), vite = reduitMouvement();
-  ov.classList.toggle("enjeu", enjeu);
-  $("cerSur").textContent = sur; $("cerTitre").textContent = titre; $("cerSous").textContent = sous; $("cerCoupe").innerHTML = coupe;
-  $("cerOk").textContent = enjeu ? "Au match !" : "Continuer";
-  const hasard = (a, b) => a + Math.random() * (b - a), couleurs = ["#FFD34D", "#F4C542", "#FFFFFF", "#E8574A", "#4DA3FF"];
-  $("cerConfettis").innerHTML = enjeu || vite ? "" : Array.from({ length: 80 }, (_, i) =>
-    `<i style="left:${hasard(0, 100).toFixed(1)}%;background:${couleurs[i % couleurs.length]};--d:${hasard(2.2, 3.6).toFixed(2)}s;--r:${hasard(0, 1.2).toFixed(2)}s;--x:${Math.round(hasard(-80, 80))}px;--t:${Math.round(hasard(360, 900))}deg"></i>`).join("");
-  ov.hidden = false; $("cerOk").focus();
-  try { ambiance.initialiser(); if (!enjeu) ambiance.public("ovation", 0.6); } catch { /* sans son */ }
-  if (ligne && CATALOGUE.has(ligne)) setTimeout(() => { if (!ov.hidden) voix.dire([CATALOGUE.get(ligne)]); }, 400);
-  let fini = false;
-  const fermer = () => { if (fini) return; fini = true; ov.hidden = true; $("cerConfettis").innerHTML = ""; apres(); };
-  $("cerOk").onclick = fermer;
+  ouvrirFaceAFace();
 }
 // Le circuit d'un joueur de la carrière (pour la coupe, toutes divisions confondues).
 const circuitDe = id => { const k = C?.circuits.findIndex(c => c.includes(id)); return k >= 0 ? CIRCUITS[k].replace("Circuit ", "") : "invité"; };   // (les bots qui ne jouent pas en carrière)
@@ -1636,19 +1593,7 @@ function vitrineHTML() {
     + `<p class="vitrine-titre">🏆 La Coupe Monique-Latour · toutes divisions confondues</p><div class="vitrine"><div class="vitrine-case${ml.length ? " gagnee" : ""}">${coupeMLSVG(ml.length > 0)}<small>${saisons(ml)}</small></div></div>`
     + rangee("🛡️ Les boucliers · 1er de la saison régulière", bouclierSVG, "boucliers");
 }
-// Les onglets de la carrière : rien d'ouvert en arrivant (le prochain match d'abord) ; on touche un onglet pour l'ouvrir.
-let ongletCarriere = null;
-function majOngletsCarriere() {
-  $("carOnglets").hidden = !C;
-  document.querySelectorAll("#carOnglets button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.o === ongletCarriere)));
-  for (const o of ["classement", "calendrier", "coupe", "palmares"]) $(`carVolet-${o}`).hidden = !C || o !== ongletCarriere;
-}
-$("carOnglets").addEventListener("click", e => {
-  const b = e.target.closest("button[data-o]"); if (!b) return;
-  ongletCarriere = ongletCarriere === b.dataset.o ? null : b.dataset.o; majOngletsCarriere();
-});
 function renderCarriere() {
-  majOngletsCarriere(); $("carResume").textContent = "";
   $("carRecommencer").hidden = !C; $("carTableau").innerHTML = ""; $("carCalendrier").innerHTML = ""; $("carVitrine").innerHTML = ""; $("carCoupe").innerHTML = ""; $("carClassement").innerHTML = ""; $("carPalmares").innerHTML = "";
   if (!C) {
     $("carEntete").textContent = "Saison 1 · Circuit Amateur";
@@ -1665,10 +1610,6 @@ function renderCarriere() {
     : C.phase === "barrage" ? (C.barrage.haut ? `Finaliste des playoffs ! Barrage d'accession contre ${adv.nom}, qui joue son maintien en ${CIRCUITS[k + 1]} : gagne, et tu montes. 2 sets gagnants.`
       : `Barrage du maintien contre ${adv.nom}, finaliste du ${CIRCUITS[k - 1]} : gagne, et tu restes en ${CIRCUITS[k]}. 2 sets gagnants.`)
     : `${place}${pm.etape} contre ${adv.nom} (niveau ${adv.elo}). 2 sets gagnants.`;
-  // En bref : ma place et ma coupe.
-  const maPlace = C.phase === "saison" && C.journee > 0 ? classementCarriere(C).findIndex(l => l.id === "moi") + 1 : null, K0 = C.coupe;
-  $("carResume").textContent = [maPlace && `📊 ${maPlace}${maPlace === 1 ? "er" : "e"} ${C.poules ? "de ta poule" : "du classement"}`,
-    K0 && `🏆 Coupe : ${K0.vainqueur === "moi" ? "vainqueur !" : K0.elimine !== null ? "éliminé" : `en ${TOURS_COUPE[K0.tour].nom.toLowerCase()}`}`].filter(Boolean).join(" · ");
   $("carJouer").textContent = pm?.coupe ? `Jouer : ${TOURS_COUPE[C.coupe.tour].singulier.toLowerCase()} de la coupe` : C.phase === "fin" ? `Commencer la saison ${C.saison + 1}` : C.phase === "saison" ? `Jouer la journée ${C.journee + 1}` : `Jouer : ${pm.etape.charAt(0).toLowerCase()}${pm.etape.slice(1)}`;
   // Le tableau des playoffs (ou du maintien), et le barrage.
   let h = "";
@@ -1677,7 +1618,7 @@ function renderCarriere() {
   $("carTableau").innerHTML = h;
   // La Coupe Monique-Latour : mon parcours et les tableaux, tour par tour.
   const K = C.coupe;
-  $("carCoupe").innerHTML = !K ? `<p class="hint">La Coupe Monique-Latour commence à la saison prochaine.</p>` : `<div class="rnd">🏆 Coupe Monique-Latour</div><p class="hint" style="margin:0 0 6px">${esc(texteCoupe(C))}${K.vainqueur && K.vainqueur !== "moi" ? ` Vainqueur : ${esc(infoJoueur(K.vainqueur).nom)}.` : ""}${!K.vainqueur && !pm?.coupe && K.elimine === null ? ` Prochain tour après la journée ${coupeApres(C, K.tour)}.` : ""}</p>`
+  $("carCoupe").innerHTML = !K ? "" : `<div class="rnd">🏆 Coupe Monique-Latour</div><p class="hint" style="margin:0 0 6px">${esc(texteCoupe(C))}${K.vainqueur && K.vainqueur !== "moi" ? ` Vainqueur : ${esc(infoJoueur(K.vainqueur).nom)}.` : ""}${!K.vainqueur && !pm?.coupe && K.elimine === null ? ` Prochain tour après la journée ${coupeApres(C, K.tour)}.` : ""}</p>`
     + K.tours.map((R, i) => `<details class="regles car-coupe-tour"${i === K.tours.length - 1 ? " open" : ""}><summary>${TOURS_COUPE[i].nom}${R.some(m => m.v) ? "" : " · tirage"}</summary>`
       + [...R].sort((x, y) => (y.a === "moi" || y.b === "moi") - (x.a === "moi" || x.b === "moi")).map(m => ligneMatch(m, m.v, true)).join("") + `</details>`).join("");
   // Mon calendrier : mes 11 journées, jouées (avec le score) ou à venir, et les tours de la Coupe Monique-Latour glissés entre elles.
@@ -1692,14 +1633,14 @@ function renderCarriere() {
     const etat = m.v ? resultat(m.v === "moi", score) : prochain ? "👉 Prochain match" : `Après la J${coupeApres(C, r)}`;
     return ligneCal(m.v ? "jouee" : prochain ? "prochain" : "", adv, `🏆 ${titre}<br><span class="car-cal-adv">${esc(adv.nom)} <small>(${adv.elo})</small></span>`, etat, true);
   };
-  $("carCalendrier").innerHTML = `<div class="car-calendrier"><ol>`
+  $("carCalendrier").innerHTML = `<details class="regles car-calendrier"${C.phase === "saison" ? " open" : ""}><summary>📅 Mon calendrier</summary><ol>`
     + C.journees.map((j, i) => {
       const adv = j.find(p => p.includes("moi")).find(x => x !== "moi"), b = botParId(adv), r = C.resultats.find(x => x.a === "moi" && x.b === adv);
       const prochain = i === C.journee && C.phase === "saison" && !pm?.coupe;
       const etat = r ? resultat(r.v === "moi", r.scores.map(x => x.join("–")).join(", ")) : prochain ? "👉 Prochain match" : "À jouer";
       return ligneCal(r ? "jouee" : prochain ? "prochain" : "", b, `J${i + 1} · ${esc(b.nom)} <small>(${b.elo})</small>`, etat)
         + (C.coupe ? TOURS_COUPE.map((T, t) => (coupeApres(C, t) === i + 1 ? ligneCoupe(t) : "")).join("") : "");
-    }).join("") + `</ol></div>`;
+    }).join("") + `</ol></details>`;
   // Le classement de la saison (en Amateur : les 2 poules).
   const zones = k > 0, qualifies = C.poules ? 4 : QUALIFIES, nbJ = C.journees.length;
   const tableau = (lignes, titre) => (titre ? `<p class="car-poule">${titre}</p>` : "")
@@ -1712,7 +1653,7 @@ function renderCarriere() {
     + (C.poules ? tableau(classementCarriere(C, 0), "Ma poule (A)") + tableau(classementCarriere(C, 1), "Poule B")
       + `<p class="car-legende">🟩 Les 4 premiers de chaque poule : quarts de finale croisés (1er A – 4e B…), le vainqueur monte.</p>`
       : tableau(classementCarriere(C)) + `<p class="car-legende">🟩 Places 1 à 8 : playoffs, le vainqueur monte.${zones ? " 🟥 Places 9 à 12 : le maintien." : ""}</p>`);
-  $("carVitrine").innerHTML = `<div class="rnd">Ma vitrine</div>${vitrineHTML()}`;
+  $("carVitrine").innerHTML = `<details class="regles car-vitrine"><summary>🏆 Ma vitrine</summary>${vitrineHTML()}</details>`;   // repliée : on la déplie pour l'admirer
   // Le palmarès.
   if (C.palmares.length) {
     const b = bilanCarriere(C);
@@ -1749,7 +1690,7 @@ document.addEventListener("keydown", e => {
 
 // ---------------------------------------------------------------- application installable
 $("version").textContent = `Version ${VERSION}`;
-setTimeout(() => $("demarrage")?.remove(), 3600);   // l'écran de démarrage a fini de s'effacer
+setTimeout(() => $("demarrage")?.remove(), 2600);   // l'écran de démarrage a fini de s'effacer
 let invitation = null;
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); invitation = e; $("installBtn").hidden = false; });
 $("installBtn").addEventListener("click", async () => { if (!invitation) return; invitation.prompt(); await invitation.userChoice; invitation = null; $("installBtn").hidden = true; });
