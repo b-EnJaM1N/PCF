@@ -187,8 +187,8 @@ test("les coups spéciaux : Pierre ×2, Feuille soigne, Ciseaux étourdit ; rat�
   assert.equal(r.coup.special, null); assert.equal(r.combat.energie, 0); assert.equal(r.combat.arme, false);
 });
 
-test("Tante Pia remplace Monique : plus de trace de HandSlam dans les textes", () => {
+test("L'Enchanteresse remplace Monique : plus de trace de HandSlam dans les textes", () => {
   const textes = [M.intro, ...M.adversaires.flatMap(a => [a.mission, a.bravo]), ...PIQUES].join(" ");
-  assert.doesNotMatch(textes, /1997|Monique|HandSlam|scarabée|Hibou/);
-  assert.match(M.intro, /Tante Pia/);
+  assert.doesNotMatch(textes, /1997|Monique|HandSlam|scarabée|Hibou|Pia/);
+  assert.match(M.intro, /Enchanteresse/);
 });
