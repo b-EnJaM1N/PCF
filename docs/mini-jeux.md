@@ -148,3 +148,33 @@ Un mini-jeu **de hasard et de lecture**, rapide, dans un **décor de Far West** 
 
 ## Idée écartée : les trois portes (23 octobre)
 Trois portes (pierre, feuille, ciseaux), on choisit une porte et un signe ; si on gagne, porte suivante ; le premier échec arrête la partie. **Écartée d'un commun accord** : si on voit le signe des portes, on gagne à tous les coups ; s'il est caché, choisir la porte ne sert à rien (1 chance sur 3 quelle que soit la porte) ; un indice (« ce n'est pas la pierre ») laisse toujours un signe qui ne peut pas perdre. Corrigée (portes bois, fer et or, de risques différents mais de même gain moyen), elle devient surtout un jeu de prise de risque, et elle ferait doublon avec Dégaine !. Seule l'idée du choix du risque est gardée, comme option de Dégaine ! (le duel à mort).
+
+## Le Bluff (idée du porteur du projet, 23 octobre) — jeu à expérimenter
+
+Un face-à-face façon poker (« heads-up ») avec des cartes pierre, feuille et ciseaux : un joueur garde ses cartes fermées, l'autre doit les dévoiler peu à peu, et on mise à chaque étape. Le plus riche des mini-jeux, mais aussi le plus dur à équilibrer : à tester avant de le programmer pour de bon.
+
+### Les règles pour les premiers essais
+1. **Le paquet** : 30 cartes (10 pierres, 10 feuilles, 10 ciseaux), mélangées à chaque donne ; **5 cartes chacun**.
+2. **Les jetons** : 20 chacun au départ. Mise obligatoire à chaque donne : **2 jetons pour le Caché, 1 pour l'Ouvert** (celui qui a l'information paie plus cher ; voir les essais).
+3. **Les rôles**, inversés à chaque donne : **le Caché** garde ses 5 cartes fermées et parle en premier à chaque tour de mise ; **l'Ouvert** dévoile ses cartes.
+4. **Le dévoilement** : l'Ouvert montre **2 cartes de son choix**, puis une **3ᵉ**, puis une **4ᵉ** ; il choisit lui-même **la carte qui reste cachée** (son arme de bluff).
+5. **Les mises** (après chaque dévoilement) : le Caché passe ou mise (1 à 3 jetons) ; l'Ouvert **suit, relance une fois, ou se couche** ; si le Caché a passé, l'Ouvert peut miser à son tour. Celui qui se couche perd ce qu'il a misé.
+6. **L'abattage** : si personne ne s'est couché, **duel en 3 coups** : chacun joue 3 de ses 5 cartes, une par une, face cachée et en même temps ; celui qui gagne le plus de coups prend les mises ; égalité : on partage.
+7. **La fin** : quand un joueur n'a plus de jetons, ou après un nombre de donnes fixé (le plus de jetons gagne).
+
+Les corrections 1 à 3 sont des propositions de Claude acceptées par le porteur du projet : l'Ouvert choisit ce qu'il dévoile, il peut relancer, et l'abattage se joue en 3 coups (au lieu d'un seul coup de chifoumi).
+
+### Les essais (simulation de Claude, 23 octobre)
+Des milliers de parties entre joueurs virtuels : un « stratège » (il mise selon la force de sa main et bluffe 1 fois sur 5), un joueur au hasard, un joueur qui suit toujours. La force d'une main est calculée exactement (théorie des jeux).
+- **L'abattage en 3 coups donne une vraie force aux mains** : la main la plus forte l'est nettement dans 18 % des donnes (1 % avec un abattage à un seul coup, où la moitié des donnes sont presque du pile ou face).
+- **La stratégie l'emporte** : le stratège bat le joueur au hasard **64 %** du temps et celui qui suit toujours **66 %** (59 % et 53 % avec l'abattage à un coup).
+- **Le rôle de Caché donnait trop d'avantage** : avec la même mise obligatoire (1 jeton chacun), le Caché gagnait en moyenne +0,43 jeton par donne. Avec **2 jetons pour le Caché et 1 pour l'Ouvert**, c'est équilibré (−0,06 jeton par donne). D'où la règle 2.
+- **Des mises plus grosses** (jusqu'à la taille du pot) : parties plus courtes (environ 13 donnes au lieu de 18) et suiveurs plus punis (70 %), mais un peu moins d'écart avec le hasard (60 %). À essayer.
+- **Ce que la simulation ne sait pas mesurer** : le bluff et la lecture de l'adversaire. Les joueurs virtuels se couchent rarement (3 % des donnes), parce que l'Ouvert ne sait presque rien de la main du Caché et suit donc selon la cote des mises ; du coup, le bluff ne rapporte rien entre eux. Entre humains, ce sera différent : c'est ce qu'il faut tester en vrai. Si l'Ouvert manque d'indices, une piste : **le Caché montre 1 carte** au début (abandons doublés dans la simulation ; il faudra alors revoir les mises obligatoires).
+- Quelle carte l'Ouvert a intérêt à garder cachée : pas de conclusion fiable (la simulation ne modélise pas assez finement l'abattage).
+
+### Pour tester sans programmer
+Un jeu de cartes classique (par exemple cœur = pierre, carreau = feuille, pique = ciseaux, 10 de chaque) et des allumettes pour les jetons : quelques parties entre amis diront vite si le jeu fonctionne, si le bluff marche et combien de temps dure une partie.
+
+### Plus tard
+- Contre l'ordinateur : difficile (un ordinateur qui bluffe intelligemment est complexe) ; commencer par des caractères simples (prudent, bluffeur, agressif). Le vrai plaisir viendra entre humains, en ligne.
