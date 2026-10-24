@@ -1749,7 +1749,7 @@ function renderCarriere() {
   $("carClassement").innerHTML = `<div class="rnd">Classement · ${C.journee} journée${C.journee > 1 ? "s" : ""} sur ${nbJ}</div>`
     + (C.poules ? tableau(classementCarriere(C, 0), "Ma poule (A)") + tableau(classementCarriere(C, 1), "Poule B")
       + `<p class="car-legende">🟩 Les 4 premiers de chaque poule : quarts de finale croisés (1er A – 4e B…). ${k === 0
-        ? "Les 2 finalistes montent ; les 2 perdants des demies jouent un barrage, le gagnant joue un barrage d'accession contre un joueur du Régional."
+        ? "Les 2 finalistes montent ; les 2 perdants des demies jouent un barrage, le gagnant joue un barrage d'accession contre un joueur du Future."
         : "Le vainqueur monte ; le finaliste joue un barrage d'accession. 🟥 Les 7es se rencontrent (le perdant joue un barrage du maintien) ; les 8es descendent."}</p>`
       : tableau(classementCarriere(C)) + `<p class="car-legende">🟩 Places 1 à 8 : playoffs, le vainqueur monte.${zones ? " 🟥 Places 9 à 12 : le maintien." : ""}</p>`);
   $("carVitrine").innerHTML = `<div class="rnd">Ma vitrine</div>${vitrineHTML()}`;
