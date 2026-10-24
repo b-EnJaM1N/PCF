@@ -305,6 +305,9 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .ff-choix > input:focus-visible + label { outline: 2px solid var(--line); }
 .ff-choix > div { grid-column: 1 / -1; margin-top: 8px; }
 .ff-choix > input:nth-of-type(1):checked ~ .ff-vue-off, .ff-choix > input:nth-of-type(2):checked ~ .ff-vue-tous { display: none; }
+.ff-forme { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 2px 0 8px; font-size: .9rem; color: var(--muted); }
+.ff-cases { font-size: 1.05rem; letter-spacing: 2px; }
+.ff-forme b { color: var(--line); }
 .car-classement { width: 100%; border-collapse: collapse; font-size: .95rem; font-weight: 700; margin: 6px 0 4px; }   /* en gras : le classement saute aux yeux */
 .car-classement th { color: var(--muted); font-weight: 600; text-align: right; padding: 4px 3px; }
 .car-classement td { text-align: right; padding: 4px 3px; border-top: 1px solid rgba(255, 255, 255, .08); }
