@@ -86,7 +86,8 @@ export const FORMAT = d => `${texteFormat(formatDuel(d))}${d.classe === false ? 
 
 // Face-à-face avec un joueur : le bilan de tous nos duels terminés (vus de mon côté ; derniers : tous, du plus récent au plus ancien).
 // duels : lignes de la table « duels » (j0, j1, vainqueur, fin, scores_sets, coups, classe, tournoi_id, maj_le).
-export function statsFaceAFace(duels, uid) {
+// r.officiel : le même bilan, avec seulement les duels officiels (demande du 24 octobre).
+export function statsFaceAFace(duels, uid, seulementOfficiels = false) {
   const r = { matchs: 0, v: 0, d: 0, officiels: 0, sets: [0, 0], points: [0, 0], egalites: 0,
     mesSignes: [0, 0, 0], sesSignes: [0, 0, 0],
     // Après un point gagné, combien de fois chacun rejoue le même signe (moi, lui).
@@ -129,5 +130,6 @@ export function statsFaceAFace(duels, uid) {
   }
   const favori = t => { const n = t[0] + t[1] + t[2]; if (!n) return null; const s = t.indexOf(Math.max(...t)); return { signe: s, pct: Math.round(100 * t[s] / n) }; };
   r.monFavori = favori(r.mesSignes); r.sonFavori = favori(r.sesSignes);
+  if (!seulementOfficiels) r.officiel = statsFaceAFace(duels.filter(x => x.classe), uid, true);
   return r;
 }
