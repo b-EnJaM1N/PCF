@@ -20,8 +20,18 @@ const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 // ctx : { compte, ouvrirOnglet(nom), defier(profil) → texte, surClassement(points ou null), lancerDuel(duel, profil),
 //         trophees(donnees) : trophées des cercles et tournois en ligne (voir titresEnLigne dans profil.js) }
 // Le bilan de nos duels avec un joueur (ami, ou adversaire en ligne touché dans « Derniers matchs »).
+// Avec des duels officiels et d'autres : deux onglets, « Tous les duels » et « Duels officiels » (sans script : deux boutons radio).
+let nFaceAFace = 0;
 export function renderFaceAFace(r, nom) {
   if (!r.matchs) return `<p class="hint">Vous ne vous êtes encore jamais affrontés. Lance-lui un défi !</p>`;
+  const o = r.officiel;
+  if (!o || !o.matchs || o.matchs === r.matchs) return corpsFaceAFace(r, nom);
+  const k = ++nFaceAFace;
+  return `<div class="ff-choix"><input type="radio" name="ffc${k}" id="ffTous${k}" checked><label for="ffTous${k}">Tous les duels (${r.matchs})</label>`
+    + `<input type="radio" name="ffc${k}" id="ffOff${k}"><label for="ffOff${k}">Duels officiels (${o.matchs})</label>`
+    + `<div class="ff-vue-tous">${corpsFaceAFace(r, nom)}</div><div class="ff-vue-off">${corpsFaceAFace(o, nom, true)}</div></div>`;
+}
+function corpsFaceAFace(r, nom, officiels = false) {
   const n = esc(nom), pct = (x, y) => (x + y ? `${Math.round(100 * x / (x + y))} %` : "–");
   const ligne = (moi, label, lui) => `<div class="ff-ligne"><b>${moi}</b><span>${label}</span><b>${lui}</b></div>`;
   // La part de chaque signe joué, de chaque côté.
@@ -36,7 +46,7 @@ export function renderFaceAFace(r, nom) {
   const autres = r.derniers.length > 3
     ? `<details class="ff-tous"><summary>Voir tous (${r.derniers.length})</summary><ul class="ff-derniers">${r.derniers.slice(3).map(duelLigne).join("")}</ul></details>` : "";
   return `<div class="ff-tete"><span>Toi</span><b>${r.v} – ${r.d}</b><span>${n}</span></div>
-    <p class="hint" style="text-align:center;margin-top:0">${pluriel(r.matchs, "duel")}${r.officiels ? `, dont ${r.officiels} officiel${r.officiels > 1 ? "s" : ""}` : ""} · ${pct(r.v, r.d)} de victoires pour toi</p>
+    <p class="hint" style="text-align:center;margin-top:0">${officiels ? `${pluriel(r.matchs, "duel")} officiel${r.matchs > 1 ? "s" : ""}` : `${pluriel(r.matchs, "duel")}${r.officiels ? `, dont ${r.officiels} officiel${r.officiels > 1 ? "s" : ""}` : ""}`} · ${pct(r.v, r.d)} de victoires pour toi</p>
     ${ligne(r.sets[0], "Sets gagnés", r.sets[1])}
     ${ligne(r.points[0], "Points gagnés", r.points[1])}
     <h3 class="ff-titre">Signes joués</h3>
