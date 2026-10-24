@@ -56,7 +56,7 @@ test("tout gagner : saison, playoffs, et on monte", () => {
   assert.equal(prochainMatch(C).etape, "Quart de finale des playoffs");
   gagner(C, true); gagner(C, true); assert.equal(prochainMatch(C).cle, "finale"); gagner(C, true);
   assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, 1);
-  assert.match(texteBilan(C), /promu en Circuit Régional/);
+  assert.match(texteBilan(C), /promu en Circuit Future/);
   saisonSuivante(C, rng);
   assert.equal(circuitDuJoueur(C), 1); assert.equal(C.saison, 2); assert.equal(C.phase, "saison");
   C.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
@@ -70,13 +70,13 @@ test("Amateur : finaliste, on monte aussi, sans barrage", () => {
   for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, true);
   gagner(C, true); gagner(C, true); gagner(C, false);
   assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, 1);
-  assert.match(texteBilan(C), /Finaliste des playoffs : promu en Circuit Régional/);
+  assert.match(texteBilan(C), /Finaliste des playoffs : promu en Circuit Future/);
   const champion = C.issues[0].champion;
   saisonSuivante(C, rng);
   assert.equal(circuitDuJoueur(C), 1); assert.ok(C.circuits[1].includes(champion));
 });
 
-test("Amateur : demi-finale perdue, barrage des demi-finalistes, puis barrage d'accession contre le barragiste du Régional", () => {
+test("Amateur : demi-finale perdue, barrage des demi-finalistes, puis barrage d'accession contre le barragiste du Future", () => {
   const C = nouvelleCarriere(hasardGraine(20));
   for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, true);
   gagner(C, true); gagner(C, false);
@@ -102,15 +102,15 @@ test("tout perdre en Amateur : pas de playoffs, on reste", () => {
   saisonSuivante(C, rng); assert.equal(circuitDuJoueur(C), 0);
 });
 
-// Monter en Régional (champion de l'Amateur), puis la saison du Régional avec mes résultats (true : gagné).
+// Monter en Future (champion de l'Amateur), puis la saison du Future avec mes résultats (true : gagné).
 const monter = C => { while (C.phase !== "fin") gagner(C, true); saisonSuivante(C, rng); };
-const saisonRegionale = (C, res) => res.forEach(oui => gagner(C, oui));
+const saisonFuture = (C, res) => res.forEach(oui => gagner(C, oui));
 
-test("Régional : 2 poules de 8, 7 journées, quarts croisés ; le vainqueur monte, le finaliste joue le barrage du National", () => {
+test("Future : 2 poules de 8, 7 journées, quarts croisés ; le vainqueur monte, le finaliste joue le barrage du Challenger", () => {
   const C = nouvelleCarriere(hasardGraine(4)); monter(C);
   assert.equal(C.ou, 1); assert.equal(C.journees.length, 7);
   C.journees.forEach(j => assert.equal(new Set(j.flat()).size, 16));
-  saisonRegionale(C, Array(7).fill(true));
+  saisonFuture(C, Array(7).fill(true));
   assert.equal(C.place, 1); assert.equal(C.phase, "playoffs");
   const a = classement(C, 0).map(l => l.id), b = classement(C, 1).map(l => l.id);
   assert.deepEqual(C.tableau.tours[0].map(m => [m.a, m.b]), [[a[0], b[3]], [b[1], a[2]], [b[0], a[3]], [a[1], b[2]]]);
@@ -119,9 +119,9 @@ test("Régional : 2 poules de 8, 7 journées, quarts croisés ; le vainqueur mon
   assert.equal(C.phase, "barrage"); assert.equal(prochainMatch(C).adv, C.issues[2].barragiste);
 });
 
-test("Régional : 8e de sa poule, on descend", () => {
+test("Future : 8e de sa poule, on descend", () => {
   const C = nouvelleCarriere(hasardGraine(21)); monter(C);
-  saisonRegionale(C, Array(7).fill(false));
+  saisonFuture(C, Array(7).fill(false));
   assert.equal(C.place, 8); assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, -1);
   assert.match(texteBilan(C), /8e de ta poule : relégué en Circuit Amateur/);
   saisonSuivante(C, rng); assert.equal(circuitDuJoueur(C), 0);
@@ -129,10 +129,10 @@ test("Régional : 8e de sa poule, on descend", () => {
   assert.equal(new Set(C.circuits.flat()).size, 64);
 });
 
-test("Régional : 7e, le match pour le maintien ; perdu, le barrage contre le gagnant du barrage des demi-finalistes de l'Amateur", () => {
+test("Future : 7e, le match pour le maintien ; perdu, le barrage contre le gagnant du barrage des demi-finalistes de l'Amateur", () => {
   // Une victoire contre le plus faible (1re journée) : 7e.
   let C;
-  for (let g = 22; ; g++) { C = nouvelleCarriere(hasardGraine(g)); monter(C); saisonRegionale(C, [true, false, false, false, false, false, false]); if (C.place === 7) break; }
+  for (let g = 22; ; g++) { C = nouvelleCarriere(hasardGraine(g)); monter(C); saisonFuture(C, [true, false, false, false, false, false, false]); if (C.place === 7) break; }
   assert.equal(C.phase, "maintien7"); assert.equal(prochainMatch(C).etape, "Match pour le maintien");
   const D = structuredClone(C);
   gagner(C, true); assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, 0); assert.match(texteBilan(C), /maintien gagné/);
@@ -148,7 +148,7 @@ test("Régional : 7e, le match pour le maintien ; perdu, le barrage contre le ga
   E.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
 });
 
-test("le maintien du National : perdre la demi et le match pour le maintien, on descend ; le gagner, barrage", () => {
+test("le maintien du Challenger : perdre la demi et le match pour le maintien, on descend ; le gagner, barrage", () => {
   const C = nouvelleCarriere(hasardGraine(4)); monter(C); monter(C);
   assert.equal(C.ou, 2);
   const D = structuredClone(C);
@@ -193,7 +193,7 @@ test("champion de l'Élite après 4 montées ; les circuits gardent leur taille"
   assert.equal(new Set(C.circuits.flat()).size, 64);
 });
 
-test("une carrière commencée avec 5 circuits de 12 : le Régional passe à 16 à la saison suivante", () => {
+test("une carrière commencée avec 5 circuits de 12 : le Future passe à 16 à la saison suivante", () => {
   const C = nouvelleCarriere(hasardGraine(30));
   const libres = C.circuits[1].splice(12);   // l'ancienne formule : 12 partout, 4 bots libres
   assert.equal(libres.length, 4);
@@ -310,7 +310,7 @@ test("l'Amateur : 2 poules de 6, 5 journées, quarts croisés (1er A – 4e B…
   for (let j = 0; j < 5; j++) gagner(C, true);
   const a = classement(C, 0).map(l => l.id), b = classement(C, 1).map(l => l.id), q = C.tableau.tours[0];
   assert.deepEqual(q.map(m => [m.a, m.b]), [[a[0], b[3]], [b[1], a[2]], [b[0], a[3]], [a[1], b[2]]]);
-  // En Régional : 2 poules de 8 ; au National, on revient à la saison de 11 journées.
+  // En Future : 2 poules de 8 ; au Challenger, on revient à la saison de 11 journées.
   for (let i = 0; i < 3; i++) gagner(C, true);
   saisonSuivante(C, rng);
   assert.equal(C.poules.length, 2); assert.equal(C.journees.length, 7);
