@@ -217,10 +217,14 @@ export function installerCercles(ctx) {
     $("aStats").innerHTML = `<p class="hint">Chargement…</p>`; dire("aMsg", "");
     const deja = !!ctx.dejaDefie?.(id);
     $("aDefier").disabled = deja; $("aDefier").textContent = deja ? texteAttente(a) : "Défier";
+    let duels = null;
     try {
-      const r = statsFaceAFace(await duelsAvec(id), uid);
+      duels = await duelsAvec(id); const r = statsFaceAFace(duels, uid);
       if (amiOuvert === id) $("aStats").innerHTML = renderFaceAFace(r, a.pseudo);
     } catch { if (amiOuvert === id) $("aStats").innerHTML = `<p class="hint">Impossible de charger vos duels. Vérifie ta connexion.</p>`; }
+    // Son dossier et l'historique des mains (contre toi, et tous ses matchs).
+    const suite = await ctx.dossierEtMains?.(id, a.pseudo, duels);
+    if (amiOuvert === id && suite) $("aStats").insertAdjacentHTML("beforeend", suite);
   }
   // Ouvert depuis Jouer › Défier un ami : le retour y ramène.
   let origineAmi = null;
