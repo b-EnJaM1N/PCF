@@ -1,2 +1,2 @@
 // Remplacé automatiquement à chaque mise en ligne (numéro du commit et date).
-export const VERSION = "9d32cae du 23/10/2026 (test)";
+export const VERSION = "d89bf74 du 24/10/2026 (test)";
