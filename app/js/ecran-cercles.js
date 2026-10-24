@@ -31,6 +31,12 @@ export function renderFaceAFace(r, nom) {
     + `<input type="radio" name="ffc${k}" id="ffOff${k}"><label for="ffOff${k}">Duels officiels (${o.matchs})</label>`
     + `<div class="ff-vue-tous">${corpsFaceAFace(r, nom)}</div><div class="ff-vue-off">${corpsFaceAFace(o, nom, true)}</div></div>`;
 }
+// La forme : les 5 derniers duels (du plus ancien au plus récent), 🟩 gagné, 🟥 perdu, et la part de victoires (24 octobre).
+export function forme(derniers) {
+  const cinq = derniers.slice(0, 5).reverse(); if (!cinq.length) return "";
+  const v = cinq.filter(m => m.gagne).length;
+  return `<p class="ff-forme"><span>Forme (${cinq.length} dernier${cinq.length > 1 ? "s" : ""})</span><span class="ff-cases" aria-label="${v} victoire${v > 1 ? "s" : ""} sur ${cinq.length}">${cinq.map(m => (m.gagne ? "🟩" : "🟥")).join("")}</span><b>${Math.round(100 * v / cinq.length)} %</b></p>`;
+}
 function corpsFaceAFace(r, nom, officiels = false) {
   const n = esc(nom), pct = (x, y) => (x + y ? `${Math.round(100 * x / (x + y))} %` : "–");
   const ligne = (moi, label, lui) => `<div class="ff-ligne"><b>${moi}</b><span>${label}</span><b>${lui}</b></div>`;
@@ -47,6 +53,7 @@ function corpsFaceAFace(r, nom, officiels = false) {
     ? `<details class="ff-tous"><summary>Voir tous (${r.derniers.length})</summary><ul class="ff-derniers">${r.derniers.slice(3).map(duelLigne).join("")}</ul></details>` : "";
   return `<div class="ff-tete"><span>Toi</span><b>${r.v} – ${r.d}</b><span>${n}</span></div>
     <p class="hint" style="text-align:center;margin-top:0">${officiels ? `${pluriel(r.matchs, "duel")} officiel${r.matchs > 1 ? "s" : ""}` : `${pluriel(r.matchs, "duel")}${r.officiels ? `, dont ${r.officiels} officiel${r.officiels > 1 ? "s" : ""}` : ""}`} · ${pct(r.v, r.d)} de victoires pour toi</p>
+    ${forme(r.derniers)}
     ${ligne(r.sets[0], "Sets gagnés", r.sets[1])}
     ${ligne(r.points[0], "Points gagnés", r.points[1])}
     <h3 class="ff-titre">Signes joués</h3>

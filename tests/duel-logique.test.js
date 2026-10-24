@@ -125,3 +125,13 @@ test("« Défié ✓ » ou « Défiée ✓ » selon le genre", async () => {
   assert.equal(texteDefie({ genre: "m" }), "Défié ✓");
   assert.equal(texteDefie({}), "Défié ✓", "genre inconnu (avant l'étape 38)");
 });
+
+test("la forme : les 5 derniers duels en cases vertes et rouges, et la part de victoires", async () => {
+  const { forme } = await import("../app/js/ecran-cercles.js");
+  // (derniers : du plus récent au plus ancien)
+  const d = [true, false, true, true, false, true, true].map(gagne => ({ gagne }));
+  const h = forme(d);
+  assert.match(h, /🟥🟩🟩🟥🟩/); assert.match(h, /60 %/); assert.match(h, /Forme \(5 derniers\)/);
+  assert.match(forme([{ gagne: true }, { gagne: false }]), /Forme \(2 derniers\).*🟥🟩.*50 %/);
+  assert.equal(forme([]), "");
+});
