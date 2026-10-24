@@ -62,5 +62,5 @@ Google n'est ni organisateur ni partenaire du tournoi *(mention demandée pour l
 ## À décider par le porteur du projet
 1. ~~Finale~~ : en vidéo. ~~Dates~~ : après les tests avec les proches (à fixer). ~~Répartition~~ : 300 / 150 / 50.
    ~~Avocat~~ : oui, avant l'annonce.
-2. L'organisateur (article 1) : en son nom personnel, ou une micro-entreprise (recommandée : elle sera de toute façon
-   nécessaire avant le premier euro du premium ou de la publicité) ; à confirmer avec l'avocat.
+2. ~~L'organisateur~~ : une **micro-entreprise** au nom du porteur du projet, nom commercial B-Dev Labs (décidé le
+   24 octobre ; pas encore créée, création guidée pas à pas sur formalites.entreprises.gouv.fr ; à confirmer avec l'avocat).
