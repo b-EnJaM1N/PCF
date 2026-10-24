@@ -578,6 +578,11 @@ function finir() {
   if (paliers.length) $("news").textContent = `${$("news").textContent} ${paliers.join(" ")}`.trim();
   if (ouvert.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${ouvert.join(" ")} ${$("news").textContent}`.trim();
   // Un titre : la cérémonie de la coupe, peu après l'écran de fin.
+  // La montée sans le titre : finaliste de l'Amateur, ou barrage d'accession gagné.
+  if (enCarriere && !S.carriere.coupe && C.phase === "fin" && C.bilan?.mouvement === 1 && C.issues?.[C.ou]?.champion !== "moi") {
+    const seance = S, finaliste = phaseAvant === "playoffs";
+    setTimeout(() => { if (S === seance) ouvrirCeremonie({ sur: CIRCUITS[C.ou], titre: "Promu !", sous: `${finaliste ? "Finaliste des playoffs" : "Barrage gagné"} : tu montes en ${CIRCUITS[C.ou + 1]} !` }); }, 1400);
+  }
   if (enCarriere && gagne) {
     let ceremonie = null;
     if (S.carriere.coupe && C.coupe?.vainqueur === "moi") ceremonie = { sur: "Coupe Monique-Latour", titre: "Vainqueur !", sous: "Ton nom est gravé sur la Coupe Monique-Latour.", coupe: coupeMLSVG(true), voix: "speaker_champion_01" };
@@ -592,7 +597,7 @@ function finir() {
     if (e) setTimeout(() => { if (S === seance) ouvrirCeremonie({ ...e, triste: true }); }, 1400);
   }
   if (enCarriere && S.carriere.coupe) $("news").textContent = `🏆 ${gagne ? texteCoupe(C) : `Éliminé de la Coupe Monique-Latour.`} ${$("news").textContent}`.trim();
-  else if (enCarriere && C.phase !== phaseAvant) $("news").textContent = `🏅 ${C.phase === "fin" ? `Fin de saison : ${texteBilan(C)}` : C.phase === "barrage" ? `Direction le barrage contre ${botParId(C.barrage.adv).nom} !` : phaseAvant === "saison" ? `Saison terminée à la ${C.place}${C.place === 1 ? "re" : "e"} place : ${C.phase === "playoffs" ? "qualifié pour les playoffs !" : "place au maintien."}` : ""} ${$("news").textContent}`.trim();
+  else if (enCarriere && C.phase !== phaseAvant) $("news").textContent = `🏅 ${C.phase === "fin" ? `Fin de saison : ${texteBilan(C)}` : C.phase === "barrage" ? `Direction le barrage contre ${botParId(C.barrage.adv).nom} !` : C.phase === "petite" ? `Direction le barrage des demi-finalistes contre ${botParId(C.petite.adv).nom} !` : phaseAvant === "saison" ? `Saison terminée à la ${C.place}${C.place === 1 ? "re" : "e"} place${C.poules ? " de ta poule" : ""} : ${C.phase === "playoffs" ? "qualifié pour les playoffs !" : C.phase === "maintien7" ? `le match pour le maintien contre ${botParId(C.duel.adv).nom}.` : "place au maintien."}` : ""} ${$("news").textContent}`.trim();
   if (premierGant) $("news").textContent = `🧤 Ton premier gant t'est offert ! Change sa couleur (ou garde ta main nue) dans Ma fiche › Mon avatar. ${$("news").textContent}`.trim();
   // Défi avec enjeu (entre amis) : qui s'y colle, en grand.
   $("endEnjeu").hidden = !(S.duel && D?.duel?.enjeu);
@@ -1597,8 +1602,13 @@ function enjeuCarriere(pm) {
     return { sur: "Coupe Monique-Latour", titre: { quarts: "Quart de finale", demis: "Demi-finale", finale: "Finale" }[pm.cle],
       sous: { quarts: "Gagne, et tu es en demi-finale.", demis: "Gagne, et tu joues la finale.", finale: "Gagne, et la coupe est à toi !" }[pm.cle], voix: `speaker_${pm.cle}_01` };
   }
+  // (En Amateur, les 2 finalistes montent : la demi-finale fait monter.)
+  const amateur = k === 0 && !!C.poules;
   if (C.phase === "playoffs") return { sur: `Playoffs · ${CIRCUITS[k]}`, titre: { quarts: "Quart de finale", demis: "Demi-finale", finale: "Finale" }[pm.cle],
-    sous: { quarts: "Gagne, et tu es en demi-finale.", demis: "Gagne, et tu joues la finale.", finale: monte }[pm.cle], voix: `speaker_${pm.cle}_01` };
+    sous: { quarts: "Gagne, et tu es en demi-finale.", demis: amateur ? `Gagne, et tu montes en ${CIRCUITS[k + 1]} !` : "Gagne, et tu joues la finale.",
+      finale: amateur ? `Tu es déjà promu${P.genre === "f" ? "e" : ""} : gagne, et la coupe est à toi !` : monte }[pm.cle], voix: `speaker_${pm.cle}_01` };
+  if (C.phase === "petite") return { sur: `Playoffs · ${CIRCUITS[k]}`, titre: "Barrage des demi-finalistes", sous: `Gagne, et tu joues le barrage d'accession pour monter en ${CIRCUITS[k + 1]}.` };
+  if (C.phase === "maintien7") return { sur: `Maintien · ${CIRCUITS[k]}`, titre: "Match pour le maintien", sous: `Gagne, et tu restes en ${CIRCUITS[k]}. Perds, et c'est le barrage.` };
   if (C.phase === "maintien") return pm.cle === "finale"
     ? { sur: `Maintien · ${CIRCUITS[k]}`, titre: "Match pour le maintien", sous: `Perds, et tu descends en ${CIRCUITS[k - 1]}.` }
     : { sur: `Maintien · ${CIRCUITS[k]}`, titre: "Demi-finale du maintien", sous: `Gagne, et tu restes en ${CIRCUITS[k]}.` };
@@ -1610,12 +1620,17 @@ function enjeuCarriere(pm) {
 function eliminationCarriere(phaseAvant) {
   const k = C.ou, tour = S.carriere.etape.replace(/^Coupe Monique-Latour · /, ""), e = P.genre === "f" ? "e" : "";   // (Éliminée, Reléguée)
   if (S.carriere.coupe) return S.carriere.cle ? { sur: "Coupe Monique-Latour", titre: `Éliminé${e}`, sous: `Ton parcours en coupe s'arrête en ${tour.toLowerCase()}.`, coupe: coupeMLSVG(false) } : null;
+  if (phaseAvant === "saison") return C.bilan?.mouvement === -1 ? { sur: CIRCUITS[k], titre: `Relégué${e}`, sous: `${C.place}e de ta poule : direction le ${CIRCUITS[k - 1]}. On remonte plus fort !` } : null;
   if (phaseAvant === "playoffs") {
+    if (C.bilan?.mouvement === 1) return null;   // (finaliste de l'Amateur : promu quand même, la cérémonie le dit)
+    if (C.phase === "petite") return { sur: `Playoffs · ${CIRCUITS[k]}`, titre: "Demi-finale perdue", sous: `Il reste une chance : le barrage des demi-finalistes, pour monter en ${CIRCUITS[k + 1]} !`, coupe: coupeSVG(k, false) };
     if (C.phase === "barrage") return { sur: `Playoffs · ${CIRCUITS[k]}`, titre: "Finale perdue", sous: `Il reste une chance : le barrage, pour monter en ${CIRCUITS[k + 1]} !`, coupe: coupeSVG(k, false) };
     return { sur: `Playoffs · ${CIRCUITS[k]}`, titre: `Éliminé${e}`, sous: `Défaite en ${tour.toLowerCase()}. ${k === CIRCUITS.length - 1 && /^Finale/.test(tour) ? `Vice-champion${e ? "ne" : ""} de l'Élite.` : `Tu restes en ${CIRCUITS[k]} : rendez-vous la saison prochaine !`}`, coupe: coupeSVG(k, false) };
   }
   if (phaseAvant === "maintien") return C.bilan?.mouvement === -1 ? { sur: `Maintien · ${CIRCUITS[k]}`, titre: `Relégué${e}`, sous: `Direction le ${CIRCUITS[k - 1]}. On remonte plus fort !` }
     : C.phase === "maintien" ? { sur: `Maintien · ${CIRCUITS[k]}`, titre: "Demi-finale perdue", sous: "Encore un match pour sauver ta place." } : null;
+  if (phaseAvant === "petite") return { sur: "Barrage des demi-finalistes", titre: "Barrage perdu", sous: `Tu restes en ${CIRCUITS[k]}. Ce n'est que partie remise !` };
+  if (phaseAvant === "maintien7") return { sur: `Maintien · ${CIRCUITS[k]}`, titre: "Match perdu", sous: "Il reste une chance : le barrage, pour sauver ta place." };
   if (phaseAvant === "barrage") return C.barrage?.haut ? { sur: "Barrage d'accession", titre: "Barrage perdu", sous: `Tu restes en ${CIRCUITS[k]}. Ce n'est que partie remise !` }
     : { sur: "Barrage du maintien", titre: `Relégué${e}`, sous: `Direction le ${CIRCUITS[k - 1]}. On remonte plus fort !` };
   return null;
@@ -1676,13 +1691,15 @@ function renderCarriere() {
   }
   const k = C.ou, pm = prochainMatch(C), adv = pm ? botParId(pm.adv) : null;
   $("carEntete").textContent = `Saison ${C.saison} · ${CIRCUITS[k]} (${k + 1}/${CIRCUITS.length})`;
-  const place = C.place ? `${C.place}${C.place === 1 ? "re" : "e"} de la saison. ` : "";
+  const place = C.place ? `${C.place}${C.place === 1 ? "re" : "e"} ${C.poules ? "de ta poule" : "de la saison"}. ` : "";
   const sets = pm?.format.setsGagnants === 1 ? `Un set de ${pm.format.pointsParSet} points.` : "2 sets gagnants.";
   $("carMsg").textContent = pm?.coupe ? `${pm.etape} contre ${adv.nom} (niveau ${adv.elo}, ${circuitDe(adv.id)}). ${sets}`
     : C.phase === "fin" ? texteBilan(C)
     : C.phase === "saison" ? `${pm.etape} : contre ${adv.nom} (niveau ${adv.elo}), ${adv.style.charAt(0).toLowerCase()}${adv.style.slice(1)}. ${sets}`
-    : C.phase === "barrage" ? (C.barrage.haut ? `Finaliste des playoffs ! Barrage d'accession contre ${adv.nom}, qui joue son maintien en ${CIRCUITS[k + 1]} : gagne, et tu montes. 2 sets gagnants.`
-      : `Barrage du maintien contre ${adv.nom}, finaliste du ${CIRCUITS[k - 1]} : gagne, et tu restes en ${CIRCUITS[k]}. 2 sets gagnants.`)
+    : C.phase === "barrage" ? (C.barrage.haut ? `${C.petite ? "Barrage des demi-finalistes gagné" : "Finaliste des playoffs"} ! Barrage d'accession contre ${adv.nom}, qui joue son maintien en ${CIRCUITS[k + 1]} : gagne, et tu montes. 2 sets gagnants.`
+      : `Barrage du maintien contre ${adv.nom}, ${C.duel ? "vainqueur du barrage des demi-finalistes" : "finaliste"} du ${CIRCUITS[k - 1]} : gagne, et tu restes en ${CIRCUITS[k]}. 2 sets gagnants.`)
+    : C.phase === "petite" ? `Demi-finale perdue : barrage des demi-finalistes contre ${adv.nom} (niveau ${adv.elo}). Gagne, et tu joues le barrage d'accession pour monter. 2 sets gagnants.`
+    : C.phase === "maintien7" ? `${place}Match pour le maintien contre ${adv.nom} (niveau ${adv.elo}), 7e de la poule B : gagne, et tu restes. Perds, et c'est le barrage. 2 sets gagnants.`
     : `${place}${pm.etape} contre ${adv.nom} (niveau ${adv.elo}). 2 sets gagnants.`;
   // En bref : ma place et ma coupe.
   const maPlace = C.phase === "saison" && C.journee > 0 ? classementCarriere(C).findIndex(l => l.id === "moi") + 1 : null, K0 = C.coupe;
@@ -1692,6 +1709,8 @@ function renderCarriere() {
   // Le tableau des playoffs (ou du maintien), et le barrage.
   let h = "";
   if (C.tableau) C.tableau.tours.forEach((R, i) => { h += `<div class="rnd">${NOMS_TOURS[C.tableau.type][i].nom}</div>` + R.map(m => ligneMatch(m)).join(""); });
+  if (C.petite) h += `<div class="rnd">Barrage des demi-finalistes</div>` + ligneMatch({ a: "moi", b: C.petite.adv, v: C.petite.v });
+  if (C.duel) h += `<div class="rnd">Match pour le maintien (les 7es)</div>` + ligneMatch({ a: "moi", b: C.duel.adv, v: C.duel.v });
   if (C.barrage) h += `<div class="rnd">${C.barrage.haut ? "Barrage d'accession" : "Barrage du maintien"}</div>` + ligneMatch({ a: "moi", b: C.barrage.adv, v: C.barrage.v });
   $("carTableau").innerHTML = h;
   // La Coupe Monique-Latour : mon parcours et les tableaux, tour par tour.
@@ -1720,16 +1739,18 @@ function renderCarriere() {
         + (C.coupe ? TOURS_COUPE.map((T, t) => (coupeApres(C, t) === i + 1 ? ligneCoupe(t) : "")).join("") : "");
     }).join("") + `</ol></div>`;
   // Le classement de la saison (en Amateur : les 2 poules).
-  const zones = k > 0, qualifies = C.poules ? 4 : QUALIFIES, nbJ = C.journees.length;
+  const zones = k > 0, bas = C.poules ? 6 : QUALIFIES, qualifies = C.poules ? 4 : QUALIFIES, nbJ = C.journees.length;
   const tableau = (lignes, titre) => (titre ? `<p class="car-poule">${titre}</p>` : "")
     + `<table class="car-classement"><thead><tr><th>#</th><th>Joueur</th><th>J</th><th>V</th><th>D</th><th>+/−</th><th>Pts</th></tr></thead><tbody>`
     + lignes.map((l, i) => {
-      const A = infoJoueur(l.id), d = l.pm - l.pc, cls = [l.id === "moi" ? "moi" : "", i < qualifies ? "zone-po" : zones ? "zone-bas" : ""].join(" ").trim();
+      const A = infoJoueur(l.id), d = l.pm - l.pc, cls = [l.id === "moi" ? "moi" : "", i < qualifies ? "zone-po" : zones && i >= bas ? "zone-bas" : ""].join(" ").trim();
       return `<tr class="${cls}"><td>${i + 1}</td><td><span class="mini">${avatarSVG(A.av)}</span><span>${esc(A.nom)}</span></td><td>${l.j}</td><td>${l.v}</td><td>${l.d}</td><td>${d > 0 ? "+" : ""}${d}</td><td>${l.pts}</td></tr>`;
     }).join("") + `</tbody></table>`;
   $("carClassement").innerHTML = `<div class="rnd">Classement · ${C.journee} journée${C.journee > 1 ? "s" : ""} sur ${nbJ}</div>`
     + (C.poules ? tableau(classementCarriere(C, 0), "Ma poule (A)") + tableau(classementCarriere(C, 1), "Poule B")
-      + `<p class="car-legende">🟩 Les 4 premiers de chaque poule : quarts de finale croisés (1er A – 4e B…), le vainqueur monte.</p>`
+      + `<p class="car-legende">🟩 Les 4 premiers de chaque poule : quarts de finale croisés (1er A – 4e B…). ${k === 0
+        ? "Les 2 finalistes montent ; les 2 perdants des demies jouent un barrage, le gagnant joue un barrage d'accession contre un joueur du Régional."
+        : "Le vainqueur monte ; le finaliste joue un barrage d'accession. 🟥 Les 7es se rencontrent (le perdant joue un barrage du maintien) ; les 8es descendent."}</p>`
       : tableau(classementCarriere(C)) + `<p class="car-legende">🟩 Places 1 à 8 : playoffs, le vainqueur monte.${zones ? " 🟥 Places 9 à 12 : le maintien." : ""}</p>`);
   $("carVitrine").innerHTML = `<div class="rnd">Ma vitrine</div>${vitrineHTML()}`;
   // Le palmarès.
