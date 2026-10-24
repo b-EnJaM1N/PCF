@@ -1,11 +1,14 @@
-// La carrière : 5 circuits de 12 joueurs (toi et 59 bots), de l'Amateur à l'Élite. Décisions du porteur du projet (22 octobre) :
+// La carrière : 5 circuits (toi et 63 bots), de l'Amateur à l'Élite. Décisions du porteur du projet (22 et 24 octobre) :
 // - la saison : chacun rencontre une fois les 11 autres (11 journées), 2 points par victoire ;
 // - places 1 à 8 : les playoffs, à élimination directe. Le vainqueur monte ; le finaliste joue un barrage contre
 //   un joueur du circuit du dessus qui joue son maintien ;
 // - places 9 à 12 (pas en Amateur) : les playoffs du maintien, à 4. Les vainqueurs des demi-finales sont maintenus ;
 //   les deux perdants se rencontrent : le perdant descend, le gagnant joue un barrage contre le finaliste du circuit du dessous.
-// - l'Amateur, plus court (décision du 22 octobre) : 2 poules de 6 (5 journées), les 4 premiers de chaque poule en quarts
-//   de finale croisés (1er A – 4e B, 2e B – 3e A, 1er B – 4e A, 2e A – 3e B), puis élimination directe ; pas de maintien ;
+// - l'Amateur (12 joueurs) et le Régional (16) en 2 poules (de 6 et de 8 : 5 et 7 journées), les 4 premiers de chaque poule en
+//   quarts de finale croisés (1er A – 4e B, 2e B – 3e A, 1er B – 4e A, 2e A – 3e B), puis élimination directe ;
+// - entre l'Amateur et le Régional (24 octobre) : les 2 finalistes de l'Amateur montent ; les 2 perdants des demies jouent un
+//   barrage entre eux, le gagnant joue un barrage contre le barragiste du Régional. En bas du Régional : le 8e de chaque poule
+//   descend ; les deux 7es se rencontrent, le perdant est le barragiste. Le National, le Pro et l'Élite ne changent pas ;
 // - la Coupe Monique-Latour (décision du 22 octobre) : 64 joueurs toutes divisions confondues (toi et 63 bots), tirage au sort
 //   intégral à chaque tour, sans avantage pour le petit poucet ; un tour toutes les deux journées, la finale avant les playoffs.
 // Les matchs entre bots sont simulés selon leur niveau. Ici, seulement les règles (testées automatiquement) ; l'écran est dans app.js.
@@ -14,6 +17,8 @@ import { contre } from "./regles.js";
 
 export const CIRCUITS = ["Circuit Amateur", "Circuit Régional", "Circuit National", "Circuit Pro", "Circuit Élite"];
 export const TAILLE = 12, QUALIFIES = 8;
+export const TAILLES = [12, 16, 12, 12, 12];   // 64 places : toi et 63 bots
+export const avecPoules = k => k <= 1;
 export const JOURNEES = TAILLE - 1;
 export const FORMAT_SAISON = { pointsParSet: 11, setsGagnants: 1 };
 // En Amateur, la saison se joue en un set de 7 (décision du 22 octobre : contre les bots faibles, un set de 11 traînait).
@@ -52,15 +57,25 @@ const scoreTexte = (m, setsGagnants) => {
   const s = [0, 0]; m.scores.forEach(([x, y]) => s[x > y ? 0 : 1]++); return s.join("–");
 };
 
-// Au départ : les 59 bots rangés par niveau, répartis du plus faible (Amateur, avec toi) au plus fort (Élite).
-// Il y a 64 bots : on en prend 59, pris à intervalles réguliers, pour garder les plus faibles et les plus forts.
+// Au départ : 63 des 64 bots rangés par niveau (pris à intervalles réguliers), du plus faible (Amateur, avec toi) au plus fort (Élite).
 export function compositionDeDepart() {
   const tries = [...TOUS_LES_BOTS].sort((a, b) => a.elo - b.elo || a.id.localeCompare(b.id));
-  const n = CIRCUITS.length * TAILLE - 1;
+  const n = TAILLES.reduce((x, y) => x + y, 0) - 1;
   const choisis = Array.from({ length: n }, (_, i) => tries[Math.round(i * (tries.length - 1) / (n - 1))].id);
-  const circuits = [["moi", ...choisis.slice(0, TAILLE - 1)]];
-  for (let k = 1; k < CIRCUITS.length; k++) circuits.push(choisis.slice(TAILLE - 1 + (k - 1) * TAILLE, TAILLE - 1 + k * TAILLE));
+  const circuits = [];
+  let i = 0;
+  TAILLES.forEach((t, k) => { const m = k === 0 ? t - 1 : t; circuits.push([...(k === 0 ? ["moi"] : []), ...choisis.slice(i, i + m)]); i += m; });
   return circuits;
+}
+// Une carrière commencée avec des circuits de 12 partout : le Régional passe à 16 avec les bots encore libres, les plus proches de son niveau.
+function ajusterTailles(C) {
+  const pris = new Set(C.circuits.flat()), libres = TOUS_LES_BOTS.filter(b => !pris.has(b.id));
+  C.circuits.forEach((c, k) => {
+    while (c.length < TAILLES[k] && libres.length) {
+      const m = c.filter(id => id !== "moi").map(niveau).sort((x, y) => x - y), med = m[Math.floor(m.length / 2)] ?? 1000;
+      libres.sort((x, y) => Math.abs(x.elo - med) - Math.abs(y.elo - med)); c.push(libres.shift().id);
+    }
+  });
 }
 
 // Le calendrier (méthode du cercle) : toi en place fixe, les autres du plus fort au plus faible ;
@@ -125,7 +140,7 @@ function issueDe(tab) {
   return tab.type === "playoffs" ? { champion: f.v, finaliste: perdantDe(f) } : { barragiste: f.v, relegue: perdantDe(f) };
 }
 
-// Les 2 poules de l'Amateur : réparties en serpentin selon le niveau (1, 4, 5, 8, 9, 12 d'un côté), toi dans la poule A.
+// Les 2 poules (Amateur, Régional) : réparties en serpentin selon le niveau (1, 4, 5, 8, 9, 12… d'un côté), toi dans la poule A.
 export function poules(ids) {
   const t = [...ids].sort((a, b) => (a === "moi" ? -1 : b === "moi" ? 1 : niveau(b) - niveau(a)));
   const A = [], B = [];
@@ -134,14 +149,27 @@ export function poules(ids) {
 }
 // Les quarts croisés des poules (rangés pour le tableau : 1er A – 4e B et 2e B – 3e A d'un côté, 1er B – 4e A et 2e A – 3e B de l'autre).
 const tetesCroisees = (a, b) => [a[0], a[1], b[0], b[1], a[2], a[3], b[2], b[3]];
+// Le barrage des demi-finalistes de l'Amateur : les deux perdants des demies (le gagnant est le « troisième »).
+function petiteFinale(tab, rng) {
+  const [x, y] = tab.tours[1].map(perdantDe), r = simuler(x, y, 2, rng);
+  return { a: x, b: y, v: r.v, score: scoreTexte(r, 2) };
+}
+// Le bas des poules du Régional : le 8e de chaque poule descend ; les deux 7es se rencontrent, le perdant est le barragiste.
+function basDesPoules(a, b, rng) {
+  const r = simuler(a[6], b[6], 2, rng);
+  return { relegues: [a[7], b[7]], barragiste: perdantDe(r) };
+}
 // Un circuit entièrement joué par des bots : sa saison, ses playoffs et son maintien.
 export function simulerCircuit(ids, k, rng = Math.random) {
   const pts = formatSaison(k).pointsParSet, rencontres = l => {
     const r = []; for (let i = 0; i < l.length; i++) for (let j = i + 1; j < l.length; j++) r.push(simuler(l[i], l[j], 1, rng, pts)); return r;
   };
-  if (k === 0) {
+  if (avecPoules(k)) {
     const [A, B] = poules(ids), a = classementDe(A, rencontres(A)).map(l => l.id), b = classementDe(B, rencontres(B)).map(l => l.id);
-    return issueDe(finirTableau(nouveauTableau("playoffs", tetesCroisees(a, b)), rng));
+    const tab = finirTableau(nouveauTableau("playoffs", tetesCroisees(a, b)), rng), issue = issueDe(tab);
+    if (k === 0) issue.troisieme = petiteFinale(tab, rng).v;
+    else Object.assign(issue, basDesPoules(a, b, rng));
+    return issue;
   }
   const resultats = rencontres(ids);
   const cl = classementDe(ids, resultats).map(l => l.id);
@@ -157,12 +185,12 @@ export function nouvelleCarriere(rng = Math.random) {
 export const circuitDuJoueur = C => C.circuits.findIndex(c => c.includes("moi"));
 
 export function demarrerSaison(C, rng = Math.random) {
-  C.saison++;
+  C.saison++; ajusterTailles(C);
   const k = circuitDuJoueur(C);
   C.ou = k; C.phase = "saison"; C.journee = 0; C.resultats = [];
-  if (k === 0) { C.poules = poules(C.circuits[0]); const [a, b] = C.poules.map(calendrier); C.journees = a.map((j, i) => [...j, ...b[i]]); }
+  if (avecPoules(k)) { C.poules = poules(C.circuits[k]); const [a, b] = C.poules.map(calendrier); C.journees = a.map((j, i) => [...j, ...b[i]]); }
   else { C.poules = null; C.journees = calendrier(C.circuits[k]); }
-  C.tableau = null; C.autreTableau = null; C.barrage = null; C.bilan = null; C.place = null; C.sortie = null;
+  C.tableau = null; C.autreTableau = null; C.barrage = null; C.bilan = null; C.place = null; C.sortie = null; C.petite = null; C.duel = null;
   // Les autres circuits se jouent pendant ce temps (on en connaît l'issue d'avance, on la révèle à la fin).
   C.issues = {};
   C.circuits.forEach((ids, j) => { if (j !== k) C.issues[j] = simulerCircuit(ids, j, rng); });
@@ -189,8 +217,9 @@ function nouvelleCoupe(rng) {
 }
 const monMatchCoupe = K => K?.tours[K.tour]?.find(m => (m.a === "moi" || m.b === "moi") && !m.v) || null;
 const journeesJouees = C => C.journee;
-// Le tour de coupe se joue une fois ce nombre de journées joué (en Amateur, 5 journées : un tour après chacune, la finale avec la demie).
-export const coupeApres = (C, tour) => (C?.journees?.length === 5 ? [1, 2, 3, 4, 5, 5][tour] : TOURS_COUPE[tour].apres);
+// Le tour de coupe se joue une fois ce nombre de journées joué (en Amateur, 5 journées : un tour après chacune, la finale avec
+// la demie ; en Régional, 7 journées).
+export const coupeApres = (C, tour) => ({ 5: [1, 2, 3, 4, 5, 5], 7: [1, 2, 3, 5, 6, 7] }[C?.journees?.length]?.[tour] ?? TOURS_COUPE[tour].apres);
 // Fait avancer la coupe : les tours dus sont joués (simulés) tant que je n'y ai pas de match en attente.
 function avancerCoupe(C, rng) {
   const K = C.coupe; if (!K) return;
@@ -240,6 +269,8 @@ export function prochainMatch(C) {
     return { adv: m.a === "moi" ? m.b : m.a, format: FORMAT_FINALES, etape: t.singulier, cle: t.cle, voix: C.tableau.type === "playoffs" ? t.cle : null };
   }
   if (C.phase === "barrage") return { adv: C.barrage.adv, format: FORMAT_FINALES, etape: C.barrage.haut ? "Barrage d'accession" : "Barrage du maintien", cle: "finale", voix: null };
+  if (C.phase === "petite") return { adv: C.petite.adv, format: FORMAT_FINALES, etape: "Barrage des demi-finalistes", cle: "petite", voix: null };
+  if (C.phase === "maintien7") return { adv: C.duel.adv, format: FORMAT_FINALES, etape: "Match pour le maintien", cle: "maintien", voix: null };
   return null;
 }
 
@@ -266,13 +297,31 @@ export function enregistrerMonMatch(C, gagne, scores, rng = Math.random) {
     C.barrage.v = v;
     return terminer(C, C.barrage.haut ? (gagne ? 1 : 0) : (gagne ? 0 : -1));
   }
+  // Amateur : le barrage des demi-finalistes ; gagné, le barrage contre le barragiste du Régional.
+  if (C.phase === "petite") {
+    C.petite.v = v; C.issues[C.ou].troisieme = v;
+    return gagne ? versBarrage(C, C.issues[C.ou + 1].barragiste, true) : terminer(C, 0);
+  }
+  // Régional : le match des 7es ; perdu, le barrage contre le gagnant du barrage des demi-finalistes de l'Amateur.
+  if (C.phase === "maintien7") {
+    C.duel.v = v; C.issues[C.ou].barragiste = gagne ? C.duel.adv : "moi";
+    return gagne ? terminer(C, 0) : versBarrage(C, C.issues[C.ou - 1].troisieme, false);
+  }
   // playoffs ou maintien
   const tab = C.tableau, m = tab.tours[tab.tour].find(x => (x.a === "moi" || x.b === "moi") && !x.v);
   const s = [0, 0]; scores.forEach(([x, y]) => s[x > y ? 0 : 1]++);
   m.v = v; m.score = m.a === "moi" ? s.join("–") : [s[1], s[0]].join("–");
   simulerTour(tab, rng);
   const dernier = tab.tour === nbTours(tab.type) - 1;
-  if (tab.type === "playoffs") {
+  if (tab.type === "playoffs" && C.ou === 0 && C.poules) {
+    // L'Amateur : les 2 finalistes montent ; les perdants des demies jouent le barrage des demi-finalistes.
+    if (!gagne || dernier) {
+      C.sortie = tab.tour; finirTableau(tab, rng); Object.assign(C.issues[0], issueDe(tab));
+      if (!gagne && C.sortie === 1) { C.petite = { adv: tab.tours[1].map(perdantDe).find(x => x !== "moi"), v: null }; C.phase = "petite"; return C; }
+      C.issues[0].troisieme = petiteFinale(tab, rng).v;
+      return terminer(C, dernier ? 1 : 0);
+    }
+  } else if (tab.type === "playoffs") {
     if (!gagne || dernier) {
       C.sortie = tab.tour;   // le tour où s'arrête mon parcours
       finirTableau(tab, rng); Object.assign(C.issues[C.ou], issueDe(tab));
@@ -294,12 +343,18 @@ export function enregistrerMonMatch(C, gagne, scores, rng = Math.random) {
 // Fin des 11 journées : les playoffs (places 1 à 8), le maintien (9 à 12), ou rien (9 à 12 en Amateur).
 function finDeSaisonReguliere(C, rng) {
   const k = C.ou;
-  if (C.poules) {   // l'Amateur : les 4 premiers de chaque poule, en quarts croisés
+  if (C.poules) {   // l'Amateur et le Régional : les 4 premiers de chaque poule, en quarts croisés
     const [a, b] = C.poules.map(p => classementDe(p, C.resultats).map(l => l.id));
     C.place = a.indexOf("moi") + 1; C.issues[k] = {};
     const haut = nouveauTableau("playoffs", tetesCroisees(a, b));
     if (C.place <= 4) { C.phase = "playoffs"; C.tableau = haut; }
-    else { C.autreTableau = finirTableau(haut, rng); Object.assign(C.issues[k], issueDe(haut)); terminer(C, 0); }
+    else { C.autreTableau = finirTableau(haut, rng); Object.assign(C.issues[k], issueDe(haut)); if (k === 0) C.issues[k].troisieme = petiteFinale(haut, rng).v; }
+    if (k === 0) { if (C.place > 4) terminer(C, 0); return; }
+    // Le bas des poules du Régional.
+    if (C.place <= 6) { Object.assign(C.issues[k], basDesPoules(a, b, rng)); if (C.place > 4) terminer(C, 0); return; }
+    C.issues[k].relegues = [a[7], b[7]];
+    if (C.place === 8) { C.issues[k].barragiste = perdantDe(simuler(a[6], b[6], 2, rng)); terminer(C, -1); return; }
+    C.duel = { adv: b[6], v: null }; C.phase = "maintien7";
     return;
   }
   const cl = classement(C).map(l => l.id);
@@ -329,6 +384,16 @@ export function texteBilan(C) {
   if (!C.bilan) return "";
   const k = C.ou, { mouvement, titre } = C.bilan, b = C.barrage, t = C.tableau;
   if (titre === "champion") return `🏆 Champion du ${CIRCUITS[k]} !`;
+  if (C.petite) {
+    if (C.petite.v !== "moi") return `Barrage des demi-finalistes perdu : tu restes en ${CIRCUITS[k]}.`;
+    return mouvement === 1 ? `⬆️ Barrage gagné : promu en ${CIRCUITS[k + 1]} !` : `Barrage d'accession perdu : tu restes en ${CIRCUITS[k]}.`;
+  }
+  if (C.poules && k === 0 && mouvement === 1 && C.issues?.[0]?.champion !== "moi") return `🥈 Finaliste des playoffs : promu en ${CIRCUITS[k + 1]} !`;
+  if (C.duel) {
+    if (C.duel.v === "moi") return `✅ Match pour le maintien gagné : tu restes en ${CIRCUITS[k]} !`;
+    return mouvement === -1 ? `⬇️ Barrage perdu : relégué en ${CIRCUITS[k - 1]}.` : `✅ Barrage gagné : maintenu en ${CIRCUITS[k]} !`;
+  }
+  if (C.poules && mouvement === -1) return `⬇️ ${C.place}e de ta poule : relégué en ${CIRCUITS[k - 1]}.`;
   if (mouvement === 1) return b ? `⬆️ Barrage gagné : promu en ${CIRCUITS[k + 1]} !` : `🏆 Vainqueur des playoffs : promu en ${CIRCUITS[k + 1]} !`;
   if (mouvement === -1) return b ? `⬇️ Barrage perdu : relégué en ${CIRCUITS[k - 1]}.` : `⬇️ Relégué en ${CIRCUITS[k - 1]}.`;
   if (b?.haut) return `Barrage perdu : tu restes en ${CIRCUITS[k]}.`;
@@ -355,9 +420,17 @@ export function saisonSuivante(C, rng = Math.random) {
   const deplacer = (id, de, vers) => { N[de].splice(N[de].indexOf(id), 1); N[vers].push(id); resume[de][vers > de ? "montes" : "descendus"].push(id); };
   for (let k = 0; k < DERNIER; k++) {
     const bas = C.issues[k], haut = C.issues[k + 1];
-    deplacer(bas.champion, k, k + 1);
-    deplacer(haut.relegue, k + 1, k);
-    const f = bas.finaliste, g = haut.barragiste;
+    let f, g;
+    if (haut.relegues) {   // Amateur ↔ Régional : les 2 finalistes montent, les 2 derniers descendent, le barrage
+      deplacer(bas.champion, k, k + 1); deplacer(bas.finaliste, k, k + 1);
+      haut.relegues.forEach(id => deplacer(id, k + 1, k));
+      f = bas.troisieme; g = haut.barragiste;
+    } else {
+      deplacer(bas.champion, k, k + 1);
+      deplacer(haut.relegue, k + 1, k);
+      f = bas.finaliste; g = haut.barragiste;
+    }
+    if (!f || !g) continue;   // (une saison commencée avant les poules du Régional)
     const v = C.barrage && [f, g].includes("moi") ? C.barrage.v : simuler(f, g, 2, rng).v;
     if (v === f) { deplacer(f, k, k + 1); deplacer(g, k + 1, k); }
   }
@@ -401,8 +474,9 @@ export function titresCarriere(C) {
   return ids;
 }
 
-// Une saison d'Amateur commencée avant les poules (11 journées) : on la relance en poules (même numéro de saison).
+// Une saison d'Amateur ou de Régional commencée avant les poules (11 journées) : on la relance en poules (même numéro de saison).
+// (Ailleurs, le Régional passe à 16 joueurs à la saison suivante : ajusterTailles.)
 export function migrerCarriere(C, rng = Math.random) {
-  if (C && C.ou === 0 && C.phase === "saison" && !C.poules && C.journees?.length === JOURNEES) { C.saison--; demarrerSaison(C, rng); return true; }
+  if (C && avecPoules(C.ou) && C.phase === "saison" && !C.poules && C.journees?.length === JOURNEES) { C.saison--; demarrerSaison(C, rng); return true; }
   return false;
 }
