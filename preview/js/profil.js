@@ -62,8 +62,8 @@ export const TITRES = [
   { id: "imprevisible", famille: "duels", nom: "Imprévisible", desc: "Gagner un match en étant prévisible moins de 30 % du temps.", debloque: "le gant or", objet: ["gant", "or"] },
   { id: "tueur_geant", famille: "duels", nom: "Tueur de géant", desc: "Gagner un duel officiel contre un joueur qui a 200 points de niveau de plus que toi.", debloque: "le fond rubis", objet: ["fond", "rubis"] },
   // La carrière contre les bots (carriere-logique.js, titresCarriere) : des récompenses à montrer, jamais de jetons.
-  { id: "promu", famille: "carriere", nom: "Promu", desc: "Monter pour la première fois en Circuit Régional.", debloque: "le poignet bronze", objet: ["poignet", "bronze"] },
-  { id: "national", famille: "carriere", nom: "Joueur national", desc: "Monter en Circuit National.", debloque: "le fond tribunes", objet: ["fond", "tribunes"] },
+  { id: "promu", famille: "carriere", nom: "Promu", desc: "Monter pour la première fois en Circuit Future.", debloque: "le poignet bronze", objet: ["poignet", "bronze"] },
+  { id: "national", famille: "carriere", nom: "Joueur Challenger", desc: "Monter en Circuit Challenger.", debloque: "le fond tribunes", objet: ["fond", "tribunes"] },
   { id: "professionnel", famille: "carriere", nom: "Professionnel", desc: "Monter en Circuit Pro.", debloque: "le geste « brandir la coupe »", objet: ["geste", "brandir_coupe"] },
   { id: "elite", famille: "carriere", nom: "Élite", desc: "Monter en Circuit Élite.", debloque: "le cadre Élite", objet: ["cadre", "elite"] },
   { id: "vainqueur_coupe", famille: "carriere", nom: "Vainqueur de la Coupe", desc: "Remporter la Coupe Monique-Latour.", debloque: "le motif de gant lauriers", objet: ["gantMotif", "lauriers"] },
