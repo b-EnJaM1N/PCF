@@ -28,6 +28,7 @@ import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS } from "./voix/scr
 import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
+import { noterMain, mainDuel, mainDossier, htmlMains, MAX_MAINS } from "./historique-mains.js";
 import { messagesPossibles, momentApres, texteMessage, erreurMessageLibre, nettoyerMessage, PREFIXE_LIBRE, MESSAGE_LIBRE_MAX } from "./messages-rapides.js";
 import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
@@ -541,6 +542,8 @@ function finir() {
     abandon: !!special && !gagne, officiel: !!(S.duel && D?.duel?.classe), niveauMoi: monClassement ?? 1200, niveauAdv: OPP.classement ?? 1200,
     finaleEnLigne: !!(S.duel && D?.tourVoix === "finale"), sitAndGo: !!(S.duel && D?.direct), grandChelem: !!(S.duel && D?.grandChelem),
   }) : [];
+  // L'historique des mains contre un bot (les duels en ligne sont gardés sur le serveur).
+  if (n && !S.duel) ecrire("mains", noterMain(lire("mains"), OPP.id, { gagne, detail: m.scoresSets.map(([a, b]) => `${a}–${b}`).join(", "), coups: c, debutsSet: m.debutsSet }));
   // Le premier gant : offert après le premier match (avant, la main nue).
   const premierGant = matchsAvant === 0 && P.matchs > 0 && P.av.gant === "nu" && !P.premierGant;
   if (premierGant) { P.av.gant = "blanc"; P.premierGant = true; }
@@ -827,8 +830,10 @@ async function ouvrirFicheAdv(id, nom, { jouer = true } = {}) {
         <p class="hint" style="text-align:center;margin-top:0">${v + d} match${v + d > 1 ? "s" : ""} · ${Math.round((100 * v) / (v + d))} % de victoires pour toi</p>
         ${sig ? `<h3 class="ff-titre">Ses signes contre toi</h3><p class="dossier-signes">${sig.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>` : ""}
         <h3 class="ff-titre">📁 Son dossier</h3>${corpsDossierBot(b)}
+        <h3 class="ff-titre">🖐️ Historique des mains</h3>${htmlMains(lire("mains")?.[b.id], { noms: ["Toi", b.nom], vide: "Les coups de vos prochains matchs apparaîtront ici." })}
+        <p class="hint mains-note">Tes ${MAX_MAINS} derniers matchs contre ${esc(b.nom)}, coup par coup (en jaune : le point est pour toi).</p>
         ${contre.length ? `<h3 class="ff-titre">Derniers affrontements</h3><ul class="ff-derniers">${contre.map(x => `<li>${x.gagne ? "✅ Victoire" : "❌ Défaite"} · ${esc(x.detail)} · ${new Date(x.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</li>`).join("")}</ul>` : ""}`
-      : `<p class="hint">Tu n'as encore jamais affronté ${esc(b.nom)}.</p>`;
+      : `<p class="hint">Tu n'as encore jamais affronté ${esc(b.nom)}.</p><h3 class="ff-titre">📁 Son dossier</h3>${corpsDossierBot(b)}`;
   } else {
     const court = String(nom || "").replace(/#\d+$/, "");
     $("faAv").textContent = /🤖/.test(nom) ? "🤖" : "🧑";
@@ -840,11 +845,38 @@ async function ouvrirFicheAdv(id, nom, { jouer = true } = {}) {
     const local = v + d ? `<div class="ff-tete"><span>Toi</span><b>${v} – ${d}</b><span>${esc(court)}</span></div>` : `<p class="hint">Pas encore de duel enregistré contre ${esc(court)}.</p>`;
     $("faCorps").innerHTML = moi ? `<p class="hint">Chargement…</p>` : local;
     if (moi) {
-      try { const r = statsFaceAFace(await duelsAvec(uid), moi); if (demande === ficheDemande) $("faCorps").innerHTML = r.matchs ? renderFaceAFace(r, court) : local; }
+      let duels = null;
+      try { duels = await duelsAvec(uid); const r = statsFaceAFace(duels, moi); if (demande === ficheDemande) $("faCorps").innerHTML = r.matchs ? renderFaceAFace(r, court) : local; }
       catch { if (demande === ficheDemande) $("faCorps").innerHTML = local + `<p class="hint">Le détail de vos duels n'a pas pu être chargé. Vérifie ta connexion.</p>`; }
+      const suite = await dossierEtMains(uid, court, duels, /🤖/.test(nom) ? null : undefined);
+      if (demande === ficheDemande) $("faCorps").insertAdjacentHTML("beforeend", suite);
     }
   }
   $("ficheAdv").classList.add("show");
+}
+// Joueur en ligne : son dossier (ses 50 derniers matchs en ligne) et l'historique des mains, en 2 onglets :
+// « Contre toi » (nos 10 derniers duels) et « Tous ses matchs » (ses 10 derniers matchs en ligne, sans ses adversaires).
+let nOngletsMains = 0;
+async function dossierEtMains(uid, nom, duels, elle) {
+  const moi = compteUI?.session()?.user?.id, n = esc(nom);
+  if (elle === undefined) { try { elle = normaliserProfil((await profilsEnLigne([uid]))[0]?.fiche).genre === "f"; } catch { elle = false; } }
+  let matchs = null;
+  try { matchs = await dossierJoueur(uid); } catch { /* ci-dessous : dossier indisponible */ }
+  let k = compteVide();
+  for (const m of matchs || []) k = additionner(k, compterMatch(m.map(c => ({ a: c.a, b: c.b, gagnant: c.g ?? null }))));
+  const dos = matchs ? corpsDossier(dossier(k, { elle: !!elle }), d => `D'après ses ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).`,
+    "Pas encore assez de matchs en ligne pour établir son dossier.") : `<p class="hint">Dossier indisponible pour l'instant.</p>`;
+  const contre = (duels || []).filter(d => maPlace(d, moi) !== null && d.vainqueur != null && d.coups?.length)
+    .sort((x, y) => Date.parse(y.maj_le) - Date.parse(x.maj_le)).slice(0, MAX_MAINS)
+    .map(d => { const p = maPlace(d, moi); try { return mainDuel(d, rejouer(d, p).match, p); } catch { return null; } }).filter(Boolean);
+  const tous = (matchs || []).slice(0, MAX_MAINS).map(mainDossier).filter(e => e.c);
+  const il = elle ? "Elle" : "Il", x = ++nOngletsMains;
+  return `<h3 class="ff-titre">📁 Son dossier</h3>${dos}<h3 class="ff-titre">🖐️ Historique des mains</h3>`
+    + `<div class="ff-choix"><input type="radio" name="fm${x}" id="fmMoi${x}" checked><label for="fmMoi${x}">Contre toi (${contre.length})</label>`
+    + `<input type="radio" name="fm${x}" id="fmTous${x}"><label for="fmTous${x}">Tous ses matchs (${tous.length})</label>`
+    + `<div class="ff-vue-tous">${htmlMains(contre, { noms: ["Toi", nom], vide: `Pas encore de duel contre ${nom}.` })}</div>`
+    + `<div class="ff-vue-off">${htmlMains(tous, { noms: [nom, "Adversaire"], gagneTexte: [`✅ ${il} gagne`, `❌ ${il} perd`], vide: "Pas encore de match en ligne terminé." })}`
+    + `<p class="hint mains-note">Ses ${MAX_MAINS} derniers matchs en ligne, coup par coup (en jaune : le point est pour ${n}).</p></div></div>`;
 }
 $("lastBody").addEventListener("click", e => { const x = e.target.closest(".nom-adv"); if (x) ouvrirFicheAdv(x.dataset.adv, x.dataset.nom); });
 $("faCarte").addEventListener("click", async () => {
@@ -1681,6 +1713,11 @@ $("carOnglets").addEventListener("click", e => {
   const b = e.target.closest("button[data-o]"); if (!b) return;
   ongletCarriere = ongletCarriere === b.dataset.o ? null : b.dataset.o; majOngletsCarriere();
 });
+// Dans la carrière, le nom d'un bot se touche : sa fiche (notre face-à-face, son dossier, l'historique des mains).
+const nomTouchable = (id, nom) => `<button class="linkbtn nom-adv" data-adv="${esc(id)}" data-nom="${esc(nom)}">${esc(nom)}</button>`;
+["carClassement", "carCalendrier"].forEach(c => $(c).addEventListener("click", e => {
+  const x = e.target.closest(".nom-adv"); if (x) ouvrirFicheAdv(x.dataset.adv, x.dataset.nom, { jouer: false });
+}));
 function renderCarriere() {
   majOngletsCarriere(); $("carResume").textContent = "";
   $("carRecommencer").hidden = !C; $("carTableau").innerHTML = ""; $("carCalendrier").innerHTML = ""; $("carVitrine").innerHTML = ""; $("carCoupe").innerHTML = ""; $("carClassement").innerHTML = ""; $("carPalmares").innerHTML = "";
@@ -1728,14 +1765,14 @@ function renderCarriere() {
     const adv = botParId(m.a === "moi" ? m.b : m.a), prochain = pm?.coupe && K.tour === r;
     const score = m.score ? (m.a === "moi" ? m.score : m.score.split("–").reverse().join("–")) : "";
     const etat = m.v ? resultat(m.v === "moi", score) : prochain ? "👉 Prochain match" : `Après la J${coupeApres(C, r)}`;
-    return ligneCal(m.v ? "jouee" : prochain ? "prochain" : "", adv, `🏆 ${titre}<br><span class="car-cal-adv">${esc(adv.nom)} <small>(${adv.elo})</small></span>`, etat, true);
+    return ligneCal(m.v ? "jouee" : prochain ? "prochain" : "", adv, `🏆 ${titre}<br><span class="car-cal-adv">${nomTouchable(adv.id, adv.nom)} <small>(${adv.elo})</small></span>`, etat, true);
   };
   $("carCalendrier").innerHTML = `<div class="car-calendrier"><ol>`
     + C.journees.map((j, i) => {
       const adv = j.find(p => p.includes("moi")).find(x => x !== "moi"), b = botParId(adv), r = C.resultats.find(x => x.a === "moi" && x.b === adv);
       const prochain = i === C.journee && C.phase === "saison" && !pm?.coupe;
       const etat = r ? resultat(r.v === "moi", r.scores.map(x => x.join("–")).join(", ")) : prochain ? "👉 Prochain match" : "À jouer";
-      return ligneCal(r ? "jouee" : prochain ? "prochain" : "", b, `J${i + 1} · ${esc(b.nom)} <small>(${b.elo})</small>`, etat)
+      return ligneCal(r ? "jouee" : prochain ? "prochain" : "", b, `J${i + 1} · ${nomTouchable(b.id, b.nom)} <small>(${b.elo})</small>`, etat)
         + (C.coupe ? TOURS_COUPE.map((T, t) => (coupeApres(C, t) === i + 1 ? ligneCoupe(t) : "")).join("") : "");
     }).join("") + `</ol></div>`;
   // Le classement de la saison (en Amateur : les 2 poules).
@@ -1744,7 +1781,7 @@ function renderCarriere() {
     + `<table class="car-classement"><thead><tr><th>#</th><th>Joueur</th><th>J</th><th>V</th><th>D</th><th>+/−</th><th>Pts</th></tr></thead><tbody>`
     + lignes.map((l, i) => {
       const A = infoJoueur(l.id), d = l.pm - l.pc, cls = [l.id === "moi" ? "moi" : "", i < qualifies ? "zone-po" : zones && i >= bas ? "zone-bas" : ""].join(" ").trim();
-      return `<tr class="${cls}"><td>${i + 1}</td><td><span class="mini">${avatarSVG(A.av)}</span><span>${esc(A.nom)}</span></td><td>${l.j}</td><td>${l.v}</td><td>${l.d}</td><td>${d > 0 ? "+" : ""}${d}</td><td>${l.pts}</td></tr>`;
+      return `<tr class="${cls}"><td>${i + 1}</td><td><span class="mini">${avatarSVG(A.av)}</span>${l.id === "moi" ? `<span>${esc(A.nom)}</span>` : nomTouchable(l.id, A.nom)}</td><td>${l.j}</td><td>${l.v}</td><td>${l.d}</td><td>${d > 0 ? "+" : ""}${d}</td><td>${l.pts}</td></tr>`;
     }).join("") + `</tbody></table>`;
   $("carClassement").innerHTML = `<div class="rnd">Classement · ${C.journee} journée${C.journee > 1 ? "s" : ""} sur ${nbJ}</div>`
     + (C.poules ? tableau(classementCarriere(C, 0), "Ma poule (A)") + tableau(classementCarriere(C, 1), "Poule B")
@@ -2100,6 +2137,7 @@ cerclesUI = installerCercles({
   defier: p => duelsUI.defier(p),
   dejaDefie: id => !!duelsUI?.dejaDefie(id),
   voirCarte: id => voirCarteDe(id),
+  dossierEtMains: (uid, nom, duels, elle) => dossierEtMains(uid, nom, duels, elle),
   lancerDuel,
   trophees: donnees => gagnerTrophees(accorderTitres(P, titresEnLigne(donnees))),
   surClassement: (points, joues = 0, division = null) => {
