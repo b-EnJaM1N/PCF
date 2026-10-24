@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  CIRCUITS, TAILLE, JOURNEES, compositionDeDepart, calendrier, nouvelleCarriere, prochainMatch, enregistrerMonMatch,
+  CIRCUITS, TAILLE, TAILLES, JOURNEES, compositionDeDepart, calendrier, nouvelleCarriere, prochainMatch, enregistrerMonMatch,
   classement, saisonSuivante, texteBilan, circuitDuJoueur, chances, simulerCircuit, vitrine, TOURS_COUPE, texteCoupe, coupesML, coupeEnCours, titresCarriere, migrerCarriere,
 } from "../app/js/carriere-logique.js";
 import { botParId, TOUS_LES_BOTS, choisirCoup } from "../app/js/bots.js";
@@ -22,24 +22,24 @@ test("64 bots dans l'appli, tous différents, et chacun sait jouer", () => {
   }
 });
 
-test("5 circuits de 12 joueurs : toi en Amateur, les plus faibles en bas, les plus forts en haut", () => {
+test("5 circuits (12, 16, 12, 12, 12 joueurs) : toi en Amateur, les plus faibles en bas, les plus forts en haut", () => {
   const c = compositionDeDepart();
   assert.equal(c.length, CIRCUITS.length);
-  c.forEach(x => assert.equal(x.length, TAILLE));
+  c.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
   assert.ok(c[0].includes("moi"));
-  assert.equal(new Set(c.flat()).size, 60);
+  assert.equal(new Set(c.flat()).size, 64);
   const moyenne = x => x.filter(id => id !== "moi").reduce((s, id) => s + botParId(id).elo, 0) / x.filter(id => id !== "moi").length;
   for (let k = 1; k < c.length; k++) assert.ok(moyenne(c[k]) > moyenne(c[k - 1]));
   assert.ok(c[4].includes("reinemere") && c[4].includes("titan"));
 });
 
 test("le calendrier : 11 journées, chacun rencontre chaque autre une fois, adversaires de plus en plus forts", () => {
-  const ids = compositionDeDepart()[0], J = calendrier(ids);
+  const ids = compositionDeDepart()[2], J = calendrier(ids);
   assert.equal(J.length, JOURNEES);
   const paires = new Set(J.flat().map(([a, b]) => [a, b].sort().join("-")));
   assert.equal(paires.size, TAILLE * (TAILLE - 1) / 2);
   J.forEach(j => assert.equal(new Set(j.flat()).size, TAILLE));
-  const advs = J.map(j => j.find(p => p.includes("moi")).find(x => x !== "moi"));
+  const M = calendrier(["moi", ...ids.slice(1)]), advs = M.map(j => j.find(p => p.includes("moi")).find(x => x !== "moi"));
   for (let i = 1; i < advs.length; i++) assert.ok(botParId(advs[i]).elo >= botParId(advs[i - 1]).elo);
 });
 
@@ -59,24 +59,39 @@ test("tout gagner : saison, playoffs, et on monte", () => {
   assert.match(texteBilan(C), /promu en Circuit Régional/);
   saisonSuivante(C, rng);
   assert.equal(circuitDuJoueur(C), 1); assert.equal(C.saison, 2); assert.equal(C.phase, "saison");
-  C.circuits.forEach(x => assert.equal(x.length, TAILLE));
-  assert.equal(new Set(C.circuits.flat()).size, 60);
+  C.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
+  assert.equal(new Set(C.circuits.flat()).size, 64);
+  assert.equal(C.poules.length, 2); C.poules.forEach(p => assert.equal(p.length, 8)); assert.equal(C.journees.length, 7);
   assert.equal(C.palmares.length, 1);
 });
 
-test("finaliste : barrage contre le barragiste du dessus ; gagné, on monte", () => {
+test("Amateur : finaliste, on monte aussi, sans barrage", () => {
   const C = nouvelleCarriere(hasardGraine(2));
   for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, true);
   gagner(C, true); gagner(C, true); gagner(C, false);
-  assert.equal(C.phase, "barrage");
-  assert.equal(prochainMatch(C).adv, C.issues[1].barragiste);
-  assert.equal(prochainMatch(C).etape, "Barrage d'accession");
-  gagner(C, true);
-  assert.equal(C.bilan.mouvement, 1);
-  const adv = C.barrage.adv;
+  assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, 1);
+  assert.match(texteBilan(C), /Finaliste des playoffs : promu en Circuit Régional/);
+  const champion = C.issues[0].champion;
   saisonSuivante(C, rng);
-  assert.equal(circuitDuJoueur(C), 1);
-  assert.ok(C.circuits[0].includes(adv));   // le perdant du barrage descend à sa place
+  assert.equal(circuitDuJoueur(C), 1); assert.ok(C.circuits[1].includes(champion));
+});
+
+test("Amateur : demi-finale perdue, barrage des demi-finalistes, puis barrage d'accession contre le barragiste du Régional", () => {
+  const C = nouvelleCarriere(hasardGraine(20));
+  for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, true);
+  gagner(C, true); gagner(C, false);
+  assert.equal(C.phase, "petite"); assert.equal(prochainMatch(C).etape, "Barrage des demi-finalistes");
+  const D = structuredClone(C);
+  gagner(C, true);
+  assert.equal(C.phase, "barrage"); assert.equal(prochainMatch(C).etape, "Barrage d'accession");
+  const adv = C.issues[1].barragiste; assert.equal(prochainMatch(C).adv, adv);
+  gagner(C, true); assert.equal(C.bilan.mouvement, 1); assert.match(texteBilan(C), /Barrage gagné : promu/);
+  saisonSuivante(C, rng);
+  assert.equal(circuitDuJoueur(C), 1); assert.ok(C.circuits[0].includes(adv));   // le barragiste descend à sa place
+  C.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
+  // Le barrage des demi-finalistes perdu : on reste.
+  gagner(D, false); assert.equal(D.phase, "fin"); assert.equal(D.bilan.mouvement, 0); assert.match(texteBilan(D), /demi-finalistes perdu/);
+  saisonSuivante(D, rng); assert.equal(circuitDuJoueur(D), 0);
 });
 
 test("tout perdre en Amateur : pas de playoffs, on reste", () => {
@@ -87,26 +102,71 @@ test("tout perdre en Amateur : pas de playoffs, on reste", () => {
   saisonSuivante(C, rng); assert.equal(circuitDuJoueur(C), 0);
 });
 
-test("le maintien : perdre la demi et le match pour le maintien, on descend ; le gagner, barrage", () => {
-  const monter = C => { for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, true); gagner(C, true); gagner(C, true); gagner(C, true); saisonSuivante(C, rng); };
+// Monter en Régional (champion de l'Amateur), puis la saison du Régional avec mes résultats (true : gagné).
+const monter = C => { while (C.phase !== "fin") gagner(C, true); saisonSuivante(C, rng); };
+const saisonRegionale = (C, res) => res.forEach(oui => gagner(C, oui));
+
+test("Régional : 2 poules de 8, 7 journées, quarts croisés ; le vainqueur monte, le finaliste joue le barrage du National", () => {
   const C = nouvelleCarriere(hasardGraine(4)); monter(C);
+  assert.equal(C.ou, 1); assert.equal(C.journees.length, 7);
+  C.journees.forEach(j => assert.equal(new Set(j.flat()).size, 16));
+  saisonRegionale(C, Array(7).fill(true));
+  assert.equal(C.place, 1); assert.equal(C.phase, "playoffs");
+  const a = classement(C, 0).map(l => l.id), b = classement(C, 1).map(l => l.id);
+  assert.deepEqual(C.tableau.tours[0].map(m => [m.a, m.b]), [[a[0], b[3]], [b[1], a[2]], [b[0], a[3]], [a[1], b[2]]]);
+  assert.deepEqual(C.issues[1].relegues, [a[7], b[7]]); assert.ok(C.issues[1].barragiste);
+  gagner(C, true); gagner(C, true); gagner(C, false);
+  assert.equal(C.phase, "barrage"); assert.equal(prochainMatch(C).adv, C.issues[2].barragiste);
+});
+
+test("Régional : 8e de sa poule, on descend", () => {
+  const C = nouvelleCarriere(hasardGraine(21)); monter(C);
+  saisonRegionale(C, Array(7).fill(false));
+  assert.equal(C.place, 8); assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, -1);
+  assert.match(texteBilan(C), /8e de ta poule : relégué en Circuit Amateur/);
+  saisonSuivante(C, rng); assert.equal(circuitDuJoueur(C), 0);
+  C.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
+  assert.equal(new Set(C.circuits.flat()).size, 64);
+});
+
+test("Régional : 7e, le match pour le maintien ; perdu, le barrage contre le gagnant du barrage des demi-finalistes de l'Amateur", () => {
+  // Une victoire contre le plus faible (1re journée) : 7e.
+  let C;
+  for (let g = 22; ; g++) { C = nouvelleCarriere(hasardGraine(g)); monter(C); saisonRegionale(C, [true, false, false, false, false, false, false]); if (C.place === 7) break; }
+  assert.equal(C.phase, "maintien7"); assert.equal(prochainMatch(C).etape, "Match pour le maintien");
+  const D = structuredClone(C);
+  gagner(C, true); assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, 0); assert.match(texteBilan(C), /maintien gagné/);
+  saisonSuivante(C, rng); assert.equal(circuitDuJoueur(C), 1);
+  gagner(D, false);
+  assert.equal(D.phase, "barrage"); assert.equal(prochainMatch(D).etape, "Barrage du maintien");
+  assert.equal(prochainMatch(D).adv, D.issues[0].troisieme);
+  const E = structuredClone(D);
+  gagner(D, true); assert.equal(D.bilan.mouvement, 0); assert.match(texteBilan(D), /maintenu/);
+  saisonSuivante(D, rng); assert.equal(circuitDuJoueur(D), 1);
+  gagner(E, false); assert.equal(E.bilan.mouvement, -1);
+  saisonSuivante(E, rng); assert.equal(circuitDuJoueur(E), 0);
+  E.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
+});
+
+test("le maintien du National : perdre la demi et le match pour le maintien, on descend ; le gagner, barrage", () => {
+  const C = nouvelleCarriere(hasardGraine(4)); monter(C); monter(C);
+  assert.equal(C.ou, 2);
   const D = structuredClone(C);
   for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, false);
   assert.equal(C.phase, "maintien"); assert.equal(prochainMatch(C).etape, "Demi-finale du maintien");
   gagner(C, false); assert.equal(prochainMatch(C).etape, "Match pour le maintien");
   gagner(C, false); assert.equal(C.bilan.mouvement, -1);
-  saisonSuivante(C, rng); assert.equal(circuitDuJoueur(C), 0);
+  saisonSuivante(C, rng); assert.equal(circuitDuJoueur(C), 1);
 
   for (let j = 0, n = D.journees.length; j < n; j++) gagner(D, false);
   gagner(D, false); gagner(D, true);
-  assert.equal(D.phase, "barrage"); assert.equal(prochainMatch(D).adv, D.issues[0].finaliste);
+  assert.equal(D.phase, "barrage"); assert.equal(prochainMatch(D).adv, D.issues[1].finaliste);
   gagner(D, true); assert.equal(D.bilan.mouvement, 0); assert.match(texteBilan(D), /maintenu/);
-  saisonSuivante(D, rng); assert.equal(circuitDuJoueur(D), 1);
+  saisonSuivante(D, rng); assert.equal(circuitDuJoueur(D), 2);
 });
 
 test("gagner sa demi-finale du maintien suffit", () => {
-  const C = nouvelleCarriere(hasardGraine(5));
-  for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, true); for (let i = 0; i < 3; i++) gagner(C, true); saisonSuivante(C, rng);
+  const C = nouvelleCarriere(hasardGraine(5)); monter(C); monter(C);
   for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, false);
   gagner(C, true);
   assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, 0); assert.match(texteBilan(C), /Maintenu/);
@@ -120,23 +180,36 @@ test("éliminé en quart : on reste, le texte le dit", () => {
   assert.ok(C.issues[0].champion && C.issues[0].finaliste);
 });
 
-test("champion de l'Élite après 4 montées ; les circuits restent à 12", () => {
+test("champion de l'Élite après 4 montées ; les circuits gardent leur taille", () => {
   const C = nouvelleCarriere(hasardGraine(7));
   for (let s = 0; s < 5; s++) {
-    for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, true);
-    for (let i = 0; i < 3; i++) gagner(C, true);
+    while (C.phase !== "fin") gagner(C, true);
     if (s < 4) { assert.equal(C.bilan.mouvement, 1); saisonSuivante(C, rng); }
   }
   assert.equal(C.ou, 4); assert.equal(C.bilan.titre, "champion"); assert.match(texteBilan(C), /Champion du Circuit Élite/);
   saisonSuivante(C, rng);
   assert.equal(circuitDuJoueur(C), 4);
-  C.circuits.forEach(x => assert.equal(x.length, TAILLE));
-  assert.equal(new Set(C.circuits.flat()).size, 60);
+  C.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
+  assert.equal(new Set(C.circuits.flat()).size, 64);
+});
+
+test("une carrière commencée avec 5 circuits de 12 : le Régional passe à 16 à la saison suivante", () => {
+  const C = nouvelleCarriere(hasardGraine(30));
+  const libres = C.circuits[1].splice(12);   // l'ancienne formule : 12 partout, 4 bots libres
+  assert.equal(libres.length, 4);
+  while (C.phase !== "fin" || coupeEnCours(C)) { const pm = prochainMatch(C); enregistrerMonMatch(C, false, pm.format.setsGagnants === 1 ? [[3, 7]] : [[6, 11], [6, 11]], rng); }
+  saisonSuivante(C, rng);
+  C.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
+  assert.equal(new Set(C.circuits.flat()).size, 64);
 });
 
 test("un circuit de bots donne un champion, un finaliste, un relégué et un barragiste distincts", () => {
   const ids = compositionDeDepart()[2], r = simulerCircuit(ids, 2, rng);
   assert.equal(new Set([r.champion, r.finaliste, r.relegue, r.barragiste]).size, 4);
+  const a = simulerCircuit(compositionDeDepart()[0].map(x => x === "moi" ? "pantoufle" : x), 0, rng);
+  assert.equal(new Set([a.champion, a.finaliste, a.troisieme]).size, 3);
+  const g = simulerCircuit(compositionDeDepart()[1], 1, rng);
+  assert.equal(new Set([g.champion, g.finaliste, g.barragiste, ...g.relegues]).size, 5);
 });
 
 test("le palmarès de la saison : champion de chaque circuit, montées et descentes", () => {
@@ -148,6 +221,7 @@ test("le palmarès de la saison : champion de chaque circuit, montées et descen
   assert.equal(p.circuits[0].champion, "moi");
   assert.ok(p.circuits[0].montes.includes("moi"));
   assert.equal(p.circuits[4].montes.length, 0); assert.equal(p.circuits[0].descendus.length, 0);
+  assert.ok(p.circuits[0].montes.length >= 2);
   for (let k = 0; k < 4; k++) assert.equal(p.circuits[k].montes.length, p.circuits[k + 1].descendus.length);
   p.circuits.forEach(c => assert.ok(c.champion && c.finaliste));
 });
@@ -236,10 +310,13 @@ test("l'Amateur : 2 poules de 6, 5 journées, quarts croisés (1er A – 4e B…
   for (let j = 0; j < 5; j++) gagner(C, true);
   const a = classement(C, 0).map(l => l.id), b = classement(C, 1).map(l => l.id), q = C.tableau.tours[0];
   assert.deepEqual(q.map(m => [m.a, m.b]), [[a[0], b[3]], [b[1], a[2]], [b[0], a[3]], [a[1], b[2]]]);
-  // Les poules suivantes : en Régional, on revient à la saison de 11 journées.
+  // En Régional : 2 poules de 8 ; au National, on revient à la saison de 11 journées.
   for (let i = 0; i < 3; i++) gagner(C, true);
   saisonSuivante(C, rng);
-  assert.equal(C.poules, null); assert.equal(C.journees.length, 11);
+  assert.equal(C.poules.length, 2); assert.equal(C.journees.length, 7);
+  while (C.phase !== "fin") gagner(C, true);
+  saisonSuivante(C, rng);
+  assert.equal(C.ou, 2); assert.equal(C.poules, null); assert.equal(C.journees.length, 11);
 });
 
 test("une saison d'Amateur commencée en 11 journées repart en poules", () => {
