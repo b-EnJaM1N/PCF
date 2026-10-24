@@ -864,3 +864,13 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 /* À propos (Options) */
 .a-propos { text-align: center; }
 .a-propos img { display: block; width: 170px; height: 170px; margin: 4px auto 10px; }
+/* L'historique des mains, dans la fiche d'un adversaire (24 octobre). La fiche peut être longue : elle défile sans être coupée en haut. */
+#ficheAdv { align-items: flex-start; }
+#ficheAdv .panel { margin: auto 0; }
+.mains { text-align: left; }
+.main-match { border-top: 1px solid rgba(255, 255, 255, .1); padding: 6px 0; }
+.main-match summary { cursor: pointer; font-size: .88rem; }
+.main-match .tape { margin-top: 6px; }
+.main-match .tape th { background: var(--court-deep); }
+.main-match .tape td { width: 28px; min-width: 28px; height: 28px; font-size: 1rem; }
+.mains-note { font-size: .8rem; margin: 4px 0 0; }
