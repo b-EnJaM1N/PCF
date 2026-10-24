@@ -297,6 +297,14 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .car-onglets button { font-size: .82rem; padding-left: 4px; padding-right: 4px; }
 .car-volet { margin-top: 10px; }
 .car-volet[hidden] { display: none; }
+/* Face-à-face : « Tous les duels » ou « Duels officiels » (deux boutons radio, sans script) */
+.ff-choix { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ff-choix > input { position: absolute; opacity: 0; pointer-events: none; }
+.ff-choix > label { text-align: center; font-weight: 600; font-size: .88rem; padding: 9px 6px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); cursor: pointer; }
+.ff-choix > input:checked + label { border-color: var(--me); color: var(--me); background: rgba(244, 197, 66, .12); }
+.ff-choix > input:focus-visible + label { outline: 2px solid var(--line); }
+.ff-choix > div { grid-column: 1 / -1; margin-top: 8px; }
+.ff-choix > input:nth-of-type(1):checked ~ .ff-vue-off, .ff-choix > input:nth-of-type(2):checked ~ .ff-vue-tous { display: none; }
 .car-classement { width: 100%; border-collapse: collapse; font-size: .95rem; font-weight: 700; margin: 6px 0 4px; }   /* en gras : le classement saute aux yeux */
 .car-classement th { color: var(--muted); font-weight: 600; text-align: right; padding: 4px 3px; }
 .car-classement td { text-align: right; padding: 4px 3px; border-top: 1px solid rgba(255, 255, 255, .08); }

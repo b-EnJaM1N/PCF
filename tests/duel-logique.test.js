@@ -90,6 +90,8 @@ test("face-à-face : bilan, sets, points, signes favoris, réflexes et série, v
   ];
   const r = statsFaceAFace(duels, moi);
   assert.equal(r.matchs, 3); assert.equal(r.v, 1); assert.equal(r.d, 2); assert.equal(r.officiels, 1);
+  // Le même bilan, avec seulement les duels officiels (onglet « Duels officiels »).
+  assert.equal(r.officiel.matchs, 1); assert.equal(r.officiel.officiels, 1); assert.equal(r.officiel.officiel, undefined);
   assert.deepEqual(r.sets, [2, 1]);
   assert.deepEqual(r.points, [1, 2]); assert.equal(r.egalites, 2);
   assert.deepEqual(r.mesSignes, [3, 1, 1]); assert.deepEqual(r.sesSignes, [2, 1, 2]);
