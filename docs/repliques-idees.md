@@ -5,7 +5,7 @@ Le porteur du projet note ici ses idées au fil de l'eau. On les relit et on les
 seules les nouvelles répliques sont faites).
 
 ## À ajouter
-*(rien pour l'instant)*
+- La banque de commentaires du 25 octobre (environ 85 répliques), triée par moment du match : `docs/repliques-banque-brouillon.md` (à valider).
 
 ## Modifications à faire (notées au fil des tests, à faire toutes ensemble)
 *(rien pour l'instant ; fait le 3 octobre : Roland excité au lieu d'amusé partout, « Second poteau, la Feuille » refait)*
