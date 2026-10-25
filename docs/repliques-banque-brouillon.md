@@ -177,4 +177,4 @@ Aujourd'hui, avant le match, ce sont des dialogues Roland → Monique. Propositi
 2. **Coder** les nouveaux moments (beau coup selon le signe, séries de 3 à 8 et plus, première égalité, phrase d'avant-match,
    entre amis) : sans crédits, mais rien ne s'entend tant que les voix ne sont pas enregistrées.
 3. **Enregistrer** : environ 85 répliques, en comptant les versions « elle » et les 3 versions par signe, soit à peu près
-   7 000 caractères ElevenLabs (à comparer aux crédits restants avant de lancer).
+   6 000 à 7 000 caractères ElevenLabs (à comparer aux crédits restants avant de lancer).
