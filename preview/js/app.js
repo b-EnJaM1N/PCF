@@ -19,7 +19,7 @@ import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
-import { CIRCUITS, QUALIFIES, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
+import { CIRCUITS, QUALIFIES, DEBUT_MAINTIEN, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
@@ -1745,7 +1745,11 @@ function renderCarriere() {
   $("carJouer").textContent = pm?.coupe ? `Jouer : ${TOURS_COUPE[C.coupe.tour].singulier.toLowerCase()} de la coupe` : C.phase === "fin" ? `Commencer la saison ${C.saison + 1}` : C.phase === "saison" ? `Jouer la journée ${C.journee + 1}` : `Jouer : ${pm.etape.charAt(0).toLowerCase()}${pm.etape.slice(1)}`;
   // Le tableau des playoffs (ou du maintien), et le barrage.
   let h = "";
-  if (C.tableau) C.tableau.tours.forEach((R, i) => { h += `<div class="rnd">${NOMS_TOURS[C.tableau.type][i].nom}</div>` + R.map(m => ligneMatch(m)).join(""); });
+  if (C.tableau) C.tableau.tours.forEach((R, i) => {
+    h += `<div class="rnd">${NOMS_TOURS[C.tableau.type][i].nom}</div>` + R.map(m => ligneMatch(m)).join("");
+    // Les playoffs à 6 : les 1er et 2e attendent en demi-finales.
+    if (i === 0 && C.tableau.exempts) h += `<p class="car-legende">Directement en demi-finales : ${C.tableau.exempts.map(id => esc(infoJoueur(id).nom)).join(" et ")}.</p>`;
+  });
   if (C.petite) h += `<div class="rnd">Barrage des demi-finalistes</div>` + ligneMatch({ a: "moi", b: C.petite.adv, v: C.petite.v });
   if (C.duel) h += `<div class="rnd">Match pour le maintien (les 7es)</div>` + ligneMatch({ a: "moi", b: C.duel.adv, v: C.duel.v });
   if (C.barrage) h += `<div class="rnd">${C.barrage.haut ? "Barrage d'accession" : "Barrage du maintien"}</div>` + ligneMatch({ a: "moi", b: C.barrage.adv, v: C.barrage.v });
@@ -1776,7 +1780,7 @@ function renderCarriere() {
         + (C.coupe ? TOURS_COUPE.map((T, t) => (coupeApres(C, t) === i + 1 ? ligneCoupe(t) : "")).join("") : "");
     }).join("") + `</ol></div>`;
   // Le classement de la saison (en Amateur : les 2 poules).
-  const zones = k > 0, bas = C.poules ? 6 : QUALIFIES, qualifies = C.poules ? 4 : QUALIFIES, nbJ = C.journees.length;
+  const zones = k > 0, bas = C.poules ? 6 : DEBUT_MAINTIEN, qualifies = C.poules ? 4 : QUALIFIES, nbJ = C.journees.length;
   const tableau = (lignes, titre) => (titre ? `<p class="car-poule">${titre}</p>` : "")
     + `<table class="car-classement"><thead><tr><th>#</th><th>Joueur</th><th>J</th><th>V</th><th>D</th><th>+/−</th><th>Pts</th></tr></thead><tbody>`
     + lignes.map((l, i) => {
@@ -1788,7 +1792,7 @@ function renderCarriere() {
       + `<p class="car-legende">🟩 Les 4 premiers de chaque poule : quarts de finale croisés (1er A – 4e B…). ${k === 0
         ? "Les 2 finalistes montent ; les 2 perdants des demies jouent un barrage, le gagnant joue un barrage d'accession contre un joueur du Future."
         : "Le vainqueur monte ; le finaliste joue un barrage d'accession. 🟥 Les 7es se rencontrent (le perdant joue un barrage du maintien) ; les 8es descendent."}</p>`
-      : tableau(classementCarriere(C)) + `<p class="car-legende">🟩 Places 1 à 8 : playoffs, le vainqueur monte.${zones ? " 🟥 Places 9 à 12 : le maintien." : ""}</p>`);
+      : tableau(classementCarriere(C)) + `<p class="car-legende">🟩 Places 1 à 6 : playoffs (les 2 premiers directement en demi-finales, les 3e à 6e en quarts), le vainqueur monte.${zones ? " 🟥 Places 9 à 12 : le maintien." : ""}</p>`);
   $("carVitrine").innerHTML = `<div class="rnd">Ma vitrine</div>${vitrineHTML()}`;
   // Le palmarès.
   if (C.palmares.length) {

@@ -1,7 +1,8 @@
 // La carrière : 5 circuits (toi et 63 bots), de l'Amateur à l'Élite. Décisions du porteur du projet (22 et 24 octobre) :
 // - la saison : chacun rencontre une fois les 11 autres (11 journées), 2 points par victoire ;
-// - places 1 à 8 : les playoffs, à élimination directe. Le vainqueur monte ; le finaliste joue un barrage contre
-//   un joueur du circuit du dessus qui joue son maintien ;
+// - places 1 à 6 : les playoffs, façon Top 14 (décision du 25 octobre) : les 1er et 2e vont directement en demi-finales ;
+//   les 3e à 6e jouent les quarts (3e – 6e, 4e – 5e) ; en demies, 1er – vainqueur de 4e-5e, 2e – vainqueur de 3e-6e.
+//   Le vainqueur monte ; le finaliste joue un barrage contre un joueur du circuit du dessus qui joue son maintien ;
 // - places 9 à 12 (pas en Amateur) : les playoffs du maintien, à 4. Les vainqueurs des demi-finales sont maintenus ;
 //   les deux perdants se rencontrent : le perdant descend, le gagnant joue un barrage contre le finaliste du circuit du dessous.
 // - l'Amateur (12 joueurs) et le Future (16) en 2 poules (de 6 et de 8 : 5 et 7 journées), les 4 premiers de chaque poule en
@@ -16,7 +17,7 @@ import { TOUS_LES_BOTS, botParId, choisirCoup } from "./bots.js";
 import { contre } from "./regles.js";
 
 export const CIRCUITS = ["Circuit Amateur", "Circuit Future", "Circuit Challenger", "Circuit Pro", "Circuit Élite"];
-export const TAILLE = 12, QUALIFIES = 8;
+export const TAILLE = 12, QUALIFIES = 6, EXEMPTS = 2, DEBUT_MAINTIEN = 8;   // playoffs : places 1 à 6 (1 et 2 en demies) ; maintien : 9 à 12
 export const TAILLES = [12, 16, 12, 12, 12];   // 64 places : toi et 63 bots
 export const avecPoules = k => k <= 1;
 export const JOURNEES = TAILLE - 1;
@@ -104,17 +105,20 @@ export function classementDe(ids, resultats) {
   return Object.values(L).sort((x, y) => y.pts - x.pts || (y.pm - y.pc) - (x.pm - x.pc) || y.pm - x.pm || niveau(y.id) - niveau(x.id) || x.id.localeCompare(y.id));
 }
 
-// Les tableaux : les playoffs à 8 (1 contre 8, 4 contre 5, 3 contre 6, 2 contre 7) et le maintien à 4 (9 contre 12, 10 contre 11 ;
-// puis les deux perdants).
-const premierTourPlayoffs = s => [[s[0], s[7]], [s[3], s[4]], [s[2], s[5]], [s[1], s[6]]].map(([a, b]) => ({ a, b, v: null, score: "" }));
+// Les tableaux : les playoffs à 8 des poules (quarts croisés), les playoffs à 6 (façon Top 14 : 3 contre 6 et 4 contre 5,
+// les 1er et 2e attendent en demies) et le maintien à 4 (9 contre 12, 10 contre 11 ; puis les deux perdants).
+const premierTourPlayoffs = s => (s.length === QUALIFIES ? [[s[3], s[4]], [s[2], s[5]]] : [[s[0], s[7]], [s[3], s[4]], [s[2], s[5]], [s[1], s[6]]])
+  .map(([a, b]) => ({ a, b, v: null, score: "" }));
 const premierTourMaintien = s => [[s[0], s[3]], [s[1], s[2]]].map(([a, b]) => ({ a, b, v: null, score: "" }));
 export const NOMS_TOURS = {
   playoffs: [{ cle: "quarts", nom: "Quarts de finale" , singulier: "Quart de finale des playoffs" }, { cle: "demis", nom: "Demi-finales", singulier: "Demi-finale des playoffs" }, { cle: "finale", nom: "Finale", singulier: "Finale des playoffs" }],
   maintien: [{ cle: "demis", nom: "Demi-finales du maintien", singulier: "Demi-finale du maintien" }, { cle: "finale", nom: "Match pour le maintien", singulier: "Match pour le maintien" }],
 };
 // Le tour suivant d'un tableau, une fois le tour en cours joué.
-function tourSuivant(type, tour) {
+function tourSuivant(type, tour, exempts = null) {
   if (type === "maintien") return [{ a: perdantDe(tour[0]), b: perdantDe(tour[1]), v: null, score: "" }];
+  // Les demies des playoffs à 6 : le 1er contre le vainqueur de 4e-5e, le 2e contre le vainqueur de 3e-6e.
+  if (exempts) return [{ a: exempts[0], b: tour[0].v, v: null, score: "" }, { a: exempts[1], b: tour[1].v, v: null, score: "" }];
   const R = [];
   for (let i = 0; i < tour.length; i += 2) R.push({ a: tour[i].v, b: tour[i + 1].v, v: null, score: "" });
   return R;
@@ -129,10 +133,13 @@ function finirTableau(tab, rng) {
   for (;;) {
     simulerTour(tab, rng);
     if (tab.tour === nbTours(tab.type) - 1) return tab;
-    tab.tours.push(tourSuivant(tab.type, tab.tours[tab.tour])); tab.tour++;
+    avancerTableau(tab);
   }
 }
-const nouveauTableau = (type, seeds) => ({ type, tour: 0, tours: [type === "playoffs" ? premierTourPlayoffs(seeds) : premierTourMaintien(seeds)] });
+// Le tour suivant (les exemptés des playoffs à 6 entrent en demies).
+function avancerTableau(tab) { tab.tours.push(tourSuivant(tab.type, tab.tours[tab.tour], tab.tour === 0 ? tab.exempts : null)); tab.tour++; }
+const nouveauTableau = (type, seeds) => ({ type, tour: 0, tours: [type === "playoffs" ? premierTourPlayoffs(seeds) : premierTourMaintien(seeds)],
+  ...(type === "playoffs" && seeds.length === QUALIFIES ? { exempts: seeds.slice(0, EXEMPTS) } : {}) });
 // Ce qui sort des tableaux : le champion et le finaliste ; le relégué et le barragiste (le gagnant du match pour le maintien).
 function issueDe(tab) {
   const f = tab.tours[nbTours(tab.type) - 1]?.[0];
@@ -174,7 +181,7 @@ export function simulerCircuit(ids, k, rng = Math.random) {
   const resultats = rencontres(ids);
   const cl = classementDe(ids, resultats).map(l => l.id);
   const issue = issueDe(finirTableau(nouveauTableau("playoffs", cl.slice(0, QUALIFIES)), rng));
-  if (k > 0) Object.assign(issue, issueDe(finirTableau(nouveauTableau("maintien", cl.slice(QUALIFIES)), rng)));
+  if (k > 0) Object.assign(issue, issueDe(finirTableau(nouveauTableau("maintien", cl.slice(DEBUT_MAINTIEN)), rng)));
   return issue;
 }
 
@@ -336,11 +343,11 @@ export function enregistrerMonMatch(C, gagne, scores, rng = Math.random) {
       return gagne ? versBarrage(C, C.issues[C.ou - 1].finaliste, false) : terminer(C, -1);
     }
   }
-  tab.tours.push(tourSuivant(tab.type, tab.tours[tab.tour])); tab.tour++;
+  avancerTableau(tab);
   return C;
 }
 
-// Fin des 11 journées : les playoffs (places 1 à 8), le maintien (9 à 12), ou rien (9 à 12 en Amateur).
+// Fin des 11 journées : les playoffs (places 1 à 6), le maintien (9 à 12), ou rien (7e et 8e).
 function finDeSaisonReguliere(C, rng) {
   const k = C.ou;
   if (C.poules) {   // l'Amateur et le Future : les 4 premiers de chaque poule, en quarts croisés
@@ -359,15 +366,17 @@ function finDeSaisonReguliere(C, rng) {
   }
   const cl = classement(C).map(l => l.id);
   C.place = cl.indexOf("moi") + 1;
-  const haut = nouveauTableau("playoffs", cl.slice(0, QUALIFIES)), bas = k > 0 ? nouveauTableau("maintien", cl.slice(QUALIFIES)) : null;
+  const haut = nouveauTableau("playoffs", cl.slice(0, QUALIFIES)), bas = nouveauTableau("maintien", cl.slice(DEBUT_MAINTIEN));
   C.issues[k] = {};
   if (C.place <= QUALIFIES) {
     C.phase = "playoffs"; C.tableau = haut;
-    if (bas) { C.autreTableau = finirTableau(bas, rng); Object.assign(C.issues[k], issueDe(bas)); }
+    // 1er ou 2e : directement en demi-finales (les quarts se jouent sans moi).
+    if (C.place <= EXEMPTS) { simulerTour(haut, rng); avancerTableau(haut); }
   } else {
     C.autreTableau = finirTableau(haut, rng); Object.assign(C.issues[k], issueDe(haut));
-    if (bas) { C.phase = "maintien"; C.tableau = bas; } else terminer(C, 0);
   }
+  if (C.place > DEBUT_MAINTIEN) { C.phase = "maintien"; C.tableau = bas; }
+  else { const b = finirTableau(bas, rng); Object.assign(C.issues[k], issueDe(b)); if (C.place <= QUALIFIES) C.autreTableau = b; else terminer(C, 0); }
 }
 function versBarrage(C, adv, haut) {
   C.phase = "barrage"; C.barrage = { adv, haut, v: null };
