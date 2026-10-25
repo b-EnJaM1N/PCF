@@ -51,10 +51,6 @@ n'est à dire. Le texte dépend du signe gagnant.
 |---|---|
 | R | Et c'est le coup du millefeuille ! |
 | M | Il vient de mettre son adversaire sous pli. |
-| R | Emballé, c'est pesé ! ✍️ |
-| R | Il l'a mis sous enveloppe ! Retour à l'envoyeur ! ✍️ |
-| M | Il l'a emballé comme un cadeau. Sans le ruban. ✍️ |
-| M | La Pierre était solide. La Feuille était maline. ✍️ |
 
 ---
 
