@@ -282,7 +282,7 @@ test("les trophées de la carrière : une montée, le bouclier, la coupe, puis l
   for (let i = 0; i < 3; i++) gagner(C, true);
   assert.deepEqual(titresCarriere(C), ["promu", "leader"]);   // promu dès les playoffs gagnés
   saisonSuivante(C, rng);
-  for (let s = 0; s < 3; s++) { for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, true); for (let i = 0; i < 3; i++) gagner(C, true); saisonSuivante(C, rng); }
+  for (let s = 0; s < 3; s++) { while (C.phase !== "fin") gagner(C, true); saisonSuivante(C, rng); }
   assert.equal(C.ou, 4);
   assert.deepEqual(titresCarriere(C), ["promu", "national", "professionnel", "elite", "leader"]);
 });
@@ -338,4 +338,30 @@ test("les commentaires d'avant et d'après match collent à la situation", () =>
   assert.equal(prochainMatch(C).coupe && prochainMatch(C).voix, null);   // 16es : ni premier tour, ni quart
   const M = nouvelleCarriere(hasardGraine(17)); M.phase = "maintien"; M.tableau = { type: "maintien", tour: 0, tours: [[{ a: "moi", b: "rocky", v: null, score: "" }]] }; M.coupe = null;
   assert.equal(prochainMatch(M).voix, null);                          // le maintien : pas les répliques d'une demi-finale de tournoi
+});
+
+// Les playoffs du Challenger, du Pro et de l'Élite, façon Top 14 (décision du 25 octobre).
+const auChallenger = g => { const C = nouvelleCarriere(hasardGraine(g)); monter(C); monter(C); return C; };
+const jouerSaison = (C, res) => res.forEach(oui => gagner(C, oui));
+test("Challenger : 6 qualifiés ; les 2 premiers directement en demi-finales, contre les vainqueurs de 4e-5e et de 3e-6e", () => {
+  const C = auChallenger(40); assert.equal(C.ou, 2);
+  jouerSaison(C, Array(C.journees.length).fill(true));
+  assert.equal(C.place, 1); assert.equal(C.phase, "playoffs");
+  const cl = classement(C).map(l => l.id), t = C.tableau;
+  assert.deepEqual(t.exempts, [cl[0], cl[1]]);
+  assert.deepEqual(t.tours[0].map(m => [m.a, m.b]), [[cl[3], cl[4]], [cl[2], cl[5]]]);
+  assert.equal(prochainMatch(C).etape, "Demi-finale des playoffs");   // les quarts se sont joués sans moi
+  assert.deepEqual(t.tours[1].map(m => m.a), [cl[0], cl[1]]);
+  assert.deepEqual(t.tours[1].map(m => m.b), [t.tours[0][0].v, t.tours[0][1].v]);
+  gagner(C, true); assert.equal(prochainMatch(C).cle, "finale"); gagner(C, true);
+  assert.equal(C.bilan.mouvement, 1); assert.match(texteBilan(C), /promu en Circuit Pro/);
+});
+test("Challenger : 3e à 6e, on commence en quart ; 7e ou 8e, pas de playoffs ni de maintien", () => {
+  let C;
+  for (let g = 50; ; g++) { C = auChallenger(g); jouerSaison(C, Array(C.journees.length).fill(true).map((x, i) => i < 8)); if (C.place >= 3 && C.place <= 6) break; }
+  assert.equal(prochainMatch(C).etape, "Quart de finale des playoffs");
+  gagner(C, false); assert.match(texteBilan(C), /Éliminé en quart de finale/);
+  for (let g = 60; ; g++) { C = auChallenger(g); jouerSaison(C, Array(C.journees.length).fill(true).map((x, i) => i < 5)); if (C.place === 7 || C.place === 8) break; }
+  assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, 0); assert.match(texteBilan(C), /pas de playoffs/);
+  assert.ok(C.issues[2].champion && C.issues[2].relegue && C.issues[2].barragiste);
 });
