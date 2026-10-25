@@ -73,7 +73,7 @@ export async function dessinerUne(canvas, h, joueurs, score) {
   // En partant du bas : pied de page, colonnes, chapô, photo. Le titre prend la place qui reste.
   const hPhoto = 340, basColonnes = H - 110, hautColonnes = basColonnes - 250;
   ctx.font = `600 34px ${TEXTE}`;
-  const chapo = lignes(ctx, h.chapo, L - 2 * M).slice(0, 3);
+  const chapo = lignes(ctx, h.chapo, L - 2 * M).slice(0, 5);   // (5 lignes au plus : avec un enjeu, le chapô est plus long ; le titre s'adapte)
   const hautChapo = hautColonnes - 26 - chapo.length * 44 + 8;
   const hautPhoto = hautChapo - 50 - hPhoto;
 
