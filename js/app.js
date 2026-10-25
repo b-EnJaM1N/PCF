@@ -559,7 +559,7 @@ function finir() {
   S.pourUne = n && !special ? {
     etape: S.carriere ? S.carriere.coupe ? S.carriere.etape.replace(" · ", ", ") : `${CIRCUITS[S.carriere.circuit]}, ${S.carriere.etape.charAt(0).toLowerCase()}${S.carriere.etape.slice(1)}` : S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.direct ? (D.tourVoix === "finale" && D.nbTours > 1 ? "Finale de Sit & Go" : "Sit & Go") : D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
       : enTournoi ? `${tourDe(T, S.tour).singulier} du HandSlam Open` : "Match d'entraînement",
-    finale: !!S.annonces.finale, numero: P.matchs,
+    finale: !!S.annonces.finale, numero: P.matchs, enjeu: S.duel ? D?.duel?.enjeu || null : null,
   } : null;
   $("btnUne").hidden = !S.pourUne;
   $("again").hidden = enTournoi || !!S.duel; $("tNext").hidden = !enTournoi;
@@ -796,7 +796,7 @@ $("btnUne").addEventListener("click", async () => {
   const sn = surnomDe(P).texte, snAdv = OPP.humain ? OPP.surnom?.texte : null;
   const moi = { nom: nomAffiche(P), surnom: sn, legende: sn, genre: P.genre, av: avatarSVG(P.av) };
   const adv = { nom: OPP.nom, surnom: snAdv, legende: snAdv || OPP.style, genre: OPP.genre, av: avatarSVG(OPP.av) };
-  const h = histoireDuMatch(m, S.stats, moi, adv, { etape: u.etape, finale: u.finale, citations: S.citations || [] });
+  const h = histoireDuMatch(m, S.stats, moi, adv, { etape: u.etape, finale: u.finale, citations: S.citations || [], enjeu: u.enjeu });
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
   $("une").classList.add("show");
   const adresse = (location.host + location.pathname).replace(/index\.html$/, "").replace(/preview\/$/, "");
@@ -985,6 +985,7 @@ function preparerEcranMatch() {
   $("end").hidden = true; $("bar").style.transform = "scaleX(1)"; $("timer").classList.remove("urgent"); $("criBulle").hidden = true;
   render(); $("status").textContent = "Choisis ton premier coup";
   boutons(false); afficherBilan(); window.scrollTo(0, 0);
+  $("matchEnjeu").hidden = true;   // (l'enjeu d'un défi : remis par lancerDuel)
   $("revanche").hidden = true; $("retourDuels").hidden = true; $("encoreRapide").hidden = true; $("abandonDuelZone").hidden = true; $("signalerZone").hidden = true;
   $("coach").hidden = true; $("mdjPartagerFin").hidden = true; $("carSuite").hidden = true;
   $("finMsg").hidden = true; $("foMsg").hidden = true; $("foBulleMoi").hidden = true; $("foBulleAdv").hidden = true;
@@ -1879,6 +1880,8 @@ function lancerDuel(duel, ligneAdv) {
   preparerEcranMatch();
   $("startCard").hidden = true; $("tourCard").hidden = true; $("abandonDuelZone").hidden = false;
   $("ruleTxt").textContent = `Duel · ${texteFormat(formatDuel(duel))}`;
+  // L'enjeu du défi, en bandeau pendant tout le match.
+  $("matchEnjeu").hidden = !duel.enjeu; $("matchEnjeu").textContent = duel.enjeu ? `🎯 Enjeu : ${duel.enjeu}` : "";
   rafraichirAvatars(); render();
   ouvrirOnglet("match");
   if (duel.tournoi_id) reperesTournoi(duel);

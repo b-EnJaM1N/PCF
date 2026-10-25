@@ -874,3 +874,20 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .main-match .tape th { background: var(--court-deep); }
 .main-match .tape td { width: 28px; min-width: 28px; height: 28px; font-size: 1rem; }
 .mains-note { font-size: .8rem; margin: 4px 0 0; }
+/* La fenêtre « Défier » (25 octobre) : 3 formats rapides, le reste replié ; l'enjeu sur une page à part, puis en bandeau pendant le match. */
+.formats-rapides { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0; }
+.formats-rapides button { font: inherit; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 4px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: inherit; cursor: pointer; }
+.formats-rapides button b { font-size: .92rem; }
+.formats-rapides button small { font-size: .72rem; color: var(--muted); line-height: 1.2; text-align: center; }
+.formats-rapides button[aria-pressed=true] { border-color: var(--me); background: rgba(244, 197, 66, .12); }
+.formats-rapides button[aria-pressed=true] b { color: var(--me); }
+details.perso { margin: 4px 0; }
+details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88rem; padding: 4px 0; }
+.enjeu-ajout { width: 100%; margin-top: 6px; }
+.enjeu-choisi { display: flex; align-items: center; gap: 10px; margin-top: 6px; padding: 10px 12px; border-radius: 10px; border: 2px solid var(--me); background: rgba(244, 197, 66, .12); }
+.enjeu-choisi > span { flex: 1; min-width: 0; }
+.enjeu-page { z-index: 31; }
+.enjeu-cartes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 14px; }
+.enjeu-cartes button { font: inherit; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 6px; border-radius: 12px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: inherit; font-size: .85rem; cursor: pointer; text-align: center; }
+.enjeu-cartes button span { font-size: 1.8rem; line-height: 1; }
+.enjeu-bandeau { margin: 0 0 8px; padding: 8px 12px; border-radius: 10px; text-align: center; font-weight: 600; background: rgba(244, 197, 66, .14); border: 1px solid rgba(244, 197, 66, .55); }
