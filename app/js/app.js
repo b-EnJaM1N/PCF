@@ -1422,7 +1422,7 @@ function renderEditeur() {
   const mk = (el, type, table, texte) => {
     el.innerHTML = Object.keys(table).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
-      return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : type === "gant" && k === "nu" ? "✋" : ""}</button>`;
+      return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
     }).join("");
     el.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
       const k = b.dataset.k, t = verrouDe(type, k);
