@@ -76,11 +76,11 @@ test("Amateur : finaliste, on monte aussi, sans barrage", () => {
   assert.equal(circuitDuJoueur(C), 1); assert.ok(C.circuits[1].includes(champion));
 });
 
-test("Amateur : demi-finale perdue, barrage des demi-finalistes, puis barrage d'accession contre le barragiste du Future", () => {
+test("Amateur : demi-finale perdue, match pour la 3e place, puis barrage d'accession contre le barragiste du Future", () => {
   const C = nouvelleCarriere(hasardGraine(20));
   for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, true);
   gagner(C, true); gagner(C, false);
-  assert.equal(C.phase, "petite"); assert.equal(prochainMatch(C).etape, "Barrage des demi-finalistes");
+  assert.equal(C.phase, "petite"); assert.equal(prochainMatch(C).etape, "Match pour la 3e place");
   const D = structuredClone(C);
   gagner(C, true);
   assert.equal(C.phase, "barrage"); assert.equal(prochainMatch(C).etape, "Barrage d'accession");
@@ -89,8 +89,8 @@ test("Amateur : demi-finale perdue, barrage des demi-finalistes, puis barrage d'
   saisonSuivante(C, rng);
   assert.equal(circuitDuJoueur(C), 1); assert.ok(C.circuits[0].includes(adv));   // le barragiste descend à sa place
   C.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
-  // Le barrage des demi-finalistes perdu : on reste.
-  gagner(D, false); assert.equal(D.phase, "fin"); assert.equal(D.bilan.mouvement, 0); assert.match(texteBilan(D), /demi-finalistes perdu/);
+  // Le match pour la 3e place perdu : on reste.
+  gagner(D, false); assert.equal(D.phase, "fin"); assert.equal(D.bilan.mouvement, 0); assert.match(texteBilan(D), /3e place perdu/);
   saisonSuivante(D, rng); assert.equal(circuitDuJoueur(D), 0);
 });
 
@@ -106,7 +106,7 @@ test("tout perdre en Amateur : pas de playoffs, on reste", () => {
 const monter = C => { while (C.phase !== "fin") gagner(C, true); saisonSuivante(C, rng); };
 const saisonFuture = (C, res) => res.forEach(oui => gagner(C, oui));
 
-test("Future : 2 poules de 8, 7 journées, quarts croisés ; le vainqueur monte, le finaliste joue le barrage du Challenger", () => {
+test("Future : 2 poules de 8, 7 journées, quarts croisés ; les 2 finalistes montent, le 3e joue le barrage contre le 10e du Challenger", () => {
   const C = nouvelleCarriere(hasardGraine(4)); monter(C);
   assert.equal(C.ou, 1); assert.equal(C.journees.length, 7);
   C.journees.forEach(j => assert.equal(new Set(j.flat()).size, 16));
@@ -115,8 +115,15 @@ test("Future : 2 poules de 8, 7 journées, quarts croisés ; le vainqueur monte,
   const a = classement(C, 0).map(l => l.id), b = classement(C, 1).map(l => l.id);
   assert.deepEqual(C.tableau.tours[0].map(m => [m.a, m.b]), [[a[0], b[3]], [b[1], a[2]], [b[0], a[3]], [a[1], b[2]]]);
   assert.deepEqual(C.issues[1].relegues, [a[7], b[7]]); assert.ok(C.issues[1].barragiste);
+  const D = structuredClone(C);
   gagner(C, true); gagner(C, true); gagner(C, false);
-  assert.equal(C.phase, "barrage"); assert.equal(prochainMatch(C).adv, C.issues[2].barragiste);
+  assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, 1); assert.match(texteBilan(C), /Finaliste des playoffs : promu en Circuit Challenger/);
+  gagner(D, true); gagner(D, false); assert.equal(D.phase, "petite");
+  gagner(D, true); assert.equal(D.phase, "barrage"); assert.equal(prochainMatch(D).adv, C.issues[2].barragiste);
+  const dixieme = C.issues[2].barragiste;
+  gagner(D, true); saisonSuivante(D, rng);
+  assert.equal(circuitDuJoueur(D), 2); assert.ok(D.circuits[1].includes(dixieme));
+  D.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
 });
 
 test("Future : 8e de sa poule, on descend", () => {
@@ -148,26 +155,32 @@ test("Future : 7e, le match pour le maintien ; perdu, le barrage contre le gagna
   E.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
 });
 
-test("le maintien du Challenger : perdre la demi et le match pour le maintien, on descend ; le gagner, barrage", () => {
+test("le bas du Challenger : 11e et 12e descendent, le 10e joue le barrage contre le 3e du Future", () => {
   const C = nouvelleCarriere(hasardGraine(4)); monter(C); monter(C);
   assert.equal(C.ou, 2);
   const D = structuredClone(C);
   for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, false);
-  assert.equal(C.phase, "maintien"); assert.equal(prochainMatch(C).etape, "Demi-finale du maintien");
-  gagner(C, false); assert.equal(prochainMatch(C).etape, "Match pour le maintien");
-  gagner(C, false); assert.equal(C.bilan.mouvement, -1);
+  assert.equal(C.place, 12); assert.equal(C.bilan.mouvement, -1); assert.match(texteBilan(C), /12e de la saison : relégué en Circuit Future/);
   saisonSuivante(C, rng); assert.equal(circuitDuJoueur(C), 1);
-
-  for (let j = 0, n = D.journees.length; j < n; j++) gagner(D, false);
-  gagner(D, false); gagner(D, true);
-  assert.equal(D.phase, "barrage"); assert.equal(prochainMatch(D).adv, D.issues[1].finaliste);
-  gagner(D, true); assert.equal(D.bilan.mouvement, 0); assert.match(texteBilan(D), /maintenu/);
-  saisonSuivante(D, rng); assert.equal(circuitDuJoueur(D), 2);
+  C.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
+  // 10e : le barrage.
+  let E;
+  for (let g = 70; ; g++) { E = nouvelleCarriere(hasardGraine(g)); monter(E); monter(E); jouerSaison(E, Array(E.journees.length).fill(false).map((x, i) => i < 2)); if (E.place === 10) break; }
+  assert.equal(E.phase, "barrage"); assert.equal(prochainMatch(E).etape, "Barrage du maintien"); assert.equal(prochainMatch(E).adv, E.issues[1].troisieme);
+  const F = structuredClone(E);
+  gagner(E, true); assert.equal(E.bilan.mouvement, 0); assert.match(texteBilan(E), /maintenu/);
+  saisonSuivante(E, rng); assert.equal(circuitDuJoueur(E), 2);
+  gagner(F, false); assert.equal(F.bilan.mouvement, -1);
+  saisonSuivante(F, rng); assert.equal(circuitDuJoueur(F), 1);
+  F.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
+  assert.ok(D);
 });
 
-test("gagner sa demi-finale du maintien suffit", () => {
+test("les saisons commencées avant le 25 octobre se finissent avec l'ancienne formule (playoffs à 8, maintien à 4)", () => {
   const C = nouvelleCarriere(hasardGraine(5)); monter(C); monter(C);
+  delete C.formule;
   for (let j = 0, n = C.journees.length; j < n; j++) gagner(C, false);
+  assert.equal(C.phase, "maintien"); assert.equal(prochainMatch(C).etape, "Demi-finale du maintien");
   gagner(C, true);
   assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, 0); assert.match(texteBilan(C), /Maintenu/);
 });
@@ -353,15 +366,30 @@ test("Challenger : 6 qualifiés ; les 2 premiers directement en demi-finales, co
   assert.equal(prochainMatch(C).etape, "Demi-finale des playoffs");   // les quarts se sont joués sans moi
   assert.deepEqual(t.tours[1].map(m => m.a), [cl[0], cl[1]]);
   assert.deepEqual(t.tours[1].map(m => m.b), [t.tours[0][0].v, t.tours[0][1].v]);
+  const D = structuredClone(C);
   gagner(C, true); assert.equal(prochainMatch(C).cle, "finale"); gagner(C, true);
   assert.equal(C.bilan.mouvement, 1); assert.match(texteBilan(C), /promu en Circuit Pro/);
+  // Finaliste : on monte aussi.
+  gagner(D, true); gagner(D, false); assert.equal(D.bilan.mouvement, 1); assert.match(texteBilan(D), /Finaliste des playoffs : promu en Circuit Pro/);
+  saisonSuivante(D, rng); assert.equal(circuitDuJoueur(D), 3);
+  D.circuits.forEach((x, k) => assert.equal(x.length, TAILLES[k]));
 });
-test("Challenger : 3e à 6e, on commence en quart ; 7e ou 8e, pas de playoffs ni de maintien", () => {
+test("Élite : pas de 3e place ; finaliste, on reste", () => {
+  const C = nouvelleCarriere(hasardGraine(7));
+  for (let s = 0; s < 4; s++) monter(C);
+  assert.equal(C.ou, 4);
+  while (C.phase === "saison" || prochainMatch(C)?.coupe) gagner(C, true);
+  const D = structuredClone(C);
+  while (prochainMatch(C)?.cle !== "finale") gagner(C, true);
+  gagner(C, false); assert.equal(C.bilan.mouvement, 0); assert.match(texteBilan(C), /Finaliste des playoffs du Circuit Élite/);
+  gagner(D, false); assert.equal(D.phase, "fin");
+});
+test("Challenger : 3e à 6e, on commence en quart ; 7e à 9e, rien à jouer", () => {
   let C;
   for (let g = 50; ; g++) { C = auChallenger(g); jouerSaison(C, Array(C.journees.length).fill(true).map((x, i) => i < 8)); if (C.place >= 3 && C.place <= 6) break; }
   assert.equal(prochainMatch(C).etape, "Quart de finale des playoffs");
   gagner(C, false); assert.match(texteBilan(C), /Éliminé en quart de finale/);
-  for (let g = 60; ; g++) { C = auChallenger(g); jouerSaison(C, Array(C.journees.length).fill(true).map((x, i) => i < 5)); if (C.place === 7 || C.place === 8) break; }
+  for (let g = 60; ; g++) { C = auChallenger(g); jouerSaison(C, Array(C.journees.length).fill(true).map((x, i) => i < 5)); if (C.place >= 7 && C.place <= 9) break; }
   assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, 0); assert.match(texteBilan(C), /pas de playoffs/);
-  assert.ok(C.issues[2].champion && C.issues[2].relegue && C.issues[2].barragiste);
+  assert.ok(C.issues[2].champion && C.issues[2].troisieme && C.issues[2].relegues.length === 2 && C.issues[2].barragiste);
 });

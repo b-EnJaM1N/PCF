@@ -2,14 +2,14 @@
 // - la saison : chacun rencontre une fois les 11 autres (11 journées), 2 points par victoire ;
 // - places 1 à 6 : les playoffs, façon Top 14 (décision du 25 octobre) : les 1er et 2e vont directement en demi-finales ;
 //   les 3e à 6e jouent les quarts (3e – 6e, 4e – 5e) ; en demies, 1er – vainqueur de 4e-5e, 2e – vainqueur de 3e-6e.
-//   Le vainqueur monte ; le finaliste joue un barrage contre un joueur du circuit du dessus qui joue son maintien ;
-// - places 9 à 12 (pas en Amateur) : les playoffs du maintien, à 4. Les vainqueurs des demi-finales sont maintenus ;
-//   les deux perdants se rencontrent : le perdant descend, le gagnant joue un barrage contre le finaliste du circuit du dessous.
+// - partout (décision du 25 octobre) : les 2 finalistes montent ; les 2 perdants des demies jouent le match pour la 3e place,
+//   le 3e joue un barrage d'accession contre le barragiste du circuit du dessus (à l'Élite, rien au-dessus : pas de 3e place) ;
+// - en bas du Challenger, du Pro et de l'Élite : les 11e et 12e descendent, le 10e est le barragiste ; les 7e à 9e n'ont rien à jouer.
+//   (Les saisons commencées avant le 25 octobre se finissent avec l'ancienne formule : playoffs à 8, le vainqueur monte,
+//   le finaliste en barrage ; maintien à 4 pour les places 9 à 12.)
 // - l'Amateur (12 joueurs) et le Future (16) en 2 poules (de 6 et de 8 : 5 et 7 journées), les 4 premiers de chaque poule en
 //   quarts de finale croisés (1er A – 4e B, 2e B – 3e A, 1er B – 4e A, 2e A – 3e B), puis élimination directe ;
-// - entre l'Amateur et le Future (24 octobre) : les 2 finalistes de l'Amateur montent ; les 2 perdants des demies jouent un
-//   barrage entre eux, le gagnant joue un barrage contre le barragiste du Future. En bas du Future : le 8e de chaque poule
-//   descend ; les deux 7es se rencontrent, le perdant est le barragiste. Le Challenger, le Pro et l'Élite ne changent pas ;
+// - en bas du Future (24 octobre) : le 8e de chaque poule descend ; les deux 7es se rencontrent, le perdant est le barragiste ;
 // - la Coupe Monique-Latour (décision du 22 octobre) : 64 joueurs toutes divisions confondues (toi et 63 bots), tirage au sort
 //   intégral à chaque tour, sans avantage pour le petit poucet ; un tour toutes les deux journées, la finale avant les playoffs.
 // Les matchs entre bots sont simulés selon leur niveau. Ici, seulement les règles (testées automatiquement) ; l'écran est dans app.js.
@@ -17,7 +17,11 @@ import { TOUS_LES_BOTS, botParId, choisirCoup } from "./bots.js";
 import { contre } from "./regles.js";
 
 export const CIRCUITS = ["Circuit Amateur", "Circuit Future", "Circuit Challenger", "Circuit Pro", "Circuit Élite"];
-export const TAILLE = 12, QUALIFIES = 6, EXEMPTS = 2, DEBUT_MAINTIEN = 8;   // playoffs : places 1 à 6 (1 et 2 en demies) ; maintien : 9 à 12
+export const TAILLE = 12, QUALIFIES = 6, EXEMPTS = 2, BARRAGISTE = 10;   // playoffs : places 1 à 6 (1 et 2 en demies) ; 10e : barrage ; 11e et 12e : descente
+export const FORMULE = 2;   // la formule du 25 octobre (les saisons sans ce numéro se finissent avec l'ancienne)
+// Les 2 finalistes montent : partout avec la formule du 25 octobre ; en Amateur seulement avant.
+export const deuxMontent = C => C.ou === 0 || C.formule >= FORMULE;
+const ANCIENS_QUALIFIES = 8;
 export const TAILLES = [12, 16, 12, 12, 12];   // 64 places : toi et 63 bots
 export const avecPoules = k => k <= 1;
 export const JOURNEES = TAILLE - 1;
@@ -156,7 +160,7 @@ export function poules(ids) {
 }
 // Les quarts croisés des poules (rangés pour le tableau : 1er A – 4e B et 2e B – 3e A d'un côté, 1er B – 4e A et 2e A – 3e B de l'autre).
 const tetesCroisees = (a, b) => [a[0], a[1], b[0], b[1], a[2], a[3], b[2], b[3]];
-// Le barrage des demi-finalistes de l'Amateur : les deux perdants des demies (le gagnant est le « troisième »).
+// Le match pour la 3e place : les deux perdants des demies (le gagnant est le « troisième »).
 function petiteFinale(tab, rng) {
   const [x, y] = tab.tours[1].map(perdantDe), r = simuler(x, y, 2, rng);
   return { a: x, b: y, v: r.v, score: scoreTexte(r, 2) };
@@ -166,6 +170,8 @@ function basDesPoules(a, b, rng) {
   const r = simuler(a[6], b[6], 2, rng);
   return { relegues: [a[7], b[7]], barragiste: perdantDe(r) };
 }
+// Le bas du Challenger, du Pro et de l'Élite : les 11e et 12e descendent, le 10e est le barragiste.
+const basDuClassement = cl => ({ relegues: [cl[TAILLE - 1], cl[TAILLE - 2]], barragiste: cl[BARRAGISTE - 1] });
 // Un circuit entièrement joué par des bots : sa saison, ses playoffs et son maintien.
 export function simulerCircuit(ids, k, rng = Math.random) {
   const pts = formatSaison(k).pointsParSet, rencontres = l => {
@@ -174,15 +180,13 @@ export function simulerCircuit(ids, k, rng = Math.random) {
   if (avecPoules(k)) {
     const [A, B] = poules(ids), a = classementDe(A, rencontres(A)).map(l => l.id), b = classementDe(B, rencontres(B)).map(l => l.id);
     const tab = finirTableau(nouveauTableau("playoffs", tetesCroisees(a, b)), rng), issue = issueDe(tab);
-    if (k === 0) issue.troisieme = petiteFinale(tab, rng).v;
-    else Object.assign(issue, basDesPoules(a, b, rng));
+    issue.troisieme = petiteFinale(tab, rng).v;
+    if (k > 0) Object.assign(issue, basDesPoules(a, b, rng));
     return issue;
   }
-  const resultats = rencontres(ids);
-  const cl = classementDe(ids, resultats).map(l => l.id);
-  const issue = issueDe(finirTableau(nouveauTableau("playoffs", cl.slice(0, QUALIFIES)), rng));
-  if (k > 0) Object.assign(issue, issueDe(finirTableau(nouveauTableau("maintien", cl.slice(DEBUT_MAINTIEN)), rng)));
-  return issue;
+  const cl = classementDe(ids, rencontres(ids)).map(l => l.id);
+  const tab = finirTableau(nouveauTableau("playoffs", cl.slice(0, QUALIFIES)), rng);
+  return { ...issueDe(tab), ...(k < DERNIER ? { troisieme: petiteFinale(tab, rng).v } : {}), ...basDuClassement(cl) };
 }
 
 // ---------------------------------------------------------------- la carrière du joueur
@@ -194,7 +198,7 @@ export const circuitDuJoueur = C => C.circuits.findIndex(c => c.includes("moi"))
 export function demarrerSaison(C, rng = Math.random) {
   C.saison++; ajusterTailles(C);
   const k = circuitDuJoueur(C);
-  C.ou = k; C.phase = "saison"; C.journee = 0; C.resultats = [];
+  C.ou = k; C.phase = "saison"; C.journee = 0; C.resultats = []; C.formule = FORMULE;
   if (avecPoules(k)) { C.poules = poules(C.circuits[k]); const [a, b] = C.poules.map(calendrier); C.journees = a.map((j, i) => [...j, ...b[i]]); }
   else { C.poules = null; C.journees = calendrier(C.circuits[k]); }
   C.tableau = null; C.autreTableau = null; C.barrage = null; C.bilan = null; C.place = null; C.sortie = null; C.petite = null; C.duel = null;
@@ -276,7 +280,7 @@ export function prochainMatch(C) {
     return { adv: m.a === "moi" ? m.b : m.a, format: FORMAT_FINALES, etape: t.singulier, cle: t.cle, voix: C.tableau.type === "playoffs" ? t.cle : null };
   }
   if (C.phase === "barrage") return { adv: C.barrage.adv, format: FORMAT_FINALES, etape: C.barrage.haut ? "Barrage d'accession" : "Barrage du maintien", cle: "finale", voix: null };
-  if (C.phase === "petite") return { adv: C.petite.adv, format: FORMAT_FINALES, etape: "Barrage des demi-finalistes", cle: "petite", voix: null };
+  if (C.phase === "petite") return { adv: C.petite.adv, format: FORMAT_FINALES, etape: "Match pour la 3e place", cle: "petite", voix: null };
   if (C.phase === "maintien7") return { adv: C.duel.adv, format: FORMAT_FINALES, etape: "Match pour le maintien", cle: "maintien", voix: null };
   return null;
 }
@@ -304,12 +308,12 @@ export function enregistrerMonMatch(C, gagne, scores, rng = Math.random) {
     C.barrage.v = v;
     return terminer(C, C.barrage.haut ? (gagne ? 1 : 0) : (gagne ? 0 : -1));
   }
-  // Amateur : le barrage des demi-finalistes ; gagné, le barrage contre le barragiste du Future.
+  // Le match pour la 3e place ; gagné, le barrage d'accession contre le barragiste du circuit du dessus.
   if (C.phase === "petite") {
     C.petite.v = v; C.issues[C.ou].troisieme = v;
     return gagne ? versBarrage(C, C.issues[C.ou + 1].barragiste, true) : terminer(C, 0);
   }
-  // Future : le match des 7es ; perdu, le barrage contre le gagnant du barrage des demi-finalistes de l'Amateur.
+  // Future : le match des 7es ; perdu, le barrage contre le 3e de l'Amateur.
   if (C.phase === "maintien7") {
     C.duel.v = v; C.issues[C.ou].barragiste = gagne ? C.duel.adv : "moi";
     return gagne ? terminer(C, 0) : versBarrage(C, C.issues[C.ou - 1].troisieme, false);
@@ -320,12 +324,14 @@ export function enregistrerMonMatch(C, gagne, scores, rng = Math.random) {
   m.v = v; m.score = m.a === "moi" ? s.join("–") : [s[1], s[0]].join("–");
   simulerTour(tab, rng);
   const dernier = tab.tour === nbTours(tab.type) - 1;
-  if (tab.type === "playoffs" && C.ou === 0 && C.poules) {
-    // L'Amateur : les 2 finalistes montent ; les perdants des demies jouent le barrage des demi-finalistes.
+  if (tab.type === "playoffs" && deuxMontent(C)) {
+    // Les 2 finalistes montent ; les perdants des demies jouent le match pour la 3e place (pas à l'Élite : rien au-dessus).
     if (!gagne || dernier) {
-      C.sortie = tab.tour; finirTableau(tab, rng); Object.assign(C.issues[0], issueDe(tab));
+      const k = C.ou;
+      C.sortie = tab.tour; finirTableau(tab, rng); Object.assign(C.issues[k], issueDe(tab));
+      if (k === DERNIER) return terminer(C, 0, gagne ? "champion" : null);
       if (!gagne && C.sortie === 1) { C.petite = { adv: tab.tours[1].map(perdantDe).find(x => x !== "moi"), v: null }; C.phase = "petite"; return C; }
-      C.issues[0].troisieme = petiteFinale(tab, rng).v;
+      C.issues[k].troisieme = petiteFinale(tab, rng).v;
       return terminer(C, dernier ? 1 : 0);
     }
   } else if (tab.type === "playoffs") {
@@ -347,7 +353,7 @@ export function enregistrerMonMatch(C, gagne, scores, rng = Math.random) {
   return C;
 }
 
-// Fin des 11 journées : les playoffs (places 1 à 6), le maintien (9 à 12), ou rien (7e et 8e).
+// Fin des 11 journées : les playoffs (places 1 à 6), le barrage (10e), la descente (11e et 12e), ou rien (7e à 9e).
 function finDeSaisonReguliere(C, rng) {
   const k = C.ou;
   if (C.poules) {   // l'Amateur et le Future : les 4 premiers de chaque poule, en quarts croisés
@@ -355,7 +361,7 @@ function finDeSaisonReguliere(C, rng) {
     C.place = a.indexOf("moi") + 1; C.issues[k] = {};
     const haut = nouveauTableau("playoffs", tetesCroisees(a, b));
     if (C.place <= 4) { C.phase = "playoffs"; C.tableau = haut; }
-    else { C.autreTableau = finirTableau(haut, rng); Object.assign(C.issues[k], issueDe(haut)); if (k === 0) C.issues[k].troisieme = petiteFinale(haut, rng).v; }
+    else { C.autreTableau = finirTableau(haut, rng); Object.assign(C.issues[k], issueDe(haut)); if (deuxMontent(C)) C.issues[k].troisieme = petiteFinale(haut, rng).v; }
     if (k === 0) { if (C.place > 4) terminer(C, 0); return; }
     // Le bas des poules du Future.
     if (C.place <= 6) { Object.assign(C.issues[k], basDesPoules(a, b, rng)); if (C.place > 4) terminer(C, 0); return; }
@@ -366,17 +372,32 @@ function finDeSaisonReguliere(C, rng) {
   }
   const cl = classement(C).map(l => l.id);
   C.place = cl.indexOf("moi") + 1;
-  const haut = nouveauTableau("playoffs", cl.slice(0, QUALIFIES)), bas = nouveauTableau("maintien", cl.slice(DEBUT_MAINTIEN));
-  C.issues[k] = {};
+  if (!(C.formule >= FORMULE)) return finAncienneFormule(C, cl, rng);
+  const haut = nouveauTableau("playoffs", cl.slice(0, QUALIFIES));
+  C.issues[k] = basDuClassement(cl);
   if (C.place <= QUALIFIES) {
     C.phase = "playoffs"; C.tableau = haut;
     // 1er ou 2e : directement en demi-finales (les quarts se jouent sans moi).
     if (C.place <= EXEMPTS) { simulerTour(haut, rng); avancerTableau(haut); }
+    return;
+  }
+  C.autreTableau = finirTableau(haut, rng); Object.assign(C.issues[k], issueDe(haut));
+  if (k < DERNIER) C.issues[k].troisieme = petiteFinale(haut, rng).v;
+  // 10e : le barrage du maintien contre le 3e du circuit du dessous ; 11e et 12e : la descente ; 7e à 9e : rien à jouer.
+  if (C.place === BARRAGISTE) versBarrage(C, C.issues[k - 1].troisieme, false);
+  else terminer(C, C.place > BARRAGISTE ? -1 : 0);
+}
+// L'ancienne formule (saison commencée avant le 25 octobre) : playoffs à 8, maintien à 4 (places 9 à 12).
+function finAncienneFormule(C, cl, rng) {
+  const k = C.ou, haut = nouveauTableau("playoffs", cl.slice(0, ANCIENS_QUALIFIES)), bas = nouveauTableau("maintien", cl.slice(ANCIENS_QUALIFIES));
+  C.issues[k] = {};
+  if (C.place <= ANCIENS_QUALIFIES) {
+    C.phase = "playoffs"; C.tableau = haut;
+    C.autreTableau = finirTableau(bas, rng); Object.assign(C.issues[k], issueDe(bas));
   } else {
     C.autreTableau = finirTableau(haut, rng); Object.assign(C.issues[k], issueDe(haut));
+    C.phase = "maintien"; C.tableau = bas;
   }
-  if (C.place > DEBUT_MAINTIEN) { C.phase = "maintien"; C.tableau = bas; }
-  else { const b = finirTableau(bas, rng); Object.assign(C.issues[k], issueDe(b)); if (C.place <= QUALIFIES) C.autreTableau = b; else terminer(C, 0); }
 }
 function versBarrage(C, adv, haut) {
   C.phase = "barrage"; C.barrage = { adv, haut, v: null };
@@ -394,10 +415,11 @@ export function texteBilan(C) {
   const k = C.ou, { mouvement, titre } = C.bilan, b = C.barrage, t = C.tableau;
   if (titre === "champion") return `🏆 Champion du ${CIRCUITS[k]} !`;
   if (C.petite) {
-    if (C.petite.v !== "moi") return `Barrage des demi-finalistes perdu : tu restes en ${CIRCUITS[k]}.`;
+    if (C.petite.v !== "moi") return `Match pour la 3e place perdu : tu restes en ${CIRCUITS[k]}.`;
     return mouvement === 1 ? `⬆️ Barrage gagné : promu en ${CIRCUITS[k + 1]} !` : `Barrage d'accession perdu : tu restes en ${CIRCUITS[k]}.`;
   }
-  if (C.poules && k === 0 && mouvement === 1 && C.issues?.[0]?.champion !== "moi") return `🥈 Finaliste des playoffs : promu en ${CIRCUITS[k + 1]} !`;
+  if (deuxMontent(C) && mouvement === 1 && !b && C.issues?.[k]?.champion !== "moi") return `🥈 Finaliste des playoffs : promu en ${CIRCUITS[k + 1]} !`;
+  if (C.formule >= FORMULE && !C.poules && mouvement === -1 && !b) return `⬇️ ${C.place}e de la saison : relégué en ${CIRCUITS[k - 1]}.`;
   if (C.duel) {
     if (C.duel.v === "moi") return `✅ Match pour le maintien gagné : tu restes en ${CIRCUITS[k]} !`;
     return mouvement === -1 ? `⬇️ Barrage perdu : relégué en ${CIRCUITS[k - 1]}.` : `✅ Barrage gagné : maintenu en ${CIRCUITS[k]} !`;
