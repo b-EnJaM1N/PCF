@@ -23,9 +23,13 @@ n'est à dire. Le texte dépend du signe gagnant.
 | M | Sur cette pierre, il bâtit son église. |
 | R | Pierre après pierre, il bâtit sa légende ! |
 | M | Un bloc de sang-froid. Un roc de détermination. Un adversaire en miettes. |
-| R | Il lui jette la pierre, Pierre ! ❓ *(le « Pierre » final : un clin d'œil à une chanson ou à quelqu'un ? sinon : « Il lui jette la pierre ! »)* |
-| M | Pierre qui roule n'amasse pas mousse. ❓ *(je la mettrais quand il gagne avec la Pierre juste après avoir changé de signe)* |
+| R | Il lui jette la pierre, Pierre ! *(clin d'œil à un film, confirmé le 25 octobre : tiré plus rarement, comme les autres clins d'œil de cinéma)* |
 | M | Les Ciseaux sont émoussés. Définitivement. ✍️ |
+
+🆕 **Trois points d'affilée gagnés avec la Pierre** (décidé le 25 octobre) :
+| Qui | Réplique |
+|---|---|
+| M | Pierre qui roule n'amasse pas mousse. |
 
 ### Avec les Ciseaux (contre la Feuille)
 | Qui | Réplique |
@@ -67,7 +71,6 @@ Aujourd'hui, une série n'est commentée qu'à 4 et à 6 points. Proposition : u
 | 4 | M | Il lui fait la musique. |
 | 5 | R | Il marche sur son adversaire ! ♻️ *(déjà enregistrée : elle passe dans cette réserve)* |
 | 5 | R | C'est un récital ! |
-| 5 | M | Pas de chichifoumi. ❓ *(je la placerais ici : il gagne sans fioritures ; d'accord ?)* |
 | 6 | R | Mais qui va pouvoir l'arrêter ?! |
 | 6 | R | Il est en état de grâce ! |
 | 7 | R | C'est une démonstration ! |
@@ -94,6 +97,13 @@ réparties entre ces réserves.
 | 8 + | R | Appelez les secours, il ne répond plus ! |
 
 ---
+
+## 3 bis. Set gagné sèchement (moment « set écrasant », déjà codé)
+Décidé le 25 octobre : dite à la fin d'un set gagné **11-6 ou plus large** (en set de 7 points : 7-3 ou plus large).
+Aujourd'hui, ce moment n'arrive qu'à partir de 6 points d'écart : pour cette réplique, on l'ouvre à 5.
+| Qui | Réplique |
+|---|---|
+| M | Pas de chichifoumi. |
 
 ## 4. Égalités (même signe des deux côtés : moment « duel d'esprits », déjà codé)
 | Qui | Réplique |
