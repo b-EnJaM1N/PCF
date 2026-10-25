@@ -14,8 +14,8 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
      2. **Mémoire des poignées de main** entre deux joueurs : en début de match, Roland et Monique disent s'ils s'entendent bien ou
         pas (« Ils ne s'apprécient guère… », « Les meilleurs amis du monde… » : voir `docs/repliques-banque-brouillon.md`).
      3. **Message à un ami** : l'écran n'est pas clair et prend trop de place (capture d'écran demandée au porteur du projet).
-     4. ~~L'enjeu~~ — *fait (à valider)*, 25 octobre : la fenêtre « Défier » raccourcie (3 formats rapides Éclair, Classique,
-        Marathon ; « Personnaliser » et la mise repliés) ; un gros bouton « 🎯 Ajouter un enjeu » ouvre une page d'idées en grandes
+     4. ~~L'enjeu~~ — *fait (à valider)*, 25 octobre : la fenêtre « Défier » raccourcie (3 formats rapides : Éclair 1 set de 7, Express
+        1 set de 11, Classique 2 sets de 11 ; « Personnaliser » et la mise repliés) ; un gros bouton « 🎯 Ajouter un enjeu » ouvre une page d'idées en grandes
         cartes (`IDEES` de `app/js/enjeux.js`) ou son propre texte ; l'enjeu choisi s'affiche dans la fenêtre (Changer, ✕),
         en bandeau pendant le match, et La Une dit qui s'y colle.
    - **En attente jusqu'après les tests** (décision du 24 octobre) : le **grand tournoi de lancement** (500 € : 300 / 150 / 50, gratuit, qualifications au freeroll de 20 h, finale en vidéo ; brouillon : `docs/tournoi-lancement-brouillon.md`) et la **création de la micro-entreprise** qui l'organisera (nom commercial B-Dev Labs ; reprendre à l'étape 1 : connexion FranceConnect sur formalites.entreprises.gouv.fr). Aussi en attente : les sons de stade et les répliques de carrière (crédits ElevenLabs à 84 %).
