@@ -13,6 +13,12 @@ export const SUGGESTIONS = [
   "Le gagnant choisit le film",
 ];
 
+// Les idées de la page « Choisis l'enjeu » (25 octobre), avec leur dessin.
+export const IDEES = [
+  ["🍕", "Le perdant paie les pizzas"], ["☕", "Le perdant paie le café"], ["🍽️", "Qui fait la vaisselle ce soir ?"], ["🗑️", "Qui sort les poubelles ?"],
+  ["🎬", "Le gagnant choisit le film"], ["🚗", "Le perdant conduit"], ["🥐", "Le perdant amène les viennoiseries"], ["🧹", "Le perdant range la cuisine"],
+];
+
 // Les gros mots refusés (écrits sans accents ; on compare des mots entiers, sans accents ni majuscules).
 export const MOTS_INTERDITS = ["connard", "connasse", "conasse", "salope", "pute", "putain", "encule", "enculer", "nique", "niquer", "ntm",
   "fdp", "batard", "pd", "pede", "tapette", "gouine", "negre", "bougnoule", "youpin", "salaud", "pouffiasse", "petasse"];

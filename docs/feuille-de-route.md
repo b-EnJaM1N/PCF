@@ -14,8 +14,10 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
      2. **Mémoire des poignées de main** entre deux joueurs : en début de match, Roland et Monique disent s'ils s'entendent bien ou
         pas (« Ils ne s'apprécient guère… », « Les meilleurs amis du monde… » : voir `docs/repliques-banque-brouillon.md`).
      3. **Message à un ami** : l'écran n'est pas clair et prend trop de place (capture d'écran demandée au porteur du projet).
-     4. **L'enjeu** (défi entre amis, `app/js/enjeux.js`) : une vraie page pour le choisir, avec plusieurs idées (« Le perdant paie
-        les pizzas »…) ; l'enjeu choisi affiché pendant le match ; et **La Une** de fin de match qui en parle.
+     4. ~~L'enjeu~~ — *fait (à valider)*, 25 octobre : la fenêtre « Défier » raccourcie (3 formats rapides : Éclair 1 set de 7, Express
+        1 set de 11, Classique 2 sets de 11 ; « Personnaliser » et la mise repliés) ; un gros bouton « 🎯 Ajouter un enjeu » ouvre une page d'idées en grandes
+        cartes (`IDEES` de `app/js/enjeux.js`) ou son propre texte ; l'enjeu choisi s'affiche dans la fenêtre (Changer, ✕),
+        en bandeau pendant le match, et La Une dit qui s'y colle.
    - **En attente jusqu'après les tests** (décision du 24 octobre) : le **grand tournoi de lancement** (500 € : 300 / 150 / 50, gratuit, qualifications au freeroll de 20 h, finale en vidéo ; brouillon : `docs/tournoi-lancement-brouillon.md`) et la **création de la micro-entreprise** qui l'organisera (nom commercial B-Dev Labs ; reprendre à l'étape 1 : connexion FranceConnect sur formalites.entreprises.gouv.fr). Aussi en attente : les sons de stade et les répliques de carrière (crédits ElevenLabs à 84 %).
 3. **Google Play Store** (plan ci-dessous) : le test fermé de 14 jours sert aussi de test avec les proches.
 4. **Après le lancement** (décision du porteur du projet, 22 octobre) : **le grand rangement de `app/js/app.js`** (environ 2 100 lignes, cinq fois plus que les autres fichiers ; point 7 de l'audit). Sortir, un morceau à la fois et sans rien changer pour les joueurs, l'écran de la Carrière solo, l'éditeur d'avatar et Ma fiche, l'écran de fin de match, le match du jour et l'entraînement, vers leurs propres fichiers `ecran-….js` (comme les tournois, les duels, la boutique) ; tests après chaque étape, vérification sur la version de test.
