@@ -119,7 +119,7 @@ Aujourd'hui, ce moment n'arrive qu'à partir de 6 points d'écart : pour cette r
 | Qui | Réplique |
 |---|---|
 | R | C'est irrespirable ! |
-| M | Une victoire le sépare de l'immortalité. Enfin… de la victoire du jour. Restons mesurés. |
+| R | Une victoire le sépare de l'immortalité. Enfin… de la victoire du jour. Restons mesurés. |
 | M | Il a la victoire au bout des doigts. Littéralement. |
 
 ## 6. Remontée (moment « remontée », déjà codé)
@@ -166,9 +166,6 @@ Aujourd'hui, avant le match, ce sont des dialogues Roland → Monique. Propositi
 | M | Ils se connaissent par cœur. Malheureusement, ils se connaissent aussi les défauts. |
 | M | Une vieille rivalité, quelques rancœurs, et trois signes pour régler tout ça. |
 | M | Il paraît qu'ils ne s'apprécient guère. Heureusement, le chifoumi ne nécessite aucun dialogue. |
-| M | Une poignée de main avant le match, une mauvaise foi légendaire après. Les classiques sont de retour. |
-| R | Ils se sont déjà serré la main. Aujourd'hui, ils espèrent surtout serrer la victoire ! |
-| M | Ils ont des choses à se dire. Mais ils ont choisi le seul sport où l'on peut répondre avec une feuille. |
 
 ### Entre amis (🆕 défi lancé à un ami ou à un membre d'un cercle)
 | Qui | Réplique |
