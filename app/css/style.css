@@ -878,6 +878,7 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .formats-rapides { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0; }
 .formats-rapides button { font: inherit; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 4px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: inherit; cursor: pointer; }
 .formats-rapides button b { font-size: .92rem; }
+.formats-rapides .fr-i { font-size: 1.5rem; line-height: 1; }   /* le symbole, puis le nom, puis le format : chacun sur sa ligne */
 .formats-rapides button small { font-size: .72rem; color: var(--muted); line-height: 1.2; text-align: center; }
 .formats-rapides button[aria-pressed=true] { border-color: var(--me); background: rgba(244, 197, 66, .12); }
 .formats-rapides button[aria-pressed=true] b { color: var(--me); }
