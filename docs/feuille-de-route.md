@@ -6,7 +6,7 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 
 **À faire ensuite, dans l'ordre** (pas de précipitation, faire les choses bien) :
 1. **Finir de valider** ce qui reste « à valider » (sur la version de test) : les tournois programmés et le freeroll de 20 h (à tester un soir), puis la version de lancement.
-2. **Tests avec les proches** : 10 à 20 personnes dans un cercle « Testeurs HandSlam », invitées par petites vagues, avec une soirée freeroll (message d'invitation déjà préparé dans une conversation précédente). Le porteur du projet prévoit d'avoir tous ses testeurs le **lundi 26 octobre**.
+2. **Tests avec les proches** : 10 à 20 personnes dans un cercle « Testeurs HandSlam », invitées par petites vagues, avec une soirée freeroll (message d'invitation déjà préparé dans une conversation précédente). **Test fermé Google lancé le dimanche 25 octobre au soir : 14 testeurs inscrits** (il en faut 12 inscrits sans interruption pendant 14 jours chacun ; un nouveau venu repart de zéro pour lui). Demande d'accès à la production possible au plus tôt vers le **8 novembre** (bouton « Demander l'accès à la production » du tableau de bord de la Play Console ; questionnaire sur le test à préparer ensemble).
    - **Prochain lot demandé** (25 octobre, porteur du projet ; rien de fait) :
      1. **Fin de match** : laisser le commentaire de fin de match se terminer avant la poignée de main ; pendant la poignée de main,
         des commentaires selon les styles (franche, froide…) — retour sur la décision d'avant (« plus de commentaire de Monique sur
