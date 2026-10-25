@@ -24,7 +24,6 @@ n'est à dire. Le texte dépend du signe gagnant.
 | R | Pierre après pierre, il bâtit sa légende ! |
 | M | Un bloc de sang-froid. Un roc de détermination. Un adversaire en miettes. |
 | R | Il lui jette la pierre, Pierre ! *(clin d'œil à un film, confirmé le 25 octobre : tiré plus rarement, comme les autres clins d'œil de cinéma)* |
-| M | Les Ciseaux sont émoussés. Définitivement. ✍️ |
 
 🆕 **Trois points d'affilée gagnés avec la Pierre** (décidé le 25 octobre) :
 | Qui | Réplique |
@@ -115,8 +114,13 @@ Aujourd'hui, ce moment n'arrive qu'à partir de 6 points d'écart : pour cette r
 | Qui | Réplique |
 |---|---|
 | R | C'est irrespirable ! |
-| R | Une victoire le sépare de l'immortalité. Enfin… de la victoire du jour. Restons mesurés. |
 | M | Il a la victoire au bout des doigts. Littéralement. |
+
+🆕 **En dialogue** (décidé le 25 octobre : Roland s'enflamme, Monique le calme ; sur une balle de match, de temps en temps) :
+| Qui | Réplique |
+|---|---|
+| R | Une victoire le sépare de l'immortalité ! |
+| M | Enfin… de la victoire du jour. Restons mesurés. |
 
 ## 6. Remontée (moment « remontée », déjà codé)
 | Qui | Réplique |
@@ -177,7 +181,7 @@ Aujourd'hui, avant le match, ce sont des dialogues Roland → Monique. Propositi
 
 ## Ce qu'il reste à faire
 1. **Le porteur du projet valide** : le tri, qui dit quoi (Roland ou Monique), les ❓, mes ✍️.
-2. **Coder** les nouveaux moments (beau coup selon le signe, séries de 3 à 8 et plus, première égalité, phrase d'avant-match,
-   entre amis) : sans crédits, mais rien ne s'entend tant que les voix ne sont pas enregistrées.
+2. **Coder** les nouveaux moments (beau coup selon le signe, 3 Pierres gagnantes, séries de 3 à 8 et plus, première égalité,
+   dialogue sur une balle de match, phrase d'avant-match, entre amis) : sans crédits, mais rien ne s'entend tant que les voix ne sont pas enregistrées.
 3. **Enregistrer** : environ 85 répliques, en comptant les versions « elle » et les 3 versions par signe, soit à peu près
    6 000 à 7 000 caractères ElevenLabs (à comparer aux crédits restants avant de lancer).
