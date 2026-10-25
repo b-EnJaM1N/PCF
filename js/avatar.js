@@ -8,7 +8,10 @@ export const FONDS = { court: ["Court", "#1F5FA8"], gazon: ["Gazon", "#2E8B57"],
   neon: ["Néon", "#1A0B33", "radial-gradient(circle,#1A0B33 55%,#FF3EA5 60%,#22D3EE 70%)"], coucher: ["Coucher de soleil", "#F2784B", "linear-gradient(#FFB347,#F2784B,#8E3B8E)"],
   stade: ["Stade de nuit", "#0B1B33", "radial-gradient(circle at 50% 0,#FFF6C8,#0B1B33 60%)"], galaxie: ["Galaxie", "#120A2A", "radial-gradient(circle at 30% 30%,#5B2A86,#120A2A 70%)"] };
 // La main nue (« nu ») prend la couleur de peau choisie ; c'est la main des nouveaux joueurs, jusqu'à leur premier gant.
-export const GANTS = { nu: ["Main nue", null, "linear-gradient(90deg,#FFCC4D 0 25%,#F7D9C4 25% 50%,#A86B42 50% 75%,#4A2C1A 75%)"], blanc: ["Blanc", "#F5F7FA"], jaune: ["Jaune", "#F4C542"], rouge: ["Rouge", "#E8574A"], bleu: ["Bleu", "#4DA3FF"], vert: ["Vert", "#6BD49A"], or: ["Or", "#FFD34D"], argent: ["Argent", "#C9CED6"],
+// « Sans » (main nue, sans vernis, sans bracelet, sans bague) : un rond barré d'une croix (25 octobre, demande du porteur du projet :
+// les rayures et le rond multicolore ne disaient pas assez qu'on enlève l'accessoire).
+const SANS = "linear-gradient(45deg,transparent 43%,#E8574A 43% 57%,transparent 57%),linear-gradient(-45deg,transparent 43%,#E8574A 43% 57%,transparent 57%),rgba(255,255,255,.14)";
+export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc", "#F5F7FA"], jaune: ["Jaune", "#F4C542"], rouge: ["Rouge", "#E8574A"], bleu: ["Bleu", "#4DA3FF"], vert: ["Vert", "#6BD49A"], or: ["Or", "#FFD34D"], argent: ["Argent", "#C9CED6"],
   rose: ["Rose", "#F28DB2"], violet: ["Violet", "#9B6BD6"], noir: ["Noir mat", "#33363D"], turquoise: ["Turquoise", "#2EC4B6"],
   elite: ["Gant de l'Élite (champion de la carrière)", "#1D1A2E", "linear-gradient(135deg,#1D1A2E 0 45%,#E9C046 45% 55%,#1D1A2E 55%)"] };
 export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], bronze: ["Bronze", "#C27A3A"], blanc: ["Blanc", "#F5F7FA"], bleu: ["Bleu", "#2C6FD1"], jaune: ["Jaune", "#F4C542"], noir: ["Noir", "#23262B"], or: ["Or", "#E0B12A"], argent: ["Argent", "#AEB6C2"],
@@ -19,7 +22,7 @@ export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], bronze: ["Bronze", "#C27A
 export const PEAUX = { neutre: ["Neutre (comme les emojis)", "#FFCC4D"], claire: ["Claire", "#F7D9C4"], rosee: ["Rosée", "#EDB894"], doree: ["Dorée", "#D49A6A"],
   mate: ["Mate", "#A86B42"], brune: ["Brune", "#7A4A2A"], ebene: ["Ébène", "#4A2C1A"] };
 // Les petits accessoires (gratuits) : le vernis (sur la main nue), le bracelet et la bague.
-const AUCUN = "repeating-linear-gradient(45deg,rgba(255,255,255,.35) 0 3px,transparent 3px 7px)";
+const AUCUN = SANS;
 export const ONGLES = { aucun: ["Sans vernis", null, AUCUN], rouge: ["Vernis rouge", "#D7263D"], rose: ["Vernis rose", "#F28DB2"], noir: ["Vernis noir", "#1E1E24"],
   bleu: ["Vernis bleu", "#2C6FD1"], or: ["Vernis or", "#E0B12A"] };
 export const BRACELETS = { aucun: ["Sans bracelet", null, AUCUN], cuir: ["Bracelet en cuir", "#7A4A2A"], perles: ["Bracelet de perles", "#EFE9DA"], argent: ["Bracelet argent", "#C9CED6"], or: ["Bracelet or", "#E0B12A"] };
