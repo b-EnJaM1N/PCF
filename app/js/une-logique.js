@@ -7,8 +7,9 @@ const MAJ = t => t.toLocaleUpperCase("fr-FR");
 const setsTexte = (a, b) => `${a} set${a > 1 ? "s" : ""} à ${b}`;
 
 // m : le match terminé ; stats : stats-match.js ; moi / adv : { nom, surnom (texte), genre }
-// contexte : { etape (« Finale du PCF Open », « Duel officiel »…), finale, citations (répliques dites pendant le match) }
-export function histoireDuMatch(m, stats, moi, adv, { etape = "Match amical", finale = false, citations = [] } = {}, rng = Math.random) {
+// contexte : { etape (« Finale du PCF Open », « Duel officiel »…), finale, citations (répliques dites pendant le match),
+//   enjeu (le gage d'un défi entre amis : le perdant s'y colle) }
+export function histoireDuMatch(m, stats, moi, adv, { etape = "Match amical", finale = false, citations = [], enjeu = null } = {}, rng = Math.random) {
   const gagne = m.vainqueur === 0, f = moi.genre === "f";
   const [A, B] = [MAJ(moi.nom), MAJ(adv.nom)];
   const sets = m.scoresSets, unSet = m.format.setsGagnants === 1;
@@ -40,8 +41,10 @@ export function histoireDuMatch(m, stats, moi, adv, { etape = "Match amical", fi
   const chapo = unSet
     ? `${qui(moi)} ${verbe} ${detail} face à ${qui(adv).replace(/,$/, "")}.`
     : `${qui(moi)} ${verbe} ${setsTexte(m.sets[0], m.sets[1])} face à ${qui(adv).replace(/,$/, "")} (${detail}).`;
+  // L'enjeu du défi (25 octobre) : le journal dit qui s'y colle.
+  const gage = enjeu ? ` L'enjeu était « ${enjeu.replace(/[.!?\s]+$/, "")} » : c'est ${gagne ? adv.nom : moi.nom} qui s'y colle !` : "";
 
-  return { etape, titre, chapo, chiffre: chiffreDuMatch(m, stats), citation: citationDuMatch(citations), gagne };
+  return { etape, titre, chapo: chapo + gage, chiffre: chiffreDuMatch(m, stats), citation: citationDuMatch(citations), gagne };
 }
 
 // Le chiffre à retenir : le plus remarquable du match.

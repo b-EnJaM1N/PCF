@@ -49,3 +49,11 @@ test("la phrase du match : la commentatrice d'abord", () => {
   assert.equal(citationDuMatch([c[1]]).auteur, "Roland Pignon");
   assert.equal(citationDuMatch([]), null);
 });
+
+test("un défi avec enjeu : La Une dit qui s'y colle", () => {
+  const { m, st } = jouer("aaaaaaa" + "aaaaaaa");
+  const h = histoireDuMatch(m, st, moi, adv, { enjeu: "Le perdant paie les pizzas" });
+  assert.match(h.chapo, /L'enjeu était « Le perdant paie les pizzas » : c'est Rocky qui s'y colle !$/);
+  const q = histoireDuMatch(m, st, moi, adv, { enjeu: "Qui fait la vaisselle ce soir ?" });
+  assert.match(q.chapo, /« Qui fait la vaisselle ce soir » : c'est Rocky/);
+});

@@ -8,7 +8,7 @@ import { demanderAmi, mesAmis } from "./social-serveur.js";
 import { pointPresence, textePresence, parPresence } from "./social-logique.js";
 import { etatNotifications, activerNotifications } from "./notifications.js";
 import { MISES, gainDuel } from "./jetons-logique.js";
-import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu } from "./enjeux.js";
+import { IDEES, erreurEnjeu, nettoyerEnjeu } from "./enjeux.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -37,6 +37,10 @@ export function installerDuels(ctx) {
   const renderFormat = () => {
     document.querySelectorAll("#duelLen button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === format.len)));
     document.querySelectorAll("#duelWin button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === format.win)));
+    // Les 3 formats rapides ; un autre réglage : « Personnaliser » le résume (et reste ouvert).
+    let rapide = false;
+    document.querySelectorAll("#duelPresets button").forEach(b => { const ok = +b.dataset.len === format.len && +b.dataset.win === format.win; rapide ||= ok; b.setAttribute("aria-pressed", String(ok)); });
+    $("duelPersoResume").textContent = rapide ? "Personnaliser" : `Personnalisé : ${format.win === 1 ? "1 set" : `${format.win} sets gagnants`} de ${format.len} point${format.len > 1 ? "s" : ""}`;
     // Les formats courts (1 set, sets de 3 ou 1 point) sont toujours amicaux.
     const court = formatCourt(format.len, format.win);
     $("duelClasse").disabled = court; $("duelClasse").checked = format.classe && !court;
@@ -48,26 +52,44 @@ export function installerDuels(ctx) {
     $("duelMiseTexte").textContent = format.mise
       ? `Chacun paie ${format.mise} jetons quand le match commence ; le gagnant en remporte ${gainDuel(format.mise)}. Refusé ou annulé : personne ne paie.`
       : "Sans mise : on joue pour le plaisir (et pour le niveau officiel, si le match est officiel).";
+    $("duelMiseResume").textContent = `🪙 Mise : ${format.mise ? `${format.mise} jetons` : "sans mise"}`;
   };
   document.querySelectorAll("#duelMise button").forEach(b => b.addEventListener("click", () => { format.mise = +b.dataset.v; ecrire("duelMise", format.mise); renderMise(); }));
   renderMise();
   document.querySelectorAll("#duelLen button").forEach(b => b.addEventListener("click", () => { format.len = +b.dataset.v; ecrire("duelLen", format.len); renderFormat(); }));
   document.querySelectorAll("#duelWin button").forEach(b => b.addEventListener("click", () => { format.win = +b.dataset.v; ecrire("duelWin", format.win); renderFormat(); }));
+  document.querySelectorAll("#duelPresets button").forEach(b => b.addEventListener("click", () => {
+    format.len = +b.dataset.len; format.win = +b.dataset.win; ecrire("duelLen", format.len); ecrire("duelWin", format.win); renderFormat();
+  }));
   renderFormat();
   $("duelClasse").addEventListener("change", e => { format.classe = e.target.checked; ecrire("duelClasse", format.classe); });
 
 
   // ------------------------------------------------ l'enjeu (facultatif, entre amis)
-  $("duelEnjeuOn").addEventListener("change", e => { $("duelEnjeuBox").hidden = !e.target.checked; if (e.target.checked) $("duelEnjeu").focus(); });
-  $("duelEnjeuIdees").innerHTML = SUGGESTIONS.map((s, i) => `<button type="button" data-i="${i}">${esc(s)}</button>`).join("");
-  $("duelEnjeuIdees").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { $("duelEnjeu").value = SUGGESTIONS[+b.dataset.i]; $("duelEnjeu").focus(); }));
-  // L'enjeu choisi (null : pas d'enjeu) ; une erreur s'il n'est pas accepté.
-  const enjeuChoisi = () => {
-    if (!$("duelEnjeuOn").checked) return null;
-    const e = erreurEnjeu($("duelEnjeu").value);
-    if (e) throw new Error(e);
-    return nettoyerEnjeu($("duelEnjeu").value);
+  // Le gros bouton ouvre la page « Choisis l'enjeu » (des idées en grandes cartes, ou son propre texte) ;
+  // une fois choisi, l'enjeu s'affiche dans la fenêtre, avec « Changer » et ✕.
+  let enjeu = null;
+  const renderEnjeu = () => {
+    $("duelEnjeuBtn").hidden = !!enjeu; $("duelEnjeuChoisi").hidden = !enjeu;
+    $("duelEnjeuTexte").textContent = enjeu || "";
   };
+  const ouvrirEnjeu = () => { $("duelEnjeu").value = enjeu || ""; $("enjeuMsg").textContent = ""; $("enjeuMsg").classList.remove("erreur"); $("enjeuFenetre").hidden = false; };
+  const fermerEnjeu = () => { $("enjeuFenetre").hidden = true; };
+  const choisirEnjeu = texte => {
+    const e = erreurEnjeu(texte);
+    if (e) { $("enjeuMsg").textContent = e; $("enjeuMsg").classList.add("erreur"); return; }
+    enjeu = nettoyerEnjeu(texte); renderEnjeu(); fermerEnjeu();
+  };
+  $("enjeuCartes").innerHTML = IDEES.map(([e, t], i) => `<button type="button" data-i="${i}"><span aria-hidden="true">${e}</span>${esc(t)}</button>`).join("");
+  $("enjeuCartes").addEventListener("click", e => { const b = e.target.closest("button"); if (b) choisirEnjeu(IDEES[+b.dataset.i][1]); });
+  $("enjeuValider").addEventListener("click", () => choisirEnjeu($("duelEnjeu").value));
+  $("enjeuRetour").addEventListener("click", fermerEnjeu);
+  $("enjeuFenetre").addEventListener("click", e => { if (e.target.id === "enjeuFenetre") fermerEnjeu(); });
+  $("duelEnjeuBtn").addEventListener("click", ouvrirEnjeu);
+  $("duelEnjeuModif").addEventListener("click", ouvrirEnjeu);
+  const viderEnjeu = () => { enjeu = null; renderEnjeu(); };
+  $("duelEnjeuRetirer").addEventListener("click", viderEnjeu);
+  const enjeuChoisi = () => enjeu;
 
   // ------------------------------------------------ connecté ou pas
   function surSession(session) {
@@ -353,7 +375,7 @@ export function installerDuels(ctx) {
     const enjeu = enjeuChoisi();
     await serveur.creer(p.id, format.len, format.win, format.classe, format.mise, enjeu);
     defiesA.add(p.id);
-    if (enjeu) { $("duelEnjeuOn").checked = false; $("duelEnjeuBox").hidden = true; $("duelEnjeu").value = ""; }
+    if (enjeu) viderEnjeu();
     const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"}${format.mise ? ` avec une mise de ${format.mise} jetons` : ""}${enjeu ? ` et l'enjeu « ${enjeu} »` : ""} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra en haut de son menu « Jouer ». Quand ${p.genre === "f" ? "elle" : "il"} l'acceptera, tu seras prévenu : le match démarrera dès que vous serez là tous les deux.`;
     dire(texte); rafraichir();
     return texte;

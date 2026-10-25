@@ -1,10 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { ENJEU_MAX, SUGGESTIONS, MOTS_INTERDITS, nettoyerEnjeu, erreurEnjeu, annonceEnjeu } from "../app/js/enjeux.js";
+import { ENJEU_MAX, SUGGESTIONS, IDEES, MOTS_INTERDITS, nettoyerEnjeu, erreurEnjeu, annonceEnjeu } from "../app/js/enjeux.js";
 
 test("les idées toutes prêtes sont toutes acceptées", () => {
   for (const s of SUGGESTIONS) assert.equal(erreurEnjeu(s), null, s);
+  for (const [, s] of IDEES) assert.equal(erreurEnjeu(s), null, s);
 });
 
 test("un enjeu court et propre est accepté, les espaces en trop sont retirés", () => {
