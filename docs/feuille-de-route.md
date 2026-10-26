@@ -29,6 +29,12 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
      4. Après le lancement : les **interclubs** (cercle contre cercle) et le **match par équipe façon escrime** (relais à
         l'américaine : équipes de 3, chaque joueur affronte chacun des 3 adversaires, 9 relais, le score continue d'un relais à
         l'autre et chaque relais s'arrête au multiple de 5 suivant, 5, 10… jusqu'à 45 ; à 2 contre 2 : 4 relais jusqu'à 20).
+     5. Après le lancement : en tournoi, pendant qu'on attend son prochain adversaire, **regarder son match en direct** (avis de
+        Claude : avant un mini-jeu, qui viendrait ensuite et s'arrêterait dès que le match est prêt).
+     6. **Le tournoi de la semaine accessible par ticket** : le ticket se gagne par la régularité (match du jour, défis du jour,
+        un match en ligne ; avis de Claude : 5 jours sur 7 plutôt que 7). Avis de Claude sur la dotation en argent proposée
+        (80 / 50 / 20 € chaque semaine) : plutôt des récompenses dans l'appli (titre « Champion de la semaine », gant, jetons),
+        l'argent gardé pour le tournoi de lancement et un éventuel tournoi mensuel ; un ticket ne doit jamais pouvoir s'acheter.
    - **En attente jusqu'après les tests** (décision du 24 octobre) : le **grand tournoi de lancement** (500 € : 300 / 150 / 50, gratuit, qualifications au freeroll de 20 h, finale en vidéo ; brouillon : `docs/tournoi-lancement-brouillon.md`) et la **création de la micro-entreprise** qui l'organisera (nom commercial B-Dev Labs ; reprendre à l'étape 1 : connexion FranceConnect sur formalites.entreprises.gouv.fr). Aussi en attente : les sons de stade et les répliques de carrière (crédits ElevenLabs à 84 %).
 3. **Google Play Store** (plan ci-dessous) : le test fermé de 14 jours sert aussi de test avec les proches.
 4. **Après le lancement** (décision du porteur du projet, 22 octobre) : **le grand rangement de `app/js/app.js`** (environ 2 100 lignes, cinq fois plus que les autres fichiers ; point 7 de l'audit). Sortir, un morceau à la fois et sans rien changer pour les joueurs, l'écran de la Carrière solo, l'éditeur d'avatar et Ma fiche, l'écran de fin de match, le match du jour et l'entraînement, vers leurs propres fichiers `ecran-….js` (comme les tournois, les duels, la boutique) ; tests après chaque étape, vérification sur la version de test.
