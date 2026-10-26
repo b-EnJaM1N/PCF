@@ -18,6 +18,17 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
         1 set de 11, Classique 2 sets de 11 ; « Personnaliser » et la mise repliés) ; un gros bouton « 🎯 Ajouter un enjeu » ouvre une page d'idées en grandes
         cartes (`IDEES` de `app/js/enjeux.js`) ou son propre texte ; l'enjeu choisi s'affiche dans la fenêtre (Changer, ✕),
         en bandeau pendant le match, et La Une dit qui s'y colle.
+   - **Idées à développer** (26 octobre, porteur du projet ; avis de Claude donné, rien de décidé) :
+     1. **Des tutos courts dans l'appli** (bulles la première fois : créer son cercle et son championnat, défier avec un enjeu,
+        la carrière ; « Revoir le tuto » dans les Options), ciblés sur ce qui bloque les testeurs ; chacun peut devenir une vidéo courte.
+     2. **Des cercles plus vivants** (classement de la semaine, joueur de la semaine, invitation en 2 gestes), pour les lycéens
+        et les adultes : avant 15 ans, accord des parents pour les données et règles Google « Familles » à vérifier avant de viser
+        les collégiens.
+     3. **1 ou 2 mini-jeux en « échauffement »** dans l'entraînement (ceux qui apprennent à lire l'adversaire), quand ils seront prêts
+        (session Chifoumania).
+     4. Après le lancement : les **interclubs** (cercle contre cercle) et le **match par équipe façon escrime** (relais à
+        l'américaine : équipes de 3, chaque joueur affronte chacun des 3 adversaires, 9 relais, le score continue d'un relais à
+        l'autre et chaque relais s'arrête au multiple de 5 suivant, 5, 10… jusqu'à 45 ; à 2 contre 2 : 4 relais jusqu'à 20).
    - **En attente jusqu'après les tests** (décision du 24 octobre) : le **grand tournoi de lancement** (500 € : 300 / 150 / 50, gratuit, qualifications au freeroll de 20 h, finale en vidéo ; brouillon : `docs/tournoi-lancement-brouillon.md`) et la **création de la micro-entreprise** qui l'organisera (nom commercial B-Dev Labs ; reprendre à l'étape 1 : connexion FranceConnect sur formalites.entreprises.gouv.fr). Aussi en attente : les sons de stade et les répliques de carrière (crédits ElevenLabs à 84 %).
 3. **Google Play Store** (plan ci-dessous) : le test fermé de 14 jours sert aussi de test avec les proches.
 4. **Après le lancement** (décision du porteur du projet, 22 octobre) : **le grand rangement de `app/js/app.js`** (environ 2 100 lignes, cinq fois plus que les autres fichiers ; point 7 de l'audit). Sortir, un morceau à la fois et sans rien changer pour les joueurs, l'écran de la Carrière solo, l'éditeur d'avatar et Ma fiche, l'écran de fin de match, le match du jour et l'entraînement, vers leurs propres fichiers `ecran-….js` (comme les tournois, les duels, la boutique) ; tests après chaque étape, vérification sur la version de test.
