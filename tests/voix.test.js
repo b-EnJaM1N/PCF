@@ -34,3 +34,13 @@ test("une réplique coupée pendant son chargement ne laisse pas la suivante par
     assert.equal(fb.joue, false, "la réplique précédente est bien coupée");
   } finally { globalThis.Audio = avant; }
 });
+
+test("la salle baisse sous la voix : un seul signal pour deux répliques qui s'enchaînent, puis le silence", async () => {
+  const v = new LecteurVoix(), recu = [];
+  v.surParole = on => recu.push(on);
+  v.parole(true); v.parole(false); v.parole(true);   // fin de la 1re réplique, début de la 2e
+  assert.deepEqual(recu, [true]);
+  v.parole(false);
+  await new Promise(r => setTimeout(r, 450));
+  assert.deepEqual(recu, [true, false]);
+});

@@ -29,6 +29,9 @@ export class LecteurVoix {
     this.voix = null;
     this.jeton = 0;              // pour interrompre une séquence en cours
     this.enCours = null;
+    // Prévenu quand une voix se met à parler (true) et quand plus personne ne parle (false) : l'ambiance baisse le public en dessous.
+    this.surParole = null;
+    this.parleDepuis = false; this.finParole = null;
     if (synth) { this.choisirVoix(); synth.addEventListener?.("voiceschanged", () => this.choisirVoix()); }
   }
 
@@ -56,9 +59,17 @@ export class LecteurVoix {
       || vs.find(v => /fr-FR/i.test(v.lang)) || vs[0] || null;
   }
 
+  // Une voix parle (true) ou se tait (false). Entre deux répliques qui s'enchaînent, le public ne remonte pas :
+  // on attend un court instant avant d'annoncer le silence.
+  parole(on) {
+    clearTimeout(this.finParole);
+    if (on) { if (!this.parleDepuis) { this.parleDepuis = true; this.surParole?.(true); } return; }
+    this.finParole = setTimeout(() => { if (this.parleDepuis) { this.parleDepuis = false; this.surParole?.(false); } }, 400);
+  }
+
   arreter() {
     this.jeton++;
-    if (this.enCours) { this.enCours.pause(); this.enCours = null; }
+    if (this.enCours) { this.enCours.pause(); this.enCours = null; this.parole(false); }
     if (synth) try { synth.cancel(); } catch { /* rien */ }
   }
 
@@ -100,9 +111,9 @@ export class LecteurVoix {
     audio.currentTime = 0;
     // On n'oublie la réplique en cours que si c'est bien celle-ci : une réplique interrompue pendant son chargement
     // échoue après coup, et ne doit pas faire oublier la suivante (qu'on ne pourrait plus couper : deux voix en même temps).
-    const oublier = () => { if (this.enCours === audio) this.enCours = null; };
+    const oublier = () => { if (this.enCours === audio) this.enCours = null; this.parole(false); };
     audio.onended = () => { oublier(); fin(); };
-    audio.play().then(debut).catch(() => { oublier(); secours(); });
+    audio.play().then(() => { this.parole(true); debut(); }).catch(() => { oublier(); secours(); });
   }
 
   parler(r, debut, fin) {

@@ -97,6 +97,9 @@ export function egalitesAvantDernier(coups) {
   for (let i = coups.length - 2; i >= 0 && coups[i].gagnant === null; i--) n++;
   return n;
 }
+// Quand Roland, Monique (ou une autre voix) parlent, la salle baisse (le public, les applaudissements, l'écho), comme à la télévision
+// sous la voix des commentateurs ; le coup de raquette, lui, reste au même niveau. Descente rapide, remontée en douceur.
+export const SOUS_LA_VOIX = { niveau: 0.5, descente: 0.08, remontee: 0.45 };
 // Crête sous laquelle un enregistrement est jugé muet (environ −26 dB).
 export const SEUIL_MUET = 0.05;
 const HAUTEUR = [0.8, 1.4, 1];   // Pierre grave, Ciseaux aigu, Feuille entre les deux
@@ -116,9 +119,11 @@ export class Ambiance {
     try { this.ctx = new AC(); } catch { this.ctx = null; return; }
     const ctx = this.ctx, fs = ctx.sampleRate;
     this.master = ctx.createGain(); this.master.gain.value = this.actif ? 1 : 0; this.master.connect(ctx.destination);
+    // La salle (tout sauf le coup de raquette) : elle baisse sous la voix des commentateurs.
+    this.salle = ctx.createGain(); this.salle.gain.value = this.parleMaintenant ? SOUS_LA_VOIX.niveau : 1; this.salle.connect(this.master);
     // l'écho du stade, mélangé au son direct
     this.echo = ctx.createConvolver(); this.echo.buffer = this.tampon(echoStade(fs));
-    const retour = ctx.createGain(); retour.gain.value = 0.35; this.echo.connect(retour); retour.connect(this.master);
+    const retour = ctx.createGain(); retour.gain.value = 0.35; this.echo.connect(retour); retour.connect(this.salle);
 
     // La fabrication des sons prend un moment : on la fait juste après, sans bloquer l'écran.
     const etapes = [
@@ -179,12 +184,19 @@ export class Ambiance {
     if (this.master) this.master.gain.setTargetAtTime(on ? 1 : 0, this.ctx.currentTime, 0.05);
   }
 
-  jouer(buffer, vol, echo, { delai = 0, vitesse = 1 } = {}) {
+  // Une voix parle (true) ou se tait (false) : la salle baisse, puis remonte.
+  parole(on) {
+    this.parleMaintenant = on;
+    if (!this.salle) return;
+    try { this.salle.gain.setTargetAtTime(on ? SOUS_LA_VOIX.niveau : 1, this.ctx.currentTime, on ? SOUS_LA_VOIX.descente : SOUS_LA_VOIX.remontee); } catch { /* rien */ }
+  }
+
+  jouer(buffer, vol, echo, { delai = 0, vitesse = 1, salle = true } = {}) {
     const ctx = this.ctx; if (!ctx || !buffer) return null;
     try {
       const src = ctx.createBufferSource(); src.buffer = buffer; src.playbackRate.value = vitesse;
       const g = ctx.createGain(); g.gain.value = vol;
-      src.connect(g); g.connect(this.master); if (echo) g.connect(this.echo);
+      src.connect(g); g.connect(salle ? this.salle : this.master); if (echo) g.connect(this.echo);
       src.start(ctx.currentTime + delai);
       return { src, g };
     } catch { return null; /* un son raté ne doit jamais bloquer le match */ }
@@ -195,8 +207,8 @@ export class Ambiance {
   raquette(signe = 2, fort = false) {
     const f = this.raquettesFichiers[signe] || [];
     const b = (fort && f[1]) || f[0];
-    if (b) this.jouer(b, fort ? 1 : 0.7, fort && !f[1], { vitesse: 0.98 + Math.random() * 0.04 });
-    else this.jouer(this.raquettes[signe], fort ? 0.9 : 0.7, true);
+    if (b) this.jouer(b, fort ? 1 : 0.7, fort && !f[1], { vitesse: 0.98 + Math.random() * 0.04, salle: false });
+    else this.jouer(this.raquettes[signe], fort ? 0.9 : 0.7, true, { salle: false });
   }
 
   // Le murmure du public, en boucle pendant le match (seulement avec l'enregistrement).
@@ -209,7 +221,7 @@ export class Ambiance {
         // Deux couches du même enregistrement, décalées, l'une un peu à gauche et l'autre un peu à droite (et un peu plus grave) :
         // une foule plus dense et plus vivante, qui ne se répète pas à l'oreille.
         const g = ctx.createGain(); g.gain.value = 0; g.gain.setTargetAtTime(FOND.entrePoints, ctx.currentTime, 0.8);
-        g.connect(this.master);
+        g.connect(this.salle);
         const duree = this.buf.fond.duration;
         const sources = [[-0.35, 1, 0, 1], [0.35, 0.94, duree / 2, 0.75]].map(([cote, vitesse, depart, vol]) => {
           const src = ctx.createBufferSource(); src.buffer = this.buf.fond; src.loop = true; src.playbackRate.value = vitesse;
