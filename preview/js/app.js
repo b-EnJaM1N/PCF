@@ -121,6 +121,7 @@ let panneauOuvert = null, faceAFaceOuvert = false;
 // Les commentaires ne choisissent que des dialogues déjà enregistrés (voir dialogue() dans annonces.js).
 const avecAudible = etat => Object.assign(etat, { audible: id => !voix.fichiers.size || voix.fichiers.has(id) });
 const voix = new LecteurVoix();
+voix.surParole = on => ambiance.parole(on);   // la salle baisse sous la voix des commentateurs
 const ambiance = new Ambiance();
 let sonActif = lire("son", true) !== false;
 // Dans les Options, on peut couper seulement les commentaires (Roland, Monique et la journaliste) ou seulement les bruitages
