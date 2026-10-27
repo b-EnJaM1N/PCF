@@ -231,6 +231,28 @@ Clins d'œil « sport » : tirés plus rarement, comme les autres.
 |---|---|---|
 | M | Le coup du berger. Plié en quelques coups. | Échecs |
 
+## 11. Propositions de Claude dans le même esprit (✍️, 28 octobre, à valider)
+Le porteur du projet a validé « il s'est fait cueillir » et demandé d'autres idées du même genre, pour étoffer la banque.
+
+| Qui | Réplique | Moment | D'où |
+|---|---|---|---|
+| R | En garde… prêts… allez ! | Premier point d'un set (🆕, de temps en temps) | Escrime |
+| R | Touché ! L'arbitre lève le bras ! | Beau coup (point gagné) | Escrime |
+| M | Une parade… sans riposte. Il a oublié la moitié de l'escrime. | Point perdu après des égalités | Escrime |
+| R | Tapis ! Il met tout sur la Pierre ! *(et sur les Ciseaux, sur la Feuille)* | Obstination (3 fois le même signe) | Poker |
+| M | Il a misé gros. La banque dit merci. | Obstination punie (point perdu) | Poker |
+| M | Il joue cartes sur table. Au poker, on appelle ça un cadeau. | Il s'est fait lire | Poker |
+| R | Il sort l'as de sa manche ! | Balle sauvée | Poker |
+| M | Il roque. Il se met à l'abri. Ça ne suffira pas. | Série de points perdus | Échecs |
+| M | Échec. Pas encore mat. | Balle de match contre lui (tension) | Échecs |
+| R | Uppercut ! Il ne l'a pas vu venir ! | Il a lu son adversaire | Boxe |
+| M | Il cherche le K.-O. Il risque surtout le K.-O. technique. | Série de points perdus | Boxe |
+| M | Il s'est mis dans la roue. Il attend. C'est malin. Ou paresseux. | Égalités (duel d'esprits) | Cyclisme |
+| R | Il attaque dans la dernière ascension ! | Remontée | Cyclisme |
+| R | Il plonge à l'intérieur… dépassement ! | Il passe devant au score | Formule 1 |
+| M | Arrêt au stand. Il en avait besoin. | Il change enfin de signe après une obstination | Formule 1 |
+| R | Il franchit la ligne d'avantage ! | Série de 3 points gagnés | Rugby |
+
 ---
 
 ## Ce qu'il reste à faire
