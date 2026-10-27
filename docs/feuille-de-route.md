@@ -35,6 +35,9 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
         un match en ligne ; avis de Claude : 5 jours sur 7 plutôt que 7).
         Avis de Claude sur une dotation en argent chaque semaine : plutôt des récompenses dans l'appli (titre « Champion de la semaine »,
         gant, jetons) ; un ticket ne doit jamais pouvoir s'acheter.
+   - **Le son** (27 octobre, retours des testeurs : « artisanal », pas homogène) : priorité dès qu'il y a des crédits ElevenLabs.
+     Plan : `docs/bible-sonore.md` (un seul univers, une phrase commune pour tous les sons, essai de 4 sons puis le reste, puis les
+     nouveaux commentaires). Fait sans crédits : la salle baisse sous la voix des commentateurs.
    - **En attente jusqu'après les tests** (décision du 24 octobre) : le **grand tournoi de lancement** et les démarches qui vont avec (détails gardés par le porteur du projet, hors du dépôt public : les lui redemander). Aussi en attente : les sons de stade et les répliques de carrière (crédits ElevenLabs à 84 %).
 3. **Google Play Store** (plan ci-dessous) : le test fermé de 14 jours sert aussi de test avec les proches.
 4. **Après le lancement** (décision du porteur du projet, 22 octobre) : **le grand rangement de `app/js/app.js`** (environ 2 100 lignes, cinq fois plus que les autres fichiers ; point 7 de l'audit). Sortir, un morceau à la fois et sans rien changer pour les joueurs, l'écran de la Carrière solo, l'éditeur d'avatar et Ma fiche, l'écran de fin de match, le match du jour et l'entraînement, vers leurs propres fichiers `ecran-….js` (comme les tournois, les duels, la boutique) ; tests après chaque étape, vérification sur la version de test.
