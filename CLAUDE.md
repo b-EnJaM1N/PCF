@@ -3,7 +3,7 @@
 ## Le porteur du projet
 - Il est français, non-développeur, sur un téléphone Android. Explique simplement, en français, une étape à la fois.
 - **Demande-lui avant tout choix qui coûte de l'argent ou qui est difficile à changer ensuite.**
-- **Aucun mot de passe ni clé secrète dans le code : le projet GitHub est public.** (La clé « publishable » de Supabase dans `app/js/config.js` est publique par nature.)
+- **Aucun mot de passe ni clé secrète dans le code : le projet GitHub est public.** Pas non plus de détails sur ses démarches commerciales ou administratives (prestataires, remboursements, prix, budgets, dotations, statut d'entreprise) dans les fichiers du dépôt : il les garde de son côté (décision du 27 octobre). (La clé « publishable » de Supabase dans `app/js/config.js` est publique par nature.)
 - Quand il faut coller du SQL dans Supabase depuis son téléphone, donne un lien `raw.githubusercontent.com` vers le fichier, ou une requête sur une seule ligne (le collage de plusieurs lignes se passe mal sur téléphone). Éditeur SQL : https://supabase.com/dashboard/project/fvfdcyglwngosxfougje/sql/new
 
 ## Façon de travailler

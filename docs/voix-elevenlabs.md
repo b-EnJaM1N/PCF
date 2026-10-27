@@ -3,7 +3,7 @@
 Page à ouvrir **sur l'ordinateur** pendant la séance : chaque phrase de test est prête à copier-coller dans
 ElevenLabs › Text to Speech. Modèle : **Eleven v3**. Les indications entre crochets (`[deadpan]`…) sont jouées, pas lues.
 
-Abonnement : Starter (1,11 € le premier mois, puis 6,67 €/mois) — **penser à résilier le renouvellement**.
+Abonnement : Starter.
 
 ## Décision
 On commence par **les deux commentateurs** : 353 répliques, environ 14 200 caractères. Le speaker (171 répliques, dont les surnoms)
