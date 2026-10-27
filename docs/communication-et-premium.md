@@ -71,16 +71,7 @@ C'est un travail de long terme. Les briques, dans l'ordre :
 
 **Règles à ne jamais casser** : jamais de vente de jetons (ni directement, ni « jetons offerts avec l'abonnement » : avec les mises, ce serait un jeu d'argent) ; jamais d'avantage en match ; pas de boîtes à surprise payantes.
 
-**Idée : le « Club HandSlam »**, environ 2 à 3 € par mois, ou un **pack « Supporter »** payé une fois.
-- 🎙️ **Son pseudo prononcé par Roland et Monique** : « Et Benji égalise ! ». L'avantage que personne d'autre n'a (voix à fabriquer en lot, avec des crédits ElevenLabs).
-- 🎬 **Ses meilleurs points en vidéo**, prêts à partager sur TikTok et Instagram : chaque abonné devient aussi un relais de communication.
-- 📊 **Statistiques avancées** : ses réflexes sur 100 matchs, son signe par moment du set, ses adversaires les plus difficiles.
-- 🧤 **Une apparence exclusive chaque mois** (le gant du mois), un badge « Club » sur sa carte, un cadre animé.
-- 🏆 **Plus de tournois de cercle** et de championnats, avec un trophée au nom choisi.
-- 🆕 **L'accès en avant-première** aux nouveautés (terrains, nouveaux modes).
-- 🚫 **Sans publicité**, si la publicité facultative arrive un jour.
-
-**Avant le premier euro** : un statut pour encaisser (par exemple une micro-entreprise), le paiement par Google obligatoire sur le Play Store (environ 15 % prélevés), les mentions légales à jour. Voir aussi « Modèle économique » dans la feuille de route.
+Les idées détaillées (contenu, prix, démarches) sont gardées par le porteur du projet, hors du dépôt public.
 
 ## 8. Calendrier conseillé
 
