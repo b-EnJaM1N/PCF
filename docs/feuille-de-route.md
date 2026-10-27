@@ -39,6 +39,14 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
         (27 octobre) : d'abord l'interface en anglais (un système de langues à mettre en place : tous les textes sont écrits en
         français dans le code), l'arbitre et une soixantaine de commentaires simples ; ensuite de vrais commentateurs anglais,
         avec leur propre humour. Au lancement : publication limitée aux pays francophones.
+     8. **Plus de commentaires pendant les sets** (28 octobre ; aujourd'hui 2 ou 3 par set) : augmenter un peu la fréquence,
+        mais **après** l'enregistrement de la nouvelle banque (sinon, plus de répétitions).
+     9. **Le public qui gronde** (28 octobre) : de temps en temps, des huées ou un gros brouhaha pendant lequel on ne peut pas
+        jouer (le compteur du coup s'arrête, « Silence, s'il vous plaît », puis on reprend). Facile contre les bots ; en duel en
+        ligne, le compteur est tenu par le serveur : une étape SQL. Le son des huées est à faire avec la bible sonore.
+     10. **La vitesse selon la surface** (28 octobre, idée d'un testeur ; va avec « Varier les terrains ») : gazon 5 s, dur 8 s
+        (comme aujourd'hui), terre battue 10 à 12 s, une surface ultra-rapide 3 s. Facile contre les bots ; en ligne, le temps du
+        coup est fixé par le serveur (étape 46) : une étape SQL, et 3 s y serait risqué (délai du réseau).
    - **Le son** (27 octobre, retours des testeurs : « artisanal », pas homogène) : priorité dès qu'il y a des crédits ElevenLabs.
      Plan : `docs/bible-sonore.md` (un seul univers, une phrase commune pour tous les sons, essai de 4 sons puis le reste, puis les
      nouveaux commentaires). Fait sans crédits : la salle baisse sous la voix des commentateurs.
