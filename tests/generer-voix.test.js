@@ -44,6 +44,12 @@ test("les bruitages : les noms attendus par l'appli, des durées permises, le fo
   assert.deepEqual(Object.keys(SONS).sort(), attendus);
   for (const [id, s] of Object.entries(SONS)) assert.ok(s.texte && s.duree >= 0.5 && s.duree <= 30, id);
   assert.equal(SONS.public_fond_01.boucle, true);
+  // La même salle pour tous les sons de l'univers choisi (docs/bible-sonore.md), une description qui reste courte.
+  const { description } = await import("../outils/generer-sons.js");
+  assert.match(description(SONS.public_point_01), /^Same venue for every sound/);
+  assert.match(description(SONS.raquette_pierre_01), /^Same venue for every sound/);
+  assert.equal(description(SONS.stade_corne_01), SONS.stade_corne_01.texte);
+  for (const s of Object.values(SONS)) assert.ok(description(s).length <= 450, s.texte);
   assert.equal(sonsAFaire({ existe: () => true }).length, 0, "rien à refaire");
   assert.equal(sonsAFaire({ ids: ["stade_corne_01"], existe: () => false }).length, 1, "les sons de stade se génèrent comme les autres");
   assert.equal(sonsAFaire({ ids: ["raquette_pierre_01"], refaire: true, existe: () => true }).length, 1);

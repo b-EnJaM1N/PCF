@@ -11,7 +11,7 @@ Les descriptions envoyées à ElevenLabs (`outils/sons.json`) racontent des lieu
 - des applaudissements polis de tennis à côté de l'orgue de basket, de la corne de brume, des vuvuzelas et des « Olé ! » ;
 - chaque son a été fabriqué à part, avec sa propre salle et son propre volume.
 
-## 2. Le choix de l'univers (à décider par le porteur du projet)
+## 2. Le choix de l'univers : **A, décidé le 27 octobre**
 **A. Le court central couvert, un soir de finale** (conseil de Claude). C'est l'univers du jeu : sets, balles de match,
 arbitre, « Silence, s'il vous plaît », Roland et Monique en cabine. Public nombreux et passionné, mais qui se tait pendant
 l'échange. Les sons de stade gardés : seulement ceux qui vont avec (la fanfare de victoire, peut-être la montée d'orgue
@@ -45,13 +45,14 @@ Puis la description propre au son, courte. Les sons du geste (« raquette ») ga
 | `raquette_*` (6 sons) | Mêmes idées qu'aujourd'hui (Pierre grave, Ciseaux qui claquent, Feuille qui souffle), entendus de près, dans la même salle | 1 à 1,5 s |
 | `stade_fanfare_victoire_01` | Short triumphant brass fanfare played in the arena after the final point | 5 s |
 
-**Question au porteur du projet** : le geste garde-t-il un son de raquette (le jeu se joue sur un « court ») ou devient-il
-un son de main (un claquement, un souffle) ?
+**Le geste garde un son de raquette** (décidé le 27 octobre). Les descriptions sont prêtes dans `outils/sons.json` : la phrase
+commune y est ajoutée automatiquement (`_salle`) ; les autres sons de stade (orgue, corne, vuvuzelas…) n'y ont pas droit et ne
+seront pas joués.
 
 ## 5. L'ordre
-1. Le porteur du projet choisit l'univers (A ou B) et répond à la question de la raquette.
-2. **Essai de 4 sons** : `public_fond_01`, `public_point_01`, `public_ovation_01` et un son de geste. Il écoute sur la version
-   de test.
+1. ~~Le choix de l'univers et de la raquette~~ : A et raquette (27 octobre).
+2. **Essai de 4 sons** : robot « Voix », choix « sons », avec ces noms : `public_fond_01,public_point_01,public_ovation_01,raquette_pierre_01`
+   (ils remplacent les anciens). Il écoute sur la version de test.
 3. Si ça lui plaît : le reste des sons du tableau, en un seul lot (robot « Voix », choix « sons », avec la liste des noms).
 4. Les nouveaux commentaires (banque `docs/repliques-banque-brouillon.md`), eux aussi en un seul lot, avec les mêmes réglages
    de voix que les anciens (`docs/voix-elevenlabs.md`).

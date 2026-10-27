@@ -1,142 +1,152 @@
 {
-  "_explication": "Les bruitages du court, générés par ElevenLabs Sound Effects (robot GitHub « Voix », choix « sons »). Description en anglais, durée en secondes (0,5 à 30), boucle pour le fond. Pour refaire un son : le supprimer de app/audio/ (ou le donner dans « ids ») et relancer.",
+  "_explication": "Les bruitages du court, générés par ElevenLabs Sound Effects (robot GitHub « Voix », choix « sons »). Description en anglais, durée en secondes (0,5 à 30), boucle pour le fond. Pour refaire un son : le supprimer de app/audio/ (ou le donner dans « ids ») et relancer. Univers choisi le 27 octobre (docs/bible-sonore.md) : la phrase « _salle » est mise au début de chaque description (sauf « salle »: false), pour que tous les sons viennent du même lieu.",
   "sons": {
     "raquette_pierre_01": {
-      "texte": "Clear tennis racket hitting a tennis ball, soft round pop with a short whoosh of the racket, single hit, close-up, no crowd",
+      "texte": "Close to the court: a heavy tennis ball hit, deep solid thud like a rock, low pitch, single hit",
       "duree": 1
     },
     "raquette_pierre_fort_01": {
-      "texte": "Fast slicing tennis shot, sharp whoosh and pop with stadium reverb, no crowd",
+      "texte": "Close to the court: a massive tennis smash, very powerful deep thud like a rock, single hit",
       "duree": 1.5
     },
     "raquette_ciseaux_01": {
-      "texte": "Loud tennis ball hit mixed with a sharp metallic scissors snip, single short hit, close-up, no crowd",
+      "texte": "Close to the court: a crisp tennis ball hit with a sharp metallic scissors snip, single short hit",
       "duree": 1
     },
     "raquette_ciseaux_fort_01": {
-      "texte": "Powerful loud tennis smash mixed with a big sharp metallic scissors snip, stadium reverb, single hit, no crowd",
+      "texte": "Close to the court: a powerful tennis smash with a big sharp metallic scissors snip, single hit",
       "duree": 1.5
     },
     "raquette_feuille_01": {
-      "texte": "Heavy tennis ball hit, deep powerful thud, low pitch, close-up, no crowd",
+      "texte": "Close to the court: a tennis ball hit with a soft papery swish, airy and light, single hit",
       "duree": 1
     },
     "raquette_feuille_fort_01": {
-      "texte": "Massive tennis smash, very powerful deep thud with stadium reverb, no crowd",
+      "texte": "Close to the court: a powerful tennis smash with a big papery swoosh, single hit",
       "duree": 1.5
     },
     "public_fond_01": {
-      "texte": "Tennis stadium crowd ambience, quiet murmurs, soft whispers, calm, seamless loop",
+      "texte": "Crowd murmur between points, calm, steady, seamless loop",
       "duree": 30,
       "boucle": true
     },
     "public_tension_01": {
-      "texte": "Tennis crowd murmuring nervously, rising tension, buzzing anticipation",
+      "texte": "The crowd goes quiet and nervous before a match point, a few whispers",
       "duree": 6
     },
     "public_ooh_01": {
-      "texte": "Tennis crowd \"ooh\" reaction to a near miss",
+      "texte": "The whole crowd reacts \"ooh\" to a very close point",
       "duree": 2
     },
     "public_point_01": {
-      "texte": "Polite tennis applause, short",
+      "texte": "Short applause after a point, medium",
       "duree": 3
     },
     "public_clameur_01": {
-      "texte": "Tennis crowd cheering burst after a great point",
+      "texte": "Big cheer after a great point, then applause",
       "duree": 3
     },
     "public_set_01": {
-      "texte": "Warm tennis crowd applause with a few cheers",
+      "texte": "Warm applause with cheers at the end of a set",
       "duree": 5
     },
     "public_ovation_01": {
-      "texte": "Standing ovation in a tennis stadium, loud cheers and whistles",
+      "texte": "Standing ovation for the champion, huge cheers and applause",
       "duree": 8
     },
     "public_allez_01": {
-      "texte": "A single French male tennis spectator shouting \"Allez !\" enthusiastically from the stands, short, light crowd murmur behind",
+      "texte": "A single French male spectator shouting \"Allez !\" enthusiastically in the stands, short",
       "duree": 1.5
     },
     "public_allez_02": {
-      "texte": "A single French female tennis spectator cheering \"Allez !\" from the stands, short, light crowd murmur behind",
+      "texte": "A single French female spectator cheering \"Allez !\" in the stands, short",
       "duree": 1.5
     },
     "public_allez_03": {
-      "texte": "A few French tennis fans chanting \"Allez, allez, allez !\" briefly in the stands, short",
+      "texte": "A few French fans chanting \"Allez, allez, allez !\" briefly in the stands, short",
       "duree": 2
     },
     "public_oh_decu_01": {
-      "texte": "Tennis crowd disappointed groan \"ohhh\", falling tone, short",
+      "texte": "The crowd groans in disappointment, \"ohhh\", falling tone, short",
       "duree": 2
     },
     "public_oh_decu_02": {
-      "texte": "Tennis stadium crowd sighing in disappointment, \"aww\", short",
+      "texte": "The crowd sighs in disappointment, \"aww\", short",
       "duree": 2
     },
     "public_bravo_01": {
-      "texte": "A French tennis spectator shouting \"Bravo !\" followed by a few claps, short",
+      "texte": "A French spectator shouting \"Bravo !\" followed by a few claps, short",
       "duree": 2
     },
     "public_bravo_02": {
-      "texte": "Several tennis spectators calling \"Bravo !\" with short warm applause",
+      "texte": "Several French spectators calling \"Bravo !\" with short warm applause",
       "duree": 2.5
     },
     "public_brouhaha_01": {
-      "texte": "Tennis crowd chatter swelling briefly after a point then settling down, lively murmurs, people talking",
+      "texte": "The crowd chatters excitedly after a long rally, then settles down",
       "duree": 4
     },
     "public_brouhaha_02": {
-      "texte": "Lively tennis crowd buzz, spectators commenting excitedly after a rally, rising then fading",
+      "texte": "Lively crowd buzz, spectators commenting after a rally, rising then fading",
       "duree": 4
     },
     "public_rires_01": {
-      "texte": "Tennis stadium crowd bursting into light amused laughter, warm chuckles, then settling down, no music",
+      "texte": "The crowd bursts into warm amused laughter, then settles down",
       "duree": 2.5
     },
     "public_rires_02": {
-      "texte": "Large tennis crowd laughing together at a funny moment, friendly giggles and chuckles fading out",
+      "texte": "The whole crowd laughs together at a funny moment, chuckles fading out",
       "duree": 2.5
     },
     "stade_charge_01": {
       "texte": "Stadium trumpet playing the classic short \"charge\" bugle call, then a big crowd shouting \"Charge!\", arena reverb",
-      "duree": 4
+      "duree": 4,
+      "salle": false
     },
     "stade_orgue_montee_01": {
       "texte": "Basketball arena organ playing a short rising chromatic build-up, tension, arena reverb, no crowd voices",
-      "duree": 4
+      "duree": 4,
+      "salle": false
     },
     "stade_orgue_defense_01": {
       "texte": "Arena organ riff followed by a big crowd chanting \"De-fense! De-fense!\" rhythmically, basketball arena",
-      "duree": 4
+      "duree": 4,
+      "salle": false
     },
     "stade_corne_01": {
       "texte": "Loud deep stadium air horn blast, single long blast, arena reverb",
-      "duree": 2.5
+      "duree": 2.5,
+      "salle": false
     },
     "stade_tambour_01": {
       "texte": "Stadium crowd stomping on bleachers and clapping, big drum, \"boom boom clap\" rhythm three times, arena reverb",
-      "duree": 5
+      "duree": 5,
+      "salle": false
     },
     "stade_orgue_entree_01": {
       "texte": "Upbeat cheerful arena organ jingle, short, catchy, sports arena",
-      "duree": 5
+      "duree": 5,
+      "salle": false
     },
     "stade_vuvuzela_01": {
       "texte": "A few vuvuzelas blowing together in a stadium, short, slightly comical",
-      "duree": 3
+      "duree": 3,
+      "salle": false
     },
     "stade_ole_01": {
       "texte": "Football stadium crowd chanting \"Olé! Olé! Olé!\", short",
-      "duree": 4
+      "duree": 4,
+      "salle": false
     },
     "stade_fanfare_victoire_01": {
-      "texte": "Short triumphant brass fanfare, stadium celebration, bright and joyful",
+      "texte": "Short triumphant brass fanfare played in the arena right after the final point",
       "duree": 5
     },
     "stade_sifflet_01": {
       "texte": "Stadium crowd playful whistling and light good-natured booing, short",
-      "duree": 3
+      "duree": 3,
+      "salle": false
     }
-  }
+  },
+  "_salle": "Same venue for every sound: a large indoor tennis arena with about 5,000 spectators, evening final, warm natural hall reverb, heard from the TV broadcast microphones near the court, consistent loudness, no music."
 }
