@@ -35,6 +35,10 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
         un match en ligne ; avis de Claude : 5 jours sur 7 plutôt que 7).
         Avis de Claude sur une dotation en argent chaque semaine : plutôt des récompenses dans l'appli (titre « Champion de la semaine »,
         gant, jetons) ; un ticket ne doit jamais pouvoir s'acheter.
+     7. **Une version internationale**, après le lancement et seulement si la Play Console montre de l'intérêt à l'étranger
+        (27 octobre) : d'abord l'interface en anglais (un système de langues à mettre en place : tous les textes sont écrits en
+        français dans le code), l'arbitre et une soixantaine de commentaires simples ; ensuite de vrais commentateurs anglais,
+        avec leur propre humour. Au lancement : publication limitée aux pays francophones.
    - **Le son** (27 octobre, retours des testeurs : « artisanal », pas homogène) : priorité dès qu'il y a des crédits ElevenLabs.
      Plan : `docs/bible-sonore.md` (un seul univers, une phrase commune pour tous les sons, essai de 4 sons puis le reste, puis les
      nouveaux commentaires). Fait sans crédits : la salle baisse sous la voix des commentateurs.

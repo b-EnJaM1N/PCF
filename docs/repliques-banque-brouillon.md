@@ -179,9 +179,63 @@ Aujourd'hui, avant le match, ce sont des dialogues Roland → Monique. Propositi
 
 ---
 
+## 10. Les clins d'œil : échecs, poker, escrime (reçus le 28 octobre)
+Ils enrichissent surtout des moments déjà codés, en particulier « il s'est fait lire » (seulement 4 répliques aujourd'hui).
+Clins d'œil « sport » : tirés plus rarement, comme les autres.
+
+### Il s'est fait lire (moment « lecture subie », déjà codé : l'adversaire a deviné son réflexe)
+| Qui | Réplique | D'où |
+|---|---|---|
+| M | La défense sicilienne. Il révise ses classiques… mais ça ne lui réussit pas. | Échecs (1 et 2 réunis : la même phrase deux fois) |
+| M | Il avait trois coups d'avance. Dommage qu'il ait oublié celui de son adversaire. | Échecs |
+| M | Il pensait avoir anticipé tous les scénarios. Visiblement, pas celui-là. | Échecs |
+| M | C'était téléphoné. Mais il était en mode avion. | Poker |
+| M | Il a voulu lire dans le jeu de son adversaire. Il ferait déjà bien de lire dans le sien. | Poker |
+| R | Il a tenté le bluff du siècle ! Son adversaire n'a même pas cligné des yeux ! | Poker |
+
+### Il a lu son adversaire (moment « lecture réussie », déjà codé)
+| Qui | Réplique | D'où |
+|---|---|---|
+| M | Bien vu l'aveugle. | Poker (ironique : c'était facile à voir) |
+
+### Il craque sur une balle de set ou de match (moment « craquage », déjà codé)
+| Qui | Réplique | D'où |
+|---|---|---|
+| R | Il a tenté une attaque audacieuse… et son adversaire lui répond par un coup de maître ! | Échecs |
+| R | Une erreur tactique qui risque de coûter cher ! Il a perdu la main ! | Échecs |
+| M | Il a voulu porter l'estocade. Il s'est fait cueillir sur la riposte. | Escrime (« empalé » adouci) |
+
+### Il sauve une balle de set ou de match (moment « balle sauvée », déjà codé)
+| Qui | Réplique | D'où |
+|---|---|---|
+| R | Une riposte fulgurante ! Il ne laisse aucune chance à son adversaire ! | Escrime |
+
+### Le point qui suit une série d'égalités (🆕 : un point enfin gagné après 2 égalités ou plus)
+| Qui | Réplique | D'où |
+|---|---|---|
+| R | Une feinte, une parade, une riposte ! Quel échange ! | Escrime (dite pour le gagnant du point) |
+| R | Oh, la feinte de la feinte de la feinte… ça a failli passer ! | Poker (dite pour le perdant du point) |
+
+### Série de points perdus (réserve de 4 ou 5, voir le 3)
+| Qui | Réplique | D'où |
+|---|---|---|
+| M | La main ferme. Le cerveau en bouillie. | Poker |
+
+### Le premier point du match perdu (🆕, de temps en temps)
+| Qui | Réplique | D'où |
+|---|---|---|
+| M | Il choisit l'ouverture Kolodrov, 1956… et elle ne lui sourit pas. | Échecs (une ouverture inventée : Monique a son érudition à elle, comme la finale de 1997) |
+
+### Set perdu très vite (moment « set écrasant », déjà codé)
+| Qui | Réplique | D'où |
+|---|---|---|
+| M | Le coup du berger. Plié en quelques coups. | Échecs |
+
+---
+
 ## Ce qu'il reste à faire
 1. **Le porteur du projet valide** : le tri, qui dit quoi (Roland ou Monique), les ❓, mes ✍️.
 2. **Coder** les nouveaux moments (beau coup selon le signe, 3 Pierres gagnantes, séries de 3 à 8 et plus, première égalité,
-   dialogue sur une balle de match, phrase d'avant-match, entre amis) : sans crédits, mais rien ne s'entend tant que les voix ne sont pas enregistrées.
-3. **Enregistrer** : environ 85 répliques, en comptant les versions « elle » et les 3 versions par signe, soit à peu près
+   dialogue sur une balle de match, phrase d'avant-match, entre amis, point après des égalités, premier point perdu) : sans crédits, mais rien ne s'entend tant que les voix ne sont pas enregistrées.
+3. **Enregistrer** : environ 100 répliques (avec les clins d'œil du 10), en comptant les versions « elle » et les 3 versions par signe, soit à peu près
    6 000 à 7 000 caractères ElevenLabs (à comparer aux crédits restants avant de lancer).
