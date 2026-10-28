@@ -3,27 +3,33 @@
   "sons": {
     "raquette_pierre_01": {
       "texte": "Close to the court: a heavy tennis ball hit, deep solid thud like a rock, low pitch, single hit",
-      "duree": 1
+      "duree": 1,
+      "salle": false
     },
     "raquette_pierre_fort_01": {
       "texte": "Close to the court: a massive tennis smash, very powerful deep thud like a rock, single hit",
-      "duree": 1.5
+      "duree": 1.5,
+      "salle": false
     },
     "raquette_ciseaux_01": {
       "texte": "Close to the court: a crisp tennis ball hit with a sharp metallic scissors snip, single short hit",
-      "duree": 1
+      "duree": 1,
+      "salle": false
     },
     "raquette_ciseaux_fort_01": {
       "texte": "Close to the court: a powerful tennis smash with a big sharp metallic scissors snip, single hit",
-      "duree": 1.5
+      "duree": 1.5,
+      "salle": false
     },
     "raquette_feuille_01": {
       "texte": "Close to the court: a tennis ball hit with a soft papery swish, airy and light, single hit",
-      "duree": 1
+      "duree": 1,
+      "salle": false
     },
     "raquette_feuille_fort_01": {
       "texte": "Close to the court: a powerful tennis smash with a big papery swoosh, single hit",
-      "duree": 1.5
+      "duree": 1.5,
+      "salle": false
     },
     "public_fond_01": {
       "texte": "Crowd murmur between points, calm, steady, seamless loop",

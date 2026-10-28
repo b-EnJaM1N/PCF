@@ -413,7 +413,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
 function apresPoint(evt, a, cel, rp) {
   const m = S.match;
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
-  if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
+  if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.7, set: 0.8, ovation: 0.85 }[a.public]), 250);
   // Sinon, parfois, une réaction du public : applaudissements, « Allez ! », « Bravo ! », « Ohhh… » ou brouhaha (voir reactionPoint).
   else if (rp && !rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups); if (r) setTimeout(() => ambiance.reagir(r), 300); }
   // Parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).

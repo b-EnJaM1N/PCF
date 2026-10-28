@@ -69,6 +69,12 @@ seront pas joués.
   faible que les anciens sons (murmure de fond à -40 dB au lieu de -34). Tous les sons du public ramenés au niveau des anciens
   (murmure un peu plus fort : -29 dB ; réactions vers -20 dB ; ffmpeg avec limiteur), raquette un peu moins forte dans l'appli.
   Pour les prochains sons : vérifier le niveau de chaque fichier généré, et l'ajuster avant de le proposer à l'écoute.
+- Deuxième écoute : toujours pas de public, et les trois signes ont le même son de raquette. Causes : (1) les 6 nouvelles raquettes
+  avaient toutes le même timbre (la phrase commune les a uniformisées : fréquence centrale 2 600 à 2 800 Hz pour les 6, contre
+  1 100 Hz pour la Feuille et 5 900 Hz pour les Ciseaux avant) : les anciennes sont remises ; **la raquette n'aura plus la phrase
+  commune** ; (2) le public était joué 20 à 28 dB sous les voix, inaudible sur un téléphone : murmure de fond 0,9 entre les points
+  (au lieu de 0,34) et 0,5 pendant l'échange (au lieu de 0,15), réactions et applaudissements environ deux fois plus forts, avec un
+  limiteur en sortie pour ne jamais saturer.
 
 ## 6. Côté code (sans crédits)
 - **Fait le 27 octobre** : la salle baisse sous la voix de Roland, Monique et des autres voix, comme à la télévision ; le coup
