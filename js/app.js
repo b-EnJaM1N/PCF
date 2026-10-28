@@ -1,8 +1,8 @@
 // Écran principal : relie les règles, les bots, les annonces, le son et la fiche joueur.
-import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
+import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, nouveauMatch, jouerCoup, penaliser, depassement, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, commentaireMemoire, commentaireMemeOuverture } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
 import { voirTournoi, mesAmis, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs } from "./social-serveur.js";
 import { compterVisite, compterTroisMatchs } from "./visites.js";
@@ -51,7 +51,7 @@ import { GESTES, CELEBRATIONS, CADRES, gesteValide, celebrationValide, articleDe
 import { gainDuel } from "./jetons-logique.js";
 import { texteClassementFin, texteNiveau, provisoire, divisionDe, texteDivision } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
-import { maPlace, coupVuDe, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel, statsFaceAFace } from "./duel-logique.js";
+import { maPlace, vuDe, evenementsDuel, nbEvenements, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel, statsFaceAFace } from "./duel-logique.js";
 // La version de lancement : ce qui a besoin de monde est caché pour l'instant (lancement.js).
 document.body.classList.toggle("lancement", LANCEMENT.actif);
 
@@ -198,7 +198,7 @@ function dialogueCriAuChoix(hasard = Math.random) {
 }
 // Les commentaires entendus aux derniers matchs (environ huit), pour ne pas recommencer chaque match par les mêmes.
 function commentairesRecents() { try { return lire("commentairesRecents", []) || []; } catch { return []; } }
-// « Je vous demande de vous arrêter » : rare. Jamais deux fois en moins de 12 heures (même d'un match à l'autre),
+// Les sifflets et « Je vous demande de vous arrêter » (l'arbitre) : rare. Jamais deux fois en moins de 12 heures (même d'un match à l'autre),
 // et jamais pendant le premier match après l'ouverture de l'appli (sinon on l'entendait à chaque reprise).
 const HUEES_ECART_MS = 12 * 60 * 60 * 1000;
 let matchsDepuisOuverture = 0;
@@ -231,19 +231,64 @@ function ouvrirPanneau({ kick = "", big = "", bigCls = "", sc = "", tally = "", 
 $("iGo").addEventListener("click", () => panneauGo && panneauGo());
 function fermerPanneau() { $("inter").classList.remove("show"); panneauOuvert = null; panneauGo = null; }
 
-// ---------------------------------------------------------------- minuteur (8 s par coup)
+// ---------------------------------------------------------------- minuteur (8 s par coup, puis la réserve de temps)
 let raf = 0, tDebut = 0;
 function lancerMinuteur() {
-  cancelAnimationFrame(raf); tDebut = performance.now(); $("timer").classList.remove("urgent");
+  cancelAnimationFrame(raf); tDebut = performance.now(); $("timer").classList.remove("urgent", "reserve");
   ambiance.calmer(true);                                   // l'échange commence : le public baisse la voix
+  const m = S.match; m.reserve ||= [RESERVE_MS, RESERVE_MS];
+  const reserveDebut = m.reserve[0];
+  afficherReserve(reserveDebut);
   const tick = t => {
-    const reste = Math.max(0, 1 - (t - tDebut) / DUREE_COUP_MS);
-    $("bar").style.transform = `scaleX(${reste})`;
-    if (reste < 0.3) $("timer").classList.add("urgent");
-    if (reste <= 0) { if (!S.occupe && !S.match.termine) jouer(signeAuHasard(), true); return; }
+    const ecoule = t - tDebut;
+    if (ecoule < DUREE_COUP_MS) {
+      const reste = 1 - ecoule / DUREE_COUP_MS;
+      $("bar").style.transform = `scaleX(${reste})`;
+      if (reste < 0.3) $("timer").classList.add("urgent");
+    } else {
+      // Les 8 secondes sont passées : on puise dans la réserve.
+      const r = Math.max(0, reserveDebut - (ecoule - DUREE_COUP_MS));
+      m.reserve[0] = r;
+      $("timer").classList.add("urgent", "reserve");
+      $("bar").style.transform = `scaleX(${r / RESERVE_MS})`;
+      afficherReserve(r, true);
+      if (r <= 0) { if (S?.match === m && !S.occupe && !m.termine) tempsDepasse(); return; }
+    }
     raf = requestAnimationFrame(tick);
   };
   raf = requestAnimationFrame(tick);
+}
+// Solo : ma réserve est épuisée. La première fois, un avertissement (et 8 secondes de plus) ; ensuite, un point de pénalité.
+function tempsDepasse() {
+  if (depassement(S.match, 0) === "avertissement") { avertir(0); lancerMinuteur(); return; }
+  S.occupe = true; boutons(false); arreterMinuteur();
+  afficherPenalite(0);
+}
+// Le petit compteur sous la barre : ma réserve de temps (enCours : on y puise en ce moment).
+function afficherReserve(ms, enCours = false) {
+  const el = $("reserve");
+  if (ms === null || ms === undefined) { el.hidden = true; return; }
+  el.hidden = false; el.textContent = `⏱️ Réserve : ${Math.ceil(ms / 1000)} s`;
+  el.classList.toggle("en-cours", enCours); el.classList.toggle("vide", ms <= 0);
+}
+// L'avertissement de l'arbitre (fautif : 0 moi, 1 l'adversaire).
+function avertir(fautif) {
+  annoncer([annonceAvertissement(fautif)]);
+  $("verdict").textContent = fautif === 0 ? "Avertissement : temps dépassé. La prochaine fois, c'est un point de pénalité."
+    : `Avertissement pour ${OPP.nom} : temps dépassé.`;
+}
+// Un point de pénalité (fautif : 0 moi, 1 l'adversaire) : l'arbitre l'annonce, le point va à l'autre, sans signes montrés.
+function afficherPenalite(fautif, { silencieux = false } = {}) {
+  const m = S.match, evt = penaliser(m, fautif);
+  if (silencieux) return evt;
+  ambiance.calmer(false);
+  const a = annoncerPenalite(m, evt, S.annonces);
+  const cel = evt.finSet ? { ...celebration(criDe(evt.gagnant), { finMatch: m.termine, sauvee: false }), joueur: evt.gagnant } : null;
+  document.querySelectorAll("#moves button.choisi").forEach(b => b.classList.remove("choisi"));
+  $("hMe").textContent = "⏱️"; $("hBot").textContent = "⏱️"; $("hMe").className = "hand"; $("hBot").className = "hand";
+  $("verdict").textContent = fautif === 0 ? `Temps dépassé : point de pénalité, le point va à ${OPP.nom}.`
+    : `${OPP.nom} a dépassé son temps : point de pénalité, le point est pour toi.`;
+  return apresPoint(evt, a, cel, null);
 }
 function arreterMinuteur() { cancelAnimationFrame(raf); }
 
@@ -324,13 +369,16 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   ambiance.calmer(false);
   const rp = reactionsPublic(evt, egalitesAvantDernier(m.coups));
   if (rp.ooh) ambiance.ooh();
-  // Après le « ooh » du public, Monique le rappelle à l'ordre (une fois sur quatre, et pas plus d'une fois en 30 minutes) :
-  // elle parle à la fin du « ooh », et c'est le seul commentaire de ce point.
-  if (rp.ooh && hueesPermises() && Math.random() < 0.12 && CATALOGUE.has("commentatrice_huees_01")) {
-    try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
-    for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
-    const seance = S, huees = CATALOGUE.get("commentatrice_huees_01");
-    setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, 1300);
+  // Après le « ooh », parfois, le public siffle et l'arbitre le rappelle à l'ordre (pas plus d'une fois en 12 heures) :
+  // il parle à la fin des sifflets, et c'est le seul commentaire de ce point.
+  if (rp.ooh && hueesPermises() && Math.random() < 0.12 && voix.fichiers.has("arbitre_huees_01")) {
+    const duree = ambiance.sifflets(0.9);
+    if (duree) {
+      try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
+      for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
+      const seance = S, huees = CATALOGUE.get("arbitre_huees_01");
+      setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, (0.9 + duree * 0.8) * 1000);
+    }
   }
   if (rp.tension) setTimeout(() => ambiance.tension(), 500);
   // Le cri du vainqueur du set (ou du match) ; les commentateurs réagissent parfois.
@@ -357,11 +405,17 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   }, silencieux || reduitMouvement() ? 0 : 500);
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
+  return apresPoint(evt, a, cel, rp);
+}
 
+// Après un coup ou un point de pénalité : le public, les annonces, le score, puis la fin du set, du match ou le coup suivant.
+// rp : les réactions du public à ce coup (null après une pénalité : pas de réaction).
+function apresPoint(evt, a, cel, rp) {
+  const m = S.match;
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
   if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
   // Sinon, parfois, une réaction du public : applaudissements, « Allez ! », « Bravo ! », « Ohhh… » ou brouhaha (voir reactionPoint).
-  else if (!rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups); if (r) setTimeout(() => ambiance.reagir(r), 300); }
+  else if (rp && !rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups); if (r) setTimeout(() => ambiance.reagir(r), 300); }
   // Parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
   if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length))
     a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));
@@ -1943,22 +1997,27 @@ function majDuel(duel) {
   if (D.duel && Date.parse(duel.maj_le) < Date.parse(D.duel.maj_le)) return;   // information périmée
   // La réponse est arrivée pendant la secousse des poings : on la dévoile à la fin de la secousse.
   const resteSecousse = (D.secoueFin || 0) - performance.now();
-  if (resteSecousse > 0 && (duel.coups || []).length > S.match.coups.length) {
+  if (resteSecousse > 0 && evenementsDuel(duel, D.moi).length > nbEvenements(S.match)) {
     D.enAttente = duel; clearTimeout(D.secoueT);
     D.secoueT = setTimeout(() => { D && (D.secoueFin = 0, majDuel(D.enAttente)); }, resteSecousse);
     return;
   }
   D.duel = duel;
   afficherMessages(duel);
-  const m = S.match, n = (duel.coups || []).length;
+  const m = S.match, ev = evenementsDuel(duel, D.moi), n = ev.length;
+  // Un avertissement pour dépassement de temps, depuis la dernière fois (pas ceux d'avant mon arrivée dans le match).
+  const avertis = Array.isArray(duel.avertis) ? vuDe(duel.avertis, D.moi) : [false, false];
+  if (D.avertisVus) [0, 1].forEach(k => { if (avertis[k] && !D.avertisVus[k]) avertir(k); });
+  D.avertisVus = avertis;
 
-  // 1. Les coups révélés depuis la dernière fois (rattrapage si plusieurs).
-  if (m.coups.length < n && !m.termine) {
-    while (m.coups.length < n - 1) { const c = coupVuDe(duel.coups[m.coups.length], D.moi); afficherCoup(c.a, c.b, c.auto, { silencieux: true }); }
-    const c = coupVuDe(duel.coups[n - 1], D.moi);
+  // 1. Les coups révélés (et les points de pénalité) depuis la dernière fois (rattrapage si plusieurs).
+  const montrer = (e, opts) => (e.coup ? afficherCoup(e.coup.a, e.coup.b, e.coup.auto, opts) : afficherPenalite(e.penalite, opts));
+  if (nbEvenements(m) < n && !m.termine) {
+    while (nbEvenements(m) < n - 1) montrer(ev[nbEvenements(m)], { silencieux: true });
+    const e = ev[n - 1];
     S.occupe = true; arreterMinuteur(); boutons(false);
-    ambiance.raquette(c.a, grandMoment(m));   // le coup de raquette au moment où les deux signes se dévoilent
-    afficherCoup(c.a, c.b, c.auto);
+    if (e.coup) ambiance.raquette(e.coup.a, grandMoment(m));   // le coup de raquette au moment où les deux signes se dévoilent
+    montrer(e, {});
     if (!coherent(m, duel, D.moi)) {   // ne devrait jamais arriver : on se recale sur le serveur
       const r = rejouer(duel, D.moi); S.match = r.match; render(); renderHistorique();
     }
@@ -2007,18 +2066,28 @@ function duelReprendre() {
 }
 
 function lancerMinuteurDuel() {
-  cancelAnimationFrame(raf); $("timer").classList.remove("urgent");
+  cancelAnimationFrame(raf); $("timer").classList.remove("urgent", "reserve");
   ambiance.calmer(true);
   const manche = D.duel.manche;
   const tick = () => {
     if (!D || D.fini || D.duel.manche !== manche || D.duel.pause_depuis) return;
     const reste = tempsRestant(D.duel.echeance, D.decalage);
-    const k = Math.max(0, Math.min(1, reste / DUREE_COUP_MS));
-    $("bar").style.transform = `scaleX(${k})`;
-    if (k < 0.3) $("timer").classList.add("urgent");
-    if (reste <= 0) {
-      // Temps écoulé : le serveur jouera au hasard pour celui qui n'a pas joué.
-      if (D.mancheEnvoyee !== manche) { boutons(false); $("verdict").textContent = "Temps écoulé…"; }
+    // Ma réserve de temps (étape 49 ; null : serveur pas encore à jour, l'ancienne règle s'applique).
+    const reserve = Array.isArray(D.duel.reserve) ? Number(D.duel.reserve[D.moi]) * 1000 : null;
+    if (reste > 0) {
+      const k = Math.max(0, Math.min(1, reste / DUREE_COUP_MS));
+      $("bar").style.transform = `scaleX(${k})`;
+      if (k < 0.3) $("timer").classList.add("urgent");
+      afficherReserve(reserve);
+    } else if (reserve !== null && D.mancheEnvoyee !== manche && reste + reserve > 0) {
+      // Les 8 secondes sont passées : je puise dans ma réserve.
+      const r = reste + reserve;
+      $("timer").classList.add("urgent", "reserve");
+      $("bar").style.transform = `scaleX(${r / RESERVE_MS})`;
+      afficherReserve(r, true);
+    } else {
+      // Temps dépassé : le serveur décide (avertissement, puis point de pénalité).
+      if (D.mancheEnvoyee !== manche) { boutons(false); $("verdict").textContent = "Temps dépassé…"; if (reserve !== null) afficherReserve(0); }
       setTimeout(battement, TOLERANCE_MS);
       return;
     }

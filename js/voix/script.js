@@ -57,6 +57,13 @@ const ARBITRE = {
   arbitre_silence_01: "Silence, s'il vous plaît.",
   arbitre_temps_01: "Temps.",
   arbitre_coup_joue_d_office_01: "Coup joué d'office.",
+  // La réserve de temps épuisée (28 octobre) : avertissement, puis point de pénalité.
+  arbitre_avertissement_jaune_01: "Avertissement, dépassement de temps, côté jaune.",
+  arbitre_avertissement_rouge_01: "Avertissement, dépassement de temps, côté rouge.",
+  arbitre_penalite_jaune_01: "Point de pénalité, côté jaune.",
+  arbitre_penalite_rouge_01: "Point de pénalité, côté rouge.",
+  // Après les sifflets du public (rare).
+  arbitre_huees_01: "Je vous demande de vous arrêter.",
   // Pour les prochaines cérémonies (temps mort, réclamation, poignée de main, forfait).
   arbitre_temps_mort_jaune_01: "Temps mort, côté jaune.",
   arbitre_temps_mort_rouge_01: "Temps mort, côté rouge.",
