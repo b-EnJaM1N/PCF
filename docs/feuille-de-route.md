@@ -25,8 +25,9 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 - **Décision du 28 octobre : HandSlam est le circuit, pas la discipline.** La discipline, c'est le Pierre-Feuille-Ciseaux ;
   HandSlam est l'endroit où on la joue sérieusement (comme Roland-Garros pour le tennis, ou la NBA pour le basket). On écrit
   « jouer au Pierre-Feuille-Ciseaux sur HandSlam », « un joueur de HandSlam », « le circuit HandSlam » ; jamais « jouer au
-  HandSlam ». Les répliques enregistrées (« le monde du HandSlam », « champion du monde du HandSlam ») se lisent comme un circuit.
-- **La revue « Les Cahiers de HandSlam »** (28 octobre, nom choisi par le porteur du projet, idée d'un testeur dont écrire est le métier) : sur le
+  HandSlam ». Avec l'article quand on parle du circuit (« le HandSlam », « L'Écho du HandSlam », « Les Cahiers du HandSlam ») ;
+  sans article pour le site ou l'appli (« jouer sur HandSlam »). Les répliques enregistrées (« le monde du HandSlam », « champion du monde du HandSlam ») se lisent comme un circuit.
+- **La revue « Les Cahiers du HandSlam »** (28 octobre, nom choisi par le porteur du projet, idée d'un testeur dont écrire est le métier) : sur le
   site (`app/revue.html`, modèle d'article `app/revue-modele.html`, un fichier `revue-<titre>.html` par article). Rubriques :
   philosophie de la discipline, analyse technique, chroniques du court central ; un article toutes les deux semaines ; ton sérieux
   décalé. Le forum attendra qu'il y ait du monde (après la sortie sur le Play Store). Le lien depuis l'appli, au premier article.
