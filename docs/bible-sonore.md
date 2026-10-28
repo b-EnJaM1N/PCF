@@ -63,6 +63,8 @@ seront pas joués.
   réaliste (applaudissements, « Allez ! », huées, rires). D'où le lot complet du 28 octobre : tous les sons du public et de la
   raquette, avec la phrase commune, plus 2 nouveaux applaudissements (`public_point_02`, `_03`) et des huées avec sifflets
   (`stade_sifflet_01`, refait dans la même salle). La fanfare attend (c'est de la musique : « no music » dans la phrase commune).
+- 9 sons du lot sont sortis presque muets (3 « Allez ! », un « ohhh » déçu, le « ooh », 4 raquettes) : leur volume a été remonté
+  à la main (ffmpeg, crête à -1,5 dB). Si l'un d'eux sonne mal à l'écoute, on le refait après le 2 novembre.
 
 ## 6. Côté code (sans crédits)
 - **Fait le 27 octobre** : la salle baisse sous la voix de Roland, Monique et des autres voix, comme à la télévision ; le coup
