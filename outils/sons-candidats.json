@@ -1,17 +1,35 @@
 {
-  "_explication": "Des sons candidats (28 octobre), générés à part dans app/audio/essais/ et écoutés sur app/essais-sons.html avant d'entrer dans le jeu (robot « Voix », choix « sons-candidats »). Chaque son a sa propre description, sans phrase commune.",
+  "_explication": "Des sons candidats (28 octobre), générés à part dans app/audio/essais/ et écoutés sur app/essais-sons.html avant d'entrer dans le jeu (robot « Voix », choix « sons-candidats »). Chaque son a sa propre description, sans phrase commune. Deuxième essai (28 octobre) : « Bravo » et « Allez » seulement, avec l'accent français (les premiers : z prononcé, « Bravo » à l'italienne).",
   "candidats": {
-    "applaudir_1": { "groupe": "Applaudissements après un point", "texte": "Polite tennis audience applause after a point in a large indoor arena, many people clapping, natural and clear, no ball sounds, no music", "duree": 3 },
-    "applaudir_2": { "groupe": "Applaudissements après un point", "texte": "Warm audience applause with a few cheers after a great point, large indoor tennis arena, close and clear, no ball sounds, no music", "duree": 3 },
-    "applaudir_3": { "groupe": "Applaudissements après un point", "texte": "Big enthusiastic crowd applause and cheering after an amazing point, indoor arena, loud and clear, no ball sounds, no music", "duree": 3 },
-    "bravo_1": { "groupe": "« Bravo ! »", "texte": "A French man in the crowd shouts \"Bravo !\" loudly, then people applaud, indoor arena, clear voice, no music", "duree": 2.5 },
-    "bravo_2": { "groupe": "« Bravo ! »", "texte": "A French woman in the crowd shouts \"Bravo !\" with enthusiasm, then applause, indoor arena, clear voice, no music", "duree": 2.5 },
-    "bravo_3": { "groupe": "« Bravo ! »", "texte": "Several French spectators shout \"Bravo ! Bravo !\" together with applause, indoor arena, clear voices, no music", "duree": 2.5 },
-    "allez_1": { "groupe": "« Allez ! »", "texte": "A French man in the crowd shouts \"Allez !\" loudly to encourage a player, indoor arena, clear voice, crowd murmur behind, no music", "duree": 2 },
-    "allez_2": { "groupe": "« Allez ! »", "texte": "A French woman in the crowd shouts \"Allez !\" to encourage a player, indoor arena, clear voice, crowd murmur behind, no music", "duree": 2 },
-    "allez_3": { "groupe": "« Allez ! »", "texte": "A group of French fans chant \"Allez ! Allez !\" with claps, indoor arena, clear voices, no music", "duree": 2 },
-    "huees_1": { "groupe": "Huées du public", "texte": "The crowd boos loudly in disapproval, a long \"booo\", indoor arena, clear, no music", "duree": 3 },
-    "huees_2": { "groupe": "Huées du public", "texte": "The crowd boos and whistles in protest at a decision, indoor arena, loud and clear, no music", "duree": 3 },
-    "huees_3": { "groupe": "Huées du public", "texte": "Scattered booing and disapproving whistles from the crowd, then it calms down, indoor arena, clear, no music", "duree": 3 }
+    "bravo_1": {
+      "groupe": "« Bravo ! »",
+      "texte": "A native French man in the stands shouts the French word \"Bravo !\" once, French accent, stress on the last syllable (bra-VO), short, then a few claps, indoor arena, no music",
+      "duree": 2
+    },
+    "bravo_2": {
+      "groupe": "« Bravo ! »",
+      "texte": "A native French woman in the stands calls out \"Bravo !\" once, French accent, stress on the last syllable (bra-VO), short, indoor arena, no music",
+      "duree": 2
+    },
+    "bravo_3": {
+      "groupe": "« Bravo ! »",
+      "texte": "Several native French spectators call out \"Bravo !\" with a French accent (bra-VO), short, with applause, indoor arena, no music",
+      "duree": 2
+    },
+    "allez_1": {
+      "groupe": "« Allez ! »",
+      "texte": "A native French man in the stands yells the French word \"Allez !\" once, pronounced ah-LAY with no z sound, French accent, short and punchy, indoor arena, no music",
+      "duree": 2
+    },
+    "allez_2": {
+      "groupe": "« Allez ! »",
+      "texte": "A native French woman in the stands yells \"Allez !\" once, pronounced ah-LAY with no z sound, French accent, short, indoor arena, no music",
+      "duree": 2
+    },
+    "allez_3": {
+      "groupe": "« Allez ! »",
+      "texte": "A few native French tennis fans shout \"Allez !\" together once, pronounced ah-LAY with no z sound, French accent, short, indoor arena, no music",
+      "duree": 2
+    }
   }
 }
