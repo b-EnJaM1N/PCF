@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (436 répliques)
+## Commentateur — vif, enthousiaste, plein de références (453 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -319,6 +319,18 @@ restent lus par la voix de synthèse.
 | `commentateur_memoire_ouverture_01_ciseaux_f.mp3` | La dernière fois, elle avait ouvert avec les Ciseaux ! |
 | `commentateur_memoire_ouverture_01_feuille.mp3` | La dernière fois, il avait ouvert avec la Feuille ! |
 | `commentateur_memoire_ouverture_01_feuille_f.mp3` | La dernière fois, elle avait ouvert avec la Feuille ! |
+| `commentateur_memoire_meme_ouverture_01.mp3` | Il rouvre comme au dernier match ! Il ose ! Il ose ! |
+| `commentateur_memoire_meme_ouverture_01_f.mp3` | Elle rouvre comme au dernier match ! Elle ose ! Elle ose ! |
+| `commentateur_memoire_change_ouverture_01.mp3` | Nouvelle ouverture ! Il a préparé ce match ! |
+| `commentateur_memoire_change_ouverture_01_f.mp3` | Nouvelle ouverture ! Elle a préparé ce match ! |
+| `commentateur_memoire_habitues_01.mp3` | Ces deux-là se connaissent par cœur ! Et ça promet ! |
+| `commentateur_memoire_jamais_battu_01.mp3` | Il n'a jamais battu cet adversaire ! Ce soir, peut-être ? |
+| `commentateur_memoire_jamais_battu_01_f.mp3` | Elle n'a jamais battu cet adversaire ! Ce soir, peut-être ? |
+| `commentateur_memoire_retrouvailles_01.mp3` | Ils se retrouvent pour la première fois depuis un moment ! |
+| `commentateur_memoire_dernier_gagne_01.mp3` | Il reste sur une victoire contre lui ! Il veut la confirmer ! |
+| `commentateur_memoire_dernier_gagne_01_f.mp3` | Elle reste sur une victoire ! Elle veut la confirmer ! |
+| `commentateur_memoire_renverse_01.mp3` | La dernière fois, il avait renversé le match ! Le public n'a pas oublié ! |
+| `commentateur_memoire_renverse_01_f.mp3` | La dernière fois, elle avait renversé le match ! Le public n'a pas oublié ! |
 | `commentateur_memoire_defaite_seche_01.mp3` | Le dernier match s'était soldé par une défaite sèche… l'heure de la revanche a sonné ! |
 | `commentateur_memoire_balle_sauvee_01.mp3` | Au dernier match, il avait sauvé une balle de match ! Le public s'en souvient ! |
 | `commentateur_memoire_balle_sauvee_01_f.mp3` | Au dernier match, elle avait sauvé une balle de match ! Le public s'en souvient ! |
@@ -340,6 +352,11 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_avant_match_14.mp3` | Échauffement terminé, les mains sont prêtes ! |
 | `commentateur_dialogue_avant_match_15.mp3` | Un conseil pour nos joueurs, Madame ? |
 | `commentateur_dialogue_avant_bot_01.mp3` | Un humain contre une machine, Madame ! |
+| `commentateur_dialogue_memoire_meme_ouverture_01.mp3` | Il rouvre comme au dernier match ! Quelle audace ! |
+| `commentateur_dialogue_memoire_meme_ouverture_01_f.mp3` | Elle rouvre comme au dernier match ! Quelle audace ! |
+| `commentateur_dialogue_memoire_revanche_01.mp3` | Une revanche, Madame ! Une vraie ! |
+| `commentateur_dialogue_memoire_habitues_01.mp3` | Ils se connaissent, ils se jaugent, ils se respectent ! |
+| `commentateur_dialogue_memoire_marquant_01.mp3` | La dernière fois, quel match, Madame ! |
 | `commentateur_dialogue_avant_finale_01.mp3` | Une finale, Madame ! Une FINALE ! |
 | `commentateur_dialogue_avant_revanche_01.mp3` | Ils se connaissent, ces deux-là ! |
 | `commentateur_dialogue_avant_nuit_01.mp3` | Il est tard, Madame, mais le HandSlam ne dort jamais ! |
@@ -552,7 +569,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (381 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (405 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -711,8 +728,28 @@ restent lus par la voix de synthèse.
 | `commentatrice_memoire_ouverture_01_ciseaux_f.mp3` | Elle avait ouvert avec les Ciseaux la dernière fois. Elle a peut-être appris. Peut-être. |
 | `commentatrice_memoire_ouverture_01_feuille.mp3` | Il avait ouvert avec la Feuille la dernière fois. Il a peut-être appris. Peut-être. |
 | `commentatrice_memoire_ouverture_01_feuille_f.mp3` | Elle avait ouvert avec la Feuille la dernière fois. Elle a peut-être appris. Peut-être. |
-| `commentatrice_memoire_meme_ouverture_01.mp3` | Il rejoue la même ouverture que la dernière fois. La mémoire, ce n'est pas son fort. |
-| `commentatrice_memoire_meme_ouverture_01_f.mp3` | Elle rejoue la même ouverture que la dernière fois. La mémoire, ce n'est pas son fort. |
+| `commentatrice_memoire_meme_ouverture_02.mp3` | Il rejoue la même ouverture que la dernière fois. Simple habitude, ou piège ? |
+| `commentatrice_memoire_meme_ouverture_02_f.mp3` | Elle rejoue la même ouverture que la dernière fois. Simple habitude, ou piège ? |
+| `commentatrice_memoire_meme_ouverture_03.mp3` | Même ouverture. Il assume. |
+| `commentatrice_memoire_meme_ouverture_03_f.mp3` | Même ouverture. Elle assume. |
+| `commentatrice_memoire_meme_ouverture_04.mp3` | La même ouverture que la dernière fois. Il teste la mémoire de son adversaire. |
+| `commentatrice_memoire_meme_ouverture_04_f.mp3` | La même ouverture que la dernière fois. Elle teste la mémoire de son adversaire. |
+| `commentatrice_memoire_change_ouverture_01.mp3` | Il change d'ouverture. La dernière fois lui a servi de leçon. |
+| `commentatrice_memoire_change_ouverture_01_f.mp3` | Elle change d'ouverture. La dernière fois lui a servi de leçon. |
+| `commentatrice_memoire_mene_01.mp3` | Il mène dans leurs face-à-face. Mais ça ne veut rien dire. Enfin, un peu. |
+| `commentatrice_memoire_mene_01_f.mp3` | Elle mène dans leurs face-à-face. Mais ça ne veut rien dire. Enfin, un peu. |
+| `commentatrice_memoire_jamais_battu_01.mp3` | Jamais battu cet adversaire. Il y a un début à tout. |
+| `commentatrice_memoire_dernier_gagne_01.mp3` | Il avait gagné la dernière fois. Le plus dur, c'est de recommencer. |
+| `commentatrice_memoire_dernier_gagne_01_f.mp3` | Elle avait gagné la dernière fois. Le plus dur, c'est de recommencer. |
+| `commentatrice_memoire_dernier_perdu_01.mp3` | Il reste sur une défaite contre lui. Il a eu le temps d'y penser. |
+| `commentatrice_memoire_dernier_perdu_01_f.mp3` | Elle reste sur une défaite. Elle a eu le temps d'y penser. |
+| `commentatrice_memoire_favori_01_pierre.mp3` | La dernière fois, il avait beaucoup joué la Pierre. Il a dû y repenser. |
+| `commentatrice_memoire_favori_01_pierre_f.mp3` | La dernière fois, elle avait beaucoup joué la Pierre. Elle a dû y repenser. |
+| `commentatrice_memoire_favori_01_ciseaux.mp3` | La dernière fois, il avait beaucoup joué les Ciseaux. Il a dû y repenser. |
+| `commentatrice_memoire_favori_01_ciseaux_f.mp3` | La dernière fois, elle avait beaucoup joué les Ciseaux. Elle a dû y repenser. |
+| `commentatrice_memoire_favori_01_feuille.mp3` | La dernière fois, il avait beaucoup joué la Feuille. Il a dû y repenser. |
+| `commentatrice_memoire_favori_01_feuille_f.mp3` | La dernière fois, elle avait beaucoup joué la Feuille. Elle a dû y repenser. |
+| `commentatrice_memoire_long_01.mp3` | Leur dernier match a duré une éternité. J'ai prévu un thermos. |
 | `commentatrice_memoire_defaite_seche_01.mp3` | La dernière fois, c'était une correction. On espère un match, cette fois. |
 | `commentatrice_memoire_serre_01.mp3` | La dernière fois, ça s'était joué à un point. Prévoyez du temps. |
 | `commentatrice_memoire_habitude_01.mp3` | Il a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude. |
@@ -735,6 +772,10 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_avant_match_14.mp3` | On s'échauffe les mains, maintenant. On aura tout vu. |
 | `commentatrice_dialogue_avant_match_15.mp3` | Ne jouez pas Pierre. Ou jouez Pierre. Je ne sais plus. |
 | `commentatrice_dialogue_avant_bot_01.mp3` | La machine a l'air plus détendue. |
+| `commentatrice_dialogue_memoire_meme_ouverture_01.mp3` | Ou quel manque d'imagination. On saura à la fin du match. |
+| `commentatrice_dialogue_memoire_revanche_01.mp3` | Ils ont dû la préparer toute la semaine. |
+| `commentatrice_dialogue_memoire_habitues_01.mp3` | Ils se méfient, surtout. |
+| `commentatrice_dialogue_memoire_marquant_01.mp3` | On en reparle à la fin de celui-ci. |
 | `commentatrice_dialogue_avant_finale_01.mp3` | J'avais entendu la première fois. |
 | `commentatrice_dialogue_avant_revanche_01.mp3` | Oui. Et ils ne s'aiment pas beaucoup. |
 | `commentatrice_dialogue_avant_nuit_01.mp3` | Moi si. Normalement. |

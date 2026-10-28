@@ -47,14 +47,37 @@ test("la mémoire du dernier match : ouverture, défaite sèche, balle sauvée, 
   assert.equal(n.serre, true); assert.equal(n.defaiteSeche, false); assert.equal(n.habitude, null);
 });
 
-test("les commentateurs se souviennent : une réplique enregistrée, au bon genre, et la même ouverture relevée", async () => {
+test("les commentateurs se souviennent : des répliques enregistrées, au bon genre, et l'ouverture relevée", async () => {
   const { commentaireMemoire, commentaireMemeOuverture } = await import("../app/js/annonces.js");
-  const l = commentaireMemoire({ ouverture: 1, defaiteSeche: false, balleSauvee: false, serre: false, belle: false, habitude: null }, { genreAdv: "f" }, () => 0);
+  const [l] = commentaireMemoire({ ouverture: 1, defaiteSeche: false, balleSauvee: false, serre: false, belle: false, habitude: null }, { genreAdv: "f" }, () => 0);
   assert.match(l.id, /^commentateur_memoire_ouverture_01_ciseaux_f$/);
   assert.match(l.texte, /elle avait ouvert avec les Ciseaux/);
-  const b = commentaireMemoire({ ouverture: 0, balleSauvee: true }, {}, () => 0.1);
+  const [b] = commentaireMemoire({ ouverture: 0, balleSauvee: true }, {}, () => 0.1);
   assert.match(b.id, /memoire_balle_sauvee/);
   assert.equal(commentaireMemoire({ ouverture: 0 }, { audible: () => false }, () => 0), null, "pas de voix : rien");
-  assert.match(commentaireMemeOuverture({ ouverture: 2 }, 2).texte, /même ouverture/);
-  assert.equal(commentaireMemeOuverture({ ouverture: 2 }, 1), null);
+  // Une revanche : le dialogue Roland → Monique.
+  const r = commentaireMemoire({ ouverture: null, gagne: false, v: 0, d: 1 }, {}, () => 0, );
+  assert.ok(r.length >= 1);
+  const rev = commentaireMemoire({ ouverture: null, gagne: false }, { audible: id => /memoire_revanche/.test(id) }, () => 0);
+  assert.deepEqual(rev.map(x => x.id), ["commentateur_dialogue_memoire_revanche_01", "commentatrice_dialogue_memoire_revanche_01"]);
+  // Le bilan : elle mène 3–1 (je suis l'adversaire, au masculin).
+  const mene = commentaireMemoire({ ouverture: null, v: 1, d: 3 }, { genreAdv: "f", audible: id => /memoire_mene/.test(id) }, () => 0);
+  assert.match(mene[0].texte, /^Elle mène/);
+  // « contre lui » : jamais pour une adversaire.
+  for (let i = 0; i < 50; i++) {
+    const x = commentaireMemoire({ ouverture: null, gagne: true, v: 1, d: 0 }, { genreAdv: "f" }, Math.random);
+    assert.ok(!x || !x.some(y => /contre lui/.test(y.texte)), x?.map(y => y.texte).join(" "));
+  }
+  // Son signe favori.
+  const fav = commentaireMemoire({ ouverture: null, favori: { signe: 2, part: 0.6 } }, { audible: id => /memoire_favori/.test(id) }, () => 0);
+  assert.match(fav[0].texte, /beaucoup joué la Feuille/);
+  // Au premier coup : la même ouverture (jamais la réplique retirée), ou une nouvelle, une fois sur deux.
+  for (let i = 0; i < 30; i++) {
+    const m = commentaireMemeOuverture({ ouverture: 2 }, 2, {}, Math.random);
+    assert.ok(m.length >= 1 && !m.some(y => /pas son fort/.test(y.texte)));
+    assert.match(m.map(y => y.texte).join(" "), /même ouverture|Même ouverture|rouvre/);
+  }
+  assert.match(commentaireMemeOuverture({ ouverture: 2 }, 2, { genreAdv: "f" }, () => 0)[0].texte, /^Elle rejoue/);
+  assert.match(commentaireMemeOuverture({ ouverture: 2 }, 1, {}, () => 0)[0].texte, /ouverture/);
+  assert.equal(commentaireMemeOuverture({ ouverture: 2 }, 1, {}, () => 0.9), null);
 });

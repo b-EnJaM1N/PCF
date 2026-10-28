@@ -308,10 +308,10 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   S.suivi.enregistrer(signe, evt.gagnant === null ? "e" : evt.gagnant === 0 ? "g" : "p");
   suivreCoup(S.stats, m, evt);
   const a = annoncerCoup(m, evt, S.annonces, { recents: S.suivi.recents, auto: !!auto[0] });
-  // Au premier coup : il rejoue la même ouverture qu'au dernier match (Monique le relève).
+  // Au premier coup : il rejoue la même ouverture qu'au dernier match, ou il en change (Roland ou Monique le relève).
   if (m.coups.length === 1 && !silencieux) {
     const mo = commentaireMemeOuverture(S.memoire, signeAdv, { genreAdv: S.genreAdv, audible: id => !voix.fichiers.size || voix.fichiers.has(id) });
-    if (mo && !a.lignes.some(l => l.role !== "arbitre")) a.lignes.push(mo);
+    if (mo && !a.lignes.some(l => l.role !== "arbitre")) a.lignes.push(...mo);
   }
   (S.citations ||= []).push(...a.lignes.filter(l => l.role !== "arbitre"));   // pour « La Une »
   // Balle de match sauvée : le cri de fin de set sera plus fort.
