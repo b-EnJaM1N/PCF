@@ -22,6 +22,10 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   L'historique des mains est maintenant gardé aussi pour les duels en ligne (sur le téléphone), avec les balles de match sauvées.
   Deuxième lot (28 octobre) : bilan des face-à-face, revanche, jamais battu, dernier vainqueur, dialogues ; 14 répliques attendent
   des crédits (`outils/a-refaire.txt`, lignes en #).
+- **La revue « Les Cahiers du HandSlam »** (28 octobre, idée d'un testeur dont écrire est le métier ; nom provisoire) : sur le
+  site (`app/revue.html`, modèle d'article `app/revue-modele.html`, un fichier `revue-<titre>.html` par article). Rubriques :
+  philosophie de la discipline, analyse technique, chroniques du court central ; un article toutes les deux semaines ; ton sérieux
+  décalé. Le forum attendra qu'il y ait du monde (après la sortie sur le Play Store). Le lien depuis l'appli, au premier article.
 - **La réserve de temps** (décision du 28 octobre, *fait, à valider* ; étape SQL 49) : plus aucun coup joué au hasard (un coup au
   hasard est imprévisible, donc il pouvait avantager). 8 secondes par coup, puis une réserve de 20 secondes pour tout le match
   (pas remise à zéro à chaque set) ; réserve épuisée : avertissement de l'arbitre la première fois (et 8 secondes de plus),
