@@ -42,6 +42,14 @@
       "texte": "Short applause after a point, medium",
       "duree": 3
     },
+    "public_point_02": {
+      "texte": "Polite applause after a good point, natural, many hands, short",
+      "duree": 2.5
+    },
+    "public_point_03": {
+      "texte": "Enthusiastic applause after a fine point, a few whistles of approval, short",
+      "duree": 2.5
+    },
     "public_clameur_01": {
       "texte": "Big cheer after a great point, then applause",
       "duree": 3
@@ -143,9 +151,8 @@
       "duree": 5
     },
     "stade_sifflet_01": {
-      "texte": "Stadium crowd playful whistling and light good-natured booing, short",
-      "duree": 3,
-      "salle": false
+      "texte": "The crowd boos and whistles loudly in disapproval at a disputed call, then settles down",
+      "duree": 3
     }
   },
   "_salle": "Same venue for every sound: a large indoor tennis arena with about 5,000 spectators, evening final, warm natural hall reverb, heard from the TV broadcast microphones near the court, consistent loudness, no music."

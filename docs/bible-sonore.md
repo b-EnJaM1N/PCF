@@ -57,10 +57,20 @@ seront pas joués.
 4. Les nouveaux commentaires (banque `docs/repliques-banque-brouillon.md`), eux aussi en un seul lot, avec les mêmes réglages
    de voix que les anciens (`docs/voix-elevenlabs.md`).
 
+## 5 bis. Où on en est (28 octobre)
+- Essai de 3 sons (applaudissements après un point, ovation, raquette Pierre) : environ 11 crédits par seconde de son.
+- Avis du porteur du projet : la raquette, oui ; le reste ne change pas assez, il veut une vraie ambiance de stade, homogène et
+  réaliste (applaudissements, « Allez ! », huées, rires). D'où le lot complet du 28 octobre : tous les sons du public et de la
+  raquette, avec la phrase commune, plus 2 nouveaux applaudissements (`public_point_02`, `_03`) et des huées avec sifflets
+  (`stade_sifflet_01`, refait dans la même salle). La fanfare attend (c'est de la musique : « no music » dans la phrase commune).
+
 ## 6. Côté code (sans crédits)
 - **Fait le 27 octobre** : la salle baisse sous la voix de Roland, Monique et des autres voix, comme à la télévision ; le coup
   de raquette reste au même niveau (`SOUS_LA_VOIX` dans `app/js/ambiance.js`).
 - **28 octobre** : les sifflets (`stade_sifflet_01`) sont joués, rarement, après un « ooh » ; l'arbitre rappelle alors le public
   à l'ordre (« Je vous demande de vous arrêter »).
+- **28 octobre** : le public réagit plus souvent après un point (applaudissements 3 fois sur 10 au lieu de 8 sur 100, plus
+  de brouhaha, de « Allez ! » et de « Bravo ! » ; jamais deux points de suite), et les applaudissements durent 2 secondes, un peu
+  plus fort.
 - Après les nouveaux sons : régler les volumes ensemble, à l'écoute, sur la version de test.
 - Plus tard, à essayer : une légère couleur « micro de télévision » sur les voix des commentateurs.
