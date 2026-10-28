@@ -73,10 +73,28 @@ C'est un travail de long terme. Les briques, dans l'ordre :
 
 Les idées détaillées (contenu, prix, démarches) sont gardées par le porteur du projet, hors du dépôt public.
 
-## 8. Calendrier conseillé
+## 8. Calendrier conseillé (mis à jour le 28 octobre : on attend le Play Store)
 
-1. **Maintenant** : réserver @handslam sur TikTok, Instagram et YouTube ; préparer 6 à 9 vidéos d'avance.
-2. **Pendant le test fermé** : publier 2 ou 3 vidéos par semaine pour s'entraîner et voir ce qui marche ; raconter l'histoire du créateur.
-3. **Le jour du lancement** : vidéo d'annonce, avis des testeurs, message à tous les proches, communiqué à la presse locale.
-4. **Le premier mois** : regarder les chiffres de retour ; si les joueurs reviennent, tester un micro-influenceur.
-5. **Ensuite** : le premium, quand il y aura une communauté qui joue chaque semaine.
+Décision du porteur du projet : **rien n'est publié avant la sortie sur le Play Store** (une seule première impression ; l'appli
+bouge encore ; tout doit tomber le même jour). Une vidéo d'essai avant reste possible, sans obligation (handslam.fr marche déjà).
+
+1. **Maintenant, sans rien publier** : réserver @handslam sur TikTok, Instagram et YouTube (et X) ; garder les 3 vidéos prêtes
+   (`docs/videos/premieres-videos.md`) et en préparer 3 ou 4 de plus ; préparer la fiche du Play Store ; prévenir les testeurs
+   qu'on leur demandera un avis honnête le jour J.
+2. **Jour J (sortie sur le Play Store, vers le 15-20 novembre)** : la vidéo 1 « Monique a dit » sur tous les réseaux, un message
+   à tous les proches avec le lien du Play Store, les avis des testeurs.
+3. **J+2** : la vidéo 2 (les 3 réflexes). **J+4** : le tuto « Comment jouer à HandSlam ».
+4. **Ensuite** : 2 ou 3 vidéos par semaine ; on décline ce qui marche le mieux. La première semaine : un message à la presse locale.
+5. **Après 2 ou 3 semaines** : regarder les chiffres (installations, retours du lendemain, 3e match). Seulement si les joueurs
+   reviennent : le grand tournoi, puis éventuellement un micro-influenceur.
+6. **Plus tard** : le premium, quand il y aura une communauté qui joue chaque semaine.
+
+## 9. Faire circuler les vidéos (sans spammer)
+Partager largement, oui ; inonder, non : les réseaux sanctionnent le spam (comptes bloqués) et ça abîme l'image.
+- **Les proches d'abord** : WhatsApp, statuts, stories Instagram et Snapchat ; leur demander de partager à leur tour.
+- **Les groupes et communautés** (un seul message par groupe, adapté au groupe, après avoir lu ses règles, en restant pour
+  répondre) : groupes Facebook de jeux mobiles et d'applis gratuites, serveurs Discord qui ont un salon « autopromo »,
+  Reddit francophone (seulement là où l'autopromotion est permise, souvent un jour précis).
+- **Sur X** : publier sur son compte ; répondre seulement quand c'est vraiment dans le sujet (une discussion sur le chifoumi,
+  un jeu entre amis) ; jamais la même vidéo collée sous des dizaines de messages, ni de mentions en masse.
+- **Jamais** : acheter des abonnés ou des vues, utiliser des robots, envoyer des messages privés à des inconnus.
