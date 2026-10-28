@@ -7,8 +7,11 @@ Même vidéo sur TikTok, Instagram (Reels) et YouTube Shorts.
 **Avant de publier** : sur TikTok, ajouter une musique tendance **à volume très bas** (5 à 10 %) pour ne pas couvrir les voix ; ou garder le son original.
 Ordre conseillé : vidéo 3 (l'histoire) en premier, puis 1, puis 2, à 2 ou 3 jours d'intervalle.
 
-## Vidéo 1 — « Monique a dit » (`v1-monique-a-dit.mp4`, 19 s)
-Roland ouvre la retransmission, puis Monique, Roland, Monique, Monique pendant un vrai match (« Quel mental de chips. », « Mesdames et mesdames… quelle main ! », « Muscle ton jeu, Robert. Muscle ton jeu. », « Bref. Il a perdu le set. »), puis le logo. Voix à la même vitesse que dans l'appli (Monique × 1,65, Roland × 1,4).
+## Vidéo 1 — « Monique a dit » (`v1-monique-a-dit.mp4`, 24 s)
+Pendant un vrai match : Roland ouvre la retransmission ; Monique : « Un pur produit de l'école hongroise. Très propre. » ;
+Roland : « Il est en train de craquer sous la pression ! », Monique : « Quel mental de chips. » ; Roland : « Mesdames et
+mesdames… quelle main ! » ; sur la balle de match contre Benji, Roland : « Le côté jaune a peur. » ; après la défaite, Monique :
+« Il a le seum. Comme disent les jeunes. » ; puis le logo (choix du porteur du projet, 28 octobre).
 
 **Légende** :
 > Lui s'enflamme. Elle ne pardonne rien. 🎙️🧊
