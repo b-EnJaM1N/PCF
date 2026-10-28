@@ -2,7 +2,7 @@
 import { EMOJI, NOM, DUREE_COUP_MS, nouveauMatch, jouerCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, signeAuHasard, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, commentaireMemoire, commentaireMemeOuverture } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
 import { voirTournoi, mesAmis, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs } from "./social-serveur.js";
 import { compterVisite, compterTroisMatchs } from "./visites.js";
@@ -28,7 +28,7 @@ import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS } from "./voix/scr
 import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
-import { noterMain, mainDuel, mainDossier, htmlMains, MAX_MAINS } from "./historique-mains.js";
+import { noterMain, mainDuel, mainDossier, htmlMains, MAX_MAINS, memoireDuDernier } from "./historique-mains.js";
 import { messagesPossibles, momentApres, texteMessage, erreurMessageLibre, nettoyerMessage, PREFIXE_LIBRE, MESSAGE_LIBRE_MAX } from "./messages-rapides.js";
 import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
@@ -308,6 +308,11 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   S.suivi.enregistrer(signe, evt.gagnant === null ? "e" : evt.gagnant === 0 ? "g" : "p");
   suivreCoup(S.stats, m, evt);
   const a = annoncerCoup(m, evt, S.annonces, { recents: S.suivi.recents, auto: !!auto[0] });
+  // Au premier coup : il rejoue la même ouverture qu'au dernier match, ou il en change (Roland ou Monique le relève).
+  if (m.coups.length === 1 && !silencieux) {
+    const mo = commentaireMemeOuverture(S.memoire, signeAdv, { genreAdv: S.genreAdv, audible: id => !voix.fichiers.size || voix.fichiers.has(id) });
+    if (mo && !a.lignes.some(l => l.role !== "arbitre")) a.lignes.push(...mo);
+  }
   (S.citations ||= []).push(...a.lignes.filter(l => l.role !== "arbitre"));   // pour « La Une »
   // Balle de match sauvée : le cri de fin de set sera plus fort.
   if (evt.balleAvant?.type === "match" && evt.gagnant !== null && evt.gagnant !== evt.balleAvant.joueur) (S.sauvee ||= [false, false])[evt.gagnant] = true;
@@ -543,8 +548,9 @@ function finir() {
     abandon: !!special && !gagne, officiel: !!(S.duel && D?.duel?.classe), niveauMoi: monClassement ?? 1200, niveauAdv: OPP.classement ?? 1200,
     finaleEnLigne: !!(S.duel && D?.tourVoix === "finale"), sitAndGo: !!(S.duel && D?.direct), grandChelem: !!(S.duel && D?.grandChelem),
   }) : [];
-  // L'historique des mains contre un bot (les duels en ligne sont gardés sur le serveur).
-  if (n && !S.duel) ecrire("mains", noterMain(lire("mains"), OPP.id, { gagne, detail: m.scoresSets.map(([a, b]) => `${a}–${b}`).join(", "), coups: c, debutsSet: m.debutsSet }));
+  // L'historique des mains contre cet adversaire (bot ou joueur en ligne), gardé sur le téléphone : la fiche de l'adversaire
+  // et la mémoire des commentateurs (balles de match sauvées comprises).
+  if (n) ecrire("mains", noterMain(lire("mains"), OPP.id, { gagne, detail: m.scoresSets.map(([a, b]) => `${a}–${b}`).join(", "), coups: c, debutsSet: m.debutsSet, balles: S.stats.ballesDeMatchSauvees || 0 }));
   // Le premier gant : offert après le premier match (avant, la main nue).
   const premierGant = matchsAvant === 0 && P.matchs > 0 && P.av.gant === "nu" && !P.premierGant;
   if (premierGant) { P.av.gant = "blanc"; P.premierGant = true; }
@@ -1113,11 +1119,15 @@ function presenterSpeaker() {
   const niveauMoi = humain ? monClassement ?? 1200 : P.elo, niveauAdv = humain ? OPP.classement ?? 1200 : OPP.elo;
   const monId = `h:${compteUI.session()?.user?.id}`;
   let recents = []; try { recents = lire("speakerRecents", []) || []; } catch { /* rien */ }
+  // La mémoire du dernier match contre le même adversaire (gardée pour le premier coup : la même ouverture ?).
+  const audible = id => !voix.fichiers.size || voix.fichiers.has(id), genreAdv = humain ? OPP.genre : botAuFeminin(OPP) ? "f" : "m";
+  S.memoire = memoireDuDernier(lire("mains")?.[OPP.id], f); S.genreAdv = genreAdv;
   const av = annoncesAvantMatch({
     moi: { surnom: surnomDe(P), genre: P.genre, etiquette: etiquetteDe(P, { advId: OPP.id, niveauMoi, niveauAdv }) },
     adv: humain ? { surnom: OPP.surnom, genre: OPP.genre, etiquette: etiquetteDe(OPP.fiche, { advId: monId, niveauMoi: niveauAdv, niveauAdv: niveauMoi }) } : { bot: OPP.id },
     tour: S.duel ? D?.tourCommente ?? null : S.tour !== null && T ? tourDe(T, S.tour).cle : null, sng: !!(S.duel && D?.sng),
-    humain, domination: !!(f && f.d >= f.v + 3), genre: P.genre, jeu: S.annonces?.jeu ?? null, audible: id => !voix.fichiers.size || voix.fichiers.has(id),
+    humain, domination: !!(f && f.d >= f.v + 3), genre: P.genre, jeu: S.annonces?.jeu ?? null, audible,
+    memoire: commentaireMemoire(S.memoire, { genreMoi: P.genre, genreAdv, audible }),
     situations: situationsDuMatch({
       humain, dejaJoues: !!(f && f.v + f.d > 0), niveauMoi, niveauAdv, memePays: humain && OPP.drapeau === P.drapeau,
       rapide: !!(D?.duel?.rapide || S.contreBotRapide), officiel: !!(S.duel && D?.duel?.classe), setsGagnants: S.match.format.setsGagnants,

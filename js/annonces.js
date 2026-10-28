@@ -374,7 +374,7 @@ const partiesSurnom = s => (s ? [CATALOGUE.get(idPartie(s.nom)), CATALOGUE.get(i
 // situations : situationsDuMatch() ; recents : les phrases dites aux derniers matchs (on évite de les répéter).
 // Renvoie { speaker, commentaires } : les deux listes de répliques, dans l'ordre.
 export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = false, humain = false, domination = false, genre = "m",
-  situations = [], recents = [], jeu = null, audible = null } = {}, rng = Math.random) {
+  situations = [], recents = [], jeu = null, audible = null, memoire = null } = {}, rng = Math.random) {
   const deja = new Set(recents);
   // Une version de la phrase, en évitant celles déjà entendues récemment.
   const dire = (cle, g = "m") => {
@@ -418,6 +418,8 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
     const d = dialogue(etat, `avant_${jeu}`, rng);
     if (d) return { speaker: sp.filter(Boolean), commentaires: d };
   }
+  // Le souvenir du dernier match contre le même adversaire (commentaireMemoire), 6 fois sur 10.
+  if (memoire?.length && rng() < 0.6) return { speaker: sp.filter(Boolean), commentaires: memoire };
   const contexte = tour === "finale" ? "avant_finale" : situations.includes("revanche") ? "avant_revanche"
     : situations.includes("nuit") ? "avant_nuit" : situations.includes("contre_bot") ? "avant_bot" : null;
   const contexteRecent = contexte && recents.slice(0, 20).includes(`commentateur_dialogue_${contexte}_01`);
@@ -427,6 +429,68 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
   else if (humain && rng() < 0.5) com = choisir(etat, "humain", {}, rng);
   const commentaires = com ? [com] : rng() < 0.85 ? dialogue(etat, "avant_match", rng) || [] : [];
   return { speaker: sp.filter(Boolean), commentaires };
+}
+
+// La mémoire du dernier match (voir memoireDuDernier, historique-mains.js) : les répliques à dire avant le match (une seule,
+// ou un dialogue Roland → Monique), ou null. Les souvenirs (balle sauvée, défaite sèche, revanche, bilan…) passent avant
+// l'ouverture. genreMoi, genreAdv : pour « il » ou « elle » ; audible : seulement des répliques enregistrées.
+export function commentaireMemoire(mem, { genreMoi = "m", genreAdv = "m", audible = null } = {}, rng = Math.random) {
+  if (!mem) return null;
+  const v = mem.v || 0, d = mem.d || 0, total = v + d;
+  const entendu = lignes => lignes.length > 0 && lignes.every(l => l && (!audible || audible(l.id)));
+  // Une réplique d'un moment (tirée au hasard parmi celles qu'on entend), ou un dialogue.
+  const moment = (cle, genre, signeAdv = mem.ouverture ?? 0) => () => {
+    const ok = (POOLS[cle] || []).map(item => [ligneMoment(item, { genre, signeAdv })]).filter(entendu);
+    return ok.length ? ok[Math.floor(rng() * ok.length)] : null;
+  };
+  const dia = (cle, genre = "m") => () => {
+    const ok = (DIALOGUES_IDS[cle] || []).map((_, k) => ligneDialogue(cle, k, genre)).filter(entendu);
+    return ok.length ? ok[Math.floor(rng() * ok.length)] : null;
+  };
+  // « il » gagnant ou perdant du dernier match, dont l'autre est dit « lui » au masculin (« contre lui »).
+  const gagnant = mem.gagne ? genreMoi : genreAdv, perdant = mem.gagne ? genreAdv : genreMoi;
+  const cands = [];
+  if (mem.balleSauvee) cands.push(moment("memoire_balle_sauvee", genreMoi));
+  if (mem.defaiteSeche) cands.push(moment("memoire_defaite_seche", genreMoi));
+  if (mem.gagne === false) cands.push(dia("memoire_revanche"));
+  if (mem.serre) cands.push(moment("memoire_serre", genreMoi));
+  if (mem.long) cands.push(moment("memoire_long", genreMoi));
+  if (mem.serre || mem.long) cands.push(dia("memoire_marquant"));
+  if (mem.belle) cands.push(moment("memoire_belle", genreMoi));
+  if (mem.habitude) cands.push(moment("memoire_habitude", mem.habitude === "moi" ? genreMoi : genreAdv));
+  if (total >= 5) cands.push(moment("memoire_habitues", genreMoi));
+  if (total >= 3) cands.push(dia("memoire_habitues"));
+  if (total >= 3 && v !== d) cands.push(moment("memoire_mene", v > d ? genreMoi : genreAdv));
+  if (v === 0 && d >= 2) cands.push(moment("memoire_jamais_battu", genreMoi));
+  if ((mem.jours || 0) >= 7) cands.push(moment("memoire_retrouvailles", genreMoi));
+  if (typeof mem.gagne === "boolean") {
+    if (gagnant === "f" || perdant === "m") cands.push(moment("memoire_dernier_gagne", gagnant));
+    if (perdant === "f" || gagnant === "m") cands.push(moment("memoire_dernier_perdu", perdant));
+  }
+  if (mem.renverse) cands.push(moment("memoire_renverse", gagnant));
+  if (mem.favori && mem.favori.part >= 0.45) cands.push(moment("memoire_favori", genreAdv, mem.favori.signe));
+  const ouverture = mem.ouverture !== null && mem.ouverture !== undefined ? moment("memoire_ouverture", genreAdv) : null;
+  // On tire parmi les souvenirs (7 fois sur 10 s'il y a aussi l'ouverture) ; si rien n'est enregistré, on essaie l'ouverture.
+  const ordre = cands.length && (!ouverture || rng() < 0.7) ? [cands, ouverture ? [ouverture] : []] : [ouverture ? [ouverture] : [], cands];
+  for (const liste of ordre) {
+    const reste = [...liste];
+    while (reste.length) {
+      const lignes = reste.splice(Math.floor(rng() * reste.length), 1)[0]();
+      if (lignes) return lignes;
+    }
+  }
+  return null;
+}
+// Après le premier coup : il rejoue la même ouverture qu'au dernier match (une réplique ou le dialogue), ou il en change
+// (une fois sur deux). Les répliques à dire, ou null.
+export function commentaireMemeOuverture(mem, signeAdv, { genreAdv = "m", audible = null } = {}, rng = Math.random) {
+  if (!mem || mem.ouverture === null || mem.ouverture === undefined) return null;
+  const entendu = lignes => lignes.every(l => l && (!audible || audible(l.id)));
+  const ok = mem.ouverture === signeAdv
+    ? [...POOLS.memoire_meme_ouverture.map(item => [ligneMoment(item, { genre: genreAdv })]),
+      ...DIALOGUES_IDS.memoire_meme_ouverture.map((_, k) => ligneDialogue("memoire_meme_ouverture", k, genreAdv))].filter(entendu)
+    : rng() < 0.5 ? POOLS.memoire_change_ouverture.map(item => [ligneMoment(item, { genre: genreAdv })]).filter(entendu) : [];
+  return ok.length ? ok[Math.floor(rng() * ok.length)] : null;
 }
 
 // ---------------------------------------------------------------- après une finale : l'interview
