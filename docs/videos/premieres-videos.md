@@ -7,6 +7,7 @@ Même vidéo sur TikTok, Instagram (Reels) et YouTube Shorts.
 **Avant de publier** : sur TikTok, ajouter une musique tendance **à volume très bas** (5 à 10 %) pour ne pas couvrir les voix ; ou garder le son original.
 Ordre conseillé : vidéo 1 (les commentateurs) en premier, puis 2, puis 3 (le tuto), à 2 ou 3 jours d'intervalle.
 Toutes les vidéos finissent sur le logo et « Rejoins le club ! » (décision du 28 octobre).
+Les vidéos 1 et 3 existent aussi en **version animée** (28 octobre, choix du porteur du projet) : de vrais passages de l'appli filmés en action, à vitesse normale, reliés par des fondus enchaînés, avec des arrêts sur image (léger zoom, sans flash) sur les commentaires forts (`v1-monique-a-dit-anime.mp4`, 29 s ; `v3-tuto-anime.mp4`, 37 s).
 
 ## Vidéo 1 — « Monique a dit » (`v1-monique-a-dit.mp4`, 24 s)
 Pendant un vrai match : Roland ouvre la retransmission ; Monique : « Un pur produit de l'école hongroise. Très propre. » ;
