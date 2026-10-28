@@ -141,3 +141,24 @@ test("le temps pour jouer un coup est le même dans l'appli et sur le serveur (d
   }
   assert.equal(secondes * 1000, DUREE_COUP_MS);
 });
+
+test("la réserve de temps : avertissement d'abord, puis un point de pénalité à chaque fois (le point va à l'autre)", async () => {
+  const { RESERVE_MS, depassement, penaliser } = await import("../app/js/regles.js");
+  const m = nouveauMatch({ pointsParSet: 3, setsGagnants: 2 });
+  assert.deepEqual(m.reserve, [RESERVE_MS, RESERVE_MS]);
+  assert.equal(RESERVE_MS, 20000);
+  assert.equal(depassement(m, 0), "avertissement");
+  assert.equal(m.reserve[0], 0);
+  assert.equal(depassement(m, 0), "penalite");
+  assert.equal(depassement(m, 0), "penalite", "à chaque fois");
+  assert.equal(depassement(m, 1), "avertissement", "chacun a son avertissement");
+  pointA(m);
+  const e = penaliser(m, 0);
+  assert.equal(e.gagnant, 1); assert.equal(e.penalite, 0); assert.equal(e.a, null);
+  assert.deepEqual(m.points, [1, 1]);
+  assert.equal(m.coups.length, 1, "une pénalité n'est pas un coup");
+  assert.deepEqual(m.penalites, [{ apres: 1, fautif: 0 }]);
+  penaliser(m, 0); const f = penaliser(m, 0);
+  assert.ok(f.finSet, "une pénalité peut finir le set");
+  assert.deepEqual(m.scoresSets, [[1, 3]]);
+});

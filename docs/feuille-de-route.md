@@ -20,6 +20,12 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   une balle de match sauvée, un match serré, la belle, une série), 6 fois sur 10 ; au premier coup, Monique relève s'il rejoue
   la même ouverture (`memoireDuDernier` dans `app/js/historique-mains.js`, `commentaireMemoire` dans `app/js/annonces.js`).
   L'historique des mains est maintenant gardé aussi pour les duels en ligne (sur le téléphone), avec les balles de match sauvées.
+  Deuxième lot (28 octobre) : bilan des face-à-face, revanche, jamais battu, dernier vainqueur, dialogues ; 14 répliques attendent
+  des crédits (`outils/a-refaire.txt`, lignes en #).
+- **La réserve de temps** (décision du 28 octobre, *fait, à valider* ; étape SQL 49) : plus aucun coup joué au hasard (un coup au
+  hasard est imprévisible, donc il pouvait avantager). 8 secondes par coup, puis une réserve de 20 secondes pour tout le match
+  (pas remise à zéro à chaque set) ; réserve épuisée : avertissement de l'arbitre la première fois (et 8 secondes de plus),
+  puis un point de pénalité à chaque fois (le point va à l'adversaire, sans signes montrés). Même règle contre les bots.
 
 **À faire ensuite, dans l'ordre** (pas de précipitation, faire les choses bien) :
 1. **Finir de valider** ce qui reste « à valider » (sur la version de test) : les tournois programmés et le freeroll de 20 h (à tester un soir), puis la version de lancement.

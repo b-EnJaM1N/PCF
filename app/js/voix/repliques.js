@@ -181,7 +181,7 @@ export const MOMENTS = {
     { r: "c", t: "Faux départ… enfin, pas de départ du tout !", clin: "sport" },
     { r: "d", t: "Le chrono ne pardonne pas. Moi non plus." },
     { r: "d", t: "Trop de réflexion tue la réflexion." },
-    { r: "d", t: "Jouer au hasard, c'est avouer qu'on n'a plus de plan." },
+    { r: "d", t: "Jouer au hasard, c'est avouer qu'on n'a plus de plan.", retiree: true },   // (retirée le 28 octobre : plus de coup au hasard)
     { r: "d", t: "L'affaire du chronomètre. On n'en parle pas." },
     { r: "d", t: "Le ridicule ne tue pas. Heureusement pour lui.", f: "Le ridicule ne tue pas. Heureusement pour elle.", si: "balle_match" },
   ],

@@ -16,7 +16,7 @@ L'arbitre ne prononce jamais de pseudo : il nomme les joueurs par leur côté
 (jaune = le joueur, rouge = l'adversaire). Les scores rares au-delà de 20–18
 restent lus par la voix de synthèse.
 
-## Arbitre — grave et sobre (91 répliques)
+## Arbitre — grave et sobre (95 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -51,6 +51,10 @@ restent lus par la voix de synthèse.
 | `arbitre_silence_01.mp3` | Silence, s'il vous plaît. |
 | `arbitre_temps_01.mp3` | Temps. |
 | `arbitre_coup_joue_d_office_01.mp3` | Coup joué d'office. |
+| `arbitre_avertissement_jaune_01.mp3` | Avertissement, dépassement de temps, côté jaune. |
+| `arbitre_avertissement_rouge_01.mp3` | Avertissement, dépassement de temps, côté rouge. |
+| `arbitre_penalite_jaune_01.mp3` | Point de pénalité, côté jaune. |
+| `arbitre_penalite_rouge_01.mp3` | Point de pénalité, côté rouge. |
 | `arbitre_huees_01.mp3` | Je vous demande de vous arrêter. |
 | `arbitre_temps_mort_jaune_01.mp3` | Temps mort, côté jaune. |
 | `arbitre_temps_mort_rouge_01.mp3` | Temps mort, côté rouge. |
@@ -569,7 +573,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (403 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (402 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -661,7 +665,6 @@ restent lus par la voix de synthèse.
 | `commentatrice_lecture_reussie_01.mp3` | Coup de maître. |
 | `commentatrice_temps_ecoule_01.mp3` | Le chrono ne pardonne pas. Moi non plus. |
 | `commentatrice_temps_ecoule_02.mp3` | Trop de réflexion tue la réflexion. |
-| `commentatrice_temps_ecoule_03.mp3` | Jouer au hasard, c'est avouer qu'on n'a plus de plan. |
 | `commentatrice_temps_ecoule_04.mp3` | L'affaire du chronomètre. On n'en parle pas. |
 | `commentatrice_temps_ecoule_05.mp3` | Le ridicule ne tue pas. Heureusement pour lui. |
 | `commentatrice_temps_ecoule_05_f.mp3` | Le ridicule ne tue pas. Heureusement pour elle. |

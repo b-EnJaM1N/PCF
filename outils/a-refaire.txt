@@ -1,6 +1,9 @@
 # Les répliques à refaire avec le robot « Voix » (choix « liste ») : un identifiant par ligne. Les lignes en # sont ignorées.
-# L'arbitre après les sifflets du public (28 octobre).
-arbitre_huees_01
+# L'arbitre : la réserve de temps (28 octobre).
+arbitre_avertissement_jaune_01
+arbitre_avertissement_rouge_01
+arbitre_penalite_jaune_01
+arbitre_penalite_rouge_01
 # Plus tard, quand il y aura des crédits (environ 1 460) : enlever le # devant chaque ligne.
 # commentateur_memoire_change_ouverture_01
 # commentateur_memoire_change_ouverture_01_f
