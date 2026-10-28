@@ -27,6 +27,10 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   « jouer au Pierre-Feuille-Ciseaux sur HandSlam », « un joueur de HandSlam », « le circuit HandSlam » ; jamais « jouer au
   HandSlam ». Avec l'article quand on parle du circuit (« le HandSlam », « L'Écho du HandSlam », « Les Cahiers du HandSlam ») ;
   sans article pour le site ou l'appli (« jouer sur HandSlam »). Les répliques enregistrées (« le monde du HandSlam », « champion du monde du HandSlam ») se lisent comme un circuit.
+- **Le nombre de matchs par jour** (28 octobre, étape 50) : « trois_matchs » ne compte qu'une fois par téléphone (le jour de son
+  tout premier 3e match : il mesure si les nouveaux accrochent) ; la nouvelle colonne « matchs » compte tous les matchs terminés,
+  anciens joueurs compris (en ligne, chacun des deux joueurs compte le sien). Lecture (une ligne) :
+  `select to_char(jour,'DD/MM') j, sum(visiteurs) v, sum(nouveaux) n, sum(revenus) r, sum(trois_matchs) t, sum(matchs) m from visites group by jour order by jour desc limit 30;`
 - **La revue « Les Cahiers du HandSlam »** (28 octobre, nom choisi par le porteur du projet, idée d'un testeur dont écrire est le métier) : sur le
   site (`app/revue.html`, modèle d'article `app/revue-modele.html`, un fichier `revue-<titre>.html` par article). Rubriques :
   philosophie de la discipline, analyse technique, chroniques du court central ; un article toutes les deux semaines ; ton sérieux
