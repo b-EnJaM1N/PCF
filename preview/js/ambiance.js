@@ -31,7 +31,7 @@ export const FICHIERS_REACTIONS = {
 // La force moyenne d'un enregistrement (racine de la moyenne des carrés), et celle visée pour les réactions du public.
 export const forceMoyenne = canaux => { let t = 0, n = 0; for (const c of canaux) for (let i = 0; i < c.length; i++) { t += c[i] * c[i]; n++; } return n ? Math.sqrt(t / n) : 0; };
 const FORCE_REACTION = 0.12;
-const VOLUME_REACTION = { allez: 0.38, ohDecu: 0.42, bravo: 0.38, brouhaha: 0.3, rires: 0.36, applaudir: 0.22 };
+const VOLUME_REACTION = { allez: 0.55, ohDecu: 0.42, bravo: 0.38, brouhaha: 0.3, rires: 0.36, applaudir: 0.22 };
 // Le coup de raquette : un son par signe (0 Pierre, 1 Ciseaux, 2 Feuille), et une version forte pour les grands moments
 // (balle de set ou de match, point décisif) : [normal, fort].
 export const FICHIERS_RAQUETTE_SIGNE = [
@@ -53,7 +53,7 @@ export const FICHIERS_STADE = {
 export const FOND = { entrePoints: 0.34, echange: 0.15 };
 // Les petits applaudissements après un point gagné, comme au tennis : volume et vitesse tirés au hasard (jamais deux fois pareils),
 // courts (ils s'éteignent au bout de deux secondes environ, et tout de suite si l'échange suivant commence).
-export const APPLAUDIR = { vol: [0.16, 0.26], vitesse: [0.93, 1.08], duree: 1.8 };
+export const APPLAUDIR = { vol: [0.4, 0.55], vitesse: [0.93, 1.08], duree: 1.8 };   // (28 octobre : plus fort, on ne les entendait pas)
 
 // Combien de points de suite le gagnant de ce coup vient d'enchaîner (égalités ignorées), et la série qu'il vient de briser.
 export function series(coups) {
