@@ -22,7 +22,7 @@ export const FICHIERS_AMBIANCE = {
 export const FICHIERS_REACTIONS = {
   // Les applaudissements après un point : deux versions en alternance (choisies à l'écoute le 28 octobre, app/essais-sons.html).
   applaudir: ["public_applaudir_01", "public_applaudir_02"],
-  allez: ["public_allez_01", "public_allez_02", "public_allez_03"],
+  allez: ["public_allez_01"],   // (28 octobre : la version n° 1 de l'essai, à juger en match ; les anciennes sont dans l'historique)
   ohDecu: ["public_oh_decu_01", "public_oh_decu_02"],
   bravo: ["public_bravo_01", "public_bravo_02"],
   brouhaha: ["public_brouhaha_01", "public_brouhaha_02"],

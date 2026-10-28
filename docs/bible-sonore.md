@@ -88,6 +88,9 @@ seront pas joués.
   `public_applaudir_01`, `_02`), huées n° 2 (`stade_sifflet_01`, avant « Je vous demande de vous arrêter »). « Bravo » et « Allez » :
   aucun (« Allez » où l'on entend le z, « Bravo » à l'italienne) : on garde les anciens. Le public applaudit après 2 points
   ordinaires sur 10 (au lieu de 8 sur 100), pendant près de 2 secondes.
+- Deuxième essai « Bravo » / « Allez », avec l'accent français demandé : Bravo, aucun ; Allez, « à la limite le premier » : mis
+  dans le jeu seul, à la place des trois anciens, pour le juger en match. Piste suivante (crédits de novembre) : faire dire
+  « Bravo ! » et « Allez ! » par la synthèse vocale (voix françaises, donc bonne prononciation), mélangée à une foule.
 
 ## 6. Côté code (sans crédits)
 - **Fait le 27 octobre** : la salle baisse sous la voix de Roland, Monique et des autres voix, comme à la télévision ; le coup

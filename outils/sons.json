@@ -65,16 +65,9 @@
       "duree": 8
     },
     "public_allez_01": {
-      "texte": "A single French male spectator shouting \"Allez !\" enthusiastically in the stands, short",
-      "duree": 1.5
-    },
-    "public_allez_02": {
-      "texte": "A single French female spectator cheering \"Allez !\" in the stands, short",
-      "duree": 1.5
-    },
-    "public_allez_03": {
-      "texte": "A few French fans chanting \"Allez, allez, allez !\" briefly in the stands, short",
-      "duree": 2
+      "texte": "A native French man in the stands yells the French word \"Allez !\" once, pronounced ah-LAY with no z sound, French accent, short and punchy, indoor arena, no music",
+      "duree": 2,
+      "salle": false
     },
     "public_oh_decu_01": {
       "texte": "The crowd groans in disappointment, \"ohhh\", falling tone, short",
