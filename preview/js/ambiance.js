@@ -20,6 +20,7 @@ export const FICHIERS_AMBIANCE = {
 };
 // Les réactions variées du public après un point (plusieurs versions de chacune, pour ne pas se répéter).
 export const FICHIERS_REACTIONS = {
+  applaudir: ["public_point_02", "public_point_03"],   // les applaudissements après un point (28 octobre)
   allez: ["public_allez_01", "public_allez_02", "public_allez_03"],
   ohDecu: ["public_oh_decu_01", "public_oh_decu_02"],
   bravo: ["public_bravo_01", "public_bravo_02"],
@@ -50,8 +51,8 @@ export const FICHIERS_STADE = {
 // les commentaires ne doivent jamais sortir du silence).
 export const FOND = { entrePoints: 0.34, echange: 0.15 };
 // Les petits applaudissements après un point gagné, comme au tennis : volume et vitesse tirés au hasard (jamais deux fois pareils),
-// courts (ils s'éteignent au bout d'une seconde environ, et tout de suite si l'échange suivant commence).
-export const APPLAUDIR = { vol: [0.16, 0.26], vitesse: [0.93, 1.08], duree: 1.1 };
+// courts (ils s'éteignent au bout de deux secondes environ, et tout de suite si l'échange suivant commence).
+export const APPLAUDIR = { vol: [0.22, 0.32], vitesse: [0.95, 1.05], duree: 2 };
 
 // Combien de points de suite le gagnant de ce coup vient d'enchaîner (égalités ignorées), et la série qu'il vient de briser.
 export function series(coups) {
@@ -77,7 +78,7 @@ export function reactionPoint(etat, evt, coups, rng = Math.random) {
   else if (!etat.dernier) {
     if (egalites >= 1) r = x < 0.35 ? "bravo" : x < 0.6 ? "applaudir" : null;      // un point arraché après des égalités
     else if (serie >= 3) r = x < 0.4 ? "allez" : x < 0.55 ? "applaudir" : null;    // une série qui se construit
-    else r = x < 0.08 ? "applaudir" : x < 0.15 ? "brouhaha" : x < 0.19 ? "allez" : null;
+    else r = x < 0.3 ? "applaudir" : x < 0.38 ? "brouhaha" : x < 0.44 ? "allez" : x < 0.48 ? "bravo" : null;
   }
   etat.dernier = !!r;
   return r;
