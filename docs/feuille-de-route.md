@@ -30,7 +30,8 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 - **La revue « Les Cahiers du HandSlam »** (28 octobre, nom choisi par le porteur du projet, idée d'un testeur dont écrire est le métier) : sur le
   site (`app/revue.html`, modèle d'article `app/revue-modele.html`, un fichier `revue-<titre>.html` par article). Rubriques :
   philosophie de la discipline, analyse technique, chroniques du court central ; un article toutes les deux semaines ; ton sérieux
-  décalé. Le forum attendra qu'il y ait du monde (après la sortie sur le Play Store). Le lien depuis l'appli, au premier article.
+  décalé. Le forum attendra qu'il y ait du monde (après la sortie sur le Play Store). Au premier article : un bouton discret « 📜 Les Cahiers du HandSlam »
+  sur l'écran d'accueil (donc dans l'appli et sur le site) ; chaque article finit par « Jouer sur HandSlam ».
 - **La réserve de temps** (décision du 28 octobre, *fait, à valider* ; étape SQL 49) : plus aucun coup joué au hasard (un coup au
   hasard est imprévisible, donc il pouvait avantager). 8 secondes par coup, puis une réserve de 20 secondes pour tout le match
   (pas remise à zéro à chaque set) ; réserve épuisée : avertissement de l'arbitre la première fois (et 8 secondes de plus),
