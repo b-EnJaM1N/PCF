@@ -60,5 +60,7 @@ seront pas joués.
 ## 6. Côté code (sans crédits)
 - **Fait le 27 octobre** : la salle baisse sous la voix de Roland, Monique et des autres voix, comme à la télévision ; le coup
   de raquette reste au même niveau (`SOUS_LA_VOIX` dans `app/js/ambiance.js`).
+- **28 octobre** : les sifflets (`stade_sifflet_01`) sont joués, rarement, après un « ooh » ; l'arbitre rappelle alors le public
+  à l'ordre (« Je vous demande de vous arrêter »).
 - Après les nouveaux sons : régler les volumes ensemble, à l'écoute, sur la version de test.
 - Plus tard, à essayer : une légère couleur « micro de télévision » sur les voix des commentateurs.

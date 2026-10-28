@@ -1,34 +1,6 @@
 # Les répliques à refaire avec le robot « Voix » (choix « liste ») : un identifiant par ligne. Les lignes en # sont ignorées.
-# La mémoire des matchs précédents, deuxième lot (28 octobre) : les plus utiles d'abord (environ 2 380 crédits).
-commentatrice_memoire_meme_ouverture_02
-commentatrice_memoire_meme_ouverture_02_f
-commentatrice_memoire_meme_ouverture_03
-commentatrice_memoire_meme_ouverture_03_f
-commentatrice_memoire_meme_ouverture_04
-commentatrice_memoire_meme_ouverture_04_f
-commentateur_memoire_meme_ouverture_01
-commentateur_memoire_meme_ouverture_01_f
-commentatrice_memoire_change_ouverture_01
-commentatrice_memoire_change_ouverture_01_f
-commentatrice_memoire_mene_01
-commentatrice_memoire_mene_01_f
-commentateur_memoire_jamais_battu_01
-commentateur_memoire_jamais_battu_01_f
-commentatrice_memoire_jamais_battu_01
-commentatrice_memoire_dernier_gagne_01
-commentatrice_memoire_dernier_gagne_01_f
-commentatrice_memoire_dernier_perdu_01
-commentatrice_memoire_dernier_perdu_01_f
-commentatrice_memoire_long_01
-commentateur_dialogue_memoire_meme_ouverture_01
-commentateur_dialogue_memoire_meme_ouverture_01_f
-commentatrice_dialogue_memoire_meme_ouverture_01
-commentateur_dialogue_memoire_revanche_01
-commentatrice_dialogue_memoire_revanche_01
-commentateur_dialogue_memoire_habitues_01
-commentatrice_dialogue_memoire_habitues_01
-commentateur_dialogue_memoire_marquant_01
-commentatrice_dialogue_memoire_marquant_01
+# L'arbitre après les sifflets du public (28 octobre).
+arbitre_huees_01
 # Plus tard, quand il y aura des crédits (environ 1 460) : enlever le # devant chaque ligne.
 # commentateur_memoire_change_ouverture_01
 # commentateur_memoire_change_ouverture_01_f

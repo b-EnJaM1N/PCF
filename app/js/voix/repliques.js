@@ -167,8 +167,10 @@ export const MOMENTS = {
   // J'ai lu le réflexe de l'adversaire.
   lecture_reussie: [
     { r: "c", t: "Il l'attendait ! Il l'attendait !", f: "Elle l'attendait ! Elle l'attendait !" },
-    { r: "c", t: "Pleine lucarne !", clin: "sport" },
-    { r: "c", t: ["Second poteau, la Pierre !", "Second poteau, les Ciseaux !", "Second poteau, la Feuille !"], clin: "sport" },
+    // (retirées le 28 octobre, énervantes à l'usage : « Pleine lucarne ! », « Second poteau » avec la Pierre et les Ciseaux ;
+    // « Second poteau, la Feuille ! » reste, mais très rare)
+    { r: "c", t: "Pleine lucarne !", clin: "sport", retiree: true },
+    { r: "c", t: ["Second poteau, la Pierre !", "Second poteau, les Ciseaux !", "Second poteau, la Feuille !"], clin: "sport", seul: 2, rare: 0.08 },
     { r: "c", t: "Il vous a compris !", f: "Elle vous a compris !", clin: "cine" },
     { r: "c", t: "Il est entré dans son cerveau !", f: "Elle est entrée dans son cerveau !", si: "serie4" },   // seulement après 4 points d'affilée ou plus
     { r: "d", t: "Coup de maître.", clin: "sport", rare: true },
@@ -314,7 +316,7 @@ export const MOMENTS = {
     { r: "d", t: "Il faudra revoir ce match. Ou l'oublier. Je conseille l'oubli." },
     { r: "d", t: "On apprend plus d'une défaite. Il a beaucoup appris, ce soir.", f: "On apprend plus d'une défaite. Elle a beaucoup appris, ce soir." },
     { r: "d", t: "Quelqu'un peut lui expliquer les règles ?" },
-    { r: "d", t: "C'est officiel : la stratégie n'était pas au rendez-vous." },
+    { r: "d", t: "C'est officiel : la stratégie n'était pas au rendez-vous.", retiree: true },   // (retirée le 28 octobre)
     { r: "d", t: "Il va falloir se remettre en question. Ou changer de main." },
     { r: "c", t: "Il cherche encore où il a perdu la Feuille !", f: "Elle cherche encore où elle a perdu la Feuille !", seul: 2 },
     { r: "d", t: "La sentence est irrévocable.", clin: "cine" },
@@ -324,8 +326,8 @@ export const MOMENTS = {
   domination: [
     { r: "d", t: "Je suis ton père.", clin: "cine" },
   ],
-  // Le public fait « ooh » sur un point disputé : Monique, une fois par match au plus, parfois.
-  huees: [{ r: "d", t: "Je vous demande de vous arrêter." }],
+  // (« Je vous demande de vous arrêter », de Monique, est retirée le 28 octobre : c'est désormais l'arbitre qui le dit, après
+  // les sifflets du public : arbitre_huees_01)
   // La mémoire du dernier match entre les deux mêmes joueurs (28 octobre, idée du porteur du projet) : dite avant le match,
   // une fois de temps en temps (annonces.js, memoireAvantMatch). « Il » : le joueur dont on parle (voir chaque moment).
   // L'ouverture de l'adversaire au dernier match (par signe : celui qu'il avait joué en premier).

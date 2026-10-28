@@ -16,7 +16,7 @@ L'arbitre ne prononce jamais de pseudo : il nomme les joueurs par leur côté
 (jaune = le joueur, rouge = l'adversaire). Les scores rares au-delà de 20–18
 restent lus par la voix de synthèse.
 
-## Arbitre — grave et sobre (90 répliques)
+## Arbitre — grave et sobre (91 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -51,6 +51,7 @@ restent lus par la voix de synthèse.
 | `arbitre_silence_01.mp3` | Silence, s'il vous plaît. |
 | `arbitre_temps_01.mp3` | Temps. |
 | `arbitre_coup_joue_d_office_01.mp3` | Coup joué d'office. |
+| `arbitre_huees_01.mp3` | Je vous demande de vous arrêter. |
 | `arbitre_temps_mort_jaune_01.mp3` | Temps mort, côté jaune. |
 | `arbitre_temps_mort_rouge_01.mp3` | Temps mort, côté rouge. |
 | `arbitre_reprise_du_jeu_01.mp3` | Reprise du jeu. |
@@ -111,7 +112,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (453 répliques)
+## Commentateur — vif, enthousiaste, plein de références (452 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -210,7 +211,6 @@ restent lus par la voix de synthèse.
 | `commentateur_duel_esprits_09.mp3` | Égalité parfaite ! La tension monte ! |
 | `commentateur_lecture_reussie_01.mp3` | Il l'attendait ! Il l'attendait ! |
 | `commentateur_lecture_reussie_01_f.mp3` | Elle l'attendait ! Elle l'attendait ! |
-| `commentateur_lecture_reussie_02.mp3` | Pleine lucarne ! |
 | `commentateur_lecture_reussie_03_pierre.mp3` | Second poteau, la Pierre ! |
 | `commentateur_lecture_reussie_03_ciseaux.mp3` | Second poteau, les Ciseaux ! |
 | `commentateur_lecture_reussie_03_feuille.mp3` | Second poteau, la Feuille ! |
@@ -569,7 +569,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (405 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (403 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -715,13 +715,11 @@ restent lus par la voix de synthèse.
 | `commentatrice_defaite_03.mp3` | On apprend plus d'une défaite. Il a beaucoup appris, ce soir. |
 | `commentatrice_defaite_03_f.mp3` | On apprend plus d'une défaite. Elle a beaucoup appris, ce soir. |
 | `commentatrice_defaite_04.mp3` | Quelqu'un peut lui expliquer les règles ? |
-| `commentatrice_defaite_05.mp3` | C'est officiel : la stratégie n'était pas au rendez-vous. |
 | `commentatrice_defaite_06.mp3` | Il va falloir se remettre en question. Ou changer de main. |
 | `commentatrice_defaite_07.mp3` | La sentence est irrévocable. |
 | `commentatrice_defaite_08.mp3` | Il a le seum. Comme disent les jeunes. |
 | `commentatrice_defaite_08_f.mp3` | Elle a le seum. Comme disent les jeunes. |
 | `commentatrice_domination_01.mp3` | Je suis ton père. |
-| `commentatrice_huees_01.mp3` | Je vous demande de vous arrêter. |
 | `commentatrice_memoire_ouverture_01_pierre.mp3` | Il avait ouvert avec la Pierre la dernière fois. Il a peut-être appris. Peut-être. |
 | `commentatrice_memoire_ouverture_01_pierre_f.mp3` | Elle avait ouvert avec la Pierre la dernière fois. Elle a peut-être appris. Peut-être. |
 | `commentatrice_memoire_ouverture_01_ciseaux.mp3` | Il avait ouvert avec les Ciseaux la dernière fois. Il a peut-être appris. Peut-être. |
@@ -1204,3 +1202,4 @@ Fabriqués par le code en attendant. Un vrai enregistrement portant ce nom les r
 | `public_fond_01.mp3` | undefined |
 | `public_tension_01.mp3` | undefined |
 | `public_ooh_01.mp3` | undefined |
+| `stade_sifflet_01.mp3` | undefined |
