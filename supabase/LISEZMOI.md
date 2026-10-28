@@ -377,6 +377,15 @@ Même manipulation avec [`etape-48-message-ecrit.sql`](etape-48-message-ecrit.sq
 Entre amis, avant ou après un duel, on peut écrire son propre message (60 caractères au plus, sans gros mots, sans argent,
 sans lien). **À coller avant de valider l'appli** : sinon, le message écrit est refusé (les phrases toutes faites marchent).
 
+## 1 quadragies novies. La réserve de temps (étape 49)
+
+Même manipulation avec [`etape-49-reserve-de-temps.sql`](etape-49-reserve-de-temps.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-49-reserve-de-temps.sql).
+Plus aucun coup joué au hasard : après les 8 secondes d'un coup, on puise dans une réserve de 20 secondes pour tout le match ;
+réserve épuisée, un avertissement la première fois, puis un point de pénalité à chaque fois. **À coller avant de tester la
+version de test** (elle utilise le même serveur). En attendant la fusion, l'ancienne version de l'appli continue de marcher ;
+seul l'affichage du score peut se tromper d'un point après une pénalité (le serveur, lui, compte juste).
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

@@ -23,7 +23,7 @@ puis « Sur l'écran d'accueil » / « Installer l'application ». Le détail es
 | Points par set | 11, avec 2 points d'écart, point décisif à 14 partout (options : 7 avec 2 points d'écart, point décisif à 9 partout ; 3 ou 1 sans écart, le premier au total gagne le set) |
 | Égalités (même signe) | Ne comptent pas, le point est rejoué |
 | Nombre de sets | 2 ou 3 sets gagnants, choisi avant le match (ou un match en 1 set). En duel, les formats courts (1 set, sets de 3 ou 1 point) sont toujours amicaux |
-| Temps par coup | 8 secondes, sinon un signe est joué au hasard |
+| Temps par coup | 8 secondes, puis une réserve de 20 secondes pour tout le match ; réserve épuisée : un avertissement, puis un point de pénalité à chaque fois |
 | Historique | Visible pendant tout le match |
 | Pendant l'échange | Aucune animation : révélation immédiate des signes |
 

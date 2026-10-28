@@ -96,15 +96,34 @@ reset role; update duels set echeance = now() - interval '1 second' where id = (
 select pg_temp.en_tant_que(:'A'); select reclamer((select val from t where cle = 'duel'));
 select pg_temp.verifier((select phase = 'jeu' from duels where id = (select val from t where cle = 'duel')), 'set suivant lancé automatiquement');
 
--- 8. Temps écoulé : un signe au hasard pour celui qui n'a pas joué
-select jouer((select val from t where cle = 'duel'), (select manche from duels where id = (select val from t where cle = 'duel')), 0);
+-- 8. Temps dépassé (étape 49) : on puise dans la réserve (20 s), puis avertissement, puis point de pénalité ; jamais de coup au hasard
+\set M '(select manche from duels where id = (select val from t where cle = ''duel''))'
+select jouer((select val from t where cle = 'duel'), :M, 0);
 select pg_temp.en_tant_que(:'B'); select reclamer((select val from t where cle = 'duel'));   -- Bob est bien là
-reset role; update duels set echeance = now() - interval '2 seconds' where id = (select val from t where cle = 'duel');
-select pg_temp.en_tant_que(:'B');
-select pg_temp.interdit(format('select jouer(%L, %s, 1)', (select val from t where cle = 'duel'), (select manche from duels where id = (select val from t where cle = 'duel'))), 'trop tard pour jouer');
+-- 12 secondes de retard : Bob peut encore jouer (il puise dans sa réserve).
+reset role; update duels set echeance = now() - interval '12 seconds' where id = (select val from t where cle = 'duel');
+update coups_secrets set joue_le = now() - interval '13 seconds' where duel_id = (select val from t where cle = 'duel') and joueur = 0;   -- Alice avait joué à temps
 select pg_temp.en_tant_que(:'A'); select reclamer((select val from t where cle = 'duel'));
-select pg_temp.verifier((select (coups->-1->'auto') = '[false,true]'::jsonb and (coups->-1->>'a')::int = 0
-  from duels where id = (select val from t where cle = 'duel')), 'temps écoulé : Bob a joué au hasard, Alice a gardé son signe');
+select pg_temp.verifier((select jsonb_array_length(penalites) = 0 and not avertis[2] from duels where id = (select val from t where cle = 'duel')), 'en retard, mais de la réserve : rien ne se passe');
+select pg_temp.en_tant_que(:'B'); select jouer((select val from t where cle = 'duel'), :M, 2);
+select pg_temp.verifier((select reserve[2] between 7 and 8.5 and reserve[1] = 20 and (coups->-1->>'b')::int = 2
+  from duels where id = (select val from t where cle = 'duel')), 'Bob a joué avec 12 s de retard : il lui reste environ 8 s');
+-- Bob dépasse sa réserve : avertissement, 8 secondes de plus pour ce coup.
+select pg_temp.en_tant_que(:'A'); select jouer((select val from t where cle = 'duel'), :M, 0);
+reset role; update duels set echeance = now() - interval '10 seconds' where id = (select val from t where cle = 'duel');
+select pg_temp.en_tant_que(:'A'); select reclamer((select val from t where cle = 'duel'));
+select pg_temp.verifier((select avertis = '{false,true}' and reserve[2] = 0 and echeance > now() + interval '7 seconds' and jsonb_array_length(penalites) = 0
+  from duels where id = (select val from t where cle = 'duel')), 'réserve épuisée : avertissement pour Bob, 8 s de plus');
+-- Il dépasse encore : point de pénalité, le point va à Alice, le coup suivant commence.
+reset role; create temp table avant as select manche, points from duels where id = (select val from t where cle = 'duel'); grant all on avant to public;
+update duels set echeance = now() - interval '2 seconds' where id = (select val from t where cle = 'duel');
+select pg_temp.en_tant_que(:'B');
+select pg_temp.interdit(format('select jouer(%L, %s, 1)', (select val from t where cle = 'duel'), (select manche from avant)), 'trop tard pour jouer');
+select pg_temp.en_tant_que(:'A'); select reclamer((select val from t where cle = 'duel'));
+select pg_temp.verifier((select penalites = jsonb_build_array(jsonb_build_object('apres', jsonb_array_length(coups), 'fautif', 1))
+  and points[1] = (select points[1] from avant) + 1 and manche = (select manche from avant) + 1
+  and not (coups::text like '%"auto": [false, true]%')
+  from duels where id = (select val from t where cle = 'duel')), 'deuxième dépassement : point de pénalité pour Alice, sans coup au hasard');
 
 -- 9. Bob disparaît : pause, puis forfait après 60 secondes
 reset role; update presences set vu = now() - interval '20 seconds' where joueur = 1 and duel_id = (select val from t where cle = 'duel');

@@ -7,6 +7,10 @@ export const PIERRE = 0, CISEAUX = 1, FEUILLE = 2;
 export const EMOJI = ["🪨", "✂️", "📄"];
 export const NOM = ["Pierre", "Ciseaux", "Feuille"];
 export const DUREE_COUP_MS = 8000;
+// La réserve de temps (décision du 28 octobre) : 20 secondes pour tout le match, où l'on puise quand les 8 secondes d'un coup
+// sont passées. Réserve épuisée : un avertissement la première fois (et 8 secondes de plus pour jouer ce coup), puis un point
+// de pénalité à chaque fois (le point va à l'adversaire, sans signes montrés). Plus aucun coup joué au hasard.
+export const RESERVE_MS = 20000;
 // Un set se gagne en 11 points (format officiel), 7, 3 ou 1. À 7 et 11, il faut 2 points d'écart,
 // mais pas sans fin : à 14 partout (sets de 11) ou 9 partout (sets de 7), point décisif, le premier à 15 (ou 10) gagne le set.
 // À 3 et 1, un point d'écart suffit (3–2 gagne ; à 1 point, le premier point gagne le set).
@@ -36,8 +40,11 @@ export function nouveauMatch({ pointsParSet = 11, setsGagnants = 2 } = {}) {
     points: [0, 0],        // score du set en cours
     sets: [0, 0],          // sets gagnés
     scoresSets: [],        // scores des sets terminés, ex. [[11, 8], [9, 11]]
-    coups: [],             // { a, b, gagnant: 0|1|null, auto: [bool, bool] }
+    coups: [],             // { a, b, gagnant: 0|1|null, auto: [bool, bool] } (auto : coup joué au hasard, anciens matchs en ligne)
     debutsSet: [0],        // index du premier coup de chaque set
+    penalites: [],         // points de pénalité : { apres (nombre de coups joués avant), fautif: 0|1 }
+    reserve: [RESERVE_MS, RESERVE_MS],   // la réserve de temps de chacun (ms)
+    avertis: [false, false],             // déjà averti pour dépassement de temps
     termine: false,
     vainqueur: null,
   };
@@ -96,8 +103,12 @@ export function jouerCoup(match, a, b, auto = [false, false]) {
   const balleAvant = balle(match);
   const gagnant = gagnantCoup(a, b);
   match.coups.push({ a, b, gagnant, auto: [!!auto[0], !!auto[1]] });
-  const evt = { a, b, gagnant, egalite: gagnant === null, balleAvant, finSet: false, finMatch: false, scoreSet: null };
+  return marquer(match, { a, b, gagnant, egalite: gagnant === null, balleAvant, finSet: false, finMatch: false, scoreSet: null });
+}
 
+// Le point (s'il y a un gagnant) : score, fin de set, fin de match.
+function marquer(match, evt) {
+  const gagnant = evt.gagnant;
   if (gagnant !== null) {
     match.points[gagnant]++;
     const v = vainqueurSet(match.points[0], match.points[1], match.format.pointsParSet);
@@ -118,4 +129,22 @@ export function jouerCoup(match, a, b, auto = [false, false]) {
   }
   evt.balleApres = balle(match);
   return evt;
+}
+
+// Un point de pénalité contre fautif (0 ou 1) : le point va à l'adversaire. Renvoie l'événement, comme jouerCoup
+// (evt.penalite : le fautif ; pas de signes).
+export function penaliser(match, fautif) {
+  if (match.termine) throw new Error("Le match est terminé");
+  if (fautif !== 0 && fautif !== 1) throw new Error(`Joueur invalide : ${fautif}`);
+  (match.penalites ||= []).push({ apres: match.coups.length, fautif });
+  return marquer(match, { a: null, b: null, penalite: fautif, gagnant: 1 - fautif, egalite: false, balleAvant: balle(match), finSet: false, finMatch: false, scoreSet: null });
+}
+
+// La réserve de fautif est épuisée et il n'a toujours pas joué : "avertissement" la première fois, "penalite" ensuite
+// (le point de pénalité est alors à appliquer avec penaliser).
+export function depassement(match, fautif) {
+  match.reserve ||= [RESERVE_MS, RESERVE_MS]; match.avertis ||= [false, false];
+  match.reserve[fautif] = 0;
+  if (!match.avertis[fautif]) { match.avertis[fautif] = true; return "avertissement"; }
+  return "penalite";
 }

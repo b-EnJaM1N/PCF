@@ -135,3 +135,16 @@ test("la forme : les 5 derniers duels en cases vertes et rouges, et la part de v
   assert.match(forme([{ gagne: true }, { gagne: false }]), /Forme \(2 derniers\).*🟥🟩.*50 %/);
   assert.equal(forme([]), "");
 });
+
+test("en ligne, les points de pénalité sont rejoués à leur place, vus de mon côté", async () => {
+  const { evenementsDuel } = await import("../app/js/duel-logique.js");
+  const d = { ...duel([{ a: 0, b: 1, g: 0 }, { a: 2, b: 2, g: null }]), penalites: [{ apres: 1, fautif: 1 }, { apres: 2, fautif: 0 }] };
+  assert.deepEqual(evenementsDuel(d, 0).map(e => (e.coup ? "c" : `p${e.penalite}`)), ["c", "p1", "c", "p0"]);
+  assert.deepEqual(evenementsDuel(d, 1).map(e => (e.coup ? "c" : `p${e.penalite}`)), ["c", "p0", "c", "p1"], "vu de l'autre côté");
+  const r0 = rejouer(d, 0), r1 = rejouer(d, 1);
+  assert.deepEqual(r0.match.points, [2, 1]);
+  assert.deepEqual(r1.match.points, [1, 2]);
+  assert.ok(coherent(r0.match, { ...d, points: [2, 1], sets: [0, 0] }, 0));
+  // Un ancien duel (avant l'étape 49) : pas de pénalités.
+  assert.equal(evenementsDuel(duel([{ a: 0, b: 1, g: 0 }]), 0).length, 1);
+});

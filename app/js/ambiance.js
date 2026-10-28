@@ -16,6 +16,7 @@ export const FICHIERS_AMBIANCE = {
   fond: "public_fond_01",           // en boucle pendant le match
   tension: "public_tension_01",     // balles de set et de match
   ooh: "public_ooh_01",             // point disputé
+  sifflets: "stade_sifflet_01",     // le public siffle (rare ; l'arbitre le rappelle à l'ordre)
 };
 // Les réactions variées du public après un point (plusieurs versions de chacune, pour ne pas se répéter).
 export const FICHIERS_REACTIONS = {
@@ -42,7 +43,7 @@ export const FICHIERS_RAQUETTE = FICHIERS_RAQUETTE_SIGNE.flat();
 export const FICHIERS_STADE = {
   charge: "stade_charge_01", orgueMontee: "stade_orgue_montee_01", orgueDefense: "stade_orgue_defense_01", corne: "stade_corne_01",
   tambour: "stade_tambour_01", orgueEntree: "stade_orgue_entree_01", vuvuzela: "stade_vuvuzela_01", ole: "stade_ole_01",
-  fanfare: "stade_fanfare_victoire_01", sifflets: "stade_sifflet_01",
+  fanfare: "stade_fanfare_victoire_01",
 };
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
@@ -279,6 +280,8 @@ export class Ambiance {
   }
   // Le « ooh » sur un point disputé.
   ooh() { this.jouer(this.buf.ooh, 0.5, true, { delai: 0.15 }); }
+  // Les sifflets du public (renvoie leur durée en secondes, 0 s'ils ne sont pas prêts).
+  sifflets(delai = 0) { return this.buf.sifflets && this.jouer(this.buf.sifflets, 0.45, true, { delai }) ? this.buf.sifflets.duration : 0; }
   // (si un son n'est pas encore prêt, il est simplement ignoré)
 
   // "point", "clameur", "set" ou "ovation"
