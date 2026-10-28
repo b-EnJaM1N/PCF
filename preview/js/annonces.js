@@ -93,7 +93,7 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
     const ordinaires = valides.filter(e => !e.si && e.seul === undefined);
     const g = ordinaires.length ? ordinaires : speciales;
     if (!g.length) return null;
-    const poids = e => (e.rare ? 0.25 : e.clin === "cine" ? 0.6 : 1);   // (« rare » : une réplique qui marque trop pour revenir souvent)
+    const poids = e => (typeof e.rare === "number" ? e.rare : e.rare ? 0.25 : e.clin === "cine" ? 0.6 : 1);   // (« rare » : une réplique qui marque trop pour revenir souvent)
     let r = rng() * g.reduce((t, e) => t + poids(e), 0);
     item = g.find(e => (r -= poids(e)) < 0) ?? g[g.length - 1];
   }
@@ -189,7 +189,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
         moment = "obstination"; etat.obstine = true; etat.dejaSet.add("obstination");
       } else if (g === 1 && recents.length >= 8 && recents.filter(Boolean).length >= 6 && peutCommenter(6) && rng() < 0.5) {
         moment = "lecture_subie";
-      } else if (lectureReussie(c) && peutCommenter(5) && rng() < 0.3) {   // (6 répliques seulement : « Pleine lucarne ! » revenait trop)
+      } else if (lectureReussie(c) && peutCommenter(5) && rng() < 0.3) {   // (peu de répliques : qu'elles ne reviennent pas trop)
         moment = "lecture_reussie"; ctx.serie4 = etat.serie.joueur === 0 && etat.serie.n >= 4;
       } else if (h && h.type === "match" && peutCommenter(3, 0.5) && rng() < 0.5) {
         moment = "tension"; ctx.balleContre = h.joueur === 1;

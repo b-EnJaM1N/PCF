@@ -198,7 +198,7 @@ function dialogueCriAuChoix(hasard = Math.random) {
 }
 // Les commentaires entendus aux derniers matchs (environ huit), pour ne pas recommencer chaque match par les mêmes.
 function commentairesRecents() { try { return lire("commentairesRecents", []) || []; } catch { return []; } }
-// « Je vous demande de vous arrêter » : rare. Jamais deux fois en moins de 12 heures (même d'un match à l'autre),
+// Les sifflets et « Je vous demande de vous arrêter » (l'arbitre) : rare. Jamais deux fois en moins de 12 heures (même d'un match à l'autre),
 // et jamais pendant le premier match après l'ouverture de l'appli (sinon on l'entendait à chaque reprise).
 const HUEES_ECART_MS = 12 * 60 * 60 * 1000;
 let matchsDepuisOuverture = 0;
@@ -324,13 +324,16 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   ambiance.calmer(false);
   const rp = reactionsPublic(evt, egalitesAvantDernier(m.coups));
   if (rp.ooh) ambiance.ooh();
-  // Après le « ooh » du public, Monique le rappelle à l'ordre (une fois sur quatre, et pas plus d'une fois en 30 minutes) :
-  // elle parle à la fin du « ooh », et c'est le seul commentaire de ce point.
-  if (rp.ooh && hueesPermises() && Math.random() < 0.12 && CATALOGUE.has("commentatrice_huees_01")) {
-    try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
-    for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
-    const seance = S, huees = CATALOGUE.get("commentatrice_huees_01");
-    setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, 1300);
+  // Après le « ooh », parfois, le public siffle et l'arbitre le rappelle à l'ordre (pas plus d'une fois en 12 heures) :
+  // il parle à la fin des sifflets, et c'est le seul commentaire de ce point.
+  if (rp.ooh && hueesPermises() && Math.random() < 0.12 && voix.fichiers.has("arbitre_huees_01")) {
+    const duree = ambiance.sifflets(0.9);
+    if (duree) {
+      try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
+      for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
+      const seance = S, huees = CATALOGUE.get("arbitre_huees_01");
+      setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, (0.9 + duree * 0.8) * 1000);
+    }
   }
   if (rp.tension) setTimeout(() => ambiance.tension(), 500);
   // Le cri du vainqueur du set (ou du match) ; les commentateurs réagissent parfois.
