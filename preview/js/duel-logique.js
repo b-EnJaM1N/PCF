@@ -3,7 +3,7 @@
 //
 // Sur le serveur, joueur 0 = celui qui a lancé le défi. À l'écran, on est
 // toujours le côté 0 (jaune) : on retourne donc les coups si on est le joueur 1.
-import { nouveauMatch, jouerCoup, EMOJI, NOM, texteFormat } from "./regles.js";
+import { nouveauMatch, jouerCoup, penaliser, EMOJI, NOM, texteFormat } from "./regles.js";
 import { indiceImprevisibilite } from "./analyse.js";
 import { normaliserProfil, signeFavori, dernierTitre, titresObtenus } from "./profil.js";
 import { surnomDe } from "./surnoms.js";
@@ -18,11 +18,27 @@ export function coupVuDe(c, moi) {
   return moi === 0 ? { a: c.a, b: c.b, auto: [!!auto[0], !!auto[1]] } : { a: c.b, b: c.a, auto: [!!auto[1], !!auto[0]] };
 }
 
-// Rejoue tous les coups révélés avec les règles de l'application.
+// Les coups révélés et les points de pénalité (étape 49 : duel.penalites, { apres, fautif }), dans l'ordre, vus de mon côté :
+// { coup: { a, b, auto } } ou { penalite: fautif (0 = moi, 1 = l'adversaire) }.
+export function evenementsDuel(duel, moi) {
+  const coups = duel.coups || [], pens = Array.isArray(duel.penalites) ? duel.penalites : [], liste = [];
+  let k = 0;
+  for (let i = 0; i <= coups.length; i++) {
+    while (k < pens.length && (pens[k].apres ?? 0) <= i) liste.push({ penalite: pens[k++].fautif === moi ? 0 : 1 });
+    if (i < coups.length) liste.push({ coup: coupVuDe(coups[i], moi) });
+  }
+  return liste;
+}
+// Applique un de ces événements au match ; renvoie ce qui s'est passé (comme jouerCoup).
+export const appliquerEvenement = (match, e) => (e.coup ? jouerCoup(match, e.coup.a, e.coup.b, e.coup.auto) : penaliser(match, e.penalite));
+// Combien d'événements le match a déjà vus (coups et pénalités).
+export const nbEvenements = match => match.coups.length + (match.penalites?.length || 0);
+
+// Rejoue tous les coups révélés (et les pénalités) avec les règles de l'application.
 // Renvoie le match (de mon point de vue) et les événements de chaque coup.
 export function rejouer(duel, moi) {
   const match = nouveauMatch(formatDuel(duel));
-  const evenements = (duel.coups || []).map(c => { const v = coupVuDe(c, moi); return jouerCoup(match, v.a, v.b, v.auto); });
+  const evenements = evenementsDuel(duel, moi).map(e => appliquerEvenement(match, e));
   return { match, evenements };
 }
 

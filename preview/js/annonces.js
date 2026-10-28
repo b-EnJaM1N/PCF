@@ -224,6 +224,42 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
   return { lignes, commentaire, dialogue: dialogueFin, public: pub, ambiance };
 }
 
+// Un point de pénalité (evt : ce que renvoie penaliser) : l'arbitre l'annonce, puis le score comme après un coup ;
+// parfois (6 fois sur 10), si c'est moi le fautif, un commentaire sur le temps. Renvoie la même chose qu'annoncerCoup.
+export function annoncerPenalite(match, evt, etat, rng = Math.random) {
+  const g = evt.gagnant, cote = COTE[g], len = match.format.pointsParSet, court = ecartRequis(len) === 1;
+  const lignes = [replique(`arbitre_penalite_${COTE[evt.penalite]}_01`)];
+  let pub = null, commentaire = null;
+  etat.egalitesDeSuite = 0;
+  etat.serie = etat.serie.joueur === g ? { joueur: g, n: etat.serie.n + 1 } : { joueur: g, n: 1 };
+  if (evt.finMatch) {
+    const [a, b] = [match.sets[g], match.sets[1 - g]];
+    const mot = k => slug(["zéro", "un", "deux", "trois"][k]);
+    lignes.push(replique(`arbitre_jeu_set_et_match_${cote}_01`));
+    if (match.format.setsGagnants > 1) lignes.push(replique(`arbitre_sets_${mot(a)}_a_${mot(b)}_01`));
+    else lignes.push(repliqueScore(Math.max(...evt.scoreSet), Math.min(...evt.scoreSet)));
+    pub = g === 0 ? "ovation" : "set";
+  } else if (evt.finSet) {
+    const [pa, pb] = evt.scoreSet;
+    lignes.push(replique(`arbitre_${slug(ORDINAUX[match.scoresSets.length - 1])}_set_${cote}_01`), repliqueScore(Math.max(pa, pb), Math.min(pa, pb)));
+    pub = "set";
+  } else {
+    const [a, b] = match.points, h = evt.balleApres;
+    if (h) lignes.push(replique(`arbitre_balle_de_${h.type}_${COTE[h.joueur]}_01`));
+    else if (pointDecisif(match)) lignes.push(replique("arbitre_point_decisif_01"));
+    else if (!court && a === b && a >= len - 1) lignes.push(repliquePartout(a));
+  }
+  if (evt.finSet) { etat.ecartMin = 0; etat.serieMaxSet = [0, 0]; etat.dejaSet.clear(); }
+  if (evt.penalite === 0 && !evt.finMatch && rng() < 0.6) {
+    commentaire = choisir(etat, "temps_ecoule", { balleMatch: evt.balleAvant?.type === "match" }, rng);
+    if (commentaire) { lignes.push(commentaire); etat.dernierCom = match.coups.length; }
+  }
+  const ambiance = match.termine ? "fin" : evt.balleApres && evt.balleApres.type === "match" ? "silence" : "murmure";
+  return { lignes, commentaire, dialogue: [], public: pub, ambiance };
+}
+// L'avertissement pour dépassement de temps (fautif : 0 moi, 1 l'adversaire).
+export const annonceAvertissement = fautif => replique(`arbitre_avertissement_${COTE[fautif]}_01`);
+
 // La figure technique (inventée) que dessinent mes derniers signes, si le dernier gagne le point ; sinon null.
 // c : les coups du match (a : mon signe, b : le sien, gagnant : 0 moi, 1 lui, null égalité). Pierre 0, Ciseaux 1, Feuille 2.
 export function figureDe(c) {
