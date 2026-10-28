@@ -78,7 +78,7 @@ export const MOMENTS = {
   ],
   serie_pour: [
     { r: "c", t: "Plus rien ne l'arrête !" },
-    { r: "c", t: "Quatre à la suite !" },
+    { r: "c", t: "Quatre à la suite !", si: "pile4" },
     { r: "c", t: "Ça déroule, ça déroule !" },
     { r: "c", t: "Il a mis une mine, ça explose derrière !", f: "Elle a mis une mine, ça explose derrière !", clin: "sport" },
     { r: "c", t: "C'est du Pierre-Feuille-Ciseaux champagne !", clin: "sport" },

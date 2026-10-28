@@ -42,7 +42,7 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
 
 // ---------------------------------------------------------------- choisir une réplique
 const CONDITIONS = {
-  onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
+  onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, pile4: c => c.pile4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
   balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, un_partout: c => c.unPartout, finale: c => c.finale,
   // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
@@ -136,14 +136,14 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
 
   // Le match chauffe : balle de set ou de match, fin de set serrée.
   const chaud = !!(evt.balleAvant || evt.balleApres) || (!court && Math.max(...match.points) >= len - 3);
-  etat.reserve = Math.min(RESERVE_MAX, etat.reserve + (chaud ? 1 / 5 : 1 / 8));
+  etat.reserve = Math.min(RESERVE_MAX, etat.reserve + (chaud ? 1 / 3 : 1 / 4));
   const peutCommenter = (ecart, seuil = 1) => n >= 3 && etat.reserve >= seuil && n - etat.dernierCom >= ecart;
   let moment = null;
 
   if (evt.egalite) {
     etat.egalitesDeSuite++;
     // (une fois par set au plus : sinon c'est le commentaire qu'on entend le plus)
-    if ((etat.egalitesDeSuite === 3 || etat.egalitesDeSuite === 5) && !etat.dejaSet.has("duel_esprits") && peutCommenter(3)) {
+    if ((etat.egalitesDeSuite >= 3 && etat.egalitesDeSuite <= 5) && !etat.dejaSet.has("duel_esprits") && peutCommenter(3)) {
       moment = "duel_esprits"; ctx.cinqEgalites = etat.egalitesDeSuite === 5; etat.dejaSet.add("duel_esprits");
     }
   } else {
@@ -179,15 +179,15 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
         if (moment === "balle_sauvee" && evt.balleAvant.type === "match" && rng() < 0.5) moment = "main_legendaire";
       } else if (a === b && a >= 4 && etat.ecartMin <= -4 && peutCommenter(3, 0.5)) {
         moment = "remontee"; etat.ecartMin = 0;
-      } else if ((etat.serie.n === 4 || etat.serie.n === 6) && peutCommenter(4) && rng() < 0.7) {
-        moment = g === 0 ? "serie_pour" : "serie_contre"; ctx.serie6 = etat.serie.n === 6;
+      } else if ([4, 5, 6].includes(etat.serie.n) && peutCommenter(4) && rng() < 0.9) {   // (à 5 : si rien n'a été dit à 4)
+        moment = g === 0 ? "serie_pour" : "serie_contre"; ctx.serie6 = etat.serie.n === 6; ctx.pile4 = etat.serie.n === 4;
       } else if (auto && peutCommenter(4) && rng() < 0.6) {
         moment = "temps_ecoule"; ctx.balleMatch = evt.balleAvant?.type === "match";
       } else if (etat.obstine && c[n - 1].a !== c[n - 2].a && peutCommenter(2) && rng() < 0.2) {   // (une seule réplique : pas trop souvent)
         moment = "changement"; etat.obstine = false;
-      } else if (obstination && !etat.dejaSet.has("obstination") && peutCommenter(4) && rng() < 0.4) {   // (une fois par set au plus)
+      } else if (obstination && !etat.dejaSet.has("obstination") && peutCommenter(3) && rng() < 0.6) {   // (une fois par set au plus)
         moment = "obstination"; etat.obstine = true; etat.dejaSet.add("obstination");
-      } else if (g === 1 && recents.length >= 8 && recents.filter(Boolean).length >= 6 && peutCommenter(6) && rng() < 0.5) {
+      } else if (g === 1 && recents.length >= 8 && recents.filter(Boolean).length >= 6 && peutCommenter(6) && rng() < 0.7) {
         moment = "lecture_subie";
       } else if (lectureReussie(c) && peutCommenter(5) && rng() < 0.3) {   // (peu de répliques : qu'elles ne reviennent pas trop)
         moment = "lecture_reussie"; ctx.serie4 = etat.serie.joueur === 0 && etat.serie.n >= 4;
@@ -211,7 +211,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
     // (pour les écoles rares, seule la version cassante compte : sinon l'école reviendrait dès que la cassante a été entendue)
     const f = figureDe(c), ds = f && DIALOGUES_IDS[`figure_${f}`];
     const neuve = ds && (ECOLES_REGULIERES.includes(`figure_${f}`) ? ds : ds.slice(0, 1)).some(d => !etat.anciens?.has(baseDe(d[0])));
-    const d = neuve && rng() < 0.25 && dialogue(etat, `figure_${f}`, rng);
+    const d = neuve && rng() < 0.4 && dialogue(etat, `figure_${f}`, rng);
     if (d) { dialogueFin = d; etat.figures++; etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
   }
   if (moment) {
