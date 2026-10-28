@@ -253,6 +253,24 @@ Le porteur du projet a validé « il s'est fait cueillir » et demandé d'autres
 | M | Arrêt au stand. Il en avait besoin. | Il change enfin de signe après une obstination | Formule 1 |
 | R | Il franchit la ligne d'avantage ! | Série de 3 points gagnés | Rugby |
 
+## 12. La mémoire des matchs précédents (✍️, 28 octobre, idée du porteur du projet ; version 2)
+Quand deux joueurs (ou un joueur et un bot) se retrouvent, Roland et Monique rappellent leur dernier match, avant le match ou au
+premier coup. Les voix ne peuvent pas dire de nom propre : les répliques restent générales (« il », « la dernière fois »).
+Données nécessaires : le premier signe du dernier match et le score (déjà gardés : historique des mains), les balles de match
+sauvées (à garder en plus), le vainqueur.
+
+| Qui | Réplique | Quand |
+|---|---|---|
+| R | La dernière fois, il avait ouvert avec la Pierre ! *(Ciseaux, Feuille)* | Avant le premier coup |
+| M | Il avait ouvert avec la Pierre la dernière fois. Il a peut-être appris. Peut-être. *(Ciseaux, Feuille)* | Avant le premier coup |
+| M | Il rejoue la même ouverture que la dernière fois. La mémoire, ce n'est pas son fort. | Il ouvre avec le même signe |
+| R | Le dernier match s'était soldé par une défaite sèche… l'heure de la revanche a sonné ! | Le dernier match perdu nettement |
+| M | La dernière fois, c'était une correction. On espère un match, cette fois. | Le dernier match perdu nettement |
+| R | Au dernier match, il avait sauvé une balle de match ! Le public s'en souvient ! | Une balle sauvée au dernier match |
+| M | La dernière fois, ça s'était joué à un point. Prévoyez du temps. | Le dernier match très serré |
+| R | Ils restent sur trois matchs gagnés chacun : la belle, mesdames et messieurs ! | Égalité dans leurs face-à-face |
+| M | Il a gagné les quatre derniers. À ce stade, ce n'est plus un duel, c'est une habitude. | Une série dans leurs face-à-face |
+
 ---
 
 ## Ce qu'il reste à faire

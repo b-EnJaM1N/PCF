@@ -4,6 +4,19 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 
 ## En bref (14 octobre 2026)
 
+**Le cap (audit du 28 octobre, décisions du porteur du projet)** :
+- **Objectif** : un projet dont il est fier, pas une source de revenus ; devenir la référence du chifoumi (en France d'abord).
+- **Deux publics, deux rôles** : le **duel entre amis avec enjeu** fait venir le grand public (chaque défi amène quelqu'un) ;
+  les **amateurs de stratégie et de duels psychologiques** (deviner le coup de l'autre) sont le cœur qui reste. L'appli doit
+  rester simple au premier contact et révéler sa profondeur ensuite. À vérifier avec les testeurs : le compte obligatoire
+  pour défier un ami est-il un frein ?
+- **La ligne d'arrivée de la version 1** : la sortie sur le Play Store ; un son homogène et les nouveaux commentaires ; un accueil
+  simple pour les nouveaux ; les 3 vidéos publiées. Jusque-là, pas de nouvelle fonction : seulement des corrections. Tout le
+  reste (idées listées plus bas) attend la version 2.
+- **Critère de réussite, 3 mois après la sortie** : une vingtaine de joueurs qui jouent chaque semaine, quelques cercles actifs.
+- **Version 2, en premier** : la rivalité entre deux joueurs (face-à-face, revanche, historique des mains, poignées de main) et
+  **la mémoire des matchs précédents dans les commentaires** (répliques proposées dans `docs/repliques-banque-brouillon.md`, section 12).
+
 **À faire ensuite, dans l'ordre** (pas de précipitation, faire les choses bien) :
 1. **Finir de valider** ce qui reste « à valider » (sur la version de test) : les tournois programmés et le freeroll de 20 h (à tester un soir), puis la version de lancement.
 2. **Tests avec les proches** : 10 à 20 personnes dans un cercle « Testeurs HandSlam », invitées par petites vagues, avec une soirée freeroll (message d'invitation déjà préparé dans une conversation précédente). **Test fermé Google lancé le dimanche 25 octobre au soir : 14 testeurs inscrits** (il en faut 12 inscrits sans interruption pendant 14 jours chacun ; un nouveau venu repart de zéro pour lui). Demande d'accès à la production possible au plus tôt vers le **8 novembre** (bouton « Demander l'accès à la production » du tableau de bord de la Play Console ; questionnaire sur le test à préparer ensemble).
