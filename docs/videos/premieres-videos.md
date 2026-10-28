@@ -1,14 +1,14 @@
-# Les 3 premières vidéos (22 octobre 2026)
+# Les 3 premières vidéos (22 octobre 2026, refaites le 28 octobre avec la version actuelle de l'appli)
 
-Format : vertical 1080 × 1920, 23 à 28 secondes, son compris (voix de Monique et Roland, public, raquette).
+Format : vertical 1080 × 1920, 19 à 24 secondes, son compris (voix de Monique et Roland, public, raquette).
 Fichiers fabriqués par Claude à partir de vraies captures de l'appli (envoyés dans la conversation, pas dans le projet : trop lourds).
 Même vidéo sur TikTok, Instagram (Reels) et YouTube Shorts.
 
 **Avant de publier** : sur TikTok, ajouter une musique tendance **à volume très bas** (5 à 10 %) pour ne pas couvrir les voix ; ou garder le son original.
 Ordre conseillé : vidéo 3 (l'histoire) en premier, puis 1, puis 2, à 2 ou 3 jours d'intervalle.
 
-## Vidéo 1 — « Monique a dit » (`v1-monique-a-dit.mp4`, 23 s)
-Monique, Roland, Monique pendant un vrai match (« Quel mental de chips. », « Mesdames et mesdames… quelle main ! », « Muscle ton jeu, Robert. Muscle ton jeu. »), puis le logo. Voix à la même vitesse que dans l'appli (Monique × 1,65, Roland × 1,4).
+## Vidéo 1 — « Monique a dit » (`v1-monique-a-dit.mp4`, 19 s)
+Roland ouvre la retransmission, puis Monique, Roland, Monique, Monique pendant un vrai match (« Quel mental de chips. », « Mesdames et mesdames… quelle main ! », « Muscle ton jeu, Robert. Muscle ton jeu. », « Bref. Il a perdu le set. »), puis le logo. Voix à la même vitesse que dans l'appli (Monique × 1,65, Roland × 1,4).
 
 **Légende** :
 > Lui s'enflamme. Elle ne pardonne rien. 🎙️🧊
@@ -17,7 +17,7 @@ Monique, Roland, Monique pendant un vrai match (« Quel mental de chips. », « 
 
 **Hashtags** : #chifoumi #pierrefeuilleciseaux #shifumi #humour #jeumobile #tennis #commentateur #handslam
 
-## Vidéo 2 — « 3 réflexes que tout le monde a au chifoumi » (`v2-trois-reflexes.mp4`, 27 s)
+## Vidéo 2 — « 3 réflexes que tout le monde a au chifoumi » (`v2-trois-reflexes.mp4`, 22 s)
 Les réflexes, avec à chaque fois comment en profiter, puis « Trop prévisible. » de Monique.
 
 **Légende** :
@@ -29,8 +29,8 @@ Les réflexes, avec à chaque fois comment en profiter, puis « Trop prévisible
 
 Idée de commentaire épinglé : « Teste sur un proche ce soir et dis-moi si ça marche 😏 »
 
-## Vidéo 3 — « Je ne sais pas coder, j'ai créé un jeu avec une IA » (`v3-createur.mp4`, 28 s)
-L'idée, les premiers logos, le logo final, la présentation avec Roland et Monique, La Une.
+## Vidéo 3 — « Je ne sais pas coder, j'ai créé un jeu avec une IA » (`v3-createur.mp4`, 24 s)
+L'idée, la présentation avec Roland et Monique, la carrière (de l'Amateur à l'Élite), le défi avec un enjeu, La Une, le test avec les proches.
 
 **Légende** :
 > Je ne sais pas coder. Il y a un mois, j'avais juste une idée bizarre : faire du chifoumi un vrai sport. 🎾
@@ -42,8 +42,8 @@ L'idée, les premiers logos, le logo final, la présentation avec Roland et Moni
 **Si tu veux ajouter ta voix** (fortement conseillé pour cette vidéo, ça la rend plus humaine) : enregistre-la dans CapCut ou dans TikTok par-dessus la vidéo, en suivant les textes à l'écran :
 1. « Je ne sais pas coder. Et pourtant, j'ai créé un jeu… avec une IA. »
 2. « L'idée : faire du chifoumi un vrai sport. »
-3. « On a cherché le logo : un club de tennis chic. »
-4. « Il y a un arbitre, un public… et deux commentateurs, Roland et Monique. » (laisser parler Roland)
+3. « Il y a un arbitre, un public… et deux commentateurs, Roland et Monique. » (laisser parler Roland)
+4. « Une carrière, de l'Amateur à l'Élite. Et tu défies tes amis, avec un enjeu. »
 5. « Et après chaque match, tu fais la Une. »
 6. « Le test avec mes proches a commencé. Abonne-toi pour la suite. »
 
