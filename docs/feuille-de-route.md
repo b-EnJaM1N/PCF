@@ -48,6 +48,13 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
         (comme aujourd'hui), terre battue 10 à 12 s, une surface ultra-rapide 3 s. Facile contre les bots ; en ligne, le temps du
         coup est fixé par le serveur (étape 46) : une étape SQL, et 3 s y serait risqué (délai du réseau).
    - **Le son** (27 octobre, retours des testeurs : « artisanal », pas homogène) : priorité dès qu'il y a des crédits ElevenLabs.
+     11. **Un hymne HandSlam** (28 octobre) : une courte musique originale (20 à 30 s) jouée à l'entrée des joueurs pour les
+        grands matchs (finales, Grand Chelem, finales de carrière et de coupe), dans l'esprit de la Ligue des champions mais sans
+        lui ressembler (son hymne est protégé). À faire avec la bible sonore ; vérifier que la musique générée peut servir dans
+        une appli publiée.
+     12. **Le public qui scande le pseudo** (« Allez Benji ! », « Let's go Benji ! ») : à fabriquer pour chaque pseudo, donc
+        plutôt réservé à une future offre (comme le pseudo prononcé par Roland et Monique) ; seulement des pseudos vérifiés
+        (jamais de pseudo grossier scandé), avec une prononciation à contrôler.
      Plan : `docs/bible-sonore.md` (un seul univers, une phrase commune pour tous les sons, essai de 4 sons puis le reste, puis les
      nouveaux commentaires). Fait sans crédits : la salle baisse sous la voix des commentateurs.
    - **En attente jusqu'après les tests** (décision du 24 octobre) : le **grand tournoi de lancement** et les démarches qui vont avec (détails gardés par le porteur du projet, hors du dépôt public : les lui redemander). Aussi en attente : les sons de stade et les répliques de carrière (crédits ElevenLabs à 84 %).
