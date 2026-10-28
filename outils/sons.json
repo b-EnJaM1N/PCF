@@ -42,6 +42,16 @@
       "texte": "Short applause after a point, medium",
       "duree": 3
     },
+    "public_applaudir_01": {
+      "texte": "Polite tennis audience applause after a point in a large indoor arena, many people clapping, natural and clear, no ball sounds, no music",
+      "duree": 3,
+      "salle": false
+    },
+    "public_applaudir_02": {
+      "texte": "Warm audience applause with a few cheers after a great point, large indoor tennis arena, close and clear, no ball sounds, no music",
+      "duree": 3,
+      "salle": false
+    },
     "public_clameur_01": {
       "texte": "Big cheer after a great point, then applause",
       "duree": 3
@@ -143,7 +153,7 @@
       "duree": 5
     },
     "stade_sifflet_01": {
-      "texte": "Stadium crowd playful whistling and light good-natured booing, short",
+      "texte": "The crowd boos and whistles in protest at a decision, indoor arena, loud and clear, no music",
       "duree": 3,
       "salle": false
     }

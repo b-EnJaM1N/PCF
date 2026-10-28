@@ -83,6 +83,12 @@ seront pas joués.
   de chaque son, description propre à chaque son, sans la phrase commune ni « micros près du court », « no ball hits »), niveau
   vérifié et ajusté, à écouter sur une page d'essai ; seuls ceux que le porteur du projet choisit entrent dans le jeu.
 
+- **Premier essai avec la nouvelle méthode** (28 octobre, 4 sons × 3 versions, `outils/sons-candidats.json`, page
+  `app/essais-sons.html`) : des sons nets et forts cette fois. Choix du porteur du projet : applaudissements 1 et 2 (en alternance,
+  `public_applaudir_01`, `_02`), huées n° 2 (`stade_sifflet_01`, avant « Je vous demande de vous arrêter »). « Bravo » et « Allez » :
+  aucun (« Allez » où l'on entend le z, « Bravo » à l'italienne) : on garde les anciens. Le public applaudit après 2 points
+  ordinaires sur 10 (au lieu de 8 sur 100), pendant près de 2 secondes.
+
 ## 6. Côté code (sans crédits)
 - **Fait le 27 octobre** : la salle baisse sous la voix de Roland, Monique et des autres voix, comme à la télévision ; le coup
   de raquette reste au même niveau (`SOUS_LA_VOIX` dans `app/js/ambiance.js`).
