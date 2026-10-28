@@ -65,6 +65,10 @@ seront pas joués.
   (`stade_sifflet_01`, refait dans la même salle). La fanfare attend (c'est de la musique : « no music » dans la phrase commune).
 - 9 sons du lot sont sortis presque muets (3 « Allez ! », un « ohhh » déçu, le « ooh », 4 raquettes) : leur volume a été remonté
   à la main (ffmpeg, crête à -1,5 dB). Si l'un d'eux sonne mal à l'écoute, on le refait après le 2 novembre.
+- À l'écoute (porteur du projet) : plus de public du tout, la raquette trop forte. Cause : ElevenLabs a rendu tout le lot bien plus
+  faible que les anciens sons (murmure de fond à -40 dB au lieu de -34). Tous les sons du public ramenés au niveau des anciens
+  (murmure un peu plus fort : -29 dB ; réactions vers -20 dB ; ffmpeg avec limiteur), raquette un peu moins forte dans l'appli.
+  Pour les prochains sons : vérifier le niveau de chaque fichier généré, et l'ajuster avant de le proposer à l'écoute.
 
 ## 6. Côté code (sans crédits)
 - **Fait le 27 octobre** : la salle baisse sous la voix de Roland, Monique et des autres voix, comme à la télévision ; le coup

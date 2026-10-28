@@ -209,7 +209,8 @@ export class Ambiance {
   raquette(signe = 2, fort = false) {
     const f = this.raquettesFichiers[signe] || [];
     const b = (fort && f[1]) || f[0];
-    if (b) this.jouer(b, fort ? 1 : 0.7, fort && !f[1], { vitesse: 0.98 + Math.random() * 0.04, salle: false });
+    // (un peu moins fort depuis le 28 octobre : la raquette couvrait le public)
+    if (b) this.jouer(b, fort ? 0.8 : 0.55, fort && !f[1], { vitesse: 0.98 + Math.random() * 0.04, salle: false });
     else this.jouer(this.raquettes[signe], fort ? 0.9 : 0.7, true, { salle: false });
   }
 
