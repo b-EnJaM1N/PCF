@@ -372,12 +372,12 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   // Après le « ooh », parfois, le public siffle et l'arbitre le rappelle à l'ordre (pas plus d'une fois en 12 heures) :
   // il parle à la fin des sifflets, et c'est le seul commentaire de ce point.
   if (rp.ooh && hueesPermises() && Math.random() < 0.12 && voix.fichiers.has("arbitre_huees_01")) {
-    const duree = ambiance.sifflets(0.4);
+    const duree = ambiance.sifflets(0.9);
     if (duree) {
       try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
       for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
       const seance = S, huees = CATALOGUE.get("arbitre_huees_01");
-      setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, (0.4 + duree * 0.8) * 1000);
+      setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, (0.9 + duree * 0.8) * 1000);
     }
   }
   if (rp.tension) setTimeout(() => ambiance.tension(), 500);
@@ -415,7 +415,7 @@ function apresPoint(evt, a, cel, rp) {
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
   if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
   // Sinon, parfois, une réaction du public : applaudissements, « Allez ! », « Bravo ! », « Ohhh… » ou brouhaha (voir reactionPoint).
-  else if (rp && !rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups); if (r) setTimeout(() => ambiance.reagir(r), 60); }   // (tout de suite après le point, comme au tennis)
+  else if (rp && !rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups); if (r) setTimeout(() => ambiance.reagir(r), 300); }
   // Parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
   if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length))
     a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));
