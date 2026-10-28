@@ -5,7 +5,8 @@ Fichiers fabriqués par Claude à partir de vraies captures de l'appli (envoyés
 Même vidéo sur TikTok, Instagram (Reels) et YouTube Shorts.
 
 **Avant de publier** : sur TikTok, ajouter une musique tendance **à volume très bas** (5 à 10 %) pour ne pas couvrir les voix ; ou garder le son original.
-Ordre conseillé : vidéo 3 (l'histoire) en premier, puis 1, puis 2, à 2 ou 3 jours d'intervalle.
+Ordre conseillé : vidéo 1 (les commentateurs) en premier, puis 2, puis 3 (le tuto), à 2 ou 3 jours d'intervalle.
+Toutes les vidéos finissent sur le logo et « Rejoins le club ! » (décision du 28 octobre).
 
 ## Vidéo 1 — « Monique a dit » (`v1-monique-a-dit.mp4`, 24 s)
 Pendant un vrai match : Roland ouvre la retransmission ; Monique : « Un pur produit de l'école hongroise. Très propre. » ;
@@ -32,23 +33,19 @@ Les réflexes, avec à chaque fois comment en profiter, puis « Trop prévisible
 
 Idée de commentaire épinglé : « Teste sur un proche ce soir et dis-moi si ça marche 😏 »
 
-## Vidéo 3 — « Je ne sais pas coder, j'ai créé un jeu avec une IA » (`v3-createur.mp4`, 24 s)
-L'idée, la présentation avec Roland et Monique, la carrière (de l'Amateur à l'Élite), le défi avec un enjeu, La Une, le test avec les proches.
+## Vidéo 3 — « Comment jouer à HandSlam » (`v3-tuto.mp4`, 31 s)
+Un tuto qui présente l'appli (choix du porteur du projet, 28 octobre : pas de « je ne sais pas coder »), avec le titre
+« Comment jouer à HandSlam » en haut tout du long : le chifoumi devient un sport ; des sets et des balles de match comme au
+tennis ; lis ton adversaire (son dossier) ; deux commentateurs sans pitié (Roland, puis Monique) ; le match du jour ; défier
+ses amis avec un enjeu ; créer son cercle (classe, famille, collègues) avec son classement et son championnat ; la carrière,
+de l'Amateur à l'Élite ; La Une.
 
 **Légende** :
-> Je ne sais pas coder. Il y a un mois, j'avais juste une idée bizarre : faire du chifoumi un vrai sport. 🎾
-> Aujourd'hui il y a des sets, un arbitre, un public… et deux commentateurs.
-> Le test avec mes proches a commencé. Je vous raconte la suite ? 👇
+> Le chifoumi devient un sport. 🎾 Sets, balles de match, commentateurs, carrière, défis entre amis…
+> Crée le cercle de ta classe ou de ta bande et fais le classement. 👥
+> 👉 Gratuit : handslam.fr
 
-**Hashtags** : #ia #intelligenceartificielle #createur #appli #chifoumi #projet #buildinpublic #handslam
-
-**Si tu veux ajouter ta voix** (fortement conseillé pour cette vidéo, ça la rend plus humaine) : enregistre-la dans CapCut ou dans TikTok par-dessus la vidéo, en suivant les textes à l'écran :
-1. « Je ne sais pas coder. Et pourtant, j'ai créé un jeu… avec une IA. »
-2. « L'idée : faire du chifoumi un vrai sport. »
-3. « Il y a un arbitre, un public… et deux commentateurs, Roland et Monique. » (laisser parler Roland)
-4. « Une carrière, de l'Amateur à l'Élite. Et tu défies tes amis, avec un enjeu. »
-5. « Et après chaque match, tu fais la Une. »
-6. « Le test avec mes proches a commencé. Abonne-toi pour la suite. »
+**Hashtags** : #chifoumi #pierrefeuilleciseaux #shifumi #jeumobile #tuto #entreamis #handslam
 
 ## Après la publication
 - Répondre aux commentaires la première heure (ça aide beaucoup la diffusion).
