@@ -64,14 +64,23 @@ export function htmlMains(entrees, { noms = ["Toi", "Lui"], gagneTexte = ["✅ V
 // La mémoire du dernier match contre le même adversaire, pour les commentateurs (28 octobre).
 // entrees : ses matchs gardés (le plus récent d'abord) ; face : notre bilan { v, d }.
 // Renvoie { ouverture (son premier signe au dernier match, ou null), defaiteSeche, balleSauvee, serre, belle, habitude (null,
-// "moi" ou "lui" : qui a gagné les 3 derniers) }, ou null s'il n'y a pas de match précédent.
-export function memoireDuDernier(entrees, face = null) {
+// "moi" ou "lui" : qui a gagné les 3 derniers), gagne (ai-je gagné le dernier ?), renverse (le vainqueur du dernier match avait
+// perdu le premier set), favori ({ signe, part } : son signe le plus joué au dernier match), long (40 coups ou plus), jours (depuis
+// le dernier match), v, d (notre bilan) }, ou null s'il n'y a pas de match précédent.
+export function memoireDuDernier(entrees, face = null, maintenant = Date.now()) {
   const e = entrees?.[0]; if (!e) return null;
   const sets = String(e.s || "").split(",").map(x => x.split("–").map(Number)).filter(x => x.length === 2 && x.every(Number.isFinite));
   const premier = decoderCoups(e.c)[0]?.[0];
   const dernierSet = sets.at(-1);
-  const trois = entrees.slice(0, 3);
+  const trois = entrees.slice(0, 3), coups = decoderCoups(e.c).flat(), sien = [0, 0, 0];
+  coups.forEach(c => sien[c.b]++);
+  const fav = sien.indexOf(Math.max(...sien));
   return {
+    gagne: !!e.g, v: face?.v ?? 0, d: face?.d ?? 0,
+    renverse: sets.length >= 2 && (e.g ? sets[0][0] < sets[0][1] : sets[0][0] > sets[0][1]),
+    favori: coups.length >= 8 ? { signe: fav, part: sien[fav] / coups.length } : null,
+    long: coups.length >= 40,
+    jours: e.d ? Math.floor((maintenant - e.d) / 86400000) : 0,
     ouverture: premier ? premier.b : null,
     defaiteSeche: !e.g && sets.length > 0 && sets.every(([a, b]) => b - a >= 5),
     balleSauvee: (e.b || 0) > 0,

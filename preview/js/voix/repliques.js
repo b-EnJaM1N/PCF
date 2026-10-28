@@ -336,9 +336,46 @@ export const MOMENTS = {
       f: ["Elle avait ouvert avec la Pierre la dernière fois. Elle a peut-être appris. Peut-être.", "Elle avait ouvert avec les Ciseaux la dernière fois. Elle a peut-être appris. Peut-être.", "Elle avait ouvert avec la Feuille la dernière fois. Elle a peut-être appris. Peut-être."], signe: "adv" },
   ],
   // L'adversaire rejoue la même ouverture qu'au dernier match (dit après le premier coup).
+  // (la première, « La mémoire, ce n'est pas son fort », est retirée le 28 octobre : rejouer la même ouverture peut être un choix)
   memoire_meme_ouverture: [
-    { r: "d", t: "Il rejoue la même ouverture que la dernière fois. La mémoire, ce n'est pas son fort.", f: "Elle rejoue la même ouverture que la dernière fois. La mémoire, ce n'est pas son fort." },
+    { r: "d", t: "Il rejoue la même ouverture que la dernière fois. La mémoire, ce n'est pas son fort.", retiree: true },
+    { r: "d", t: "Il rejoue la même ouverture que la dernière fois. Simple habitude, ou piège ?", f: "Elle rejoue la même ouverture que la dernière fois. Simple habitude, ou piège ?" },
+    { r: "d", t: "Même ouverture. Il assume.", f: "Même ouverture. Elle assume." },
+    { r: "d", t: "La même ouverture que la dernière fois. Il teste la mémoire de son adversaire.", f: "La même ouverture que la dernière fois. Elle teste la mémoire de son adversaire." },
+    { r: "c", t: "Il rouvre comme au dernier match ! Il ose ! Il ose !", f: "Elle rouvre comme au dernier match ! Elle ose ! Elle ose !" },
   ],
+  // Il change d'ouverture par rapport au dernier match (dit après le premier coup, une fois sur deux).
+  memoire_change_ouverture: [
+    { r: "d", t: "Il change d'ouverture. La dernière fois lui a servi de leçon.", f: "Elle change d'ouverture. La dernière fois lui a servi de leçon." },
+    { r: "c", t: "Nouvelle ouverture ! Il a préparé ce match !", f: "Nouvelle ouverture ! Elle a préparé ce match !" },
+  ],
+  // Beaucoup de matchs entre eux (5 ou plus).
+  memoire_habitues: [{ r: "c", t: "Ces deux-là se connaissent par cœur ! Et ça promet !" }],
+  // « Il » mène dans leurs face-à-face (3 matchs ou plus).
+  memoire_mene: [{ r: "d", t: "Il mène dans leurs face-à-face. Mais ça ne veut rien dire. Enfin, un peu.", f: "Elle mène dans leurs face-à-face. Mais ça ne veut rien dire. Enfin, un peu." }],
+  // Je n'ai jamais battu cet adversaire (2 défaites ou plus).
+  memoire_jamais_battu: [
+    { r: "c", t: "Il n'a jamais battu cet adversaire ! Ce soir, peut-être ?", f: "Elle n'a jamais battu cet adversaire ! Ce soir, peut-être ?" },
+    { r: "d", t: "Jamais battu cet adversaire. Il y a un début à tout." },
+  ],
+  // Le dernier match remonte à plus d'une semaine.
+  memoire_retrouvailles: [{ r: "c", t: "Ils se retrouvent pour la première fois depuis un moment !" }],
+  // « Il » avait gagné le dernier match.
+  memoire_dernier_gagne: [
+    { r: "d", t: "Il avait gagné la dernière fois. Le plus dur, c'est de recommencer.", f: "Elle avait gagné la dernière fois. Le plus dur, c'est de recommencer." },
+    { r: "c", t: "Il reste sur une victoire contre lui ! Il veut la confirmer !", f: "Elle reste sur une victoire ! Elle veut la confirmer !" },
+  ],
+  // « Il » avait perdu le dernier match.
+  memoire_dernier_perdu: [{ r: "d", t: "Il reste sur une défaite contre lui. Il a eu le temps d'y penser.", f: "Elle reste sur une défaite. Elle a eu le temps d'y penser." }],
+  // Le vainqueur du dernier match l'avait renversé (premier set perdu).
+  memoire_renverse: [{ r: "c", t: "La dernière fois, il avait renversé le match ! Le public n'a pas oublié !", f: "La dernière fois, elle avait renversé le match ! Le public n'a pas oublié !" }],
+  // Son signe le plus joué au dernier match (45 % ou plus).
+  memoire_favori: [
+    { r: "d", t: ["La dernière fois, il avait beaucoup joué la Pierre. Il a dû y repenser.", "La dernière fois, il avait beaucoup joué les Ciseaux. Il a dû y repenser.", "La dernière fois, il avait beaucoup joué la Feuille. Il a dû y repenser."],
+      f: ["La dernière fois, elle avait beaucoup joué la Pierre. Elle a dû y repenser.", "La dernière fois, elle avait beaucoup joué les Ciseaux. Elle a dû y repenser.", "La dernière fois, elle avait beaucoup joué la Feuille. Elle a dû y repenser."], signe: "adv" },
+  ],
+  // Le dernier match avait été très long (40 coups ou plus).
+  memoire_long: [{ r: "d", t: "Leur dernier match a duré une éternité. J'ai prévu un thermos." }],
   // J'avais perdu nettement le dernier match.
   memoire_defaite_seche: [
     { r: "c", t: "Le dernier match s'était soldé par une défaite sèche… l'heure de la revanche a sonné !" },
@@ -386,6 +423,12 @@ export const DIALOGUES = {
   ],
   // Avant le match, selon la situation (contre un bot, en finale, une revanche, tard le soir).
   avant_bot: [["Un humain contre une machine, Madame !", "La machine a l'air plus détendue."]],
+  // La mémoire du dernier match (28 octobre) : il rejoue la même ouverture ; une revanche (j'avais perdu) ; des habitués ;
+  // un dernier match marquant (serré ou long).
+  memoire_meme_ouverture: [[{ t: "Il rouvre comme au dernier match ! Quelle audace !", f: "Elle rouvre comme au dernier match ! Quelle audace !" }, "Ou quel manque d'imagination. On saura à la fin du match."]],
+  memoire_revanche: [["Une revanche, Madame ! Une vraie !", "Ils ont dû la préparer toute la semaine."]],
+  memoire_habitues: [["Ils se connaissent, ils se jaugent, ils se respectent !", "Ils se méfient, surtout."]],
+  memoire_marquant: [["La dernière fois, quel match, Madame !", "On en reparle à la fin de celui-ci."]],
   avant_finale: [["Une finale, Madame ! Une FINALE !", "J'avais entendu la première fois."]],
   avant_revanche: [["Ils se connaissent, ces deux-là !", "Oui. Et ils ne s'aiment pas beaucoup."]],
   avant_nuit: [["Il est tard, Madame, mais le HandSlam ne dort jamais !", "Moi si. Normalement."]],
