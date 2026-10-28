@@ -20,9 +20,7 @@ export const FICHIERS_AMBIANCE = {
 };
 // Les réactions variées du public après un point (plusieurs versions de chacune, pour ne pas se répéter).
 export const FICHIERS_REACTIONS = {
-  // Les applaudissements après un point : deux versions en alternance (choisies à l'écoute le 28 octobre, app/essais-sons.html).
-  applaudir: ["public_applaudir_01", "public_applaudir_02"],
-  allez: ["public_allez_01"],   // (28 octobre : la version n° 1 de l'essai, à juger en match ; les anciennes sont dans l'historique)
+  allez: ["public_allez_01"],   // (28 octobre : le « Allez ! » n° 1 de l'essai, gardé à l'écoute ; les anciens sont dans l'historique)
   ohDecu: ["public_oh_decu_01", "public_oh_decu_02"],
   bravo: ["public_bravo_01", "public_bravo_02"],
   brouhaha: ["public_brouhaha_01", "public_brouhaha_02"],
@@ -52,8 +50,8 @@ export const FICHIERS_STADE = {
 // les commentaires ne doivent jamais sortir du silence).
 export const FOND = { entrePoints: 0.34, echange: 0.15 };
 // Les petits applaudissements après un point gagné, comme au tennis : volume et vitesse tirés au hasard (jamais deux fois pareils),
-// courts (ils s'éteignent au bout de deux secondes environ, et tout de suite si l'échange suivant commence).
-export const APPLAUDIR = { vol: [0.4, 0.55], vitesse: [0.93, 1.08], duree: 1.8 };   // (28 octobre : plus fort, on ne les entendait pas)
+// courts (ils s'éteignent au bout d'une seconde environ, et tout de suite si l'échange suivant commence).
+export const APPLAUDIR = { vol: [0.16, 0.26], vitesse: [0.93, 1.08], duree: 1.1 };
 
 // Combien de points de suite le gagnant de ce coup vient d'enchaîner (égalités ignorées), et la série qu'il vient de briser.
 export function series(coups) {
@@ -79,7 +77,7 @@ export function reactionPoint(etat, evt, coups, rng = Math.random) {
   else if (!etat.dernier) {
     if (egalites >= 1) r = x < 0.35 ? "bravo" : x < 0.6 ? "applaudir" : null;      // un point arraché après des égalités
     else if (serie >= 3) r = x < 0.4 ? "allez" : x < 0.55 ? "applaudir" : null;    // une série qui se construit
-    else r = x < 0.2 ? "applaudir" : x < 0.27 ? "brouhaha" : x < 0.31 ? "allez" : null;
+    else r = x < 0.08 ? "applaudir" : x < 0.15 ? "brouhaha" : x < 0.19 ? "allez" : null;
   }
   etat.dernier = !!r;
   return r;
@@ -102,7 +100,7 @@ export function egalitesAvantDernier(coups) {
 }
 // Quand Roland, Monique (ou une autre voix) parlent, la salle baisse (le public, les applaudissements, l'écho), comme à la télévision
 // sous la voix des commentateurs ; le coup de raquette, lui, reste au même niveau. Descente rapide, remontée en douceur.
-export const SOUS_LA_VOIX = { niveau: 0.65, descente: 0.3, remontee: 0.45 };   // (28 octobre : moins creusé et plus doux, sinon on entendait un trou avant les applaudissements)
+export const SOUS_LA_VOIX = { niveau: 0.5, descente: 0.08, remontee: 0.45 };
 // Crête sous laquelle un enregistrement est jugé muet (environ −26 dB).
 export const SEUIL_MUET = 0.05;
 const HAUTEUR = [0.8, 1.4, 1];   // Pierre grave, Ciseaux aigu, Feuille entre les deux
@@ -252,7 +250,7 @@ export class Ambiance {
       this.bravos = null;
     }
     if (!this.fondGain) return;
-    try { this.fondGain.gain.setTargetAtTime(echange ? FOND.echange : FOND.entrePoints, this.ctx.currentTime, echange ? 0.25 : 0.2); } catch { /* rien */ }
+    try { this.fondGain.gain.setTargetAtTime(echange ? FOND.echange : FOND.entrePoints, this.ctx.currentTime, echange ? 0.25 : 0.6); } catch { /* rien */ }
   }
   // Le brouhaha des balles de set et de match (pas deux fois de suite en quelques secondes).
   tension() {
@@ -263,7 +261,7 @@ export class Ambiance {
   // La réaction du public après un point (voir reactionPoint). Sans l'enregistrement voulu : des applaudissements pour
   // « Bravo ! », rien pour les autres. Courte : elle s'éteint d'elle-même, et tout de suite quand l'échange suivant commence.
   reagir(type) {
-    const h = (a, b) => a + Math.random() * (b - a), delai = h(0, 0.08);
+    const h = (a, b) => a + Math.random() * (b - a), delai = h(0.05, 0.2);
     const versions = this.reactions[type] || [];
     let buffer = null, vitesse = 1, egal = 1;
     if (versions.length) {

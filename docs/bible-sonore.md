@@ -92,6 +92,10 @@ seront pas joués.
   dans le jeu seul, à la place des trois anciens, pour le juger en match. Piste suivante (crédits de novembre) : faire dire
   « Bravo ! » et « Allez ! » par la synthèse vocale (voix françaises, donc bonne prononciation), mélangée à une foule.
 
+- **Écoute en match (28 octobre au soir, avec le testeur le plus assidu)** : le « Allez ! » va ; les nouveaux applaudissements et les
+  huées, non. Retour au son d'avant (anciens applaudissements, anciennes huées, anciens volumes et réglages), seul le nouveau
+  « Allez ! » est gardé. Les candidats restent sur la page d'essais.
+
 ## 6. Côté code (sans crédits)
 - **Fait le 27 octobre** : la salle baisse sous la voix de Roland, Monique et des autres voix, comme à la télévision ; le coup
   de raquette reste au même niveau (`SOUS_LA_VOIX` dans `app/js/ambiance.js`).
