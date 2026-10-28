@@ -111,7 +111,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (426 répliques)
+## Commentateur — vif, enthousiaste, plein de références (436 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -313,6 +313,16 @@ restent lus par la voix de synthèse.
 | `commentateur_defaite_02_f.mp3` | Elle reviendra ! |
 | `commentateur_defaite_03.mp3` | Il cherche encore où il a perdu la Feuille ! |
 | `commentateur_defaite_03_f.mp3` | Elle cherche encore où elle a perdu la Feuille ! |
+| `commentateur_memoire_ouverture_01_pierre.mp3` | La dernière fois, il avait ouvert avec la Pierre ! |
+| `commentateur_memoire_ouverture_01_pierre_f.mp3` | La dernière fois, elle avait ouvert avec la Pierre ! |
+| `commentateur_memoire_ouverture_01_ciseaux.mp3` | La dernière fois, il avait ouvert avec les Ciseaux ! |
+| `commentateur_memoire_ouverture_01_ciseaux_f.mp3` | La dernière fois, elle avait ouvert avec les Ciseaux ! |
+| `commentateur_memoire_ouverture_01_feuille.mp3` | La dernière fois, il avait ouvert avec la Feuille ! |
+| `commentateur_memoire_ouverture_01_feuille_f.mp3` | La dernière fois, elle avait ouvert avec la Feuille ! |
+| `commentateur_memoire_defaite_seche_01.mp3` | Le dernier match s'était soldé par une défaite sèche… l'heure de la revanche a sonné ! |
+| `commentateur_memoire_balle_sauvee_01.mp3` | Au dernier match, il avait sauvé une balle de match ! Le public s'en souvient ! |
+| `commentateur_memoire_balle_sauvee_01_f.mp3` | Au dernier match, elle avait sauvé une balle de match ! Le public s'en souvient ! |
+| `commentateur_memoire_belle_01.mp3` | Égalité parfaite dans leurs face-à-face : c'est la belle, mesdames et messieurs ! |
 | `commentateur_humain_01.mp3` | C'est un duel ! Un vrai ! Les yeux dans les yeux ! |
 | `commentateur_dialogue_avant_match_01.mp3` | Madame, la tension est palpable. |
 | `commentateur_dialogue_avant_match_02.mp3` | Deux styles, deux écoles ! |
@@ -542,7 +552,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (369 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (381 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -695,6 +705,18 @@ restent lus par la voix de synthèse.
 | `commentatrice_defaite_08_f.mp3` | Elle a le seum. Comme disent les jeunes. |
 | `commentatrice_domination_01.mp3` | Je suis ton père. |
 | `commentatrice_huees_01.mp3` | Je vous demande de vous arrêter. |
+| `commentatrice_memoire_ouverture_01_pierre.mp3` | Il avait ouvert avec la Pierre la dernière fois. Il a peut-être appris. Peut-être. |
+| `commentatrice_memoire_ouverture_01_pierre_f.mp3` | Elle avait ouvert avec la Pierre la dernière fois. Elle a peut-être appris. Peut-être. |
+| `commentatrice_memoire_ouverture_01_ciseaux.mp3` | Il avait ouvert avec les Ciseaux la dernière fois. Il a peut-être appris. Peut-être. |
+| `commentatrice_memoire_ouverture_01_ciseaux_f.mp3` | Elle avait ouvert avec les Ciseaux la dernière fois. Elle a peut-être appris. Peut-être. |
+| `commentatrice_memoire_ouverture_01_feuille.mp3` | Il avait ouvert avec la Feuille la dernière fois. Il a peut-être appris. Peut-être. |
+| `commentatrice_memoire_ouverture_01_feuille_f.mp3` | Elle avait ouvert avec la Feuille la dernière fois. Elle a peut-être appris. Peut-être. |
+| `commentatrice_memoire_meme_ouverture_01.mp3` | Il rejoue la même ouverture que la dernière fois. La mémoire, ce n'est pas son fort. |
+| `commentatrice_memoire_meme_ouverture_01_f.mp3` | Elle rejoue la même ouverture que la dernière fois. La mémoire, ce n'est pas son fort. |
+| `commentatrice_memoire_defaite_seche_01.mp3` | La dernière fois, c'était une correction. On espère un match, cette fois. |
+| `commentatrice_memoire_serre_01.mp3` | La dernière fois, ça s'était joué à un point. Prévoyez du temps. |
+| `commentatrice_memoire_habitude_01.mp3` | Il a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude. |
+| `commentatrice_memoire_habitude_01_f.mp3` | Elle a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude. |
 | `commentatrice_humain_01.mp3` | Ils se connaissent. Et ça se voit. |
 | `commentatrice_humain_02.mp3` | Entre amis, il n'y a pas de pitié. |
 | `commentatrice_dialogue_avant_match_01.mp3` | On sent surtout deux personnes devant leur téléphone. Mais oui. |

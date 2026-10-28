@@ -326,6 +326,36 @@ export const MOMENTS = {
   ],
   // Le public fait « ooh » sur un point disputé : Monique, une fois par match au plus, parfois.
   huees: [{ r: "d", t: "Je vous demande de vous arrêter." }],
+  // La mémoire du dernier match entre les deux mêmes joueurs (28 octobre, idée du porteur du projet) : dite avant le match,
+  // une fois de temps en temps (annonces.js, memoireAvantMatch). « Il » : le joueur dont on parle (voir chaque moment).
+  // L'ouverture de l'adversaire au dernier match (par signe : celui qu'il avait joué en premier).
+  memoire_ouverture: [
+    { r: "c", t: ["La dernière fois, il avait ouvert avec la Pierre !", "La dernière fois, il avait ouvert avec les Ciseaux !", "La dernière fois, il avait ouvert avec la Feuille !"],
+      f: ["La dernière fois, elle avait ouvert avec la Pierre !", "La dernière fois, elle avait ouvert avec les Ciseaux !", "La dernière fois, elle avait ouvert avec la Feuille !"], signe: "adv" },
+    { r: "d", t: ["Il avait ouvert avec la Pierre la dernière fois. Il a peut-être appris. Peut-être.", "Il avait ouvert avec les Ciseaux la dernière fois. Il a peut-être appris. Peut-être.", "Il avait ouvert avec la Feuille la dernière fois. Il a peut-être appris. Peut-être."],
+      f: ["Elle avait ouvert avec la Pierre la dernière fois. Elle a peut-être appris. Peut-être.", "Elle avait ouvert avec les Ciseaux la dernière fois. Elle a peut-être appris. Peut-être.", "Elle avait ouvert avec la Feuille la dernière fois. Elle a peut-être appris. Peut-être."], signe: "adv" },
+  ],
+  // L'adversaire rejoue la même ouverture qu'au dernier match (dit après le premier coup).
+  memoire_meme_ouverture: [
+    { r: "d", t: "Il rejoue la même ouverture que la dernière fois. La mémoire, ce n'est pas son fort.", f: "Elle rejoue la même ouverture que la dernière fois. La mémoire, ce n'est pas son fort." },
+  ],
+  // J'avais perdu nettement le dernier match.
+  memoire_defaite_seche: [
+    { r: "c", t: "Le dernier match s'était soldé par une défaite sèche… l'heure de la revanche a sonné !" },
+    { r: "d", t: "La dernière fois, c'était une correction. On espère un match, cette fois." },
+  ],
+  // J'avais sauvé une balle de match au dernier match.
+  memoire_balle_sauvee: [
+    { r: "c", t: "Au dernier match, il avait sauvé une balle de match ! Le public s'en souvient !", f: "Au dernier match, elle avait sauvé une balle de match ! Le public s'en souvient !" },
+  ],
+  // Le dernier match s'était joué de très peu.
+  memoire_serre: [{ r: "d", t: "La dernière fois, ça s'était joué à un point. Prévoyez du temps." }],
+  // Égalité dans nos face-à-face (au moins 2 victoires chacun).
+  memoire_belle: [{ r: "c", t: "Égalité parfaite dans leurs face-à-face : c'est la belle, mesdames et messieurs !" }],
+  // Le même joueur a gagné les 3 derniers face-à-face (« il » : ce joueur).
+  memoire_habitude: [
+    { r: "d", t: "Il a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude.", f: "Elle a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude." },
+  ],
   humain: [
     { r: "c", t: "C'est un duel ! Un vrai ! Les yeux dans les yeux !" },
     { r: "d", t: "Ils se connaissent. Et ça se voit." },

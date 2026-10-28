@@ -20,9 +20,9 @@ export function decoderCoups(texte) {
 }
 
 // Ajoute un match en tête de la liste (la plus récente d'abord), 10 au plus.
-// m : { date, gagne, detail (« 11–7, 9–11 »), coups, debutsSet }.
+// m : { date, gagne, detail (« 11–7, 9–11 »), coups, debutsSet, balles (balles de match que j'ai sauvées) }.
 export function ajouterMain(liste, m) {
-  const entree = { d: m.date ?? Date.now(), g: !!m.gagne, s: m.detail || "", c: encoderCoups(m.coups, m.debutsSet) };
+  const entree = { d: m.date ?? Date.now(), g: !!m.gagne, s: m.detail || "", c: encoderCoups(m.coups, m.debutsSet), ...(m.balles ? { b: m.balles } : {}) };
   return [entree, ...(Array.isArray(liste) ? liste : [])].slice(0, MAX_MAINS);
 }
 
@@ -59,4 +59,24 @@ export function htmlMains(entrees, { noms = ["Toi", "Lui"], gagneTexte = ["✅ V
     return `<details class="main-match"${i === 0 ? " open" : ""}><summary>${e.g ? gagneTexte[0] : gagneTexte[1]}${e.s ? ` · ${esc(e.s)}` : ""}${date(e.d)}</summary>`
       + `<div class="tape"><table>${ligne("a", noms[0])}${ligne("b", noms[1])}</table></div></details>`;
   }).join("") + `</div>`;
+}
+
+// La mémoire du dernier match contre le même adversaire, pour les commentateurs (28 octobre).
+// entrees : ses matchs gardés (le plus récent d'abord) ; face : notre bilan { v, d }.
+// Renvoie { ouverture (son premier signe au dernier match, ou null), defaiteSeche, balleSauvee, serre, belle, habitude (null,
+// "moi" ou "lui" : qui a gagné les 3 derniers) }, ou null s'il n'y a pas de match précédent.
+export function memoireDuDernier(entrees, face = null) {
+  const e = entrees?.[0]; if (!e) return null;
+  const sets = String(e.s || "").split(",").map(x => x.split("–").map(Number)).filter(x => x.length === 2 && x.every(Number.isFinite));
+  const premier = decoderCoups(e.c)[0]?.[0];
+  const dernierSet = sets.at(-1);
+  const trois = entrees.slice(0, 3);
+  return {
+    ouverture: premier ? premier.b : null,
+    defaiteSeche: !e.g && sets.length > 0 && sets.every(([a, b]) => b - a >= 5),
+    balleSauvee: (e.b || 0) > 0,
+    serre: !!dernierSet && Math.abs(dernierSet[0] - dernierSet[1]) <= 2,
+    belle: !!face && face.v === face.d && face.v >= 2,
+    habitude: trois.length === 3 && trois.every(x => x.g === trois[0].g) ? (trois[0].g ? "moi" : "lui") : null,
+  };
 }

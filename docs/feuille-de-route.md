@@ -15,7 +15,11 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   reste (idées listées plus bas) attend la version 2.
 - **Critère de réussite, 3 mois après la sortie** : une vingtaine de joueurs qui jouent chaque semaine, quelques cercles actifs.
 - **Version 2, en premier** : la rivalité entre deux joueurs (face-à-face, revanche, historique des mains, poignées de main) et
-  **la mémoire des matchs précédents dans les commentaires** (répliques proposées dans `docs/repliques-banque-brouillon.md`, section 12).
+  la mémoire des matchs précédents dans les commentaires : *fait (à valider)*, 28 octobre, avec les derniers crédits ElevenLabs :
+  avant le match, Roland ou Monique rappellent le dernier match contre le même adversaire (son ouverture, une défaite sèche,
+  une balle de match sauvée, un match serré, la belle, une série), 6 fois sur 10 ; au premier coup, Monique relève s'il rejoue
+  la même ouverture (`memoireDuDernier` dans `app/js/historique-mains.js`, `commentaireMemoire` dans `app/js/annonces.js`).
+  L'historique des mains est maintenant gardé aussi pour les duels en ligne (sur le téléphone), avec les balles de match sauvées.
 
 **À faire ensuite, dans l'ordre** (pas de précipitation, faire les choses bien) :
 1. **Finir de valider** ce qui reste « à valider » (sur la version de test) : les tournois programmés et le freeroll de 20 h (à tester un soir), puis la version de lancement.

@@ -35,3 +35,26 @@ test("l'affichage : un bandeau par match, ou le message s'il n'y en a pas", () =
   assert.equal((h.match(/<td/g) || []).length, 8);
   assert.equal((h.match(/newset/g) || []).length, 2);
 });
+
+test("la mémoire du dernier match : ouverture, défaite sèche, balle sauvée, match serré, belle, habitude", async () => {
+  const { memoireDuDernier } = await import("../app/js/historique-mains.js");
+  assert.equal(memoireDuDernier([]), null);
+  // son premier signe : la Feuille (coup 3 × moi + lui : 0 Pierre contre 2 Feuille → « 2 »)
+  const m = memoireDuDernier([{ g: false, s: "4–11", c: "21|0", b: 1 }, { g: false, s: "", c: "" }, { g: false, s: "", c: "" }], { v: 2, d: 2 });
+  assert.equal(m.ouverture, 2); assert.equal(m.defaiteSeche, true); assert.equal(m.balleSauvee, true);
+  assert.equal(m.serre, false); assert.equal(m.belle, true); assert.equal(m.habitude, "lui");
+  const n = memoireDuDernier([{ g: true, s: "11–9", c: "1" }]);
+  assert.equal(n.serre, true); assert.equal(n.defaiteSeche, false); assert.equal(n.habitude, null);
+});
+
+test("les commentateurs se souviennent : une réplique enregistrée, au bon genre, et la même ouverture relevée", async () => {
+  const { commentaireMemoire, commentaireMemeOuverture } = await import("../app/js/annonces.js");
+  const l = commentaireMemoire({ ouverture: 1, defaiteSeche: false, balleSauvee: false, serre: false, belle: false, habitude: null }, { genreAdv: "f" }, () => 0);
+  assert.match(l.id, /^commentateur_memoire_ouverture_01_ciseaux_f$/);
+  assert.match(l.texte, /elle avait ouvert avec les Ciseaux/);
+  const b = commentaireMemoire({ ouverture: 0, balleSauvee: true }, {}, () => 0.1);
+  assert.match(b.id, /memoire_balle_sauvee/);
+  assert.equal(commentaireMemoire({ ouverture: 0 }, { audible: () => false }, () => 0), null, "pas de voix : rien");
+  assert.match(commentaireMemeOuverture({ ouverture: 2 }, 2).texte, /même ouverture/);
+  assert.equal(commentaireMemeOuverture({ ouverture: 2 }, 1), null);
+});
