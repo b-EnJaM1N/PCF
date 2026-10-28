@@ -76,6 +76,13 @@ seront pas joués.
   (au lieu de 0,34) et 0,5 pendant l'échange (au lieu de 0,15), réactions et applaudissements environ deux fois plus forts, avec un
   limiteur en sortie pour ne jamais saturer.
 
+- Troisième écoute : rien ne va (des coups de raquette « à côté », à contretemps : sans doute dans le nouveau murmure de fond,
+  généré « entendu par les micros près du court » ; toujours pas de public ; commentaires moins audibles). **Décision : retour aux
+  anciens sons et aux anciens volumes** (identiques à la version officielle).
+- **Nouvelle méthode, pour la suite** : ne plus remplacer les sons directement. Générer des **candidats** à part (plusieurs versions
+  de chaque son, description propre à chaque son, sans la phrase commune ni « micros près du court », « no ball hits »), niveau
+  vérifié et ajusté, à écouter sur une page d'essai ; seuls ceux que le porteur du projet choisit entrent dans le jeu.
+
 ## 6. Côté code (sans crédits)
 - **Fait le 27 octobre** : la salle baisse sous la voix de Roland, Monique et des autres voix, comme à la télévision ; le coup
   de raquette reste au même niveau (`SOUS_LA_VOIX` dans `app/js/ambiance.js`).

@@ -20,7 +20,6 @@ export const FICHIERS_AMBIANCE = {
 };
 // Les réactions variées du public après un point (plusieurs versions de chacune, pour ne pas se répéter).
 export const FICHIERS_REACTIONS = {
-  applaudir: ["public_point_02", "public_point_03"],   // les applaudissements après un point (28 octobre)
   allez: ["public_allez_01", "public_allez_02", "public_allez_03"],
   ohDecu: ["public_oh_decu_01", "public_oh_decu_02"],
   bravo: ["public_bravo_01", "public_bravo_02"],
@@ -30,7 +29,7 @@ export const FICHIERS_REACTIONS = {
 // La force moyenne d'un enregistrement (racine de la moyenne des carrés), et celle visée pour les réactions du public.
 export const forceMoyenne = canaux => { let t = 0, n = 0; for (const c of canaux) for (let i = 0; i < c.length; i++) { t += c[i] * c[i]; n++; } return n ? Math.sqrt(t / n) : 0; };
 const FORCE_REACTION = 0.12;
-const VOLUME_REACTION = { allez: 0.6, ohDecu: 0.65, bravo: 0.6, brouhaha: 0.5, rires: 0.55, applaudir: 0.45 };
+const VOLUME_REACTION = { allez: 0.38, ohDecu: 0.42, bravo: 0.38, brouhaha: 0.3, rires: 0.36, applaudir: 0.22 };
 // Le coup de raquette : un son par signe (0 Pierre, 1 Ciseaux, 2 Feuille), et une version forte pour les grands moments
 // (balle de set ou de match, point décisif) : [normal, fort].
 export const FICHIERS_RAQUETTE_SIGNE = [
@@ -49,10 +48,10 @@ export const FICHIERS_STADE = {
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
-export const FOND = { entrePoints: 0.9, echange: 0.5 };   // (28 octobre : bien plus fort, on ne l'entendait pas sur un téléphone)
+export const FOND = { entrePoints: 0.34, echange: 0.15 };
 // Les petits applaudissements après un point gagné, comme au tennis : volume et vitesse tirés au hasard (jamais deux fois pareils),
-// courts (ils s'éteignent au bout de deux secondes environ, et tout de suite si l'échange suivant commence).
-export const APPLAUDIR = { vol: [0.45, 0.6], vitesse: [0.95, 1.05], duree: 2 };
+// courts (ils s'éteignent au bout d'une seconde environ, et tout de suite si l'échange suivant commence).
+export const APPLAUDIR = { vol: [0.16, 0.26], vitesse: [0.93, 1.08], duree: 1.1 };
 
 // Combien de points de suite le gagnant de ce coup vient d'enchaîner (égalités ignorées), et la série qu'il vient de briser.
 export function series(coups) {
@@ -78,7 +77,7 @@ export function reactionPoint(etat, evt, coups, rng = Math.random) {
   else if (!etat.dernier) {
     if (egalites >= 1) r = x < 0.35 ? "bravo" : x < 0.6 ? "applaudir" : null;      // un point arraché après des égalités
     else if (serie >= 3) r = x < 0.4 ? "allez" : x < 0.55 ? "applaudir" : null;    // une série qui se construit
-    else r = x < 0.3 ? "applaudir" : x < 0.38 ? "brouhaha" : x < 0.44 ? "allez" : x < 0.48 ? "bravo" : null;
+    else r = x < 0.08 ? "applaudir" : x < 0.15 ? "brouhaha" : x < 0.19 ? "allez" : null;
   }
   etat.dernier = !!r;
   return r;
@@ -120,13 +119,7 @@ export class Ambiance {
     if (this.ctx || !AC) { if (this.ctx && this.ctx.state === "suspended") this.ctx.resume(); return; }
     try { this.ctx = new AC(); } catch { this.ctx = null; return; }
     const ctx = this.ctx, fs = ctx.sampleRate;
-    this.master = ctx.createGain(); this.master.gain.value = this.actif ? 1 : 0;
-    // Un limiteur en sortie : le public plus fort (28 octobre) ne doit jamais saturer quand plusieurs sons se superposent.
-    try {
-      const lim = ctx.createDynamicsCompressor();
-      lim.threshold.value = -6; lim.knee.value = 6; lim.ratio.value = 12; lim.attack.value = 0.003; lim.release.value = 0.25;
-      this.master.connect(lim); lim.connect(ctx.destination);
-    } catch { this.master.connect(ctx.destination); }
+    this.master = ctx.createGain(); this.master.gain.value = this.actif ? 1 : 0; this.master.connect(ctx.destination);
     // La salle (tout sauf le coup de raquette) : elle baisse sous la voix des commentateurs.
     this.salle = ctx.createGain(); this.salle.gain.value = this.parleMaintenant ? SOUS_LA_VOIX.niveau : 1; this.salle.connect(this.master);
     // l'écho du stade, mélangé au son direct
@@ -215,8 +208,7 @@ export class Ambiance {
   raquette(signe = 2, fort = false) {
     const f = this.raquettesFichiers[signe] || [];
     const b = (fort && f[1]) || f[0];
-    // (un peu moins fort depuis le 28 octobre : la raquette couvrait le public)
-    if (b) this.jouer(b, fort ? 0.8 : 0.55, fort && !f[1], { vitesse: 0.98 + Math.random() * 0.04, salle: false });
+    if (b) this.jouer(b, fort ? 1 : 0.7, fort && !f[1], { vitesse: 0.98 + Math.random() * 0.04, salle: false });
     else this.jouer(this.raquettes[signe], fort ? 0.9 : 0.7, true, { salle: false });
   }
 
@@ -264,7 +256,7 @@ export class Ambiance {
   tension() {
     if (!this.ctx || !this.buf.tension || this.ctx.currentTime - this.dernierTension < 5) return;
     this.dernierTension = this.ctx.currentTime;
-    this.jouer(this.buf.tension, 0.7, false);
+    this.jouer(this.buf.tension, 0.45, false);
   }
   // La réaction du public après un point (voir reactionPoint). Sans l'enregistrement voulu : des applaudissements pour
   // « Bravo ! », rien pour les autres. Courte : elle s'éteint d'elle-même, et tout de suite quand l'échange suivant commence.
@@ -287,7 +279,7 @@ export class Ambiance {
     this.bravos = { son, parle };
   }
   // Le « ooh » sur un point disputé.
-  ooh() { this.jouer(this.buf.ooh, 0.7, true, { delai: 0.15 }); }
+  ooh() { this.jouer(this.buf.ooh, 0.5, true, { delai: 0.15 }); }
   // Les sifflets du public (renvoie leur durée en secondes, 0 s'ils ne sont pas prêts).
   sifflets(delai = 0) { return this.buf.sifflets && this.jouer(this.buf.sifflets, 0.45, true, { delai }) ? this.buf.sifflets.duration : 0; }
   // (si un son n'est pas encore prêt, il est simplement ignoré)
