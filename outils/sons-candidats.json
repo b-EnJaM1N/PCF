@@ -1,0 +1,17 @@
+{
+  "_explication": "Des sons candidats (28 octobre), générés à part dans app/audio/essais/ et écoutés sur app/essais-sons.html avant d'entrer dans le jeu (robot « Voix », choix « sons-candidats »). Chaque son a sa propre description, sans phrase commune.",
+  "candidats": {
+    "applaudir_1": { "groupe": "Applaudissements après un point", "texte": "Polite tennis audience applause after a point in a large indoor arena, many people clapping, natural and clear, no ball sounds, no music", "duree": 3 },
+    "applaudir_2": { "groupe": "Applaudissements après un point", "texte": "Warm audience applause with a few cheers after a great point, large indoor tennis arena, close and clear, no ball sounds, no music", "duree": 3 },
+    "applaudir_3": { "groupe": "Applaudissements après un point", "texte": "Big enthusiastic crowd applause and cheering after an amazing point, indoor arena, loud and clear, no ball sounds, no music", "duree": 3 },
+    "bravo_1": { "groupe": "« Bravo ! »", "texte": "A French man in the crowd shouts \"Bravo !\" loudly, then people applaud, indoor arena, clear voice, no music", "duree": 2.5 },
+    "bravo_2": { "groupe": "« Bravo ! »", "texte": "A French woman in the crowd shouts \"Bravo !\" with enthusiasm, then applause, indoor arena, clear voice, no music", "duree": 2.5 },
+    "bravo_3": { "groupe": "« Bravo ! »", "texte": "Several French spectators shout \"Bravo ! Bravo !\" together with applause, indoor arena, clear voices, no music", "duree": 2.5 },
+    "allez_1": { "groupe": "« Allez ! »", "texte": "A French man in the crowd shouts \"Allez !\" loudly to encourage a player, indoor arena, clear voice, crowd murmur behind, no music", "duree": 2 },
+    "allez_2": { "groupe": "« Allez ! »", "texte": "A French woman in the crowd shouts \"Allez !\" to encourage a player, indoor arena, clear voice, crowd murmur behind, no music", "duree": 2 },
+    "allez_3": { "groupe": "« Allez ! »", "texte": "A group of French fans chant \"Allez ! Allez !\" with claps, indoor arena, clear voices, no music", "duree": 2 },
+    "huees_1": { "groupe": "Huées du public", "texte": "The crowd boos loudly in disapproval, a long \"booo\", indoor arena, clear, no music", "duree": 3 },
+    "huees_2": { "groupe": "Huées du public", "texte": "The crowd boos and whistles in protest at a decision, indoor arena, loud and clear, no music", "duree": 3 },
+    "huees_3": { "groupe": "Huées du public", "texte": "Scattered booing and disapproving whistles from the crowd, then it calms down, indoor arena, clear, no music", "duree": 3 }
+  }
+}

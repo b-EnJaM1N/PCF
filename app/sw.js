@@ -10,6 +10,7 @@ const FICHIERS = [
   "mentions.html",
   "suppression-compte.html",
   "ecoute.html",
+  "essais-sons.html",
   "manifest.webmanifest",
   "css/style.css",
   "js/app.js",
