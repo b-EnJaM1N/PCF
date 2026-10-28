@@ -102,7 +102,7 @@ export function egalitesAvantDernier(coups) {
 }
 // Quand Roland, Monique (ou une autre voix) parlent, la salle baisse (le public, les applaudissements, l'écho), comme à la télévision
 // sous la voix des commentateurs ; le coup de raquette, lui, reste au même niveau. Descente rapide, remontée en douceur.
-export const SOUS_LA_VOIX = { niveau: 0.5, descente: 0.08, remontee: 0.45 };
+export const SOUS_LA_VOIX = { niveau: 0.65, descente: 0.3, remontee: 0.45 };   // (28 octobre : moins creusé et plus doux, sinon on entendait un trou avant les applaudissements)
 // Crête sous laquelle un enregistrement est jugé muet (environ −26 dB).
 export const SEUIL_MUET = 0.05;
 const HAUTEUR = [0.8, 1.4, 1];   // Pierre grave, Ciseaux aigu, Feuille entre les deux
@@ -252,7 +252,7 @@ export class Ambiance {
       this.bravos = null;
     }
     if (!this.fondGain) return;
-    try { this.fondGain.gain.setTargetAtTime(echange ? FOND.echange : FOND.entrePoints, this.ctx.currentTime, echange ? 0.25 : 0.6); } catch { /* rien */ }
+    try { this.fondGain.gain.setTargetAtTime(echange ? FOND.echange : FOND.entrePoints, this.ctx.currentTime, echange ? 0.25 : 0.2); } catch { /* rien */ }
   }
   // Le brouhaha des balles de set et de match (pas deux fois de suite en quelques secondes).
   tension() {
@@ -263,7 +263,7 @@ export class Ambiance {
   // La réaction du public après un point (voir reactionPoint). Sans l'enregistrement voulu : des applaudissements pour
   // « Bravo ! », rien pour les autres. Courte : elle s'éteint d'elle-même, et tout de suite quand l'échange suivant commence.
   reagir(type) {
-    const h = (a, b) => a + Math.random() * (b - a), delai = h(0.05, 0.2);
+    const h = (a, b) => a + Math.random() * (b - a), delai = h(0, 0.08);
     const versions = this.reactions[type] || [];
     let buffer = null, vitesse = 1, egal = 1;
     if (versions.length) {
