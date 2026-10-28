@@ -62,8 +62,10 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
         (27 octobre) : d'abord l'interface en anglais (un système de langues à mettre en place : tous les textes sont écrits en
         français dans le code), l'arbitre et une soixantaine de commentaires simples ; ensuite de vrais commentateurs anglais,
         avec leur propre humour. Au lancement : publication limitée aux pays francophones.
-     8. **Plus de commentaires pendant les sets** (28 octobre ; aujourd'hui 2 ou 3 par set) : augmenter un peu la fréquence,
-        mais **après** l'enregistrement de la nouvelle banque (sinon, plus de répétitions).
+     8. **Plus de commentaires pendant les sets** (28 octobre ; avant : 2 ou 3 par set). Premier pas *fait* le 28 octobre
+        (décision : « un peu plus », 3 à 4 par set) : la jauge de parole se remplit plus vite, les séries, l'obstination, la lecture
+        subie et les figures sont relevées plus souvent (simulation : +17 %). **Ensuite, 5 à 6 par set, quand la nouvelle
+        banque sera enregistrée** (sinon, trop de répétitions).
      9. **Le public qui gronde** (28 octobre) : de temps en temps, des huées ou un gros brouhaha pendant lequel on ne peut pas
         jouer (le compteur du coup s'arrête, « Silence, s'il vous plaît », puis on reprend). Facile contre les bots ; en duel en
         ligne, le compteur est tenu par le serveur : une étape SQL. Le son des huées est à faire avec la bible sonore.
