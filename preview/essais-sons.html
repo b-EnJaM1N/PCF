@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Essais de sons · HandSlam</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0F2C52">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .essais { max-width: 680px; margin: 0 auto; padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px calc(env(safe-area-inset-bottom, 0px) + 40px); display: flex; flex-direction: column; gap: 14px; }
+  .essais a { color: var(--me); }
+  .essais h1 { font-family: "Barlow Condensed", sans-serif; font-size: 1.6rem; margin: 0; }
+  .essais .intro { font-size: .92rem; line-height: 1.5; color: var(--muted); margin: 0; }
+  .essais h2 { font-family: "Barlow Condensed", sans-serif; font-size: 1.2rem; margin: 12px 0 6px; }
+  .rang { display: flex; gap: 10px; flex-wrap: wrap; }
+  .rang button { font: inherit; font-weight: 700; min-width: 92px; padding: 14px 16px; border-radius: 12px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: var(--line); cursor: pointer; }
+  .rang button.joue { border-color: var(--me); color: var(--me); }
+  .rang button:disabled { opacity: .4; cursor: default; }
+</style>
+</head>
+<body>
+<main class="essais">
+  <p><a href="./">← Retour à HandSlam</a></p>
+  <h1>🎧 Essais de sons du public</h1>
+  <p class="intro">Pour chaque son, trois versions candidates. Touche une version pour l'écouter (volumes déjà égalisés entre
+    elles). Pour choisir, dis simplement par exemple « applaudissements : la 2 ; Bravo : aucune ».</p>
+  <div id="liste"></div>
+</main>
+<script type="module">
+  // Les candidats (outils/sons-candidats.json), générés dans audio/essais/ par le robot « Voix », choix « sons-candidats ».
+  const GROUPES = [
+    ["👏 Applaudissements après un point", "applaudir"],
+    ["🗣️ « Bravo ! »", "bravo"],
+    ["📣 « Allez ! »", "allez"],
+    ["👎 Huées du public", "huees"],
+  ];
+  let enCours = null;
+  const liste = document.getElementById("liste");
+  for (const [titre, cle] of GROUPES) {
+    const h = document.createElement("h2"); h.textContent = titre; liste.append(h);
+    const rang = document.createElement("div"); rang.className = "rang"; liste.append(rang);
+    for (const n of [1, 2, 3]) {
+      const b = document.createElement("button"); b.textContent = `▶ ${n}`;
+      const audio = new Audio(`audio/essais/${cle}_${n}.mp3?v=${Date.now()}`);
+      audio.addEventListener("error", () => { b.disabled = true; b.textContent = `${n} : pas encore là`; });
+      audio.addEventListener("ended", () => b.classList.remove("joue"));
+      b.addEventListener("click", () => {
+        if (enCours && enCours.audio !== audio) { enCours.audio.pause(); enCours.b.classList.remove("joue"); }
+        audio.currentTime = 0; audio.play(); b.classList.add("joue"); enCours = { audio, b };
+      });
+      rang.append(b);
+    }
+  }
+</script>
+</body>
+</html>
