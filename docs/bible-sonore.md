@@ -57,10 +57,52 @@ seront pas joués.
 4. Les nouveaux commentaires (banque `docs/repliques-banque-brouillon.md`), eux aussi en un seul lot, avec les mêmes réglages
    de voix que les anciens (`docs/voix-elevenlabs.md`).
 
+## 5 bis. Où on en est (28 octobre)
+- Essai de 3 sons (applaudissements après un point, ovation, raquette Pierre) : environ 11 crédits par seconde de son.
+- Avis du porteur du projet : la raquette, oui ; le reste ne change pas assez, il veut une vraie ambiance de stade, homogène et
+  réaliste (applaudissements, « Allez ! », huées, rires). D'où le lot complet du 28 octobre : tous les sons du public et de la
+  raquette, avec la phrase commune, plus 2 nouveaux applaudissements (`public_point_02`, `_03`) et des huées avec sifflets
+  (`stade_sifflet_01`, refait dans la même salle). La fanfare attend (c'est de la musique : « no music » dans la phrase commune).
+- 9 sons du lot sont sortis presque muets (3 « Allez ! », un « ohhh » déçu, le « ooh », 4 raquettes) : leur volume a été remonté
+  à la main (ffmpeg, crête à -1,5 dB). Si l'un d'eux sonne mal à l'écoute, on le refait après le 2 novembre.
+- À l'écoute (porteur du projet) : plus de public du tout, la raquette trop forte. Cause : ElevenLabs a rendu tout le lot bien plus
+  faible que les anciens sons (murmure de fond à -40 dB au lieu de -34). Tous les sons du public ramenés au niveau des anciens
+  (murmure un peu plus fort : -29 dB ; réactions vers -20 dB ; ffmpeg avec limiteur), raquette un peu moins forte dans l'appli.
+  Pour les prochains sons : vérifier le niveau de chaque fichier généré, et l'ajuster avant de le proposer à l'écoute.
+- Deuxième écoute : toujours pas de public, et les trois signes ont le même son de raquette. Causes : (1) les 6 nouvelles raquettes
+  avaient toutes le même timbre (la phrase commune les a uniformisées : fréquence centrale 2 600 à 2 800 Hz pour les 6, contre
+  1 100 Hz pour la Feuille et 5 900 Hz pour les Ciseaux avant) : les anciennes sont remises ; **la raquette n'aura plus la phrase
+  commune** ; (2) le public était joué 20 à 28 dB sous les voix, inaudible sur un téléphone : murmure de fond 0,9 entre les points
+  (au lieu de 0,34) et 0,5 pendant l'échange (au lieu de 0,15), réactions et applaudissements environ deux fois plus forts, avec un
+  limiteur en sortie pour ne jamais saturer.
+
+- Troisième écoute : rien ne va (des coups de raquette « à côté », à contretemps : sans doute dans le nouveau murmure de fond,
+  généré « entendu par les micros près du court » ; toujours pas de public ; commentaires moins audibles). **Décision : retour aux
+  anciens sons et aux anciens volumes** (identiques à la version officielle).
+- **Nouvelle méthode, pour la suite** : ne plus remplacer les sons directement. Générer des **candidats** à part (plusieurs versions
+  de chaque son, description propre à chaque son, sans la phrase commune ni « micros près du court », « no ball hits »), niveau
+  vérifié et ajusté, à écouter sur une page d'essai ; seuls ceux que le porteur du projet choisit entrent dans le jeu.
+
+- **Premier essai avec la nouvelle méthode** (28 octobre, 4 sons × 3 versions, `outils/sons-candidats.json`, page
+  `app/essais-sons.html`) : des sons nets et forts cette fois. Choix du porteur du projet : applaudissements 1 et 2 (en alternance,
+  `public_applaudir_01`, `_02`), huées n° 2 (`stade_sifflet_01`, avant « Je vous demande de vous arrêter »). « Bravo » et « Allez » :
+  aucun (« Allez » où l'on entend le z, « Bravo » à l'italienne) : on garde les anciens. Le public applaudit après 2 points
+  ordinaires sur 10 (au lieu de 8 sur 100), pendant près de 2 secondes.
+- Deuxième essai « Bravo » / « Allez », avec l'accent français demandé : Bravo, aucun ; Allez, « à la limite le premier » : mis
+  dans le jeu seul, à la place des trois anciens, pour le juger en match. Piste suivante (crédits de novembre) : faire dire
+  « Bravo ! » et « Allez ! » par la synthèse vocale (voix françaises, donc bonne prononciation), mélangée à une foule.
+
+- **Écoute en match (28 octobre au soir, avec le testeur le plus assidu)** : le « Allez ! » va ; les nouveaux applaudissements et les
+  huées, non. Retour au son d'avant (anciens applaudissements, anciennes huées, anciens volumes et réglages), seul le nouveau
+  « Allez ! » est gardé. Les candidats restent sur la page d'essais.
+
 ## 6. Côté code (sans crédits)
 - **Fait le 27 octobre** : la salle baisse sous la voix de Roland, Monique et des autres voix, comme à la télévision ; le coup
   de raquette reste au même niveau (`SOUS_LA_VOIX` dans `app/js/ambiance.js`).
 - **28 octobre** : les sifflets (`stade_sifflet_01`) sont joués, rarement, après un « ooh » ; l'arbitre rappelle alors le public
   à l'ordre (« Je vous demande de vous arrêter »).
+- **28 octobre** : le public réagit plus souvent après un point (applaudissements 3 fois sur 10 au lieu de 8 sur 100, plus
+  de brouhaha, de « Allez ! » et de « Bravo ! » ; jamais deux points de suite), et les applaudissements durent 2 secondes, un peu
+  plus fort.
 - Après les nouveaux sons : régler les volumes ensemble, à l'écoute, sur la version de test.
 - Plus tard, à essayer : une légère couleur « micro de télévision » sur les voix des commentateurs.

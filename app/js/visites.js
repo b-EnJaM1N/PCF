@@ -1,6 +1,6 @@
 // Le compteur de visites (supabase/etape-43-visites.sql et etape-44-fidelite.sql) : au plus une fois par jour, ce téléphone
 // dit « j'ai ouvert l'appli », avec son origine (site, appli Android, appli installée), s'il s'agit de la toute première fois
-// et s'il était déjà venu la veille ; et, une seule fois, « je viens de jouer mon 3e match ».
+// et s'il était déjà venu la veille ; une seule fois, « je viens de jouer mon 3e match » ; et « un match terminé » à chaque match.
 // Rien d'autre n'est envoyé : ni compte, ni identifiant.
 import { lire, ecrire } from "./stockage.js";
 import { jourParis } from "./match-du-jour.js";
@@ -34,6 +34,14 @@ export function compterVisite(envoyer, premiereFois) {
     const jour = jourParis(), dernierJour = lire("visiteJour", null);
     if (!aCompter({ dernierJour, jour, chemin: location.pathname, hote: location.hostname })) return;
     envoyer(origineIci(), dernierJour === null && premiereFois, dernierJour === veille(jour)).then(() => ecrire("visiteJour", jour)).catch(() => {});
+  } catch { /* sans réseau ou sans stockage : tant pis */ }
+}
+
+// Un match terminé (étape 50 : le nombre de matchs joués chaque jour, anciens joueurs compris). envoyer(origine) : l'appel au serveur.
+export function compterMatchJoue(envoyer) {
+  try {
+    if (!aCompter({ dernierJour: null, jour: "", chemin: location.pathname, hote: location.hostname })) return;
+    envoyer(origineIci()).catch(() => {});
   } catch { /* sans réseau ou sans stockage : tant pis */ }
 }
 

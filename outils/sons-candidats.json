@@ -1,0 +1,35 @@
+{
+  "_explication": "Des sons candidats (28 octobre), générés à part dans app/audio/essais/ et écoutés sur app/essais-sons.html avant d'entrer dans le jeu (robot « Voix », choix « sons-candidats »). Chaque son a sa propre description, sans phrase commune. Deuxième essai (28 octobre) : « Bravo » et « Allez » seulement, avec l'accent français (les premiers : z prononcé, « Bravo » à l'italienne).",
+  "candidats": {
+    "bravo_1": {
+      "groupe": "« Bravo ! »",
+      "texte": "A native French man in the stands shouts the French word \"Bravo !\" once, French accent, stress on the last syllable (bra-VO), short, then a few claps, indoor arena, no music",
+      "duree": 2
+    },
+    "bravo_2": {
+      "groupe": "« Bravo ! »",
+      "texte": "A native French woman in the stands calls out \"Bravo !\" once, French accent, stress on the last syllable (bra-VO), short, indoor arena, no music",
+      "duree": 2
+    },
+    "bravo_3": {
+      "groupe": "« Bravo ! »",
+      "texte": "Several native French spectators call out \"Bravo !\" with a French accent (bra-VO), short, with applause, indoor arena, no music",
+      "duree": 2
+    },
+    "allez_1": {
+      "groupe": "« Allez ! »",
+      "texte": "A native French man in the stands yells the French word \"Allez !\" once, pronounced ah-LAY with no z sound, French accent, short and punchy, indoor arena, no music",
+      "duree": 2
+    },
+    "allez_2": {
+      "groupe": "« Allez ! »",
+      "texte": "A native French woman in the stands yells \"Allez !\" once, pronounced ah-LAY with no z sound, French accent, short, indoor arena, no music",
+      "duree": 2
+    },
+    "allez_3": {
+      "groupe": "« Allez ! »",
+      "texte": "A few native French tennis fans shout \"Allez !\" together once, pronounced ah-LAY with no z sound, French accent, short, indoor arena, no music",
+      "duree": 2
+    }
+  }
+}

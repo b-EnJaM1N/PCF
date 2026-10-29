@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       quoi:
-        description: "Voix : essai (10 répliques, refaites), tout (ce qui manque), tout-refaire (les rôles choisis, en entier) ou liste (les répliques de outils/a-refaire.txt). Bruitages du court : sons-essai (3 sons) ou sons (tous)."
+        description: "Voix : essai (10 répliques, refaites), tout (ce qui manque), tout-refaire (les rôles choisis, en entier) ou liste (les répliques de outils/a-refaire.txt). Bruitages du court : sons-essai (3 sons), sons (tous) ou sons-candidats (à écouter avant de choisir)."
         type: choice
-        options: [essai, tout, tout-refaire, liste, sons-essai, sons]
+        options: [essai, tout, tout-refaire, liste, sons-essai, sons, sons-candidats]
         default: essai
       roles:
         description: "Les voix à générer (séparées par des virgules)"
@@ -45,7 +45,8 @@ jobs:
           IDS: ${{ inputs.ids }}
         run: |
           ESSAI="commentateur_balle_match_convertie_03,commentateur_tension_01,commentateur_craquage_02,commentateur_defaite_01,commentateur_obstination_02,commentatrice_craquage_02,commentatrice_victoire_02,commentatrice_defaite_02,commentatrice_set_ecrasant_02,commentatrice_serie_contre_03"
-          if [ "$QUOI" = "sons-essai" ]; then node outils/generer-sons.js --ids "raquette_pierre_01,raquette_pierre_fort_01,public_point_01"
+          if [ "$QUOI" = "sons-candidats" ]; then node outils/generer-sons.js --candidats
+          elif [ "$QUOI" = "sons-essai" ]; then node outils/generer-sons.js --ids "raquette_pierre_01,raquette_pierre_fort_01,public_point_01"
           elif [ "$QUOI" = "sons" ] && [ -n "$IDS" ]; then node outils/generer-sons.js --ids "$IDS" --refaire
           elif [ "$QUOI" = "sons" ]; then node outils/generer-sons.js
           elif [ -n "$IDS" ]; then node outils/generer-voix.js --ids "$IDS" --refaire

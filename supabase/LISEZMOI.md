@@ -386,6 +386,14 @@ réserve épuisée, un avertissement la première fois, puis un point de pénali
 version de test** (elle utilise le même serveur). En attendant la fusion, l'ancienne version de l'appli continue de marcher ;
 seul l'affichage du score peut se tromper d'un point après une pénalité (le serveur, lui, compte juste).
 
+## 1 quinquagies. Le nombre de matchs par jour (étape 50)
+
+Même manipulation avec [`etape-50-matchs-par-jour.sql`](etape-50-matchs-par-jour.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-50-matchs-par-jour.sql).
+Chaque téléphone signale « un match terminé » à la fin de chaque match, toujours sans aucun identifiant (en ligne, chacun des
+deux joueurs compte le sien). Pour lire les chiffres (une ligne) :
+`select to_char(jour,'DD/MM') j, sum(visiteurs) v, sum(nouveaux) n, sum(revenus) r, sum(trois_matchs) t, sum(matchs) m from visites group by jour order by jour desc limit 30;`
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

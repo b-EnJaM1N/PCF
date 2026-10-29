@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Les Cahiers du HandSlam</title>
+<meta name="description" content="La revue du circuit HandSlam : philosophie, technique et chroniques du Pierre-Feuille-Ciseaux de haut niveau.">
+<meta name="theme-color" content="#0F2C52">
+<!-- L'aperçu quand on partage le lien sur les réseaux (à remplir pour chaque article) -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="HandSlam">
+<meta property="og:title" content="Les Cahiers du HandSlam">
+<meta property="og:description" content="La revue du circuit HandSlam : philosophie, technique et chroniques du Pierre-Feuille-Ciseaux de haut niveau.">
+<meta property="og:url" content="https://handslam.fr/revue.html">
+<meta property="og:image" content="https://handslam.fr/icons/icon-512.png">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .revue { max-width: 680px; margin: 0 auto; padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px calc(env(safe-area-inset-bottom, 0px) + 40px); display: flex; flex-direction: column; gap: 16px; }
+  .revue a { color: var(--me); }
+  .revue header { display: block; text-align: center; padding: 18px 0 6px; border-bottom: 1px solid rgba(255, 255, 255, .15); }
+  .revue .surtitre { font-size: .78rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin: 0; }
+  .revue h1 { font-family: "Barlow Condensed", sans-serif; font-size: 2.2rem; margin: 6px 0; }
+  .revue .devise { font-style: italic; color: var(--muted); margin: 0 0 12px; }
+  .revue h2 { font-family: "Barlow Condensed", sans-serif; font-size: 1.25rem; margin: 8px 0 0; }
+  .rubriques { display: grid; gap: 10px; }
+  .rubrique { background: var(--panel); border-radius: 12px; padding: 12px 14px; }
+  .rubrique b { font-family: "Barlow Condensed", sans-serif; font-size: 1.08rem; }
+  .rubrique p { margin: 4px 0 0; font-size: .9rem; line-height: 1.45; color: var(--muted); }
+  .sommaire { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .sommaire li { background: var(--panel); border-radius: 12px; padding: 12px 14px; }
+  .sommaire .meta { font-size: .8rem; color: var(--muted); }
+  .vide { color: var(--muted); font-style: italic; }
+</style>
+</head>
+<body>
+<main class="revue">
+  <p><a href="./">← Retour à HandSlam</a></p>
+  <header>
+    <p class="surtitre">La revue du Pierre-Feuille-Ciseaux · fondée en 2026</p>
+    <h1>Les Cahiers du HandSlam</h1>
+    <p class="devise">« Trois signes. Une infinité de questions. »</p>
+  </header>
+
+  <h2>Les rubriques</h2>
+  <div class="rubriques">
+    <div class="rubrique"><b>🧠 Philosophie de la discipline</b><p>Le libre arbitre réduit à trois options, la tentation de la Pierre, l'éthique du coup joué en retard.</p></div>
+    <div class="rubrique"><b>📊 Analyse technique</b><p>Ouvertures, réflexes après une défaite, écoles lyonnaise et hongroise : ce que disent vraiment les chiffres.</p></div>
+    <div class="rubrique"><b>🎙️ Chroniques du court central</b><p>Portraits, grands matchs, et quelques mots de Monique Latour, qui n'a rien demandé.</p></div>
+  </div>
+
+  <h2>Les derniers numéros</h2>
+  <ul class="sommaire" id="sommaire">
+    <!-- Un article par ligne, le plus récent en haut :
+    <li><a href="revue-titre-de-l-article.html">Titre de l'article</a><div class="meta">Rubrique · Auteur · 1er novembre 2026</div></li>
+    -->
+    <li><a href="revue-ouverture-feinte-contre-feinte.html">L'ouverture, la feinte et la contre-feinte</a><div class="meta">Philosophie de la discipline · La rédaction · 29 octobre 2026</div></li>
+  </ul>
+</main>
+</body>
+</html>

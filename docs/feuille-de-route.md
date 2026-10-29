@@ -22,6 +22,22 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   L'historique des mains est maintenant gardé aussi pour les duels en ligne (sur le téléphone), avec les balles de match sauvées.
   Deuxième lot (28 octobre) : bilan des face-à-face, revanche, jamais battu, dernier vainqueur, dialogues ; 14 répliques attendent
   des crédits (`outils/a-refaire.txt`, lignes en #).
+- **Décision du 28 octobre : HandSlam est le circuit, pas la discipline.** La discipline, c'est le Pierre-Feuille-Ciseaux ;
+  HandSlam est l'endroit où on la joue sérieusement (comme Roland-Garros pour le tennis, ou la NBA pour le basket). On écrit
+  « jouer au Pierre-Feuille-Ciseaux sur HandSlam », « un joueur de HandSlam », « le circuit HandSlam » ; jamais « jouer au
+  HandSlam ». Avec l'article quand on parle du circuit (« le HandSlam », « L'Écho du HandSlam », « Les Cahiers du HandSlam ») ;
+  sans article pour le site ou l'appli (« jouer sur HandSlam »). Les répliques enregistrées (« le monde du HandSlam », « champion du monde du HandSlam ») se lisent comme un circuit.
+- **Le nombre de matchs par jour** (28 octobre, étape 50) : « trois_matchs » ne compte qu'une fois par téléphone (le jour de son
+  tout premier 3e match : il mesure si les nouveaux accrochent) ; la nouvelle colonne « matchs » compte tous les matchs terminés,
+  anciens joueurs compris (en ligne, chacun des deux joueurs compte le sien). Lecture (une ligne) :
+  `select to_char(jour,'DD/MM') j, sum(visiteurs) v, sum(nouveaux) n, sum(revenus) r, sum(trois_matchs) t, sum(matchs) m from visites group by jour order by jour desc limit 30;`
+- **La revue « Les Cahiers du HandSlam »** (28 octobre, nom choisi par le porteur du projet, idée d'un testeur dont écrire est le métier) : sur le
+  site (`app/revue.html`, modèle d'article `app/revue-modele.html`, un fichier `revue-<titre>.html` par article). Rubriques :
+  philosophie de la discipline, analyse technique, chroniques du court central ; un article toutes les deux semaines ; ton sérieux
+  décalé. Le forum attendra qu'il y ait du monde (après la sortie sur le Play Store). Premier article publié le 29 octobre (« L'ouverture, la feinte et la
+  contre-feinte », signé « La rédaction », `app/revue-ouverture-feinte-contre-feinte.html`) ; bouton « 📜 Les Cahiers du HandSlam »
+  sur l'écran d'accueil (dès le 1er match) ; chaque article finit par « Jouer sur HandSlam ». En réserve : « Pourquoi perd-on si
+  souvent contre un débutant ? » et le portrait de Miroir.
 - **La réserve de temps** (décision du 28 octobre, *fait, à valider* ; étape SQL 49) : plus aucun coup joué au hasard (un coup au
   hasard est imprévisible, donc il pouvait avantager). 8 secondes par coup, puis une réserve de 20 secondes pour tout le match
   (pas remise à zéro à chaque set) ; réserve épuisée : avertissement de l'arbitre la première fois (et 8 secondes de plus),
