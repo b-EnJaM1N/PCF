@@ -36,8 +36,8 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   philosophie de la discipline, analyse technique, chroniques du court central ; un article toutes les deux semaines ; ton sérieux
   décalé. Le forum attendra qu'il y ait du monde (après la sortie sur le Play Store). Premier article publié le 29 octobre (« L'ouverture, la feinte et la
   contre-feinte », signé « La rédaction », `app/revue-ouverture-feinte-contre-feinte.html`) ; bouton « 📜 Les Cahiers du HandSlam »
-  sur l'écran d'accueil (dès le 1er match) ; chaque article finit par « Jouer sur HandSlam ». En réserve : « Pourquoi perd-on si
-  souvent contre un débutant ? » et le portrait de Miroir.
+  sur l'écran d'accueil (dès le 1er match) ; chaque article finit par « Jouer sur HandSlam ». En réserve (`docs/revue-brouillons.md`) :
+  « Pourquoi perd-on si souvent contre un débutant ? » et « Miroir, ou l'anti-Narcisse ».
 - **La réserve de temps** (décision du 28 octobre, *fait, à valider* ; étape SQL 49) : plus aucun coup joué au hasard (un coup au
   hasard est imprévisible, donc il pouvait avantager). 8 secondes par coup, puis une réserve de 20 secondes pour tout le match
   (pas remise à zéro à chaque set) ; réserve épuisée : avertissement de l'arbitre la première fois (et 8 secondes de plus),
