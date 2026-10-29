@@ -20,7 +20,7 @@ export const FICHIERS_AMBIANCE = {
 };
 // Les réactions variées du public après un point (plusieurs versions de chacune, pour ne pas se répéter).
 export const FICHIERS_REACTIONS = {
-  allez: ["public_allez_01", "public_allez_02", "public_allez_03"],
+  allez: ["public_allez_01"],   // (28 octobre : le « Allez ! » n° 1 de l'essai, gardé à l'écoute ; les anciens sont dans l'historique)
   ohDecu: ["public_oh_decu_01", "public_oh_decu_02"],
   bravo: ["public_bravo_01", "public_bravo_02"],
   brouhaha: ["public_brouhaha_01", "public_brouhaha_02"],
@@ -29,7 +29,7 @@ export const FICHIERS_REACTIONS = {
 // La force moyenne d'un enregistrement (racine de la moyenne des carrés), et celle visée pour les réactions du public.
 export const forceMoyenne = canaux => { let t = 0, n = 0; for (const c of canaux) for (let i = 0; i < c.length; i++) { t += c[i] * c[i]; n++; } return n ? Math.sqrt(t / n) : 0; };
 const FORCE_REACTION = 0.12;
-const VOLUME_REACTION = { allez: 0.38, ohDecu: 0.42, bravo: 0.38, brouhaha: 0.3, rires: 0.36, applaudir: 0.22 };
+const VOLUME_REACTION = { allez: 0.55, ohDecu: 0.42, bravo: 0.38, brouhaha: 0.3, rires: 0.36, applaudir: 0.22 };
 // Le coup de raquette : un son par signe (0 Pierre, 1 Ciseaux, 2 Feuille), et une version forte pour les grands moments
 // (balle de set ou de match, point décisif) : [normal, fort].
 export const FICHIERS_RAQUETTE_SIGNE = [
