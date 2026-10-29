@@ -394,6 +394,13 @@ Chaque téléphone signale « un match terminé » à la fin de chaque match, to
 deux joueurs compte le sien). Pour lire les chiffres (une ligne) :
 `select to_char(jour,'DD/MM') j, sum(visiteurs) v, sum(nouveaux) n, sum(revenus) r, sum(trois_matchs) t, sum(matchs) m from visites group by jour order by jour desc limit 30;`
 
+## 1 quinquagies semel. Rattrapage du championnat de chaque semaine (étape 51)
+
+Même manipulation avec [`etape-51-rattrapage-championnat-hebdo.sql`](etape-51-rattrapage-championnat-hebdo.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-51-rattrapage-championnat-hebdo.sql).
+Constaté le 29 octobre : l'étape 36 n'avait jamais été collée, et « Créer le championnat » échouait. Ce fichier reprend l'étape 36
+sans écraser la version plus récente de `arreter_serie` (étape 41). **Ne pas recoller l'étape 36 seule.**
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

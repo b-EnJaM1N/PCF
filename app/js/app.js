@@ -619,7 +619,7 @@ function finir() {
   if (n) compterMatchJoue(envoyerMatch);   // le nombre de matchs joués chaque jour (anonyme)
   // « La Une » : on garde de quoi raconter ce match.
   S.pourUne = n && !special ? {
-    etape: S.carriere ? S.carriere.coupe ? S.carriere.etape.replace(" · ", ", ") : `${CIRCUITS[S.carriere.circuit]}, ${S.carriere.etape.charAt(0).toLowerCase()}${S.carriere.etape.slice(1)}` : S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.direct ? (D.tourVoix === "finale" && D.nbTours > 1 ? "Finale de Sit & Go" : "Sit & Go") : D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
+    etape: S.carriere ? S.carriere.coupe ? S.carriere.etape.replace(" · ", ", ") : `${CIRCUITS[S.carriere.circuit]}, ${S.carriere.etape.charAt(0).toLowerCase()}${S.carriere.etape.slice(1)}` : S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.direct ? (D.tourVoix === "finale" && D.nbTours > 1 ? "Finale de Sit & Go" : "Sit & Go") : D.championnat ? "Championnat du cercle" : D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
       : enTournoi ? `${tourDe(T, S.tour).singulier} du HandSlam Open` : "Match d'entraînement",
     finale: !!S.annonces.finale, numero: P.matchs, enjeu: S.duel ? D?.duel?.enjeu || null : null,
   } : null;
@@ -1963,7 +1963,9 @@ async function reperesTournoi(duel) {
     const t = await voirTournoi(duel.tournoi_id);
     const m = (t?.matchs || []).find(x => x.id === duel.tournoi_match);
     if (!D || D.id !== duel.id || !m) return;
-    D.tourVoix = { 0: "finale", 1: "demis", 2: "quarts", 3: "huitiemes" }[t.nb_tours - m.tour] ?? null;
+    // (championnat : tous les matchs sont au « tour 1 sur 1 », ce n'est pas une finale)
+    D.championnat = t.mode === "championnat";
+    D.tourVoix = D.championnat ? null : { 0: "finale", 1: "demis", 2: "quarts", 3: "huitiemes" }[t.nb_tours - m.tour] ?? null;
     D.nbTours = t.nb_tours;
     D.sng = t.mode === "direct" && m.tour === 1;
     D.direct = t.mode === "direct" && !t.freeroll && !t.programme;   // (le trophée « Roi du Sit & Go » ne vaut ni pour le freeroll ni pour les tournois programmés)
