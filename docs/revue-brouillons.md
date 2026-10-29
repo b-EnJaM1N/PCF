@@ -1,7 +1,9 @@
 # Les Cahiers du HandSlam : articles en réserve
 
 Textes prêts, pas encore publiés (décision du porteur du projet, 29 octobre). Pour en publier un : copier
-`app/revue-modele.html` en `app/revue-<titre>.html`, y mettre le texte, l'ajouter au sommaire de `app/revue.html` et à `app/sw.js`.
+`app/revue-modele.html` en `app/revue-<titre>.html`, y mettre le texte, ajouter une ligne à la liste `ARTICLES` de
+`app/revue.html` (rubrique : philosophie, technique ou chroniques) et le fichier à `app/sw.js`. La page range l'article dans sa
+rubrique et l'affiche dans « Les dernières contributions » (les 3 plus récentes).
 Les phrases de Monique Latour sont inventées (c'est un personnage du jeu).
 
 ---
