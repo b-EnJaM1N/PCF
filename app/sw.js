@@ -13,6 +13,7 @@ const FICHIERS = [
   "essais-sons.html",
   "revue.html",
   "revue-modele.html",
+  "revue-ouverture-feinte-contre-feinte.html",
   "manifest.webmanifest",
   "css/style.css",
   "js/app.js",
