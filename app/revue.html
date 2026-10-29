@@ -26,7 +26,14 @@
   .revue h2 { font-family: "Barlow Condensed", sans-serif; font-size: 1.25rem; margin: 8px 0 0; }
   .rubriques { display: grid; gap: 10px; }
   .rubrique { background: var(--panel); border-radius: 12px; padding: 12px 14px; }
-  .rubrique b { font-family: "Barlow Condensed", sans-serif; font-size: 1.08rem; }
+  .rubrique b { font-family: "Barlow Condensed", sans-serif; font-size: 1.15rem; }
+  .rubrique summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .rubrique summary::-webkit-details-marker { display: none; }
+  .rubrique summary::after { content: "▾"; color: var(--me); font-size: 1.1rem; transition: transform .2s; }
+  .rubrique[open] summary::after { transform: rotate(180deg); }
+  .rubrique .compte { margin-left: auto; font-size: .8rem; color: var(--muted); }
+  .rubrique { border: 2px solid rgba(255, 255, 255, .14); }
+  .rubrique[open] { border-color: var(--me); }
   .rubrique p { margin: 4px 0 0; font-size: .9rem; line-height: 1.45; color: var(--muted); }
   .sommaire { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
   .sommaire li { background: var(--panel); border-radius: 12px; padding: 12px 14px; }
@@ -47,9 +54,9 @@
 
   <h2>Les rubriques</h2>
   <div class="rubriques">
-    <section class="rubrique" data-rubrique="philosophie"><b>🧠 Philosophie de la discipline</b><p>Le libre arbitre réduit à trois options, la tentation de la Pierre, l'éthique du coup joué en retard.</p><ul class="articles-rubrique"></ul></section>
-    <section class="rubrique" data-rubrique="technique"><b>📊 Analyse technique</b><p>Ouvertures, réflexes après une défaite, écoles lyonnaise et hongroise : ce que disent vraiment les chiffres.</p><ul class="articles-rubrique"></ul></section>
-    <section class="rubrique" data-rubrique="chroniques"><b>🎙️ Chroniques du court central</b><p>Portraits, grands matchs, et quelques mots de Monique Latour, qui n'a rien demandé.</p><ul class="articles-rubrique"></ul></section>
+    <details class="rubrique" data-rubrique="philosophie"><summary><b>🧠 Philosophie de la discipline</b><span class="compte"></span></summary><p>Le libre arbitre réduit à trois options, la tentation de la Pierre, l'éthique du coup joué en retard.</p><ul class="articles-rubrique"></ul></details>
+    <details class="rubrique" data-rubrique="technique"><summary><b>📊 Analyse technique</b><span class="compte"></span></summary><p>Ouvertures, réflexes après une défaite, écoles lyonnaise et hongroise : ce que disent vraiment les chiffres.</p><ul class="articles-rubrique"></ul></details>
+    <details class="rubrique" data-rubrique="chroniques"><summary><b>🎙️ Chroniques du court central</b><span class="compte"></span></summary><p>Portraits, grands matchs, et quelques mots de Monique Latour, qui n'a rien demandé.</p><ul class="articles-rubrique"></ul></details>
   </div>
 
   <h2>Les dernières contributions</h2>
@@ -65,9 +72,10 @@
   const esc = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
   const jour = d => new Date(`${d}T12:00:00`).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
   const tries = [...ARTICLES].sort((x, y) => y.date.localeCompare(x.date));
-  // Dans chaque rubrique : tous ses articles.
+  // Chaque rubrique est un bouton : touchée, elle s'ouvre sur tous ses articles.
   document.querySelectorAll("[data-rubrique]").forEach(r => {
     const liste = tries.filter(a => a.rubrique === r.dataset.rubrique);
+    r.querySelector(".compte").textContent = liste.length ? `${liste.length} article${liste.length > 1 ? "s" : ""}` : "à paraître";
     r.querySelector("ul").innerHTML = liste.length
       ? liste.map(a => `<li><a href="${esc(a.url)}">${esc(a.titre)}</a> <span class="meta">· ${esc(jour(a.date))}</span></li>`).join("")
       : `<li class="vide">À paraître.</li>`;
