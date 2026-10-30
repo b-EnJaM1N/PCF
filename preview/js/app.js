@@ -1907,19 +1907,23 @@ $("carSuite").addEventListener("click", () => { nouvelleSeance(); aller("viewCar
 
 // ---------------------------------------------------------------- clavier (ordinateur)
 // Un appui long (près d'une demi-seconde) sur un signe : un smash, s'il en reste un dans ce set (le bouton grossit quand il est prêt).
-const APPUI_LONG_MS = 450;
+const APPUI_LONG_MS = 380;
 const smashPossible = () => !!(S && S.enJeu && !S.occupe && S.match && peutSmasher(S.match, 0));
+// (sur un vrai téléphone, le « clic » ne suit pas toujours un appui long, et un doigt qui bouge un peu faisait croire à un
+// défilement : le coup smashé part donc dès qu'on lâche, ou si le téléphone annule le geste une fois le smash prêt)
 document.querySelectorAll("#moves button").forEach(b => {
-  let minuterie = 0, long = false;
-  const lacher = () => { clearTimeout(minuterie); b.classList.remove("charge"); };
+  let minuterie = 0, long = false, sansClic = false;
+  const smasher = () => { long = false; sansClic = true; b.classList.remove("charge"); jouer(+b.dataset.m, false, true); };
   b.addEventListener("pointerdown", () => {
-    long = false;
+    clearTimeout(minuterie); long = false; sansClic = false;
     if (b.disabled || !smashPossible()) return;
     minuterie = setTimeout(() => { long = true; b.classList.add("charge"); try { navigator.vibrate?.(20); } catch { /* rien */ } }, APPUI_LONG_MS);
   });
-  for (const ev of ["pointerup", "pointerleave", "pointercancel"]) b.addEventListener(ev, lacher);
+  b.addEventListener("pointerup", () => { clearTimeout(minuterie); if (long) smasher(); });
+  b.addEventListener("pointercancel", () => { clearTimeout(minuterie); if (long) smasher(); else b.classList.remove("charge"); });
+  b.addEventListener("pointerleave", e => { if (e.pointerType === "mouse") { clearTimeout(minuterie); long = false; b.classList.remove("charge"); } });
   b.addEventListener("contextmenu", e => e.preventDefault());   // (Android : pas de menu sur l'appui long)
-  b.addEventListener("click", () => { const smash = long; long = false; jouer(+b.dataset.m, false, smash); });
+  b.addEventListener("click", () => { if (sansClic) { sansClic = false; return; } jouer(+b.dataset.m); });
 });
 // Sous la barre : le smash de ce set, disponible ou déjà joué.
 function afficherSmash() {
