@@ -3,7 +3,7 @@
 //
 // Sur le serveur, joueur 0 = celui qui a lancé le défi. À l'écran, on est
 // toujours le côté 0 (jaune) : on retourne donc les coups si on est le joueur 1.
-import { nouveauMatch, jouerCoup, penaliser, EMOJI, NOM, texteFormat } from "./regles.js";
+import { nouveauMatch, jouerCoup, penaliser, noterSmash, EMOJI, NOM, texteFormat } from "./regles.js";
 import { indiceImprevisibilite } from "./analyse.js";
 import { normaliserProfil, signeFavori, dernierTitre, titresObtenus } from "./profil.js";
 import { surnomDe } from "./surnoms.js";
@@ -13,9 +13,11 @@ export const adversaireDe = (duel, uid) => (duel.j0 === uid ? duel.j1 : duel.j0)
 export const vuDe = (paire, moi) => (moi === 0 ? [paire[0], paire[1]] : [paire[1], paire[0]]);
 
 // Un coup révélé par le serveur, vu de mon côté : a = mon signe, b = celui de l'adversaire.
+// smash : qui a smashé ce coup (étape 52 ; [false, false] avant).
 export function coupVuDe(c, moi) {
-  const auto = c.auto || [false, false];
-  return moi === 0 ? { a: c.a, b: c.b, auto: [!!auto[0], !!auto[1]] } : { a: c.b, b: c.a, auto: [!!auto[1], !!auto[0]] };
+  const auto = c.auto || [false, false], smash = c.smash || [false, false];
+  return moi === 0 ? { a: c.a, b: c.b, auto: [!!auto[0], !!auto[1]], smash: [!!smash[0], !!smash[1]] }
+    : { a: c.b, b: c.a, auto: [!!auto[1], !!auto[0]], smash: [!!smash[1], !!smash[0]] };
 }
 
 // Les coups révélés et les points de pénalité (étape 49 : duel.penalites, { apres, fautif }), dans l'ordre, vus de mon côté :
@@ -30,7 +32,11 @@ export function evenementsDuel(duel, moi) {
   return liste;
 }
 // Applique un de ces événements au match ; renvoie ce qui s'est passé (comme jouerCoup).
-export const appliquerEvenement = (match, e) => (e.coup ? jouerCoup(match, e.coup.a, e.coup.b, e.coup.auto) : penaliser(match, e.penalite));
+export function appliquerEvenement(match, e) {
+  if (!e.coup) return penaliser(match, e.penalite);
+  (e.coup.smash || []).forEach((s, j) => { if (s) noterSmash(match, j); });
+  return jouerCoup(match, e.coup.a, e.coup.b, e.coup.auto);
+}
 // Combien d'événements le match a déjà vus (coups et pénalités).
 export const nbEvenements = match => match.coups.length + (match.penalites?.length || 0);
 
