@@ -1,5 +1,5 @@
 // Écran principal : relie les règles, les bots, les annonces, le son et la fiche joueur.
-import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, nouveauMatch, jouerCoup, penaliser, depassement, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
+import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
@@ -316,15 +316,19 @@ document.addEventListener("visibilitychange", () => {
 // ---------------------------------------------------------------- un coup
 const boutons = on => document.querySelectorAll("#moves button").forEach(b => { b.disabled = !on; if (on) b.classList.remove("choisi"); });
 
-function jouer(signe, auto = false) {
-  if (S && S.duel) return jouerDuel(signe);
+// smash : appui long sur le signe (un par set, pour le spectacle seulement ; voir peutSmasher).
+function jouer(signe, auto = false, smash = false) {
+  if (S && S.duel) return jouerDuel(signe, smash);
   if (!S || !S.enJeu || S.occupe || S.match.termine || panneauOuvert || faceAFaceOuvert) return;
   S.occupe = true; arreterMinuteur(); boutons(false);
   const m = S.match;
+  smash = !!smash && peutSmasher(m, 0);
+  // Le bot smashe lui aussi, une fois par set au plus, de temps en temps.
+  const smashBot = peutSmasher(m, 1) && Math.random() < 0.1;
   // Le bot choisit sans connaître le coup du joueur.
   const histBot = m.coups.map(c => ({ moi: c.b, adv: c.a, res: c.gagnant === null ? "e" : c.gagnant === 1 ? "g" : "p" }));
   const signeBot = (S.carriere ? coupCarriere : choisirCoup)(OPP, histBot, S.hasard || Math.random, contexteBot(m));   // (carrière : les bots faibles renforcés)   // (match du jour : le même tirage pour tout le monde)
-  const reveler = () => { ambiance.raquette(signe, grandMoment(m)); afficherCoup(signe, signeBot, [auto, false]); };
+  const reveler = () => { ambiance.raquette(signe, grandMoment(m) || smash || smashBot); afficherCoup(signe, signeBot, [auto, false], { smash: [smash, smashBot] }); };
   if (reduitMouvement()) { reveler(); return; }
   // Comme au chifoumi : les deux poings se secouent, puis les deux signes s'ouvrent ensemble (pareil en duel).
   const seance = S;
@@ -346,9 +350,10 @@ function secouerLesPoings() {
 
 // Révèle un coup (solo ou duel) et enchaîne : annonces, score, fin de set ou de match.
 // silencieux : on met seulement l'état à jour (rattrapage de plusieurs coups en duel).
-function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
+function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [false, false] } = {}) {
   const m = S.match;
   S.suivi.figer();
+  smash.forEach((x, j) => { if (x) noterSmash(m, j); });
   const evt = jouerCoup(m, signe, signeAdv, auto);
   S.suivi.enregistrer(signe, evt.gagnant === null ? "e" : evt.gagnant === 0 ? "g" : "p");
   suivreCoup(S.stats, m, evt);
@@ -405,7 +410,18 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false } = {}) {
   }, silencieux || reduitMouvement() ? 0 : 500);
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
+  if (smash[0] || smash[1]) effetSmash(smash);
   return apresPoint(evt, a, cel, rp);
+}
+
+// Le smash : une secousse de l'arène et une vibration (Android ; l'iPhone ne vibre pas depuis une page web), et le verdict l'annonce.
+function effetSmash(smash) {
+  const qui = smash[0] && smash[1] ? "Double smash ! " : smash[0] ? "Smash ! " : `Smash de ${OPP.nom} ! `;
+  $("verdict").textContent = `💥 ${qui}${$("verdict").textContent}`;
+  try { if (document.visibilityState === "visible") navigator.vibrate?.(smash[0] && smash[1] ? [120, 60, 120, 60, 200] : [150, 60, 220]); } catch { /* sans vibration */ }
+  if (reduitMouvement()) return;
+  const arene = document.querySelector(".arena");
+  arene?.classList.remove("smash"); void arene?.offsetWidth; arene?.classList.add("smash");
 }
 
 // Après un coup ou un point de pénalité : le public, les annonces, le score, puis la fin du set, du match ou le coup suivant.
@@ -502,6 +518,7 @@ function criEnGrand(cel, apres) {
 // ---------------------------------------------------------------- affichage du match
 function render() {
   const m = S.match;
+  afficherSmash();
   majModeMatch();
   // Pendant la pause après le dernier point, on montre encore le score du dernier set (11–9), pas déjà les sets (2–1).
   const dernierSet = S.pauseFin ? m.scoresSets[m.scoresSets.length - 1] : null;
@@ -1889,7 +1906,28 @@ $("carRecommencer").addEventListener("click", () => {
 $("carSuite").addEventListener("click", () => { nouvelleSeance(); aller("viewCarriere"); });
 
 // ---------------------------------------------------------------- clavier (ordinateur)
-document.querySelectorAll("#moves button").forEach(b => b.addEventListener("click", () => jouer(+b.dataset.m)));
+// Un appui long (près d'une demi-seconde) sur un signe : un smash, s'il en reste un dans ce set (le bouton grossit quand il est prêt).
+const APPUI_LONG_MS = 450;
+const smashPossible = () => !!(S && S.enJeu && !S.occupe && S.match && peutSmasher(S.match, 0));
+document.querySelectorAll("#moves button").forEach(b => {
+  let minuterie = 0, long = false;
+  const lacher = () => { clearTimeout(minuterie); b.classList.remove("charge"); };
+  b.addEventListener("pointerdown", () => {
+    long = false;
+    if (b.disabled || !smashPossible()) return;
+    minuterie = setTimeout(() => { long = true; b.classList.add("charge"); try { navigator.vibrate?.(20); } catch { /* rien */ } }, APPUI_LONG_MS);
+  });
+  for (const ev of ["pointerup", "pointerleave", "pointercancel"]) b.addEventListener(ev, lacher);
+  b.addEventListener("contextmenu", e => e.preventDefault());   // (Android : pas de menu sur l'appui long)
+  b.addEventListener("click", () => { const smash = long; long = false; jouer(+b.dataset.m, false, smash); });
+});
+// Sous la barre : le smash de ce set, disponible ou déjà joué.
+function afficherSmash() {
+  const el = $("smashInfo"); if (!el || !S?.match) return;
+  const dispo = peutSmasher(S.match, 0);
+  el.textContent = dispo ? "💥 Smash : appui long sur un signe (1 par set)" : "💥 Smash joué dans ce set";
+  el.classList.toggle("utilise", !dispo);
+}
 document.addEventListener("keydown", e => {
   if (e.target && /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
   const k = { p: 0, c: 1, f: 2 }[e.key.toLowerCase()];
@@ -2014,12 +2052,12 @@ function majDuel(duel) {
   D.avertisVus = avertis;
 
   // 1. Les coups révélés (et les points de pénalité) depuis la dernière fois (rattrapage si plusieurs).
-  const montrer = (e, opts) => (e.coup ? afficherCoup(e.coup.a, e.coup.b, e.coup.auto, opts) : afficherPenalite(e.penalite, opts));
+  const montrer = (e, opts) => (e.coup ? afficherCoup(e.coup.a, e.coup.b, e.coup.auto, { ...opts, smash: e.coup.smash }) : afficherPenalite(e.penalite, opts));
   if (nbEvenements(m) < n && !m.termine) {
     while (nbEvenements(m) < n - 1) montrer(ev[nbEvenements(m)], { silencieux: true });
     const e = ev[n - 1];
     S.occupe = true; arreterMinuteur(); boutons(false);
-    if (e.coup) ambiance.raquette(e.coup.a, grandMoment(m));   // le coup de raquette au moment où les deux signes se dévoilent
+    if (e.coup) ambiance.raquette(e.coup.a, grandMoment(m) || e.coup.smash.some(Boolean));   // le coup de raquette au moment où les deux signes se dévoilent
     montrer(e, {});
     if (!coherent(m, duel, D.moi)) {   // ne devrait jamais arriver : on se recale sur le serveur
       const r = rejouer(duel, D.moi); S.match = r.match; render(); renderHistorique();
@@ -2099,9 +2137,10 @@ function lancerMinuteurDuel() {
   raf = requestAnimationFrame(tick);
 }
 
-function jouerDuel(signe) {
+function jouerDuel(signe, smash = false) {
   if (!D || D.fini || S.occupe || panneauOuvert || faceAFaceOuvert) return;
   const d = D.duel;
+  smash = !!smash && peutSmasher(S.match, 0);
   if (d.phase !== "jeu" || d.pause_depuis || D.mancheEnvoyee === d.manche) return;
   D.mancheEnvoyee = d.manche; boutons(false);
   // Les deux signes se dévoilent ensemble, comme contre un bot d'entraînement : en attendant la réponse du serveur,
@@ -2113,7 +2152,7 @@ function jouerDuel(signe) {
   // de 2,5 s, on l'indique, pour qu'on ne croie pas l'appli bloquée.
   const mancheJouee = d.manche;
   setTimeout(() => { if (D && !D.fini && D.mancheEnvoyee === mancheJouee && S.match.coups.length < mancheJouee) $("verdict").textContent = `En attente de ${OPP.nom}…`; }, 2500);
-  serveur.jouer(D.id, d.manche, signe).then(majDuel).catch(e => {
+  serveur.jouer(D.id, d.manche, signe, smash).then(majDuel).catch(e => {
     if (!D) return;
     if (/déjà terminé|déjà joué|Temps écoulé/.test(e.message)) { battement(); return; }
     D.mancheEnvoyee = null; D.secoueFin = 0; $("verdict").textContent = e.message;

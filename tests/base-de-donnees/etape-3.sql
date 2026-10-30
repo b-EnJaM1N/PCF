@@ -71,7 +71,7 @@ select pg_temp.verifier((select jsonb_array_length(coups) = 0 from duels where i
 select pg_temp.interdit(format('select jouer(%L, 1, 7)', (select val from t where cle = 'duel')), 'signe invalide refusé');
 select pg_temp.interdit(format('select jouer(%L, 5, 1)', (select val from t where cle = 'duel')), 'mauvais numéro de coup refusé');
 select jouer((select val from t where cle = 'duel'), 1, 1);
-select pg_temp.verifier((select coups->0 = '{"a":0,"b":1,"g":0,"auto":[false,false]}'::jsonb and points = '{1,0}' and manche = 2
+select pg_temp.verifier((select (coups->0) - 'smash' = '{"a":0,"b":1,"g":0,"auto":[false,false]}'::jsonb and points = '{1,0}' and manche = 2
   from duels where id = (select val from t where cle = 'duel')), 'Pierre bat Ciseaux : point pour Alice, révélé aux deux');
 
 -- 5. Une égalité ne compte pas

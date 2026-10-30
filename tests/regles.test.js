@@ -162,3 +162,15 @@ test("la réserve de temps : avertissement d'abord, puis un point de pénalité 
   assert.ok(f.finSet, "une pénalité peut finir le set");
   assert.deepEqual(m.scoresSets, [[1, 3]]);
 });
+
+test("le smash : un par set et par joueur, pour le spectacle (le point ne change pas)", async () => {
+  const { peutSmasher, noterSmash } = await import("../app/js/regles.js");
+  const m = nouveauMatch({ pointsParSet: 3, setsGagnants: 2 });
+  assert.ok(peutSmasher(m, 0) && peutSmasher(m, 1));
+  noterSmash(m, 0);
+  assert.ok(!peutSmasher(m, 0), "déjà smashé dans ce set");
+  assert.ok(peutSmasher(m, 1), "l'adversaire a le sien");
+  repeter(3, () => pointA(m));
+  assert.deepEqual(m.scoresSets, [[3, 0]]);
+  assert.ok(peutSmasher(m, 0), "nouveau set : un nouveau smash");
+});
