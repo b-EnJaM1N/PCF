@@ -33,7 +33,8 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   `select to_char(jour,'DD/MM') j, sum(visiteurs) v, sum(nouveaux) n, sum(revenus) r, sum(trois_matchs) t, sum(matchs) m from visites group by jour order by jour desc limit 30;`
 - **Le smash** (décision du 30 octobre, *fait, à valider* ; étape SQL 52) : appui long sur un signe ; gros son de raquette, secousse
   de l'arène, vibration (Android) ; en duel, les deux téléphones. Pour le spectacle seulement (le point ne change pas), un par set
-  et par joueur ; les bots d'entraînement smashent aussi, de temps en temps. Plus tard : des répliques de Roland sur le smash.
+  et par joueur ; les bots d'entraînement smashent aussi, de temps en temps. Pas de mention sous la barre (retirée le 30 octobre, à la demande du porteur du projet) : le geste se découvre ou
+  s'explique de vive voix. Plus tard : des répliques de Roland sur le smash.
 - **La revue « Les Cahiers du HandSlam »** (28 octobre, nom choisi par le porteur du projet, idée d'un testeur dont écrire est le métier) : sur le
   site (`app/revue.html`, modèle d'article `app/revue-modele.html`, un fichier `revue-<titre>.html` par article). Rubriques :
   philosophie de la discipline, analyse technique, chroniques du court central ; un article toutes les deux semaines ; ton sérieux
