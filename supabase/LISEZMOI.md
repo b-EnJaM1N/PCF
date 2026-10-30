@@ -401,6 +401,14 @@ Même manipulation avec [`etape-51-rattrapage-championnat-hebdo.sql`](etape-51-r
 Constaté le 29 octobre : l'étape 36 n'avait jamais été collée, et « Créer le championnat » échouait. Ce fichier reprend l'étape 36
 sans écraser la version plus récente de `arreter_serie` (étape 41). **Ne pas recoller l'étape 36 seule.**
 
+## 1 quinquagies bis. Le smash (étape 52)
+
+Même manipulation avec [`etape-52-smash.sql`](etape-52-smash.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-52-smash.sql).
+Un appui long sur un signe joue un « smash » (gros son, secousse, vibration), un par set et par joueur, pour le spectacle :
+le serveur le transmet à l'adversaire, dont le téléphone vibre aussi. **À coller avant de valider l'appli** (sans elle, en
+ligne, le smash n'est vu que par celui qui le joue). Si on relance un jour l'étape 49, relancer celle-ci ensuite.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

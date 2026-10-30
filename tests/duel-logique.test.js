@@ -14,8 +14,10 @@ test("chaque joueur se voit côté jaune", () => {
   assert.equal(maPlace(d, "A"), 0); assert.equal(maPlace(d, "B"), 1); assert.equal(maPlace(d, "Z"), null);
   assert.equal(adversaireDe(d, "A"), "B"); assert.equal(adversaireDe(d, "B"), "A");
   const c = { a: PIERRE, b: FEUILLE, g: 1, auto: [false, true] };
-  assert.deepEqual(coupVuDe(c, 0), { a: PIERRE, b: FEUILLE, auto: [false, true] });
-  assert.deepEqual(coupVuDe(c, 1), { a: FEUILLE, b: PIERRE, auto: [true, false] });
+  assert.deepEqual(coupVuDe(c, 0), { a: PIERRE, b: FEUILLE, auto: [false, true], smash: [false, false] });
+  assert.deepEqual(coupVuDe(c, 1), { a: FEUILLE, b: PIERRE, auto: [true, false], smash: [false, false] });
+  // Le smash (étape 52) se retourne lui aussi.
+  assert.deepEqual(coupVuDe({ ...c, smash: [true, false] }, 1).smash, [false, true]);
 });
 
 test("rejouer les coups du serveur donne le même score des deux côtés", () => {
