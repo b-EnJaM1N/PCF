@@ -518,7 +518,6 @@ function criEnGrand(cel, apres) {
 // ---------------------------------------------------------------- affichage du match
 function render() {
   const m = S.match;
-  afficherSmash();
   majModeMatch();
   // Pendant la pause après le dernier point, on montre encore le score du dernier set (11–9), pas déjà les sets (2–1).
   const dernierSet = S.pauseFin ? m.scoresSets[m.scoresSets.length - 1] : null;
@@ -1925,13 +1924,6 @@ document.querySelectorAll("#moves button").forEach(b => {
   b.addEventListener("contextmenu", e => e.preventDefault());   // (Android : pas de menu sur l'appui long)
   b.addEventListener("click", () => { if (sansClic) { sansClic = false; return; } jouer(+b.dataset.m); });
 });
-// Sous la barre : le smash de ce set, disponible ou déjà joué.
-function afficherSmash() {
-  const el = $("smashInfo"); if (!el || !S?.match) return;
-  const dispo = peutSmasher(S.match, 0);
-  el.textContent = dispo ? "💥 Smash : appui long sur un signe (1 par set)" : "💥 Smash joué dans ce set";
-  el.classList.toggle("utilise", !dispo);
-}
 document.addEventListener("keydown", e => {
   if (e.target && /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
   const k = { p: 0, c: 1, f: 2 }[e.key.toLowerCase()];
