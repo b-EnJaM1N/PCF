@@ -14,6 +14,7 @@ const FICHIERS = [
   "revue.html",
   "revue-modele.html",
   "revue-ouverture-feinte-contre-feinte.html",
+  "revue-precis-des-ouvertures.html",
   "manifest.webmanifest",
   "css/style.css",
   "js/app.js",
