@@ -45,6 +45,7 @@ export function nouveauMatch({ pointsParSet = 11, setsGagnants = 2 } = {}) {
     penalites: [],         // points de pénalité : { apres (nombre de coups joués avant), fautif: 0|1 }
     reserve: [RESERVE_MS, RESERVE_MS],   // la réserve de temps de chacun (ms)
     avertis: [false, false],             // déjà averti pour dépassement de temps
+    smashs: [-1, -1],                    // le set (son numéro, à partir de 0) du dernier smash de chacun
     termine: false,
     vainqueur: null,
   };
@@ -139,6 +140,11 @@ export function penaliser(match, fautif) {
   (match.penalites ||= []).push({ apres: match.coups.length, fautif });
   return marquer(match, { a: null, b: null, penalite: fautif, gagnant: 1 - fautif, egalite: false, balleAvant: balle(match), finSet: false, finMatch: false, scoreSet: null });
 }
+
+// Le smash (décision du 30 octobre) : un coup joué « plus fort » (appui long), pour le spectacle seulement (gros son,
+// secousse, vibration), un par set et par joueur. Il ne change rien au point.
+export const peutSmasher = (match, joueur) => !match.termine && (match.smashs?.[joueur] ?? -1) !== match.scoresSets.length;
+export function noterSmash(match, joueur) { (match.smashs ||= [-1, -1])[joueur] = match.scoresSets.length; }
 
 // La réserve de fautif est épuisée et il n'a toujours pas joué : "avertissement" la première fois, "penalite" ensuite
 // (le point de pénalité est alors à appliquer avec penaliser).

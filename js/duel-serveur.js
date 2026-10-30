@@ -21,7 +21,13 @@ export const annuler = id => rpc("annuler_duel", { p_id: id });
 // Dans la salle d'attente d'un défi accepté (étape 37) : « je suis là » ; renvoie le duel (« presentation » quand les deux y sont).
 export const rendezVous = id => rpc("rendez_vous", { p_id: id });
 export const pret = id => rpc("pret", { p_id: id });
-export const jouer = (id, manche, signe) => rpc("jouer", { p_id: id, p_manche: manche, p_signe: signe });
+// smash (étape 52) : envoyé seulement s'il y en a un ; un serveur pas encore à jour (sans p_smash) : on rejoue sans.
+export const jouer = async (id, manche, signe, smash = false) => {
+  const args = { p_id: id, p_manche: manche, p_signe: signe };
+  if (!smash) return rpc("jouer", args);
+  try { return await rpc("jouer", { ...args, p_smash: true }); }
+  catch (e) { if (/p_smash|Could not find the function/i.test(e.message || "")) return rpc("jouer", args); throw e; }
+};
 export const reclamer = id => rpc("reclamer", { p_id: id });      // → { maintenant, duel }
 export const abandonner = id => rpc("abandonner", { p_id: id });
 export const serrerLaMain = (id, style) => rpc("serrer_la_main", { p_id: id, p_style: style });   // → le duel (avec poignee0, poignee1)
