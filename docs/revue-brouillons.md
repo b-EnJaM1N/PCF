@@ -52,11 +52,11 @@ Faut-il alors renoncer au savoir ? Certainement pas. Le débutant ne le reste ja
 
 Mais la leçon demeure. La véritable maîtrise n'est pas d'accumuler du savoir. C'est de savoir s'en défaire au bon moment : connaître toutes les théories, et jouer pourtant comme si l'on n'en connaissait aucune. Retrouver, après des années d'étude, la main légère de celui qui découvre.
 
-Socrate se disait le plus sage des hommes parce qu'il était le seul à savoir qu'il ne savait rien. Le grand joueur de Pierre-Feuille-Ciseaux est peut-être celui qui, sachant tout, a réappris à ne rien savoir.
+Un vieux sage disait que le plus savant est celui qui sait qu'il ne sait rien. Le grand joueur de Pierre-Feuille-Ciseaux est peut-être celui qui, sachant tout, a réappris à ne rien savoir.
 
-Votre neveu de neuf ans, lui, n'a pas eu besoin de vingt-cinq siècles de philosophie pour y arriver. Ne le lui dites surtout pas.
+Votre neveu de neuf ans, lui, n'a pas eu besoin de tant de sagesse pour y arriver. Ne le lui dites surtout pas.
 
-*Références : Suzuki (Esprit zen, esprit neuf), citation authentique en traduction ; Spinoza reformulé ; Socrate d'après l'Apologie, sans citation exacte.*
+*Références : Suzuki (Esprit zen, esprit neuf), citation authentique en traduction ; Spinoza reformulé. (Socrate retiré le 31 octobre : trop de références ; « un vieux sage disait ».)*
 
 ---
 
