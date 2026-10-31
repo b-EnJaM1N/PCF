@@ -24,7 +24,7 @@ Le maître zen Shunryu Suzuki l'a dit avec une simplicité désarmante : « Dans
 
 ### II. Le débutant, figure de la liberté
 
-Spinoza observait que les hommes se croient libres parce qu'ils ont conscience de leurs actes, mais ignorent les causes qui les déterminent. L'expert est l'illustration parfaite de cette illusion. Il croit choisir son signe ; en réalité, son signe est choisi par ses lectures, ses défaites passées, ses théories, sa peur d'être prévisible. Plus il réfléchit, plus il est déterminé. Ses coups ont des causes, et tout ce qui a une cause peut être deviné.
+On dit que les hommes se croient libres parce qu'ils savent ce qu'ils font, mais ignorent ce qui les pousse à le faire. L'expert est l'illustration parfaite de cette illusion. Il croit choisir son signe ; en réalité, son signe est choisi par ses lectures, ses défaites passées, ses théories, sa peur d'être prévisible. Plus il réfléchit, plus il est déterminé. Ses coups ont des causes, et tout ce qui a une cause peut être deviné.
 
 Le débutant, paradoxalement, est plus libre. Non parce qu'il serait plus sage, mais parce que rien encore ne pèse sur sa main. Aucune habitude ne l'a façonné, aucune théorie ne l'encombre. Son coup n'a pas d'histoire. Et un coup sans histoire est un coup sans indice.
 
@@ -52,11 +52,11 @@ Faut-il alors renoncer au savoir ? Certainement pas. Le débutant ne le reste ja
 
 Mais la leçon demeure. La véritable maîtrise n'est pas d'accumuler du savoir. C'est de savoir s'en défaire au bon moment : connaître toutes les théories, et jouer pourtant comme si l'on n'en connaissait aucune. Retrouver, après des années d'étude, la main légère de celui qui découvre.
 
-Socrate se disait le plus sage des hommes parce qu'il était le seul à savoir qu'il ne savait rien. Le grand joueur de Pierre-Feuille-Ciseaux est peut-être celui qui, sachant tout, a réappris à ne rien savoir.
+Un vieux sage disait que le plus savant est celui qui sait qu'il ne sait rien. Le grand joueur de Pierre-Feuille-Ciseaux est peut-être celui qui, sachant tout, a réappris à ne rien savoir.
 
-Votre neveu de neuf ans, lui, n'a pas eu besoin de vingt-cinq siècles de philosophie pour y arriver. Ne le lui dites surtout pas.
+La prochaine fois que vous perdrez contre un débutant, ne parlez pas de chance. Dites plutôt : j'ai rencontré un maître qui s'ignorait.
 
-*Références : Suzuki (Esprit zen, esprit neuf), citation authentique en traduction ; Spinoza reformulé ; Socrate d'après l'Apologie, sans citation exacte.*
+*Références : Suzuki (Esprit zen, esprit neuf), citation authentique en traduction ; Spinoza allégé en « on dit que… » (31 octobre). (Socrate retiré le 31 octobre : trop de références ; « un vieux sage disait ».)*
 
 ---
 

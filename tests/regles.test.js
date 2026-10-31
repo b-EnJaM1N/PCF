@@ -174,3 +174,14 @@ test("le smash : un par set et par joueur, pour le spectacle (le point ne change
   assert.deepEqual(m.scoresSets, [[3, 0]]);
   assert.ok(peutSmasher(m, 0), "nouveau set : un nouveau smash");
 });
+
+test("ce que donne un smash : gagné, raté ou bloqué (égalité)", async () => {
+  const { issueSmash } = await import("../app/js/regles.js");
+  assert.equal(issueSmash([false, false], 0), null);
+  assert.equal(issueSmash([true, false], 0), "gagne");
+  assert.equal(issueSmash([true, false], 1), "rate");
+  assert.equal(issueSmash([true, false], null), "bloque");
+  assert.equal(issueSmash([false, true], 1), "gagne");
+  assert.equal(issueSmash([false, true], 0), "rate");
+  assert.equal(issueSmash([true, true], 0), "gagne", "double smash : le gagnant a smashé");
+});

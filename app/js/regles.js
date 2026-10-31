@@ -145,6 +145,13 @@ export function penaliser(match, fautif) {
 // secousse, vibration), un par set et par joueur. Il ne change rien au point.
 export const peutSmasher = (match, joueur) => !match.termine && (match.smashs?.[joueur] ?? -1) !== match.scoresSets.length;
 export function noterSmash(match, joueur) { (match.smashs ||= [-1, -1])[joueur] = match.scoresSets.length; }
+// Ce qu'a donné le smash d'un coup (smash : [moi, l'adversaire] ; gagnant : 0, 1 ou null pour une égalité) :
+// "gagne" (un smash qui gagne le point, le grand effet), "bloque" (égalité) ou "rate" (le smash perd le point) ; null sans smash.
+export function issueSmash(smash, gagnant) {
+  if (!smash?.[0] && !smash?.[1]) return null;
+  if (gagnant === null || gagnant === undefined) return "bloque";
+  return smash[gagnant] ? "gagne" : "rate";
+}
 
 // La réserve de fautif est épuisée et il n'a toujours pas joué : "avertissement" la première fois, "penalite" ensuite
 // (le point de pénalité est alors à appliquer avec penaliser).
