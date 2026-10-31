@@ -54,7 +54,7 @@ Mais la leçon demeure. La véritable maîtrise n'est pas d'accumuler du savoir.
 
 Un vieux sage disait que le plus savant est celui qui sait qu'il ne sait rien. Le grand joueur de Pierre-Feuille-Ciseaux est peut-être celui qui, sachant tout, a réappris à ne rien savoir.
 
-Votre neveu de neuf ans, lui, n'a pas eu besoin de tant de sagesse pour y arriver. Ne le lui dites surtout pas.
+La prochaine fois que vous perdrez contre un débutant, ne parlez pas de chance. Dites plutôt : j'ai rencontré un maître qui s'ignorait.
 
 *Références : Suzuki (Esprit zen, esprit neuf), citation authentique en traduction ; Spinoza allégé en « on dit que… » (31 octobre). (Socrate retiré le 31 octobre : trop de références ; « un vieux sage disait ».)*
 
