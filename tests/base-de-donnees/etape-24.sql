@@ -56,7 +56,11 @@ begin
 
   -- 3. Mise de 50 : des bots panachés (étape 45) ; mise de 500 : des bots forts ; un tableau de 32 : 31 bots tous différents.
   t := pg_temp.salle_seul(2, 8, 50);
-  perform pg_temp.verifier((select count(*) = 7 and min(b.elo) <= 1000 and max(b.elo) >= 1400 from inscrits_tournoi i join bots_en_ligne b on b.joueur = i.joueur where i.tournoi_id = t.id), 'mise de 50 : 7 bots panachés, des faibles aux forts (étape 45)');
+  -- (un bot tiré au hasard dans chacun des 4 quarts de niveau, puis 3 de plus : le test vérifie les 4 quarts, pas des seuils
+  -- de niveau fixes, que le tirage pouvait manquer de peu)
+  perform pg_temp.verifier((select count(*) = 7 and count(distinct q.quart) = 4
+    from inscrits_tournoi i join (select joueur, ntile(4) over (order by elo) as quart from bots_en_ligne where actif) q on q.joueur = i.joueur
+    where i.tournoi_id = t.id), 'mise de 50 : 7 bots panachés, des faibles aux forts (un de chaque quart de niveau, étape 45)');
   update tournois set phase = 'annule', fini_le = now() where id = t.id;
   t := pg_temp.salle_seul(3, 8, 500);
   perform pg_temp.verifier((select bool_and(b.elo >= 1250) from inscrits_tournoi i join bots_en_ligne b on b.joueur = i.joueur where i.tournoi_id = t.id), 'mise de 500 : 7 bots forts (1 250 au moins)');
