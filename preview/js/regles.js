@@ -11,6 +11,8 @@ export const DUREE_COUP_MS = 8000;
 // sont passées. Réserve épuisée : un avertissement la première fois (et 8 secondes de plus pour jouer ce coup), puis un point
 // de pénalité à chaque fois (le point va à l'adversaire, sans signes montrés). Plus aucun coup joué au hasard.
 export const RESERVE_MS = 20000;
+// Sonné par un smash réussi (décision du 1er novembre) : au coup suivant, pas de coup pendant les 4 premières secondes.
+export const SONNE_MS = 4000;
 // Un set se gagne en 11 points (format officiel), 7, 3 ou 1. À 7 et 11, il faut 2 points d'écart,
 // mais pas sans fin : à 14 partout (sets de 11) ou 9 partout (sets de 7), point décisif, le premier à 15 (ou 10) gagne le set.
 // À 3 et 1, un point d'écart suffit (3–2 gagne ; à 1 point, le premier point gagne le set).
