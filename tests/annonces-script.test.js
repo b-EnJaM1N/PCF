@@ -429,3 +429,24 @@ test("la banque du 1er novembre : rien de muet, rien de trop long pendant l'éch
   for (let k = 0; k < 200; k++) annoncesAvantMatch({ humain: true, situations: [] }, rngFixe(k)).commentaires.forEach(l => amis.add(baseDe(l.id).replace(/_\d\d$/, "")));
   assert.ok([...amis].some(x => /avant_seul_amis$/.test(x)), [...amis].join(", "));
 });
+
+test("le ciseau retourné : seulement quand je gagne avec les Ciseaux juste après les Ciseaux de l'adversaire", async () => {
+  const { POOLS } = await import("../app/js/voix/script.js");
+  const item = POOLS.beau_coup.find(e => e.t === "Magnifique ciseau retourné !");
+  assert.equal(item.si, "ciseau_retourne");
+  const vu = (coups) => {
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 });
+    let dit = false;
+    for (let k = 0; k < 200 && !dit; k++) {
+      const m2 = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = rngFixe(k);
+      etat.reserve = 2;
+      let r;
+      for (const [a, b] of coups) r = annoncerCoup(m2, jouerCoup(m2, a, b), etat, {}, rng);
+      if (r.commentaire?.texte === "Magnifique ciseau retourné !") dit = true;
+    }
+    return dit;
+  };
+  // (trois points avant, pour que les commentateurs puissent parler)
+  assert.ok(vu([[0, 1], [2, 0], [0, 0], [2, 1], [1, 2]]), "Ciseaux gagnants après les Ciseaux de l'adversaire : possible");
+  assert.ok(!vu([[0, 1], [2, 0], [0, 0], [2, 0], [1, 2]]), "sinon : jamais");
+});

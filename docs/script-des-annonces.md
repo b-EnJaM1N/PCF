@@ -770,7 +770,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_set_ecrasant_06.mp3` | Qu'on m'apporte un café. Et un autre match. |
 | `commentatrice_set_ecrasant_07.mp3` | Bref. Il a perdu le set. |
 | `commentatrice_set_ecrasant_07_f.mp3` | Bref. Elle a perdu le set. |
-| `commentatrice_set_ecrasant_08.mp3` | Pas de chichifoumi. |
+| `commentatrice_set_ecrasant_08.mp3` | Un set vite expédié, pas de chichifoumi. |
 | `commentatrice_set_ecrasant_09.mp3` | Le coup du berger. Plié en quelques coups. |
 | `commentatrice_set_couteau_01.mp3` | Arraché. Mérité, on en reparlera. |
 | `commentatrice_set_couteau_02.mp3` | Il fallait des nerfs solides pour conclure celui-là. Il y en avait. Juste assez. |
