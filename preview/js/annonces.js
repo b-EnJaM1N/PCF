@@ -15,6 +15,8 @@ import { JOURNALISTE, REPONSES_INTERVIEW, REPONSES_DEFAITE } from "./voix/repliq
 import { idPartie } from "./surnoms.js";
 
 const RESERVE_MAX = 2;
+// Pendant l'échange, seules les répliques assez courtes pour tenir entre deux coups sont dites (voir app.js, même valeur).
+export const REPLIQUE_COURTE = 55;
 
 // L'identifiant de base d'une réplique, sans sa variante (« _f », signe) : commentateur_craquage_02_f → commentateur_craquage_02.
 export const baseDe = id => /^(.*?_\d\d)(?:_|$)/.exec(id)?.[1] ?? id;
@@ -37,13 +39,16 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
     egalitesDeSuite: 0,
     ecartMin: 0,                  // plus gros retard du joueur dans le set (négatif)
     obstine: false,               // on a relevé son obstination : on attend qu'il change
+    beauSet: 0,                   // « beaux coups » commentés dans ce set (3 au plus)
+    dernierMoment: null,          // le dernier moment commenté (un « beau coup » jamais deux fois de suite)
+    troisPierres: false,          // « Pierre qui roule… » : une fois par match
   };
 }
 
 // ---------------------------------------------------------------- choisir une réplique
 const CONDITIONS = {
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, pile4: c => c.pile4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
-  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, un_partout: c => c.unPartout, finale: c => c.finale,
+  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, un_partout: c => c.unPartout, finale: c => c.finale,
   // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
 };
@@ -75,14 +80,22 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
   const pool = POOLS[moment];
   if (!pool) return null;
   // Les jeux de mots sur un signe (« seul ») ne se disent que si le joueur vient de jouer ce signe.
-  let valides = pool.filter(e => !etat.dits.has(e.base) && (!e.si || CONDITIONS[e.si]?.(ctx, etat)) && (e.seul === undefined || e.seul === ctx.signe) && (!e.quand || e.quand === ctx.quand) && (e.clin !== "cine" || !etat.cine));
+  let valides = pool.filter(e => !etat.dits.has(e.base) && (!e.si || CONDITIONS[e.si]?.(ctx, etat)) && (e.seul === undefined || e.seul === ctx.signe) && (!e.quand || e.quand === ctx.quand) && (e.clin !== "cine" || !etat.cine)
+    // (une série : les répliques écrites pour sa longueur, 8 voulant dire « 8 ou plus » ; un set gagné de 5 points : seulement « net »)
+    && (e.long === undefined || e.long === ctx.longueur || (e.long === 8 && ctx.longueur >= 8)) && (!ctx.net5 || e.net));
+  // Seulement ce qu'on peut entendre : une réplique enregistrée (etat.audible) et, pendant l'échange (ctx.court), assez courte
+  // pour être dite (voir REPLIQUE_COURTE dans app.js) ; sinon, une autre réplique plutôt qu'un silence.
+  const ligne = e => ligneMoment(e, { genre: etat.genre, signe: ctx.signe ?? 0, signeAdv: ctx.signeAdv ?? 0 });
+  valides = valides.filter(e => { const l = ligne(e); return l && (!etat.audible || etat.audible(l.id)) && (!ctx.court || l.texte.length <= REPLIQUE_COURTE); });
   if (!valides.length) return null;
   // Ce qui n'a pas été entendu aux derniers matchs d'abord (sinon, on reprend tout).
   const frais = valides.filter(e => !etat.anciens?.has(e.base));
   if (frais.length) valides = frais;
+  // (un moment qui n'a qu'une ou deux répliques, déjà entendues aux derniers matchs : on se tait plutôt que de les redire)
+  else if (pool.length <= 2 && etat.anciens?.size) return null;
   // Les répliques « spéciales » passent en priorité : une condition remplie (7 fois sur 10),
   // un jeu de mots sur le signe joué (4 fois sur 10, pour qu'il reste une surprise).
-  const conditions = valides.filter(e => e.si), jeux = valides.filter(e => !e.si && e.seul !== undefined);
+  const conditions = valides.filter(e => e.si || e.long !== undefined), jeux = valides.filter(e => !e.si && e.long === undefined && e.seul !== undefined);
   const speciales = [...conditions, ...jeux];
   let item;
   if (conditions.length && rng() < 0.7) item = conditions[Math.floor(rng() * conditions.length)];
@@ -90,7 +103,7 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
   else {
     // Tirage pondéré : chaque réplique a sa chance, les clins d'œil de cinéma un peu moins (ils marquent plus).
     // (Avant, on tirait d'abord un groupe : les rares clins d'œil d'un moment revenaient alors bien plus souvent que les autres.)
-    const ordinaires = valides.filter(e => !e.si && e.seul === undefined);
+    const ordinaires = valides.filter(e => !e.si && e.long === undefined && e.seul === undefined);
     const g = ordinaires.length ? ordinaires : speciales;
     if (!g.length) return null;
     const poids = e => (typeof e.rare === "number" ? e.rare : e.rare ? 0.25 : e.clin === "cine" ? 0.6 : 1);   // (« rare » : une réplique qui marque trop pour revenir souvent)
@@ -132,7 +145,8 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
   const lignes = [], n = match.coups.length, len = match.format.pointsParSet, court = ecartRequis(len) === 1;   // sets de 3 et 1 point
   const c = match.coups, dernier = c[n - 1];
   let pub = null, commentaire = null, dialogueFin = [];
-  const ctx = { signe: dernier.a, signeAdv: dernier.b };
+  // (court : pendant l'échange, seulement des répliques courtes ; pas en fin de set ni de match, où l'on a le temps)
+  const ctx = { signe: dernier.a, signeAdv: dernier.b, court: !evt.finSet && !evt.finMatch };
 
   // Le match chauffe : balle de set ou de match, fin de set serrée.
   const chaud = !!(evt.balleAvant || evt.balleApres) || (!court && Math.max(...match.points) >= len - 3);
@@ -140,10 +154,13 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
   const peutCommenter = (ecart, seuil = 1) => n >= 3 && etat.reserve >= seuil && n - etat.dernierCom >= ecart;
   let moment = null;
 
+  const egalitesAvant = etat.egalitesDeSuite;
   if (evt.egalite) {
     etat.egalitesDeSuite++;
+    // Le tout premier coup du match est une égalité (de temps en temps).
+    if (n === 1 && rng() < 0.6) moment = "premiere_egalite";
     // (une fois par set au plus : sinon c'est le commentaire qu'on entend le plus)
-    if ((etat.egalitesDeSuite >= 3 && etat.egalitesDeSuite <= 5) && !etat.dejaSet.has("duel_esprits") && peutCommenter(3)) {
+    else if ((etat.egalitesDeSuite >= 3 && etat.egalitesDeSuite <= 5) && !etat.dejaSet.has("duel_esprits") && peutCommenter(3)) {
       moment = "duel_esprits"; ctx.cinqEgalites = etat.egalitesDeSuite === 5; etat.dejaSet.add("duel_esprits");
     }
   } else {
@@ -179,8 +196,14 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
         if (moment === "balle_sauvee" && evt.balleAvant.type === "match" && rng() < 0.5) moment = "main_legendaire";
       } else if (a === b && a >= 4 && etat.ecartMin <= -4 && peutCommenter(3, 0.5)) {
         moment = "remontee"; etat.ecartMin = 0;
-      } else if ([4, 5, 6].includes(etat.serie.n) && peutCommenter(4) && rng() < 0.9) {   // (à 5 : si rien n'a été dit à 4)
-        moment = g === 0 ? "serie_pour" : "serie_contre"; ctx.serie6 = etat.serie.n === 6; ctx.pile4 = etat.serie.n === 4;
+      } else if (g === 1 && !c.slice(0, n - 1).some(x => x.gagnant !== null) && rng() < 0.35) {   // (le tout premier point du match)
+        moment = "premier_point_perdu";
+      } else if (egalitesAvant >= 2 && peutCommenter(2) && rng() < 0.5) {   // un point enfin gagné après des égalités
+        moment = g === 0 ? "apres_egalites_gagne" : "apres_egalites_perdu";
+      } else if (g === 0 && !etat.troisPierres && troisPierres(c) && rng() < 0.7) {
+        moment = "trois_pierres"; etat.troisPierres = true;
+      } else if (etat.serie.n >= 3 && peutCommenter(3) && rng() < (etat.serie.n === 3 ? 0.45 : 0.75)) {   // une réplique par longueur de série
+        moment = g === 0 ? "serie_pour" : "serie_contre"; ctx.longueur = etat.serie.n; ctx.serie6 = etat.serie.n === 6; ctx.pile4 = etat.serie.n === 4;
       } else if (auto && peutCommenter(4) && rng() < 0.6) {
         moment = "temps_ecoule"; ctx.balleMatch = evt.balleAvant?.type === "match";
       } else if (etat.obstine && c[n - 1].a !== c[n - 2].a && peutCommenter(2) && rng() < 0.2) {   // (une seule réplique : pas trop souvent)
@@ -195,11 +218,18 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
         moment = "tension"; ctx.balleContre = h.joueur === 1;
       } else if (!h && pointDecisif(match) && peutCommenter(3, 0.5) && rng() < 0.5) {
         moment = "point_decisif";
+      } else if (g === 0 && etat.beauSet < 3 && etat.dernierMoment !== "beau_coup" && peutCommenter(3) && rng() < 0.15) {
+        moment = "beau_coup"; etat.beauSet++;   // un beau coup, selon le signe gagnant (quand rien d'autre n'est à dire)
+      }
+      // Sur une balle de match pour moi, parfois le dialogue « l'immortalité » plutôt qu'une réplique.
+      if (moment === "tension" && !ctx.balleContre && rng() < 0.3) {
+        const d = dialogue(etat, "balle_de_match", rng);
+        if (d) { dialogueFin = d; moment = null; etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
       }
     }
     // Le public applaudit une série de 4 points d'affilée (puis 8, 12…), mais se tait avant une balle de match.
     if (!evt.finSet && etat.serie.n % 4 === 0 && !(evt.balleApres && evt.balleApres.type === "match")) pub = "serie";
-    if (evt.finSet) { etat.ecartMin = 0; etat.serieMaxSet = [0, 0]; etat.dejaSet.clear(); }
+    if (evt.finSet) { etat.ecartMin = 0; etat.serieMaxSet = [0, 0]; etat.dejaSet.clear(); etat.beauSet = 0; }
   }
   // Sur une égalité, il peut aussi avoir changé de signe : on n'attend plus.
   if (evt.egalite && etat.obstine && n >= 2 && c[n - 1].a !== c[n - 2].a) etat.obstine = false;
@@ -218,6 +248,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
     commentaire = choisir(etat, moment, ctx, rng);
     if (commentaire) { lignes.push(commentaire); etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
   }
+  etat.dernierMoment = commentaire ? moment : null;
   lignes.push(...dialogueFin);
 
   const ambiance = match.termine ? "fin" : evt.balleApres && evt.balleApres.type === "match" ? "silence" : "murmure";
@@ -260,6 +291,12 @@ export function annoncerPenalite(match, evt, etat, rng = Math.random) {
 // L'avertissement pour dépassement de temps (fautif : 0 moi, 1 l'adversaire).
 export const annonceAvertissement = fautif => replique(`arbitre_avertissement_${COTE[fautif]}_01`);
 
+// Mes trois derniers points gagnés d'affilée l'ont tous été avec la Pierre (les égalités ne comptent pas).
+export function troisPierres(c) {
+  const points = c.filter(x => x.gagnant !== null).slice(-3);
+  return points.length === 3 && points.every(x => x.gagnant === 0 && x.a === 0);
+}
+
 // La figure technique (inventée) que dessinent mes derniers signes, si le dernier gagne le point ; sinon null.
 // c : les coups du match (a : mon signe, b : le sien, gagnant : 0 moi, 1 lui, null égalité). Pierre 0, Ciseaux 1, Feuille 2.
 export function figureDe(c) {
@@ -293,7 +330,8 @@ function finDeSet(match, evt, etat, ctx, rng) {
   const decisifEnSuite = match.sets[0] === match.format.setsGagnants - 1 && match.sets[1] === match.format.setsGagnants - 1;
   const ajoute = x => { if (x) Array.isArray(x) ? out.push(...x) : out.push(x); };
   if (!court) {
-    if (haut - bas >= 6) ajoute(choisir(etat, "set_ecrasant", { ...ctx, onzeZero: haut === 11 && bas === 0 }, rng));
+    // (à 5 points d'écart, seulement les répliques « net » : « Pas de chichifoumi », le coup du berger)
+    if (haut - bas >= 5) ajoute(choisir(etat, "set_ecrasant", { ...ctx, onzeZero: haut === 11 && bas === 0, net5: haut - bas === 5 }, rng));
     else if (bas >= len - 1) ajoute(choisir(etat, "set_couteau", ctx, rng));
     else if (rng() < 0.5) ajoute(dialogue(etat, "fin_set", rng) || choisir(etat, "resume_set", ctx, rng));
     else ajoute(choisir(etat, "resume_set", { ...ctx, unPartout: match.sets[0] === 1 && match.sets[1] === 1 }, rng));
@@ -463,6 +501,12 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
   if (domination) com = choisir(etat, "domination", {}, rng);
   else if (contexte && !contexteRecent && rng() < 0.5) return { speaker: sp.filter(Boolean), commentaires: dialogue(etat, contexte, rng) || [] };
   else if (humain && rng() < 0.5) com = choisir(etat, "humain", {}, rng);
+  // Parfois, une seule phrase au lieu d'un dialogue : entre amis, une revanche, un grand match, ou n'importe quel match.
+  if (!com && rng() < 0.35) {
+    const seul = humain && !situations.includes("partie_rapide") && rng() < 0.6 ? "avant_seul_amis"
+      : situations.includes("revanche") && rng() < 0.6 ? "avant_seul_revanche" : (tour || jeu) && rng() < 0.5 ? "avant_seul_grand" : "avant_seul";
+    com = choisir(etat, seul, {}, rng) || choisir(etat, "avant_seul", {}, rng);
+  }
   const commentaires = com ? [com] : rng() < 0.85 ? dialogue(etat, "avant_match", rng) || [] : [];
   return { speaker: sp.filter(Boolean), commentaires };
 }
