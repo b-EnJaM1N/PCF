@@ -450,3 +450,19 @@ test("le ciseau retourné : seulement quand je gagne avec les Ciseaux juste apr�
   assert.ok(vu([[0, 1], [2, 0], [0, 0], [2, 1], [1, 2]]), "Ciseaux gagnants après les Ciseaux de l'adversaire : possible");
   assert.ok(!vu([[0, 1], [2, 0], [0, 0], [2, 0], [1, 2]]), "sinon : jamais");
 });
+
+test("les commentaires du smash : réussi, sonné, raté, bloqué ; jamais « il a tout raté » pour le smash de l'adversaire", () => {
+  const vus = new Map(), rng = rngFixe(11);
+  for (let k = 0; k < 400; k++) {
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces();
+    const a = Math.floor(rng() * 3), b = Math.floor(rng() * 3), smash = [rng() < 0.5, rng() < 0.5];
+    const r = annoncerCoup(m, jouerCoup(m, a, b), etat, { smash }, rng);
+    if (!r.commentaire) continue;
+    const mo = baseDe(r.commentaire.id).replace(/^(commentateur|commentatrice)_/, "").replace(/_\d\d$/, "");
+    if (!mo.startsWith("smash")) continue;
+    vus.set(mo, (vus.get(mo) || 0) + 1);
+    if (smash[1] && !smash[0]) assert.ok(!/raté|vide|mur\. Le mur/.test(r.commentaire.texte), r.commentaire.texte);
+    if (smash[0] && smash[1]) assert.equal(mo, "smash_double");
+  }
+  for (const mo of ["smash_reussi", "smash_sonne", "smash_rate", "smash_bloque", "smash_double"]) assert.ok(vus.get(mo) > 0, mo);
+});

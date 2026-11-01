@@ -116,7 +116,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (539 répliques)
+## Commentateur — vif, enthousiaste, plein de références (568 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -418,6 +418,35 @@ restent lus par la voix de synthèse.
 | `commentateur_avant_seul_04.mp3` | La pression monte, les poignets sont chauds ! |
 | `commentateur_avant_seul_grand_01.mp3` | Parfum de Ligue des champions ce soir ! |
 | `commentateur_avant_seul_amis_01.mp3` | Amis dans la vie, ennemis dans l'arène ! Enfin, c'est ce qu'ils racontent avant le premier coup. |
+| `commentateur_smash_reussi_01.mp3` | QUEL SMASH ! |
+| `commentateur_smash_reussi_02.mp3` | Il a tout mis dans ce coup ! |
+| `commentateur_smash_reussi_02_f.mp3` | Elle a tout mis dans ce coup ! |
+| `commentateur_smash_reussi_03.mp3` | Le smash est passé ! Imparable ! |
+| `commentateur_smash_reussi_04.mp3` | Ça, c'est un coup de massue ! |
+| `commentateur_smash_reussi_05.mp3` | Avec autorité ! |
+| `commentateur_smash_reussi_06.mp3` | Il monte au filet, et ça paye ! |
+| `commentateur_smash_reussi_06_f.mp3` | Elle monte au filet, et ça paye ! |
+| `commentateur_smash_reussi_07.mp3` | C'est le point du K.-O. ! |
+| `commentateur_smash_reussi_08.mp3` | Il éteint son adversaire ! |
+| `commentateur_smash_reussi_08_f.mp3` | Elle éteint son adversaire ! |
+| `commentateur_smash_reussi_09.mp3` | Il fait montre de tout son talent ! |
+| `commentateur_smash_reussi_09_f.mp3` | Elle fait montre de tout son talent ! |
+| `commentateur_smash_reussi_10.mp3` | Il est en train de rentrer dans la tête de son adversaire ! |
+| `commentateur_smash_reussi_10_f.mp3` | Elle est en train de rentrer dans la tête de son adversaire ! |
+| `commentateur_smash_reussi_11.mp3` | La feuille A4 ! Format grand smash ! |
+| `commentateur_smash_reussi_12.mp3` | La cisaille ! Il a tout tranché ! |
+| `commentateur_smash_reussi_12_f.mp3` | La cisaille ! Elle a tout tranché ! |
+| `commentateur_smash_reussi_13.mp3` | Le rocher dévale ! Rien ne l'arrête ! |
+| `commentateur_smash_sonne_01.mp3` | Il est sonné ! Il cherche ses repères ! |
+| `commentateur_smash_sonne_01_f.mp3` | Elle est sonnée ! Elle cherche ses repères ! |
+| `commentateur_smash_sonne_02.mp3` | Il titube ! Il est groggy ! |
+| `commentateur_smash_sonne_02_f.mp3` | Elle titube ! Elle est groggy ! |
+| `commentateur_smash_rate_01.mp3` | Il a tout tenté… et tout raté ! |
+| `commentateur_smash_rate_01_f.mp3` | Elle a tout tenté… et tout raté ! |
+| `commentateur_smash_rate_02.mp3` | Le smash finit dans le filet ! |
+| `commentateur_smash_bloque_01.mp3` | Bloqué ! Le mur a tenu ! |
+| `commentateur_smash_bloque_02.mp3` | Smash contré ! Quelle lecture ! |
+| `commentateur_smash_double_01.mp3` | Double smash ! Ça tape de partout ! |
 | `commentateur_humain_01.mp3` | C'est un duel ! Un vrai ! Les yeux dans les yeux ! |
 | `commentateur_dialogue_avant_match_01.mp3` | Madame, la tension est palpable. |
 | `commentateur_dialogue_avant_match_02.mp3` | Deux styles, deux écoles ! |
@@ -660,7 +689,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (478 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (501 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -912,6 +941,29 @@ restent lus par la voix de synthèse.
 | `commentatrice_avant_seul_amis_03.mp3` | Les meilleurs amis du monde. Jusqu'au moment où l'un des deux sort une pierre avec un sourire suspect. |
 | `commentatrice_avant_seul_amis_04.mp3` | Ils se connaissent, ils s'apprécient, ils se respectent. Enfin, pour l'instant. |
 | `commentatrice_avant_seul_amis_05.mp3` | Il y a des amitiés qui durent toute une vie. Et puis il y a celles qui se terminent sur un ciseau mal anticipé. |
+| `commentatrice_smash_reussi_01.mp3` | Un smash. Et un adversaire en morceaux. |
+| `commentatrice_smash_reussi_02.mp3` | Il a frappé fort. Pour une fois, il a frappé juste. |
+| `commentatrice_smash_reussi_02_f.mp3` | Elle a frappé fort. Pour une fois, elle a frappé juste. |
+| `commentatrice_smash_reussi_03.mp3` | Un point d'exclamation sur sa victoire. |
+| `commentatrice_smash_reussi_04.mp3` | Retour à l'école pour son adversaire ! |
+| `commentatrice_smash_reussi_05.mp3` | Il amuse la galerie. |
+| `commentatrice_smash_reussi_05_f.mp3` | Elle amuse la galerie. |
+| `commentatrice_smash_reussi_06.mp3` | Celui-là, c'était pour les photographes. |
+| `commentatrice_smash_reussi_07.mp3` | Une feuille A4. Pliée en quatre, l'adversaire. |
+| `commentatrice_smash_reussi_08.mp3` | La cisaille. Net et sans bavure. |
+| `commentatrice_smash_reussi_09.mp3` | Un rocher. L'adversaire ne s'en relèvera pas tout de suite. |
+| `commentatrice_smash_sonne_01.mp3` | Il voit des étoiles. Moi aussi, parfois. |
+| `commentatrice_smash_sonne_01_f.mp3` | Elle voit des étoiles. Moi aussi, parfois. |
+| `commentatrice_smash_sonne_02.mp3` | Comptez jusqu'à quatre. Il revient. |
+| `commentatrice_smash_sonne_02_f.mp3` | Comptez jusqu'à quatre. Elle revient. |
+| `commentatrice_smash_rate_01.mp3` | Beaucoup d'élan. Peu de résultat. |
+| `commentatrice_smash_rate_02.mp3` | Frapper fort, c'est bien. Frapper juste, c'est mieux. |
+| `commentatrice_smash_rate_03.mp3` | Il a smashé dans le vide. Le vide a gagné. |
+| `commentatrice_smash_rate_03_f.mp3` | Elle a smashé dans le vide. Le vide a gagné. |
+| `commentatrice_smash_bloque_01.mp3` | Il a smashé dans un mur. Le mur ne s'est pas excusé. |
+| `commentatrice_smash_bloque_01_f.mp3` | Elle a smashé dans un mur. Le mur ne s'est pas excusé. |
+| `commentatrice_smash_bloque_02.mp3` | Tout ce bruit pour une égalité. |
+| `commentatrice_smash_double_01.mp3` | Deux smashs. Aucune finesse. Beaucoup de bruit. |
 | `commentatrice_humain_01.mp3` | Ils se connaissent. Et ça se voit. |
 | `commentatrice_humain_02.mp3` | Entre amis, il n'y a pas de pitié. |
 | `commentatrice_dialogue_avant_match_01.mp3` | On sent surtout deux personnes devant leur téléphone. Mais oui. |

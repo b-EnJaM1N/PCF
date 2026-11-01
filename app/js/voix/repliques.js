@@ -546,6 +546,61 @@ export const MOMENTS = {
     { r: "d", t: "Ils se connaissent, ils s'apprécient, ils se respectent. Enfin, pour l'instant." },
     { r: "d", t: "Il y a des amitiés qui durent toute une vie. Et puis il y a celles qui se terminent sur un ciseau mal anticipé." },
   ],
+  // ---------------------------------------------------------------- le smash (validé le 1er novembre)
+  // « Il » : moi. deMoi : la phrase parle du smasheur, donc seulement pour mes smashs (pour ceux de l'adversaire, les autres).
+  // Mon smash gagne le point (l'adversaire est sonné).
+  smash_reussi: [
+    { r: "c", t: "QUEL SMASH !" },
+    { r: "c", t: "Il a tout mis dans ce coup !", f: "Elle a tout mis dans ce coup !" },
+    { r: "c", t: "Le smash est passé ! Imparable !" },
+    { r: "c", t: "Ça, c'est un coup de massue !" },
+    { r: "d", t: "Un smash. Et un adversaire en morceaux." },
+    { r: "d", t: "Il a frappé fort. Pour une fois, il a frappé juste.", f: "Elle a frappé fort. Pour une fois, elle a frappé juste." },
+    // (idées d'un testeur, validées le 1er novembre ; seul : selon le signe du smash)
+    { r: "c", t: "Avec autorité !" },
+    { r: "c", t: "Il monte au filet, et ça paye !", f: "Elle monte au filet, et ça paye !" },
+    { r: "c", t: "C'est le point du K.-O. !" },
+    { r: "c", t: "Il éteint son adversaire !", f: "Elle éteint son adversaire !" },
+    { r: "c", t: "Il fait montre de tout son talent !", f: "Elle fait montre de tout son talent !" },
+    { r: "c", t: "Il est en train de rentrer dans la tête de son adversaire !", f: "Elle est en train de rentrer dans la tête de son adversaire !" },
+    { r: "d", t: "Un point d'exclamation sur sa victoire." },
+    { r: "d", t: "Retour à l'école pour son adversaire !" },
+    { r: "d", t: "Il amuse la galerie.", f: "Elle amuse la galerie." },
+    { r: "d", t: "Celui-là, c'était pour les photographes." },
+    { r: "c", t: "La feuille A4 ! Format grand smash !", seul: 2 },
+    { r: "d", t: "Une feuille A4. Pliée en quatre, l'adversaire.", seul: 2 },
+    { r: "c", t: "La cisaille ! Il a tout tranché !", f: "La cisaille ! Elle a tout tranché !", seul: 1 },
+    { r: "d", t: "La cisaille. Net et sans bavure.", seul: 1 },
+    { r: "c", t: "Le rocher dévale ! Rien ne l'arrête !", seul: 0 },
+    { r: "d", t: "Un rocher. L'adversaire ne s'en relèvera pas tout de suite.", seul: 0 },
+  ],
+  // Le smash de l'adversaire gagne le point : je suis sonné.
+  smash_sonne: [
+    { r: "c", t: "Il est sonné ! Il cherche ses repères !", f: "Elle est sonnée ! Elle cherche ses repères !" },
+    { r: "c", t: "Il titube ! Il est groggy !", f: "Elle titube ! Elle est groggy !" },
+    { r: "d", t: "Il voit des étoiles. Moi aussi, parfois.", f: "Elle voit des étoiles. Moi aussi, parfois." },
+    { r: "d", t: "Comptez jusqu'à quatre. Il revient.", f: "Comptez jusqu'à quatre. Elle revient." },
+  ],
+  // Un smash qui perd le point.
+  smash_rate: [
+    { r: "c", t: "Il a tout tenté… et tout raté !", f: "Elle a tout tenté… et tout raté !", deMoi: true },
+    { r: "c", t: "Le smash finit dans le filet !" },
+    { r: "d", t: "Beaucoup d'élan. Peu de résultat." },
+    { r: "d", t: "Frapper fort, c'est bien. Frapper juste, c'est mieux." },
+    { r: "d", t: "Il a smashé dans le vide. Le vide a gagné.", f: "Elle a smashé dans le vide. Le vide a gagné.", deMoi: true },
+  ],
+  // Un smash sur une égalité.
+  smash_bloque: [
+    { r: "c", t: "Bloqué ! Le mur a tenu !" },
+    { r: "c", t: "Smash contré ! Quelle lecture !" },
+    { r: "d", t: "Il a smashé dans un mur. Le mur ne s'est pas excusé.", f: "Elle a smashé dans un mur. Le mur ne s'est pas excusé.", deMoi: true },
+    { r: "d", t: "Tout ce bruit pour une égalité." },
+  ],
+  // Les deux joueurs smashent le même coup.
+  smash_double: [
+    { r: "c", t: "Double smash ! Ça tape de partout !" },
+    { r: "d", t: "Deux smashs. Aucune finesse. Beaucoup de bruit." },
+  ],
   humain: [
     { r: "c", t: "C'est un duel ! Un vrai ! Les yeux dans les yeux !" },
     { r: "d", t: "Ils se connaissent. Et ça se voit." },

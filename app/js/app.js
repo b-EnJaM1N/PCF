@@ -381,7 +381,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   const evt = jouerCoup(m, signe, signeAdv, auto);
   S.suivi.enregistrer(signe, evt.gagnant === null ? "e" : evt.gagnant === 0 ? "g" : "p");
   suivreCoup(S.stats, m, evt);
-  const a = annoncerCoup(m, evt, S.annonces, { recents: S.suivi.recents, auto: !!auto[0] });
+  const a = annoncerCoup(m, evt, S.annonces, { recents: S.suivi.recents, auto: !!auto[0], smash });
   // Au premier coup : il rejoue la même ouverture qu'au dernier match, ou il en change (Roland ou Monique le relève).
   if (m.coups.length === 1 && !silencieux) {
     const mo = commentaireMemeOuverture(S.memoire, signeAdv, { genreAdv: S.genreAdv, audible: id => !voix.fichiers.size || voix.fichiers.has(id) });
