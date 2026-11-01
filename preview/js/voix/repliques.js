@@ -268,7 +268,7 @@ export const MOMENTS = {
     { r: "d", t: "Qu'on m'apporte un café. Et un autre match." },
     { r: "d", t: "Bref. Il a perdu le set.", f: "Bref. Elle a perdu le set.", clin: "cine" },
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
-    { r: "d", t: "Pas de chichifoumi.", net: true },
+    { r: "d", t: "Un set vite expédié, pas de chichifoumi.", net: true },
     { r: "d", t: "Le coup du berger. Plié en quelques coups.", net: true },
   ],
   set_couteau: [
@@ -465,7 +465,7 @@ export const MOMENTS = {
     { r: "c", t: "Un coup magnifiquement ciselé !", seul: 1 },
     { r: "c", t: "C'est l'effet ciseaux !", seul: 1 },
     { r: "c", t: "Un coup de ciseaux chirurgical !", seul: 1 },
-    { r: "c", t: "Magnifique ciseau retourné !", seul: 1, clin: "sport" },
+    { r: "c", t: "Magnifique ciseau retourné !", seul: 1, clin: "sport", si: "ciseau_retourne" },   // (Ciseaux gagnants juste après les Ciseaux de l'adversaire)
     { r: "c", t: "Une coupe parfaite ! Sanction immédiate !", seul: 1 },
     { r: "c", t: "Il vient de raccourcir les ambitions de son rival !", f: "Elle vient de raccourcir les ambitions de son rival !", seul: 1 },
     { r: "c", t: "La feuille est en deux, et les espoirs aussi !", seul: 1 },

@@ -48,7 +48,7 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
 // ---------------------------------------------------------------- choisir une réplique
 const CONDITIONS = {
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, pile4: c => c.pile4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
-  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, un_partout: c => c.unPartout, finale: c => c.finale,
+  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
   // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
 };
@@ -146,7 +146,9 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
   const c = match.coups, dernier = c[n - 1];
   let pub = null, commentaire = null, dialogueFin = [];
   // (court : pendant l'échange, seulement des répliques courtes ; pas en fin de set ni de match, où l'on a le temps)
-  const ctx = { signe: dernier.a, signeAdv: dernier.b, court: !evt.finSet && !evt.finMatch };
+  const ctx = { signe: dernier.a, signeAdv: dernier.b, court: !evt.finSet && !evt.finMatch,
+    // (le « ciseau retourné » : je gagne avec les Ciseaux juste après que l'adversaire a joué les Ciseaux)
+    ciseauRetourne: n >= 2 && dernier.a === 1 && evt.gagnant === 0 && c[n - 2].b === 1 };
 
   // Le match chauffe : balle de set ou de match, fin de set serrée.
   const chaud = !!(evt.balleAvant || evt.balleApres) || (!court && Math.max(...match.points) >= len - 3);
@@ -218,7 +220,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
         moment = "tension"; ctx.balleContre = h.joueur === 1;
       } else if (!h && pointDecisif(match) && peutCommenter(3, 0.5) && rng() < 0.5) {
         moment = "point_decisif";
-      } else if (g === 0 && etat.beauSet < 3 && etat.dernierMoment !== "beau_coup" && peutCommenter(3) && rng() < 0.15) {
+      } else if (g === 0 && etat.beauSet < 3 && etat.dernierMoment !== "beau_coup" && peutCommenter(3) && rng() < (ctx.ciseauRetourne ? 0.5 : 0.15)) {
         moment = "beau_coup"; etat.beauSet++;   // un beau coup, selon le signe gagnant (quand rien d'autre n'est à dire)
       }
       // Sur une balle de match pour moi, parfois le dialogue « l'immortalité » plutôt qu'une réplique.
