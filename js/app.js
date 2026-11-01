@@ -229,7 +229,10 @@ function ouvrirPanneau({ kick = "", big = "", bigCls = "", sc = "", tally = "", 
   panneauOuvert = true; $("inter").classList.add("show"); $("iGo").focus();
 }
 $("iGo").addEventListener("click", () => panneauGo && panneauGo());
-function fermerPanneau() { $("inter").classList.remove("show"); panneauOuvert = null; panneauGo = null; }
+function fermerPanneau() {
+  $("inter").classList.remove("show"); panneauOuvert = null; panneauGo = null;
+  for (const id of ["iMsg", "iMsgMoi", "iMsgAdv", "iEcrit"]) $(id).hidden = true;
+}
 
 // ---------------------------------------------------------------- minuteur (8 s par coup, puis la réserve de temps)
 let raf = 0, tDebut = 0;
@@ -478,7 +481,7 @@ function apresPoint(evt, a, cel, rp) {
       resteOuvert: !!S.duel,
       onGo: S.duel ? duelPret : () => { nouveauSet(); decompteSolo(); },
     });
-      if (S.duel) majBoutonsPret();
+      if (S.duel) { majBoutonsPret(); afficherMessages(D.duel); }   // (le bouton des messages de la pause, étape 53)
     }, cel ? 2400 : 1200);                                  // on laisse le temps de voir le cri
     return evt;
   }
@@ -771,7 +774,7 @@ async function verifierAmi() {
   try { const amis = await mesAmis(); if (D === d) { d.ami = amis.some(a => a.id === OPP.uid && a.statut === "amis"); afficherMessages(d.duel); } }
   catch { /* sans la liste, pas de chambrage */ }
 }
-const momentAvecMoi = duel => (duel.phase === "presentation" ? "avant" : duel.phase === "termine" && duel.vainqueur !== null && duel.vainqueur !== undefined ? momentApres(duel.vainqueur === D.moi) : null);
+const momentAvecMoi = duel => (duel.phase === "presentation" ? "avant" : duel.phase === "entre_sets" ? "entre_sets" : duel.phase === "termine" && duel.vainqueur !== null && duel.vainqueur !== undefined ? momentApres(duel.vainqueur === D.moi) : null);
 // Un seul bouton à l'écran ; il ouvre la fenêtre des messages (décision du 22 octobre : les rangées de puces encombraient).
 function puces(zone, moment) {
   zone.innerHTML = `<button class="btn alt msg-ouvrir" data-moment="${moment}">💬 Envoyer un message à ${esc(OPP.nom)}</button>`;
@@ -782,9 +785,12 @@ function ouvrirMessages(moment) {
   const ami = !!D.ami, liste = messagesPossibles(moment, ami), rubrique = (titre, l) => `<p class="msg-rubrique">${titre}</p><div class="msg-puces">`
     + l.map(m => `<button class="${m.amis ? "amis" : ""}" data-msg="${m.id}">${esc(m.texte)}</button>`).join("") + `</div>`;
   $("msgFenetreTitre").textContent = `💬 Un mot pour ${OPP.nom}`;
-  $("msgFenetreCorps").innerHTML = rubrique("😊 Fair-play", liste.filter(m => !m.amis))
+  // (le message écrit en premier, entre amis : avant, il fallait faire défiler jusqu'en bas de la fenêtre ; puis les annonces)
+  const annonces = liste.filter(m => m.annonce);
+  $("msgFenetreCorps").innerHTML = (ami ? `<p class="msg-rubrique">✍️ Écrire mon message</p><div class="msg-libre"><input type="text" id="msgLibre" maxlength="${MESSAGE_LIBRE_MAX}" placeholder="Ton message (${MESSAGE_LIBRE_MAX} max.)" autocomplete="off"><button class="btn" id="msgLibreEnvoyer">Envoyer</button></div>` : "")
+    + (annonces.length ? rubrique("🧠 Annonces (vraies ou fausses…)", annonces) : "")
+    + rubrique("😊 Fair-play", liste.filter(m => !m.amis && !m.annonce))
     + (ami ? rubrique("😈 Chambrage, entre amis", liste.filter(m => m.amis))
-      + `<p class="msg-rubrique">✍️ Écrire mon message</p><div class="msg-libre"><input type="text" id="msgLibre" maxlength="${MESSAGE_LIBRE_MAX}" placeholder="Ton message (${MESSAGE_LIBRE_MAX} max.)" autocomplete="off"><button class="btn" id="msgLibreEnvoyer">Envoyer</button></div>`
       : `<p class="hint">Le chambrage et les messages écrits, c'est entre amis : ajoute ${esc(OPP.nom)} à tes amis pour en profiter.</p>`);
   $("msgFenetre").dataset.moment = moment;
   $("msgFenetreErreur").hidden = true; $("msgFenetre").hidden = false;
@@ -799,6 +805,15 @@ function bullesDepart(duel) {
   const moi = D.moi, adv = 1 - moi;
   bulle($("bulleSideMe"), texteMessage("avant", duel[`message_avant${moi}`]));
   bulle($("bulleSideAdv"), masquerMessages() ? null : texteMessage("avant", duel[`message_avant${adv}`]));
+  setTimeout(() => { $("bulleSideMe").hidden = true; $("bulleSideAdv").hidden = true; }, 6000);
+}
+// Au début du set suivant, les messages de la pause sortent des avatars (6 secondes), comme ceux d'avant le match.
+function bullesSet(duel) {
+  const moi = D.moi, adv = 1 - moi, n = (duel.scores_sets || []).length;
+  const duSet = j => (duel.message_set_n?.[j] === n ? texteMessage("entre_sets", duel[`message_set${j}`]) : null);
+  const m = duSet(moi), a = masquerMessages() ? null : duSet(adv);
+  if (!m && !a) return;
+  bulle($("bulleSideMe"), m); bulle($("bulleSideAdv"), a);
   setTimeout(() => { $("bulleSideMe").hidden = true; $("bulleSideAdv").hidden = true; }, 6000);
 }
 function afficherMessages(duel) {
@@ -816,6 +831,14 @@ function afficherMessages(duel) {
   const ecrit = envoye => !cache && !envoye && Date.now() - Date.parse(duel[`ecrit${adv}`] || 0) < 60000;
   const signalEcrit = (el, oui) => { el.hidden = !oui; el.textContent = oui ? `✍️ ${OPP.nom} t'écrit un message…` : ""; };
   signalEcrit($("foEcrit"), duel.phase === "presentation" && ecrit(avAdv));
+  // Pendant la pause entre deux sets (étape 53) : un message chacun, dans la fenêtre de fin de set.
+  const n = (duel.scores_sets || []).length, duSet = j => (duel.message_set_n?.[j] === n ? duel[`message_set${j}`] : null);
+  const pause = duel.phase === "entre_sets" && !!panneauOuvert, setMoi = duSet(moi), setAdv = duSet(adv);
+  bulle($("iMsgMoi"), pause && setMoi ? `Toi : ${texteMessage("entre_sets", setMoi) || "…"}` : null);
+  bulle($("iMsgAdv"), pause && !cache && setAdv ? `${OPP.nom} : ${texteMessage("entre_sets", setAdv) || "…"}` : null);
+  $("iMsg").hidden = !(pause && !setMoi);
+  if (!$("iMsg").hidden && D.pucesSet !== `${n}${!!D.ami}`) { puces($("iMsg"), "entre_sets"); D.pucesSet = `${n}${!!D.ami}`; }
+  signalEcrit($("iEcrit"), pause && ecrit(setAdv));
   // Après le match (écran de fin)
   if (duel.phase !== "termine" || duel.vainqueur === null || duel.vainqueur === undefined) return;
   const apMoi = duel[`message_apres${moi}`], apAdv = duel[`message_apres${adv}`];
@@ -837,7 +860,7 @@ async function envoyerMessage(message) {
   } catch (e) { erreur(e?.message || "Le message n'est pas parti. Réessaie."); }
   zone.querySelectorAll("button, input").forEach(b => { b.disabled = false; });
 }
-for (const id of ["foMsgPuces", "finMsgPuces"]) $(id).addEventListener("click", e => { const b = e.target.closest("button[data-moment]"); if (b) ouvrirMessages(b.dataset.moment); });
+for (const id of ["foMsgPuces", "finMsgPuces", "iMsg"]) $(id).addEventListener("click", e => { const b = e.target.closest("button[data-moment]"); if (b) ouvrirMessages(b.dataset.moment); });
 $("msgFenetre").addEventListener("click", e => {
   if (e.target === $("msgFenetre") || e.target.id === "msgFenetreFermer") { fermerMessages(); return; }
   const b = e.target.closest("button[data-msg]"); if (b) { envoyerMessage(b.dataset.msg); return; }
@@ -2079,7 +2102,7 @@ function majDuel(duel) {
     // Set suivant lancé par le serveur : on ferme le panneau et on reprend la main tout de suite
     // (sinon le premier coup du set pouvait partir au hasard).
     const reprise = !!panneauOuvert;
-    if (panneauOuvert) { fermerPanneau(); D.apresPanneau?.(); D.apresPanneau = null; }
+    if (panneauOuvert) { fermerPanneau(); D.apresPanneau?.(); D.apresPanneau = null; bullesSet(duel); }
     S.enJeu = true; majModeMatch();
     if (!S.occupe || reprise) duelReprendre();
   } else if (duel.phase === "termine") {
