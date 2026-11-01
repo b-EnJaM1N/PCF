@@ -409,6 +409,13 @@ Un appui long sur un signe joue un « smash » (gros son, secousse, vibration), 
 le serveur le transmet à l'adversaire, dont le téléphone vibre aussi. **À coller avant de valider l'appli** (sans elle, en
 ligne, le smash n'est vu que par celui qui le joue). Si on relance un jour l'étape 49, relancer celle-ci ensuite.
 
+## 1 quinquagies ter. Les messages entre les sets et les annonces (étape 53)
+
+Même manipulation avec [`etape-53-messages-entre-sets.sql`](etape-53-messages-entre-sets.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-53-messages-entre-sets.sql).
+Pendant la pause entre deux sets, chacun peut envoyer un message (ouvrir la fenêtre laisse 30 secondes au moins) ; des
+« annonces » au début de chaque set (« J'ouvre avec Pierre. », « Ne joue pas Feuille. »…). **À coller avant de valider l'appli.**
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

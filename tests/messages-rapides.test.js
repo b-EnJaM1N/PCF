@@ -6,19 +6,21 @@ import { MOTS_INTERDITS } from "../app/js/enjeux.js";
 
 test("chaque message tient dans une bulle et chaque identifiant est unique à son moment", () => {
   for (const [moment, m] of Object.entries(MESSAGES)) {
-    const ids = [...m.tous, ...m.amis].map(([id]) => id);
+    const ids = [...(m.annonces || []), ...m.tous, ...m.amis].map(([id]) => id);
     assert.equal(new Set(ids).size, ids.length, moment);
-    for (const [id, texte] of [...m.tous, ...m.amis]) assert.ok(texte.length <= LONGUEUR_MAX, `${id} : ${texte.length} caractères`);
+    for (const [id, texte] of [...(m.annonces || []), ...m.tous, ...m.amis]) assert.ok(texte.length <= LONGUEUR_MAX, `${id} : ${texte.length} caractères`);
   }
 });
 
 test("les mêmes messages dans l'appli et sur le serveur", () => {
-  const sql = readFileSync(new URL("../supabase/etape-22-messages-rapides.sql", import.meta.url), "utf8");
+  // (la liste la plus récente : étape 53, qui ajoute les annonces et la pause entre les sets ; les annonces comptent parmi « tous »)
+  const sql = readFileSync(new URL("../supabase/etape-53-messages-entre-sets.sql", import.meta.url), "utf8");
   for (const [moment, m] of Object.entries(MESSAGES)) {
     for (const [registre, amis] of [["tous", false], ["amis", true]]) {
       const ligne = sql.match(new RegExp(`p_moment = '${moment}' and ${amis ? "" : "not "}p_amis then array\\[([^\\]]*)\\]`));
       assert.ok(ligne, `${moment} ${registre}`);
-      assert.deepEqual([...ligne[1].matchAll(/'([a-z_]+)'/g)].map(x => x[1]), m[registre].map(([id]) => id), `${moment} ${registre}`);
+      const attendus = (registre === "tous" ? [...(m.annonces || []), ...m.tous] : m.amis).map(([id]) => id);
+      assert.deepEqual([...ligne[1].matchAll(/'([a-z_]+)'/g)].map(x => x[1]), attendus, `${moment} ${registre}`);
     }
   }
 });

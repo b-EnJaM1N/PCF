@@ -736,11 +736,12 @@
       <div class="fo-vs" aria-hidden="true">VS</div>
       <div class="fo-p right"><div class="fo-av" id="foAvBot"></div><div class="fo-name" id="foNameBot"></div><div class="fo-sub" id="foSubBot"></div><div class="fo-rec" id="foRecBot"></div><div class="fo-surnom" id="foSurBot"></div><div class="bulle-msg adv" id="foBulleAdv" hidden></div></div>
     </div>
+    <!-- (le bouton des messages juste sous les deux joueurs : avant, il fallait faire défiler jusqu'en bas) -->
+    <p class="msg-ecrit" id="foEcrit" hidden></p>
+    <div class="msg-zone" id="foMsg" hidden><div class="msg-puces" id="foMsgPuces"></div></div>
     <div class="fo-rows" id="foRows"></div>
     <details class="fo-dossier" id="foDossier" open hidden><summary>📁 Son dossier</summary><div id="foDossierCorps"></div></details>
     <p class="fo-key" id="foKey"></p>
-    <p class="msg-ecrit" id="foEcrit" hidden></p>
-    <div class="msg-zone" id="foMsg" hidden><div class="msg-puces" id="foMsgPuces"></div></div>
     <div class="fo-end">
       <p class="fo-attente" id="foAttente" role="status" hidden></p>
       <button class="btn" id="foGo">Commencer</button>
@@ -756,6 +757,11 @@
     <div class="sc" id="iSc"></div>
     <div class="tally" id="iTally"></div>
     <div class="next" id="iNext"></div>
+    <!-- Duel : la pause entre les sets, le temps d'un message (étape 53) -->
+    <p class="bulle-panneau" id="iMsgMoi" hidden></p>
+    <p class="bulle-panneau adv" id="iMsgAdv" hidden></p>
+    <p class="msg-ecrit" id="iEcrit" hidden></p>
+    <div class="msg-zone" id="iMsg" hidden></div>
     <button class="btn" id="iGo"></button>
   </div>
 </div>

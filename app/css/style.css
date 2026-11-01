@@ -761,6 +761,10 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 /* « Julie t'écrit un message… » */
 .msg-ecrit { margin: 4px 0; font-size: .85rem; color: var(--muted); text-align: center; font-style: italic; }
 .msg-ecrit[hidden] { display: none; }
+.bulle-panneau { margin: 8px 0 0; padding: 6px 12px; border-radius: 12px; background: var(--me); color: #1A1A1A; font-weight: 600; font-size: .9rem; }
+.bulle-panneau.adv { background: var(--bot); color: #fff; }
+.bulle-panneau[hidden] { display: none; }
+.panel .msg-zone { margin: 10px 0 0; }
 /* Au début du match, le message d'avant-match sort de l'avatar, dans le tableau des scores */
 .bulle-side { position: absolute; z-index: 3; top: -10px; left: 6px; right: 6px; transform: translateY(-100%); padding: 6px 10px; border-radius: 12px;
   background: var(--me); color: #1A1A1A; font-size: .85rem; font-weight: 600; line-height: 1.25; text-align: left; box-shadow: 0 4px 12px rgba(0, 0, 0, .35);

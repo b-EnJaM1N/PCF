@@ -31,6 +31,11 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   tout premier 3e match : il mesure si les nouveaux accrochent) ; la nouvelle colonne « matchs » compte tous les matchs terminés,
   anciens joueurs compris (en ligne, chacun des deux joueurs compte le sien). Lecture (une ligne) :
   `select to_char(jour,'DD/MM') j, sum(visiteurs) v, sum(nouveaux) n, sum(revenus) r, sum(trois_matchs) t, sum(matchs) m from visites group by jour order by jour desc limit 30;`
+- **Messages entre les sets** (1er novembre, étape SQL 53) : en duel, pendant la pause entre deux sets, un bouton « 💬 Envoyer un message »
+  dans la fenêtre de fin de set ; ouvrir la fenêtre laisse 30 secondes au moins avant le set suivant ; les messages sortent des
+  avatars au début du set. Des **annonces** au début de chaque set (avant le match et entre les sets, avec n'importe quel joueur) :
+  « J'ouvre avec Pierre. », « Je sais : tu ouvres avec Ciseaux. », « Ne joue pas Feuille. », « Joue Pierre ! ». Le message écrit
+  (entre amis) est en haut de la fenêtre, et le bouton est juste sous les deux joueurs sur l'écran de présentation.
 - **La banque de commentaires** (*branchée le 1er novembre*, à enregistrer avec les crédits du 2 novembre) : beau coup selon le signe
   gagnant, 3 Pierres d'affilée, séries de 3 à 8 points et plus (une réserve par longueur), première égalité, point après des égalités,
   premier point perdu, dialogue sur une balle de match, une seule phrase avant le match (tous, grands matchs, revanche, entre amis),
