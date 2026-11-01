@@ -169,6 +169,10 @@ export const MOMENTS = {
   // Il change enfin de signe après une obstination.
   changement: [
     { r: "c", t: "Le changement, c'est maintenant !", clin: "cine" },
+    { r: "c", t: "Il change enfin de signe !", f: "Elle change enfin de signe !" },
+    { r: "c", t: "Magnifique dégagement !" },
+    { r: "d", t: "Il a changé. Il était temps.", f: "Elle a changé. Il était temps." },
+    { r: "d", t: "Une autre idée. Enfin." },
   ],
   duel_esprits: [
     { r: "c", t: "Ils se lisent dans les pensées !" },
@@ -475,16 +479,49 @@ export const MOMENTS = {
     { r: "d", t: "Certains écrivent l'histoire, lui la découpe aux ciseaux.", f: "Certains écrivent l'histoire, elle la découpe aux ciseaux.", seul: 1 },
     { r: "c", t: "Et c'est le coup du millefeuille !", seul: 2 },
     { r: "d", t: "Il vient de mettre son adversaire sous pli.", f: "Elle vient de mettre son adversaire sous pli.", seul: 2 },
+    { r: "c", t: "La Feuille enveloppe tout !", seul: 2 },
+    { r: "c", t: "Un coup tout en douceur ! La Feuille a parlé !", seul: 2 },
+    { r: "d", t: "Une feuille. Et la pierre n'y peut rien.", seul: 2 },
+    { r: "d", t: "Emballé, c'est pesé.", seul: 2 },
   ],
   // Trois points d'affilée gagnés avec la Pierre.
   trois_pierres: [{ r: "d", t: "Pierre qui roule n'amasse pas mousse." }],
+  // Trois points d'affilée gagnés avec les Ciseaux, avec la Feuille.
+  trois_ciseaux: [{ r: "d", t: "Trois Ciseaux, trois points. Le coiffeur est en forme." }],
+  trois_feuilles: [
+    { r: "c", t: "Trois Feuilles gagnantes ! Il écrit son roman !", f: "Trois Feuilles gagnantes ! Elle écrit son roman !" },
+    { r: "d", t: "Trois Feuilles, trois points. On tourne la page." },
+  ],
   // Le tout premier coup du match est une égalité.
-  premiere_egalite: [{ r: "c", t: "Premier coup… même signe ! Ils se neutralisent !" }],
+  premiere_egalite: [
+    { r: "c", t: "Premier coup… même signe ! Ils se neutralisent !" },
+    { r: "c", t: "Même idée dès le premier coup ! Ça promet !" },
+    { r: "d", t: "Ça commence bien. Enfin, ça ne commence pas." },
+    { r: "d", t: "Premier coup, premier match nul." },
+  ],
   // Un point enfin gagné après des égalités (2 ou plus) : par moi, ou par l'adversaire.
-  apres_egalites_gagne: [{ r: "c", t: "Une feinte, une parade, une riposte ! Quel échange !" }],
-  apres_egalites_perdu: [{ r: "c", t: "Oh, la feinte de la feinte de la feinte… ça a failli passer !" }],
+  apres_egalites_gagne: [
+    { r: "c", t: "Une feinte, une parade, une riposte ! Quel échange !" },
+    { r: "c", t: "Il a fini par trouver la faille !", f: "Elle a fini par trouver la faille !" },
+    { r: "c", t: "Enfin ! Le duel d'esprits a un vainqueur !" },
+    { r: "c", t: "Il a lu dans ses pensées !", f: "Elle a lu dans ses pensées !" },
+    { r: "d", t: "Il fallait bien que quelqu'un se décide." },
+    { r: "d", t: "La patience a payé. Pour une fois." },
+  ],
+  apres_egalites_perdu: [
+    { r: "c", t: "Oh, la feinte de la feinte de la feinte… ça a failli passer !" },
+    { r: "c", t: "Le duel d'esprits a tourné court !" },
+    { r: "d", t: "Il a cligné le premier.", f: "Elle a cligné la première." },
+    { r: "d", t: "À force d'attendre, il s'est fait prendre.", f: "À force d'attendre, elle s'est fait prendre." },
+    { r: "d", t: "L'autre a tenu un coup de plus." },
+  ],
   // Le premier point du match perdu (de temps en temps). L'ouverture Kolodrov est inventée : l'érudition de Monique.
-  premier_point_perdu: [{ r: "d", t: "L'ouverture de Kolodrov, 1956… mais ça ne lui sourit pas.", clin: "sport" }],
+  premier_point_perdu: [
+    { r: "d", t: "L'ouverture de Kolodrov, 1956… mais ça ne lui sourit pas.", clin: "sport" },
+    { r: "c", t: "Premier point pour l'adversaire ! Rien n'est joué !" },
+    { r: "d", t: "Un mauvais départ. Il reste du temps. Heureusement." },
+    { r: "d", t: "Ça commence mal. On a déjà vu pire. Rarement." },
+  ],
   // Avant le match, parfois une seule phrase au lieu d'un dialogue : tous les matchs, les grands matchs, une revanche, entre amis.
   avant_seul: [
     { r: "c", t: "Affrontement sous haute tension !" },
@@ -539,6 +576,9 @@ export const DIALOGUES = {
   ],
   // Avant le match, selon la situation (contre un bot, en finale, une revanche, tard le soir).
   // Sur une balle de match, de temps en temps (banque du 1er novembre) : Roland s'enflamme, Monique le calme. « Le » : moi.
+  // La première égalité du match (de temps en temps à la place d'une réplique) ; il change enfin de signe : le dégagement.
+  premiere_egalite: [["Premier coup, première égalité !", "Et pas la dernière, à mon avis."]],
+  changement: [[{ t: "Il casse enfin la série !", f: "Elle casse enfin la série !" }, "Oui. Dégagement très propre."]],
   balle_de_match: [[{ t: "Une victoire le sépare de l'immortalité !", f: "Une victoire la sépare de l'immortalité !" }, "Enfin… de la victoire du jour. Restons mesurés."]],
   avant_bot: [["Un humain contre une machine, Madame !", "La machine a l'air plus détendue."]],
   // La mémoire du dernier match (28 octobre) : il rejoue la même ouverture ; une revanche (j'avais perdu) ; des habitués ;
@@ -807,6 +847,8 @@ export const DIALOGUES = {
   // après une défaite
   fin_match: [
     [{ t: "Il n'a pas démérité !", f: "Elle n'a pas démérité !" }, "Si. Un peu quand même."],
+    ["Quel combat, Madame !", "Un combat. Perdu. Mais un combat."],
+    [{ t: "Il peut sortir la tête haute !", f: "Elle peut sortir la tête haute !" }, { t: "Il peut sortir. C'est déjà ça.", f: "Elle peut sortir. C'est déjà ça." }],
   ],
   // Un joueur vient de pousser son cri de victoire (voir celebrations.js).
   cri: [
