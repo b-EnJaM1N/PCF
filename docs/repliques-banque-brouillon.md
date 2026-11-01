@@ -3,7 +3,8 @@
 Reçue le 25 octobre 2026. **Branchée dans l'appli le 1er novembre** (sections 1 à 10 ; `app/js/voix/repliques.js`, `app/js/annonces.js`),
 à enregistrer avec les crédits du 2 novembre (`outils/a-refaire.txt`). Tant qu'une réplique n'est pas enregistrée, elle n'est jamais choisie.
 La section 11 (propositions de Claude) n'est pas branchée : elle attend la validation du porteur du projet. Les répliques trop
-longues pour être dites pendant l'échange (plus de 55 caractères) sont branchées mais pas enregistrées : à raccourcir d'abord.
+longues pour être dites pendant l'échange ont été raccourcies avec le porteur du projet (1er novembre ; la limite
+passe de 55 à 62 caractères) : le texte dans l'appli fait foi.
 
 Rappels : **R** = Roland (le commentateur, enthousiaste), **M** = Monique (la commentatrice, pince-sans-rire).
 « Il » désigne le joueur dont on parle : chaque réplique a aussi sa version « elle » (pas recopiée ici quand il suffit de

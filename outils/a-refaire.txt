@@ -1,6 +1,13 @@
 # Les répliques à refaire avec le robot « Voix » (choix « liste ») : un identifiant par ligne. Les lignes en # sont ignorées.
-# La banque de commentaires du porteur du projet (branchée le 1er novembre) : 87 répliques, environ 6 400 crédits.
-# (les répliques trop longues pour être dites pendant l'échange ne sont pas dans la liste : à raccourcir d'abord)
+# La banque de commentaires du porteur du projet (branchée le 1er novembre, phrases raccourcies validées) : 119 répliques, environ 8 800 crédits.
+commentateur_craquage_10
+commentateur_craquage_11
+commentateur_craquage_11_f
+commentatrice_craquage_08
+commentatrice_craquage_08_f
+commentateur_balle_sauvee_09
+commentateur_remontee_08
+commentateur_remontee_08_f
 commentateur_remontee_09
 commentateur_remontee_10
 commentateur_serie_pour_11
@@ -20,6 +27,7 @@ commentateur_serie_pour_18
 commentateur_serie_pour_19
 commentateur_serie_pour_19_f
 commentateur_serie_pour_20
+commentateur_serie_pour_21
 commentateur_serie_contre_07
 commentateur_serie_contre_07_f
 commentatrice_serie_contre_13
@@ -38,8 +46,19 @@ commentateur_serie_contre_13_f
 commentateur_duel_esprits_10
 commentateur_duel_esprits_11
 commentateur_duel_esprits_12
+commentatrice_duel_esprits_11
+commentatrice_duel_esprits_12_pierre
+commentatrice_duel_esprits_12_ciseaux
+commentatrice_duel_esprits_12_feuille
+commentatrice_lecture_subie_05
+commentatrice_lecture_subie_06
+commentatrice_lecture_subie_07
+commentatrice_lecture_subie_07_f
 commentatrice_lecture_subie_08
 commentatrice_lecture_subie_08_f
+commentatrice_lecture_subie_09
+commentatrice_lecture_subie_09_f
+commentateur_lecture_subie_01
 commentatrice_lecture_reussie_02
 commentateur_tension_06
 commentatrice_tension_05
@@ -53,21 +72,33 @@ commentatrice_beau_coup_01
 commentatrice_beau_coup_01_f
 commentateur_beau_coup_02
 commentateur_beau_coup_02_f
+commentatrice_beau_coup_02
 commentateur_beau_coup_03
 commentateur_beau_coup_03_f
 commentateur_beau_coup_04
 commentateur_beau_coup_05
 commentateur_beau_coup_06
 commentateur_beau_coup_07
+commentateur_beau_coup_08
+commentateur_beau_coup_09
+commentateur_beau_coup_09_f
 commentateur_beau_coup_10
 commentatrice_beau_coup_03
 commentatrice_beau_coup_03_f
 commentatrice_beau_coup_04
+commentatrice_beau_coup_04_f
+commentatrice_beau_coup_05
+commentatrice_beau_coup_05_f
+commentatrice_beau_coup_06
+commentatrice_beau_coup_06_f
 commentateur_beau_coup_11
 commentatrice_beau_coup_07
 commentatrice_beau_coup_07_f
 commentatrice_trois_pierres_01
+commentateur_premiere_egalite_01
 commentateur_apres_egalites_gagne_01
+commentateur_apres_egalites_perdu_01
+commentatrice_premier_point_perdu_01
 commentateur_avant_seul_01
 commentateur_avant_seul_02
 commentateur_avant_seul_03

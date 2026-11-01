@@ -33,9 +33,9 @@ export const MOMENTS = {
     { r: "c", t: "Chute à l'avant ! Il avait le match en poche !", f: "Chute à l'avant ! Elle avait le match en poche !", clin: "sport", quand: "match" },
     { r: "c", t: "Oh non, pas ça ! Pas aujourd'hui ! Pas comme ça ! Pas après tout ce que tu as fait…", quand: "match" },
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
-    { r: "c", t: "Il a tenté une attaque audacieuse… et son adversaire lui répond par un coup de maître !", f: "Elle a tenté une attaque audacieuse… et son adversaire lui répond par un coup de maître !", clin: "sport" },
-    { r: "c", t: "Une erreur tactique qui risque de coûter cher ! Il a perdu la main !", f: "Une erreur tactique qui risque de coûter cher ! Elle a perdu la main !", clin: "sport" },
-    { r: "d", t: "Il a voulu porter l'estocade. Il s'est fait cueillir sur la riposte.", f: "Elle a voulu porter l'estocade. Elle s'est fait cueillir sur la riposte.", clin: "sport" },
+    { r: "c", t: "Attaque audacieuse… et riposte de maître !", clin: "sport" },
+    { r: "c", t: "Erreur tactique ! Il a perdu la main !", f: "Erreur tactique ! Elle a perdu la main !", clin: "sport" },
+    { r: "d", t: "L'estocade ? Non : cueilli sur la riposte.", f: "L'estocade ? Non : cueillie sur la riposte.", clin: "sport" },
   ],
   // Une balle de match sauvée, ou le point qui donne le titre : la main entre dans la légende.
   main_legendaire: [
@@ -66,7 +66,7 @@ export const MOMENTS = {
     { r: "c", t: "Madame, vous n'auriez pas fait mieux ! Enfin… sauf en 1997 !" },
     { r: "c", t: "Vous ne passerez pas !", clin: "cine" },
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
-    { r: "c", t: "Une riposte fulgurante ! Il ne laisse aucune chance à son adversaire !", f: "Une riposte fulgurante ! Elle ne laisse aucune chance à son adversaire !", clin: "sport" },
+    { r: "c", t: "Une riposte fulgurante, aucune chance pour son adversaire !", clin: "sport" },
   ],
   remontee: [
     { r: "c", t: "Quelle remontée extraordinaire !" },
@@ -82,7 +82,7 @@ export const MOMENTS = {
     { r: "d", t: "Un match n'est jamais fini. Surtout quand on joue mal." },
     { r: "d", t: "C'est abracadabrantesque.", clin: "cine" },
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
-    { r: "c", t: "C'EST INCROYABLE ! Il était au fond du trou, il vient de remonter à la surface !", f: "C'EST INCROYABLE ! Elle était au fond du trou, elle vient de remonter à la surface !" },
+    { r: "c", t: "Il était au fond du trou, le revoilà à la surface !", f: "Elle était au fond du trou, la revoilà à la surface !" },
     { r: "c", t: "Magnifique remontada !" },
     { r: "c", t: "Encore un point ! Le doute change de camp !" },
   ],
@@ -114,7 +114,7 @@ export const MOMENTS = {
     { r: "c", t: "C'est une démonstration !", long: 7 },
     { r: "c", t: "Il est en train de ridiculiser son adversaire !", f: "Elle est en train de ridiculiser son adversaire !", long: 7 },
     { r: "c", t: "C'est le Mozart du chifoumi !", long: 8 },
-    { r: "c", t: "On n'assiste plus à un match, on assiste à une légende !", long: 8 },
+    { r: "c", t: "Ce n'est plus un match, c'est une légende !", long: 8 },
   ],
   serie_contre: [
     { r: "c", t: "Quelqu'un peut arrêter ça ?!" },
@@ -195,8 +195,8 @@ export const MOMENTS = {
     { r: "c", t: "Ils se rendent coup pour coup !" },
     { r: "c", t: "Une nouvelle égalité sur le central !" },
     { r: "c", t: "Ils se regardent, ils se jaugent… Qui va craquer ?" },
-    { r: "d", t: "Même signe. Ils sont partis pour un duel psychologique dont personne n'avait demandé la prolongation." },
-    { r: "d", t: ["Il a étudié son adversaire pendant trois semaines. Il a joué Pierre. L'autre aussi. Trois semaines pour rien.", "Il a étudié son adversaire pendant trois semaines. Il a joué Ciseaux. L'autre aussi. Trois semaines pour rien.", "Il a étudié son adversaire pendant trois semaines. Il a joué Feuille. L'autre aussi. Trois semaines pour rien."], f: ["Elle a étudié son adversaire pendant trois semaines. Elle a joué Pierre. L'autre aussi. Trois semaines pour rien.", "Elle a étudié son adversaire pendant trois semaines. Elle a joué Ciseaux. L'autre aussi. Trois semaines pour rien.", "Elle a étudié son adversaire pendant trois semaines. Elle a joué Feuille. L'autre aussi. Trois semaines pour rien."] },
+    { r: "d", t: "Même signe. Une prolongation que personne n'a demandée." },
+    { r: "d", t: ["Deux Pierres, égalité. Trois semaines d'étude pour ça…", "Deux Ciseaux, égalité. Trois semaines d'étude pour ça…", "Deux Feuilles, égalité. Trois semaines d'étude pour ça…"] },
   ],
   // L'adversaire a lu mon réflexe.
   lecture_subie: [
@@ -205,12 +205,12 @@ export const MOMENTS = {
     { r: "d", t: "Ses tics sont en train de le trahir.", f: "Ses tics sont en train de la trahir." },
     { r: "d", t: "C'était écrit. En gros caractères." },
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
-    { r: "d", t: "La défense sicilienne. Il révise ses classiques… mais ça ne lui réussit pas.", f: "La défense sicilienne. Elle révise ses classiques… mais ça ne lui réussit pas.", clin: "sport" },
-    { r: "d", t: "Il avait trois coups d'avance. Dommage qu'il ait oublié celui de son adversaire.", f: "Elle avait trois coups d'avance. Dommage qu'elle ait oublié celui de son adversaire.", clin: "sport" },
-    { r: "d", t: "Il pensait avoir anticipé tous les scénarios. Visiblement, pas celui-là.", f: "Elle pensait avoir anticipé tous les scénarios. Visiblement, pas celui-là." },
+    { r: "d", t: "Défense sicilienne, un classique. Mais ça ne lui réussit pas.", clin: "sport" },
+    { r: "d", t: "Trois coups d'avance. Sauf celui de l'adversaire.", clin: "sport" },
+    { r: "d", t: "Il avait tout anticipé. Sauf ça.", f: "Elle avait tout anticipé. Sauf ça." },
     { r: "d", t: "C'était téléphoné. Mais il était en mode avion.", f: "C'était téléphoné. Mais elle était en mode avion.", clin: "sport" },
-    { r: "d", t: "Il a voulu lire dans le jeu de son adversaire. Il ferait déjà bien de lire dans le sien.", f: "Elle a voulu lire dans le jeu de son adversaire. Elle ferait déjà bien de lire dans le sien.", clin: "sport" },
-    { r: "c", t: "Il a tenté le bluff du siècle ! Son adversaire n'a même pas cligné des yeux !", f: "Elle a tenté le bluff du siècle ! Son adversaire n'a même pas cligné des yeux !", clin: "sport" },
+    { r: "d", t: "Il veut lire le jeu adverse. Qu'il commence par le sien.", f: "Elle veut lire le jeu adverse. Qu'elle commence par le sien.", clin: "sport" },
+    { r: "c", t: "Le bluff du siècle ! L'autre n'a pas cillé !", clin: "sport" },
   ],
   // J'ai lu le réflexe de l'adversaire.
   lecture_reussie: [
@@ -460,31 +460,31 @@ export const MOMENTS = {
     { r: "c", t: "Il l'a pétrifié !", f: "Elle l'a pétrifié !", seul: 0 },
     { r: "d", t: "Sur cette pierre, il bâtit son église.", f: "Sur cette pierre, elle bâtit son église.", seul: 0 },
     { r: "c", t: "Pierre après pierre, il bâtit sa légende !", f: "Pierre après pierre, elle bâtit sa légende !", seul: 0 },
-    { r: "d", t: "Un bloc de sang-froid. Un roc de détermination. Un adversaire en miettes.", seul: 0 },
+    { r: "d", t: "Un roc. Et un adversaire en miettes.", seul: 0 },
     { r: "c", t: "Il lui jette la pierre, Pierre !", f: "Elle lui jette la pierre, Pierre !", seul: 0, clin: "cine" },
     { r: "c", t: "Un coup magnifiquement ciselé !", seul: 1 },
     { r: "c", t: "C'est l'effet ciseaux !", seul: 1 },
     { r: "c", t: "Un coup de ciseaux chirurgical !", seul: 1 },
     { r: "c", t: "Magnifique ciseau retourné !", seul: 1, clin: "sport" },
-    { r: "c", t: "Une coupe parfaite ! Le geste est précis, la sanction est immédiate !", seul: 1 },
-    { r: "c", t: "Attention à la coupe ! Il vient de raccourcir les ambitions de son rival !", f: "Attention à la coupe ! Elle vient de raccourcir les ambitions de son rival !", seul: 1 },
+    { r: "c", t: "Une coupe parfaite ! Sanction immédiate !", seul: 1 },
+    { r: "c", t: "Il vient de raccourcir les ambitions de son rival !", f: "Elle vient de raccourcir les ambitions de son rival !", seul: 1 },
     { r: "c", t: "La feuille est en deux, et les espoirs aussi !", seul: 1 },
     { r: "d", t: "Il a sorti les lames. Et pas pour couper le gâteau.", f: "Elle a sorti les lames. Et pas pour couper le gâteau.", seul: 1 },
     { r: "d", t: "Il taille dans le vif et découpe les espoirs adverses.", f: "Elle taille dans le vif et découpe les espoirs adverses.", seul: 1 },
-    { r: "d", t: "Il coupe la feuille, mais surtout l'herbe sous le pied de son rival.", f: "Elle coupe la feuille, mais surtout l'herbe sous le pied de son rival.", seul: 1 },
-    { r: "d", t: "Certains écrivent l'histoire. D'autres la déchirent avec des ciseaux.", seul: 1 },
+    { r: "d", t: "Il lui coupe l'herbe sous le pied !", f: "Elle lui coupe l'herbe sous le pied !", seul: 1 },
+    { r: "d", t: "Certains écrivent l'histoire, lui la découpe aux ciseaux.", f: "Certains écrivent l'histoire, elle la découpe aux ciseaux.", seul: 1 },
     { r: "c", t: "Et c'est le coup du millefeuille !", seul: 2 },
     { r: "d", t: "Il vient de mettre son adversaire sous pli.", f: "Elle vient de mettre son adversaire sous pli.", seul: 2 },
   ],
   // Trois points d'affilée gagnés avec la Pierre.
   trois_pierres: [{ r: "d", t: "Pierre qui roule n'amasse pas mousse." }],
   // Le tout premier coup du match est une égalité.
-  premiere_egalite: [{ r: "c", t: "Première confrontation… même signe ! Ils se neutralisent !" }],
+  premiere_egalite: [{ r: "c", t: "Premier coup… même signe ! Ils se neutralisent !" }],
   // Un point enfin gagné après des égalités (2 ou plus) : par moi, ou par l'adversaire.
   apres_egalites_gagne: [{ r: "c", t: "Une feinte, une parade, une riposte ! Quel échange !" }],
   apres_egalites_perdu: [{ r: "c", t: "Oh, la feinte de la feinte de la feinte… ça a failli passer !" }],
   // Le premier point du match perdu (de temps en temps). L'ouverture Kolodrov est inventée : l'érudition de Monique.
-  premier_point_perdu: [{ r: "d", t: "Il choisit l'ouverture Kolodrov, 1956… et elle ne lui sourit pas.", f: "Elle choisit l'ouverture Kolodrov, 1956… et elle ne lui sourit pas.", clin: "sport" }],
+  premier_point_perdu: [{ r: "d", t: "L'ouverture de Kolodrov, 1956… mais ça ne lui sourit pas.", clin: "sport" }],
   // Avant le match, parfois une seule phrase au lieu d'un dialogue : tous les matchs, les grands matchs, une revanche, entre amis.
   avant_seul: [
     { r: "c", t: "Affrontement sous haute tension !" },

@@ -16,7 +16,7 @@ import { idPartie } from "./surnoms.js";
 
 const RESERVE_MAX = 2;
 // Pendant l'échange, seules les répliques assez courtes pour tenir entre deux coups sont dites (voir app.js, même valeur).
-export const REPLIQUE_COURTE = 55;
+export const REPLIQUE_COURTE = 62;   // (55 jusqu'au 1er novembre ; 62 : environ 3,4 secondes, pour la banque du porteur du projet)
 
 // L'identifiant de base d'une réplique, sans sa variante (« _f », signe) : commentateur_craquage_02_f → commentateur_craquage_02.
 export const baseDe = id => /^(.*?_\d\d)(?:_|$)/.exec(id)?.[1] ?? id;
