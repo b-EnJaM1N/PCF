@@ -31,6 +31,11 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   tout premier 3e match : il mesure si les nouveaux accrochent) ; la nouvelle colonne « matchs » compte tous les matchs terminés,
   anciens joueurs compris (en ligne, chacun des deux joueurs compte le sien). Lecture (une ligne) :
   `select to_char(jour,'DD/MM') j, sum(visiteurs) v, sum(nouveaux) n, sum(revenus) r, sum(trois_matchs) t, sum(matchs) m from visites group by jour order by jour desc limit 30;`
+- **La banque de commentaires** (*branchée le 1er novembre*, à enregistrer avec les crédits du 2 novembre) : beau coup selon le signe
+  gagnant, 3 Pierres d'affilée, séries de 3 à 8 points et plus (une réserve par longueur), première égalité, point après des égalités,
+  premier point perdu, dialogue sur une balle de match, une seule phrase avant le match (tous, grands matchs, revanche, entre amis),
+  et des répliques en plus pour les moments existants. Nouvelles règles : jamais une réplique non enregistrée, jamais une réplique
+  trop longue pendant l'échange (une autre plutôt qu'un silence), une phrase unique déjà entendue n'est pas redite.
 - **Le smash** (décision du 30 octobre, *fait, à valider* ; étape SQL 52) : appui long sur un signe ; gros son de raquette, secousse
   de l'arène, vibration (Android) ; en duel, les deux téléphones. Pour le spectacle seulement (le point ne change pas), un par set
   et par joueur ; les bots d'entraînement smashent aussi, de temps en temps. Selon l'issue (31 octobre) : smash gagnant, le grand effet ; perdu, « 💨 Smash raté ! » et une petite vibration ;

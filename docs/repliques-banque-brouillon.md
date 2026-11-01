@@ -1,7 +1,9 @@
-# Banque de commentaires du porteur du projet (brouillon à valider)
+# Banque de commentaires du porteur du projet
 
-Reçue le 25 octobre 2026. **Rien n'est enregistré ni branché** : on valide le tri, puis on code les nouveaux moments et on
-enregistre toutes les voix en une fois, quand les crédits ElevenLabs le permettront (à 84 % le 24 octobre).
+Reçue le 25 octobre 2026. **Branchée dans l'appli le 1er novembre** (sections 1 à 10 ; `app/js/voix/repliques.js`, `app/js/annonces.js`),
+à enregistrer avec les crédits du 2 novembre (`outils/a-refaire.txt`). Tant qu'une réplique n'est pas enregistrée, elle n'est jamais choisie.
+La section 11 (propositions de Claude) n'est pas branchée : elle attend la validation du porteur du projet. Les répliques trop
+longues pour être dites pendant l'échange (plus de 55 caractères) sont branchées mais pas enregistrées : à raccourcir d'abord.
 
 Rappels : **R** = Roland (le commentateur, enthousiaste), **M** = Monique (la commentatrice, pince-sans-rire).
 « Il » désigne le joueur dont on parle : chaque réplique a aussi sa version « elle » (pas recopiée ici quand il suffit de
