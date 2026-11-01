@@ -422,6 +422,8 @@ Même manipulation avec [`etape-54-smash-sonne.sql`](etape-54-smash-sonne.sql)
 (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-54-smash-sonne.sql).
 Un smash qui gagne le point sonne l'adversaire : au coup suivant, pas de coup pendant les 4 premières secondes (le serveur
 refuse un coup trop tôt). **À coller avant de valider l'appli.** Si on relance un jour l'étape 49 ou 52, relancer celle-ci ensuite.
+Mise à jour du 1er novembre : un smash qui donne le set (ou le match) ne sonne plus personne (pas de KO au début du set
+suivant) : **recoller cette étape une fois**.
 
 ## 2. Adresses du site (connexion par lien)
 

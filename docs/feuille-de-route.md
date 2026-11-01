@@ -44,7 +44,7 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 - **Le smash** (décision du 30 octobre, *fait, à valider* ; étape SQL 52) : appui long sur un signe ; gros son de raquette, secousse
   de l'arène, vibration (Android) ; en duel, les deux téléphones. Pour le spectacle seulement (le point ne change pas), un par set
   et par joueur ; les bots d'entraînement smashent aussi, de temps en temps. Smash réussi (1er novembre, étape 54) : l'adversaire est **sonné** au coup suivant, 4 secondes sans pouvoir jouer (boutons
-  grisés et tremblants, vibration par secousses) ; pourcentage de smashs réussis dans la fiche et dans le face-à-face. Selon l'issue (31 octobre) : smash gagnant, le grand effet ; perdu, « 💨 Smash raté ! » et une petite vibration ;
+  grisés et tremblants, vibration par secousses, écran flou qui redevient net peu à peu pendant les 4 secondes ; le message « Sonné » reste net) ; pas de KO si ce smash donne le set (début du set suivant normal) ; pourcentage de smashs réussis dans la fiche et dans le face-à-face. Selon l'issue (31 octobre) : smash gagnant, le grand effet ; perdu, « 💨 Smash raté ! » et une petite vibration ;
   égalité, « 🧱 Smash bloqué ! » (le point ne change jamais). Pas de mention sous la barre (retirée le 30 octobre, à la demande du porteur du projet) : le geste se découvre ou
   s'explique de vive voix. Plus tard : des répliques de Roland sur le smash.
 - **La revue « Les Cahiers du HandSlam »** (28 octobre, nom choisi par le porteur du projet, idée d'un testeur dont écrire est le métier) : sur le

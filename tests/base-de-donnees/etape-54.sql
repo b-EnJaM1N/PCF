@@ -44,3 +44,8 @@ select pg_temp.verifier((select jsonb_array_length(coups) = 2 from duels where i
 select jouer((select val from t where cle = 'duel'), :M, 1, true);
 select pg_temp.en_tant_que(:'A'); select jouer((select val from t where cle = 'duel'), :M, 0);
 select pg_temp.verifier((select sonne_manche <> manche from duels where id = (select val from t where cle = 'duel')), 'smash raté de Bob : personne n''est sonné');
+-- 5. Un smash réussi qui donne le set ne sonne personne : pas de KO au début du set suivant.
+reset role; update duels set points = '{0,6}', smashs = '{-1,-1}' where id = (select val from t where cle = 'duel');
+select pg_temp.en_tant_que(:'B'); select jouer((select val from t where cle = 'duel'), :M, 0, true);
+select pg_temp.en_tant_que(:'A'); select jouer((select val from t where cle = 'duel'), :M, 1);
+select pg_temp.verifier((select phase = 'entre_sets' and sonne_manche <> manche from duels where id = (select val from t where cle = 'duel')), 'smash de Bob qui donne le set : personne n''est sonné');
