@@ -1195,7 +1195,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_cri_03.mp3` | La prochaine fois, prévoyez les boules Quies. |
 | `commentatrice_dialogue_cri_04.mp3` | C'est Ronaldo sans les abdos. |
 
-## Speaker — voix de salle, voyelles étirées (194 répliques)
+## Speaker — voix de salle, voyelles étirées (198 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1232,6 +1232,10 @@ restent lus par la voix de synthèse.
 | `speaker_coin_rouge_02.mp3` | Et à ma droite… dans le coin rouuuge… |
 | `speaker_coin_rouge_03.mp3` | Face à lui… côté rouge… |
 | `speaker_coin_rouge_03_f.mp3` | Face à elle… côté rouge… |
+| `speaker_presente_jaune_01.mp3` | Côté jaune, on retrouve… |
+| `speaker_presente_jaune_02.mp3` | Dans le coin jaune… |
+| `speaker_presente_rouge_01.mp3` | Et en face… |
+| `speaker_presente_rouge_02.mp3` | Et côté rouge… |
 | `speaker_debutant_01.mp3` | Pour son tout premier match officiel… |
 | `speaker_invaincu_01.mp3` | Invaincu depuis trois rencontres… |
 | `speaker_invaincu_01_f.mp3` | Invaincue depuis trois rencontres… |

@@ -466,3 +466,13 @@ test("les commentaires du smash : réussi, sonné, raté, bloqué ; jamais « il
   }
   for (const mo of ["smash_reussi", "smash_sonne", "smash_rate", "smash_bloque", "smash_double"]) assert.ok(vus.get(mo) > 0, mo);
 });
+
+test("Roland présente les joueurs par leur surnom (ou le nom du bot) ; sans surnom, pas de présentation", () => {
+  const sur = surnomDe(profilParDefaut());
+  const contreBot = annoncesAvantMatch({ moi: { surnom: sur }, adv: { bot: "tictac" } }).presentation.map(r => r.id);
+  assert.ok(/^speaker_presente_jaune_/.test(contreBot[0]) && /^speaker_presente_rouge_/.test(contreBot[3]));
+  assert.deepEqual(contreBot.slice(1, 3), [`speaker_surnom_${sur.nom.id}_01`, `speaker_surnom_${sur.complement.id}_01`]);
+  assert.equal(contreBot[4], "speaker_bot_tictac_01");
+  assert.equal(annoncesAvantMatch({ moi: { surnom: sur }, adv: { surnom: sur }, humain: true }).presentation.length, 6);
+  assert.equal(annoncesAvantMatch({ adv: { bot: "tictac" } }).presentation.length, 0);
+});

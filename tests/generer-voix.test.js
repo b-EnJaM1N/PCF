@@ -34,7 +34,8 @@ test("ce qu'il reste à générer : les rôles choisis, sans refaire les fichier
   assert.equal(aFaire({ roles, limite: 10, existe: () => false }).length, 10);
   assert.equal(aFaire({ ids: ["arbitre_set_decisif_01"], refaire: true, existe: () => true }).length, 1, "refaire une réplique précise");
   assert.ok(aFaire({ roles: ["commentatrice"], refaire: true, existe: () => true }).length > 100, "tout refaire pour un rôle");
-  assert.equal(aFaire({ ids: ["speaker_bienvenue_01"], existe: () => false }).length, 0, "pas de voix choisie pour le speaker : rien");
+  assert.equal(aFaire({ ids: ["journaliste_question_01"], existe: () => false }).length, 0, "pas de voix choisie pour le journaliste : rien");
+  assert.equal(aFaire({ ids: ["speaker_surnom_la_quiche_01"], existe: () => false }).length, 1, "les surnoms : la voix de Roland");
 });
 
 test("les bruitages : les noms attendus par l'appli, des durées permises, le fond en boucle", async () => {

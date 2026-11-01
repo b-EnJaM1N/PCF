@@ -155,6 +155,13 @@
       "voice_id": "lm3gOYJiClKJc7YaR3r1",
       "stability": 1,
       "indication": ""
+    },
+    "speaker": {
+      "nom": "Roland Pignon (présentations)",
+      "voice_id": "pwONJQic3ZwHTFG8D6uM",
+      "stability": 0,
+      "indication": "[excited] [like a French radio sports commentator]",
+      "tons": []
     }
   },
   "textes": {
