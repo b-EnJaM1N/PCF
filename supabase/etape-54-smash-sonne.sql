@@ -5,7 +5,7 @@
 -- Si on relance un jour l'étape 49 ou 52, il faut relancer celle-ci ensuite.
 --
 -- Décision du porteur du projet (1er novembre) : un smash qui gagne le point sonne l'adversaire : au coup suivant, il ne peut
--- pas jouer pendant les 4 premières secondes (son téléphone vibre, ses boutons sont grisés). Il lui reste 4 secondes, puis sa
+-- pas jouer pendant les 4 premières secondes, sauf si ce smash donne le set (son téléphone vibre, ses boutons sont grisés). Il lui reste 4 secondes, puis sa
 -- réserve. Le serveur garde qui est sonné, et pour quel coup (colonnes sonne et sonne_manche), et refuse un coup trop tôt.
 
 alter table public.duels add column if not exists sonne smallint;
@@ -37,7 +37,8 @@ begin
   d.echeance := now() + public._duree_coup() + interval '0.9 seconds';   -- le temps de voir les signes
   d := public._marquer(d, g);
   -- Un smash qui gagne le point « sonne » l'adversaire : il ne peut pas jouer pendant les 4 premières secondes du coup suivant.
-  if g is not null and (case when g = 0 then sa.smash else sb.smash end) then d.sonne := 1 - g; d.sonne_manche := d.manche; end if;
+  -- Sauf s'il donne le set (ou le match) : pas de KO au début du set suivant (décision du 1er novembre).
+  if g is not null and d.phase = 'jeu' and (case when g = 0 then sa.smash else sb.smash end) then d.sonne := 1 - g; d.sonne_manche := d.manche; end if;
 
   update public.duels set coups = d.coups, manche = d.manche, echeance = d.echeance, points = d.points, sets = d.sets,
     scores_sets = d.scores_sets, phase = d.phase, prets = d.prets, vainqueur = d.vainqueur, fin = d.fin, reserve = d.reserve,

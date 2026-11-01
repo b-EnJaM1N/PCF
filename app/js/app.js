@@ -446,9 +446,9 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
   if (smash[0] || smash[1]) effetSmash(smash, evt.gagnant);
-  // Mes smashs, pour la fiche ; un smash réussi « sonne » l'adversaire au coup suivant (en solo ici ; en duel, le serveur le dit).
+  // Mes smashs, pour la fiche ; un smash réussi « sonne » l'adversaire au coup suivant, sauf s'il donne le set (en solo ici ; en duel, le serveur le dit).
   if (smash[0]) { S.stats.smashsTentes++; if (evt.gagnant === 0) S.stats.smashsReussis++; }
-  if (!S.duel) S.sonne = issueSmash(smash, evt.gagnant) === "gagne" && evt.gagnant === 1;
+  if (!S.duel) S.sonne = issueSmash(smash, evt.gagnant) === "gagne" && evt.gagnant === 1 && !evt.finSet;   // (pas de KO au début du set suivant)
   return apresPoint(evt, a, cel, rp);
 }
 
