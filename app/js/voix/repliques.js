@@ -32,6 +32,10 @@ export const MOMENTS = {
     { r: "c", t: "Il avait le match au bout des doigts… et il l'a laissé filer !", f: "Elle avait le match au bout des doigts… et elle l'a laissé filer !", quand: "match" },
     { r: "c", t: "Chute à l'avant ! Il avait le match en poche !", f: "Chute à l'avant ! Elle avait le match en poche !", clin: "sport", quand: "match" },
     { r: "c", t: "Oh non, pas ça ! Pas aujourd'hui ! Pas comme ça ! Pas après tout ce que tu as fait…", quand: "match" },
+    // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
+    { r: "c", t: "Attaque audacieuse… et riposte de maître !", clin: "sport" },
+    { r: "c", t: "Erreur tactique ! Il a perdu la main !", f: "Erreur tactique ! Elle a perdu la main !", clin: "sport" },
+    { r: "d", t: "L'estocade ? Non : cueilli sur la riposte.", f: "L'estocade ? Non : cueillie sur la riposte.", clin: "sport" },
   ],
   // Une balle de match sauvée, ou le point qui donne le titre : la main entre dans la légende.
   main_legendaire: [
@@ -61,6 +65,8 @@ export const MOMENTS = {
     { r: "d", t: "Des nerfs d'acier. Ou aucune conscience du danger. On ne saura jamais." },
     { r: "c", t: "Madame, vous n'auriez pas fait mieux ! Enfin… sauf en 1997 !" },
     { r: "c", t: "Vous ne passerez pas !", clin: "cine" },
+    // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
+    { r: "c", t: "Une riposte fulgurante, aucune chance pour son adversaire !", clin: "sport" },
   ],
   remontee: [
     { r: "c", t: "Quelle remontée extraordinaire !" },
@@ -75,6 +81,10 @@ export const MOMENTS = {
     { r: "d", t: "Son adversaire a avalé la trompette.", clin: "sport" },
     { r: "d", t: "Un match n'est jamais fini. Surtout quand on joue mal." },
     { r: "d", t: "C'est abracadabrantesque.", clin: "cine" },
+    // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
+    { r: "c", t: "Il était au fond du trou, le revoilà à la surface !", f: "Elle était au fond du trou, la revoilà à la surface !" },
+    { r: "c", t: "Magnifique remontada !" },
+    { r: "c", t: "Encore un point ! Le doute change de camp !" },
   ],
   serie_pour: [
     { r: "c", t: "Plus rien ne l'arrête !" },
@@ -87,11 +97,24 @@ export const MOMENTS = {
     { r: "d", t: "Il a trouvé la faille. Il appuie dessus. Enfin quelqu'un de sérieux.", f: "Elle a trouvé la faille. Elle appuie dessus. Enfin quelqu'un de sérieux." },
     { r: "d", t: "Il gagne dans un fauteuil.", f: "Elle gagne dans un fauteuil.", clin: "sport" },
     { r: "d", t: "Une démonstration. Je note." },
-    { r: "c", t: "Il marche sur son adversaire !", f: "Elle marche sur son adversaire !" },
+    { r: "c", t: "Il marche sur son adversaire !", f: "Elle marche sur son adversaire !", long: 5 },
     { r: "c", t: "Qui va réussir à l'arrêter ?" },
     { r: "c", t: "La main est chaude ! Très chaude !" },
     { r: "d", t: "Il ne joue plus. Il distribue des corrections.", f: "Elle ne joue plus. Elle distribue des corrections." },
     { r: "d", t: "Six points d'affilée. Ça devient indécent.", si: "serie6" },
+    // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
+    { r: "c", t: "Il est lancé !", f: "Elle est lancée !", long: 3 },
+    { r: "c", t: "Il est en train de prendre le contrôle de ce match !", f: "Elle est en train de prendre le contrôle de ce match !", long: 3 },
+    { r: "c", t: "Rien ne semble pouvoir l'arrêter !", long: 4 },
+    { r: "c", t: "Il commence sérieusement à donner une leçon !", f: "Elle commence sérieusement à donner une leçon !", long: 4 },
+    { r: "d", t: "Il lui fait la musique.", f: "Elle lui fait la musique.", long: 4 },
+    { r: "c", t: "C'est un récital !", long: 5 },
+    { r: "c", t: "Mais qui va pouvoir l'arrêter ?!", long: 6 },
+    { r: "c", t: "Il est en état de grâce !", f: "Elle est en état de grâce !", long: 6 },
+    { r: "c", t: "C'est une démonstration !", long: 7 },
+    { r: "c", t: "Il est en train de ridiculiser son adversaire !", f: "Elle est en train de ridiculiser son adversaire !", long: 7 },
+    { r: "c", t: "C'est le Mozart du chifoumi !", long: 8 },
+    { r: "c", t: "Ce n'est plus un match, c'est une légende !", long: 8 },
   ],
   serie_contre: [
     { r: "c", t: "Quelqu'un peut arrêter ça ?!" },
@@ -112,6 +135,18 @@ export const MOMENTS = {
     { r: "c", t: "T'es pas venu ici pour souffrir, ok ?", f: "T'es pas venue ici pour souffrir, ok ?", clin: "cine" },
     { r: "c", t: "Houston, on a un problème !", clin: "cine" },
     { r: "d", t: "Il est en PLS. Comme disent les jeunes.", f: "Elle est en PLS. Comme disent les jeunes." },
+    // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
+    { r: "c", t: "Il est en train de perdre le fil !", f: "Elle est en train de perdre le fil !", long: 3 },
+    { r: "d", t: "Le doute commence sérieusement à s'installer.", long: 3 },
+    { r: "c", t: "Attention, il se fait acculer !", f: "Attention, elle se fait acculer !", long: 4 },
+    { r: "c", t: "Ça tourne au cauchemar !", long: 5 },
+    { r: "c", t: "Il n'y arrive plus !", f: "Elle n'y arrive plus !", long: 5 },
+    { r: "d", t: "La main ferme. Le cerveau en bouillie.", long: 5 },
+    { r: "c", t: "Arrêtez le massacre !", long: 6 },
+    { r: "d", t: "Il va falloir appeler du renfort.", long: 6 },
+    { r: "c", t: "C'est une boucherie !", long: 7 },
+    { r: "d", t: "Ce n'est plus un match, c'est une exécution.", long: 7 },
+    { r: "c", t: "Appelez les secours, il ne répond plus !", f: "Appelez les secours, elle ne répond plus !", long: 8 },
   ],
   obstination: [
     { r: "c", t: ["Troisième Pierre d'affilée ! C'est audacieux !", "Troisièmes Ciseaux d'affilée ! C'est audacieux !", "Troisième Feuille d'affilée ! C'est audacieux !"] },
@@ -156,6 +191,12 @@ export const MOMENTS = {
     { r: "d", t: "Ils ont exactement la même idée. Inquiétant." },
     { r: "d", t: "Personne ne veut prendre de risque aujourd'hui." },
     { r: "d", t: "Encore la même chose. Ça sent le duel interminable." },
+    // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
+    { r: "c", t: "Ils se rendent coup pour coup !" },
+    { r: "c", t: "Une nouvelle égalité sur le central !" },
+    { r: "c", t: "Ils se regardent, ils se jaugent… Qui va craquer ?" },
+    { r: "d", t: "Même signe. Une prolongation que personne n'a demandée." },
+    { r: "d", t: ["Deux Pierres, égalité. Trois semaines d'étude pour ça…", "Deux Ciseaux, égalité. Trois semaines d'étude pour ça…", "Deux Feuilles, égalité. Trois semaines d'étude pour ça…"] },
   ],
   // L'adversaire a lu mon réflexe.
   lecture_subie: [
@@ -163,6 +204,13 @@ export const MOMENTS = {
     { r: "d", t: "Trop prévisible." },
     { r: "d", t: "Ses tics sont en train de le trahir.", f: "Ses tics sont en train de la trahir." },
     { r: "d", t: "C'était écrit. En gros caractères." },
+    // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
+    { r: "d", t: "Défense sicilienne, un classique. Mais ça ne lui réussit pas.", clin: "sport" },
+    { r: "d", t: "Trois coups d'avance. Sauf celui de l'adversaire.", clin: "sport" },
+    { r: "d", t: "Il avait tout anticipé. Sauf ça.", f: "Elle avait tout anticipé. Sauf ça." },
+    { r: "d", t: "C'était téléphoné. Mais il était en mode avion.", f: "C'était téléphoné. Mais elle était en mode avion.", clin: "sport" },
+    { r: "d", t: "Il veut lire le jeu adverse. Qu'il commence par le sien.", f: "Elle veut lire le jeu adverse. Qu'elle commence par le sien.", clin: "sport" },
+    { r: "c", t: "Le bluff du siècle ! L'autre n'a pas cillé !", clin: "sport" },
   ],
   // J'ai lu le réflexe de l'adversaire.
   lecture_reussie: [
@@ -174,6 +222,8 @@ export const MOMENTS = {
     { r: "c", t: "Il vous a compris !", f: "Elle vous a compris !", clin: "cine" },
     { r: "c", t: "Il est entré dans son cerveau !", f: "Elle est entrée dans son cerveau !", si: "serie4" },   // seulement après 4 points d'affilée ou plus
     { r: "d", t: "Coup de maître.", clin: "sport", rare: true },
+    // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
+    { r: "d", t: "Bien vu l'aveugle.", clin: "sport" },
   ],
   temps_ecoule: [
     { r: "c", t: "Il a oublié de jouer !", f: "Elle a oublié de jouer !" },
@@ -196,6 +246,9 @@ export const MOMENTS = {
     { r: "c", t: "Un point pour l'Éternité…", si: "enjeu" },
     { r: "c", t: "Le titre est au bout de ce point…", si: "finale_tournoi" },
     { r: "d", t: "Toute une carrière pour ce point. Aucune pression.", si: "enjeu" },
+    // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
+    { r: "c", t: "C'est irrespirable !" },
+    { r: "d", t: "Il a la victoire au bout des doigts. Littéralement.", f: "Elle a la victoire au bout des doigts. Littéralement.", si: "balle_pour" },
   ],
   point_decisif: [
     { r: "c", t: "Un point. Un seul. Pour tout !" },
@@ -214,6 +267,9 @@ export const MOMENTS = {
     { r: "d", t: "Un set à oublier. Je l'ai déjà oublié." },
     { r: "d", t: "Qu'on m'apporte un café. Et un autre match." },
     { r: "d", t: "Bref. Il a perdu le set.", f: "Bref. Elle a perdu le set.", clin: "cine" },
+    // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
+    { r: "d", t: "Un set vite expédié, pas de chichifoumi.", net: true },
+    { r: "d", t: "Le coup du berger. Plié en quelques coups.", net: true },
   ],
   set_couteau: [
     { r: "c", t: "Irrespirable !" },
@@ -321,6 +377,8 @@ export const MOMENTS = {
     { r: "c", t: "Il cherche encore où il a perdu la Feuille !", f: "Elle cherche encore où elle a perdu la Feuille !", seul: 2 },
     { r: "d", t: "La sentence est irrévocable.", clin: "cine" },
     { r: "d", t: "Il a le seum. Comme disent les jeunes.", f: "Elle a le seum. Comme disent les jeunes." },
+    // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
+    { r: "d", t: "Le vainqueur repart avec la gloire. Le vaincu repart avec une remise en question existentielle." },
   ],
   // L'adversaire domine nettement nos face-à-face (dit avant le match).
   domination: [
@@ -395,6 +453,62 @@ export const MOMENTS = {
   memoire_habitude: [
     { r: "d", t: "Il a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude.", f: "Elle a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude." },
   ],
+  // ---------------------------------------------------------------- banque du porteur du projet (branchée le 1er novembre)
+  // Un point gagné avec un signe (« beau coup ») : de temps en temps, quand rien d'autre n'est à dire ; le texte dépend du signe
+  // gagnant (seul : 0 Pierre, 1 Ciseaux, 2 Feuille). « Il » : moi.
+  beau_coup: [
+    { r: "c", t: "Il l'a pétrifié !", f: "Elle l'a pétrifié !", seul: 0 },
+    { r: "d", t: "Sur cette pierre, il bâtit son église.", f: "Sur cette pierre, elle bâtit son église.", seul: 0 },
+    { r: "c", t: "Pierre après pierre, il bâtit sa légende !", f: "Pierre après pierre, elle bâtit sa légende !", seul: 0 },
+    { r: "d", t: "Un roc. Et un adversaire en miettes.", seul: 0 },
+    { r: "c", t: "Il lui jette la pierre, Pierre !", f: "Elle lui jette la pierre, Pierre !", seul: 0, clin: "cine" },
+    { r: "c", t: "Un coup magnifiquement ciselé !", seul: 1 },
+    { r: "c", t: "C'est l'effet ciseaux !", seul: 1 },
+    { r: "c", t: "Un coup de ciseaux chirurgical !", seul: 1 },
+    { r: "c", t: "Magnifique ciseau retourné !", seul: 1, clin: "sport", si: "ciseau_retourne" },   // (Ciseaux gagnants juste après les Ciseaux de l'adversaire)
+    { r: "c", t: "Une coupe parfaite ! Sanction immédiate !", seul: 1 },
+    { r: "c", t: "Il vient de raccourcir les ambitions de son rival !", f: "Elle vient de raccourcir les ambitions de son rival !", seul: 1 },
+    { r: "c", t: "La feuille est en deux, et les espoirs aussi !", seul: 1 },
+    { r: "d", t: "Il a sorti les lames. Et pas pour couper le gâteau.", f: "Elle a sorti les lames. Et pas pour couper le gâteau.", seul: 1 },
+    { r: "d", t: "Il taille dans le vif et découpe les espoirs adverses.", f: "Elle taille dans le vif et découpe les espoirs adverses.", seul: 1 },
+    { r: "d", t: "Il lui coupe l'herbe sous le pied !", f: "Elle lui coupe l'herbe sous le pied !", seul: 1 },
+    { r: "d", t: "Certains écrivent l'histoire, lui la découpe aux ciseaux.", f: "Certains écrivent l'histoire, elle la découpe aux ciseaux.", seul: 1 },
+    { r: "c", t: "Et c'est le coup du millefeuille !", seul: 2 },
+    { r: "d", t: "Il vient de mettre son adversaire sous pli.", f: "Elle vient de mettre son adversaire sous pli.", seul: 2 },
+  ],
+  // Trois points d'affilée gagnés avec la Pierre.
+  trois_pierres: [{ r: "d", t: "Pierre qui roule n'amasse pas mousse." }],
+  // Le tout premier coup du match est une égalité.
+  premiere_egalite: [{ r: "c", t: "Premier coup… même signe ! Ils se neutralisent !" }],
+  // Un point enfin gagné après des égalités (2 ou plus) : par moi, ou par l'adversaire.
+  apres_egalites_gagne: [{ r: "c", t: "Une feinte, une parade, une riposte ! Quel échange !" }],
+  apres_egalites_perdu: [{ r: "c", t: "Oh, la feinte de la feinte de la feinte… ça a failli passer !" }],
+  // Le premier point du match perdu (de temps en temps). L'ouverture Kolodrov est inventée : l'érudition de Monique.
+  premier_point_perdu: [{ r: "d", t: "L'ouverture de Kolodrov, 1956… mais ça ne lui sourit pas.", clin: "sport" }],
+  // Avant le match, parfois une seule phrase au lieu d'un dialogue : tous les matchs, les grands matchs, une revanche, entre amis.
+  avant_seul: [
+    { r: "c", t: "Affrontement sous haute tension !" },
+    { r: "c", t: "Les deux joueurs entrent dans l'arène. Pas un sourire. Pas un regard de trop." },
+    { r: "c", t: "Les mains sont prêtes, les esprits sont affûtés. Le spectacle peut commencer !" },
+    { r: "c", t: "La pression monte, les poignets sont chauds !" },
+    { r: "d", t: "Ce soir, il n'y aura qu'un vainqueur. Et probablement un mauvais perdant." },
+    { r: "d", t: "Deux joueurs, trois signes, un seul objectif : humilier son prochain." },
+    { r: "d", t: "Ce soir, on ne règle pas ses comptes. On les découpe." },
+  ],
+  avant_seul_grand: [{ r: "c", t: "Parfum de Ligue des champions ce soir !", clin: "sport" }],
+  avant_seul_revanche: [
+    { r: "d", t: "Ils se connaissent par cœur. Malheureusement, ils se connaissent aussi les défauts." },
+    { r: "d", t: "Une vieille rivalité, quelques rancœurs, et trois signes pour régler tout ça." },
+    { r: "d", t: "Il paraît qu'ils ne s'apprécient guère. Heureusement, le chifoumi ne nécessite aucun dialogue." },
+  ],
+  avant_seul_amis: [
+    { r: "c", t: "Amis dans la vie, ennemis dans l'arène ! Enfin, c'est ce qu'ils racontent avant le premier coup." },
+    { r: "d", t: "Il paraît qu'ils sont très bons amis. On va voir combien de temps cette amitié résiste à une défaite." },
+    { r: "d", t: "Ils sont venus ensemble, ils repartiront ensemble… enfin, si le perdant accepte de suivre." },
+    { r: "d", t: "Les meilleurs amis du monde. Jusqu'au moment où l'un des deux sort une pierre avec un sourire suspect." },
+    { r: "d", t: "Ils se connaissent, ils s'apprécient, ils se respectent. Enfin, pour l'instant." },
+    { r: "d", t: "Il y a des amitiés qui durent toute une vie. Et puis il y a celles qui se terminent sur un ciseau mal anticipé." },
+  ],
   humain: [
     { r: "c", t: "C'est un duel ! Un vrai ! Les yeux dans les yeux !" },
     { r: "d", t: "Ils se connaissent. Et ça se voit." },
@@ -424,6 +538,8 @@ export const DIALOGUES = {
     ["Un conseil pour nos joueurs, Madame ?", "Ne jouez pas Pierre. Ou jouez Pierre. Je ne sais plus."],
   ],
   // Avant le match, selon la situation (contre un bot, en finale, une revanche, tard le soir).
+  // Sur une balle de match, de temps en temps (banque du 1er novembre) : Roland s'enflamme, Monique le calme. « Le » : moi.
+  balle_de_match: [[{ t: "Une victoire le sépare de l'immortalité !", f: "Une victoire la sépare de l'immortalité !" }, "Enfin… de la victoire du jour. Restons mesurés."]],
   avant_bot: [["Un humain contre une machine, Madame !", "La machine a l'air plus détendue."]],
   // La mémoire du dernier match (28 octobre) : il rejoue la même ouverture ; une revanche (j'avais perdu) ; des habitués ;
   // un dernier match marquant (serré ou long).

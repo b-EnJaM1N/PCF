@@ -133,7 +133,8 @@ test("la réserve de parole : les commentateurs parlent peu pendant le jeu", () 
       if (!a.commentaire && !a.dialogue.length) assert.ok(a.lignes.every(l => l.role === "arbitre"));
     }
   }
-  assert.ok(coms > 0 && coms < coups / 8, `${coms} commentaires pour ${coups} coups`);
+  // (décision du 28 octobre : 3 à 4 commentaires par set, soit un peu moins d'un tous les 6 coups ; 5 à 6 plus tard)
+  assert.ok(coms > 0 && coms < coups / 6, `${coms} commentaires pour ${coups} coups`);
 });
 
 test("la version au féminin et le signe joué sont respectés", () => {
@@ -396,4 +397,56 @@ test("figures techniques : chaque enchaînement gagnant a son nom", () => {
   assert.equal(figureDe(coups([[1, 0], [0, 0, 2], [2, 0]])), "miroir", "je joue la Feuille qu'il vient de jouer");
   assert.equal(figureDe(coups([[1, 0], [0, null], [2, null], [1, null], [0, 0]])), "parapluie");
   assert.equal(figureDe(coups([[2, 1], [2, 1], [2, 1]])), null, "un point perdu : pas de figure");
+});
+
+test("la banque du 1er novembre : rien de muet, rien de trop long pendant l'échange, et les nouveaux moments", async () => {
+  const { troisPierres, REPLIQUE_COURTE, annoncesAvantMatch } = await import("../app/js/annonces.js");
+  // Trois points gagnés d'affilée avec la Pierre (les égalités ne comptent pas).
+  const P = (a, b, g) => ({ a, b, gagnant: g });
+  assert.ok(troisPierres([P(0, 1, 0), P(2, 2, null), P(0, 1, 0), P(0, 1, 0)]));
+  assert.ok(!troisPierres([P(0, 1, 0), P(1, 2, 0), P(0, 1, 0)]));
+  // Sans voix enregistrée, aucun commentaire n'est choisi (plutôt qu'un silence) ; pendant l'échange, jamais de réplique trop longue.
+  const rng = rngFixe(3);
+  let muets = 0, trop = 0, coms = 0;
+  for (let k = 0; k < 30; k++) {
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 });
+    const sansVoix = nouvelEtatAnnonces(), avecVoix = nouvelEtatAnnonces();
+    sansVoix.audible = () => false;
+    const m2 = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 });
+    while (!m.termine) {
+      const a = Math.floor(rng() * 3), b = Math.floor(rng() * 3);
+      if (annoncerCoup(m, jouerCoup(m, a, b), sansVoix, {}, rng).commentaire) muets++;
+      if (!m2.termine) {
+        const evt = jouerCoup(m2, a, b), r = annoncerCoup(m2, evt, avecVoix, {}, rng);
+        if (r.commentaire) { coms++; if (!evt.finSet && r.commentaire.texte.length > REPLIQUE_COURTE) trop++; }
+      }
+    }
+  }
+  assert.equal(muets, 0, "pas de voix : pas de commentaire");
+  assert.ok(coms > 0); assert.equal(trop, 0, "rien de trop long pendant l'échange");
+  // Avant un duel entre amis, parfois une seule phrase « entre amis ».
+  const amis = new Set();
+  for (let k = 0; k < 200; k++) annoncesAvantMatch({ humain: true, situations: [] }, rngFixe(k)).commentaires.forEach(l => amis.add(baseDe(l.id).replace(/_\d\d$/, "")));
+  assert.ok([...amis].some(x => /avant_seul_amis$/.test(x)), [...amis].join(", "));
+});
+
+test("le ciseau retourné : seulement quand je gagne avec les Ciseaux juste après les Ciseaux de l'adversaire", async () => {
+  const { POOLS } = await import("../app/js/voix/script.js");
+  const item = POOLS.beau_coup.find(e => e.t === "Magnifique ciseau retourné !");
+  assert.equal(item.si, "ciseau_retourne");
+  const vu = (coups) => {
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 });
+    let dit = false;
+    for (let k = 0; k < 200 && !dit; k++) {
+      const m2 = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = rngFixe(k);
+      etat.reserve = 2;
+      let r;
+      for (const [a, b] of coups) r = annoncerCoup(m2, jouerCoup(m2, a, b), etat, {}, rng);
+      if (r.commentaire?.texte === "Magnifique ciseau retourné !") dit = true;
+    }
+    return dit;
+  };
+  // (trois points avant, pour que les commentateurs puissent parler)
+  assert.ok(vu([[0, 1], [2, 0], [0, 0], [2, 1], [1, 2]]), "Ciseaux gagnants après les Ciseaux de l'adversaire : possible");
+  assert.ok(!vu([[0, 1], [2, 0], [0, 0], [2, 0], [1, 2]]), "sinon : jamais");
 });
