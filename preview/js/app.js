@@ -185,9 +185,9 @@ const grandMoment = m => !!balle(m) || pointDecisif(m);
 // une réplique longue déborderait sur les coups suivants. Les longues sont dites dans les pauses
 // (avant le match, fin de set, fin de match).
 // Pendant l'échange, seules les répliques assez courtes pour tenir entre deux coups sont dites (8 secondes par coup
-// depuis le 20 octobre : 55 caractères, environ 3 secondes à la vitesse des voix ; à 32, une centaine de répliques
+// depuis le 20 octobre : 55 caractères, environ 3 secondes à la vitesse des voix ; 62 depuis le 1er novembre ; à 32, une centaine de répliques
 // enregistrées n'étaient jamais entendues).
-const REPLIQUE_COURTE = 55;   // (la même valeur dans annonces.js : les commentaires trop longs ne sont plus choisis pendant l'échange)
+const REPLIQUE_COURTE = 62;   // (la même valeur dans annonces.js : les commentaires trop longs ne sont plus choisis pendant l'échange)
 // Le dialogue après un cri de victoire : un qu'on n'a pas entendu récemment (au hasard), sinon le plus ancien.
 function dialogueCriAuChoix(hasard = Math.random) {
   const recents = commentairesRecents(), n = nbDialogues("cri");
