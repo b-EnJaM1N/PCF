@@ -556,6 +556,23 @@ export const MOMENTS = {
     { r: "c", t: "Ça, c'est un coup de massue !" },
     { r: "d", t: "Un smash. Et un adversaire en morceaux." },
     { r: "d", t: "Il a frappé fort. Pour une fois, il a frappé juste.", f: "Elle a frappé fort. Pour une fois, elle a frappé juste." },
+    // (idées d'un testeur, validées le 1er novembre ; seul : selon le signe du smash)
+    { r: "c", t: "Avec autorité !" },
+    { r: "c", t: "Il monte au filet, et ça paye !", f: "Elle monte au filet, et ça paye !" },
+    { r: "c", t: "C'est le point du K.-O. !" },
+    { r: "c", t: "Il éteint son adversaire !", f: "Elle éteint son adversaire !" },
+    { r: "c", t: "Il fait montre de tout son talent !", f: "Elle fait montre de tout son talent !" },
+    { r: "c", t: "Il est en train de rentrer dans la tête de son adversaire !", f: "Elle est en train de rentrer dans la tête de son adversaire !" },
+    { r: "d", t: "Un point d'exclamation sur sa victoire." },
+    { r: "d", t: "Retour à l'école pour son adversaire !" },
+    { r: "d", t: "Il amuse la galerie.", f: "Elle amuse la galerie." },
+    { r: "d", t: "Celui-là, c'était pour les photographes." },
+    { r: "c", t: "La feuille A4 ! Format grand smash !", seul: 2 },
+    { r: "d", t: "Une feuille A4. Pliée en quatre, l'adversaire.", seul: 2 },
+    { r: "c", t: "La cisaille ! Il a tout tranché !", f: "La cisaille ! Elle a tout tranché !", seul: 1 },
+    { r: "d", t: "La cisaille. Net et sans bavure.", seul: 1 },
+    { r: "c", t: "Le rocher dévale ! Rien ne l'arrête !", seul: 0 },
+    { r: "d", t: "Un rocher. L'adversaire ne s'en relèvera pas tout de suite.", seul: 0 },
   ],
   // Le smash de l'adversaire gagne le point : je suis sonné.
   smash_sonne: [
