@@ -468,7 +468,8 @@ const partiesSurnom = s => (s ? [CATALOGUE.get(idPartie(s.nom)), CATALOGUE.get(i
 // moi, adv : { surnom (voir surnomDe), genre, etiquette, bot (id d'un bot) }.
 // tour : "huitiemes", "quarts", "demis", "finale" (ou null) ; sng : premier tour d'un Sit & Go.
 // situations : situationsDuMatch() ; recents : les phrases dites aux derniers matchs (on évite de les répéter).
-// Renvoie { speaker, commentaires } : les deux listes de répliques, dans l'ordre.
+// Renvoie { speaker, commentaires, presentation } : les listes de répliques, dans l'ordre (presentation : Roland présente
+// les deux joueurs par leur surnom ; vide s'il manque un surnom).
 export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = false, humain = false, domination = false, genre = "m",
   situations = [], recents = [], jeu = null, audible = null, memoire = null } = {}, rng = Math.random) {
   const deja = new Set(recents);
@@ -498,6 +499,10 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
     sp.push(...partiesSurnom(adv.surnom));
   }
   if (humain && moi.surnom && adv.surnom && moi.surnom.texte === adv.surnom.texte) sp.push(dire("miroir"));
+  // La présentation par Roland (avant ses commentaires) : « Côté jaune, on retrouve… La Quiche… du PMU… Et en face… Tic-Tac ! »
+  const bot = adv.bot && CATALOGUE.get(`speaker_bot_${adv.bot}_01`);
+  const presentation = [dire("presente_jaune"), ...partiesSurnom(moi.surnom), dire("presente_rouge"), ...(bot ? [bot] : partiesSurnom(adv.surnom))];
+  const fin = r => ({ ...r, presentation: moi.surnom && (bot || adv.surnom) && presentation.every(Boolean) ? presentation : [] });
   sp.push(dire("cloture"));
 
   // Les commentateurs lancent le match (en évitant, eux aussi, ce qu'ils ont dit récemment).
@@ -512,16 +517,16 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
     const recentsJeu = recents.filter(id => id.startsWith(`commentateur_dialogue_avant_${jeu}_`)).slice(0, 4);
     recentsJeu.forEach(id => { const m = /_(\d\d)(_f)?$/.exec(id); if (m) etat.dialoguesDits.add(`avant_${jeu}_${+m[1] - 1}`); });
     const d = dialogue(etat, `avant_${jeu}`, rng);
-    if (d) return { speaker: sp.filter(Boolean), commentaires: d };
+    if (d) return fin({ speaker: sp.filter(Boolean), commentaires: d });
   }
   // Le souvenir du dernier match contre le même adversaire (commentaireMemoire), 6 fois sur 10.
-  if (memoire?.length && rng() < 0.6) return { speaker: sp.filter(Boolean), commentaires: memoire };
+  if (memoire?.length && rng() < 0.6) return fin({ speaker: sp.filter(Boolean), commentaires: memoire });
   const contexte = tour === "finale" ? "avant_finale" : situations.includes("revanche") ? "avant_revanche"
     : situations.includes("nuit") ? "avant_nuit" : situations.includes("contre_bot") ? "avant_bot" : null;
   const contexteRecent = contexte && recents.slice(0, 20).includes(`commentateur_dialogue_${contexte}_01`);
   let com = null;
   if (domination) com = choisir(etat, "domination", {}, rng);
-  else if (contexte && !contexteRecent && rng() < 0.5) return { speaker: sp.filter(Boolean), commentaires: dialogue(etat, contexte, rng) || [] };
+  else if (contexte && !contexteRecent && rng() < 0.5) return fin({ speaker: sp.filter(Boolean), commentaires: dialogue(etat, contexte, rng) || [] });
   else if (humain && rng() < 0.5) com = choisir(etat, "humain", {}, rng);
   // Parfois, une seule phrase au lieu d'un dialogue : entre amis, une revanche, un grand match, ou n'importe quel match.
   if (!com && rng() < 0.35) {
@@ -530,7 +535,7 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
     com = choisir(etat, seul, {}, rng) || choisir(etat, "avant_seul", {}, rng);
   }
   const commentaires = com ? [com] : rng() < 0.85 ? dialogue(etat, "avant_match", rng) || [] : [];
-  return { speaker: sp.filter(Boolean), commentaires };
+  return fin({ speaker: sp.filter(Boolean), commentaires });
 }
 
 // La mémoire du dernier match (voir memoireDuDernier, historique-mains.js) : les répliques à dire avant le match (une seule,
