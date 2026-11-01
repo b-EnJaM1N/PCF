@@ -9,6 +9,7 @@ export function nouvellesStats() {
     retardMaxSet: 0, meilleureRemontee: 0,
     premierSetPerdu: false,
     lecturesReussies: 0,                      // réflexes de l'adversaire lus et contrés
+    smashsTentes: 0, smashsReussis: 0,        // mes smashs, et ceux qui ont gagné le point
   };
 }
 
