@@ -126,6 +126,7 @@ export function profilParDefaut() {
     cri: CRI_DEFAUT,                          // mon cri de victoire (voir celebrations.js)
     mainsTendues: 0,                          // poignées chaleureuses après une défaite
     duelsFinis: 0,                            // duels en ligne joués sans abandonner
+    smashsTentes: 0, smashsReussis: 0,        // les smashs (appui long) joués, et ceux qui ont gagné le point
     // La boutique (voir catalogue.js) : les articles achetés et ceux qu'on utilise.
     achats: [], geste: "poing", celebration: "confettis", cadre: "aucun",
   };
@@ -150,6 +151,8 @@ export function nouvelElo(elo, eloAdv, gagne, k = K_ELO) {
 }
 
 export const nomAffiche = P => P.pseudo || "Toi";
+// Le pourcentage de smashs réussis (qui ont gagné le point), ou null si aucun smash joué.
+export const tauxSmash = P => (P.smashsTentes ? Math.round(100 * P.smashsReussis / P.smashsTentes) : null);
 export const titresObtenus = P => TITRES.filter(t => P.titres[t.id]).sort((a, b) => P.titres[b.id] - P.titres[a.id]);
 export const dernierTitre = P => (titresObtenus(P)[0] || { nom: "Espoir du circuit" }).nom;
 export const signeFavori = c => (c.reduce((a, b) => a + b, 0) ? c.indexOf(Math.max(...c)) : null);
@@ -182,6 +185,7 @@ export function enregistrerMatch(P, r) {
   P.devines += r.devines; P.lisibles += r.lisibles;
   P.ballesObtenues += stats.ballesObtenues; P.ballesConverties += stats.ballesConverties;
   P.ballesSubies += stats.ballesSubies; P.ballesSauvees += stats.ballesSauvees;
+  P.smashsTentes += stats.smashsTentes || 0; P.smashsReussis += stats.smashsReussis || 0;
   if (match.format.setsGagnants > 1 && match.scoresSets.length === 2 * match.format.setsGagnants - 1) { P.decisifsJoues++; if (gagne) P.decisifsGagnes++; }
   if (stats.premierSetPerdu && gagne) P.remontadas++;
   P.meilleureSeriePoints = Math.max(P.meilleureSeriePoints, stats.meilleureSerie);

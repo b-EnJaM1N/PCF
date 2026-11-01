@@ -416,6 +416,13 @@ Même manipulation avec [`etape-53-messages-entre-sets.sql`](etape-53-messages-e
 Pendant la pause entre deux sets, chacun peut envoyer un message (ouvrir la fenêtre laisse 30 secondes au moins) ; des
 « annonces » au début de chaque set (« J'ouvre avec Pierre. », « Ne joue pas Feuille. »…). **À coller avant de valider l'appli.**
 
+## 1 quinquagies quater. Le smash réussi sonne l'adversaire (étape 54)
+
+Même manipulation avec [`etape-54-smash-sonne.sql`](etape-54-smash-sonne.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-54-smash-sonne.sql).
+Un smash qui gagne le point sonne l'adversaire : au coup suivant, pas de coup pendant les 4 premières secondes (le serveur
+refuse un coup trop tôt). **À coller avant de valider l'appli.** Si on relance un jour l'étape 49 ou 52, relancer celle-ci ensuite.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

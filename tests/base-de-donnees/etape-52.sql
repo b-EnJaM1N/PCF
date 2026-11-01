@@ -30,6 +30,7 @@ select jouer((select val from t where cle = 'duel'), :M, 0, true);
 select pg_temp.en_tant_que(:'B'); select jouer((select val from t where cle = 'duel'), :M, 1);
 select pg_temp.verifier((select coups->-1->'smash' = '[true, false]'::jsonb from duels where id = (select val from t where cle = 'duel')), 'le smash d''Alice est révélé avec le coup');
 -- 2. Un deuxième smash dans le même set : le coup part, sans smash.
+reset role; update duels set sonne = null where id = (select val from t where cle = 'duel');   -- (Bob, sonné par le smash réussi d'Alice : testé à l'étape 54)
 select pg_temp.en_tant_que(:'A'); select jouer((select val from t where cle = 'duel'), :M, 2, true);
 select pg_temp.en_tant_que(:'B'); select jouer((select val from t where cle = 'duel'), :M, 2, true);
 select pg_temp.verifier((select coups->-1->'smash' = '[false, true]'::jsonb from duels where id = (select val from t where cle = 'duel')), 'un seul smash par set : Alice n''en a plus, Bob a le sien');

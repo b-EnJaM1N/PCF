@@ -105,6 +105,10 @@ body:not(.en-match) .rule { display: none; }
 .moves button.charge { transform: scale(1.08); border-color: var(--me); box-shadow: 0 0 16px rgba(244, 197, 66, .45); transition: transform .12s; }
 .moves button { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: none; }   /* (l'appui long n'est jamais pris pour un défilement) */
 .arena.smash { animation: smash-secousse .38s ease-out; }
+/* Sonné par un smash réussi : les signes grisés, qui tremblent. */
+.moves.sonne button { filter: grayscale(1) brightness(.75); animation: sonne-tremble .5s ease-in-out infinite; }
+@keyframes sonne-tremble { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+@media (prefers-reduced-motion: reduce) { .moves.sonne button { animation: none; } }
 @keyframes smash-secousse { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-7px, 3px); } 40% { transform: translate(6px, -4px); } 60% { transform: translate(-4px, 2px); } 80% { transform: translate(3px, -1px); } }
 .reserve-temps.en-cours { color: #F59E3B; font-weight: 700; }
 .reserve-temps.vide { color: var(--bot); }

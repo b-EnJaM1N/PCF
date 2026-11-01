@@ -1,5 +1,5 @@
 // Écran principal : relie les règles, les bots, les annonces, le son et la fiche joueur.
-import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, issueSmash, gagnantCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
+import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, SONNE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, issueSmash, gagnantCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
@@ -17,7 +17,7 @@ import { etatNotifications, activerNotifications, desactiverNotifications, ratta
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
-import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori } from "./profil.js";
+import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
@@ -242,6 +242,8 @@ function lancerMinuteur() {
   const m = S.match; m.reserve ||= [RESERVE_MS, RESERVE_MS];
   const reserveDebut = m.reserve[0];
   afficherReserve(reserveDebut);
+  // Sonné par le smash réussi du bot : 4 secondes sans pouvoir jouer (la barre, elle, avance).
+  if (S.sonne) { S.sonne = false; sonner(SONNE_MS, () => { if (S?.match === m && !S.occupe && !m.termine) boutons(true); }); }
   const tick = t => {
     const ecoule = t - tDebut;
     if (ecoule < DUREE_COUP_MS) {
@@ -267,6 +269,22 @@ function tempsDepasse() {
   S.occupe = true; boutons(false); arreterMinuteur();
   afficherPenalite(0);
 }
+// Sonné par un smash réussi : les boutons grisés et tremblants, le téléphone qui vibre par petites secousses, pendant ms ;
+// puis reprise() (qui rend les boutons, si c'est toujours à moi de jouer).
+let sonneT = 0;
+function sonner(ms, reprise) {
+  boutons(false); $("moves").classList.add("sonne");
+  S.sonneJusqu = performance.now() + ms;
+  $("verdict").textContent = "💫 Sonné ! Encore un instant…";
+  try { const n = Math.max(1, Math.round(ms / 500)); navigator.vibrate?.(Array.from({ length: 2 * n - 1 }, (_, i) => (i % 2 ? 300 : 200))); } catch { /* sans vibration */ }
+  clearTimeout(sonneT);
+  sonneT = setTimeout(() => {
+    $("moves").classList.remove("sonne");
+    if ($("verdict").textContent.startsWith("💫")) $("verdict").textContent = "À toi de jouer !";
+    reprise();
+  }, ms);
+}
+
 // Le petit compteur sous la barre : ma réserve de temps (enCours : on y puise en ce moment).
 function afficherReserve(ms, enCours = false) {
   const el = $("reserve");
@@ -321,6 +339,7 @@ const boutons = on => document.querySelectorAll("#moves button").forEach(b => { 
 
 // smash : appui long sur le signe (un par set, pour le spectacle seulement ; voir peutSmasher).
 function jouer(signe, auto = false, smash = false) {
+  if (S?.sonneJusqu && performance.now() < S.sonneJusqu) return;   // (sonné : même au clavier, pas de coup)
   if (S && S.duel) return jouerDuel(signe, smash);
   if (!S || !S.enJeu || S.occupe || S.match.termine || panneauOuvert || faceAFaceOuvert) return;
   S.occupe = true; arreterMinuteur(); boutons(false);
@@ -416,6 +435,9 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
   if (smash[0] || smash[1]) effetSmash(smash, evt.gagnant);
+  // Mes smashs, pour la fiche ; un smash réussi « sonne » l'adversaire au coup suivant (en solo ici ; en duel, le serveur le dit).
+  if (smash[0]) { S.stats.smashsTentes++; if (evt.gagnant === 0) S.stats.smashsReussis++; }
+  if (!S.duel) S.sonne = issueSmash(smash, evt.gagnant) === "gagne" && evt.gagnant === 1;
   return apresPoint(evt, a, cel, rp);
 }
 
@@ -425,7 +447,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
 function effetSmash(smash, gagnant) {
   const issue = issueSmash(smash, gagnant), double = smash[0] && smash[1];
   const de = j => (j === 0 ? "" : ` de ${OPP.nom}`);
-  const texte = issue === "gagne" ? (double ? "💥 Double smash ! " : `💥 Smash${de(gagnant)} ! `)
+  const sonneAdv = `${OPP.nom} est ${OPP.genre === "f" ? "sonnée" : "sonné"} ! `;
+  const texte = issue === "gagne" ? (double ? `💥 Double smash ! ${gagnant === 0 ? sonneAdv : ""}` : gagnant === 0 ? `💥 Smash ! ${sonneAdv}` : `💥 Smash${de(gagnant)} ! `)
     : issue === "bloque" ? (double ? "🧱 Double smash bloqué ! " : `🧱 Smash${de(smash[0] ? 0 : 1)} bloqué ! `)
     : `💨 Smash raté${de(smash[0] ? 0 : 1)} ! `;
   $("verdict").textContent = `${texte}${$("verdict").textContent}`;
@@ -1497,6 +1520,7 @@ function renderFiche() {
     $("mentalBody").innerHTML = `
       <div class="ln"><span>Balles de set et de match converties</span><span>${pc(P.ballesConverties, P.ballesObtenues)}</span></div>
       <div class="ln"><span>Balles adverses sauvées</span><span>${pc(P.ballesSauvees, P.ballesSubies)}</span></div>
+      <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${P.smashsTentes ? `${P.smashsReussis} sur ${P.smashsTentes} (${tauxSmash(P)} %)` : "Aucun pour l'instant"}</span></div>
       <div class="ln"><span>Sets décisifs gagnés</span><span>${P.decisifsJoues ? `${P.decisifsGagnes} sur ${P.decisifsJoues}` : "Aucun joué"}</span></div>
       <div class="ln"><span>Matchs gagnés après avoir perdu le 1er set</span><span>${P.remontadas}</span></div>`;
     $("recBody").innerHTML = `
@@ -2131,6 +2155,16 @@ function duelReprendre() {
     return;
   }
   if ($("verdict").textContent.startsWith("Premier coup dans")) $("verdict").textContent = "À toi de jouer !";
+  // Sonné par le smash réussi de l'adversaire (étape 54) : pas de coup pendant les 4 premières secondes du coup.
+  const resteSonne = d.sonne === D.moi && d.sonne_manche === d.manche ? tempsRestant(d.echeance, D.decalage) - (DUREE_COUP_MS - SONNE_MS) : 0;
+  if (resteSonne > 100) {
+    lancerMinuteurDuel();
+    if (D.sonneManche !== d.manche) {
+      D.sonneManche = d.manche;
+      sonner(resteSonne + 150, () => { if (D && !D.fini && D.duel.manche === d.manche && D.mancheEnvoyee !== d.manche && !panneauOuvert) boutons(true); });
+    } else boutons(false);
+    return;
+  }
   boutons(true); lancerMinuteurDuel();
 }
 

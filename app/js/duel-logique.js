@@ -5,7 +5,7 @@
 // toujours le côté 0 (jaune) : on retourne donc les coups si on est le joueur 1.
 import { nouveauMatch, jouerCoup, penaliser, noterSmash, EMOJI, NOM, texteFormat } from "./regles.js";
 import { indiceImprevisibilite } from "./analyse.js";
-import { normaliserProfil, signeFavori, dernierTitre, titresObtenus } from "./profil.js";
+import { normaliserProfil, signeFavori, dernierTitre, titresObtenus, tauxSmash } from "./profil.js";
 import { surnomDe } from "./surnoms.js";
 
 export const maPlace = (duel, uid) => (duel.j0 === uid ? 0 : duel.j1 === uid ? 1 : null);
@@ -68,6 +68,7 @@ export function adversaireHumain(ligne) {
     specialite: fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`,
     imprevisibilite: P.lisibles >= 10 ? indiceImprevisibilite(P.devines / P.lisibles) : null,
     titres: titresObtenus(P).length,
+    smash: tauxSmash(P),                          // pourcentage de smashs réussis (null : aucun joué)
     av: { ...P.av, ...(ligne.avatar || {}) },
     // Pour le speaker et les commentateurs
     surnom: surnomDe(P), genre: P.genre, fiche: P, drapeau: ligne.drapeau || null,
