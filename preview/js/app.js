@@ -1250,7 +1250,8 @@ async function afficherDossier() {
       "Pas encore assez de matchs en ligne pour établir son dossier.");
   } catch { montrer(null, null, "Dossier indisponible pour l'instant."); }
 }
-// Les commentateurs lancent le match, à voix haute (pas de speaker pour l'instant : sa présentation n'est ni dite ni affichée).
+// Les commentateurs lancent le match, à voix haute : Roland présente les joueurs par leur surnom, puis les commentaires
+// (la présentation complète du speaker n'est ni dite ni affichée).
 function presenterSpeaker() {
   const f = P.faceAFace[OPP.id], humain = !!OPP.humain;
   const niveauMoi = humain ? monClassement ?? 1200 : P.elo, niveauAdv = humain ? OPP.classement ?? 1200 : OPP.elo;
@@ -1274,7 +1275,9 @@ function presenterSpeaker() {
   // On retient les phrases dites, pour ne pas les répéter aux prochains matchs.
   ecrire("speakerRecents", av.commentaires.map(l => l.id).concat(recents).slice(0, 80));
   clearTimeout(voixIntro);
-  voixIntro = setTimeout(() => { if (faceAFaceOuvert && !S.passe) voix.dire(av.commentaires); }, reduitMouvement() ? 0 : 1300);
+  // Roland présente d'abord les deux joueurs par leur surnom, seulement si tout est enregistré (pas de surnom à moitié dit).
+  const presentation = av.presentation.length && av.presentation.every(l => voix.fichiers.has(l.id)) ? av.presentation : [];
+  voixIntro = setTimeout(() => { if (faceAFaceOuvert && !S.passe) voix.dire([...presentation, ...av.commentaires]); }, reduitMouvement() ? 0 : 1300);
 }
 // Les nombres défilent jusqu'à leur valeur, comme au tableau d'affichage.
 function compter(el) {
