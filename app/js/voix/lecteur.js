@@ -7,7 +7,7 @@
 
 // Le volume de chaque voix (0 à 1), mesuré sur les enregistrements ElevenLabs : l'arbitre en retrait,
 // Roland (enregistré plus fort) ramené au niveau de Monique.
-export const VOLUMES = { arbitre: 0.55, commentateur: 0.5, commentatrice: 0.85, speaker: 0.8, journaliste: 0.8 };
+export const VOLUMES = { arbitre: 0.55, commentateur: 0.5, commentatrice: 0.85, speaker: 0.5, journaliste: 0.8 };   // (le speaker : la voix de Roland, même volume)
 // L'arbitre ne dit à voix haute que l'essentiel (décision du porteur du projet) : le début de chaque set, « Jeu, set et match »
 // (ou la victoire par forfait, l'abandon) et parfois « Silence, s'il vous plaît ». Ses autres annonces (balles de set et de match,
 // scores) restent seulement affichées par écrit.
@@ -15,7 +15,7 @@ const ARBITRE_PARLE = /^arbitre_((premier|deuxieme|troisieme|quatrieme)_set|set_
 export const ditAVoixHaute = r => r.role !== "arbitre" || ARBITRE_PARLE.test(r.id);
 
 // La vitesse de lecture (1 = normale) : les commentaires doivent tenir entre deux coups. La hauteur de la voix ne change pas.
-export const VITESSES = { arbitre: 1, commentateur: 1.4, commentatrice: 1.65, speaker: 1, journaliste: 1 };
+export const VITESSES = { arbitre: 1, commentateur: 1.4, commentatrice: 1.65, speaker: 1.25, journaliste: 1 };
 
 const synth = typeof window !== "undefined" && "speechSynthesis" in window ? window.speechSynthesis : null;
 

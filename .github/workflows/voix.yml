@@ -44,7 +44,8 @@ jobs:
           ROLES: ${{ inputs.roles }}
           IDS: ${{ inputs.ids }}
         run: |
-          ESSAI="commentateur_balle_match_convertie_03,commentateur_tension_01,commentateur_craquage_02,commentateur_defaite_01,commentateur_obstination_02,commentatrice_craquage_02,commentatrice_victoire_02,commentatrice_defaite_02,commentatrice_set_ecrasant_02,commentatrice_serie_contre_03"
+          # Essai du 2 novembre : les surnoms et les présentations, dits par Roland (rôle « speaker », voir outils/voix.json).
+          ESSAI="speaker_presente_jaune_01,speaker_presente_rouge_01,speaker_surnom_la_quiche_01,speaker_surnom_du_pmu_01,speaker_surnom_le_menhir_01,speaker_surnom_de_beton_01,speaker_surnom_l_ouragan_01,speaker_surnom_de_l_apero_01,speaker_bot_tictac_01,speaker_finale_01"
           if [ "$QUOI" = "sons-candidats" ]; then node outils/generer-sons.js --candidats
           elif [ "$QUOI" = "sons-essai" ]; then node outils/generer-sons.js --ids "raquette_pierre_01,raquette_pierre_fort_01,public_point_01"
           elif [ "$QUOI" = "sons" ] && [ -n "$IDS" ]; then node outils/generer-sons.js --ids "$IDS" --refaire
