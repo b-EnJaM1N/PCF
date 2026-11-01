@@ -270,10 +270,21 @@ function tempsDepasse() {
   afficherPenalite(0);
 }
 // Sonné par un smash réussi : les boutons grisés et tremblants, le téléphone qui vibre par petites secousses, pendant ms ;
-// puis reprise() (qui rend les boutons, si c'est toujours à moi de jouer).
+// puis reprise() (qui rend les boutons, si c'est toujours à moi de jouer). L'écran du match est flou, puis redevient net
+// peu à peu pendant ces ms (le message « Sonné » reste net).
 let sonneT = 0;
+function flouSonne(ms) {
+  const doux = matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  for (const el of document.querySelectorAll("#viewMatch .board, #viewMatch .arena, #timer, #reserve, #moves")) {
+    try {
+      el.getAnimations?.().forEach(a => { if (a.id === "flou-sonne") a.cancel(); });
+      const a = el.animate([{ filter: `blur(${doux ? 3 : 7}px)` }, { filter: "blur(0)" }], { duration: ms, easing: "ease-in" });
+      a.id = "flou-sonne";
+    } catch { /* navigateur sans animations : pas de flou */ }
+  }
+}
 function sonner(ms, reprise) {
-  boutons(false); $("moves").classList.add("sonne");
+  boutons(false); $("moves").classList.add("sonne"); flouSonne(ms);
   S.sonneJusqu = performance.now() + ms;
   $("verdict").textContent = "💫 Sonné ! Encore un instant…";
   try { const n = Math.max(1, Math.round(ms / 500)); navigator.vibrate?.(Array.from({ length: 2 * n - 1 }, (_, i) => (i % 2 ? 300 : 200))); } catch { /* sans vibration */ }
@@ -435,9 +446,9 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
   if (smash[0] || smash[1]) effetSmash(smash, evt.gagnant);
-  // Mes smashs, pour la fiche ; un smash réussi « sonne » l'adversaire au coup suivant (en solo ici ; en duel, le serveur le dit).
+  // Mes smashs, pour la fiche ; un smash réussi « sonne » l'adversaire au coup suivant, sauf s'il donne le set (en solo ici ; en duel, le serveur le dit).
   if (smash[0]) { S.stats.smashsTentes++; if (evt.gagnant === 0) S.stats.smashsReussis++; }
-  if (!S.duel) S.sonne = issueSmash(smash, evt.gagnant) === "gagne" && evt.gagnant === 1;
+  if (!S.duel) S.sonne = issueSmash(smash, evt.gagnant) === "gagne" && evt.gagnant === 1 && !evt.finSet;   // (pas de KO au début du set suivant)
   return apresPoint(evt, a, cel, rp);
 }
 
