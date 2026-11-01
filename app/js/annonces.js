@@ -160,7 +160,11 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
   if (evt.egalite) {
     etat.egalitesDeSuite++;
     // Le tout premier coup du match est une égalité (de temps en temps).
-    if (n === 1 && rng() < 0.6) moment = "premiere_egalite";
+    if (n === 1 && rng() < 0.6) {
+      // (une fois sur deux, le dialogue « Premier coup, première égalité ! » / « Et pas la dernière »)
+      const d = rng() < 0.5 && dialogue(etat, "premiere_egalite", rng);
+      if (d) { dialogueFin = d; etat.dernierCom = n; } else moment = "premiere_egalite";
+    }
     // (une fois par set au plus : sinon c'est le commentaire qu'on entend le plus)
     else if ((etat.egalitesDeSuite >= 3 && etat.egalitesDeSuite <= 5) && !etat.dejaSet.has("duel_esprits") && peutCommenter(3)) {
       moment = "duel_esprits"; ctx.cinqEgalites = etat.egalitesDeSuite === 5; etat.dejaSet.add("duel_esprits");
@@ -202,14 +206,16 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
         moment = "premier_point_perdu";
       } else if (egalitesAvant >= 2 && peutCommenter(2) && rng() < 0.5) {   // un point enfin gagné après des égalités
         moment = g === 0 ? "apres_egalites_gagne" : "apres_egalites_perdu";
-      } else if (g === 0 && !etat.troisPierres && troisPierres(c) && rng() < 0.7) {
-        moment = "trois_pierres"; etat.troisPierres = true;
+      } else if (g === 0 && !etat.troisPierres && troisMemeSigne(c) !== null && rng() < 0.7) {
+        moment = ["trois_pierres", "trois_ciseaux", "trois_feuilles"][troisMemeSigne(c)]; etat.troisPierres = true;   // (une fois par match)
       } else if (etat.serie.n >= 3 && peutCommenter(3) && rng() < (etat.serie.n === 3 ? 0.45 : 0.75)) {   // une réplique par longueur de série
         moment = g === 0 ? "serie_pour" : "serie_contre"; ctx.longueur = etat.serie.n; ctx.serie6 = etat.serie.n === 6; ctx.pile4 = etat.serie.n === 4;
       } else if (auto && peutCommenter(4) && rng() < 0.6) {
         moment = "temps_ecoule"; ctx.balleMatch = evt.balleAvant?.type === "match";
       } else if (etat.obstine && c[n - 1].a !== c[n - 2].a && peutCommenter(2) && rng() < 0.2) {   // (une seule réplique : pas trop souvent)
         moment = "changement"; etat.obstine = false;
+        // (une fois sur trois, le dialogue du dégagement : « Il casse enfin la série ! » / « Oui. Dégagement très propre. »)
+        if (rng() < 0.35) { const d = dialogue(etat, "changement", rng); if (d) { dialogueFin = d; moment = null; etat.dernierCom = n; } }
       } else if (obstination && !etat.dejaSet.has("obstination") && peutCommenter(3) && rng() < 0.6) {   // (une fois par set au plus)
         moment = "obstination"; etat.obstine = true; etat.dejaSet.add("obstination");
       } else if (g === 1 && recents.length >= 8 && recents.filter(Boolean).length >= 6 && peutCommenter(6) && rng() < 0.7) {
@@ -294,9 +300,11 @@ export function annoncerPenalite(match, evt, etat, rng = Math.random) {
 export const annonceAvertissement = fautif => replique(`arbitre_avertissement_${COTE[fautif]}_01`);
 
 // Mes trois derniers points gagnés d'affilée l'ont tous été avec la Pierre (les égalités ne comptent pas).
-export function troisPierres(c) {
+export function troisPierres(c) { return troisMemeSigne(c) === 0; }
+// Mes trois derniers points gagnés d'affilée l'ont été avec le même signe : lequel (0, 1, 2), sinon null.
+export function troisMemeSigne(c) {
   const points = c.filter(x => x.gagnant !== null).slice(-3);
-  return points.length === 3 && points.every(x => x.gagnant === 0 && x.a === 0);
+  return points.length === 3 && points.every(x => x.gagnant === 0 && x.a === points[0].a) ? points[0].a : null;
 }
 
 // La figure technique (inventée) que dessinent mes derniers signes, si le dernier gagne le point ; sinon null.

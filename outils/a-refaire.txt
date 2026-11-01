@@ -1,5 +1,5 @@
 # Les répliques à refaire avec le robot « Voix » (choix « liste ») : un identifiant par ligne. Les lignes en # sont ignorées.
-# La banque de commentaires du porteur du projet (branchée le 1er novembre, phrases raccourcies validées) : 119 répliques, environ 8 800 crédits.
+# La banque de commentaires du porteur du projet, avec les compléments du 1er novembre : 163 répliques (environ 11 800 crédits).
 commentateur_craquage_10
 commentateur_craquage_11
 commentateur_craquage_11_f
@@ -43,6 +43,12 @@ commentateur_serie_contre_12
 commentatrice_serie_contre_16
 commentateur_serie_contre_13
 commentateur_serie_contre_13_f
+commentateur_changement_02
+commentateur_changement_02_f
+commentateur_changement_03
+commentatrice_changement_01
+commentatrice_changement_01_f
+commentatrice_changement_02
 commentateur_duel_esprits_10
 commentateur_duel_esprits_11
 commentateur_duel_esprits_12
@@ -94,11 +100,38 @@ commentatrice_beau_coup_06_f
 commentateur_beau_coup_11
 commentatrice_beau_coup_07
 commentatrice_beau_coup_07_f
+commentateur_beau_coup_12
+commentateur_beau_coup_13
+commentatrice_beau_coup_08
+commentatrice_beau_coup_09
 commentatrice_trois_pierres_01
+commentatrice_trois_ciseaux_01
+commentateur_trois_feuilles_01
+commentateur_trois_feuilles_01_f
+commentatrice_trois_feuilles_01
 commentateur_premiere_egalite_01
+commentateur_premiere_egalite_02
+commentatrice_premiere_egalite_01
+commentatrice_premiere_egalite_02
 commentateur_apres_egalites_gagne_01
+commentateur_apres_egalites_gagne_02
+commentateur_apres_egalites_gagne_02_f
+commentateur_apres_egalites_gagne_03
+commentateur_apres_egalites_gagne_04
+commentateur_apres_egalites_gagne_04_f
+commentatrice_apres_egalites_gagne_01
+commentatrice_apres_egalites_gagne_02
 commentateur_apres_egalites_perdu_01
+commentateur_apres_egalites_perdu_02
+commentatrice_apres_egalites_perdu_01
+commentatrice_apres_egalites_perdu_01_f
+commentatrice_apres_egalites_perdu_02
+commentatrice_apres_egalites_perdu_02_f
+commentatrice_apres_egalites_perdu_03
 commentatrice_premier_point_perdu_01
+commentateur_premier_point_perdu_01
+commentatrice_premier_point_perdu_02
+commentatrice_premier_point_perdu_03
 commentateur_avant_seul_01
 commentateur_avant_seul_02
 commentateur_avant_seul_03
@@ -116,9 +149,20 @@ commentatrice_avant_seul_amis_02
 commentatrice_avant_seul_amis_03
 commentatrice_avant_seul_amis_04
 commentatrice_avant_seul_amis_05
+commentateur_dialogue_premiere_egalite_01
+commentatrice_dialogue_premiere_egalite_01
+commentateur_dialogue_changement_01
+commentateur_dialogue_changement_01_f
+commentatrice_dialogue_changement_01
 commentateur_dialogue_balle_de_match_01
 commentateur_dialogue_balle_de_match_01_f
 commentatrice_dialogue_balle_de_match_01
+commentateur_dialogue_fin_match_02
+commentatrice_dialogue_fin_match_02
+commentateur_dialogue_fin_match_03
+commentateur_dialogue_fin_match_03_f
+commentatrice_dialogue_fin_match_03
+commentatrice_dialogue_fin_match_03_f
 # La mémoire des matchs précédents, la fin du deuxième lot : 14 répliques, environ 1 460 crédits.
 commentateur_memoire_change_ouverture_01
 commentateur_memoire_change_ouverture_01_f

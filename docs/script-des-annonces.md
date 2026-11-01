@@ -116,7 +116,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (518 répliques)
+## Commentateur — vif, enthousiaste, plein de références (539 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -240,6 +240,9 @@ restent lus par la voix de synthèse.
 | `commentateur_obstination_05_ciseaux.mp3` | Ciseaux, ciseaux, ciseaux, ciseaux, ciseaux ! |
 | `commentateur_obstination_05_feuille.mp3` | Des feuilles, des feuilles, des feuilles, des feuilles, des feuilles ! |
 | `commentateur_changement_01.mp3` | Le changement, c'est maintenant ! |
+| `commentateur_changement_02.mp3` | Il change enfin de signe ! |
+| `commentateur_changement_02_f.mp3` | Elle change enfin de signe ! |
+| `commentateur_changement_03.mp3` | Magnifique dégagement ! |
 | `commentateur_duel_esprits_01.mp3` | Ils se lisent dans les pensées ! |
 | `commentateur_duel_esprits_03.mp3` | Surplace sur la piste ! Personne ne veut lancer le sprint ! |
 | `commentateur_duel_esprits_04.mp3` | Coude à coude ! Impossible de les séparer ! |
@@ -394,9 +397,21 @@ restent lus par la voix de synthèse.
 | `commentateur_beau_coup_09_f.mp3` | Elle vient de raccourcir les ambitions de son rival ! |
 | `commentateur_beau_coup_10.mp3` | La feuille est en deux, et les espoirs aussi ! |
 | `commentateur_beau_coup_11.mp3` | Et c'est le coup du millefeuille ! |
+| `commentateur_beau_coup_12.mp3` | La Feuille enveloppe tout ! |
+| `commentateur_beau_coup_13.mp3` | Un coup tout en douceur ! La Feuille a parlé ! |
+| `commentateur_trois_feuilles_01.mp3` | Trois Feuilles gagnantes ! Il écrit son roman ! |
+| `commentateur_trois_feuilles_01_f.mp3` | Trois Feuilles gagnantes ! Elle écrit son roman ! |
 | `commentateur_premiere_egalite_01.mp3` | Premier coup… même signe ! Ils se neutralisent ! |
+| `commentateur_premiere_egalite_02.mp3` | Même idée dès le premier coup ! Ça promet ! |
 | `commentateur_apres_egalites_gagne_01.mp3` | Une feinte, une parade, une riposte ! Quel échange ! |
+| `commentateur_apres_egalites_gagne_02.mp3` | Il a fini par trouver la faille ! |
+| `commentateur_apres_egalites_gagne_02_f.mp3` | Elle a fini par trouver la faille ! |
+| `commentateur_apres_egalites_gagne_03.mp3` | Enfin ! Le duel d'esprits a un vainqueur ! |
+| `commentateur_apres_egalites_gagne_04.mp3` | Il a lu dans ses pensées ! |
+| `commentateur_apres_egalites_gagne_04_f.mp3` | Elle a lu dans ses pensées ! |
 | `commentateur_apres_egalites_perdu_01.mp3` | Oh, la feinte de la feinte de la feinte… ça a failli passer ! |
+| `commentateur_apres_egalites_perdu_02.mp3` | Le duel d'esprits a tourné court ! |
+| `commentateur_premier_point_perdu_01.mp3` | Premier point pour l'adversaire ! Rien n'est joué ! |
 | `commentateur_avant_seul_01.mp3` | Affrontement sous haute tension ! |
 | `commentateur_avant_seul_02.mp3` | Les deux joueurs entrent dans l'arène. Pas un sourire. Pas un regard de trop. |
 | `commentateur_avant_seul_03.mp3` | Les mains sont prêtes, les esprits sont affûtés. Le spectacle peut commencer ! |
@@ -419,6 +434,9 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_avant_match_13.mp3` | Les deux joueurs se regardent droit dans les yeux… |
 | `commentateur_dialogue_avant_match_14.mp3` | Échauffement terminé, les mains sont prêtes ! |
 | `commentateur_dialogue_avant_match_15.mp3` | Un conseil pour nos joueurs, Madame ? |
+| `commentateur_dialogue_premiere_egalite_01.mp3` | Premier coup, première égalité ! |
+| `commentateur_dialogue_changement_01.mp3` | Il casse enfin la série ! |
+| `commentateur_dialogue_changement_01_f.mp3` | Elle casse enfin la série ! |
 | `commentateur_dialogue_balle_de_match_01.mp3` | Une victoire le sépare de l'immortalité ! |
 | `commentateur_dialogue_balle_de_match_01_f.mp3` | Une victoire la sépare de l'immortalité ! |
 | `commentateur_dialogue_avant_bot_01.mp3` | Un humain contre une machine, Madame ! |
@@ -632,6 +650,9 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_titre_01.mp3` | Madame, c'est historique ! |
 | `commentateur_dialogue_fin_match_01.mp3` | Il n'a pas démérité ! |
 | `commentateur_dialogue_fin_match_01_f.mp3` | Elle n'a pas démérité ! |
+| `commentateur_dialogue_fin_match_02.mp3` | Quel combat, Madame ! |
+| `commentateur_dialogue_fin_match_03.mp3` | Il peut sortir la tête haute ! |
+| `commentateur_dialogue_fin_match_03_f.mp3` | Elle peut sortir la tête haute ! |
 | `commentateur_dialogue_cri_01.mp3` | Ah, il y a de la voix ! |
 | `commentateur_dialogue_cri_02.mp3` | Il a craqué son slip ! |
 | `commentateur_dialogue_cri_02_f.mp3` | Elle a craqué son slip ! |
@@ -639,7 +660,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (455 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (478 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -717,6 +738,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_obstination_08.mp3` | Quand on veut, on peut. Quand on peut, on choisit Pierre, apparemment. |
 | `commentatrice_obstination_09.mp3` | Mieux vaut une Feuille en main que deux Ciseaux dans le pot. C'est sa philosophie. |
 | `commentatrice_obstination_10.mp3` | Allô ? Non mais allô, quoi ! |
+| `commentatrice_changement_01.mp3` | Il a changé. Il était temps. |
+| `commentatrice_changement_01_f.mp3` | Elle a changé. Il était temps. |
+| `commentatrice_changement_02.mp3` | Une autre idée. Enfin. |
 | `commentatrice_duel_esprits_01.mp3` | Deux esprits. Une seule idée. Jamais la bonne. |
 | `commentatrice_duel_esprits_02.mp3` | On pourrait rester là toute la nuit. Je préférerais éviter. |
 | `commentatrice_duel_esprits_03.mp3` | Une partie d'échecs à trois pièces. Sans les échecs. |
@@ -860,8 +884,23 @@ restent lus par la voix de synthèse.
 | `commentatrice_beau_coup_06_f.mp3` | Certains écrivent l'histoire, elle la découpe aux ciseaux. |
 | `commentatrice_beau_coup_07.mp3` | Il vient de mettre son adversaire sous pli. |
 | `commentatrice_beau_coup_07_f.mp3` | Elle vient de mettre son adversaire sous pli. |
+| `commentatrice_beau_coup_08.mp3` | Une feuille. Et la pierre n'y peut rien. |
+| `commentatrice_beau_coup_09.mp3` | Emballé, c'est pesé. |
 | `commentatrice_trois_pierres_01.mp3` | Pierre qui roule n'amasse pas mousse. |
+| `commentatrice_trois_ciseaux_01.mp3` | Trois Ciseaux, trois points. Le coiffeur est en forme. |
+| `commentatrice_trois_feuilles_01.mp3` | Trois Feuilles, trois points. On tourne la page. |
+| `commentatrice_premiere_egalite_01.mp3` | Ça commence bien. Enfin, ça ne commence pas. |
+| `commentatrice_premiere_egalite_02.mp3` | Premier coup, premier match nul. |
+| `commentatrice_apres_egalites_gagne_01.mp3` | Il fallait bien que quelqu'un se décide. |
+| `commentatrice_apres_egalites_gagne_02.mp3` | La patience a payé. Pour une fois. |
+| `commentatrice_apres_egalites_perdu_01.mp3` | Il a cligné le premier. |
+| `commentatrice_apres_egalites_perdu_01_f.mp3` | Elle a cligné la première. |
+| `commentatrice_apres_egalites_perdu_02.mp3` | À force d'attendre, il s'est fait prendre. |
+| `commentatrice_apres_egalites_perdu_02_f.mp3` | À force d'attendre, elle s'est fait prendre. |
+| `commentatrice_apres_egalites_perdu_03.mp3` | L'autre a tenu un coup de plus. |
 | `commentatrice_premier_point_perdu_01.mp3` | L'ouverture de Kolodrov, 1956… mais ça ne lui sourit pas. |
+| `commentatrice_premier_point_perdu_02.mp3` | Un mauvais départ. Il reste du temps. Heureusement. |
+| `commentatrice_premier_point_perdu_03.mp3` | Ça commence mal. On a déjà vu pire. Rarement. |
 | `commentatrice_avant_seul_01.mp3` | Ce soir, il n'y aura qu'un vainqueur. Et probablement un mauvais perdant. |
 | `commentatrice_avant_seul_02.mp3` | Deux joueurs, trois signes, un seul objectif : humilier son prochain. |
 | `commentatrice_avant_seul_03.mp3` | Ce soir, on ne règle pas ses comptes. On les découpe. |
@@ -890,6 +929,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_avant_match_13.mp3` | Ils regardent leur téléphone, Roland. |
 | `commentatrice_dialogue_avant_match_14.mp3` | On s'échauffe les mains, maintenant. On aura tout vu. |
 | `commentatrice_dialogue_avant_match_15.mp3` | Ne jouez pas Pierre. Ou jouez Pierre. Je ne sais plus. |
+| `commentatrice_dialogue_premiere_egalite_01.mp3` | Et pas la dernière, à mon avis. |
+| `commentatrice_dialogue_changement_01.mp3` | Oui. Dégagement très propre. |
 | `commentatrice_dialogue_balle_de_match_01.mp3` | Enfin… de la victoire du jour. Restons mesurés. |
 | `commentatrice_dialogue_avant_bot_01.mp3` | La machine a l'air plus détendue. |
 | `commentatrice_dialogue_memoire_meme_ouverture_01.mp3` | Ou quel manque d'imagination. On saura à la fin du match. |
@@ -1094,6 +1135,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_set_decisif_01.mp3` | Un set pour ce soir. Ce sera déjà bien. |
 | `commentatrice_dialogue_titre_01.mp3` | Pas d'enflammade. Pas d'enflammade. |
 | `commentatrice_dialogue_fin_match_01.mp3` | Si. Un peu quand même. |
+| `commentatrice_dialogue_fin_match_02.mp3` | Un combat. Perdu. Mais un combat. |
+| `commentatrice_dialogue_fin_match_03.mp3` | Il peut sortir. C'est déjà ça. |
+| `commentatrice_dialogue_fin_match_03_f.mp3` | Elle peut sortir. C'est déjà ça. |
 | `commentatrice_dialogue_cri_01.mp3` | On l'avait entendu. |
 | `commentatrice_dialogue_cri_02.mp3` | Attention que ça ne vous arrive pas. |
 | `commentatrice_dialogue_cri_03.mp3` | La prochaine fois, prévoyez les boules Quies. |
