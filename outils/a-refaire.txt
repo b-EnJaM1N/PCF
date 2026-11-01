@@ -1,5 +1,5 @@
 # Les répliques à refaire avec le robot « Voix » (choix « liste ») : un identifiant par ligne. Les lignes en # sont ignorées.
-# La banque de commentaires du porteur du projet, avec les compléments et les smashs du 1er novembre : 193 répliques.
+# La banque de commentaires du porteur du projet, avec les compléments et les smashs du 1er novembre : 215 répliques.
 commentateur_craquage_10
 commentateur_craquage_11
 commentateur_craquage_11_f
@@ -157,6 +157,28 @@ commentateur_smash_reussi_04
 commentatrice_smash_reussi_01
 commentatrice_smash_reussi_02
 commentatrice_smash_reussi_02_f
+commentateur_smash_reussi_05
+commentateur_smash_reussi_06
+commentateur_smash_reussi_06_f
+commentateur_smash_reussi_07
+commentateur_smash_reussi_08
+commentateur_smash_reussi_08_f
+commentateur_smash_reussi_09
+commentateur_smash_reussi_09_f
+commentateur_smash_reussi_10
+commentateur_smash_reussi_10_f
+commentatrice_smash_reussi_03
+commentatrice_smash_reussi_04
+commentatrice_smash_reussi_05
+commentatrice_smash_reussi_05_f
+commentatrice_smash_reussi_06
+commentateur_smash_reussi_11
+commentatrice_smash_reussi_07
+commentateur_smash_reussi_12
+commentateur_smash_reussi_12_f
+commentatrice_smash_reussi_08
+commentateur_smash_reussi_13
+commentatrice_smash_reussi_09
 commentateur_smash_sonne_01
 commentateur_smash_sonne_01_f
 commentateur_smash_sonne_02

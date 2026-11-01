@@ -116,7 +116,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (554 répliques)
+## Commentateur — vif, enthousiaste, plein de références (568 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -423,6 +423,20 @@ restent lus par la voix de synthèse.
 | `commentateur_smash_reussi_02_f.mp3` | Elle a tout mis dans ce coup ! |
 | `commentateur_smash_reussi_03.mp3` | Le smash est passé ! Imparable ! |
 | `commentateur_smash_reussi_04.mp3` | Ça, c'est un coup de massue ! |
+| `commentateur_smash_reussi_05.mp3` | Avec autorité ! |
+| `commentateur_smash_reussi_06.mp3` | Il monte au filet, et ça paye ! |
+| `commentateur_smash_reussi_06_f.mp3` | Elle monte au filet, et ça paye ! |
+| `commentateur_smash_reussi_07.mp3` | C'est le point du K.-O. ! |
+| `commentateur_smash_reussi_08.mp3` | Il éteint son adversaire ! |
+| `commentateur_smash_reussi_08_f.mp3` | Elle éteint son adversaire ! |
+| `commentateur_smash_reussi_09.mp3` | Il fait montre de tout son talent ! |
+| `commentateur_smash_reussi_09_f.mp3` | Elle fait montre de tout son talent ! |
+| `commentateur_smash_reussi_10.mp3` | Il est en train de rentrer dans la tête de son adversaire ! |
+| `commentateur_smash_reussi_10_f.mp3` | Elle est en train de rentrer dans la tête de son adversaire ! |
+| `commentateur_smash_reussi_11.mp3` | La feuille A4 ! Format grand smash ! |
+| `commentateur_smash_reussi_12.mp3` | La cisaille ! Il a tout tranché ! |
+| `commentateur_smash_reussi_12_f.mp3` | La cisaille ! Elle a tout tranché ! |
+| `commentateur_smash_reussi_13.mp3` | Le rocher dévale ! Rien ne l'arrête ! |
 | `commentateur_smash_sonne_01.mp3` | Il est sonné ! Il cherche ses repères ! |
 | `commentateur_smash_sonne_01_f.mp3` | Elle est sonnée ! Elle cherche ses repères ! |
 | `commentateur_smash_sonne_02.mp3` | Il titube ! Il est groggy ! |
@@ -675,7 +689,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (493 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (501 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -930,6 +944,14 @@ restent lus par la voix de synthèse.
 | `commentatrice_smash_reussi_01.mp3` | Un smash. Et un adversaire en morceaux. |
 | `commentatrice_smash_reussi_02.mp3` | Il a frappé fort. Pour une fois, il a frappé juste. |
 | `commentatrice_smash_reussi_02_f.mp3` | Elle a frappé fort. Pour une fois, elle a frappé juste. |
+| `commentatrice_smash_reussi_03.mp3` | Un point d'exclamation sur sa victoire. |
+| `commentatrice_smash_reussi_04.mp3` | Retour à l'école pour son adversaire ! |
+| `commentatrice_smash_reussi_05.mp3` | Il amuse la galerie. |
+| `commentatrice_smash_reussi_05_f.mp3` | Elle amuse la galerie. |
+| `commentatrice_smash_reussi_06.mp3` | Celui-là, c'était pour les photographes. |
+| `commentatrice_smash_reussi_07.mp3` | Une feuille A4. Pliée en quatre, l'adversaire. |
+| `commentatrice_smash_reussi_08.mp3` | La cisaille. Net et sans bavure. |
+| `commentatrice_smash_reussi_09.mp3` | Un rocher. L'adversaire ne s'en relèvera pas tout de suite. |
 | `commentatrice_smash_sonne_01.mp3` | Il voit des étoiles. Moi aussi, parfois. |
 | `commentatrice_smash_sonne_01_f.mp3` | Elle voit des étoiles. Moi aussi, parfois. |
 | `commentatrice_smash_sonne_02.mp3` | Comptez jusqu'à quatre. Il revient. |
