@@ -5,7 +5,7 @@
 // (plus vite quand le match est chaud) et chaque commentaire la vide. Ils se taisent donc la
 // plupart du temps, et leurs dialogues sont réservés aux temps morts (fin de set, fin de match).
 // Ils parlent toujours du joueur côté jaune (celui qui tient le téléphone) : « il » ou « elle ».
-import { COTE, ecartRequis, pointDecisif } from "./regles.js";
+import { COTE, ecartRequis, pointDecisif, issueSmash } from "./regles.js";
 import { lectureReussie, indiceImprevisibilite } from "./analyse.js";
 import {
   replique, repliqueScore, repliquePartout, ORDINAUX, slug,
@@ -82,7 +82,8 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
   // Les jeux de mots sur un signe (« seul ») ne se disent que si le joueur vient de jouer ce signe.
   let valides = pool.filter(e => !etat.dits.has(e.base) && (!e.si || CONDITIONS[e.si]?.(ctx, etat)) && (e.seul === undefined || e.seul === ctx.signe) && (!e.quand || e.quand === ctx.quand) && (e.clin !== "cine" || !etat.cine)
     // (une série : les répliques écrites pour sa longueur, 8 voulant dire « 8 ou plus » ; un set gagné de 5 points : seulement « net »)
-    && (e.long === undefined || e.long === ctx.longueur || (e.long === 8 && ctx.longueur >= 8)) && (!ctx.net5 || e.net));
+    && (e.long === undefined || e.long === ctx.longueur || (e.long === 8 && ctx.longueur >= 8)) && (!ctx.net5 || e.net)
+    && (!ctx.smashAdv || !e.deMoi));   // (le smash de l'adversaire : pas les phrases qui parlent du smasheur comme de moi)
   // Seulement ce qu'on peut entendre : une réplique enregistrée (etat.audible) et, pendant l'échange (ctx.court), assez courte
   // pour être dite (voir REPLIQUE_COURTE dans app.js) ; sinon, une autre réplique plutôt qu'un silence.
   const ligne = e => ligneMoment(e, { genre: etat.genre, signe: ctx.signe ?? 0, signeAdv: ctx.signeAdv ?? 0 });
@@ -141,7 +142,8 @@ function dialogue(etat, moment, rng) {
 // Renvoie { lignes, commentaire, dialogue, public, ambiance } :
 //   lignes : tout ce qui est dit, dans l'ordre (arbitre, puis commentaire ou dialogue)
 //   commentaire : la réplique pendant le jeu ; dialogue : les répliques du temps mort (fin de set, de match)
-export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = {}, rng = Math.random) {
+// smash : qui a smashé ce coup ([moi, l'adversaire]).
+export function annoncerCoup(match, evt, etat, { recents = [], auto = false, smash = [false, false] } = {}, rng = Math.random) {
   const lignes = [], n = match.coups.length, len = match.format.pointsParSet, court = ecartRequis(len) === 1;   // sets de 3 et 1 point
   const c = match.coups, dernier = c[n - 1];
   let pub = null, commentaire = null, dialogueFin = [];
@@ -251,6 +253,16 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false } = 
     const neuve = ds && (ECOLES_REGULIERES.includes(`figure_${f}`) ? ds : ds.slice(0, 1)).some(d => !etat.anciens?.has(baseDe(d[0])));
     const d = neuve && rng() < 0.4 && dialogue(etat, `figure_${f}`, rng);
     if (d) { dialogueFin = d; etat.figures++; etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
+  }
+  // Le smash passe avant tout le reste (8 fois sur 10) : réussi (l'adversaire est sonné), sonné (le smash réussi de l'adversaire),
+  // raté, bloqué (égalité), ou double. Pas sur la balle de match gagnée : le commentaire de fin de match a la place.
+  const issue = issueSmash(smash, evt.gagnant);
+  if (issue && !evt.finMatch && rng() < 0.8) {
+    const smasheur = smash[0] ? 0 : 1;
+    moment = smash[0] && smash[1] ? "smash_double" : issue === "gagne" ? (evt.gagnant === 0 ? "smash_reussi" : "smash_sonne")
+      : issue === "bloque" ? "smash_bloque" : "smash_rate";
+    ctx.smashAdv = smasheur === 1 && !(smash[0] && smash[1]);
+    if (!evt.finSet) dialogueFin = [];
   }
   if (moment) {
     commentaire = choisir(etat, moment, ctx, rng);
