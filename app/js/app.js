@@ -1273,7 +1273,7 @@ function presenterSpeaker() {
     moi: { surnom: surnomDe(P), genre: P.genre, etiquette: etiquetteDe(P, { advId: OPP.id, niveauMoi, niveauAdv }) },
     adv: humain ? { surnom: OPP.surnom, genre: OPP.genre, etiquette: etiquetteDe(OPP.fiche, { advId: monId, niveauMoi: niveauAdv, niveauAdv: niveauMoi }) } : { bot: OPP.id },
     tour: S.duel ? D?.tourCommente ?? null : S.tour !== null && T ? tourDe(T, S.tour).cle : null, sng: !!(S.duel && D?.sng),
-    humain, domination: !!(f && f.d >= f.v + 3), genre: P.genre, jeu: S.annonces?.jeu ?? null, audible,
+    humain, genre: P.genre, jeu: S.annonces?.jeu ?? null, audible,
     memoire: commentaireMemoire(S.memoire, { genreMoi: P.genre, genreAdv, audible }),
     situations: situationsDuMatch({
       humain, dejaJoues: !!(f && f.v + f.d > 0), niveauMoi, niveauAdv, memePays: humain && OPP.drapeau === P.drapeau,
