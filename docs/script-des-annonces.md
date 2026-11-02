@@ -693,7 +693,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (506 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (504 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -783,7 +783,6 @@ restent lus par la voix de synthèse.
 | `commentatrice_duel_esprits_05_ciseaux_f.mp3` | Elle n'a pas le monopole des Ciseaux. |
 | `commentatrice_duel_esprits_05_feuille.mp3` | Il n'a pas le monopole de la Feuille. |
 | `commentatrice_duel_esprits_05_feuille_f.mp3` | Elle n'a pas le monopole de la Feuille. |
-| `commentatrice_duel_esprits_06.mp3` | Laissez du temps au temps. |
 | `commentatrice_duel_esprits_07.mp3` | Ennuyeux. |
 | `commentatrice_duel_esprits_08.mp3` | Ils ont exactement la même idée. Inquiétant. |
 | `commentatrice_duel_esprits_09.mp3` | Personne ne veut prendre de risque aujourd'hui. |
@@ -871,7 +870,6 @@ restent lus par la voix de synthèse.
 | `commentatrice_defaite_08.mp3` | Il a le seum. Comme disent les jeunes. |
 | `commentatrice_defaite_08_f.mp3` | Elle a le seum. Comme disent les jeunes. |
 | `commentatrice_defaite_09.mp3` | Le vainqueur repart avec la gloire. Le vaincu repart avec une remise en question existentielle. |
-| `commentatrice_domination_01.mp3` | Je suis ton père. |
 | `commentatrice_memoire_ouverture_01_pierre.mp3` | Il avait ouvert avec la Pierre la dernière fois. Il a peut-être appris. Peut-être. |
 | `commentatrice_memoire_ouverture_01_pierre_f.mp3` | Elle avait ouvert avec la Pierre la dernière fois. Elle a peut-être appris. Peut-être. |
 | `commentatrice_memoire_ouverture_01_ciseaux.mp3` | Il avait ouvert avec les Ciseaux la dernière fois. Il a peut-être appris. Peut-être. |
