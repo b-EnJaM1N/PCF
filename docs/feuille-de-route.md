@@ -78,8 +78,8 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
         Cercle et championnat, Carrière solo ; **le smash reste un secret**, pas de tuto) : la première fois qu'un écran s'ouvre, 2 à 4
         bulles l'une après l'autre (le bouton dans un cadre, le reste assombri ; « Suivant », « Passer »), une seule fois chacun :
         Défier un ami (recherche, lien), la fenêtre Défier (format, officiel, enjeu, envoyer), Amis et cercles, la page d'un cercle
-        (inviter, classement, tournoi), Organiser un championnat, la Carrière (une fois commencée). Jamais pendant un match ni
-        par-dessus une autre fenêtre. Options › 🎓 Les tutos › « Revoir les tutos ». Chacun peut devenir une vidéo courte.
+        (inviter, classement, tournoi), Organiser un championnat, la Carrière. Jamais pendant un match ni
+        par-dessus une autre fenêtre. Options › 🎓 Les tutos : un bouton par tuto (Défier un ami, Amis et cercles, Carrière solo) qui ouvre son écran et le remontre tout de suite, et « Tout revoir ». Chacun peut devenir une vidéo courte.
      2. **Des cercles plus vivants** (classement de la semaine, joueur de la semaine, invitation en 2 gestes), pour les lycéens
         et les adultes : avant 15 ans, accord des parents pour les données et règles Google « Familles » à vérifier avant de viser
         les collégiens.

@@ -46,7 +46,7 @@ export const TUTOS = [
     ],
   },
   {
-    id: "carriere", nom: "Carrière solo", quand: ["#viewCarriere", "#carOnglets"],
+    id: "carriere", nom: "Carrière solo", quand: ["#viewCarriere"],
     etapes: [
       { cible: "#carEntete", texte: "🏅 5 circuits, de l'Amateur à l'Élite : chaque saison, les 2 finalistes des playoffs montent au circuit du dessus." },
       { cible: "#carJouer", texte: "▶️ Ton prochain match. Joue quand tu veux, autant que tu veux." },
@@ -123,5 +123,6 @@ export function installerTutos({ lire, ecrire, occupe = () => false }) {
   }
   new MutationObserver(planifier).observe(document.body, { subtree: true, attributes: true, attributeFilter: ["hidden"] });
   planifier();
-  return { revoir() { ecrire(CLE, []); } };
+  // revoir() : tous les tutos ; revoir(id) : celui-là seulement.
+  return { revoir(id) { ecrire(CLE, id ? (lire(CLE, []) || []).filter(x => x !== id) : []); planifier(); } };
 }

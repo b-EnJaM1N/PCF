@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { TUTOS, tutoAMontrer, etapesVisibles } from "../app/js/tutos.js";
 
 test("tutos : chacun une fois, seulement quand son écran est affiché ; pas de tuto du smash (il reste un secret)", () => {
-  const ecran = new Set(["#viewCarriere", "#carOnglets"]);
+  const ecran = new Set(["#viewCarriere"]);
   const visible = sel => ecran.has(sel) || sel.startsWith("#car");
   assert.equal(tutoAMontrer([], visible).id, "carriere");
   assert.equal(tutoAMontrer(["carriere"], visible), null, "déjà vu : plus montré");
