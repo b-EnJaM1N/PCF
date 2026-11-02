@@ -12,7 +12,7 @@ import {
   POOLS, ligneMoment, DIALOGUES_IDS, ligneDialogue, ligneSpeaker, nbSpeaker, ligneJournaliste, CATALOGUE,
 } from "./voix/script.js";
 import { JOURNALISTE, REPONSES_INTERVIEW, REPONSES_DEFAITE } from "./voix/repliques.js";
-import { idPartie } from "./surnoms.js";
+import { repliqueSurnom } from "./surnom-voix.js";
 
 const RESERVE_MAX = 2;
 // Pendant l'échange, seules les répliques assez courtes pour tenir entre deux coups sont dites (voir app.js, même valeur).
@@ -463,7 +463,8 @@ export function situationsDuMatch({ humain = false, dejaJoues = false, niveauMoi
 const RARES = ["revanche", "david_goliath", "compatriotes", "coude_a_coude", "nuit", "matin", "partie_rapide"];
 
 const TOURS = ["huitiemes", "quarts", "demis", "finale"];
-const partiesSurnom = s => (s ? [CATALOGUE.get(idPartie(s.nom)), CATALOGUE.get(idPartie(s.complement))] : []);
+// Le surnom, dit d'un trait par Roland (voir surnom-voix.js).
+const partiesSurnom = s => (s ? [repliqueSurnom(s)] : []);
 
 // moi, adv : { surnom (voir surnomDe), genre, etiquette, bot (id d'un bot) }.
 // tour : "huitiemes", "quarts", "demis", "finale" (ou null) ; sng : premier tour d'un Sit & Go.
@@ -499,7 +500,7 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
     sp.push(...partiesSurnom(adv.surnom));
   }
   if (humain && moi.surnom && adv.surnom && moi.surnom.texte === adv.surnom.texte) sp.push(dire("miroir"));
-  // La présentation par Roland (avant ses commentaires) : « Côté jaune, on retrouve… La Quiche… du PMU… Et en face… Tic-Tac ! »
+  // La présentation par Roland (avant ses commentaires) : « Côté jaune, on retrouve… La Quiche du PMU ! Et en face… Tic-Tac ! »
   const bot = adv.bot && CATALOGUE.get(`speaker_bot_${adv.bot}_01`);
   const presentation = [dire("presente_jaune"), ...partiesSurnom(moi.surnom), dire("presente_rouge"), ...(bot ? [bot] : partiesSurnom(adv.surnom))];
   const fin = r => ({ ...r, presentation: moi.surnom && (bot || adv.surnom) && presentation.every(Boolean) ? presentation : [] });

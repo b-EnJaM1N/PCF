@@ -37,7 +37,7 @@ export class LecteurVoix {
 
   get syntheseDisponible() { return !!synth; }
   // Cette réplique sera-t-elle entendue ?
-  peutDire(r) { return this.actif && !this.rolesCoupes.has(r.role) && (this.fichiers.has(r.id) || (this.synthese && !!synth)); }
+  peutDire(r) { return this.actif && !this.rolesCoupes.has(r.role) && (!!r.url || this.fichiers.has(r.id) || (this.synthese && !!synth)); }
   get nbVoix() { return synth ? synth.getVoices().length : 0; }
 
   // Charge la liste des répliques enregistrées. Sans elle, tout passe par la synthèse.
@@ -85,7 +85,7 @@ export class LecteurVoix {
       const r = repliques[i];
       const debut = () => { if (premiere) { premiere = false; auDebut?.(); } };
       const fin = () => suivante(i + 1);
-      const audio = this.audio(r.id);
+      const audio = r.url ? this.audioUrl(r.url) : this.audio(r.id);   // (url : un surnom, hors de app/audio/)
       if (audio) {
         audio.volume = VOLUMES[r.role] ?? 0.8;
         audio.preservesPitch = audio.mozPreservesPitch = audio.webkitPreservesPitch = true;
@@ -103,6 +103,14 @@ export class LecteurVoix {
     if (!this.fichiers.has(id)) return null;
     let a = this.fichiers.get(id);
     if (!a) { a = new Audio(); a.preload = "auto"; a.src = `${this.dossier}${id}.mp3`; this.fichiers.set(id, a); }
+    return a;
+  }
+
+  // Un fichier hors de app/audio/ (les surnoms, dans le stockage de Supabase).
+  audioUrl(url) {
+    this.externes ??= new Map();
+    let a = this.externes.get(url);
+    if (!a) { a = new Audio(); a.preload = "auto"; a.src = url; this.externes.set(url, a); }
     return a;
   }
 
