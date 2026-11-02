@@ -42,6 +42,8 @@ import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerProgrammes } from "./ecran-programmes.js";
 import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
 import { installerTutos } from "./tutos.js";
+import { demanderSurnom, fichierPresent } from "./surnom-voix.js";
+import { clientSupabase } from "./compte.js";
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
@@ -1276,9 +1278,14 @@ function presenterSpeaker() {
   // On retient les phrases dites, pour ne pas les répéter aux prochains matchs.
   ecrire("speakerRecents", av.commentaires.map(l => l.id).concat(recents).slice(0, 80));
   clearTimeout(voixIntro);
-  // Roland présente d'abord les deux joueurs par leur surnom, seulement si tout est enregistré (pas de surnom à moitié dit).
-  const presentation = av.presentation.length && av.presentation.every(l => voix.fichiers.has(l.id)) ? av.presentation : [];
-  voixIntro = setTimeout(() => { if (faceAFaceOuvert && !S.passe) voix.dire([...presentation, ...av.commentaires]); }, reduitMouvement() ? 0 : 1300);
+  // Roland présente d'abord les deux joueurs par leur surnom (dit d'un trait), seulement si tout est enregistré. Mon surnom
+  // pas encore enregistré : on le demande (joueur connecté), il sera prêt au match suivant.
+  if (compteUI?.session()?.user) demanderSurnom(surnomDe(P), clientSupabase());
+  const pret = Promise.all(av.presentation.map(l => (l.url ? fichierPresent(l.url) : voix.fichiers.has(l.id))));
+  voixIntro = setTimeout(async () => {
+    const ok = av.presentation.length > 0 && (await pret).every(Boolean);
+    if (faceAFaceOuvert && !S.passe) voix.dire([...(ok ? av.presentation : []), ...av.commentaires]);
+  }, reduitMouvement() ? 0 : 1300);
 }
 // Les nombres défilent jusqu'à leur valeur, comme au tableau d'affichage.
 function compter(el) {

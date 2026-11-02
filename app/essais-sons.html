@@ -24,45 +24,15 @@
 <main class="essais">
   <p><a href="./">← Retour à HandSlam</a></p>
   <h1>🎧 Essais de sons du public</h1>
-  <p class="intro">Les encouragements du public : pour chaque cri, deux versions (1 : un homme, 2 : une femme). Touche une version pour l'écouter (volumes déjà égalisés entre
-    elles). Pour choisir, dis simplement par exemple « Come on : la 1 ; Vamos : aucune ».</p>
-  <h2>🎙️ Les surnoms dits par Roland (essai)</h2>
-  <p class="intro">Les morceaux enchaînés comme dans le jeu, à la même vitesse.</p>
-  <div class="rang" id="surnoms"></div>
+  <p class="intro">Pour chaque son, plusieurs versions candidates. Touche une version pour l'écouter (volumes déjà égalisés entre
+    elles). Pour choisir, dis simplement par exemple « la 1 ; aucune ».</p>
   <div id="liste"></div>
 </main>
 <script type="module">
   // Les candidats (outils/sons-candidats.json), générés dans audio/essais/ par le robot « Voix », choix « sons-candidats ».
-  const GROUPES = [
-    ["🇬🇧 « Come on ! »", "come_on"],
-    ["🇪🇸 « Vamos ! »", "vamos"],
-    ["📣 « Allez, on y croit ! »", "on_y_croit"],
-    ["💪 « Lâche rien ! »", "lache_rien"],
-  ];
+  // (aucun essai en cours : les cris du 2 novembre n'ont pas été retenus)
+  const GROUPES = [];
   let enCours = null;
-  // Les surnoms : les morceaux du rôle « speaker » (voix de Roland), lus à la suite, à la vitesse et au volume du jeu.
-  const SEQUENCES = [
-    ["La Quiche du PMU contre Tic-Tac", ["speaker_presente_jaune_01", "speaker_surnom_la_quiche_01", "speaker_surnom_du_pmu_01", "speaker_presente_rouge_01", "speaker_bot_tictac_01"]],
-    ["Le Menhir de Béton", ["speaker_surnom_le_menhir_01", "speaker_surnom_de_beton_01"]],
-    ["L'Ouragan de l'Apéro", ["speaker_surnom_l_ouragan_01", "speaker_surnom_de_l_apero_01"]],
-    ["La Quiche de Béton", ["speaker_surnom_la_quiche_01", "speaker_surnom_de_beton_01"]],
-    ["« La finaaale »", ["speaker_finale_01"]],
-  ];
-  let suite = 0;
-  for (const [titre, ids] of SEQUENCES) {
-    const b = document.createElement("button"); b.textContent = `▶ ${titre}`;
-    b.addEventListener("click", () => {
-      if (enCours) { enCours.audio.pause(); enCours.b.classList.remove("joue"); }
-      const n = ++suite;
-      const jouer = k => {
-        if (n !== suite || k >= ids.length) { b.classList.remove("joue"); return; }
-        const audio = new Audio(`audio/${ids[k]}.mp3`); audio.volume = 0.5; audio.playbackRate = 1.25;
-        enCours = { audio, b }; audio.addEventListener("ended", () => jouer(k + 1)); audio.play();
-      };
-      b.classList.add("joue"); jouer(0);
-    });
-    document.getElementById("surnoms").append(b);
-  }
   const liste = document.getElementById("liste");
   for (const [titre, cle] of GROUPES) {
     const h = document.createElement("h2"); h.textContent = titre; liste.append(h);
