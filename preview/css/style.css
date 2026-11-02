@@ -911,3 +911,14 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .enjeu-cartes button { font: inherit; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 6px; border-radius: 12px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: inherit; font-size: .85rem; cursor: pointer; text-align: center; }
 .enjeu-cartes button span { font-size: 1.8rem; line-height: 1; }
 .enjeu-bandeau { margin: 0 0 8px; padding: 8px 12px; border-radius: 10px; text-align: center; font-weight: 600; background: rgba(244, 197, 66, .14); border: 1px solid rgba(244, 197, 66, .55); }
+
+/* Les tutos (app/js/tutos.js) : le bouton montré dans un cadre, le reste assombri, une bulle d'explication. */
+.tuto-fond { position: fixed; inset: 0; z-index: 60; }
+.tuto-cadre { position: fixed; border: 2px solid var(--me); border-radius: 10px; box-shadow: 0 0 0 200vmax rgba(5, 15, 30, .72);
+  transition: left .25s, top .25s, width .25s, height .25s; pointer-events: none; }
+.tuto-bulle { position: fixed; left: 16px; right: 16px; max-width: 420px; margin: 0 auto; background: var(--court-deep); color: var(--line);
+  border: 2px solid var(--me); border-radius: 12px; padding: 14px 16px 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, .5); transition: top .25s; }
+.tuto-bulle p { margin: 0 0 12px; line-height: 1.4; }
+.tuto-actions { display: flex; align-items: center; justify-content: flex-end; gap: 14px; }
+.tuto-actions .btn { width: auto; margin: 0; padding: 10px 18px; }
+@media (prefers-reduced-motion: reduce) { .tuto-cadre, .tuto-bulle { transition: none; } }
