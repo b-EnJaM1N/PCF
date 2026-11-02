@@ -493,7 +493,8 @@ function apresPoint(evt, a, cel, rp) {
   if (m.termine) {
     const seance = S;
     S.pauseFin = true; render();
-    setTimeout(() => { if (S === seance) criEnGrand(cel, () => poigneeDeMain(finir)); }, reduitMouvement() ? 900 : 1800);
+    // (la poignée de main attend que le commentaire de fin de match soit fini : demande du porteur du projet, 25 octobre)
+    setTimeout(() => { if (S === seance) criEnGrand(cel, () => voix.finiDeParler(() => { if (S === seance) poigneeDeMain(finir); })); }, reduitMouvement() ? 900 : 1800);
     return evt;
   }
   if (cel) setTimeout(() => criEnBulle(cel), 250);
