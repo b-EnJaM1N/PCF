@@ -6,7 +6,8 @@
 // public « surnoms » (surnoms/<nom>__<complement>.mp3), puis servie à tous les joueurs qui portent ce surnom.
 //
 // À créer dans Supabase (voir supabase/LISEZMOI.md, étape 55) : « Edge Functions » → « Deploy a new function » → « Via Editor »
-// → nom : Surnom → coller tout ce fichier → « Deploy ». La clé ElevenLabs est un secret de Supabase (ELEVENLABS_API_KEY,
+// → nom : Surnom → coller tout ce fichier → « Deploy », puis désactiver « Verify JWT with legacy secret » (la fonction vérifie
+// elle-même que le joueur est connecté). La clé ElevenLabs est un secret de Supabase (ELEVENLABS_API_KEY,
 // « Edge Functions » → « Secrets ») : elle n'est jamais écrite dans le code.
 //
 // Les crédits sont protégés : seulement pour un joueur connecté, au plus PAR_JOUEUR surnoms nouveaux par jour et par joueur,

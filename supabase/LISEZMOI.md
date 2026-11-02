@@ -440,7 +440,8 @@ puis servis à tous ceux qui les portent. Limites pour protéger les crédits : 
 3. **La fonction « Surnom »** : **Edge Functions** → **Deploy a new function** → **Via Editor** → nom `Surnom`
    (avec la majuscule) → efface l'exemple, colle tout le contenu de [`functions/surnom/index.ts`](functions/surnom/index.ts)
    (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/functions/surnom/index.ts) → **Deploy function**.
-   Laisser « Verify JWT » activé (seuls les joueurs connectés peuvent demander un surnom).
+   Puis, dans la page de la fonction : **Details** (ou **Settings**) → désactive **Verify JWT with legacy secret** → **Save**
+   (comme pour Notifier : sinon les joueurs connectés sont refusés ; la fonction vérifie elle-même que le joueur est connecté).
 
 Pour vérifier : connecté, joue un match ; au match suivant, Roland dit ton surnom. Les fichiers sont visibles dans **Storage** → **surnoms**.
 
