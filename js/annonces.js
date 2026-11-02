@@ -471,7 +471,7 @@ const partiesSurnom = s => (s ? [repliqueSurnom(s)] : []);
 // situations : situationsDuMatch() ; recents : les phrases dites aux derniers matchs (on évite de les répéter).
 // Renvoie { speaker, commentaires, presentation } : les listes de répliques, dans l'ordre (presentation : Roland présente
 // les deux joueurs par leur surnom ; vide s'il manque un surnom).
-export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = false, humain = false, domination = false, genre = "m",
+export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = false, humain = false, genre = "m",
   situations = [], recents = [], jeu = null, audible = null, memoire = null } = {}, rng = Math.random) {
   const deja = new Set(recents);
   // Une version de la phrase, en évitant celles déjà entendues récemment.
@@ -531,8 +531,7 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
     : situations.includes("nuit") ? "avant_nuit" : situations.includes("contre_bot") ? "avant_bot" : null;
   const contexteRecent = contexte && recents.slice(0, 20).includes(`commentateur_dialogue_${contexte}_01`);
   let com = null;
-  if (domination) com = choisir(etat, "domination", {}, rng);
-  else if (contexte && !contexteRecent && rng() < 0.5) return fin({ speaker: sp.filter(Boolean), commentaires: dialogue(etat, contexte, rng) || [] });
+  if (contexte && !contexteRecent && rng() < 0.5) return fin({ speaker: sp.filter(Boolean), commentaires: dialogue(etat, contexte, rng) || [] });
   else if (humain && rng() < 0.5) com = choisir(etat, "humain", {}, rng);
   // Parfois, une seule phrase au lieu d'un dialogue : entre amis, une revanche, un grand match, ou n'importe quel match.
   if (!com && rng() < 0.35) {

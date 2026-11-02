@@ -9,9 +9,9 @@
 // Roland (enregistré plus fort) ramené au niveau de Monique.
 export const VOLUMES = { arbitre: 0.55, commentateur: 0.5, commentatrice: 0.85, speaker: 0.5, journaliste: 0.8 };   // (le speaker : la voix de Roland, même volume)
 // L'arbitre ne dit à voix haute que l'essentiel (décision du porteur du projet) : le début de chaque set, « Jeu, set et match »
-// (ou la victoire par forfait, l'abandon) et parfois « Silence, s'il vous plaît ». Ses autres annonces (balles de set et de match,
+// (ou la victoire par forfait, l'abandon), parfois « Silence, s'il vous plaît » et « Je vous demande de vous arrêter » (après les sifflets). Ses autres annonces (balles de set et de match,
 // scores) restent seulement affichées par écrit.
-const ARBITRE_PARLE = /^arbitre_((premier|deuxieme|troisieme|quatrieme)_set|set_decisif|set_unique|troisieme_et_dernier_set|les_joueurs_sont_prets|silence|abandon|(jeu_set_et_match|forfait)_(jaune|rouge))_01$/;
+const ARBITRE_PARLE = /^arbitre_((premier|deuxieme|troisieme|quatrieme)_set|set_decisif|set_unique|troisieme_et_dernier_set|les_joueurs_sont_prets|silence|abandon|huees|(jeu_set_et_match|forfait)_(jaune|rouge))_01$/;
 export const ditAVoixHaute = r => r.role !== "arbitre" || ARBITRE_PARLE.test(r.id);
 
 // La vitesse de lecture (1 = normale) : les commentaires doivent tenir entre deux coups. La hauteur de la voix ne change pas.
