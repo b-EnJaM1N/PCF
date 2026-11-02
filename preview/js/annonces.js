@@ -502,7 +502,12 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
   if (humain && moi.surnom && adv.surnom && moi.surnom.texte === adv.surnom.texte) sp.push(dire("miroir"));
   // La présentation par Roland (avant ses commentaires) : « Côté jaune, on retrouve… La Quiche du PMU ! Et en face… Tic-Tac ! »
   const bot = adv.bot && CATALOGUE.get(`speaker_bot_${adv.bot}_01`);
-  const presentation = [dire("presente_jaune"), ...partiesSurnom(moi.surnom), dire("presente_rouge"), ...(bot ? [bot] : partiesSurnom(adv.surnom))];
+  // (seulement les versions enregistrées : une version pas encore enregistrée ferait sauter toute la présentation)
+  const direEnregistre = cle => {
+    const ks = [...Array(nbSpeaker(cle)).keys()].filter(k => !audible || audible(ligneSpeaker(cle, k).id));
+    return ks.length ? ligneSpeaker(cle, ks[Math.floor(rng() * ks.length)]) : null;
+  };
+  const presentation = [direEnregistre("presente_jaune"), ...partiesSurnom(moi.surnom), direEnregistre("presente_rouge"), ...(bot ? [bot] : partiesSurnom(adv.surnom))];
   const fin = r => ({ ...r, presentation: moi.surnom && (bot || adv.surnom) && presentation.every(Boolean) ? presentation : [] });
   sp.push(dire("cloture"));
 
