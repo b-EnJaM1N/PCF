@@ -186,7 +186,7 @@ export const MOMENTS = {
     { r: "d", t: "À ce niveau, l'égalité, c'est de la politesse.", retiree: true },
     { r: "d", t: ["Il n'a pas le monopole de la Pierre.", "Il n'a pas le monopole des Ciseaux.", "Il n'a pas le monopole de la Feuille."],
       f: ["Elle n'a pas le monopole de la Pierre.", "Elle n'a pas le monopole des Ciseaux.", "Elle n'a pas le monopole de la Feuille."], clin: "cine" },
-    { r: "d", t: "Laissez du temps au temps.", clin: "cine" },
+    { r: "d", t: "Laissez du temps au temps.", clin: "cine", retiree: true },   // (retirée le 2 novembre, à la demande du porteur du projet)
     { r: "d", t: "Ennuyeux." },
     { r: "c", t: "Deux mains, zéro vainqueur !" },
     { r: "c", t: "Égalité ! Les cerveaux sont connectés !" },
@@ -384,10 +384,8 @@ export const MOMENTS = {
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
     { r: "d", t: "Le vainqueur repart avec la gloire. Le vaincu repart avec une remise en question existentielle." },
   ],
-  // L'adversaire domine nettement nos face-à-face (dit avant le match).
-  domination: [
-    { r: "d", t: "Je suis ton père.", clin: "cine" },
-  ],
+  // (« domination », « Je suis ton père », dit avant le match quand l'adversaire dominait nos face-à-face : retiré le 2 novembre,
+  // à la demande du porteur du projet)
   // (« Je vous demande de vous arrêter », de Monique, est retirée le 28 octobre : c'est désormais l'arbitre qui le dit, après
   // les sifflets du public : arbitre_huees_01)
   // La mémoire du dernier match entre les deux mêmes joueurs (28 octobre, idée du porteur du projet) : dite avant le match,
