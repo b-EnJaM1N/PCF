@@ -74,8 +74,12 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
         cartes (`IDEES` de `app/js/enjeux.js`) ou son propre texte ; l'enjeu choisi s'affiche dans la fenêtre (Changer, ✕),
         en bandeau pendant le match, et La Une dit qui s'y colle.
    - **Idées à développer** (26 octobre, porteur du projet ; avis de Claude donné, rien de décidé) :
-     1. **Des tutos courts dans l'appli** (bulles la première fois : créer son cercle et son championnat, défier avec un enjeu,
-        la carrière ; « Revoir le tuto » dans les Options), ciblés sur ce qui bloque les testeurs ; chacun peut devenir une vidéo courte.
+     1. **Des tutos courts dans l'appli** — *fait (à valider)*, 2 novembre (`app/js/tutos.js`, choix du porteur du projet : Défier un ami,
+        Cercle et championnat, Carrière solo ; **le smash reste un secret**, pas de tuto) : la première fois qu'un écran s'ouvre, 2 à 4
+        bulles l'une après l'autre (le bouton dans un cadre, le reste assombri ; « Suivant », « Passer »), une seule fois chacun :
+        Défier un ami (recherche, lien), la fenêtre Défier (format, officiel, enjeu, envoyer), Amis et cercles, la page d'un cercle
+        (inviter, classement, tournoi), Organiser un championnat, la Carrière (une fois commencée). Jamais pendant un match ni
+        par-dessus une autre fenêtre. Options › 🎓 Les tutos › « Revoir les tutos ». Chacun peut devenir une vidéo courte.
      2. **Des cercles plus vivants** (classement de la semaine, joueur de la semaine, invitation en 2 gestes), pour les lycéens
         et les adultes : avant 15 ans, accord des parents pour les données et règles Google « Familles » à vérifier avant de viser
         les collégiens.
