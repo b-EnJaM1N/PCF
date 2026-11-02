@@ -41,6 +41,7 @@ import { installerJetons } from "./ecran-jetons.js";
 import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerProgrammes } from "./ecran-programmes.js";
 import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
+import { installerTutos } from "./tutos.js";
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
@@ -2496,3 +2497,17 @@ const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDu
 }
 renderNotifs();
 placerCompte(!!compteUI.session()?.user);
+
+// ---------------------------------------------------------------- les tutos (app/js/tutos.js)
+// Pas pendant un match ni par-dessus une autre fenêtre (sauf la fenêtre « Défier », qui a son tuto).
+const tutos = installerTutos({
+  lire, ecrire,
+  occupe: () => !!(vueCourante === "viewMatch" || faceAFaceOuvert || document.querySelector(".inter.show") || document.querySelector(".fenetre-fond:not([hidden]):not(#defiFenetre)")),
+});
+$("tutosRevoir").addEventListener("click", () => { tutos.revoir(); $("tutosMsg").textContent = "C'est noté : les bulles reviendront en ouvrant ces écrans."; });
+// Revoir un tuto tout de suite : on l'oublie, et on ouvre son écran (il s'affiche un instant plus tard).
+$("tutosListe").addEventListener("click", e => {
+  const b = e.target.closest("[data-tuto]"); if (!b) return;
+  tutos.revoir(b.dataset.tuto); $("tutosMsg").textContent = "";
+  aller(b.dataset.vue);
+});
