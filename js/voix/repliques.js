@@ -601,6 +601,25 @@ export const MOMENTS = {
     { r: "c", t: "Double smash ! Ça tape de partout !" },
     { r: "d", t: "Deux smashs. Aucune finesse. Beaucoup de bruit." },
   ],
+  // La poignée de main (2 novembre, répliques choisies par le porteur du projet ; voir poignee.js : situationPoignee).
+  // Une poignée normale n'est pas commentée.
+  poignee_franche: [
+    { r: "c", t: "Ça, c'est du respect ! Deux vraies poignées de main !" },
+    { r: "d", t: "Une belle poignée de main, on sent un grand respect mutuel." },
+  ],
+  poignee_contraste: [
+    { r: "c", t: "Très belle accolade…" },
+    { r: "d", t: "Un des deux avait envie de serrer. L'autre, non." },
+    { r: "d", t: "La chaleur humaine, à sens unique." },
+  ],
+  poignee_froide: [
+    { r: "c", t: "Brrr… un vent de fraîcheur sur le court, Madame !" },
+    { r: "d", t: "Ils ne partiront pas en vacances ensemble." },
+  ],
+  poignee_legere: [
+    { r: "d", t: "Du bout des doigts. Le strict minimum." },
+    { r: "c", t: "Une poignée de main… minimaliste !" },
+  ],
   humain: [
     { r: "c", t: "C'est un duel ! Un vrai ! Les yeux dans les yeux !" },
     { r: "d", t: "Ils se connaissent. Et ça se voit." },
