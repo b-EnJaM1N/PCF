@@ -1,34 +1,44 @@
 {
-  "_explication": "Des sons candidats (28 octobre), générés à part dans app/audio/essais/ et écoutés sur app/essais-sons.html avant d'entrer dans le jeu (robot « Voix », choix « sons-candidats »). Chaque son a sa propre description, sans phrase commune. Deuxième essai (28 octobre) : « Bravo » et « Allez » seulement, avec l'accent français (les premiers : z prononcé, « Bravo » à l'italienne).",
+  "_explication": "Des sons candidats, générés à part dans app/audio/essais/ et écoutés sur app/essais-sons.html avant d'entrer dans le jeu (robot « Voix », choix « sons-candidats »). Chaque son a sa propre description. Troisième essai (2 novembre) : les encouragements du public (« Come on », « Vamos », « Allez, on y croit », « Lâche rien »), deux versions chacun (un homme, une femme) ; « Allez ! » seul est déjà dans le jeu (public_allez_01).",
   "candidats": {
-    "bravo_1": {
-      "groupe": "« Bravo ! »",
-      "texte": "A native French man in the stands shouts the French word \"Bravo !\" once, French accent, stress on the last syllable (bra-VO), short, then a few claps, indoor arena, no music",
+    "come_on_1": {
+      "groupe": "« Come on ! »",
+      "texte": "A man in the crowd yells \"Come on !\" once to encourage a player, punchy, in the stands of an indoor tennis arena, heard from the court, natural crowd murmur behind, short, no music",
       "duree": 2
     },
-    "bravo_2": {
-      "groupe": "« Bravo ! »",
-      "texte": "A native French woman in the stands calls out \"Bravo !\" once, French accent, stress on the last syllable (bra-VO), short, indoor arena, no music",
+    "come_on_2": {
+      "groupe": "« Come on ! »",
+      "texte": "A woman in the crowd shouts \"Come on !\" once to encourage a player, in the stands of an indoor tennis arena, heard from the court, natural crowd murmur behind, short, no music",
       "duree": 2
     },
-    "bravo_3": {
-      "groupe": "« Bravo ! »",
-      "texte": "Several native French spectators call out \"Bravo !\" with a French accent (bra-VO), short, with applause, indoor arena, no music",
+    "vamos_1": {
+      "groupe": "« Vamos ! »",
+      "texte": "A man in the crowd yells the Spanish word \"Vamos !\" once, passionate, in the stands of an indoor tennis arena, heard from the court, natural crowd murmur behind, short, no music",
       "duree": 2
     },
-    "allez_1": {
-      "groupe": "« Allez ! »",
-      "texte": "A native French man in the stands yells the French word \"Allez !\" once, pronounced ah-LAY with no z sound, French accent, short and punchy, indoor arena, no music",
+    "vamos_2": {
+      "groupe": "« Vamos ! »",
+      "texte": "A woman in the crowd shouts the Spanish word \"Vamos !\" once, passionate, in the stands of an indoor tennis arena, heard from the court, natural crowd murmur behind, short, no music",
       "duree": 2
     },
-    "allez_2": {
-      "groupe": "« Allez ! »",
-      "texte": "A native French woman in the stands yells \"Allez !\" once, pronounced ah-LAY with no z sound, French accent, short, indoor arena, no music",
+    "on_y_croit_1": {
+      "groupe": "« Allez, on y croit ! »",
+      "texte": "A native French man in the crowd shouts in French \"Allez, on y croit !\" (ah-LAY, on-ee-KRWA), French accent, encouraging, in the stands of an indoor tennis arena, heard from the court, natural crowd murmur behind, short, no music",
       "duree": 2
     },
-    "allez_3": {
-      "groupe": "« Allez ! »",
-      "texte": "A few native French tennis fans shout \"Allez !\" together once, pronounced ah-LAY with no z sound, French accent, short, indoor arena, no music",
+    "on_y_croit_2": {
+      "groupe": "« Allez, on y croit ! »",
+      "texte": "A native French woman in the crowd shouts in French \"Allez, on y croit !\" (ah-LAY, on-ee-KRWA), French accent, encouraging, in the stands of an indoor tennis arena, heard from the court, natural crowd murmur behind, short, no music",
+      "duree": 2
+    },
+    "lache_rien_1": {
+      "groupe": "« Lâche rien ! »",
+      "texte": "A native French man in the crowd shouts in French \"Lâche rien !\" (LASH ree-AN), French accent, encouraging, in the stands of an indoor tennis arena, heard from the court, natural crowd murmur behind, short, no music",
+      "duree": 2
+    },
+    "lache_rien_2": {
+      "groupe": "« Lâche rien ! »",
+      "texte": "A native French woman in the crowd shouts in French \"Lâche rien !\" (LASH ree-AN), French accent, encouraging, in the stands of an indoor tennis arena, heard from the court, natural crowd murmur behind, short, no music",
       "duree": 2
     }
   }

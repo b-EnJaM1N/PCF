@@ -24,24 +24,24 @@
 <main class="essais">
   <p><a href="./">← Retour à HandSlam</a></p>
   <h1>🎧 Essais de sons du public</h1>
-  <p class="intro">Pour chaque son, trois versions candidates. Touche une version pour l'écouter (volumes déjà égalisés entre
-    elles). Pour choisir, dis simplement par exemple « applaudissements : la 2 ; Bravo : aucune ».</p>
+  <p class="intro">Les encouragements du public : pour chaque cri, deux versions (1 : un homme, 2 : une femme). Touche une version pour l'écouter (volumes déjà égalisés entre
+    elles). Pour choisir, dis simplement par exemple « Come on : la 1 ; Vamos : aucune ».</p>
   <div id="liste"></div>
 </main>
 <script type="module">
   // Les candidats (outils/sons-candidats.json), générés dans audio/essais/ par le robot « Voix », choix « sons-candidats ».
   const GROUPES = [
-    ["👏 Applaudissements après un point", "applaudir"],
-    ["🗣️ « Bravo ! »", "bravo"],
-    ["📣 « Allez ! »", "allez"],
-    ["👎 Huées du public", "huees"],
+    ["🇬🇧 « Come on ! »", "come_on"],
+    ["🇪🇸 « Vamos ! »", "vamos"],
+    ["📣 « Allez, on y croit ! »", "on_y_croit"],
+    ["💪 « Lâche rien ! »", "lache_rien"],
   ];
   let enCours = null;
   const liste = document.getElementById("liste");
   for (const [titre, cle] of GROUPES) {
     const h = document.createElement("h2"); h.textContent = titre; liste.append(h);
     const rang = document.createElement("div"); rang.className = "rang"; liste.append(rang);
-    for (const n of [1, 2, 3]) {
+    for (const n of [1, 2]) {
       const b = document.createElement("button"); b.textContent = `▶ ${n}`;
       const audio = new Audio(`audio/essais/${cle}_${n}.mp3?v=${Date.now()}`);
       audio.addEventListener("error", () => { b.disabled = true; b.textContent = `${n} : pas encore là`; });
