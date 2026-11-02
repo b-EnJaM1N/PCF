@@ -475,4 +475,10 @@ test("Roland présente les joueurs par leur surnom (ou le nom du bot) ; sans sur
   assert.equal(contreBot[3], "speaker_bot_tictac_01");
   assert.equal(annoncesAvantMatch({ moi: { surnom: sur }, adv: { surnom: sur }, humain: true }).presentation.length, 4);
   assert.equal(annoncesAvantMatch({ adv: { bot: "tictac" } }).presentation.length, 0);
+  // seulement les versions enregistrées des phrases de liaison
+  const enreg = id => !/_02$/.test(id);
+  for (let k = 0; k < 20; k++) {
+    const p = annoncesAvantMatch({ moi: { surnom: sur }, adv: { bot: "tictac" }, audible: enreg }).presentation.map(r => r.id);
+    assert.ok(p.length === 4 && p.every(enreg), p.join());
+  }
 });
