@@ -585,8 +585,14 @@
     </details>
     <details class="card pli">
       <summary><h2>🎓 Les tutos</h2><span class="pli-resume">Les petites bulles d'explication</span></summary>
-      <p class="hint" style="margin-top:12px">La première fois qu'on ouvre certains écrans (Défier un ami, les cercles, le championnat, la carrière), des bulles expliquent les boutons.</p>
-      <button class="btn alt" id="tutosRevoir" style="margin-top:8px">Revoir les tutos</button>
+      <p class="hint" style="margin-top:12px">La première fois qu'on ouvre certains écrans, des bulles expliquent les boutons. Touche un tuto pour le revoir tout de suite :</p>
+      <div class="actions-col" id="tutosListe">
+        <button class="btn alt" data-tuto="duel" data-vue="viewDuel">🤝 Défier un ami</button>
+        <button class="btn alt" data-tuto="cercles" data-vue="viewCercles">👪 Amis et cercles</button>
+        <button class="btn alt" data-tuto="carriere" data-vue="viewCarriere">🏅 Carrière solo</button>
+      </div>
+      <p class="hint" style="margin-top:10px">Les autres bulles (la fenêtre « Défier », la page d'un cercle, le championnat) reviennent quand tu ouvres ces écrans.</p>
+      <button class="linkbtn" id="tutosRevoir" style="margin-top:4px">Tout revoir</button>
       <p class="locknote" id="tutosMsg" role="status"></p>
     </details>
     <details class="card pli" id="aPropos"><summary><h2>ℹ️ À propos</h2><span class="pli-resume">HandSlam, version, contact</span></summary>

@@ -2505,3 +2505,9 @@ const tutos = installerTutos({
   occupe: () => !!(vueCourante === "viewMatch" || faceAFaceOuvert || document.querySelector(".inter.show") || document.querySelector(".fenetre-fond:not([hidden]):not(#defiFenetre)")),
 });
 $("tutosRevoir").addEventListener("click", () => { tutos.revoir(); $("tutosMsg").textContent = "C'est noté : les bulles reviendront en ouvrant ces écrans."; });
+// Revoir un tuto tout de suite : on l'oublie, et on ouvre son écran (il s'affiche un instant plus tard).
+$("tutosListe").addEventListener("click", e => {
+  const b = e.target.closest("[data-tuto]"); if (!b) return;
+  tutos.revoir(b.dataset.tuto); $("tutosMsg").textContent = "";
+  aller(b.dataset.vue);
+});
