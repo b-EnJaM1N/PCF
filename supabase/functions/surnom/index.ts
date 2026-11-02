@@ -1,4 +1,4 @@
-// HandSlam — fonction « Surnom » (Supabase Edge Function) : Roland dit le surnom d'un joueur d'un trait.
+// HandSlam — fonction « Surnoms » (Supabase Edge Function) : Roland dit le surnom d'un joueur d'un trait.
 //
 // Décision du porteur du projet (2 novembre) : plus de 3 200 surnoms possibles, trop pour tous les enregistrer. On
 // n'enregistre que les surnoms vraiment portés : au premier match d'un joueur connecté avec un surnom pas encore enregistré,
@@ -6,7 +6,7 @@
 // public « surnoms » (surnoms/<nom>__<complement>.mp3), puis servie à tous les joueurs qui portent ce surnom.
 //
 // À créer dans Supabase (voir supabase/LISEZMOI.md, étape 55) : « Edge Functions » → « Deploy a new function » → « Via Editor »
-// → nom : Surnom → coller tout ce fichier → « Deploy », puis désactiver « Verify JWT with legacy secret » (la fonction vérifie
+// → nom : Surnoms → coller tout ce fichier → « Deploy », puis désactiver « Verify JWT with legacy secret » (la fonction vérifie
 // elle-même que le joueur est connecté). La clé ElevenLabs est un secret de Supabase (ELEVENLABS_API_KEY,
 // « Edge Functions » → « Secrets ») : elle n'est jamais écrite dans le code.
 //

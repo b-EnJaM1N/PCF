@@ -425,9 +425,9 @@ refuse un coup trop tôt). **À coller avant de valider l'appli.** Si on relance
 Mise à jour du 1er novembre : un smash qui donne le set (ou le match) ne sonne plus personne (pas de KO au début du set
 suivant) : **recoller cette étape une fois**.
 
-## 1 quinquagies quinquies. Roland dit les surnoms d'un trait (étape 55 et fonction « Surnom »)
+## 1 quinquagies quinquies. Roland dit les surnoms d'un trait (étape 55 et fonction « Surnoms »)
 
-Seuls les surnoms vraiment portés sont enregistrés, une fois chacun, par la fonction « Surnom » (ElevenLabs, voix de Roland),
+Seuls les surnoms vraiment portés sont enregistrés, une fois chacun, par la fonction « Surnoms » (ElevenLabs, voix de Roland),
 puis servis à tous ceux qui les portent. Limites pour protéger les crédits : 3 surnoms nouveaux par joueur et par jour,
 60 par jour en tout. Trois choses à faire, dans cet ordre :
 
@@ -437,8 +437,8 @@ puis servis à tous ceux qui les portent. Limites pour protéger les crédits : 
 2. **La clé ElevenLabs, en secret** : menu de gauche **Edge Functions** → **Secrets** → **Add new secret** :
    nom `ELEVENLABS_API_KEY`, valeur : une clé d'API ElevenLabs (sur elevenlabs.io : profil → **API Keys** → en créer une).
    La clé ne s'écrit nulle part ailleurs (ni dans le code, ni dans une conversation).
-3. **La fonction « Surnom »** : **Edge Functions** → **Deploy a new function** → **Via Editor** → nom `Surnom`
-   (avec la majuscule) → efface l'exemple, colle tout le contenu de [`functions/surnom/index.ts`](functions/surnom/index.ts)
+3. **La fonction « Surnoms »** : **Edge Functions** → **Deploy a new function** → **Via Editor** → nom `Surnoms`
+   (avec la majuscule et le s) → efface l'exemple, colle tout le contenu de [`functions/surnom/index.ts`](functions/surnom/index.ts)
    (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/functions/surnom/index.ts) → **Deploy function**.
    Puis, dans la page de la fonction : **Details** (ou **Settings**) → désactive **Verify JWT with legacy secret** → **Save**
    (comme pour Notifier : sinon les joueurs connectés sont refusés ; la fonction vérifie elle-même que le joueur est connecté).
