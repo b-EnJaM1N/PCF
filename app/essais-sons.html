@@ -24,18 +24,14 @@
 <main class="essais">
   <p><a href="./">← Retour à HandSlam</a></p>
   <h1>🎧 Essais de sons du public</h1>
-  <p class="intro">Les encouragements du public : pour chaque cri, deux versions (1 : un homme, 2 : une femme). Touche une version pour l'écouter (volumes déjà égalisés entre
-    elles). Pour choisir, dis simplement par exemple « Come on : la 1 ; Vamos : aucune ».</p>
+  <p class="intro">Pour chaque son, plusieurs versions candidates. Touche une version pour l'écouter (volumes déjà égalisés entre
+    elles). Pour choisir, dis simplement par exemple « la 1 ; aucune ».</p>
   <div id="liste"></div>
 </main>
 <script type="module">
   // Les candidats (outils/sons-candidats.json), générés dans audio/essais/ par le robot « Voix », choix « sons-candidats ».
-  const GROUPES = [
-    ["🇬🇧 « Come on ! »", "come_on"],
-    ["🇪🇸 « Vamos ! »", "vamos"],
-    ["📣 « Allez, on y croit ! »", "on_y_croit"],
-    ["💪 « Lâche rien ! »", "lache_rien"],
-  ];
+  // (aucun essai en cours : les cris du 2 novembre n'ont pas été retenus)
+  const GROUPES = [];
   let enCours = null;
   const liste = document.getElementById("liste");
   for (const [titre, cle] of GROUPES) {

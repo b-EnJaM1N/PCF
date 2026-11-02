@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { NOMS, NOMS_DEPART, QUALIFICATIFS, FAMILLES, PALIERS, surnomDe, surnomValide, surnomAuHasard, debloques, aDebloquer, monterRang, idPartie } from "../app/js/surnoms.js";
+import { NOMS, NOMS_DEPART, QUALIFICATIFS, FAMILLES, PALIERS, surnomDe, surnomValide, surnomAuHasard, debloques, aDebloquer, monterRang } from "../app/js/surnoms.js";
 import { profilParDefaut, normaliserProfil } from "../app/js/profil.js";
 import { CATALOGUE } from "../app/js/voix/script.js";
 
@@ -70,11 +70,10 @@ test("les noms spécial HandSlam : selon le signe favori", () => {
   assert.ok(ids.includes("le_menhir") && !ids.includes("le_secateur") && !ids.includes("l_origami"));
 });
 
-test("chaque partie de surnom a son fichier audio, un id unique et une aide", () => {
+test("chaque partie de surnom a un id unique et une aide", () => {
   const ids = [...NOMS, ...QUALIFICATIFS].map(x => x.id);
   assert.equal(new Set(ids).size, ids.length);
   for (const p of [...NOMS, ...QUALIFICATIFS]) {
-    assert.ok(CATALOGUE.has(idPartie(p)), p.id);
     assert.ok(p.aide && FAMILLES[p.famille], p.id);
     if (p.palier) assert.ok(PALIERS[p.palier], p.id);
   }
@@ -95,4 +94,19 @@ test("les surnoms d'exploit : gagnés avec un trophée précis", async () => {
   assert.equal(texteDeblocage(TITRES.find(t => t.id === "phenix")), "le geste du doigt « non, non, non » et le surnom « Le Phénix »");
   assert.equal(texteDeblocage(TITRES.find(t => t.id === "habitue")), "");
   for (const x of [...NOMS, ...QUALIFICATIFS].filter(v => v.famille === "exploit")) assert.ok(TITRES.some(t => t.id === x.trophee), x.id);
+});
+
+test("les surnoms dits par Roland : la fonction « Surnom » connaît exactement les mêmes surnoms que l'appli", async () => {
+  const f = await import("../supabase/functions/surnom/index.ts");
+  assert.deepEqual(Object.entries(f.NOMS), NOMS.map(x => [x.id, x.t]));
+  assert.deepEqual(Object.entries(f.QUALIFICATIFS), QUALIFICATIFS.map(x => [x.id, x.t]));
+  assert.equal(f.cleSurnom("la_quiche", "du_pmu"), "la_quiche__du_pmu");
+  assert.equal(f.cleSurnom("la_quiche", "inconnu"), null);
+  assert.equal(f.cleSurnom("__proto__", "du_pmu"), null);
+  assert.match(f.texteSurnom("la_quiche", "du_pmu"), /\] La Quiche du PMU !$/);
+  const { repliqueSurnom, cleSurnom } = await import("../app/js/surnom-voix.js");
+  const s = surnomDe({ surnom: { nom: "la_quiche", complement: "du_pmu" } });
+  assert.equal(cleSurnom(s), "la_quiche__du_pmu");
+  assert.deepEqual(repliqueSurnom(s), { id: "surnom:la_quiche__du_pmu", role: "speaker", texte: "La Quiche du PMU !",
+    url: "https://fvfdcyglwngosxfougje.supabase.co/storage/v1/object/public/surnoms/la_quiche__du_pmu.mp3" });
 });

@@ -19,3 +19,6 @@ alter default privileges in schema public grant all on functions to anon, authen
 do $$ begin
   if not exists (select 1 from pg_publication where pubname = 'supabase_realtime') then create publication supabase_realtime; end if;
 end $$;
+-- Le stockage de fichiers (étape 55 : les voix des surnoms).
+create schema if not exists storage;
+create table if not exists storage.buckets (id text primary key, name text not null, public boolean default false);

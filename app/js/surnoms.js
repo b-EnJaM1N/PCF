@@ -1,7 +1,7 @@
-// Les surnoms, annoncés par le speaker : un nom de combattant + un qualificatif, que le joueur compose lui-même.
+// Les surnoms, annoncés par Roland : un nom de combattant + un qualificatif, que le joueur compose lui-même.
 // Ex. « Le Cobra du PMU », « La Tornade de Velours », « Le Poing des Titans ». Liste du porteur du projet (docs/surnoms-v3-tri.md).
-// Chaque partie est un fichier audio : speaker_surnom_<partie>_01. Les qualificatifs ne s'accordent pas
-// (« Le Cobra Implacable », « La Tornade Implacable ») : un seul enregistrement suffit.
+// Les qualificatifs ne s'accordent pas (« Le Cobra Implacable », « La Tornade Implacable »). Roland dit chaque surnom
+// d'un trait, enregistré quand quelqu'un le porte (surnom-voix.js, fonction « Surnom »).
 // On débloque les familles en montant les rangs de la carte de joueur (carte-logique.js).
 import { signeFavori, TITRES } from "./profil.js";
 import { RANGS } from "./carte-logique.js";
@@ -138,5 +138,3 @@ export function surnomDe(P) {
   return { nom, complement, texte: `${nom.t} ${complement.t}` };
 }
 
-// Nom du fichier audio d'une partie de surnom.
-export const idPartie = partie => `speaker_surnom_${partie.id}_01`;
