@@ -10,7 +10,7 @@ import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
 import { carteDe, notesDe, texteRang, rangDe } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
-import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee } from "./poignee.js";
+import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee, situationPoignee } from "./poignee.js";
 import { installerRapide } from "./ecran-rapide.js";
 import { installerSignalement } from "./ecran-signaler.js";
 import { etatNotifications, activerNotifications, desactiverNotifications, rattacherAbonnement, testerNotification, texteTest } from "./notifications.js";
@@ -24,7 +24,7 @@ import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
-import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS } from "./voix/script.js";
+import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS, POOLS, ligneMoment } from "./voix/script.js";
 import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
@@ -493,7 +493,8 @@ function apresPoint(evt, a, cel, rp) {
   if (m.termine) {
     const seance = S;
     S.pauseFin = true; render();
-    setTimeout(() => { if (S === seance) criEnGrand(cel, () => poigneeDeMain(finir)); }, reduitMouvement() ? 900 : 1800);
+    // (la poignée de main attend que le commentaire de fin de match soit fini : demande du porteur du projet, 25 octobre)
+    setTimeout(() => { if (S === seance) criEnGrand(cel, () => voix.finiDeParler(() => { if (S === seance) poigneeDeMain(finir); })); }, reduitMouvement() ? 900 : 1800);
     return evt;
   }
   if (cel) setTimeout(() => criEnBulle(cel), 250);
@@ -779,10 +780,15 @@ function poigneeDeMain(apres) {
     $("pmStyleAdv").textContent = `${STYLES[adv].icone} ${STYLES[adv].nom}`;
     $("pmMain").textContent = "🤝";
     scene.classList.add("go", r.animation);
-    if (ligne) setTimeout(() => voix.dire([ligne]), 500);
-    (S.citations ||= []).push(...(ligne && ligne.role !== "arbitre" ? [ligne] : []));
+    // Roland ou Monique commentent la poignée (pas une normale), seulement avec une réplique enregistrée.
+    const moment = situationPoignee(moi, adv);
+    const cands = moment ? (POOLS[moment] || []).map(it => ligneMoment(it)).filter(l => l && voix.fichiers.has(l.id)) : [];
+    const com = cands.length ? cands[Math.floor(Math.random() * cands.length)] : null;
+    if (com || ligne) setTimeout(() => voix.dire([ligne, com].filter(Boolean)), 500);
+    (S.citations ||= []).push(...[ligne, com].filter(l => l && l.role !== "arbitre"));
     ov.onclick = terminer;                                   // toucher l'écran : on passe
-    setTimeout(terminer, reduitMouvement() ? 1200 : 2400);
+    // (avec un commentaire, on laisse le temps de l'entendre)
+    setTimeout(terminer, reduitMouvement() ? 1200 : com ? 3600 : 2400);
   }
   choix.onclick = e => { const b = e.target.closest("button[data-s]"); if (b) choisir(b.dataset.s); };
 }

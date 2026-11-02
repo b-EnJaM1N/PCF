@@ -29,3 +29,18 @@ test("style habituel et compte des poignées de main dans la fiche", () => {
   compterPoignee(P, "froide"); compterPoignee(P, "froide"); compterPoignee(P, "franche");
   assert.deepEqual(P.poignees, { franche: 1, normale: 0, legere: 0, froide: 2 });
 });
+
+test("le commentaire de la poignée de main selon les deux styles (une normale n'est pas commentée)", async () => {
+  const { situationPoignee } = await import("../app/js/poignee.js");
+  const { POOLS } = await import("../app/js/voix/script.js");
+  assert.equal(situationPoignee("franche", "franche"), "poignee_franche");
+  assert.equal(situationPoignee("franche", "froide"), "poignee_contraste");
+  assert.equal(situationPoignee("legere", "franche"), "poignee_contraste");
+  assert.equal(situationPoignee("froide", "froide"), "poignee_froide");
+  assert.equal(situationPoignee("froide", "legere"), "poignee_froide");
+  assert.equal(situationPoignee("legere", "normale"), "poignee_legere");
+  assert.equal(situationPoignee("froide", "normale"), "poignee_legere");
+  assert.equal(situationPoignee("normale", "normale"), null);
+  assert.equal(situationPoignee("franche", "normale"), null);
+  for (const m of ["poignee_franche", "poignee_contraste", "poignee_froide", "poignee_legere"]) assert.ok(POOLS[m]?.length >= 2, m);
+});

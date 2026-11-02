@@ -44,3 +44,30 @@ test("la salle baisse sous la voix : un seul signal pour deux répliques qui s'e
   await new Promise(r => setTimeout(r, 450));
   assert.deepEqual(recu, [true, false]);
 });
+
+test("attendre la fin des commentaires (avant la poignée de main) : tout de suite si rien n'est dit, sinon à la fin de la suite", async () => {
+  const crees = [];
+  class FauxAudio {
+    constructor() { crees.push(this); }
+    play() { return Promise.resolve(); }
+    pause() {}
+  }
+  const avant = globalThis.Audio; globalThis.Audio = FauxAudio;
+  try {
+    const v = new LecteurVoix(), a = CATALOGUE.get("arbitre_silence_01"), b = CATALOGUE.get("arbitre_premier_set_01");
+    for (const r of [a, b]) v.fichiers.set(r.id, null);
+    let appele = 0;
+    v.finiDeParler(() => appele++);
+    assert.equal(appele, 1, "rien n'est dit : tout de suite");
+    v.dire([a, b]);
+    v.finiDeParler(() => appele++, 5000);
+    await new Promise(ok => setTimeout(ok, 50));
+    assert.equal(appele, 1, "la suite est en cours : on attend");
+    crees[0].onended(); await new Promise(ok => setTimeout(ok, 10)); crees[1].onended();
+    await new Promise(ok => setTimeout(ok, 450));
+    assert.equal(appele, 2, "la suite est finie : la poignée de main peut venir");
+    v.dire([a]); v.finiDeParler(() => appele++, 300);
+    await new Promise(ok => setTimeout(ok, 500));
+    assert.equal(appele, 3, "au bout du temps maximal, on n'attend plus");
+  } finally { globalThis.Audio = avant; }
+});

@@ -22,6 +22,18 @@ export function styleDuBot(botId, monStyle, rng = Math.random) {
 }
 
 // Les deux styles ensemble : l'animation (celle du plus froid des deux) et ce qu'on en dit.
+// Le commentaire de Roland ou Monique selon les deux poignées (moment de repliques.js), ou null (poignée normale).
+// Deux franches : « franche » ; une franche contre une légère ou froide : « contraste » ; deux froides, ou une froide et une
+// légère : « froide » ; une légère ou une froide avec une normale, deux légères : « legere ».
+export function situationPoignee(moi, lui) {
+  const a = styleValide(moi), b = styleValide(lui), paire = new Set([a, b]);
+  if (a === "franche" && b === "franche") return "poignee_franche";
+  if (paire.has("franche") && (paire.has("legere") || paire.has("froide"))) return "poignee_contraste";
+  if (paire.has("froide") && !paire.has("normale")) return "poignee_froide";
+  if (paire.has("legere") || paire.has("froide")) return "poignee_legere";
+  return null;
+}
+
 // Renvoie { animation, ligne } ; ligne = { role, id } d'une réplique du catalogue.
 export function rencontre(moi, lui) {
   const a = STYLES[styleValide(moi)], b = STYLES[styleValide(lui)];

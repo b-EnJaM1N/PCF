@@ -116,7 +116,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (568 répliques)
+## Commentateur — vif, enthousiaste, plein de références (572 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -447,6 +447,10 @@ restent lus par la voix de synthèse.
 | `commentateur_smash_bloque_01.mp3` | Bloqué ! Le mur a tenu ! |
 | `commentateur_smash_bloque_02.mp3` | Smash contré ! Quelle lecture ! |
 | `commentateur_smash_double_01.mp3` | Double smash ! Ça tape de partout ! |
+| `commentateur_poignee_franche_01.mp3` | Ça, c'est du respect ! Deux vraies poignées de main ! |
+| `commentateur_poignee_contraste_01.mp3` | Très belle accolade… |
+| `commentateur_poignee_froide_01.mp3` | Brrr… un vent de fraîcheur sur le court, Madame ! |
+| `commentateur_poignee_legere_01.mp3` | Une poignée de main… minimaliste ! |
 | `commentateur_humain_01.mp3` | C'est un duel ! Un vrai ! Les yeux dans les yeux ! |
 | `commentateur_dialogue_avant_match_01.mp3` | Madame, la tension est palpable. |
 | `commentateur_dialogue_avant_match_02.mp3` | Deux styles, deux écoles ! |
@@ -689,7 +693,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (501 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (506 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -964,6 +968,11 @@ restent lus par la voix de synthèse.
 | `commentatrice_smash_bloque_01_f.mp3` | Elle a smashé dans un mur. Le mur ne s'est pas excusé. |
 | `commentatrice_smash_bloque_02.mp3` | Tout ce bruit pour une égalité. |
 | `commentatrice_smash_double_01.mp3` | Deux smashs. Aucune finesse. Beaucoup de bruit. |
+| `commentatrice_poignee_franche_01.mp3` | Une belle poignée de main, on sent un grand respect mutuel. |
+| `commentatrice_poignee_contraste_01.mp3` | Un des deux avait envie de serrer. L'autre, non. |
+| `commentatrice_poignee_contraste_02.mp3` | La chaleur humaine, à sens unique. |
+| `commentatrice_poignee_froide_01.mp3` | Ils ne partiront pas en vacances ensemble. |
+| `commentatrice_poignee_legere_01.mp3` | Du bout des doigts. Le strict minimum. |
 | `commentatrice_humain_01.mp3` | Ils se connaissent. Et ça se voit. |
 | `commentatrice_humain_02.mp3` | Entre amis, il n'y a pas de pitié. |
 | `commentatrice_dialogue_avant_match_01.mp3` | On sent surtout deux personnes devant leur téléphone. Mais oui. |

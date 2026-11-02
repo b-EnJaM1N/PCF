@@ -1,4 +1,14 @@
 # Les répliques à refaire avec le robot « Voix » (choix « liste ») : un identifiant par ligne. Les lignes en # sont ignorées.
+# 2 novembre : les commentaires de la poignée de main (9 répliques choisies par le porteur du projet).
+commentateur_poignee_franche_01
+commentatrice_poignee_franche_01
+commentateur_poignee_contraste_01
+commentatrice_poignee_contraste_01
+commentatrice_poignee_contraste_02
+commentateur_poignee_froide_01
+commentatrice_poignee_froide_01
+commentatrice_poignee_legere_01
+commentateur_poignee_legere_01
 # 2 novembre : la voix de Roland pour les présentations (rôle « speaker ») : liaisons, tours, champion, noms des bots.
 # (Le lot de la banque de commentaires du 1er novembre a été enregistré le 2 novembre.)
 speaker_presente_jaune_02

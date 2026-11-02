@@ -67,8 +67,15 @@ export class LecteurVoix {
     this.finParole = setTimeout(() => { if (this.parleDepuis) { this.parleDepuis = false; this.surParole?.(false); } }, 400);
   }
 
+  // Appelle f quand plus rien n'est dit (la suite de répliques en cours est finie), ou au bout de max millisecondes.
+  finiDeParler(f, max = 8000) {
+    const t0 = Date.now();
+    const voir = () => (!this.occupe || Date.now() - t0 >= max ? f() : setTimeout(voir, 200));
+    voir();
+  }
+
   arreter() {
-    this.jeton++;
+    this.jeton++; this.occupe = false;
     if (this.enCours) { this.enCours.pause(); this.enCours = null; this.parole(false); }
     if (synth) try { synth.cancel(); } catch { /* rien */ }
   }
@@ -80,8 +87,10 @@ export class LecteurVoix {
     this.arreter();
     const jeton = this.jeton;
     let premiere = true;
+    this.occupe = true;   // (une suite de répliques est en cours : voir finiDeParler)
     const suivante = i => {
-      if (jeton !== this.jeton || i >= repliques.length) return;
+      if (jeton !== this.jeton) return;
+      if (i >= repliques.length) { this.occupe = false; return; }
       const r = repliques[i];
       const debut = () => { if (premiere) { premiere = false; auDebut?.(); } };
       const fin = () => suivante(i + 1);
