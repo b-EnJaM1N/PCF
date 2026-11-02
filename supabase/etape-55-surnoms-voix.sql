@@ -1,10 +1,10 @@
--- HandSlam — Étape 55 : Roland dit les surnoms d'un trait (fonction « Surnom »).
+-- HandSlam — Étape 55 : Roland dit les surnoms d'un trait (fonction « Surnoms »).
 -- À coller dans Supabase : « SQL Editor » → « New query » → coller → « Run »
 -- (Supabase peut afficher « Potential issue detected » : c'est normal, confirmer).
 -- Nécessite l'étape 2. Peut être relancé sans risque.
 --
 -- Décision du porteur du projet (2 novembre) : seuls les surnoms vraiment portés sont enregistrés, une fois chacun, par la
--- fonction « Surnom » (supabase/functions/surnom/index.ts), dans le stockage public « surnoms ». Cette table note chaque
+-- fonction « Surnoms » (supabase/functions/surnom/index.ts), dans le stockage public « surnoms ». Cette table note chaque
 -- enregistrement, pour limiter la dépense de crédits (3 par joueur et par jour, 60 par jour en tout).
 
 -- Le stockage public des voix des surnoms (lecture libre ; seule la fonction y dépose des fichiers).
