@@ -1,5 +1,5 @@
 // Roland dit les surnoms d'un trait (décision du porteur du projet, 2 novembre). Chaque surnom porté est enregistré une
-// seule fois par la fonction « Surnom » (supabase/functions/surnom/index.ts), dans le stockage public « surnoms », puis
+// seule fois par la fonction « Surnoms » (supabase/functions/surnom/index.ts), dans le stockage public « surnoms », puis
 // servi à tous ceux qui le portent. Ici : l'adresse du fichier, la réplique à dire, et savoir s'il est déjà enregistré.
 import { SUPABASE_URL } from "./config.js";
 
@@ -25,7 +25,7 @@ export async function demanderSurnom(s, client) {
   if (!cle || demandes.has(cle) || await surnomEnregistre(s)) return;
   demandes.add(cle);
   try {
-    const { data } = await client.functions.invoke("Surnom", { body: { nom: s.nom.id, complement: s.complement.id } });
+    const { data } = await client.functions.invoke("Surnoms", { body: { nom: s.nom.id, complement: s.complement.id } });
     if (data?.adresse) connus.set(adresseSurnom(s), Promise.resolve(true));
   } catch { /* pas de réseau, limite du jour : ce sera pour une autre fois */ }
 }

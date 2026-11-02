@@ -1,7 +1,7 @@
 // Les surnoms, annoncés par Roland : un nom de combattant + un qualificatif, que le joueur compose lui-même.
 // Ex. « Le Cobra du PMU », « La Tornade de Velours », « Le Poing des Titans ». Liste du porteur du projet (docs/surnoms-v3-tri.md).
 // Les qualificatifs ne s'accordent pas (« Le Cobra Implacable », « La Tornade Implacable »). Roland dit chaque surnom
-// d'un trait, enregistré quand quelqu'un le porte (surnom-voix.js, fonction « Surnom »).
+// d'un trait, enregistré quand quelqu'un le porte (surnom-voix.js, fonction « Surnoms »).
 // On débloque les familles en montant les rangs de la carte de joueur (carte-logique.js).
 import { signeFavori, TITRES } from "./profil.js";
 import { RANGS } from "./carte-logique.js";
