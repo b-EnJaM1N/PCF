@@ -65,8 +65,9 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
    - **Prochain lot demandé** (25 octobre, porteur du projet ; rien de fait) :
      1. **Fin de match** : laisser le commentaire de fin de match se terminer avant la poignée de main (*fait, 2 novembre* : la poignée
         attend la fin de la suite de répliques, 8 secondes au plus, `finiDeParler` dans `lecteur.js`) ; pendant la poignée de main,
-        des commentaires selon les styles (franche, froide…) — retour sur la décision d'avant (« plus de commentaire de Monique sur
-        la poignée de main ») ; voix à enregistrer plus tard.
+        des commentaires selon les styles (*fait, 2 novembre*, 9 répliques choisies par le porteur du projet : moments
+        `poignee_franche`, `poignee_contraste`, `poignee_froide`, `poignee_legere` ; une poignée normale n'est pas commentée ;
+        dites seulement une fois enregistrées, robot Voix « liste »).
      2. **Mémoire des poignées de main** entre deux joueurs : en début de match, Roland et Monique disent s'ils s'entendent bien ou
         pas (« Ils ne s'apprécient guère… », « Les meilleurs amis du monde… » : voir `docs/repliques-banque-brouillon.md`).
      3. **Message à un ami** : l'écran n'est pas clair et prend trop de place (capture d'écran demandée au porteur du projet).
