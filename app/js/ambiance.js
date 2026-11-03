@@ -388,16 +388,44 @@ export class Ambiance {
   // Les sifflets du public (renvoie leur durée en secondes, 0 s'ils ne sont pas prêts).
   // Un chant de supporters en entier (pause entre les sets, avant un grand match) : il baisse sous les commentaires, et s'éteint
   // en douceur dès que l'échange commence (calmer) ou qu'un autre chant démarre. On alterne les deux chants.
-  chanter({ vol = 0.55, delai = 0.6 } = {}) {
+  // perso : les chants personnalisés des joueurs du match (chants-perso.js) : s'ils sont prêts, c'est eux qu'on chante.
+  // alterner : une fois un chant personnalisé, une fois un chant habituel (la pause entre les sets).
+  // Renvoie « perso », « habituel » ou false (rien de prêt).
+  chanter({ vol = 0.55, delai = 0.6, perso = [], alterner = false } = {}) {
     this.arreterChant();
-    // (les chants entiers tournent : 1, 2, 3, puis on recommence ; le 3, « Let's go, Hand-Slam », ajouté le 3 novembre)
-    const chants = ["chant1", "chant2", "chant3"].filter(c => this.buf[c]);
-    this.chantSuivant = chants[(chants.indexOf(this.chantSuivant) + 1) % (chants.length || 1)];
-    const b = this.buf[this.chantSuivant], son = b && this.jouer(b, vol, true, { delai, fondu: 1.5 });
+    let persos = perso.filter(id => this.persoBuf?.[id]);
+    if (alterner && persos.length && this.dernierPerso) persos = [];
+    this.dernierPerso = persos.length > 0;
+    let b;
+    if (persos.length) {
+      this.persoSuivant = persos[(persos.indexOf(this.persoSuivant) + 1) % persos.length];
+      b = this.persoBuf[this.persoSuivant];
+    } else {
+      // (les chants entiers tournent : 1, 2, 3, puis on recommence ; le 3, « Let's go, Hand-Slam », ajouté le 3 novembre)
+      const chants = ["chant1", "chant2", "chant3"].filter(c => this.buf[c]);
+      this.chantSuivant = chants[(chants.indexOf(this.chantSuivant) + 1) % (chants.length || 1)];
+      b = this.buf[this.chantSuivant];
+    }
+    const son = b && this.jouer(b, vol, true, { delai, fondu: 1.5 });
     if (!son) return false;
     this.chantEnCours = son;
     this.porter(delai + b.duration);
-    return true;
+    return this.dernierPerso ? "perso" : "habituel";
+  }
+  // Charge à l'avance les chants personnalisés des joueurs du match (seulement eux : on ne télécharge pas ceux des autres).
+  async prechargerPerso(ids = []) {
+    if (!this.ctx) return;
+    this.persoBuf ||= {};
+    for (const id of ids) {
+      if (this.persoBuf[id] || !this.fichiers.includes(id)) continue;
+      try { const r = await fetch(`audio/${id}.mp3`); this.persoBuf[id] = await this.ctx.decodeAudioData(await r.arrayBuffer()); } catch { /* sans ce chant */ }
+    }
+  }
+  // Un cri court personnalisé (déjà chargé par prechargerPerso).
+  jouerPerso(id, { vol = 0.7, delai = 0.4 } = {}) {
+    const b = this.persoBuf?.[id], son = b && this.jouer(b, vol, true, { delai, salle: false, fondu: 0.8 });
+    if (son) this.porter(delai + b.duration);
+    return !!son;
   }
   arreterChant(lissage = 0.8) {
     const c = this.chantEnCours; if (!c) return;

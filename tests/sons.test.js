@@ -97,3 +97,13 @@ test("le public s'agite avec l'enjeu : calme en début de set, plus fort en fin 
   const compter = intensite => { let n = 0; for (let k = 0; k < 2000; k++) if (rp({}, { gagnant: 0 }, [{ gagnant: 1 }, { gagnant: 0 }], () => k / 2000, intensite)) n++; return n; };
   assert.ok(compter(1) > compter(0), "plus de réactions aux moments chauds");
 });
+
+test("les chants personnalisés : seulement pour les joueurs du match, quelle que soit la casse du pseudo", async () => {
+  const { chantsPerso, CHANTS_PERSO } = await import("../app/js/chants-perso.js");
+  const { existsSync } = await import("node:fs");
+  assert.equal(chantsPerso({ pseudo: "Le Chiromancien", numero: 6047 }).length, 3);
+  assert.equal(chantsPerso({ pseudo: "le chiromancien ", numero: "6047" }).length, 3);
+  assert.equal(chantsPerso({ pseudo: "Le Chiromancien", numero: 1234 }).length, 0, "un autre joueur du même pseudo : rien");
+  assert.equal(chantsPerso({ pseudo: "Ben", numero: 1 }, null).length, 0);
+  for (const id of Object.values(CHANTS_PERSO).flat()) assert.ok(existsSync(new URL(`../app/audio/${id}.mp3`, import.meta.url)), id);
+});
