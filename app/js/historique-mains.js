@@ -87,5 +87,7 @@ export function memoireDuDernier(entrees, face = null, maintenant = Date.now()) 
     serre: !!dernierSet && Math.abs(dernierSet[0] - dernierSet[1]) <= 2,
     belle: !!face && face.v === face.d && face.v >= 2,
     habitude: trois.length === 3 && trois.every(x => x.g === trois[0].g) ? (trois[0].g ? "moi" : "lui") : null,
+    // La série en cours (3 matchs ou plus gagnés d'affilée par le même joueur) : { n, gagnant: "moi" | "lui" }, ou null.
+    serie: (() => { let n = 0; while (n < entrees.length && !!entrees[n].g === !!e.g) n++; return n >= 3 ? { n, gagnant: e.g ? "moi" : "lui" } : null; })(),
   };
 }

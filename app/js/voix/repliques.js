@@ -457,6 +457,28 @@ export const MOMENTS = {
   memoire_habitude: [
     { r: "d", t: "Il a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude.", f: "Elle a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude." },
   ],
+  // La série en cours dans leurs face-à-face (3 novembre, répliques validées par le porteur du projet) : victoires d'affilée
+  // (« il » : le joueur qui enchaîne) et défaites d'affilée (« il » : le joueur qui les subit), à 3, 4, 5 et plus.
+  memoire_serie_3: [
+    { r: "d", t: "Il reste sur trois victoires d'affilée contre lui.", f: "Elle reste sur trois victoires d'affilée contre lui." },
+    { r: "c", t: "Trois victoires de suite ! Il arrive en confiance !", f: "Trois victoires de suite ! Elle arrive en confiance !" },
+  ],
+  memoire_serie_4: [
+    { r: "c", t: "Quatre victoires d'affilée ! Qui va enfin l'arrêter ?" },
+    { r: "d", t: "Quatre de suite. L'autre commence à le prendre personnellement." },
+  ],
+  memoire_serie_5: [
+    { r: "c", t: "Cinq victoires de suite contre lui ! C'est une série historique !" },
+    { r: "d", t: "Cinq victoires d'affilée. À ce niveau, ce n'est plus une série, c'est un abonnement." },
+  ],
+  memoire_serie_plus: [
+    { r: "d", t: "Il a gagné tous leurs derniers matchs. J'ai arrêté de compter. Lui, non.", f: "Elle a gagné tous leurs derniers matchs. J'ai arrêté de compter. Elle, non." },
+    { r: "c", t: "Une série incroyable ! Il est intouchable dans ce face-à-face !", f: "Une série incroyable ! Elle est intouchable dans ce face-à-face !" },
+  ],
+  memoire_defaites_3: [{ r: "d", t: "Il reste sur trois défaites consécutives contre lui.", f: "Elle reste sur trois défaites consécutives contre lui." }],
+  memoire_defaites_4: [{ r: "d", t: "Il reste sur quatre défaites consécutives contre lui.", f: "Elle reste sur quatre défaites consécutives contre lui." }],
+  memoire_defaites_5: [{ r: "d", t: "Il reste sur cinq défaites consécutives contre lui.", f: "Elle reste sur cinq défaites consécutives contre lui." }],
+  memoire_defaites_plus: [{ r: "d", t: "Il reste sur une longue série de défaites contre lui. On a arrêté de compter.", f: "Elle reste sur une longue série de défaites contre lui. On a arrêté de compter." }],
   // ---------------------------------------------------------------- banque du porteur du projet (branchée le 1er novembre)
   // Un point gagné avec un signe (« beau coup ») : de temps en temps, quand rien d'autre n'est à dire ; le texte dépend du signe
   // gagnant (seul : 0 Pierre, 1 Ciseaux, 2 Feuille). « Il » : moi.
