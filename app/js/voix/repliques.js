@@ -457,6 +457,14 @@ export const MOMENTS = {
   memoire_habitude: [
     { r: "d", t: "Il a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude.", f: "Elle a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude." },
   ],
+  // Avant un grand match, le chant des supporters (3 novembre, répliques choisies par le porteur du projet).
+  avant_ambiance: [
+    { r: "c", t: "Écoutez-moi cette ambiance ! Les supporters sont déchaînés ce soir !" },
+    { r: "c", t: "Vous entendez ça, Madame ? Le public est déjà chaud bouillant !" },
+    { r: "d", t: "On ne s'entend plus. C'est presque agréable." },
+    { r: "d", t: "Autant de bruit pour trois signes. J'adore ce sport." },
+    { r: "c", t: "Quelle ferveur ! On se croirait en finale de Coupe du monde !" },
+  ],
   // La série en cours dans leurs face-à-face (3 novembre, répliques validées par le porteur du projet) : victoires d'affilée
   // (« il » : le joueur qui enchaîne) et défaites d'affilée (« il » : le joueur qui les subit), à 3, 4, 5 et plus.
   memoire_serie_3: [

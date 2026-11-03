@@ -1,25 +1,10 @@
 # Les répliques à refaire avec le robot « Voix » (choix « liste ») : un identifiant par ligne. Les lignes en # sont ignorées.
-# 3 novembre : les séries dans les face-à-face (victoires et défaites d'affilée), répliques validées par le porteur du projet.
-commentatrice_memoire_serie_3_01
-commentatrice_memoire_serie_3_01_f
-commentateur_memoire_serie_3_01
-commentateur_memoire_serie_3_01_f
-commentateur_memoire_serie_4_01
-commentatrice_memoire_serie_4_01
-commentateur_memoire_serie_5_01
-commentatrice_memoire_serie_5_01
-commentatrice_memoire_serie_plus_01
-commentatrice_memoire_serie_plus_01_f
-commentateur_memoire_serie_plus_01
-commentateur_memoire_serie_plus_01_f
-commentatrice_memoire_defaites_3_01
-commentatrice_memoire_defaites_3_01_f
-commentatrice_memoire_defaites_4_01
-commentatrice_memoire_defaites_4_01_f
-commentatrice_memoire_defaites_5_01
-commentatrice_memoire_defaites_5_01_f
-commentatrice_memoire_defaites_plus_01
-commentatrice_memoire_defaites_plus_01_f
+# 3 novembre : avant un grand match, le chant des supporters (5 répliques choisies par le porteur du projet).
+commentateur_avant_ambiance_01
+commentateur_avant_ambiance_02
+commentatrice_avant_ambiance_01
+commentatrice_avant_ambiance_02
+commentateur_avant_ambiance_03
 
 # Le Grand Chelem (dialogues d'avant et d'après match, jamais enregistrés) : 132 répliques, environ 9 600 crédits.
 # À décider : enlever le # devant chaque ligne pour les enregistrer.
