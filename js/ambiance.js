@@ -44,12 +44,15 @@ export const FICHIERS_RAQUETTE_SIGNE = [
 ];
 export const FICHIERS_RAQUETTE = FICHIERS_RAQUETTE_SIGNE.flat();
 // Les sons de stade, entre les points (décision du 23 octobre ; brouillon : docs/sons-stade-brouillon.md). En essai : les quatre
-// premiers générés (orgue qui monte, corne, fanfare, sifflets) ; ils ne sont pas encore joués par l'appli.
+// premiers générés (orgue qui monte, corne, fanfare, sifflets) ; seuls ceux de STADE_JOUES sont joués par l'appli.
 export const FICHIERS_STADE = {
   charge: "stade_charge_01", orgueMontee: "stade_orgue_montee_01", orgueDefense: "stade_orgue_defense_01", corne: "stade_corne_01",
   tambour: "stade_tambour_01", orgueEntree: "stade_orgue_entree_01", vuvuzela: "stade_vuvuzela_01", ole: "stade_ole_01",
   fanfare: "stade_fanfare_victoire_01",
 };
+
+// Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série).
+export const STADE_JOUES = ["charge", "ole"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
@@ -181,6 +184,12 @@ export class Ambiance {
     for (const [type, id] of Object.entries(FICHIERS_AMBIANCE)) {
       if (!this.fichiers.includes(id) || this.charges?.has(id)) continue;
       try { this.buf[type] = await charger(id); (this.charges ||= new Set()).add(id); } catch { /* on garde le son fabriqué (ou rien) */ }
+    }
+    // Les sons de stade joués par l'appli (3 novembre : la trompette et le « Olé », vrais sons choisis par le porteur du projet).
+    for (const type of STADE_JOUES) {
+      const id = FICHIERS_STADE[type];
+      if (!this.fichiers.includes(id) || this.charges?.has(id)) continue;
+      try { this.buf[type] = await charger(id); (this.charges ||= new Set()).add(id); } catch { /* sans ce son */ }
     }
     for (const [type, ids] of Object.entries(FICHIERS_REACTIONS)) {
       for (const id of ids) {
@@ -348,6 +357,14 @@ export class Ambiance {
   // Le « ooh » sur un point disputé.
   ooh() { this.jouer(this.buf.ooh, 0.5, true, { delai: 0.15 }); }
   // Les sifflets du public (renvoie leur durée en secondes, 0 s'ils ne sont pas prêts).
+  // Un son de stade (la trompette, le « Olé ») ; coupe : le faire taire en douceur au bout de tant de secondes. Renvoie sa durée
+  // (0 s'il n'est pas prêt).
+  stade(type, { vol = 0.4, delai = 0.3, coupe = null } = {}) {
+    const b = this.buf[type], son = b && this.jouer(b, vol, true, { delai });
+    if (!son) return 0;
+    if (coupe !== null) try { son.g.gain.setTargetAtTime(0, this.ctx.currentTime + delai + coupe, 0.4); son.src.stop(this.ctx.currentTime + delai + coupe + 3); } catch { /* rien */ }
+    return b.duration;
+  }
   // Les huées : courtes (environ 6 secondes) ou longues ; coupe : les faire taire en douceur au bout de tant de secondes
   // (l'arbitre a parlé).
   huees({ court = true, delai = 0.3, vol = 0.35, coupe = null } = {}) {
