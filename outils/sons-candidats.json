@@ -1,15 +1,23 @@
 {
-  "_explication": "Des sons candidats, générés à part dans app/audio/essais/ et écoutés sur app/essais-sons.html avant d'entrer dans le jeu (robot « Voix », choix « sons-candidats »). Quatrième essai (3 novembre) : le chant « Défense ! » (à jouer quand on doit sauver une balle de set ou de match).",
+  "_explication": "Des sons candidats, générés à part dans app/audio/essais/ et écoutés sur app/essais-sons.html avant d'entrer dans le jeu (robot « Voix », choix « sons-candidats »). Cinquième essai (3 novembre) : un fond de stade, en boucle, pour remplacer le murmure de tennis trop calme (les chants de supporters doivent en sortir naturellement).",
   "candidats": {
-    "defense_1": {
-      "groupe": "« Défense ! »",
-      "texte": "Large basketball arena crowd rhythmically chanting \"De-fense! De-fense!\" in unison, two syllables, with two loud foot stomps between each chant, repeated, arena reverb, no music, no announcer",
-      "duree": 12
+    "fond_1": {
+      "groupe": "Fond de stade",
+      "texte": "Ambience of a packed indoor arena between plays: thousands of spectators murmuring and chatting at once, a warm continuous crowd hum, very occasional distant claps, calm but alive, no music, no announcer, no whistle, steady level without sudden peaks, seamless loop",
+      "duree": 30,
+      "boucle": true
     },
-    "defense_2": {
-      "groupe": "« Défense ! »",
-      "texte": "Thousands of fans in an indoor arena chanting \"Defense!\" over and over in unison, clapping twice after each chant, building intensity, loud and energetic, no music, no announcer",
-      "duree": 12
+    "fond_2": {
+      "groupe": "Fond de stade",
+      "texte": "Ambience of a full sports arena during a big match: a dense continuous crowd buzz, thousands of fans talking excitedly, scattered distant cheers and claps here and there, energetic but steady, no music, no announcer, no whistle, steady level without sudden peaks, seamless loop",
+      "duree": 30,
+      "boucle": true
+    },
+    "fond_3": {
+      "groupe": "Fond de stade",
+      "texte": "Ambience of a lively stadium crowd before a decisive point: a loud continuous roar of thousands of supporters, distant chanting voices blending into the crowd, occasional drums far away, constant energy, no music, no announcer, no whistle, steady level without sudden peaks, seamless loop",
+      "duree": 30,
+      "boucle": true
     }
   }
 }
