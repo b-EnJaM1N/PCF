@@ -1360,7 +1360,11 @@ function presenterSpeaker() {
     const l = (POOLS[moment] || []).map(it => ligneMoment(it, { genre })).filter(x => x && voix.fichiers.has(x.id));
     return l.length ? l[Math.floor(Math.random() * l.length)] : null;
   };
-  if (fan) {
+  if (S.annonces?.enjeu === "finale" && ambiance.hymne({ vol: 0.5, delai: 0.3 })) {
+    // Avant une finale : le stade chante l'hymne « Que vivent nos héros » (3 novembre, choix du porteur du projet).
+    const l = unDe("avant_ambiance");
+    if (l) av.commentaires.unshift(l);
+  } else if (fan) {
     const l = unDe("perso_supporters", fan.genre);
     if (l) av.commentaires.unshift(l);
     ambiance.prechargerPerso(perso).then(() => { if (faceAFaceOuvert && !S.passe) ambiance.chanter({ vol: 0.5, delai: 0.3, perso }); });
@@ -1915,16 +1919,21 @@ function eliminationCarriere(phaseAvant) {
 function ouvrirCeremonie({ sur = "", titre, sous = "", coupe = "", voix: ligne = null, enjeu = false, triste = false }, apres = () => {}) {
   const ov = $("ceremonie"), vite = reduitMouvement();
   ov.classList.toggle("enjeu", enjeu); ov.classList.toggle("triste", triste);
-  $("cerSur").textContent = sur; $("cerTitre").textContent = titre; $("cerSous").textContent = sous; $("cerCoupe").innerHTML = coupe;
+  $("cerSur").textContent = sur; $("cerTitre").textContent = titre; $("cerSous").textContent = sous;
+  // Un titre gagné : les deux mains du champion (son gant) soulèvent la coupe, et la brandissent (3 novembre, idée du porteur du projet).
+  const champion = coupe && !enjeu && !triste, poing = () => avatarSVG({ ...P.av, symbole: "pierre", sansFond: true });
+  $("cerCoupe").innerHTML = champion ? `<div class="cer-brandir"><span class="cer-main g">${poing()}</span>${coupe}<span class="cer-main d">${poing()}</span></div>` : coupe;
+  $("cerCoupe").classList.toggle("brandie", !!champion);
   $("cerOk").textContent = enjeu ? "Au match !" : "Continuer";
   const hasard = (a, b) => a + Math.random() * (b - a), couleurs = ["#FFD34D", "#F4C542", "#FFFFFF", "#E8574A", "#4DA3FF"];
   $("cerConfettis").innerHTML = enjeu || triste || vite ? "" : Array.from({ length: 80 }, (_, i) =>
     `<i style="left:${hasard(0, 100).toFixed(1)}%;background:${couleurs[i % couleurs.length]};--d:${hasard(2.2, 3.6).toFixed(2)}s;--r:${hasard(0, 1.2).toFixed(2)}s;--x:${Math.round(hasard(-80, 80))}px;--t:${Math.round(hasard(360, 900))}deg"></i>`).join("");
   ov.hidden = false; $("cerOk").focus();
-  try { ambiance.initialiser(); if (triste) ambiance.reagir("ohDecu"); else if (!enjeu) ambiance.public("ovation", 0.6); } catch { /* sans son */ }
+  // (la cérémonie du champion : l'ovation, puis le stade chante l'hymne « Que vivent nos héros », jusqu'à « Continuer »)
+  try { ambiance.initialiser(); if (triste) ambiance.reagir("ohDecu"); else if (!enjeu) { ambiance.public("ovation", 0.6); ambiance.hymne({ vol: 0.55, delai: 2.5 }); } } catch { /* sans son */ }
   if (ligne && CATALOGUE.has(ligne)) setTimeout(() => { if (!ov.hidden) voix.dire([CATALOGUE.get(ligne)]); }, 400);
   let fini = false;
-  const fermer = () => { if (fini) return; fini = true; ov.hidden = true; $("cerConfettis").innerHTML = ""; apres(); };
+  const fermer = () => { if (fini) return; fini = true; ov.hidden = true; $("cerConfettis").innerHTML = ""; if (!enjeu && !triste) ambiance.arreterChant(); apres(); };
   $("cerOk").onclick = fermer;
 }
 // Le circuit d'un joueur de la carrière (pour la coupe, toutes divisions confondues).
