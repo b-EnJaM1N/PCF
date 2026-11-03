@@ -30,12 +30,8 @@
 </main>
 <script type="module">
   // Les sons à écouter (dans audio/essais/) : [titre, [[fichier, légende], …]]. Originaux : outils/sons-a-trier/.
-  const GROUPES = [
-    ["👏 Applaudissements vifs", [["ovation_1", "1 · long (fin de match ?)"], ["applaudir_1", "2 · court (après un point ?)"]]],
-    ["👏👎 Applaudissements puis huées (le son coupé en trois)", [["melange_1", "1 · début"], ["melange_2", "2 · milieu"], ["melange_3", "3 · fin"]]],
-    ["👎 Huées", [["huees_1", "1 · longues"], ["huees_2", "2 · courtes (le plus fort)"]]],
-    ["😞 Déception", [["deception_1", "1 · « Ohhh… »"]]],
-  ];
+  // (3 novembre : les sons Pixabay sont choisis et branchés ; rien à écouter pour l'instant)
+  const GROUPES = [];
   let enCours = null;
   const liste = document.getElementById("liste");
   for (const [titre, sons] of GROUPES) {
