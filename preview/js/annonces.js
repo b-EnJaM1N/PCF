@@ -573,6 +573,12 @@ export function commentaireMemoire(mem, { genreMoi = "m", genreAdv = "m", audibl
   if (mem.serre || mem.long) cands.push(dia("memoire_marquant"));
   if (mem.belle) cands.push(moment("memoire_belle", genreMoi));
   if (mem.habitude) cands.push(moment("memoire_habitude", mem.habitude === "moi" ? genreMoi : genreAdv));
+  // La série en cours : le nombre de victoires d'affilée (« il » : celui qui enchaîne), ou de défaites (« il » : celui qui les subit).
+  if (mem.serie?.n >= 3) {
+    const k = mem.serie.n >= 6 ? "plus" : mem.serie.n, moiGagne = mem.serie.gagnant === "moi";
+    cands.push(moment(`memoire_serie_${k}`, moiGagne ? genreMoi : genreAdv));
+    cands.push(moment(`memoire_defaites_${k}`, moiGagne ? genreAdv : genreMoi));
+  }
   if (total >= 5) cands.push(moment("memoire_habitues", genreMoi));
   if (total >= 3) cands.push(dia("memoire_habitues"));
   if (total >= 3 && v !== d) cands.push(moment("memoire_mene", v > d ? genreMoi : genreAdv));
