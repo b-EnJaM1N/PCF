@@ -367,8 +367,9 @@ export class Ambiance {
   // Les sifflets du public (renvoie leur durée en secondes, 0 s'ils ne sont pas prêts).
   // Un son de stade (la trompette, le « Olé ») ; coupe : le faire taire en douceur au bout de tant de secondes. Renvoie sa durée
   // (0 s'il n'est pas prêt).
-  stade(type, { vol = 0.4, delai = 0.3, coupe = null } = {}) {
-    const b = this.buf[type], son = b && this.jouer(b, vol, true, { delai });
+  // salle : false : il ne baisse pas sous la voix des commentateurs (le chant doit s'entendre).
+  stade(type, { vol = 0.4, delai = 0.3, coupe = null, salle = true } = {}) {
+    const b = this.buf[type], son = b && this.jouer(b, vol, true, { delai, salle });
     if (!son) return 0;
     if (coupe !== null) try { son.g.gain.setTargetAtTime(0, this.ctx.currentTime + delai + coupe, 0.4); son.src.stop(this.ctx.currentTime + delai + coupe + 3); } catch { /* rien */ }
     return b.duration;
