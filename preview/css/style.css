@@ -761,6 +761,8 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 /* (dans la fenêtre des messages : deux colonnes bien rangées, demande du porteur du projet le 3 novembre) */
 .fenetre-msg .msg-puces { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .fenetre-msg .msg-puces button { font-size: .95rem; padding: 9px 10px; border-radius: 14px; min-width: 0; line-height: 1.25; text-align: center; }
+.fenetre-msg .msg-puces.trois { grid-template-columns: repeat(3, 1fr); }
+.fenetre-msg .msg-debut { margin: 8px 0 4px; font-size: .88rem; color: var(--muted); }
 .msg-libre { display: flex; gap: 8px; }
 .msg-libre input { flex: 1; min-width: 0; font: inherit; font-size: 1rem; padding: 9px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .3); background: var(--panel); color: var(--line); }
 .msg-libre .btn { width: auto; margin: 0; padding: 0 16px; }

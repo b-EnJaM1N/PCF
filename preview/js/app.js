@@ -882,6 +882,17 @@ async function verifierAmi() {
   catch { /* sans la liste, pas de chambrage */ }
 }
 const momentAvecMoi = duel => (duel.phase === "presentation" ? "avant" : duel.phase === "entre_sets" ? "entre_sets" : duel.phase === "termine" && duel.vainqueur !== null && duel.vainqueur !== undefined ? momentApres(duel.vainqueur === D.moi) : null);
+// Les annonces, une ligne par phrase : « J'ouvre avec… » puis trois boutons, un par signe (le message envoyé reste la phrase
+// entière). (3 novembre : plus lisible que la grille, où les phrases ne tombaient pas par paires.)
+const DEBUTS_ANNONCE = { ouvre: "J'ouvre avec…", sais: "Je sais : tu ouvres avec…", pas: "Ne joue pas…", joue: "Joue…" };
+const SIGNE_ANNONCE = { p: "🪨 Pierre", f: "📄 Feuille", c: "✂️ Ciseaux" };
+function annoncesParLigne(annonces) {
+  const groupes = {};
+  for (const a of annonces) { const [g, x] = a.id.split("_"); (groupes[g] ||= []).push({ ...a, signe: x }); }
+  return `<p class="msg-rubrique">🧠 Annonces (vraies ou fausses…)</p>` + Object.entries(groupes).map(([g, l]) =>
+    `<p class="msg-debut">${esc(DEBUTS_ANNONCE[g] || "")}</p><div class="msg-puces trois">`
+    + l.map(a => `<button data-msg="${a.id}" aria-label="${esc(a.texte)}">${esc(SIGNE_ANNONCE[a.signe] || a.texte)}</button>`).join("") + `</div>`).join("");
+}
 // Un seul bouton à l'écran ; il ouvre la fenêtre des messages (décision du 22 octobre : les rangées de puces encombraient).
 function puces(zone, moment) {
   zone.innerHTML = `<button class="btn alt msg-ouvrir" data-moment="${moment}">💬 Envoyer un message à ${esc(OPP.nom)}</button>`;
@@ -895,7 +906,7 @@ function ouvrirMessages(moment) {
   // (le message écrit en premier, entre amis : avant, il fallait faire défiler jusqu'en bas de la fenêtre ; puis les annonces)
   const annonces = liste.filter(m => m.annonce);
   $("msgFenetreCorps").innerHTML = (ami ? `<p class="msg-rubrique">✍️ Écrire mon message</p><div class="msg-libre"><input type="text" id="msgLibre" maxlength="${MESSAGE_LIBRE_MAX}" placeholder="Ton message (${MESSAGE_LIBRE_MAX} max.)" autocomplete="off"><button class="btn" id="msgLibreEnvoyer">Envoyer</button></div>` : "")
-    + (annonces.length ? rubrique("🧠 Annonces (vraies ou fausses…)", annonces) : "")
+    + (annonces.length ? annoncesParLigne(annonces) : "")
     + rubrique("😊 Fair-play", liste.filter(m => !m.amis && !m.annonce))
     + (ami ? rubrique("😈 Chambrage, entre amis", liste.filter(m => m.amis))
       : `<p class="hint">Le chambrage et les messages écrits, c'est entre amis : ajoute ${esc(OPP.nom)} à tes amis pour en profiter.</p>`);
