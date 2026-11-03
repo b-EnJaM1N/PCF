@@ -15,6 +15,7 @@ Pour chaque son, noter sa provenance et sa licence (Pixabay : libre ; Freesound 
 | bruit_de_foule.mp3 | Pixabay (déposé le 3 novembre) | Pixabay (libre) |
 | ole_ole.mp3 | Pixabay (déposé le 3 novembre) | Pixabay (libre) |
 | trompette.mp3 | Pixabay (déposé le 3 novembre) | Pixabay (libre) |
+| chant_handslam_1.mp3, chant_handslam_2.mp3, chant_sans_paroles.mp3 | ElevenLabs Music, créés par le porteur du projet (3 novembre) | abonnement ElevenLabs du porteur du projet |
 
 Choix du porteur du projet (3 novembre) : applaudissements vifs, version longue → `public_ovation_01` (fin de match),
 version courte → `public_point_01` (après un point) ; huées longues → `public_huees_01` (avec les gros sifflets), courtes →

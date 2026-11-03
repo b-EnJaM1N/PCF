@@ -166,6 +166,30 @@
       "duree": 12,
       "salle": false,
       "vrai": true
+    },
+    "stade_chant_01": {
+      "texte": "Chant de supporters « Hand-Slam » n° 1 (ElevenLabs Music, créé par le porteur du projet le 3 novembre) : ne pas régénérer.",
+      "duree": 27,
+      "salle": false,
+      "vrai": true
+    },
+    "stade_chant_02": {
+      "texte": "Chant de supporters « Hand-Slam » n° 2 (ElevenLabs Music, créé par le porteur du projet le 3 novembre) : ne pas régénérer.",
+      "duree": 27,
+      "salle": false,
+      "vrai": true
+    },
+    "stade_chant_court_01": {
+      "texte": "Extrait court (7 s) du chant de supporters n° 1 : ne pas régénérer.",
+      "duree": 7,
+      "salle": false,
+      "vrai": true
+    },
+    "stade_chant_court_02": {
+      "texte": "Extrait court (7 s) du chant de supporters n° 2 : ne pas régénérer.",
+      "duree": 7,
+      "salle": false,
+      "vrai": true
     }
   },
   "_salle": "Same venue for every sound: a large indoor tennis arena with about 5,000 spectators, evening final, warm natural hall reverb, heard from the TV broadcast microphones near the court, consistent loudness, no music."

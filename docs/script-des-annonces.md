@@ -116,7 +116,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (578 répliques)
+## Commentateur — vif, enthousiaste, plein de références (581 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -382,6 +382,9 @@ restent lus par la voix de synthèse.
 | `commentateur_memoire_balle_sauvee_01.mp3` | Au dernier match, il avait sauvé une balle de match ! Le public s'en souvient ! |
 | `commentateur_memoire_balle_sauvee_01_f.mp3` | Au dernier match, elle avait sauvé une balle de match ! Le public s'en souvient ! |
 | `commentateur_memoire_belle_01.mp3` | Égalité parfaite dans leurs face-à-face : c'est la belle, mesdames et messieurs ! |
+| `commentateur_avant_ambiance_01.mp3` | Écoutez-moi cette ambiance ! Les supporters sont déchaînés ce soir ! |
+| `commentateur_avant_ambiance_02.mp3` | Vous entendez ça, Madame ? Le public est déjà chaud bouillant ! |
+| `commentateur_avant_ambiance_03.mp3` | Quelle ferveur ! On se croirait en finale de Coupe du monde ! |
 | `commentateur_memoire_serie_3_01.mp3` | Trois victoires de suite ! Il arrive en confiance ! |
 | `commentateur_memoire_serie_3_01_f.mp3` | Trois victoires de suite ! Elle arrive en confiance ! |
 | `commentateur_memoire_serie_4_01.mp3` | Quatre victoires d'affilée ! Qui va enfin l'arrêter ? |
@@ -699,7 +702,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (518 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (520 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -908,6 +911,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_memoire_serre_01.mp3` | La dernière fois, ça s'était joué à un point. Prévoyez du temps. |
 | `commentatrice_memoire_habitude_01.mp3` | Il a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude. |
 | `commentatrice_memoire_habitude_01_f.mp3` | Elle a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude. |
+| `commentatrice_avant_ambiance_01.mp3` | On ne s'entend plus. C'est presque agréable. |
+| `commentatrice_avant_ambiance_02.mp3` | Autant de bruit pour trois signes. J'adore ce sport. |
 | `commentatrice_memoire_serie_3_01.mp3` | Il reste sur trois victoires d'affilée contre lui. |
 | `commentatrice_memoire_serie_3_01_f.mp3` | Elle reste sur trois victoires d'affilée contre lui. |
 | `commentatrice_memoire_serie_4_01.mp3` | Quatre de suite. L'autre commence à le prendre personnellement. |
