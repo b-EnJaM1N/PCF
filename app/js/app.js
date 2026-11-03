@@ -415,10 +415,12 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   // Après le « ooh », parfois, le public siffle et l'arbitre le rappelle à l'ordre (pas plus d'une fois en 12 heures) :
   // il parle à la fin des sifflets, et c'est le seul commentaire de ce point.
   const chaud = intensiteMatch(m);
-  if (rp.ooh && hueesPermises() && Math.random() < 0.12 && voix.fichiers.has("arbitre_huees_01")) {
+  // (en solo seulement : le jeu s'arrête le temps du rappel à l'ordre, ce qu'un duel ne peut pas faire)
+  if (!S.duel && rp.ooh && hueesPermises() && Math.random() < 0.12 && voix.fichiers.has("arbitre_huees_01")) {
     const duree = ambiance.sifflets(0.9);
     if (duree) {
       try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
+      S.silenceJusqu = Date.now() + (0.9 + duree * 0.8 + 3) * 1000;   // le coup suivant attend la fin des sifflets et de l'arbitre
       for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
       const seance = S, huees = CATALOGUE.get("arbitre_huees_01");
       setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, (0.9 + duree * 0.8) * 1000);
@@ -529,10 +531,15 @@ function apresPoint(evt, a, cel, rp) {
     }, cel ? 2400 : 1200);                                  // on laisse le temps de voir le cri
     return evt;
   }
+  // Après de gros sifflets, le jeu est arrêté le temps que l'arbitre rappelle le public à l'ordre (demande du porteur du projet).
+  const seance = S, attente = S.duel ? 900 : Math.max(900, (S.silenceJusqu || 0) - Date.now());
+  if (attente > 900) $("verdict").textContent = "🤫 Jeu arrêté : l'arbitre rappelle le public à l'ordre…";
   setTimeout(() => {
+    if (S !== seance) return;
     if (S.duel) { duelReprendre(); return; }
+    if ($("verdict").textContent.startsWith("🤫")) $("verdict").textContent = "À toi de jouer !";
     S.occupe = false; boutons(true); lancerMinuteur();
-  }, 900);
+  }, attente);
   return evt;
 }
 
