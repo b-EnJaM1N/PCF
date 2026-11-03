@@ -43,7 +43,7 @@ test("les bruitages : les noms attendus par l'appli, des durées permises, le fo
   const { FICHIERS_AMBIANCE: FICHIERS_PUBLIC, FICHIERS_RAQUETTE, FICHIERS_REACTIONS, FICHIERS_STADE } = await import("../app/js/ambiance.js");
   const attendus = [...Object.values(FICHIERS_PUBLIC), ...FICHIERS_RAQUETTE, ...Object.values(FICHIERS_REACTIONS).flat(), ...Object.values(FICHIERS_STADE)].sort();
   assert.deepEqual(Object.keys(SONS).sort(), attendus);
-  for (const [id, s] of Object.entries(SONS)) assert.ok(s.texte && s.duree >= 0.5 && s.duree <= 30, id);
+  for (const [id, s] of Object.entries(SONS)) assert.ok(s.texte && s.duree >= 0.5 && (s.duree <= 30 || s.vrai), id);   // (un vrai son, non généré, peut être plus long)
   assert.equal(SONS.public_fond_01.boucle, true);
   // La même salle pour tous les sons de l'univers choisi (docs/bible-sonore.md), une description qui reste courte.
   const { description } = await import("../outils/generer-sons.js");
