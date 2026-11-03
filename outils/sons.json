@@ -49,8 +49,9 @@
       "duree": 3
     },
     "public_set_01": {
-      "texte": "Warm applause with cheers at the end of a set",
-      "duree": 5
+      "texte": "Warm applause with cheers at the end of a set (remplacé le 3 novembre par les applaudissements vifs, Pixabay, version moyenne : ne pas régénérer)",
+      "duree": 5,
+      "vrai": true
     },
     "public_ovation_01": {
       "texte": "Standing ovation for the champion, huge cheers and applause (remplacé le 3 novembre par un vrai son de foule, Pixabay : ne pas régénérer)",
