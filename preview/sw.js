@@ -131,6 +131,9 @@ self.addEventListener("notificationclick", e => {
 self.addEventListener("fetch", e => {
   const req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
+  // Les sons (.mp3) passent directement par le navigateur, sans le service worker : il sait les lire par morceaux pendant
+  // le téléchargement (les longs chants s'arrêtaient au bout de 2 ou 3 secondes sur certains téléphones).
+  if (new URL(req.url).pathname.endsWith(".mp3")) return;
   e.respondWith((async () => {
     const cache = await caches.open(CACHE);
     try {
