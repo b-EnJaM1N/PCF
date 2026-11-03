@@ -447,11 +447,12 @@ Pour vérifier : connecté, joue un match ; au match suivant, Roland dit ton sur
 
 ## 1 quinquagies sexies. Retrait des surnoms dits par Roland (étape 56)
 
-Abandonnés le 3 novembre (les surnoms restent écrits dans l'appli). Trois choses à faire :
+Abandonnés le 3 novembre (les surnoms restent écrits dans l'appli). Quatre choses à faire :
 1. **Le fichier SQL** : même manipulation que d'habitude avec [`etape-56-retrait-surnoms-voix.sql`](etape-56-retrait-surnoms-voix.sql)
    (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-56-retrait-surnoms-voix.sql).
 2. **Supprimer la fonction** : **Edge Functions** → **Surnoms** → **Settings** (ou les trois points) → **Delete function**.
-3. **Supprimer le secret** : **Edge Functions** → **Secrets** → `ELEVENLABS_API_KEY` → supprimer. (Et, sur elevenlabs.io, supprimer
+3. **Supprimer le stockage « surnoms »** (Supabase interdit de le faire en SQL) : **Storage** → **surnoms** → **Delete bucket**.
+4. **Supprimer le secret** : **Edge Functions** → **Secrets** → `ELEVENLABS_API_KEY` → supprimer. (Et, sur elevenlabs.io, supprimer
    la clé d'API créée pour l'occasion.)
 
 ## 2. Adresses du site (connexion par lien)

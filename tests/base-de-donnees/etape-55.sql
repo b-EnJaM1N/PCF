@@ -9,5 +9,4 @@ begin
   raise exception 'ÉCHEC : accepté alors que ça devait être refusé : %', msg;
 end $$;
 -- (l'étape 56 défait l'étape 55 : les surnoms dits par Roland sont abandonnés)
-select pg_temp.verifier(not exists (select 1 from storage.buckets where id = 'surnoms'), 'étape 56 : le stockage « surnoms » est retiré');
 select pg_temp.verifier(to_regclass('public.surnoms_voix') is null, 'étape 56 : la table des enregistrements est retirée');
