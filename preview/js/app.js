@@ -1920,9 +1920,10 @@ function ouvrirCeremonie({ sur = "", titre, sous = "", coupe = "", voix: ligne =
   const ov = $("ceremonie"), vite = reduitMouvement();
   ov.classList.toggle("enjeu", enjeu); ov.classList.toggle("triste", triste);
   $("cerSur").textContent = sur; $("cerTitre").textContent = titre; $("cerSous").textContent = sous;
-  // Un titre gagné : les deux mains du champion (son gant) soulèvent la coupe, et la brandissent (3 novembre, idée du porteur du projet).
-  const champion = coupe && !enjeu && !triste, poing = () => avatarSVG({ ...P.av, symbole: "pierre", sansFond: true });
-  $("cerCoupe").innerHTML = champion ? `<div class="cer-brandir"><span class="cer-main g">${poing()}</span>${coupe}<span class="cer-main d">${poing()}</span></div>` : coupe;
+  // Un titre gagné : la main du champion (son avatar) tient la coupe par une anse, et la brandit (3 novembre, idée du porteur
+  // du projet).
+  const champion = coupe && !enjeu && !triste, poing = avatarSVG({ ...P.av, symbole: "pierre", sansFond: true });
+  $("cerCoupe").innerHTML = champion ? `<div class="cer-brandir">${coupe}<span class="cer-main d">${poing}</span></div>` : coupe;
   $("cerCoupe").classList.toggle("brandie", !!champion);
   $("cerOk").textContent = enjeu ? "Au match !" : "Continuer";
   const hasard = (a, b) => a + Math.random() * (b - a), couleurs = ["#FFD34D", "#F4C542", "#FFFFFF", "#E8574A", "#4DA3FF"];
