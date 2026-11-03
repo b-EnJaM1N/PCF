@@ -44,6 +44,7 @@ import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
 import { installerTutos } from "./tutos.js";
 import { demanderSurnom, fichierPresent } from "./surnom-voix.js";
 import { clientSupabase } from "./compte.js";
+import { chantsPerso } from "./chants-perso.js";
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
@@ -411,6 +412,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
 
   // Le public : il reprend entre les points, « ooh » sur un point disputé ; il s'agite selon l'enjeu (intensiteMatch).
   ambiance.intensite(intensiteMatch(m)); ambiance.calmer(false);
+  // (au premier point, le son est prêt : on charge les chants personnalisés des joueurs, pour la pause entre les sets)
+  if (!S.persoCharge) { S.persoCharge = true; ambiance.prechargerPerso(persoDuMatch()); }
   const rp = reactionsPublic(evt, egalitesAvantDernier(m.coups));
   if (rp.ooh) ambiance.ooh();
   // Après le « ooh », parfois, le public siffle et l'arbitre le rappelle à l'ordre (pas plus d'une fois en 12 heures) :
@@ -547,7 +550,7 @@ function apresPoint(evt, a, cel, rp) {
   if (evt.finSet) {
     // La pause entre les sets : une fois sur deux, les supporters chantent (le chant baisse sous les commentaires, s'éteint au
     // premier échange du set suivant ; 3 novembre).
-    if (Math.random() < 0.5) ambiance.chanter({ vol: 0.5, delai: 2.5 });
+    if (Math.random() < 0.5) ambiance.chanter({ vol: 0.5, delai: 2.5, perso: persoDuMatch() });
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
     const suivant = annonceDebutSet(m), decisif = setDecisif(m);
     const nouveauSet = () => {
@@ -1313,6 +1316,8 @@ async function afficherDossier() {
       "Pas encore assez de matchs en ligne pour établir son dossier.");
   } catch { montrer(null, null, "Dossier indisponible pour l'instant."); }
 }
+// Les chants de supporters personnalisés des joueurs de ce match (moi, et mon adversaire en duel) : voir chants-perso.js.
+const persoDuMatch = () => chantsPerso({ pseudo: P.pseudo, numero: P.numero }, OPP?.humain ? { pseudo: OPP.nom, numero: OPP.numero } : null);
 // Les commentateurs lancent le match, à voix haute : Roland présente les joueurs par leur surnom, puis les commentaires
 // (la présentation complète du speaker n'est ni dite ni affichée).
 function presenterSpeaker() {
@@ -1340,7 +1345,8 @@ function presenterSpeaker() {
   clearTimeout(voixIntro);
   // Avant un grand match (quarts, demies, finale, match décisif de la carrière) : les supporters chantent pendant la présentation,
   // et Roland ou Monique en parlent d'abord (3 novembre, idée du porteur du projet).
-  if (S.annonces?.enjeu && ambiance.chanter({ vol: 0.5, delai: 0.3 })) {
+  ambiance.prechargerPerso(persoDuMatch());   // (les chants personnalisés des joueurs, s'il y en a : prêts pour la pause)
+  if (S.annonces?.enjeu && ambiance.chanter({ vol: 0.5, delai: 0.3, perso: persoDuMatch() })) {
     const ambiances = (POOLS.avant_ambiance || []).map(it => ligneMoment(it)).filter(l => l && voix.fichiers.has(l.id));
     if (ambiances.length) av.commentaires.unshift(ambiances[Math.floor(Math.random() * ambiances.length)]);
   }
