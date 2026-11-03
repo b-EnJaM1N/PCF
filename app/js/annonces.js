@@ -47,6 +47,7 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
 
 // ---------------------------------------------------------------- choisir une réplique
 const CONDITIONS = {
+  premier_point: c => c.premierPoint, depart_rate: c => c.departRate,
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, pile4: c => c.pile4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
   balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
   // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
@@ -205,7 +206,9 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       } else if (a === b && a >= 4 && etat.ecartMin <= -4 && peutCommenter(3, 0.5)) {
         moment = "remontee"; etat.ecartMin = 0;
       } else if (g === 1 && !c.slice(0, n - 1).some(x => x.gagnant !== null) && rng() < 0.35) {   // (le tout premier point du match)
-        moment = "premier_point_perdu";
+        moment = "premier_point_perdu"; ctx.premierPoint = true;
+      } else if (g === 1 && !match.scoresSets.length && a === 0 && b === 3 && rng() < 0.6) {   // 0-3 d'entrée : là, c'est un mauvais départ
+        moment = "premier_point_perdu"; ctx.departRate = true;
       } else if (egalitesAvant >= 2 && peutCommenter(2) && rng() < 0.5) {   // un point enfin gagné après des égalités
         moment = g === 0 ? "apres_egalites_gagne" : "apres_egalites_perdu";
       } else if (g === 0 && !etat.troisPierres && troisMemeSigne(c) !== null && rng() < 0.7) {

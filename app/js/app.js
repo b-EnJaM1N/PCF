@@ -25,7 +25,7 @@ import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS, POOLS, ligneMoment } from "./voix/script.js";
-import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint } from "./ambiance.js";
+import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint, intensiteMatch } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
 import { noterMain, mainDuel, mainDossier, htmlMains, MAX_MAINS, memoireDuDernier } from "./historique-mains.js";
@@ -316,7 +316,7 @@ function avertir(fautif) {
 function afficherPenalite(fautif, { silencieux = false } = {}) {
   const m = S.match, evt = penaliser(m, fautif);
   if (silencieux) return evt;
-  ambiance.calmer(false);
+  ambiance.intensite(intensiteMatch(m)); ambiance.calmer(false);
   const a = annoncerPenalite(m, evt, S.annonces);
   const cel = evt.finSet ? { ...celebration(criDe(evt.gagnant), { finMatch: m.termine, sauvee: false }), joueur: evt.gagnant } : null;
   document.querySelectorAll("#moves button.choisi").forEach(b => b.classList.remove("choisi"));
@@ -408,12 +408,13 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   if (evt.finSet) S.sauvee = [false, false];
   if (silencieux) return evt;
 
-  // Le public : il reprend entre les points, « ooh » sur un point disputé, brouhaha avant une balle de set ou de match.
-  ambiance.calmer(false);
+  // Le public : il reprend entre les points, « ooh » sur un point disputé ; il s'agite selon l'enjeu (intensiteMatch).
+  ambiance.intensite(intensiteMatch(m)); ambiance.calmer(false);
   const rp = reactionsPublic(evt, egalitesAvantDernier(m.coups));
   if (rp.ooh) ambiance.ooh();
   // Après le « ooh », parfois, le public siffle et l'arbitre le rappelle à l'ordre (pas plus d'une fois en 12 heures) :
   // il parle à la fin des sifflets, et c'est le seul commentaire de ce point.
+  const chaud = intensiteMatch(m);
   if (rp.ooh && hueesPermises() && Math.random() < 0.12 && voix.fichiers.has("arbitre_huees_01")) {
     const duree = ambiance.sifflets(0.9);
     if (duree) {
@@ -422,8 +423,13 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
       const seance = S, huees = CATALOGUE.get("arbitre_huees_01");
       setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, (0.9 + duree * 0.8) * 1000);
     }
+  } else if ((rp.ooh || evt.balleAvant) && chaud >= 0.6 && !(S.siffletsSet ||= new Set()).has(m.scoresSets.length) && Math.random() < 0.4) {
+    // Aux moments chauds (point disputé, balle sauvée), le public s'agite : quelques sifflets courts, sans l'arbitre
+    // (une fois par set au plus ; demande du porteur du projet, 3 novembre).
+    S.siffletsSet.add(m.scoresSets.length);
+    ambiance.siffletsCourts(0.5);
   }
-  if (rp.tension) setTimeout(() => ambiance.tension(), 500);
+  // (le brouhaha des balles de set et de match : la couche « tension » du public, réglée par intensiteMatch)
   // Le cri du vainqueur du set (ou du match) ; les commentateurs réagissent parfois.
   const cel = evt.finSet ? { ...celebration(criDe(evt.gagnant), { finMatch: m.termine, sauvee }), joueur: evt.gagnant } : null;
   if (cel && !m.termine && commenterCri(S.criCommente, cel)) {   // (pas en fin de match : un seul commentaire, celui de la fin)
@@ -480,7 +486,7 @@ function apresPoint(evt, a, cel, rp) {
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
   if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
   // Sinon, parfois, une réaction du public : applaudissements, « Allez ! », « Bravo ! », « Ohhh… » ou brouhaha (voir reactionPoint).
-  else if (rp && !rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups); if (r) setTimeout(() => ambiance.reagir(r), 300); }
+  else if (rp && !rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups, Math.random, intensiteMatch(m)); if (r) setTimeout(() => ambiance.reagir(r), 300); }
   // Parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
   if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length))
     a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));

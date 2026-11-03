@@ -75,3 +75,25 @@ test("les réactions du public après un point : variées, jamais deux de suite,
   assert.ok(n > 400 && n < 1300, `une réaction de temps en temps, pas à chaque point (${n} sur 4000 coups)`);
   for (const id of Object.values(FICHIERS_REACTIONS).flat()) assert.match(id, /^[a-z_]+_\d{2}$/);
 });
+
+test("le public s'agite avec l'enjeu : calme en début de set, plus fort en fin de set serré, au set décisif, aux balles", async () => {
+  const { intensiteMatch, reactionPoint: rp } = await import("../app/js/ambiance.js");
+  const { nouveauMatch, jouerCoup, PIERRE, CISEAUX } = await import("../app/js/regles.js");
+  const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 });
+  assert.equal(intensiteMatch(m), 0, "début de match : calme");
+  const gagne = j => jouerCoup(m, j === 0 ? PIERRE : CISEAUX, j === 0 ? CISEAUX : PIERRE);
+  for (let i = 0; i < 3; i++) { gagne(0); gagne(1); }
+  const milieu = intensiteMatch(m);
+  for (let i = 0; i < 4; i++) { gagne(0); gagne(1); }   // 7-7
+  const fin = intensiteMatch(m);
+  assert.ok(milieu < 0.15 && fin > milieu, `3-3 : ${milieu} ; 7-7 : ${fin}`);
+  for (let i = 0; i < 3; i++) gagne(0);                  // 10-7 : balle de set
+  assert.ok(intensiteMatch(m) >= 0.8, "balle de set");
+  gagne(0);                                               // set gagné : on repart au calme
+  assert.ok(intensiteMatch(m) <= 0.1, "nouveau set : calme (un peu plus nerveux : un joueur n'est plus qu'à un set de la victoire)");
+  for (let i = 0; i < 11; i++) gagne(1);                  // 1 set partout : set décisif
+  assert.ok(intensiteMatch(m) >= 0.2, "set décisif : le public est déjà plus nerveux");
+  // les réactions : plus nombreuses quand ça chauffe
+  const compter = intensite => { let n = 0; for (let k = 0; k < 2000; k++) if (rp({}, { gagnant: 0 }, [{ gagnant: 1 }, { gagnant: 0 }], () => k / 2000, intensite)) n++; return n; };
+  assert.ok(compter(1) > compter(0), "plus de réactions aux moments chauds");
+});
