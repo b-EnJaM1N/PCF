@@ -428,7 +428,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
       const seance = S, huees = CATALOGUE.get("arbitre_huees_01");
       setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, (0.9 + duree * 0.8) * 1000);
     }
-  } else if ((rp.ooh || evt.balleAvant) && chaud >= 0.6 && !(S.siffletsSet ||= new Set()).has(m.scoresSets.length) && Math.random() < 0.4) {
+  } else if ((rp.ooh || evt.balleAvant) && chaud >= 0.5 && !(S.siffletsSet ||= new Set()).has(m.scoresSets.length) && Math.random() < 0.6) {
     // Aux moments chauds (point disputé, balle sauvée), le public s'agite : quelques sifflets courts, sans l'arbitre
     // (une fois par set au plus ; demande du porteur du projet, 3 novembre).
     S.siffletsSet.add(m.scoresSets.length);
@@ -489,7 +489,12 @@ function effetSmash(smash, gagnant) {
 function apresPoint(evt, a, cel, rp) {
   const m = S.match;
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
-  if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.8 }[a.public]), 250);
+  // (fin de match perdue : le public applaudit quand même les deux joueurs, un peu moins fort ; avant, les applaudissements du set)
+  if (a.public) {
+    const type = a.public === "serie" ? "clameur" : a.public === "set" && m.termine ? "ovation" : a.public;
+    const vol = a.public === "set" && m.termine ? 0.55 : { serie: 0.45, set: 0.6, ovation: 0.8 }[a.public];
+    setTimeout(() => ambiance.public(type, vol), 250);
+  }
   // Sinon, parfois, une réaction du public : applaudissements, « Allez ! », « Bravo ! », « Ohhh… » ou brouhaha (voir reactionPoint).
   else if (rp && !rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups, Math.random, intensiteMatch(m)); if (r) setTimeout(() => ambiance.reagir(r), 300); }
   // Parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
