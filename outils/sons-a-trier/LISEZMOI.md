@@ -26,3 +26,4 @@ Trompette → `stade_charge_01` ; « Olé, olé » → `stade_ole_01` (avant une
 Fond de stade (ElevenLabs, candidat n° 3, « très animé », 3 novembre) → `public_fond_01`, à la place du murmure de tennis Pixabay (trop calme : les chants de supporters semblaient collés dessus). Original : `fond_stade_elevenlabs.mp3`.
 Chant n° 3 « Let's go, Hand-Slam » (ElevenLabs Music, porteur du projet, 3 novembre) → `stade_chant_03`, dans la rotation des chants entiers (pause entre les sets, grands matchs). Pour les prochains : le moins d'instruments possible, des supporters qui chantent.
 Chants personnalisés (ElevenLabs Music, porteur du projet, 3 novembre) : `chant_chiromancien_01..03` → `chant_perso_chiromancien_01..03`, chantés seulement dans les matchs de Le Chiromancien#6047 (`app/js/chants-perso.js`).
+Cri court « Allez le Ki-ro-man-cien ! » (ElevenLabs Music, 3 novembre) → `cri_perso_chiromancien_01` (balle sauvée, dans ses matchs).

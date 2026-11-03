@@ -105,5 +105,6 @@ test("les chants personnalisés : seulement pour les joueurs du match, quelle qu
   assert.equal(chantsPerso({ pseudo: "le chiromancien ", numero: "6047" }).length, 3);
   assert.equal(chantsPerso({ pseudo: "Le Chiromancien", numero: 1234 }).length, 0, "un autre joueur du même pseudo : rien");
   assert.equal(chantsPerso({ pseudo: "Ben", numero: 1 }, null).length, 0);
-  for (const id of Object.values(CHANTS_PERSO).flat()) assert.ok(existsSync(new URL(`../app/audio/${id}.mp3`, import.meta.url)), id);
+  const { COURTS_PERSO } = await import("../app/js/chants-perso.js");
+  for (const id of [...Object.values(CHANTS_PERSO).flat(), ...Object.values(COURTS_PERSO).flat()]) assert.ok(existsSync(new URL(`../app/audio/${id}.mp3`, import.meta.url)), id);
 });

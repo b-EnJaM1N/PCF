@@ -531,7 +531,7 @@ function apresPoint(evt, a, cel, rp) {
     // Une balle de set ou de match sauvée : les supporters entonnent quelques secondes de leur chant (une fois par set au plus).
     S.chantCourtSet.add(nSet);
     // (« Allez le Chiromancien ! » : le cri court du joueur soutenu, s'il en a un ; sinon un extrait des chants habituels)
-    const courts = courtsPerso(...joueursDuMatch()).filter(id => ambiance.persoBuf?.[id]);
+    const courts = courtsPerso(joueursDuMatch()[evt.gagnant]).filter(id => ambiance.persoBuf?.[id]);   // (seulement si c'est lui qui a sauvé la balle)
     if (courts.length) ambiance.jouerPerso(courts[Math.floor(Math.random() * courts.length)], { vol: 0.7, delai: 0.4 });
     else {
       S.chantCourt = S.chantCourt === "chantCourt1" ? "chantCourt2" : "chantCourt1";
