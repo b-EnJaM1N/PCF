@@ -44,6 +44,7 @@ import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
 import { installerTutos } from "./tutos.js";
 import { demanderSurnom, fichierPresent } from "./surnom-voix.js";
 import { clientSupabase } from "./compte.js";
+import { chantsPerso, courtsPerso, soutenu } from "./chants-perso.js";
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
@@ -411,6 +412,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
 
   // Le public : il reprend entre les points, « ooh » sur un point disputé ; il s'agite selon l'enjeu (intensiteMatch).
   ambiance.intensite(intensiteMatch(m)); ambiance.calmer(false);
+  // (au premier point, le son est prêt : on charge les chants personnalisés des joueurs, pour la pause entre les sets)
+  if (!S.persoCharge) { S.persoCharge = true; ambiance.prechargerPerso([...persoDuMatch(), ...courtsPerso(...joueursDuMatch())]); }
   const rp = reactionsPublic(evt, egalitesAvantDernier(m.coups));
   if (rp.ooh) ambiance.ooh();
   // Après le « ooh », parfois, le public siffle et l'arbitre le rappelle à l'ordre (pas plus d'une fois en 12 heures) :
@@ -527,8 +530,13 @@ function apresPoint(evt, a, cel, rp) {
     && !(S.chantCourtSet ||= new Set()).has(nSet) && Math.random() < 0.5) {
     // Une balle de set ou de match sauvée : les supporters entonnent quelques secondes de leur chant (une fois par set au plus).
     S.chantCourtSet.add(nSet);
-    S.chantCourt = S.chantCourt === "chantCourt1" ? "chantCourt2" : "chantCourt1";
-    ambiance.stade(S.chantCourt, { vol: 0.65, delai: 0.4, salle: false });
+    // (« Allez le Chiromancien ! » : le cri court du joueur soutenu, s'il en a un ; sinon un extrait des chants habituels)
+    const courts = courtsPerso(...joueursDuMatch()).filter(id => ambiance.persoBuf?.[id]);
+    if (courts.length) ambiance.jouerPerso(courts[Math.floor(Math.random() * courts.length)], { vol: 0.7, delai: 0.4 });
+    else {
+      S.chantCourt = S.chantCourt === "chantCourt1" ? "chantCourt2" : "chantCourt1";
+      ambiance.stade(S.chantCourt, { vol: 0.65, delai: 0.4, salle: false });
+    }
   }
   annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
   render(); renderHistorique(); renderLecture();
@@ -547,7 +555,7 @@ function apresPoint(evt, a, cel, rp) {
   if (evt.finSet) {
     // La pause entre les sets : une fois sur deux, les supporters chantent (le chant baisse sous les commentaires, s'éteint au
     // premier échange du set suivant ; 3 novembre).
-    if (Math.random() < 0.5) ambiance.chanter({ vol: 0.5, delai: 2.5 });
+    if (Math.random() < 0.5) ambiance.chanter({ vol: 0.5, delai: 2.5, perso: persoDuMatch(), alterner: true });
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
     const suivant = annonceDebutSet(m), decisif = setDecisif(m);
     const nouveauSet = () => {
@@ -1313,6 +1321,9 @@ async function afficherDossier() {
       "Pas encore assez de matchs en ligne pour établir son dossier.");
   } catch { montrer(null, null, "Dossier indisponible pour l'instant."); }
 }
+// Les chants de supporters personnalisés des joueurs de ce match (moi, et mon adversaire en duel) : voir chants-perso.js.
+const joueursDuMatch = () => [{ pseudo: P.pseudo, numero: P.numero, genre: P.genre }, OPP?.humain ? { pseudo: OPP.nom, numero: OPP.numero, genre: OPP.genre } : null];
+const persoDuMatch = () => chantsPerso(...joueursDuMatch());
 // Les commentateurs lancent le match, à voix haute : Roland présente les joueurs par leur surnom, puis les commentaires
 // (la présentation complète du speaker n'est ni dite ni affichée).
 function presenterSpeaker() {
@@ -1340,9 +1351,20 @@ function presenterSpeaker() {
   clearTimeout(voixIntro);
   // Avant un grand match (quarts, demies, finale, match décisif de la carrière) : les supporters chantent pendant la présentation,
   // et Roland ou Monique en parlent d'abord (3 novembre, idée du porteur du projet).
-  if (S.annonces?.enjeu && ambiance.chanter({ vol: 0.5, delai: 0.3 })) {
-    const ambiances = (POOLS.avant_ambiance || []).map(it => ligneMoment(it)).filter(l => l && voix.fichiers.has(l.id));
-    if (ambiances.length) av.commentaires.unshift(ambiances[Math.floor(Math.random() * ambiances.length)]);
+  // Un joueur du match a ses chants personnalisés (chants-perso.js) : son chant au début de chacun de ses matchs, et Roland ou
+  // Monique parlent de ses supporters.
+  const perso = persoDuMatch(), fan = soutenu(...joueursDuMatch());
+  const unDe = (moment, genre = "m") => {
+    const l = (POOLS[moment] || []).map(it => ligneMoment(it, { genre })).filter(x => x && voix.fichiers.has(x.id));
+    return l.length ? l[Math.floor(Math.random() * l.length)] : null;
+  };
+  if (fan) {
+    const l = unDe("perso_supporters", fan.genre);
+    if (l) av.commentaires.unshift(l);
+    ambiance.prechargerPerso(perso).then(() => { if (faceAFaceOuvert && !S.passe) ambiance.chanter({ vol: 0.5, delai: 0.3, perso }); });
+  } else if (S.annonces?.enjeu && ambiance.chanter({ vol: 0.5, delai: 0.3 })) {
+    const l = unDe("avant_ambiance");
+    if (l) av.commentaires.unshift(l);
   }
   // Roland présente d'abord les deux joueurs par leur surnom (dit d'un trait), seulement si tout est enregistré. Mon surnom
   // pas encore enregistré : on le demande (joueur connecté), il sera prêt au match suivant.
