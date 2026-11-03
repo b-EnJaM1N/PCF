@@ -482,3 +482,14 @@ test("Roland présente les joueurs par leur surnom (ou le nom du bot) ; sans sur
     assert.ok(p.length === 4 && p.every(enreg), p.join());
   }
 });
+
+test("« mauvais départ » : pas dès le premier point perdu, seulement à 0-3 en début de match", () => {
+  const depart = /mauvais départ|Ça commence mal/;
+  for (let k = 0; k < 200; k++) {
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = rngFixe(k);
+    const textes = [];
+    for (let i = 0; i < 3; i++) textes.push(annoncerCoup(m, jouerCoup(m, CISEAUX, PIERRE), etat, {}, rng).lignes.map(l => l.texte).join(" | "));
+    assert.ok(!depart.test(textes[0]) && !depart.test(textes[1]), `trop tôt : ${textes.join(" / ")}`);
+    assert.ok(!/Premier point pour l'adversaire|Kolodrov/.test(textes[2]), `plus le premier point : ${textes[2]}`);
+  }
+});

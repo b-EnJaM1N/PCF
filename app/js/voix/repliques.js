@@ -514,11 +514,13 @@ export const MOMENTS = {
     { r: "d", t: "L'autre a tenu un coup de plus." },
   ],
   // Le premier point du match perdu (de temps en temps). L'ouverture Kolodrov est inventée : l'érudition de Monique.
+  // « Mauvais départ » et « Ça commence mal » : seulement à 0-3 au début du match, pas dès le premier point (remarque du
+  // porteur du projet, 3 novembre : perdre le premier coup n'est pas forcément un mauvais départ).
   premier_point_perdu: [
-    { r: "d", t: "L'ouverture de Kolodrov, 1956… mais ça ne lui sourit pas.", clin: "sport" },
-    { r: "c", t: "Premier point pour l'adversaire ! Rien n'est joué !" },
-    { r: "d", t: "Un mauvais départ. Il reste du temps. Heureusement." },
-    { r: "d", t: "Ça commence mal. On a déjà vu pire. Rarement." },
+    { r: "d", t: "L'ouverture de Kolodrov, 1956… mais ça ne lui sourit pas.", clin: "sport", si: "premier_point" },
+    { r: "c", t: "Premier point pour l'adversaire ! Rien n'est joué !", si: "premier_point" },
+    { r: "d", t: "Un mauvais départ. Il reste du temps. Heureusement.", si: "depart_rate" },
+    { r: "d", t: "Ça commence mal. On a déjà vu pire. Rarement.", si: "depart_rate" },
   ],
   // Avant le match, parfois une seule phrase au lieu d'un dialogue : tous les matchs, les grands matchs, une revanche, entre amis.
   avant_seul: [
