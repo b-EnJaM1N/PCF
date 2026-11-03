@@ -50,11 +50,14 @@ export const FICHIERS_STADE = {
   tambour: "stade_tambour_01", orgueEntree: "stade_orgue_entree_01", vuvuzela: "stade_vuvuzela_01", ole: "stade_ole_01",
   fanfare: "stade_fanfare_victoire_01",
   defense: "stade_defense_01",     // « Défense ! » (ElevenLabs, essai du 3 novembre, choisi par le porteur du projet)
+  // Les chants de supporters « Hand-Slam » (ElevenLabs Music, créés par le porteur du projet le 3 novembre) : en entier pendant
+  // la pause entre les sets et avant les grands matchs ; un extrait court pendant le match (une balle sauvée).
+  chant1: "stade_chant_01", chant2: "stade_chant_02", chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
 };
 
 // Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série) ;
 // « Défense ! » quand je dois sauver une balle de set ou de match.
-export const STADE_JOUES = ["charge", "ole", "defense"];
+export const STADE_JOUES = ["charge", "ole", "defense", "chant1", "chant2", "chantCourt1", "chantCourt2"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
@@ -283,6 +286,7 @@ export class Ambiance {
         });
         this.fondSource = sources; this.fondGain = g;
       } else if (!on && this.fondSource) {
+        this.arreterChant();
         this.fondGain.gain.setTargetAtTime(0, ctx.currentTime, 0.6);
         for (const src of this.fondSource) src.stop(ctx.currentTime + 3);
         this.fondSource = null; this.fondGain = null;
@@ -322,6 +326,7 @@ export class Ambiance {
       this.bravos = null;
     }
     this.enEchange = echange;
+    if (echange) this.arreterChant();   // (le chant de supporters s'éteint quand le jeu reprend)
     this.appliquer(echange ? 0.25 : 0.6);
   }
   // L'intensité du moment (intensiteMatch) : le murmure et la couche « tension » suivent, en douceur.
@@ -367,6 +372,20 @@ export class Ambiance {
   // Le « ooh » sur un point disputé.
   ooh() { this.jouer(this.buf.ooh, 0.5, true, { delai: 0.15 }); }
   // Les sifflets du public (renvoie leur durée en secondes, 0 s'ils ne sont pas prêts).
+  // Un chant de supporters en entier (pause entre les sets, avant un grand match) : il baisse sous les commentaires, et s'éteint
+  // en douceur dès que l'échange commence (calmer) ou qu'un autre chant démarre. On alterne les deux chants.
+  chanter({ vol = 0.55, delai = 0.6 } = {}) {
+    this.arreterChant();
+    this.chantSuivant = this.chantSuivant === "chant1" ? "chant2" : "chant1";
+    const b = this.buf[this.chantSuivant] || this.buf.chant1, son = b && this.jouer(b, vol, true, { delai });
+    if (son) this.chantEnCours = son;
+    return !!son;
+  }
+  arreterChant(lissage = 0.8) {
+    const c = this.chantEnCours; if (!c) return;
+    this.chantEnCours = null;
+    try { c.g.gain.setTargetAtTime(0, this.ctx.currentTime, lissage); c.src.stop(this.ctx.currentTime + lissage * 6); } catch { /* rien */ }
+  }
   // Un son de stade (la trompette, le « Olé ») ; coupe : le faire taire en douceur au bout de tant de secondes. Renvoie sa durée
   // (0 s'il n'est pas prêt).
   // salle : false : il ne baisse pas sous la voix des commentateurs (le chant doit s'entendre).
