@@ -24,16 +24,16 @@
 <main class="essais">
   <p><a href="./">← Retour à HandSlam</a></p>
   <h1>🎧 Essais de sons du public</h1>
-  <p class="intro">Les vrais sons de foule trouvés sur Pixabay (3 novembre), découpés et mis au même volume. Touche un son pour
+  <p class="intro">Les sons en essai, à écouter avant de les mettre dans le jeu. Touche un son pour
     l'écouter. Pour choisir, dis simplement par exemple « huées : la 2 ; mélange : aucun ».</p>
   <div id="liste"></div>
 </main>
 <script type="module">
   // Les sons à écouter (dans audio/essais/) : [titre, [[fichier, légende], …]]. Originaux : outils/sons-a-trier/.
   // (3 novembre : les sons Pixabay sont choisis et branchés ; rien à écouter pour l'instant)
+  // (3 novembre : essai ElevenLabs du chant « Défense ! », robot « Voix », choix « sons-candidats »)
   const GROUPES = [
-    ["🛡️ « Défense ! » (coupé à 12 secondes)", [["defense_1", "1 · début"], ["defense_2", "2 · milieu"]]],
-    ["🎶 Chant pour la pause entre les sets", [["chant_1", "1 · le chant (7 secondes)"]]],
+    ["🛡️ « Défense ! » (ElevenLabs)", [["defense_1", "1 · avec des pas"], ["defense_2", "2 · avec des applaudissements"]]],
   ];
   let enCours = null;
   const liste = document.getElementById("liste");
