@@ -25,7 +25,7 @@ import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS, POOLS, ligneMoment } from "./voix/script.js";
-import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint, intensiteMatch } from "./ambiance.js";
+import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint, intensiteMatch, series } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
 import { noterMain, mainDuel, mainDossier, htmlMains, MAX_MAINS, memoireDuDernier } from "./historique-mains.js";
@@ -497,9 +497,26 @@ function apresPoint(evt, a, cel, rp) {
   }
   // Sinon, parfois, une réaction du public : applaudissements, « Allez ! », « Bravo ! », « Ohhh… » ou brouhaha (voir reactionPoint).
   else if (rp && !rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups, Math.random, intensiteMatch(m)); if (r) setTimeout(() => ambiance.reagir(r), 300); }
-  // Parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
-  if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length))
+  // Avant une balle de set ou de match, de temps en temps (une fois par set au plus) : la trompette ou « Olé, olé », puis l'arbitre
+  // demande le silence et le public se tait (demande du porteur du projet, 3 novembre). Contre un bot, le coup suivant attend.
+  const nSet = m.scoresSets.length, chant = evt.balleApres && !m.termine && !evt.finSet && !(S.chantSet ||= new Set()).has(nSet) && Math.random() < 0.35
+    ? (evt.balleApres.type === "match" && Math.random() < 0.5 ? "ole" : "charge") : null;
+  const coupe = chant === "ole" ? (S.duel ? 2.5 : 4) : 3.2;
+  if (chant && ambiance.stade(chant, { vol: chant === "ole" ? 0.38 : 0.42, delai: 0.4, coupe })) {
+    S.chantSet.add(nSet);
+    for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].id === "arbitre_silence_01") a.lignes.splice(k, 1);
+    const seance = S, silence = CATALOGUE.get("arbitre_silence_01");
+    // (si Roland ou Monique parlent encore, l'arbitre attend un peu qu'ils aient fini)
+    setTimeout(() => voix.finiDeParler(() => { if (S === seance && !S.match.termine) voix.dire([silence]); }, 1500), (0.4 + coupe) * 1000);
+    if (!S.duel) S.silenceJusqu = Date.now() + (0.4 + coupe + 3.5) * 1000;
+  } else if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length)) {
+    // Sinon, parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
     a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));
+  } else if (!evt.finSet && !m.termine && evt.gagnant !== null && series(m.coups).serie === 5 && !(S.oleSet ||= new Set()).has(nSet) && Math.random() < 0.6) {
+    // « Olé ! » : le public salue une série de 5 points d'affilée (une fois par set au plus).
+    S.oleSet.add(nSet);
+    ambiance.stade("ole", { vol: 0.32, delai: 0.5, coupe: 5 });
+  }
   annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
   render(); renderHistorique(); renderLecture();
   if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);

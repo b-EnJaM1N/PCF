@@ -116,7 +116,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (572 répliques)
+## Commentateur — vif, enthousiaste, plein de références (578 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -382,6 +382,12 @@ restent lus par la voix de synthèse.
 | `commentateur_memoire_balle_sauvee_01.mp3` | Au dernier match, il avait sauvé une balle de match ! Le public s'en souvient ! |
 | `commentateur_memoire_balle_sauvee_01_f.mp3` | Au dernier match, elle avait sauvé une balle de match ! Le public s'en souvient ! |
 | `commentateur_memoire_belle_01.mp3` | Égalité parfaite dans leurs face-à-face : c'est la belle, mesdames et messieurs ! |
+| `commentateur_memoire_serie_3_01.mp3` | Trois victoires de suite ! Il arrive en confiance ! |
+| `commentateur_memoire_serie_3_01_f.mp3` | Trois victoires de suite ! Elle arrive en confiance ! |
+| `commentateur_memoire_serie_4_01.mp3` | Quatre victoires d'affilée ! Qui va enfin l'arrêter ? |
+| `commentateur_memoire_serie_5_01.mp3` | Cinq victoires de suite contre lui ! C'est une série historique ! |
+| `commentateur_memoire_serie_plus_01.mp3` | Une série incroyable ! Il est intouchable dans ce face-à-face ! |
+| `commentateur_memoire_serie_plus_01_f.mp3` | Une série incroyable ! Elle est intouchable dans ce face-à-face ! |
 | `commentateur_beau_coup_01.mp3` | Il l'a pétrifié ! |
 | `commentateur_beau_coup_01_f.mp3` | Elle l'a pétrifié ! |
 | `commentateur_beau_coup_02.mp3` | Pierre après pierre, il bâtit sa légende ! |
@@ -693,7 +699,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (504 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (518 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -902,6 +908,20 @@ restent lus par la voix de synthèse.
 | `commentatrice_memoire_serre_01.mp3` | La dernière fois, ça s'était joué à un point. Prévoyez du temps. |
 | `commentatrice_memoire_habitude_01.mp3` | Il a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude. |
 | `commentatrice_memoire_habitude_01_f.mp3` | Elle a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude. |
+| `commentatrice_memoire_serie_3_01.mp3` | Il reste sur trois victoires d'affilée contre lui. |
+| `commentatrice_memoire_serie_3_01_f.mp3` | Elle reste sur trois victoires d'affilée contre lui. |
+| `commentatrice_memoire_serie_4_01.mp3` | Quatre de suite. L'autre commence à le prendre personnellement. |
+| `commentatrice_memoire_serie_5_01.mp3` | Cinq victoires d'affilée. À ce niveau, ce n'est plus une série, c'est un abonnement. |
+| `commentatrice_memoire_serie_plus_01.mp3` | Il a gagné tous leurs derniers matchs. J'ai arrêté de compter. Lui, non. |
+| `commentatrice_memoire_serie_plus_01_f.mp3` | Elle a gagné tous leurs derniers matchs. J'ai arrêté de compter. Elle, non. |
+| `commentatrice_memoire_defaites_3_01.mp3` | Il reste sur trois défaites consécutives contre lui. |
+| `commentatrice_memoire_defaites_3_01_f.mp3` | Elle reste sur trois défaites consécutives contre lui. |
+| `commentatrice_memoire_defaites_4_01.mp3` | Il reste sur quatre défaites consécutives contre lui. |
+| `commentatrice_memoire_defaites_4_01_f.mp3` | Elle reste sur quatre défaites consécutives contre lui. |
+| `commentatrice_memoire_defaites_5_01.mp3` | Il reste sur cinq défaites consécutives contre lui. |
+| `commentatrice_memoire_defaites_5_01_f.mp3` | Elle reste sur cinq défaites consécutives contre lui. |
+| `commentatrice_memoire_defaites_plus_01.mp3` | Il reste sur une longue série de défaites contre lui. On a arrêté de compter. |
+| `commentatrice_memoire_defaites_plus_01_f.mp3` | Elle reste sur une longue série de défaites contre lui. On a arrêté de compter. |
 | `commentatrice_beau_coup_01.mp3` | Sur cette pierre, il bâtit son église. |
 | `commentatrice_beau_coup_01_f.mp3` | Sur cette pierre, elle bâtit son église. |
 | `commentatrice_beau_coup_02.mp3` | Un roc. Et un adversaire en miettes. |

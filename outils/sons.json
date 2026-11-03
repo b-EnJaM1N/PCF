@@ -96,9 +96,10 @@
       "duree": 2.5
     },
     "stade_charge_01": {
-      "texte": "Stadium trumpet playing the classic short \"charge\" bugle call, then a big crowd shouting \"Charge!\", arena reverb",
+      "texte": "Stadium trumpet playing the classic short \"charge\" bugle call, then a big crowd shouting \"Charge!\", arena reverb (vrai son, trompette de stade, Pixabay, 3 novembre : ne pas régénérer)",
       "duree": 4,
-      "salle": false
+      "salle": false,
+      "vrai": true
     },
     "stade_orgue_montee_01": {
       "texte": "Basketball arena organ playing a short rising chromatic build-up, tension, arena reverb, no crowd voices",
@@ -131,9 +132,10 @@
       "salle": false
     },
     "stade_ole_01": {
-      "texte": "Football stadium crowd chanting \"Olé! Olé! Olé!\", short",
-      "duree": 4,
-      "salle": false
+      "texte": "Football stadium crowd chanting \"Olé! Olé! Olé!\", short (vrai son, supporters, Pixabay, 3 novembre : ne pas régénérer)",
+      "duree": 10.5,
+      "salle": false,
+      "vrai": true
     },
     "stade_fanfare_victoire_01": {
       "texte": "Short triumphant brass fanfare played in the arena right after the final point",

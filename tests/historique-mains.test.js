@@ -81,3 +81,20 @@ test("les commentateurs se souviennent : des répliques enregistrées, au bon ge
   assert.match(commentaireMemeOuverture({ ouverture: 2 }, 1, {}, () => 0)[0].texte, /ouverture/);
   assert.equal(commentaireMemeOuverture({ ouverture: 2 }, 1, {}, () => 0.9), null);
 });
+
+test("la série en cours dans nos face-à-face : victoires ou défaites d'affilée, et ce qu'en disent Roland et Monique", async () => {
+  const { memoireDuDernier } = await import("../app/js/historique-mains.js");
+  const { commentaireMemoire } = await import("../app/js/annonces.js");
+  const e = g => ({ g, s: "11–5", c: "", d: Date.now() });
+  assert.equal(memoireDuDernier([e(1), e(1)]).serie, null, "2 de suite : pas encore une série");
+  assert.deepEqual(memoireDuDernier([e(1), e(1), e(1), e(0)]).serie, { n: 3, gagnant: "moi" });
+  assert.deepEqual(memoireDuDernier([e(0), e(0), e(0), e(0), e(0), e(0), e(0)]).serie, { n: 7, gagnant: "lui" });
+  const textes = new Set();
+  for (let k = 0; k < 200; k++) {
+    const r = Math.random;
+    const l = commentaireMemoire({ serie: { n: 4, gagnant: "lui" }, ouverture: null }, { genreMoi: "f" }, () => r());
+    if (l) l.forEach(x => textes.add(x.texte));
+  }
+  assert.ok([...textes].some(t => /Quatre/i.test(t)), [...textes].join(" | "));
+  assert.ok([...textes].some(t => /^Elle reste sur quatre défaites/.test(t)), "la défaite, au féminin pour moi");
+});

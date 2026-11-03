@@ -1,37 +1,25 @@
 # Les répliques à refaire avec le robot « Voix » (choix « liste ») : un identifiant par ligne. Les lignes en # sont ignorées.
-# 2 novembre : les commentaires de la poignée de main (9 répliques choisies par le porteur du projet).
-commentateur_poignee_franche_01
-commentatrice_poignee_franche_01
-commentateur_poignee_contraste_01
-commentatrice_poignee_contraste_01
-commentatrice_poignee_contraste_02
-commentateur_poignee_froide_01
-commentatrice_poignee_froide_01
-commentatrice_poignee_legere_01
-commentateur_poignee_legere_01
-# 2 novembre : la voix de Roland pour les présentations (rôle « speaker ») : liaisons, tours, champion, noms des bots.
-# (Le lot de la banque de commentaires du 1er novembre a été enregistré le 2 novembre.)
-speaker_presente_jaune_02
-speaker_presente_rouge_02
-speaker_huitiemes_01
-speaker_quarts_01
-speaker_demis_01
-speaker_sit_and_go_01
-speaker_champion_01
-speaker_bot_bambi_01
-speaker_bot_papyrus_01
-speaker_bot_rancune_01
-speaker_bot_bluffeur_01
-speaker_bot_mante_01
-speaker_bot_nemesis_01
-speaker_bot_titan_01
-speaker_bot_rocky_01
-speaker_bot_miroir_01
-speaker_bot_cyclo_01
-speaker_bot_boomerang_01
-speaker_bot_chaos_01
-speaker_bot_stratege_01
-speaker_bot_professeur_01
+# 3 novembre : les séries dans les face-à-face (victoires et défaites d'affilée), répliques validées par le porteur du projet.
+commentatrice_memoire_serie_3_01
+commentatrice_memoire_serie_3_01_f
+commentateur_memoire_serie_3_01
+commentateur_memoire_serie_3_01_f
+commentateur_memoire_serie_4_01
+commentatrice_memoire_serie_4_01
+commentateur_memoire_serie_5_01
+commentatrice_memoire_serie_5_01
+commentatrice_memoire_serie_plus_01
+commentatrice_memoire_serie_plus_01_f
+commentateur_memoire_serie_plus_01
+commentateur_memoire_serie_plus_01_f
+commentatrice_memoire_defaites_3_01
+commentatrice_memoire_defaites_3_01_f
+commentatrice_memoire_defaites_4_01
+commentatrice_memoire_defaites_4_01_f
+commentatrice_memoire_defaites_5_01
+commentatrice_memoire_defaites_5_01_f
+commentatrice_memoire_defaites_plus_01
+commentatrice_memoire_defaites_plus_01_f
 
 # Le Grand Chelem (dialogues d'avant et d'après match, jamais enregistrés) : 132 répliques, environ 9 600 crédits.
 # À décider : enlever le # devant chaque ligne pour les enregistrer.
