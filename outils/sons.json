@@ -160,6 +160,12 @@
       "texte": "Vrai son de foule (Pixabay, 3 novembre) : déception « Ohhh… ». Ne pas régénérer.",
       "duree": 3,
       "vrai": true
+    },
+    "stade_defense_01": {
+      "texte": "Thousands of fans in an indoor arena chanting \"Defense!\" over and over in unison, clapping twice after each chant, building intensity, loud and energetic, no music, no announcer (candidat n° 2 de l'essai du 3 novembre, choisi par le porteur du projet : ne pas régénérer)",
+      "duree": 12,
+      "salle": false,
+      "vrai": true
     }
   },
   "_salle": "Same venue for every sound: a large indoor tennis arena with about 5,000 spectators, evening final, warm natural hall reverb, heard from the TV broadcast microphones near the court, consistent loudness, no music."
