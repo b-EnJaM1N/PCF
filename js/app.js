@@ -50,7 +50,7 @@ import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, te
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
 import { GESTES, CELEBRATIONS, CADRES, gesteValide, celebrationValide, articleDe, possede } from "./catalogue.js";
-import { gainDuel } from "./jetons-logique.js";
+import { gainDuel, exploitsDuMatch, EXPLOITS } from "./jetons-logique.js";
 import { texteClassementFin, texteNiveau, provisoire, divisionDe, texteDivision } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
 import { maPlace, vuDe, evenementsDuel, nbEvenements, rejouer, coherent, adversaireHumain, tempsRestant, formatDuel, statsFaceAFace } from "./duel-logique.js";
@@ -801,8 +801,12 @@ function finir() {
   // Les défis du jour avancent.
   defisUI?.match({ gagne, coups: n, ballesSauvees: S.stats.ballesSauvees, meilleureSerie: S.stats.meilleureSerie, scoresSets: m.scoresSets,
     pointsParSet: m.format.pointsParSet, duel: !!S.duel, termineAuScore: !!S.duel && !special, eloBot: S.duel ? 0 : OPP.elo });
-  // Une victoire contre un bot rapporte quelques jetons (avec un compte).
-  if (n && gagne && !S.duel) jetonsUI?.gagnerEntrainement().then(g => { if (g) $("news").textContent = `🪙 +${g} jetons. ${$("news").textContent}`.trim(); });
+  // Chaque match terminé rapporte des jetons (avec un compte) : selon le résultat et les exploits (étape 57 ; pas pour un
+  // forfait ou un abandon).
+  if (n && !special) {
+    const exploits = exploitsDuMatch({ stats: S.stats, m, matchJour: !!S.matchJour });
+    jetonsUI?.gagnerMatch(gagne, exploits).then(g => { if (g) $("news").textContent = `🪙 +${g} jetons${exploits.length ? ` (${exploits.map(x => EXPLOITS[x].nom).join(", ")})` : ""}. ${$("news").textContent}`.trim(); });
+  }
   $("end").scrollIntoView({ behavior: reduitMouvement() ? "auto" : "smooth", block: "start" });
   // L'interview d'après-finale : seulement pour les tournois programmés (pas les Sit & Go, ni les tournois d'entraînement ou entre amis).
   if (n && !special && S.annonces.finale && S.duel && D?.programme) setTimeout(() => ouvrirInterview(gagne), 2500);
