@@ -504,7 +504,7 @@ function apresPoint(evt, a, cel, rp) {
   const nSet = m.scoresSets.length, chant = evt.balleApres && !m.termine && !evt.finSet && !(S.chantSet ||= new Set()).has(nSet) && Math.random() < 0.35
     ? (evt.balleApres.type === "match" && Math.random() < 0.5 ? "ole" : "charge") : null;
   const coupe = chant === "ole" ? (S.duel ? 2.5 : 4) : 3.2;
-  if (chant && ambiance.stade(chant, { vol: chant === "ole" ? 0.38 : 0.42, delai: 0.4, coupe })) {
+  if (chant && ambiance.stade(chant, { vol: chant === "ole" ? 0.85 : 0.6, delai: 0.4, coupe, salle: false })) {   // (plus fort le 3 novembre : on l'entendait à peine)
     S.chantSet.add(nSet);
     for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].id === "arbitre_silence_01") a.lignes.splice(k, 1);
     const seance = S, silence = CATALOGUE.get("arbitre_silence_01");
@@ -517,7 +517,7 @@ function apresPoint(evt, a, cel, rp) {
   } else if (!evt.finSet && !m.termine && evt.gagnant !== null && series(m.coups).serie === 5 && !(S.oleSet ||= new Set()).has(nSet) && Math.random() < 0.6) {
     // « Olé ! » : le public salue une série de 5 points d'affilée (une fois par set au plus).
     S.oleSet.add(nSet);
-    ambiance.stade("ole", { vol: 0.32, delai: 0.5, coupe: 5 });
+    ambiance.stade("ole", { vol: 0.75, delai: 0.5, coupe: 5, salle: false });
   }
   annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
   render(); renderHistorique(); renderLecture();
