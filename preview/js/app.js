@@ -4,8 +4,8 @@ import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
-import { voirTournoi, mesAmis, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch } from "./social-serveur.js";
-import { compterVisite, compterTroisMatchs, compterMatchJoue } from "./visites.js";
+import { voirTournoi, mesAmis, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours } from "./social-serveur.js";
+import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
 import { carteDe, notesDe, texteRang, rangDe } from "./carte-logique.js";
@@ -743,6 +743,7 @@ function finir() {
   const ouvert = menuComplet() ? [] : nouveautes(matchsAvant, P.matchs);
   if (matchsAvant < 3 && P.matchs >= 3) compterTroisMatchs(envoyerTroisMatchs);   // pour savoir si les nouveaux joueurs accrochent (anonyme)
   if (n) compterMatchJoue(envoyerMatch);   // le nombre de matchs joués chaque jour (anonyme)
+  if (n && !special) compterPremierMatch(envoyerParcours);   // le parcours des nouveaux : premier match fini, sans abandon (anonyme, une seule fois)
   // « La Une » : on garde de quoi raconter ce match.
   S.pourUne = n && !special ? {
     etape: S.carriere ? S.carriere.coupe ? S.carriere.etape.replace(" · ", ", ") : `${CIRCUITS[S.carriere.circuit]}, ${S.carriere.etape.charAt(0).toLowerCase()}${S.carriere.etape.slice(1)}` : S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.direct ? (D.tourVoix === "finale" && D.nbTours > 1 ? "Finale de Sit & Go" : "Sit & Go") : D.championnat ? "Championnat du cercle" : D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
@@ -2527,8 +2528,8 @@ nouvelleSeance();
 compteUI.surConnexion(session => { placerCompte(!!session?.user); if (session?.user) rattacherAbonnement(); renderNotifs(); });
 
 // ---------------------------------------------------------------- le compteur de visites (étape 43), anonyme
-compterVisite(envoyerVisite, premiereFois);
-document.addEventListener("visibilitychange", () => { if (!document.hidden) compterVisite(envoyerVisite, false); });   // (appli restée ouverte jusqu'au lendemain)
+compterVisite(envoyerVisite, premiereFois, envoyerParcours);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) compterVisite(envoyerVisite, false, envoyerParcours); });   // (appli restée ouverte jusqu'au lendemain)
 
 // ---------------------------------------------------------------- qui est en ligne (étape 39)
 // Appli ouverte et à l'écran : « je suis là » toutes les minutes (en match ou pas) ; les amis voient 🟢 ou 🟠.

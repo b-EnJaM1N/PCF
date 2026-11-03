@@ -14,6 +14,7 @@ export const mesAmis = () => rpc("mes_amis");
 export const compterVisite = (origine, nouveau, revenu) => rpc("compter_visite", { p_origine: origine, p_nouveau: !!nouveau, p_revenu: !!revenu });
 export const compterTroisMatchs = origine => rpc("compter_trois_matchs", { p_origine: origine });
 export const compterMatch = origine => rpc("compter_match", { p_origine: origine });   // (étape 50 : un match terminé)
+export const compterParcours = (origine, arrivee, etape) => rpc("compter_parcours", { p_origine: origine, p_arrivee: arrivee, p_etape: etape });   // (étape 58)
 // Qui est en ligne (supabase/etape-39-en-ligne.sql) : « je suis là » toutes les minutes, et l'option pour le cacher.
 export const jeSuisLa = enMatch => rpc("je_suis_la", { p_en_match: !!enMatch });
 export const reglerPresence = visible => rpc("regler_presence", { p_visible: !!visible });
