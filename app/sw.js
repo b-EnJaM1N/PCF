@@ -71,7 +71,6 @@ const FICHIERS = [
   "js/catalogue.js",
   "js/decouverte.js",
   "js/tutos.js",
-  "js/surnom-voix.js",
   "js/chants-perso.js",
   "js/match-du-jour.js",
   "js/messages-rapides.js",
