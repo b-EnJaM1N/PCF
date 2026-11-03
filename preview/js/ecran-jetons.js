@@ -47,10 +47,11 @@ export function installerJetons(ctx) {
 
   return {
     rafraichir,
-    // Une victoire contre un bot : quelques jetons (plafonnés chaque jour par le serveur). Renvoie le montant gagné.
-    async gagnerEntrainement() {
+    // Un match terminé (contre un bot ou en duel) : des jetons selon le résultat et les exploits (étape 57 ; plafonnés chaque
+    // jour par le serveur). Renvoie le montant gagné.
+    async gagnerMatch(gagne, exploits = []) {
       if (!connecte) return 0;
-      try { etat = await rpc("gain_entrainement"); render(); return etat.gagne || 0; } catch { return 0; }
+      try { etat = await essayer(async () => verifier(await client().rpc("gain_match", { p_gagne: !!gagne, p_exploits: exploits }))); render(); return etat.gagne || 0; } catch { return 0; }
     },
   };
 }
