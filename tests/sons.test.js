@@ -90,7 +90,7 @@ test("le public s'agite avec l'enjeu : calme en début de set, plus fort en fin 
   for (let i = 0; i < 3; i++) gagne(0);                  // 10-7 : balle de set
   assert.ok(intensiteMatch(m) >= 0.8, "balle de set");
   gagne(0);                                               // set gagné : on repart au calme
-  assert.ok(intensiteMatch(m) < 0.1, "nouveau set : calme");
+  assert.ok(intensiteMatch(m) <= 0.1, "nouveau set : calme (un peu plus nerveux : un joueur n'est plus qu'à un set de la victoire)");
   for (let i = 0; i < 11; i++) gagne(1);                  // 1 set partout : set décisif
   assert.ok(intensiteMatch(m) >= 0.2, "set décisif : le public est déjà plus nerveux");
   // les réactions : plus nombreuses quand ça chauffe

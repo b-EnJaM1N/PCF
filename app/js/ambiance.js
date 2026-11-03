@@ -51,10 +51,10 @@ export const FICHIERS_STADE = {
 // les commentaires ne doivent jamais sortir du silence).
 // (3 novembre, remarque du porteur du projet : on l'entendait peu ; 0,34 et 0,15 avant.) Il monte avec l'enjeu (voir intensiteMatch) :
 // jusqu'à « monte » fois plus fort quand le moment est décisif.
-export const FOND = { entrePoints: 0.45, echange: 0.2, monte: 0.7 };
+export const FOND = { entrePoints: 0.45, echange: 0.2, monte: 1.1 };   // (« monte » : 0,7 le 3 novembre, puis plus fort en fin de match)
 // La couche « tension » : le brouhaha agité, en boucle, qui monte par-dessus le murmure quand le moment devient chaud
 // (à partir de « des » d'intensité, jusqu'au volume « max » ; pendant l'échange, il baisse lui aussi).
-export const TENSION = { des: 0.45, max: 0.32, echange: 0.4 };
+export const TENSION = { des: 0.45, max: 0.45, echange: 0.4 };
 
 // L'intensité du moment, de 0 (début de set, rien en jeu) à 1 (point décisif) : le public s'agite peu à peu en fin de set quand
 // le score est serré, encore plus au set décisif, aux balles de set et de match (demande du porteur du projet, 3 novembre).
@@ -64,7 +64,8 @@ export function intensiteMatch(m) {
   const avance = Math.min(1, Math.max(a, b) / n), ecart = Math.abs(a - b);
   const serre = ecart <= 1 ? 1 : ecart === 2 ? 0.7 : ecart === 3 ? 0.45 : 0.25;
   let i = Math.pow(avance, 1.6) * serre * 0.7;
-  if (sg > 1 && m.sets[0] === sg - 1 && m.sets[1] === sg - 1) i += 0.2;   // le set décisif
+  if (sg > 1 && m.sets[0] === sg - 1 && m.sets[1] === sg - 1) i += 0.25;   // le set décisif
+  else if (sg > 1 && Math.max(m.sets[0], m.sets[1]) === sg - 1) i += 0.1;   // un joueur n'est plus qu'à un set de la victoire
   const h = balle(m);
   if (h) i = Math.max(i, h.type === "match" ? 0.95 : 0.8);
   if (pointDecisif(m)) i = 1;
@@ -342,6 +343,12 @@ export class Ambiance {
   // Le « ooh » sur un point disputé.
   ooh() { this.jouer(this.buf.ooh, 0.5, true, { delai: 0.15 }); }
   // Les sifflets du public (renvoie leur durée en secondes, 0 s'ils ne sont pas prêts).
+  // Quelques sifflets courts, sans l'arbitre : le public s'agite à un moment chaud (ils s'éteignent au bout d'environ une seconde).
+  siffletsCourts(delai = 0.3) {
+    const son = this.buf.sifflets && this.jouer(this.buf.sifflets, 0.3, true, { delai, vitesse: 0.95 + Math.random() * 0.1 });
+    if (!son) return;
+    try { son.g.gain.setTargetAtTime(0, this.ctx.currentTime + delai + 1.1, 0.25); son.src.stop(this.ctx.currentTime + delai + 3); } catch { /* rien */ }
+  }
   sifflets(delai = 0) { return this.buf.sifflets && this.jouer(this.buf.sifflets, 0.45, true, { delai }) ? this.buf.sifflets.duration : 0; }
   // (si un son n'est pas encore prêt, il est simplement ignoré)
 
