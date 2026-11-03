@@ -1,6 +1,8 @@
 // Le compteur de visites (supabase/etape-43-visites.sql et etape-44-fidelite.sql) : au plus une fois par jour, ce téléphone
 // dit « j'ai ouvert l'appli », avec son origine (site, appli Android, appli installée), s'il s'agit de la toute première fois
 // et s'il était déjà venu la veille ; une seule fois, « je viens de jouer mon 3e match » ; et « un match terminé » à chaque match.
+// Le parcours des nouveaux (etape-58-parcours-nouveaux.sql) : le téléphone garde son jour d'arrivée et signale, rangé à ce jour,
+// la fin de son premier match, son retour le lendemain et son retour une semaine plus tard (du 7e au 13e jour).
 // Rien d'autre n'est envoyé : ni compte, ni identifiant.
 import { lire, ecrire } from "./stockage.js";
 import { jourParis } from "./match-du-jour.js";
@@ -22,18 +24,52 @@ export function veille(jour) {
   const d = new Date(`${jour}T12:00:00Z`); d.setUTCDate(d.getUTCDate() - 1);
   return d.toISOString().slice(0, 10);
 }
+// Le nombre de jours entre deux dates (« 2026-11-03 », « 2026-11-10 » → 7).
+export function ecartJours(de, a) {
+  return Math.round((Date.parse(`${a}T12:00:00Z`) - Date.parse(`${de}T12:00:00Z`)) / 86400000);
+}
+
+// Ce qu'une ouverture apprend du parcours d'un nouveau : revenu le lendemain, ou une semaine plus tard (une seule fois).
+export function retoursParcours({ arrivee, jour, retour7Fait = false }) {
+  if (!arrivee) return [];
+  const e = ecartJours(arrivee, jour);
+  if (e === 1) return ["retour_1j"];
+  if (e >= 7 && e <= 13 && !retour7Fait) return ["retour_7j"];
+  return [];
+}
+
 // D'où vient ce téléphone (on se souvient de l'appli Android, qui ne l'indique qu'à la première page).
 function origineIci() {
   if (document.referrer.startsWith("android-app://")) ecrire("visiteAndroid", true);
   return origineVisite({ referrer: document.referrer, standalone: matchMedia("(display-mode: standalone)").matches, androidVu: !!lire("visiteAndroid", false) });
 }
 
-// envoyer(origine, nouveau, revenu) : l'appel au serveur ; premiereFois : aucune fiche sur ce téléphone au démarrage.
-export function compterVisite(envoyer, premiereFois) {
+// envoyer(origine, nouveau, revenu) : l'appel au serveur ; premiereFois : aucune fiche sur ce téléphone au démarrage ;
+// envoyerParcours(origine, arrivee, etape) : le parcours des nouveaux (étape 58).
+export function compterVisite(envoyer, premiereFois, envoyerParcours = null) {
   try {
     const jour = jourParis(), dernierJour = lire("visiteJour", null);
     if (!aCompter({ dernierJour, jour, chemin: location.pathname, hote: location.hostname })) return;
-    envoyer(origineIci(), dernierJour === null && premiereFois, dernierJour === veille(jour)).then(() => ecrire("visiteJour", jour)).catch(() => {});
+    const origine = origineIci(), nouveau = dernierJour === null && premiereFois;
+    envoyer(origine, nouveau, dernierJour === veille(jour)).then(() => {
+      ecrire("visiteJour", jour);
+      if (!envoyerParcours) return;
+      if (nouveau) { ecrire("visiteArrivee", { jour, origine }); envoyerParcours(origine, jour, "arrive").catch(() => {}); return; }
+      const a = lire("visiteArrivee", null);
+      for (const etape of retoursParcours({ arrivee: a?.jour, jour, retour7Fait: !!lire("visiteRetour7", false) })) {
+        envoyerParcours(a.origine, a.jour, etape).then(() => { if (etape === "retour_7j") ecrire("visiteRetour7", true); }).catch(() => {});
+      }
+    }).catch(() => {});
+  } catch { /* sans réseau ou sans stockage : tant pis */ }
+}
+
+// Le premier match terminé d'un nouveau (étape 58) : signalé une seule fois, rangé à son jour d'arrivée.
+export function compterPremierMatch(envoyerParcours) {
+  try {
+    const a = lire("visiteArrivee", null);
+    if (!a || lire("visitePremierMatch", false) || !aCompter({ dernierJour: null, jour: "", chemin: location.pathname, hote: location.hostname })) return;
+    if (ecartJours(a.jour, jourParis()) > 30) { ecrire("visitePremierMatch", true); return; }
+    envoyerParcours(a.origine, a.jour, "premier_match").then(() => ecrire("visitePremierMatch", true)).catch(() => {});
   } catch { /* sans réseau ou sans stockage : tant pis */ }
 }
 
