@@ -758,8 +758,9 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .fenetre-msg { max-width: 520px; border-radius: 18px 18px 0 0; border-width: 2px 0 0; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); max-height: 85vh; overflow-y: auto; animation: monte .25s ease-out; }
 .fenetre-msg h2 { margin-bottom: 4px; }
 .msg-rubrique { margin: 14px 0 6px; font-size: .85rem; font-weight: 700; color: var(--muted); }
-.fenetre-msg .msg-puces { justify-content: flex-start; }
-.fenetre-msg .msg-puces button { font-size: .95rem; padding: 8px 13px; }
+/* (dans la fenêtre des messages : deux colonnes bien rangées, demande du porteur du projet le 3 novembre) */
+.fenetre-msg .msg-puces { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.fenetre-msg .msg-puces button { font-size: .95rem; padding: 9px 10px; border-radius: 14px; min-width: 0; line-height: 1.25; text-align: center; }
 .msg-libre { display: flex; gap: 8px; }
 .msg-libre input { flex: 1; min-width: 0; font: inherit; font-size: 1rem; padding: 9px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .3); background: var(--panel); color: var(--line); }
 .msg-libre .btn { width: auto; margin: 0; padding: 0 16px; }
