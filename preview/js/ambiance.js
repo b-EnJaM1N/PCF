@@ -4,6 +4,7 @@
 // enregistrement portant leur nom est déposé dans app/audio/ (ex. public_ovation_01.mp3).
 // Le murmure de fond, la tension et le « ooh » n'existent qu'en enregistrement : sans fichier, rien.
 import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe } from "./sons.js";
+import { balle, pointDecisif } from "./regles.js";
 
 const AC = typeof window !== "undefined" ? window.AudioContext || window.webkitAudioContext : null;
 
@@ -48,7 +49,27 @@ export const FICHIERS_STADE = {
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
-export const FOND = { entrePoints: 0.34, echange: 0.15 };
+// (3 novembre, remarque du porteur du projet : on l'entendait peu ; 0,34 et 0,15 avant.) Il monte avec l'enjeu (voir intensiteMatch) :
+// jusqu'à « monte » fois plus fort quand le moment est décisif.
+export const FOND = { entrePoints: 0.45, echange: 0.2, monte: 0.7 };
+// La couche « tension » : le brouhaha agité, en boucle, qui monte par-dessus le murmure quand le moment devient chaud
+// (à partir de « des » d'intensité, jusqu'au volume « max » ; pendant l'échange, il baisse lui aussi).
+export const TENSION = { des: 0.45, max: 0.32, echange: 0.4 };
+
+// L'intensité du moment, de 0 (début de set, rien en jeu) à 1 (point décisif) : le public s'agite peu à peu en fin de set quand
+// le score est serré, encore plus au set décisif, aux balles de set et de match (demande du porteur du projet, 3 novembre).
+export function intensiteMatch(m) {
+  if (!m || m.termine) return 0;
+  const [a, b] = m.points, n = m.format.pointsParSet, sg = m.format.setsGagnants;
+  const avance = Math.min(1, Math.max(a, b) / n), ecart = Math.abs(a - b);
+  const serre = ecart <= 1 ? 1 : ecart === 2 ? 0.7 : ecart === 3 ? 0.45 : 0.25;
+  let i = Math.pow(avance, 1.6) * serre * 0.7;
+  if (sg > 1 && m.sets[0] === sg - 1 && m.sets[1] === sg - 1) i += 0.2;   // le set décisif
+  const h = balle(m);
+  if (h) i = Math.max(i, h.type === "match" ? 0.95 : 0.8);
+  if (pointDecisif(m)) i = 1;
+  return Math.min(1, Math.round(i * 100) / 100);
+}
 // Les petits applaudissements après un point gagné, comme au tennis : volume et vitesse tirés au hasard (jamais deux fois pareils),
 // courts (ils s'éteignent au bout d'une seconde environ, et tout de suite si l'échange suivant commence).
 export const APPLAUDIR = { vol: [0.16, 0.26], vitesse: [0.93, 1.08], duree: 1.1 };
@@ -67,17 +88,19 @@ export function series(coups) {
 // « Ohhh… » (une série de 4 points ou plus vient d'être brisée) ou un brouhaha. Jamais deux points de suite (sauf le « Ohhh… »).
 // Sur une égalité : seulement des rires, à la 4e égalité d'affilée (les deux joueurs s'obstinent sur le même signe), puis à la 7e.
 // etat : { dernier } (gardé d'un point à l'autre) ; coups : les coups du match, celui-ci compris.
-export function reactionPoint(etat, evt, coups, rng = Math.random) {
+// intensite : celle du moment (intensiteMatch) : le public réagit moins en début de match, plus quand ça chauffe (× 0,6 à × 1,6).
+export function reactionPoint(etat, evt, coups, rng = Math.random, intensite = 0.4) {
   if (!evt) return null;
   if (evt.egalite) { const n = egalitesAvantDernier(coups) + 1; return n === 4 || n === 7 ? "rires" : null; }
   const { serie, brisee } = series(coups), egalites = egalitesAvantDernier(coups);
+  const f = 0.6 + intensite;
   let r = null;
   const x = rng();
   if (brisee >= 4 && x < 0.45) r = "ohDecu";                                         // une belle série vient d'être brisée
   else if (!etat.dernier) {
-    if (egalites >= 1) r = x < 0.35 ? "bravo" : x < 0.6 ? "applaudir" : null;      // un point arraché après des égalités
-    else if (serie >= 3) r = x < 0.4 ? "allez" : x < 0.55 ? "applaudir" : null;    // une série qui se construit
-    else r = x < 0.08 ? "applaudir" : x < 0.15 ? "brouhaha" : x < 0.19 ? "allez" : null;
+    if (egalites >= 1) r = x < 0.35 * f ? "bravo" : x < 0.6 * f ? "applaudir" : null;      // un point arraché après des égalités
+    else if (serie >= 3) r = x < 0.4 * f ? "allez" : x < 0.55 * f ? "applaudir" : null;    // une série qui se construit
+    else r = x < 0.08 * f ? "applaudir" : x < 0.15 * f ? "brouhaha" : x < 0.19 * f ? "allez" : null;
   }
   etat.dernier = !!r;
   return r;
@@ -109,6 +132,7 @@ export class Ambiance {
   constructor() {
     this.ctx = null; this.master = null; this.echo = null; this.buf = {}; this.raquettes = []; this.raquettesFichiers = []; this.reactions = {}; this.fichiers = []; this.actif = true;
     this.fondVoulu = false; this.fondSource = null; this.fondGain = null; this.dernierTension = -99;
+    this.niveau = 0; this.enEchange = false; this.tensionSource = null; this.tensionGain = null;
   }
 
   // Liste des enregistrements disponibles (lue dans audio/index.json).
@@ -221,7 +245,7 @@ export class Ambiance {
       if (on && !this.fondSource && this.buf.fond) {
         // Deux couches du même enregistrement, décalées, l'une un peu à gauche et l'autre un peu à droite (et un peu plus grave) :
         // une foule plus dense et plus vivante, qui ne se répète pas à l'oreille.
-        const g = ctx.createGain(); g.gain.value = 0; g.gain.setTargetAtTime(FOND.entrePoints, ctx.currentTime, 0.8);
+        const g = ctx.createGain(); g.gain.value = 0; g.gain.setTargetAtTime(this.volumeFond(), ctx.currentTime, 0.8);
         g.connect(this.salle);
         const duree = this.buf.fond.duration;
         const sources = [[-0.35, 1, 0, 1], [0.35, 0.94, duree / 2, 0.75]].map(([cote, vitesse, depart, vol]) => {
@@ -237,8 +261,31 @@ export class Ambiance {
         this.fondGain.gain.setTargetAtTime(0, ctx.currentTime, 0.6);
         for (const src of this.fondSource) src.stop(ctx.currentTime + 3);
         this.fondSource = null; this.fondGain = null;
+        if (this.tensionGain) {
+          this.tensionGain.gain.setTargetAtTime(0, ctx.currentTime, 0.6);
+          for (const src of this.tensionSource) src.stop(ctx.currentTime + 3);
+          this.tensionSource = null; this.tensionGain = null;
+        }
+        this.niveau = 0;
       }
+      if (on && this.fondSource && !this.tensionSource) this.lancerTension();
     } catch { /* sans murmure */ }
+  }
+  // La couche « tension » (le brouhaha agité), en boucle, muette tant que le moment n'est pas chaud.
+  lancerTension() {
+    const ctx = this.ctx;
+    if (!ctx || !this.buf.tension) return;
+    const gt = ctx.createGain(); gt.gain.value = 0; gt.connect(this.salle);
+    const dt = this.buf.tension.duration;
+    this.tensionSource = [[-0.3, 1, 0], [0.3, 0.96, dt / 2]].map(([cote, vitesse, depart]) => {
+      const src = ctx.createBufferSource(); src.buffer = this.buf.tension; src.loop = true; src.playbackRate.value = vitesse;
+      let sortie = src;
+      if (ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = cote; src.connect(p); sortie = p; }
+      sortie.connect(gt); src.start(ctx.currentTime, depart % dt);
+      return src;
+    });
+    this.tensionGain = gt;
+    this.appliquer();
   }
   // Pendant l'échange, le public baisse la voix ; entre les points, il reprend.
   calmer(echange) {
@@ -249,8 +296,22 @@ export class Ambiance {
       try { son.g.gain.setTargetAtTime(parle ? son.g.gain.value * 0.55 : 0, this.ctx.currentTime, parle ? 0.15 : 0.3); } catch { /* rien */ }
       this.bravos = null;
     }
-    if (!this.fondGain) return;
-    try { this.fondGain.gain.setTargetAtTime(echange ? FOND.echange : FOND.entrePoints, this.ctx.currentTime, echange ? 0.25 : 0.6); } catch { /* rien */ }
+    this.enEchange = echange;
+    this.appliquer(echange ? 0.25 : 0.6);
+  }
+  // L'intensité du moment (intensiteMatch) : le murmure et la couche « tension » suivent, en douceur.
+  intensite(i) { this.niveau = Math.max(0, Math.min(1, i || 0)); this.appliquer(1.2); }
+  volumeFond() { return (this.enEchange ? FOND.echange : FOND.entrePoints) * (1 + FOND.monte * this.niveau); }
+  volumeTension() {
+    const t = Math.max(0, (this.niveau - TENSION.des) / (1 - TENSION.des));
+    return TENSION.max * t * (this.enEchange ? TENSION.echange : 1);
+  }
+  appliquer(lissage = 0.6) {
+    if (!this.ctx) return;
+    try {
+      if (this.fondGain) this.fondGain.gain.setTargetAtTime(this.volumeFond(), this.ctx.currentTime, lissage);
+      if (this.tensionGain) this.tensionGain.gain.setTargetAtTime(this.volumeTension(), this.ctx.currentTime, lissage);
+    } catch { /* rien */ }
   }
   // Le brouhaha des balles de set et de match (pas deux fois de suite en quelques secondes).
   tension() {
