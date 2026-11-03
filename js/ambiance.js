@@ -49,10 +49,12 @@ export const FICHIERS_STADE = {
   charge: "stade_charge_01", orgueMontee: "stade_orgue_montee_01", orgueDefense: "stade_orgue_defense_01", corne: "stade_corne_01",
   tambour: "stade_tambour_01", orgueEntree: "stade_orgue_entree_01", vuvuzela: "stade_vuvuzela_01", ole: "stade_ole_01",
   fanfare: "stade_fanfare_victoire_01",
+  defense: "stade_defense_01",     // « Défense ! » (ElevenLabs, essai du 3 novembre, choisi par le porteur du projet)
 };
 
-// Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série).
-export const STADE_JOUES = ["charge", "ole"];
+// Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série) ;
+// « Défense ! » quand je dois sauver une balle de set ou de match.
+export const STADE_JOUES = ["charge", "ole", "defense"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).

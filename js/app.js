@@ -511,6 +511,11 @@ function apresPoint(evt, a, cel, rp) {
     // (si Roland ou Monique parlent encore, l'arbitre attend un peu qu'ils aient fini)
     setTimeout(() => voix.finiDeParler(() => { if (S === seance && !S.match.termine) voix.dire([silence]); }, 1500), (0.4 + coupe) * 1000);
     if (!S.duel) S.silenceJusqu = Date.now() + (0.4 + coupe + 3.5) * 1000;
+  } else if (evt.balleApres && evt.balleApres.joueur === 1 && !m.termine && !evt.finSet && !(S.defenseSet ||= new Set()).has(nSet)
+    && ambiance.buf?.defense && Math.random() < 0.5) {
+    // « Défense ! » : je dois sauver une balle de set ou de match, le public me pousse (une fois par set au plus ; 3 novembre).
+    S.defenseSet.add(nSet);
+    ambiance.stade("defense", { vol: 0.7, delai: 0.4, coupe: 6, salle: false });
   } else if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length)) {
     // Sinon, parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
     a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));
