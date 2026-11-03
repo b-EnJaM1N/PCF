@@ -5,5 +5,5 @@
 -- Peut être relancé sans risque.
 
 drop table if exists public.surnoms_voix;
--- Le stockage « surnoms » (vide : la fonction n'a jamais enregistré de surnom), seulement s'il ne contient aucun fichier.
-delete from storage.buckets where id = 'surnoms' and not exists (select 1 from storage.objects where bucket_id = 'surnoms');
+-- Le stockage « surnoms » ne se supprime pas en SQL (Supabase l'interdit) : dans le tableau de bord, Storage → surnoms → Delete
+-- bucket (voir supabase/LISEZMOI.md).
