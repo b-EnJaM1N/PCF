@@ -63,7 +63,7 @@ export const STADE_JOUES = ["charge", "ole", "defense", "chant1", "chant2", "cha
 // les commentaires ne doivent jamais sortir du silence).
 // (3 novembre, remarque du porteur du projet : on l'entendait peu ; 0,34 et 0,15 avant.) Il monte avec l'enjeu (voir intensiteMatch) :
 // jusqu'à « monte » fois plus fort quand le moment est décisif.
-export const FOND = { entrePoints: 0.45, echange: 0.2, monte: 1.1 };   // (« monte » : 0,7 le 3 novembre, puis plus fort en fin de match)
+export const FOND = { entrePoints: 0.55, echange: 0.25, monte: 1.1 };   // (un peu plus fort le 3 novembre, après le vrai murmure : 0,45 et 0,2)   // (« monte » : 0,7 le 3 novembre, puis plus fort en fin de match)
 // La couche « tension » : le brouhaha agité, en boucle, qui monte par-dessus le murmure quand le moment devient chaud
 // (à partir de « des » d'intensité, jusqu'au volume « max » ; pendant l'échange, il baisse lui aussi).
 export const TENSION = { des: 0.45, max: 0.45, echange: 0.4 };
@@ -331,10 +331,12 @@ export class Ambiance {
   }
   // L'intensité du moment (intensiteMatch) : le murmure et la couche « tension » suivent, en douceur.
   intensite(i) { this.niveau = Math.max(0, Math.min(1, i || 0)); this.appliquer(1.2); }
-  volumeFond() { return (this.enEchange ? FOND.echange : FOND.entrePoints) * (1 + FOND.monte * this.niveau); }
+  // (un chant de stade en cours : le public reste au niveau d'entre les points, même si l'échange a commencé)
+  enEchangeCalme() { return this.enEchange && !(this.ctx && this.ctx.currentTime < (this.porteJusqu || 0)); }
+  volumeFond() { return (this.enEchangeCalme() ? FOND.echange : FOND.entrePoints) * (1 + FOND.monte * this.niveau); }
   volumeTension() {
     const t = Math.max(0, (this.niveau - TENSION.des) / (1 - TENSION.des));
-    return TENSION.max * t * (this.enEchange ? TENSION.echange : 1);
+    return TENSION.max * t * (this.enEchangeCalme() ? TENSION.echange : 1);
   }
   appliquer(lissage = 0.6) {
     if (!this.ctx) return;
@@ -392,6 +394,11 @@ export class Ambiance {
   stade(type, { vol = 0.4, delai = 0.3, coupe = null, salle = true } = {}) {
     const b = this.buf[type], son = b && this.jouer(b, vol, true, { delai, salle });
     if (!son) return 0;
+    // Pendant le chant, le murmure ne baisse pas pour l'échange (sinon, un creux juste avant le chant : on aurait dit une coupure).
+    const fin = delai + (coupe ?? b.duration);
+    this.porteJusqu = this.ctx.currentTime + fin;
+    this.appliquer(0.3);
+    clearTimeout(this.finPorte); this.finPorte = setTimeout(() => this.appliquer(0.8), fin * 1000);
     if (coupe !== null) try { son.g.gain.setTargetAtTime(0, this.ctx.currentTime + delai + coupe, 0.4); son.src.stop(this.ctx.currentTime + delai + coupe + 3); } catch { /* rien */ }
     return b.duration;
   }
