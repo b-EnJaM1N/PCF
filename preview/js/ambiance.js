@@ -63,7 +63,7 @@ export const STADE_JOUES = ["charge", "ole", "defense", "chant1", "chant2", "cha
 // les commentaires ne doivent jamais sortir du silence).
 // (3 novembre, remarque du porteur du projet : on l'entendait peu ; 0,34 et 0,15 avant.) Il monte avec l'enjeu (voir intensiteMatch) :
 // jusqu'à « monte » fois plus fort quand le moment est décisif.
-export const FOND = { entrePoints: 0.45, echange: 0.2, monte: 1.1 };   // (« monte » : 0,7 le 3 novembre, puis plus fort en fin de match)
+export const FOND = { entrePoints: 0.55, echange: 0.25, monte: 1.1 };   // (un peu plus fort le 3 novembre, après le vrai murmure : 0,45 et 0,2)   // (« monte » : 0,7 le 3 novembre, puis plus fort en fin de match)
 // La couche « tension » : le brouhaha agité, en boucle, qui monte par-dessus le murmure quand le moment devient chaud
 // (à partir de « des » d'intensité, jusqu'au volume « max » ; pendant l'échange, il baisse lui aussi).
 export const TENSION = { des: 0.45, max: 0.45, echange: 0.4 };
