@@ -52,12 +52,13 @@ export const FICHIERS_STADE = {
   defense: "stade_defense_01",     // « Défense ! » (ElevenLabs, essai du 3 novembre, choisi par le porteur du projet)
   // Les chants de supporters « Hand-Slam » (ElevenLabs Music, créés par le porteur du projet le 3 novembre) : en entier pendant
   // la pause entre les sets et avant les grands matchs ; un extrait court pendant le match (une balle sauvée).
+  hymne: "stade_hymne_01",         // l'hymne « Que vivent nos héros » (avant les finales, pendant la cérémonie du champion)
   chant1: "stade_chant_01", chant2: "stade_chant_02", chant3: "stade_chant_03", chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
 };
 
 // Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série) ;
 // « Défense ! » quand je dois sauver une balle de set ou de match.
-export const STADE_JOUES = ["charge", "ole", "defense", "chant1", "chant2", "chant3", "chantCourt1", "chantCourt2"];
+export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chantCourt1", "chantCourt2"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
@@ -411,6 +412,16 @@ export class Ambiance {
     this.chantEnCours = son;
     this.porter(delai + b.duration);
     return this.dernierPerso ? "perso" : "habituel";
+  }
+  // L'hymne du stade (avant une finale, pendant la cérémonie du champion) : comme un chant, il s'éteint quand le jeu reprend
+  // ou quand on l'arrête (arreterChant).
+  hymne({ vol = 0.55, delai = 0.5 } = {}) {
+    this.arreterChant();
+    const b = this.buf.hymne, son = b && this.jouer(b, vol, true, { delai, fondu: 1.5 });
+    if (!son) return false;
+    this.chantEnCours = son;
+    this.porter(delai + b.duration);
+    return true;
   }
   // Charge à l'avance les chants personnalisés des joueurs du match (seulement eux : on ne télécharge pas ceux des autres).
   async prechargerPerso(ids = []) {
