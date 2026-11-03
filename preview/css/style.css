@@ -74,13 +74,6 @@ body:not(.en-match) .rule { display: none; }
 
 /* L'échange : révélation immédiate, sans animation */
 .arena { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 96px; }
-/* L'icône de l'appli peinte au centre du court, comme sur un parquet (choix F du porteur du projet, 3 novembre) : petite et
-   très pâle, derrière les mains, sans déborder de l'arène (96 px). Le mot « contre » s'efface (il tombait sur l'icône). */
-.arena { isolation: isolate; }
-.arena::before { content: ""; position: absolute; left: 50%; top: 50%; width: 92px; height: 92px; transform: translate(-50%, -50%);
-  background: url(../icons/marquage-court.svg) center / contain no-repeat; filter: grayscale(1) brightness(1.8); opacity: .07;
-  z-index: -1; pointer-events: none; }
-.arena .vs { visibility: hidden; }
 .hand { font-size: 3.4rem; text-align: center; }
 .hand.win { transform: scale(1.18); } .hand.lose { opacity: .4; }
 /* Au dévoilement, les deux mains restent un instant de la même taille, puis le gagnant grossit et le perdant s'efface (app.js). */
