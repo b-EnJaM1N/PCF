@@ -12,7 +12,8 @@ export const description = s => (s.salle === false || !FICHIER._salle ? s.texte 
 const dossier = new URL("../app/audio/", import.meta.url);
 
 export function sonsAFaire({ ids = null, refaire = false, existe = id => existsSync(new URL(`${id}.mp3`, dossier)) } = {}) {
-  return Object.entries(SONS).filter(([id]) => (!ids || ids.includes(id)) && ((refaire && ids) || !existe(id))).map(([id, s]) => ({ id, ...s }));
+  // (« vrai » : un vrai son de foule, choisi par le porteur du projet : jamais régénéré)
+  return Object.entries(SONS).filter(([id, s]) => !s.vrai && (!ids || ids.includes(id)) && ((refaire && ids) || !existe(id))).map(([id, s]) => ({ id, ...s }));
 }
 
 async function generer(s, cle, dossier) {

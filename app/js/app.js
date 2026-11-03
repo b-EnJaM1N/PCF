@@ -317,6 +317,7 @@ function afficherPenalite(fautif, { silencieux = false } = {}) {
   const m = S.match, evt = penaliser(m, fautif);
   if (silencieux) return evt;
   ambiance.intensite(intensiteMatch(m)); ambiance.calmer(false);
+  ambiance.huees({ court: true, delai: 0.4, vol: 0.3, coupe: 3 });   // le public hue le point de pénalité
   const a = annoncerPenalite(m, evt, S.annonces);
   const cel = evt.finSet ? { ...celebration(criDe(evt.gagnant), { finMatch: m.termine, sauvee: false }), joueur: evt.gagnant } : null;
   document.querySelectorAll("#moves button.choisi").forEach(b => b.classList.remove("choisi"));
@@ -421,6 +422,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
       try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
       // Contre un bot, le coup suivant attend la fin des sifflets et de l'arbitre ; en duel, le serveur tient le temps : le jeu continue.
       if (!S.duel) S.silenceJusqu = Date.now() + (0.9 + duree * 0.8 + 3) * 1000;
+      // Des huées avec les sifflets, qui se taisent quand l'arbitre a parlé.
+      ambiance.huees({ court: false, delai: 0.6, vol: 0.32, coupe: duree * 0.8 + 2.2 });
       for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
       const seance = S, huees = CATALOGUE.get("arbitre_huees_01");
       setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, (0.9 + duree * 0.8) * 1000);
@@ -429,7 +432,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
     // Aux moments chauds (point disputé, balle sauvée), le public s'agite : quelques sifflets courts, sans l'arbitre
     // (une fois par set au plus ; demande du porteur du projet, 3 novembre).
     S.siffletsSet.add(m.scoresSets.length);
-    ambiance.siffletsCourts(0.5);
+    if (Math.random() < 0.5) ambiance.siffletsCourts(0.5); else ambiance.huees({ court: true, delai: 0.5, vol: 0.25, coupe: 2.5 });
   }
   // (le brouhaha des balles de set et de match : la couche « tension » du public, réglée par intensiteMatch)
   // Le cri du vainqueur du set (ou du match) ; les commentateurs réagissent parfois.
@@ -486,7 +489,7 @@ function effetSmash(smash, gagnant) {
 function apresPoint(evt, a, cel, rp) {
   const m = S.match;
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
-  if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.6 }[a.public]), 250);
+  if (a.public) setTimeout(() => ambiance.public(a.public === "serie" ? "clameur" : a.public, { serie: 0.45, set: 0.55, ovation: 0.8 }[a.public]), 250);
   // Sinon, parfois, une réaction du public : applaudissements, « Allez ! », « Bravo ! », « Ohhh… » ou brouhaha (voir reactionPoint).
   else if (rp && !rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups, Math.random, intensiteMatch(m)); if (r) setTimeout(() => ambiance.reagir(r), 300); }
   // Parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).

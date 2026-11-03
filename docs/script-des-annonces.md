@@ -1317,3 +1317,5 @@ Fabriqués par le code en attendant. Un vrai enregistrement portant ce nom les r
 | `public_tension_01.mp3` | undefined |
 | `public_ooh_01.mp3` | undefined |
 | `stade_sifflet_01.mp3` | undefined |
+| `public_huees_01.mp3` | undefined |
+| `public_huees_02.mp3` | undefined |

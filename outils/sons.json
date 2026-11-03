@@ -39,8 +39,9 @@
       "duree": 2
     },
     "public_point_01": {
-      "texte": "Short applause after a point, medium",
-      "duree": 3
+      "texte": "Short applause after a point, medium (remplacé le 3 novembre par un vrai son de foule, Pixabay : ne pas régénérer)",
+      "duree": 3,
+      "vrai": true
     },
     "public_clameur_01": {
       "texte": "Big cheer after a great point, then applause",
@@ -51,8 +52,9 @@
       "duree": 5
     },
     "public_ovation_01": {
-      "texte": "Standing ovation for the champion, huge cheers and applause",
-      "duree": 8
+      "texte": "Standing ovation for the champion, huge cheers and applause (remplacé le 3 novembre par un vrai son de foule, Pixabay : ne pas régénérer)",
+      "duree": 8,
+      "vrai": true
     },
     "public_allez_01": {
       "texte": "A native French man in the stands yells the French word \"Allez !\" once, pronounced ah-LAY with no z sound, French accent, short and punchy, indoor arena, no music",
@@ -139,6 +141,21 @@
       "texte": "Stadium crowd playful whistling and light good-natured booing, short",
       "duree": 3,
       "salle": false
+    },
+    "public_huees_01": {
+      "texte": "Vrai son de foule (Pixabay, 3 novembre) : huées longues. Ne pas régénérer.",
+      "duree": 14,
+      "vrai": true
+    },
+    "public_huees_02": {
+      "texte": "Vrai son de foule (Pixabay, 3 novembre) : huées courtes. Ne pas régénérer.",
+      "duree": 6,
+      "vrai": true
+    },
+    "public_oh_decu_03": {
+      "texte": "Vrai son de foule (Pixabay, 3 novembre) : déception « Ohhh… ». Ne pas régénérer.",
+      "duree": 3,
+      "vrai": true
     }
   },
   "_salle": "Same venue for every sound: a large indoor tennis arena with about 5,000 spectators, evening final, warm natural hall reverb, heard from the TV broadcast microphones near the court, consistent loudness, no music."
