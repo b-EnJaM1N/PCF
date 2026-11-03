@@ -414,6 +414,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   if (rp.ooh) ambiance.ooh();
   // Après le « ooh », parfois, le public siffle et l'arbitre le rappelle à l'ordre (pas plus d'une fois en 12 heures) :
   // il parle à la fin des sifflets, et c'est le seul commentaire de ce point.
+  const chaud = intensiteMatch(m);
   if (rp.ooh && hueesPermises() && Math.random() < 0.12 && voix.fichiers.has("arbitre_huees_01")) {
     const duree = ambiance.sifflets(0.9);
     if (duree) {
@@ -422,6 +423,11 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
       const seance = S, huees = CATALOGUE.get("arbitre_huees_01");
       setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, (0.9 + duree * 0.8) * 1000);
     }
+  } else if ((rp.ooh || evt.balleAvant) && chaud >= 0.6 && !(S.siffletsSet ||= new Set()).has(m.scoresSets.length) && Math.random() < 0.4) {
+    // Aux moments chauds (point disputé, balle sauvée), le public s'agite : quelques sifflets courts, sans l'arbitre
+    // (une fois par set au plus ; demande du porteur du projet, 3 novembre).
+    S.siffletsSet.add(m.scoresSets.length);
+    ambiance.siffletsCourts(0.5);
   }
   // (le brouhaha des balles de set et de match : la couche « tension » du public, réglée par intensiteMatch)
   // Le cri du vainqueur du set (ou du match) ; les commentateurs réagissent parfois.
