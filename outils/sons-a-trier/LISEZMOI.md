@@ -8,3 +8,7 @@ Pour chaque son, noter sa provenance et sa licence (Pixabay : libre ; Freesound 
 
 | Fichier | Provenance (lien) | Licence |
 |---|---|---|
+| applaudissements_vifs.mp3 | Pixabay (déposé le 3 novembre) | Pixabay (libre) |
+| applaudissements_puis_huees.mp3 | Pixabay (déposé le 3 novembre) | Pixabay (libre) |
+| huees.mp3 | Pixabay (déposé le 3 novembre) | Pixabay (libre) |
+| deception.mp3 | Pixabay (déposé le 3 novembre) | Pixabay (libre) |
