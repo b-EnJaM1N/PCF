@@ -1005,10 +1005,7 @@ export const SPEAKER = {
   // C. Les coins
   coin_jaune: ["Dans le coin jaaaune…", "À ma gauche… dans le coin jaaaune…", "Côté jaune… accueillez…"],
   coin_rouge: ["Et dans le coin rouuuge…", "Et à ma droite… dans le coin rouuuge…", { t: "Face à lui… côté rouge…", f: "Face à elle… côté rouge…" }],
-  // C bis. Roland présente les joueurs avant le match (décision du 1er novembre : les surnoms sont dits par Roland, pas par
-  // un speaker). Les répliques « speaker » sont enregistrées avec sa voix (outils/voix.json).
-  presente_jaune: ["Côté jaune, on retrouve…", "Dans le coin jaune…"],
-  presente_rouge: ["Et en face…", "Et côté rouge…"],
+  // (C bis : « Côté jaune, on retrouve… », la présentation des surnoms par Roland, abandonnée le 3 novembre.)
   // D. Ce qu'on dit d'un joueur (avant son surnom)
   debutant: [{ t: "Pour son tout premier match officiel…" }],
   invaincu: [{ t: "Invaincu depuis trois rencontres…", f: "Invaincue depuis trois rencontres…" }],
