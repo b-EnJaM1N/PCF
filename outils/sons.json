@@ -26,9 +26,10 @@
       "duree": 1.5
     },
     "public_fond_01": {
-      "texte": "Crowd murmur between points, calm, steady, seamless loop",
+      "texte": "Crowd murmur between points, calm, steady, seamless loop (remplacé le 3 novembre par un vrai son de foule, Pixabay, mis en boucle sans coupure : ne pas régénérer)",
       "duree": 30,
-      "boucle": true
+      "boucle": true,
+      "vrai": true
     },
     "public_tension_01": {
       "texte": "The crowd goes quiet and nervous before a match point, a few whispers",
