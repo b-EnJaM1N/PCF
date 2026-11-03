@@ -2,6 +2,8 @@
 \set QUIET on
 -- Tirage sans hasard (étape 23) : ces tests vérifient des affiches précises.
 select set_config('pcf.tirage_fixe', '1', false) \g /dev/null
+-- (les anciennes mises, supprimées à l'étape 57, sont réactivées pour vérifier l'ancien code)
+set pcf.mises = 'on';
 \echo Tests de la base de données (étape 6 : Sit & Go)
 
 insert into auth.users select ('00000000-0000-0000-0000-00000000000' || i)::uuid, 'j' || i || '@x.fr' from generate_series(1, 9) i;

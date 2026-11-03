@@ -1,5 +1,7 @@
 -- Tests de supabase/etape-7-partie-rapide.sql : files d'attente, appariement par niveau, absents, annulation.
 \set QUIET on
+-- (les anciennes mises, supprimées à l'étape 57, sont réactivées pour vérifier l'ancien code)
+set pcf.mises = 'on';
 \echo Tests de la base de données (étape 7 : Partie rapide)
 
 insert into auth.users select ('00000000-0000-0000-0000-00000000000' || i)::uuid, 'j' || i || '@x.fr' from generate_series(1, 9) i;

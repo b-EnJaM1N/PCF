@@ -403,9 +403,9 @@
     <section class="card" id="sngCard" hidden>
       <h2>Tournois express (Sit &amp; Go)</h2>
       <p class="hint">Départ dès que la salle est pleine · compte pour ton niveau officiel.</p>
-      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. À 2, c'est un heads-up : un seul match, un contre un. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours. 🪙 Avec une mise : l'entrée est payée en jetons, rendue si tu quittes la salle avant le départ ; la cagnotte, moins 10 %, revient au gagnant à 2 (1,8 fois la mise) et se partage comme au poker dans les plus grandes salles : 1er et 2e à 8 et 16, jusqu'aux demi-finalistes à 32, jusqu'aux quarts de finalistes à 64. 🤖 Deux minutes après l'arrivée du premier joueur, même s'il est seul, des bots complètent la salle. <span class="seul-lancement">Ils sont panachés : des débutants aux redoutables, dans chaque salle.</span><span class="cache-lancement">Sans mise, à 50 et à 100, ils sont panachés, des débutants aux redoutables ; puis un cran de plus à 200, à 500, et les meilleurs à 1 000.</span> Les bots comptent dans la cagnotte comme s'ils avaient payé, mais ne gagnent jamais de jetons : chacun est payé selon sa vraie place (matchs contre un bot amicaux).</p></details>
-      <span class="fmt-lbl">Mise en jetons</span>
-      <div class="seg seg-mise" id="sngMise"><button data-v="0">Sans mise</button><button data-v="50">50</button><button data-v="100">100</button><button data-v="200" class="cache-lancement">200</button><button data-v="500" class="cache-lancement">500</button><button data-v="1000" class="cache-lancement">1 000</button></div>
+      <details class="regles"><summary>ℹ️ Comment ça marche ?</summary><p class="hint">Tournois publics à élimination directe, ouverts à tous : ils démarrent dès que la salle est pleine. À 2, c'est un heads-up : un seul match, un contre un. Sets de 11, 2 sets gagnants : ils comptent pour ton niveau officiel. Reste dans l'appli jusqu'à la fin de ton parcours. L'entrée est gratuite, et chaque match terminé rapporte des jetons.</p></details>
+      <!-- (les mises sont supprimées depuis l'étape 57 : le choix reste caché, sur « sans mise ») -->
+      <div class="seg seg-mise" id="sngMise" hidden><button data-v="0">Sans mise</button><button data-v="50">50</button><button data-v="100">100</button><button data-v="200" class="cache-lancement">200</button><button data-v="500" class="cache-lancement">500</button><button data-v="1000" class="cache-lancement">1 000</button></div>
       <p class="sndnote" id="sngMien" hidden style="margin-top:10px"></p>
       <div id="sngSalles" class="resultats"></div>
       <p class="locknote" id="sngMsg" role="status"></p>
@@ -883,7 +883,7 @@
       <div class="seg" id="duelWin"><button data-v="1">1 set</button><button data-v="2">2 sets gagnants</button><button data-v="3">3 sets gagnants</button></div>
     </details>
     <label class="sound" style="align-items:flex-start;margin:8px 0"><input type="checkbox" id="duelClasse" checked> <span id="duelClasseTexte">Match officiel : compte pour ton niveau officiel (décoche pour un match amical)</span></label>
-    <details class="perso" id="duelMiseZone"><summary id="duelMiseResume">🪙 Mise : sans mise</summary>
+    <details class="perso" id="duelMiseZone" hidden><summary id="duelMiseResume">🪙 Mise : sans mise</summary>
       <div class="seg seg-mise" id="duelMise"><button data-v="0">Sans mise</button><button data-v="50">50</button><button data-v="100">100</button><button data-v="200">200</button><button data-v="500">500</button><button data-v="1000">1 000</button></div>
       <p class="hint" id="duelMiseTexte" style="margin-bottom:6px"></p>
     </details>

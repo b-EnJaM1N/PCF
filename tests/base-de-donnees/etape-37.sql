@@ -1,5 +1,7 @@
 -- Tests de supabase/etape-37-rendez-vous.sql : accepter un défi donne rendez-vous ; le match démarre quand les deux sont là.
 \set QUIET on
+-- (les anciennes mises, supprimées à l'étape 57, sont réactivées pour vérifier l'ancien code)
+set pcf.mises = 'on';
 \echo Tests de la base de données (étape 37 : rendez-vous des défis)
 
 insert into auth.users select ('00000000-0000-0000-0000-00000000000' || i)::uuid, 'j' || i || '@x.fr' from generate_series(1, 3) i;

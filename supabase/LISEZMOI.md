@@ -455,6 +455,14 @@ Abandonnés le 3 novembre (les surnoms restent écrits dans l'appli). Quatre cho
 4. **Supprimer le secret** : **Edge Functions** → **Secrets** → `ELEVENLABS_API_KEY` → supprimer. (Et, sur elevenlabs.io, supprimer
    la clé d'API créée pour l'occasion.)
 
+## 1 quinquagies septies. Plus de mises ; des jetons gagnés en jouant (étape 57)
+
+Même manipulation que d'habitude avec [`etape-57-sans-mises.sql`](etape-57-sans-mises.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-57-sans-mises.sql).
+Les mises de jetons entre joueurs sont refusées partout (défis, partie rapide, heads-up, Sit & Go, tournois programmés) ; les
+entrées déjà payées sont rendues. Chaque match terminé rapporte des jetons (+5, +10 de plus pour une victoire, exploits), au plus
+150 par jour. **À coller avant de valider l'appli.**
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

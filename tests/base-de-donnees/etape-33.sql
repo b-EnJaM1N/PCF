@@ -1,6 +1,8 @@
 -- Tests de supabase/etape-33-64-bots.sql : 64 bots en ligne, une salle de 64 se complète avec 63 bots différents.
 -- (Mêmes outils que les tests de l'étape 24.)
 \set QUIET on
+-- (les anciennes mises, supprimées à l'étape 57, sont réactivées pour vérifier l'ancien code)
+set pcf.mises = 'on';
 \echo Tests de la base de données (étape 33 : 64 bots)
 
 insert into auth.users select ('00000000-0000-0000-0000-0000000000' || lpad(i::text, 2, '0'))::uuid, 'j' || i || '@x.fr' from generate_series(1, 4) i;

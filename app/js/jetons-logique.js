@@ -22,8 +22,30 @@ export function texteSerie(e) {
 // Version courte, à côté du solde : « 🔥 3 j » (jours d'affilée), rien sans série.
 export const serieCourte = e => (e && e.serie > 0 ? `🔥 ${e.serie} j` : "");
 
+// ---------------------------------------------------------------- les jetons gagnés en jouant (supabase/etape-57-sans-mises.sql)
+// Après chaque match terminé : +5, +10 de plus pour une victoire, et les exploits (au plus 150 par jour, plafond du serveur).
+// Les mêmes montants que le serveur (_recompense_match).
+export const EXPLOITS = {
+  match_du_jour: { jetons: 15, nom: "match du jour" }, balle_match: { jetons: 15, nom: "balle de match sauvée" },
+  set_blanc: { jetons: 20, nom: "set gagné sans perdre un point" }, serie5: { jetons: 5, nom: "série de 5 points" },
+  smash: { jetons: 3, nom: "smash gagnant" },
+};
+export const PLAFOND_MATCHS = 150;
+// Les exploits d'un match terminé (stats : celles de la séance ; m : le match ; matchJour : le match du jour).
+export function exploitsDuMatch({ stats = {}, m, matchJour = false }) {
+  const e = [];
+  if (matchJour) e.push("match_du_jour");
+  if ((stats.ballesDeMatchSauvees || 0) > 0) e.push("balle_match");
+  if ((m?.scoresSets || []).some(([a, b]) => a > 0 && b === 0)) e.push("set_blanc");
+  if ((stats.meilleureSerie || 0) >= 5) e.push("serie5");
+  if ((stats.smashsReussis || 0) > 0) e.push("smash");
+  return e;
+}
+export const recompenseMatch = (gagne, exploits = []) => 5 + (gagne ? 10 : 0) + [...new Set(exploits)].reduce((t, x) => t + (EXPLOITS[x]?.jetons || 0), 0);
+
 // ---------------------------------------------------------------- les mises (supabase/etape-14-mises.sql)
-export const MISES = [0, 50, 100, 200, 500, 1000];       // 0 = sans mise
+// Supprimées le 3 novembre (étape 57, décision du porteur du projet) : il ne reste que « sans mise ».
+export const MISES = [0];
 export const COMMISSION = 0.10;
 // Duel : le gagnant remporte 1,8 fois la mise.
 export const gainDuel = mise => Math.floor(2 * mise * (1 - COMMISSION));

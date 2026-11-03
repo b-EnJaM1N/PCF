@@ -1,5 +1,7 @@
 -- Tests de supabase/etape-45-bots-panaches.sql : sans mise, à 50 et à 100, des bots de tous les niveaux.
 \set QUIET on
+-- (les anciennes mises, supprimées à l'étape 57, sont réactivées pour vérifier l'ancien code)
+set pcf.mises = 'on';
 \echo Tests de la base de données (étape 45 : bots panachés)
 
 insert into auth.users select ('00000000-0000-0000-0045-0000000000' || lpad(i::text, 2, '0'))::uuid, 'p' || i || '@x.fr' from generate_series(1, 3) i;
