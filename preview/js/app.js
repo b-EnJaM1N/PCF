@@ -415,12 +415,12 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   // Après le « ooh », parfois, le public siffle et l'arbitre le rappelle à l'ordre (pas plus d'une fois en 12 heures) :
   // il parle à la fin des sifflets, et c'est le seul commentaire de ce point.
   const chaud = intensiteMatch(m);
-  // (en solo seulement : le jeu s'arrête le temps du rappel à l'ordre, ce qu'un duel ne peut pas faire)
-  if (!S.duel && rp.ooh && hueesPermises() && Math.random() < 0.12 && voix.fichiers.has("arbitre_huees_01")) {
+  if (rp.ooh && hueesPermises() && Math.random() < 0.12 && voix.fichiers.has("arbitre_huees_01")) {
     const duree = ambiance.sifflets(0.9);
     if (duree) {
       try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
-      S.silenceJusqu = Date.now() + (0.9 + duree * 0.8 + 3) * 1000;   // le coup suivant attend la fin des sifflets et de l'arbitre
+      // Contre un bot, le coup suivant attend la fin des sifflets et de l'arbitre ; en duel, le serveur tient le temps : le jeu continue.
+      if (!S.duel) S.silenceJusqu = Date.now() + (0.9 + duree * 0.8 + 3) * 1000;
       for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
       const seance = S, huees = CATALOGUE.get("arbitre_huees_01");
       setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, (0.9 + duree * 0.8) * 1000);
