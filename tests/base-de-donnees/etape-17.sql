@@ -1,5 +1,7 @@
 -- Tests de supabase/etape-17-boutique.sql : achat, vitrine du jour, achat définitif et unique, solde insuffisant.
 \set QUIET on
+-- (les anciennes mises, supprimées à l'étape 57, sont réactivées pour vérifier l'ancien code)
+set pcf.mises = 'on';
 \echo Tests de la base de données (étape 17 : boutique)
 
 insert into auth.users values ('00000000-0000-0000-0000-000000000001', 'a@x.fr');

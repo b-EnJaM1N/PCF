@@ -30,7 +30,7 @@ test("la série en version courte", () => {
 
 test("les mises : duel à 1,8 fois la mise, Sit & Go partagé façon poker (65 / 35) après 10 %", async () => {
   const { MISES, gainDuel, gainsSng, texteMise } = await import("../app/js/jetons-logique.js");
-  assert.deepEqual(MISES, [0, 50, 100, 200, 500, 1000]);
+  assert.deepEqual(MISES, [0], "les mises sont supprimées (étape 57) : il ne reste que « sans mise »");
   assert.deepEqual([50, 100, 200, 500, 1000].map(gainDuel), [90, 180, 360, 900, 1800]);
   assert.deepEqual(gainsSng(50), [234, 126]);
   assert.deepEqual(gainsSng(1000), [4680, 2520]);
@@ -67,4 +67,17 @@ test("mon résultat dans un tournoi terminé : place et gain, comme le serveur l
   assert.equal(monResultat({ ...sng, phase: "en_cours" }, "moi"), null);
   assert.equal(monResultat(sng, "inconnu"), null);
   assert.ok(dotations(1000, 8).length === 2);
+});
+
+test("les jetons gagnés en jouant : barème, exploits, et les mêmes montants que le serveur", async () => {
+  const { recompenseMatch, exploitsDuMatch, EXPLOITS, PLAFOND_MATCHS } = await import("../app/js/jetons-logique.js");
+  assert.equal(recompenseMatch(false), 5);
+  assert.equal(recompenseMatch(true), 15);
+  assert.equal(recompenseMatch(true, ["match_du_jour", "smash", "smash"]), 33, "un exploit compte une fois");
+  assert.deepEqual(exploitsDuMatch({ stats: { ballesDeMatchSauvees: 1, meilleureSerie: 6, smashsReussis: 2 }, m: { scoresSets: [[11, 0], [9, 11]] }, matchJour: true }),
+    ["match_du_jour", "balle_match", "set_blanc", "serie5", "smash"]);
+  assert.deepEqual(exploitsDuMatch({ stats: { meilleureSerie: 4 }, m: { scoresSets: [[11, 3]] } }), []);
+  const sql = readFileSync(new URL("../supabase/etape-57-sans-mises.sql", import.meta.url), "utf8");
+  for (const [cle, x] of Object.entries(EXPLOITS)) assert.match(sql, new RegExp(`'${cle}' then ${x.jetons}\\b`), cle);
+  assert.match(sql, new RegExp(`select ${PLAFOND_MATCHS} \\$\\$`), "même plafond côté serveur");
 });

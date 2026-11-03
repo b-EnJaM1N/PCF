@@ -1,5 +1,7 @@
 -- Tests de supabase/etape-14-mises.sql : défi avec mise, duel à mise en partie rapide, Sit & Go à mise.
 \set QUIET on
+-- (les anciennes mises, supprimées à l'étape 57, sont réactivées pour vérifier l'ancien code)
+set pcf.mises = 'on';
 \echo Tests de la base de données (étape 14 : mises en jetons)
 
 insert into auth.users select ('00000000-0000-0000-0000-0000000000' || lpad(i::text, 2, '0'))::uuid, 'j' || i || '@x.fr' from generate_series(1, 10) i;

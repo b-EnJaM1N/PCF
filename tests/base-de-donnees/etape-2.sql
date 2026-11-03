@@ -1,6 +1,8 @@
 -- Tests de sécurité et de fonctionnement de supabase/etape-2-comptes.sql.
 -- Chaque test lève une erreur s'il échoue (psql -v ON_ERROR_STOP=1).
 \set QUIET on
+-- (les anciennes mises, supprimées à l'étape 57, sont réactivées pour vérifier l'ancien code)
+set pcf.mises = 'on';
 \echo Tests de la base de données (étape 2)
 insert into auth.users values
   ('11111111-1111-1111-1111-111111111111', 'a@exemple.fr'),

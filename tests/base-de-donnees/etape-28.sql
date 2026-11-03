@@ -1,5 +1,7 @@
 -- Tests de supabase/etape-28-mises-toutes-tailles.sql : Sit & Go à mise dans toutes les tailles.
 \set QUIET on
+-- (les anciennes mises, supprimées à l'étape 57, sont réactivées pour vérifier l'ancien code)
+set pcf.mises = 'on';
 \echo Tests de la base de données (étape 28 : mises dans toutes les tailles)
 
 insert into auth.users select ('00000000-0000-0000-0000-0000000000' || lpad(i::text, 2, '0'))::uuid, 'j' || i || '@x.fr' from generate_series(1, 6) i;
