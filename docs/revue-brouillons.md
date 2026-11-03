@@ -8,55 +8,7 @@ Les phrases de Monique Latour sont inventées (c'est un personnage du jeu).
 
 ---
 
-## 1. Pourquoi perd-on si souvent contre un débutant ? (Philosophie de la discipline)
-
-*Essai sur l'ignorance victorieuse*
-
-> Il existe au Pierre-Feuille-Ciseaux une humiliation que tout joueur a connue : perdre contre quelqu'un qui découvre les règles. On en rit, on parle de chance. Mais si cette défaite n'était pas un accident ? Si elle disait quelque chose de profond sur le savoir, la liberté et ce que nous croyons être l'intelligence ?
-
-### I. Le savoir comme prison
-
-Le joueur expérimenté sait beaucoup de choses. Il sait que les débutants ouvrent avec la Pierre, que l'on rejoue souvent le signe qui vient de gagner, que l'on change après deux défaites. Ce savoir est précieux. Il est aussi une prison.
-
-Car savoir, c'est attendre. Celui qui sait que la Pierre est le signe des débutants ne voit plus un adversaire : il voit une catégorie. Il ne joue pas contre une personne, il joue contre une idée qu'il s'en fait. Et l'idée ne se trompe jamais, puisqu'elle n'existe que dans sa tête. C'est la réalité qui, obstinément, refuse de lui ressembler.
-
-Le maître zen Shunryu Suzuki l'a dit avec une simplicité désarmante : « Dans l'esprit du débutant, les possibilités sont nombreuses ; dans celui de l'expert, elles sont rares. » L'expert a réduit le monde à ce qu'il en connaît. Le débutant, lui, a encore les trois signes devant lui, intacts, sans hiérarchie, sans préjugé. Il ne sait pas que la Pierre est banale. Pour lui, c'est simplement une pierre.
-
-### II. Le débutant, figure de la liberté
-
-On dit que les hommes se croient libres parce qu'ils savent ce qu'ils font, mais ignorent ce qui les pousse à le faire. L'expert est l'illustration parfaite de cette illusion. Il croit choisir son signe ; en réalité, son signe est choisi par ses lectures, ses défaites passées, ses théories, sa peur d'être prévisible. Plus il réfléchit, plus il est déterminé. Ses coups ont des causes, et tout ce qui a une cause peut être deviné.
-
-Le débutant, paradoxalement, est plus libre. Non parce qu'il serait plus sage, mais parce que rien encore ne pèse sur sa main. Aucune habitude ne l'a façonné, aucune théorie ne l'encombre. Son coup n'a pas d'histoire. Et un coup sans histoire est un coup sans indice.
-
-Les mathématiciens le confirment à leur manière : contre un joueur qui jouerait parfaitement au hasard, aucune stratégie ne gagne plus d'une fois sur deux. Le hasard est le seul adversaire que l'intelligence ne peut pas vaincre. Le débutant n'est pas le hasard, mais il en est, pour un temps, le plus proche parent.
-
-### III. L'intelligence qui se retourne contre elle-même
-
-Il y a dans cette défaite une ironie que les Grecs auraient appelée tragique. Le héros tragique ne tombe pas par faiblesse, mais à cause de ce qui fait sa grandeur. Œdipe se perd parce qu'il veut savoir. Le joueur expérimenté se perd parce qu'il veut comprendre.
-
-Face au débutant, il cherche une intention qui n'existe pas. Il interprète trois coups comme une stratégie, deux Ciseaux comme une manie, une Feuille comme un message. Son esprit, cette merveilleuse machine à donner du sens, en fabrique là où il n'y en a pas. Il ne perd pas contre le débutant : il perd contre le sens qu'il a lui-même inventé.
-
-C'est ce que Monique Latour, championne de 1997, a résumé mieux que tous les traités : « Le débutant ne m'a jamais battue. C'est moi qui me suis battue, en sa présence. »
-
-Tout est dit. Le débutant n'est pas un adversaire, il est un miroir. Il ne fait rien ; il laisse l'expert se vaincre lui-même.
-
-### IV. Le poids et la légèreté
-
-Reste une dernière asymétrie, morale celle-là. Le débutant n'a rien à perdre : sa défaite est normale, sa victoire est un exploit. L'expert a tout à perdre : sa victoire passe inaperçue, sa défaite est une honte. L'un joue léger, l'autre joue lourd.
-
-Or la peur est une habitude comme une autre. La main qui craint de perdre se crispe, hésite, revient vers le signe qui rassure. Elle redevient prévisible au moment même où elle voudrait être insaisissable. Le poids de l'enjeu fait ce que des années d'entraînement avaient défait : il rend l'expert lisible.
-
-### Conclusion : retrouver l'esprit du débutant
-
-Faut-il alors renoncer au savoir ? Certainement pas. Le débutant ne le reste jamais longtemps. Bientôt, il aura ses manies, ses superstitions, son signe fétiche. Il deviendra lisible, c'est-à-dire qu'il deviendra un joueur. Et l'expert prendra sa revanche.
-
-Mais la leçon demeure. La véritable maîtrise n'est pas d'accumuler du savoir. C'est de savoir s'en défaire au bon moment : connaître toutes les théories, et jouer pourtant comme si l'on n'en connaissait aucune. Retrouver, après des années d'étude, la main légère de celui qui découvre.
-
-Un vieux sage disait que le plus savant est celui qui sait qu'il ne sait rien. Le grand joueur de Pierre-Feuille-Ciseaux est peut-être celui qui, sachant tout, a réappris à ne rien savoir.
-
-La prochaine fois que vous perdrez contre un débutant, ne parlez pas de chance. Dites plutôt : j'ai rencontré un maître qui s'ignorait.
-
-*Références : Suzuki (Esprit zen, esprit neuf), citation authentique en traduction ; Spinoza allégé en « on dit que… » (31 octobre). (Socrate retiré le 31 octobre : trop de références ; « un vieux sage disait ».)*
+## 1. ~~Pourquoi perd-on si souvent contre un débutant ?~~ — *publié le 3 novembre* (`app/revue-perdre-contre-un-debutant.html`)
 
 ---
 
