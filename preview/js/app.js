@@ -523,6 +523,12 @@ function apresPoint(evt, a, cel, rp) {
     // « Olé ! » : le public salue une série de 5 points d'affilée (une fois par set au plus).
     S.oleSet.add(nSet);
     ambiance.stade("ole", { vol: 0.75, delai: 0.5, coupe: 5, salle: false });
+  } else if (!evt.finSet && !m.termine && evt.balleAvant && evt.gagnant !== null && evt.gagnant !== evt.balleAvant.joueur
+    && !(S.chantCourtSet ||= new Set()).has(nSet) && Math.random() < 0.5) {
+    // Une balle de set ou de match sauvée : les supporters entonnent quelques secondes de leur chant (une fois par set au plus).
+    S.chantCourtSet.add(nSet);
+    S.chantCourt = S.chantCourt === "chantCourt1" ? "chantCourt2" : "chantCourt1";
+    ambiance.stade(S.chantCourt, { vol: 0.65, delai: 0.4, salle: false });
   }
   annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
   render(); renderHistorique(); renderLecture();
@@ -539,6 +545,9 @@ function apresPoint(evt, a, cel, rp) {
   }
   if (cel) setTimeout(() => criEnBulle(cel), 250);
   if (evt.finSet) {
+    // La pause entre les sets : une fois sur deux, les supporters chantent (le chant baisse sous les commentaires, s'éteint au
+    // premier échange du set suivant ; 3 novembre).
+    if (Math.random() < 0.5) ambiance.chanter({ vol: 0.5, delai: 2.5 });
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
     const suivant = annonceDebutSet(m), decisif = setDecisif(m);
     const nouveauSet = () => {
@@ -1329,6 +1338,12 @@ function presenterSpeaker() {
   // On retient les phrases dites, pour ne pas les répéter aux prochains matchs.
   ecrire("speakerRecents", av.commentaires.map(l => l.id).concat(recents).slice(0, 80));
   clearTimeout(voixIntro);
+  // Avant un grand match (quarts, demies, finale, match décisif de la carrière) : les supporters chantent pendant la présentation,
+  // et Roland ou Monique en parlent d'abord (3 novembre, idée du porteur du projet).
+  if (S.annonces?.enjeu && ambiance.chanter({ vol: 0.5, delai: 0.3 })) {
+    const ambiances = (POOLS.avant_ambiance || []).map(it => ligneMoment(it)).filter(l => l && voix.fichiers.has(l.id));
+    if (ambiances.length) av.commentaires.unshift(ambiances[Math.floor(Math.random() * ambiances.length)]);
+  }
   // Roland présente d'abord les deux joueurs par leur surnom (dit d'un trait), seulement si tout est enregistré. Mon surnom
   // pas encore enregistré : on le demande (joueur connecté), il sera prêt au match suivant.
   if (compteUI?.session()?.user) demanderSurnom(surnomDe(P), clientSupabase());
