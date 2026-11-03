@@ -52,12 +52,12 @@ export const FICHIERS_STADE = {
   defense: "stade_defense_01",     // « Défense ! » (ElevenLabs, essai du 3 novembre, choisi par le porteur du projet)
   // Les chants de supporters « Hand-Slam » (ElevenLabs Music, créés par le porteur du projet le 3 novembre) : en entier pendant
   // la pause entre les sets et avant les grands matchs ; un extrait court pendant le match (une balle sauvée).
-  chant1: "stade_chant_01", chant2: "stade_chant_02", chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
+  chant1: "stade_chant_01", chant2: "stade_chant_02", chant3: "stade_chant_03", chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
 };
 
 // Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série) ;
 // « Défense ! » quand je dois sauver une balle de set ou de match.
-export const STADE_JOUES = ["charge", "ole", "defense", "chant1", "chant2", "chantCourt1", "chantCourt2"];
+export const STADE_JOUES = ["charge", "ole", "defense", "chant1", "chant2", "chant3", "chantCourt1", "chantCourt2"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
@@ -390,8 +390,10 @@ export class Ambiance {
   // en douceur dès que l'échange commence (calmer) ou qu'un autre chant démarre. On alterne les deux chants.
   chanter({ vol = 0.55, delai = 0.6 } = {}) {
     this.arreterChant();
-    this.chantSuivant = this.chantSuivant === "chant1" ? "chant2" : "chant1";
-    const b = this.buf[this.chantSuivant] || this.buf.chant1, son = b && this.jouer(b, vol, true, { delai, fondu: 1.5 });
+    // (les chants entiers tournent : 1, 2, 3, puis on recommence ; le 3, « Let's go, Hand-Slam », ajouté le 3 novembre)
+    const chants = ["chant1", "chant2", "chant3"].filter(c => this.buf[c]);
+    this.chantSuivant = chants[(chants.indexOf(this.chantSuivant) + 1) % (chants.length || 1)];
+    const b = this.buf[this.chantSuivant], son = b && this.jouer(b, vol, true, { delai, fondu: 1.5 });
     if (!son) return false;
     this.chantEnCours = son;
     this.porter(delai + b.duration);
