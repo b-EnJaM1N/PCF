@@ -8,8 +8,10 @@ export const CHANTS_PERSO = {
   "le chiromancien#6047": ["chant_perso_chiromancien_01", "chant_perso_chiromancien_02", "chant_perso_chiromancien_03"],
 };
 
-// Les cris courts (« Allez le Chiromancien ! »), pendant le match, aux moments forts : à venir.
-export const COURTS_PERSO = {};
+// Les cris courts (« Allez le Chiromancien ! »), pendant le match, aux moments forts (une balle de set ou de match sauvée).
+export const COURTS_PERSO = {
+  "le chiromancien#6047": ["cri_perso_chiromancien_01"],
+};
 
 export const clePseudo = (pseudo, numero) => (pseudo && numero ? `${String(pseudo).trim().toLowerCase()}#${numero}` : null);
 // Les chants des joueurs du match ({ pseudo, numero } ou null).
