@@ -31,10 +31,7 @@
 <script type="module">
   // Les sons à écouter (dans audio/essais/) : [titre, [[fichier, légende], …]]. Originaux : outils/sons-a-trier/.
   // (3 novembre : les sons Pixabay sont choisis et branchés ; rien à écouter pour l'instant)
-  const GROUPES = [
-    ["🛡️ « Défense ! » (coupé à 12 secondes)", [["defense_1", "1 · début"], ["defense_2", "2 · milieu"]]],
-    ["🎶 Chant pour la pause entre les sets", [["chant_1", "1 · le chant (7 secondes)"]]],
-  ];
+  const GROUPES = [];
   let enCours = null;
   const liste = document.getElementById("liste");
   for (const [titre, sons] of GROUPES) {
