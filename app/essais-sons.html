@@ -32,7 +32,12 @@
   // Les sons à écouter (dans audio/essais/) : [titre, [[fichier, légende], …]]. Originaux : outils/sons-a-trier/.
   // (3 novembre : les sons Pixabay sont choisis et branchés ; rien à écouter pour l'instant)
   // (3 novembre : fond de stade n° 3 choisi et branché ; rien à écouter pour l'instant)
-  const GROUPES = [];
+  // (3 novembre : l'hymne « Que vivent nos héros », 2 versions ElevenLabs Music du porteur du projet ; « voix renforcées » :
+  // graves allégés, voix mises en avant, volume plus régulier)
+  const GROUPES = [
+    ["🏟️ Hymne, version 1", [["hymne_1_origine", "1 · d'origine"], ["hymne_1_voix", "1 · voix renforcées"]]],
+    ["🏟️ Hymne, version 2", [["hymne_2_origine", "2 · d'origine"], ["hymne_2_voix", "2 · voix renforcées"]]],
+  ];
   let enCours = null;
   const liste = document.getElementById("liste");
   for (const [titre, sons] of GROUPES) {
