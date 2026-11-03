@@ -1,10 +1,16 @@
 # Les répliques à refaire avec le robot « Voix » (choix « liste ») : un identifiant par ligne. Les lignes en # sont ignorées.
-# 3 novembre : avant un grand match, le chant des supporters (5 répliques choisies par le porteur du projet).
-commentateur_avant_ambiance_01
-commentateur_avant_ambiance_02
-commentatrice_avant_ambiance_01
-commentatrice_avant_ambiance_02
-commentateur_avant_ambiance_03
+# 3 novembre : les supporters d'un joueur qui a ses chants personnalisés (répliques validées par le porteur du projet).
+commentateur_perso_supporters_01
+commentateur_perso_supporters_01_f
+commentateur_perso_supporters_02
+commentateur_perso_supporters_02_f
+commentateur_perso_supporters_03
+commentateur_perso_supporters_03_f
+commentatrice_perso_supporters_01
+commentatrice_perso_supporters_01_f
+commentatrice_perso_supporters_02
+commentatrice_perso_supporters_02_f
+commentatrice_perso_supporters_03
 
 # Le Grand Chelem (dialogues d'avant et d'après match, jamais enregistrés) : 132 répliques, environ 9 600 crédits.
 # À décider : enlever le # devant chaque ligne pour les enregistrer.

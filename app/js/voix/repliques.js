@@ -465,6 +465,16 @@ export const MOMENTS = {
     { r: "d", t: "Autant de bruit pour trois signes. J'adore ce sport." },
     { r: "c", t: "Quelle ferveur ! On se croirait en finale de Coupe du monde !" },
   ],
+  // Un joueur a ses chants de supporters personnalisés (chants-perso.js) : dit au début de ses matchs, pendant son chant
+  // (3 novembre, répliques validées par le porteur du projet). « Il » : le joueur que le public soutient.
+  perso_supporters: [
+    { r: "c", t: "Écoutez ça ! Les supporters ont fait le déplacement pour lui !", f: "Écoutez ça ! Les supporters ont fait le déplacement pour elle !" },
+    { r: "c", t: "Ils sont venus nombreux pour le soutenir ce soir ! Quelle ferveur !", f: "Ils sont venus nombreux pour la soutenir ce soir ! Quelle ferveur !" },
+    { r: "c", t: "Tout le public scande son nom ! Il joue à domicile ce soir !", f: "Tout le public scande son nom ! Elle joue à domicile ce soir !" },
+    { r: "d", t: "Il a son fan-club. Je me demande combien il les paie.", f: "Elle a son fan-club. Je me demande combien elle les paie." },
+    { r: "d", t: "Des supporters rien que pour lui. Il ne faudra pas les décevoir.", f: "Des supporters rien que pour elle. Il ne faudra pas les décevoir." },
+    { r: "d", t: "Un chant à son nom. Moi, à mes débuts, j'avais juste un thermos." },
+  ],
   // La série en cours dans leurs face-à-face (3 novembre, répliques validées par le porteur du projet) : victoires d'affilée
   // (« il » : le joueur qui enchaîne) et défaites d'affilée (« il » : le joueur qui les subit), à 3, 4, 5 et plus.
   memoire_serie_3: [

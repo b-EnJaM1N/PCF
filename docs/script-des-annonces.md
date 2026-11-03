@@ -116,7 +116,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (581 répliques)
+## Commentateur — vif, enthousiaste, plein de références (587 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -385,6 +385,12 @@ restent lus par la voix de synthèse.
 | `commentateur_avant_ambiance_01.mp3` | Écoutez-moi cette ambiance ! Les supporters sont déchaînés ce soir ! |
 | `commentateur_avant_ambiance_02.mp3` | Vous entendez ça, Madame ? Le public est déjà chaud bouillant ! |
 | `commentateur_avant_ambiance_03.mp3` | Quelle ferveur ! On se croirait en finale de Coupe du monde ! |
+| `commentateur_perso_supporters_01.mp3` | Écoutez ça ! Les supporters ont fait le déplacement pour lui ! |
+| `commentateur_perso_supporters_01_f.mp3` | Écoutez ça ! Les supporters ont fait le déplacement pour elle ! |
+| `commentateur_perso_supporters_02.mp3` | Ils sont venus nombreux pour le soutenir ce soir ! Quelle ferveur ! |
+| `commentateur_perso_supporters_02_f.mp3` | Ils sont venus nombreux pour la soutenir ce soir ! Quelle ferveur ! |
+| `commentateur_perso_supporters_03.mp3` | Tout le public scande son nom ! Il joue à domicile ce soir ! |
+| `commentateur_perso_supporters_03_f.mp3` | Tout le public scande son nom ! Elle joue à domicile ce soir ! |
 | `commentateur_memoire_serie_3_01.mp3` | Trois victoires de suite ! Il arrive en confiance ! |
 | `commentateur_memoire_serie_3_01_f.mp3` | Trois victoires de suite ! Elle arrive en confiance ! |
 | `commentateur_memoire_serie_4_01.mp3` | Quatre victoires d'affilée ! Qui va enfin l'arrêter ? |
@@ -702,7 +708,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (520 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (525 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -913,6 +919,11 @@ restent lus par la voix de synthèse.
 | `commentatrice_memoire_habitude_01_f.mp3` | Elle a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude. |
 | `commentatrice_avant_ambiance_01.mp3` | On ne s'entend plus. C'est presque agréable. |
 | `commentatrice_avant_ambiance_02.mp3` | Autant de bruit pour trois signes. J'adore ce sport. |
+| `commentatrice_perso_supporters_01.mp3` | Il a son fan-club. Je me demande combien il les paie. |
+| `commentatrice_perso_supporters_01_f.mp3` | Elle a son fan-club. Je me demande combien elle les paie. |
+| `commentatrice_perso_supporters_02.mp3` | Des supporters rien que pour lui. Il ne faudra pas les décevoir. |
+| `commentatrice_perso_supporters_02_f.mp3` | Des supporters rien que pour elle. Il ne faudra pas les décevoir. |
+| `commentatrice_perso_supporters_03.mp3` | Un chant à son nom. Moi, à mes débuts, j'avais juste un thermos. |
 | `commentatrice_memoire_serie_3_01.mp3` | Il reste sur trois victoires d'affilée contre lui. |
 | `commentatrice_memoire_serie_3_01_f.mp3` | Elle reste sur trois victoires d'affilée contre lui. |
 | `commentatrice_memoire_serie_4_01.mp3` | Quatre de suite. L'autre commence à le prendre personnellement. |
