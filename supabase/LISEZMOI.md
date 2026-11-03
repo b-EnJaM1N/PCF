@@ -463,6 +463,16 @@ Les mises de jetons entre joueurs sont refusées partout (défis, partie rapide,
 entrées déjà payées sont rendues. Chaque match terminé rapporte des jetons (+5, +10 de plus pour une victoire, exploits), au plus
 150 par jour. **À coller avant de valider l'appli.**
 
+## 1 quinquagies octies. Le parcours des nouveaux joueurs (étape 58)
+
+Même manipulation que d'habitude avec [`etape-58-parcours-nouveaux.sql`](etape-58-parcours-nouveaux.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-58-parcours-nouveaux.sql).
+Un nouveau tableau « parcours », rangé par **jour d'arrivée** : combien de nouveaux sont arrivés ce jour-là, combien ont fini
+leur premier match, combien sont revenus le lendemain, combien une semaine plus tard (entre le 7e et le 13e jour). Toujours
+sans aucun identifiant : le téléphone garde lui-même son jour d'arrivée. Seuls les téléphones arrivés avec la nouvelle version
+sont suivis. **À coller avant la fusion.** Pour lire les chiffres (une ligne) :
+`select to_char(arrivee,'DD/MM') arrivee, sum(nouveaux) n, sum(premier_match) fini_1er_match, sum(retour_1j) revenu_j1, sum(retour_7j) revenu_j7 from parcours group by arrivee order by arrivee desc limit 30;`
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

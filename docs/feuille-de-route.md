@@ -31,6 +31,14 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   tout premier 3e match : il mesure si les nouveaux accrochent) ; la nouvelle colonne « matchs » compte tous les matchs terminés,
   anciens joueurs compris (en ligne, chacun des deux joueurs compte le sien). Lecture (une ligne) :
   `select to_char(jour,'DD/MM') j, sum(visiteurs) v, sum(nouveaux) n, sum(revenus) r, sum(trois_matchs) t, sum(matchs) m from visites group by jour order by jour desc limit 30;`
+- **Le parcours des nouveaux joueurs** (3 novembre, étape SQL 58, priorité n° 1 de l'audit) — *fait (à valider)* : un tableau
+  « parcours » rangé par jour d'arrivée (première ouverture sur ce téléphone) : nouveaux, premier match fini (sans abandon),
+  revenus le lendemain, revenus une semaine plus tard (du 7e au 13e jour, une seule fois). Anonyme : le téléphone garde son jour
+  d'arrivée (`compterVisite`, `compterPremierMatch`, `retoursParcours` dans `app/js/visites.js`) ; seuls les téléphones arrivés
+  avec cette version sont suivis. Mentions légales mises à jour. Lecture (une ligne) :
+  `select to_char(arrivee,'DD/MM') arrivee, sum(nouveaux) n, sum(premier_match) fini_1er_match, sum(retour_1j) revenu_j1, sum(retour_7j) revenu_j7 from parcours group by arrivee order by arrivee desc limit 30;`
+  Le chiffre « revenu à 7 jours » d'un jour d'arrivée n'est complet que 13 jours plus tard. Prochaine priorité : la sortie
+  sur le Play Store vers le 9 novembre (relance des testeurs, fiche du Store avec « chifoumi », questionnaire Google).
 - **Messages entre les sets** (1er novembre, étape SQL 53) : en duel, pendant la pause entre deux sets, un bouton « 💬 Envoyer un message »
   dans la fenêtre de fin de set ; ouvrir la fenêtre laisse 30 secondes au moins avant le set suivant ; les messages sortent des
   avatars au début du set. Des **annonces** au début de chaque set (avant le match et entre les sets, avec n'importe quel joueur) :
