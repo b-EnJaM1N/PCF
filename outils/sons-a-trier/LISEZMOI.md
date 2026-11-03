@@ -15,11 +15,10 @@ Pour chaque son, noter sa provenance et sa licence (Pixabay : libre ; Freesound 
 | bruit_de_foule.mp3 | Pixabay (déposé le 3 novembre) | Pixabay (libre) |
 | ole_ole.mp3 | Pixabay (déposé le 3 novembre) | Pixabay (libre) |
 | trompette.mp3 | Pixabay (déposé le 3 novembre) | Pixabay (libre) |
-| popopo_NON_UTILISE_droits.mp3 | Pixabay (déposé le 3 novembre) | Pixabay ; **non utilisé** : air de *Seven Nation Army* (droits sur la mélodie) |
 
 Choix du porteur du projet (3 novembre) : applaudissements vifs, version longue → `public_ovation_01` (fin de match),
 version courte → `public_point_01` (après un point) ; huées longues → `public_huees_01` (avec les gros sifflets), courtes →
 `public_huees_02` (point de pénalité, moment chaud) ; déception → `public_oh_decu_03`. « Applaudissements puis huées » : non retenu
 (plus de déception que de huées).
 Bruit de foule → `public_fond_01` (le murmure de fond, en boucle : raccord en fondu de 2 secondes ; très fort à l'origine, ramené au niveau de l'ancien murmure, à la demande du porteur du projet).
-Trompette → `stade_charge_01` ; « Olé, olé » → `stade_ole_01` (avant une balle de set ou de match, de temps en temps, puis « Silence, s'il vous plaît » ; « Olé » aussi après 5 points d'affilée). « Po po po » : mis de côté (droits d'auteur de la mélodie).
+Trompette → `stade_charge_01` ; « Olé, olé » → `stade_ole_01` (avant une balle de set ou de match, de temps en temps, puis « Silence, s'il vous plaît » ; « Olé » aussi après 5 points d'affilée). « Po po po » : écarté et retiré du dépôt (droits d'auteur de la mélodie). Deux sons venus d'un site qui reprend des retransmissions (« Défense », un chant) : retirés le 3 novembre, droits incertains.
