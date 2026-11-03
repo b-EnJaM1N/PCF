@@ -103,9 +103,10 @@ export function reactionPoint(etat, evt, coups, rng = Math.random, intensite = 0
   const x = rng();
   if (brisee >= 4 && x < 0.45) r = "ohDecu";                                         // une belle série vient d'être brisée
   else if (!etat.dernier) {
-    if (egalites >= 1) r = x < 0.35 * f ? "bravo" : x < 0.6 * f ? "applaudir" : null;      // un point arraché après des égalités
-    else if (serie >= 3) r = x < 0.4 * f ? "allez" : x < 0.55 * f ? "applaudir" : null;    // une série qui se construit
-    else r = x < 0.08 * f ? "applaudir" : x < 0.15 * f ? "brouhaha" : x < 0.19 * f ? "allez" : null;
+    // (3 novembre, remarque du porteur du projet : trop rares ; avant : 0,35/0,6, 0,4/0,55 et 0,08/0,15/0,19)
+    if (egalites >= 1) r = x < 0.35 * f ? "bravo" : x < 0.65 * f ? "applaudir" : null;      // un point arraché après des égalités
+    else if (serie >= 3) r = x < 0.4 * f ? "allez" : x < 0.62 * f ? "applaudir" : null;    // une série qui se construit
+    else r = x < 0.16 * f ? "applaudir" : x < 0.22 * f ? "brouhaha" : x < 0.27 * f ? "allez" : null;
   }
   etat.dernier = !!r;
   return r;
