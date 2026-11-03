@@ -42,8 +42,6 @@ import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerProgrammes } from "./ecran-programmes.js";
 import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
 import { installerTutos } from "./tutos.js";
-import { demanderSurnom, fichierPresent } from "./surnom-voix.js";
-import { clientSupabase } from "./compte.js";
 import { chantsPerso, courtsPerso, soutenu } from "./chants-perso.js";
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
@@ -531,7 +529,7 @@ function apresPoint(evt, a, cel, rp) {
     // Une balle de set ou de match sauvée : les supporters entonnent quelques secondes de leur chant (une fois par set au plus).
     S.chantCourtSet.add(nSet);
     // (« Allez le Chiromancien ! » : le cri court du joueur soutenu, s'il en a un ; sinon un extrait des chants habituels)
-    const courts = courtsPerso(...joueursDuMatch()).filter(id => ambiance.persoBuf?.[id]);
+    const courts = courtsPerso(joueursDuMatch()[evt.gagnant]).filter(id => ambiance.persoBuf?.[id]);   // (seulement si c'est lui qui a sauvé la balle)
     if (courts.length) ambiance.jouerPerso(courts[Math.floor(Math.random() * courts.length)], { vol: 0.7, delai: 0.4 });
     else {
       S.chantCourt = S.chantCourt === "chantCourt1" ? "chantCourt2" : "chantCourt1";
@@ -1324,8 +1322,8 @@ async function afficherDossier() {
 // Les chants de supporters personnalisés des joueurs de ce match (moi, et mon adversaire en duel) : voir chants-perso.js.
 const joueursDuMatch = () => [{ pseudo: P.pseudo, numero: P.numero, genre: P.genre }, OPP?.humain ? { pseudo: OPP.nom, numero: OPP.numero, genre: OPP.genre } : null];
 const persoDuMatch = () => chantsPerso(...joueursDuMatch());
-// Les commentateurs lancent le match, à voix haute : Roland présente les joueurs par leur surnom, puis les commentaires
-// (la présentation complète du speaker n'est ni dite ni affichée).
+// Les commentateurs lancent le match, à voix haute (pas de speaker : sa présentation n'est ni dite ni affichée ; les surnoms
+// dits par Roland ont été abandonnés le 3 novembre).
 function presenterSpeaker() {
   const f = P.faceAFace[OPP.id], humain = !!OPP.humain;
   const niveauMoi = humain ? monClassement ?? 1200 : P.elo, niveauAdv = humain ? OPP.classement ?? 1200 : OPP.elo;
@@ -1366,14 +1364,7 @@ function presenterSpeaker() {
     const l = unDe("avant_ambiance");
     if (l) av.commentaires.unshift(l);
   }
-  // Roland présente d'abord les deux joueurs par leur surnom (dit d'un trait), seulement si tout est enregistré. Mon surnom
-  // pas encore enregistré : on le demande (joueur connecté), il sera prêt au match suivant.
-  if (compteUI?.session()?.user) demanderSurnom(surnomDe(P), clientSupabase());
-  const pret = Promise.all(av.presentation.map(l => (l.url ? fichierPresent(l.url) : voix.fichiers.has(l.id))));
-  voixIntro = setTimeout(async () => {
-    const ok = av.presentation.length > 0 && (await pret).every(Boolean);
-    if (faceAFaceOuvert && !S.passe) voix.dire([...(ok ? av.presentation : []), ...av.commentaires]);
-  }, reduitMouvement() ? 0 : 1300);
+  voixIntro = setTimeout(() => { if (faceAFaceOuvert && !S.passe) voix.dire(av.commentaires); }, reduitMouvement() ? 0 : 1300);
 }
 // Les nombres défilent jusqu'à leur valeur, comme au tableau d'affichage.
 function compter(el) {
