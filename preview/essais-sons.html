@@ -24,23 +24,27 @@
 <main class="essais">
   <p><a href="./">← Retour à HandSlam</a></p>
   <h1>🎧 Essais de sons du public</h1>
-  <p class="intro">Pour chaque son, plusieurs versions candidates. Touche une version pour l'écouter (volumes déjà égalisés entre
-    elles). Pour choisir, dis simplement par exemple « la 1 ; aucune ».</p>
+  <p class="intro">Les vrais sons de foule trouvés sur Pixabay (3 novembre), découpés et mis au même volume. Touche un son pour
+    l'écouter. Pour choisir, dis simplement par exemple « huées : la 2 ; mélange : aucun ».</p>
   <div id="liste"></div>
 </main>
 <script type="module">
-  // Les candidats (outils/sons-candidats.json), générés dans audio/essais/ par le robot « Voix », choix « sons-candidats ».
-  // (aucun essai en cours : les cris du 2 novembre n'ont pas été retenus)
-  const GROUPES = [];
+  // Les sons à écouter (dans audio/essais/) : [titre, [[fichier, légende], …]]. Originaux : outils/sons-a-trier/.
+  const GROUPES = [
+    ["👏 Applaudissements vifs", [["ovation_1", "1 · long (fin de match ?)"], ["applaudir_1", "2 · court (après un point ?)"]]],
+    ["👏👎 Applaudissements puis huées (le son coupé en trois)", [["melange_1", "1 · début"], ["melange_2", "2 · milieu"], ["melange_3", "3 · fin"]]],
+    ["👎 Huées", [["huees_1", "1 · longues"], ["huees_2", "2 · courtes (le plus fort)"]]],
+    ["😞 Déception", [["deception_1", "1 · « Ohhh… »"]]],
+  ];
   let enCours = null;
   const liste = document.getElementById("liste");
-  for (const [titre, cle] of GROUPES) {
+  for (const [titre, sons] of GROUPES) {
     const h = document.createElement("h2"); h.textContent = titre; liste.append(h);
     const rang = document.createElement("div"); rang.className = "rang"; liste.append(rang);
-    for (const n of [1, 2]) {
-      const b = document.createElement("button"); b.textContent = `▶ ${n}`;
-      const audio = new Audio(`audio/essais/${cle}_${n}.mp3?v=${Date.now()}`);
-      audio.addEventListener("error", () => { b.disabled = true; b.textContent = `${n} : pas encore là`; });
+    for (const [fichier, legende] of sons) {
+      const b = document.createElement("button"); b.textContent = `▶ ${legende}`;
+      const audio = new Audio(`audio/essais/${fichier}.mp3?v=${Date.now()}`);
+      audio.addEventListener("error", () => { b.disabled = true; b.textContent = `${legende} : pas encore là`; });
       audio.addEventListener("ended", () => b.classList.remove("joue"));
       b.addEventListener("click", () => {
         if (enCours && enCours.audio !== audio) { enCours.audio.pause(); enCours.b.classList.remove("joue"); }
