@@ -367,7 +367,7 @@ function jouer(signe, auto = false, smash = false) {
   const signeBot = (S.carriere ? coupCarriere : choisirCoup)(OPP, histBot, S.hasard || Math.random, contexteBot(m));   // (carrière : les bots faibles renforcés)   // (match du jour : le même tirage pour tout le monde)
   // (le gros son de raquette seulement pour un smash qui gagne le point)
   const smashGagnant = issueSmash([smash, smashBot], gagnantCoup(signe, signeBot)) === "gagne";
-  const reveler = () => { ambiance.raquette(signe, grandMoment(m) || smashGagnant); afficherCoup(signe, signeBot, [auto, false], { smash: [smash, smashBot] }); };
+  const reveler = () => { if (smashGagnant) ambiance.smash(signe); else ambiance.raquette(signe, grandMoment(m)); afficherCoup(signe, signeBot, [auto, false], { smash: [smash, smashBot] }); };
   if (reduitMouvement()) { reveler(); return; }
   // Comme au chifoumi : les deux poings se secouent, puis les deux signes s'ouvrent ensemble (pareil en duel).
   const seance = S;
@@ -467,8 +467,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
 }
 
 // Le smash : selon ce qu'il donne (voir issueSmash), un verdict et une vibration (Android ; l'iPhone ne vibre pas depuis une
-// page web). Gagnant : « 💥 Smash ! », grande vibration et secousse de l'arène ; perdu : « 💨 Smash raté ! », une petite vibration
-// molle ; égalité : « 🧱 Smash bloqué ! », une vibration courte et sourde.
+// page web). Gagnant : « 💥 Smash ! », grande vibration et secousse de l'arène ; perdu : « 💨 Smash raté ! » ; égalité :
+// « 🧱 Smash bloqué ! » (sans vibration, depuis le 3 novembre).
 function effetSmash(smash, gagnant) {
   const issue = issueSmash(smash, gagnant), double = smash[0] && smash[1];
   const de = j => (j === 0 ? "" : ` de ${OPP.nom}`);
@@ -477,9 +477,11 @@ function effetSmash(smash, gagnant) {
     : issue === "bloque" ? (double ? "🧱 Double smash bloqué ! " : `🧱 Smash${de(smash[0] ? 0 : 1)} bloqué ! `)
     : `💨 Smash raté${de(smash[0] ? 0 : 1)} ! `;
   $("verdict").textContent = `${texte}${$("verdict").textContent}`;
-  const vibration = issue === "gagne" ? (double ? [120, 60, 120, 60, 200] : [150, 60, 220]) : issue === "bloque" ? [70, 50, 70] : [40];
-  try { if (document.visibilityState === "visible") navigator.vibrate?.(vibration); } catch { /* sans vibration */ }
-  if (issue !== "gagne" || reduitMouvement()) return;
+  // La vibration seulement quand le smash marque le point (3 novembre, demande du porteur du projet ; plus rien pour un smash
+  // raté ou bloqué), plus longue qu'avant.
+  if (issue !== "gagne") return;
+  try { if (document.visibilityState === "visible") navigator.vibrate?.(double ? [200, 70, 200, 70, 350] : [250, 80, 400]); } catch { /* sans vibration */ }
+  if (reduitMouvement()) return;
   const arene = document.querySelector(".arena");
   arene?.classList.remove("smash"); void arene?.offsetWidth; arene?.classList.add("smash");
 }
@@ -2175,7 +2177,7 @@ function majDuel(duel) {
     while (nbEvenements(m) < n - 1) montrer(ev[nbEvenements(m)], { silencieux: true });
     const e = ev[n - 1];
     S.occupe = true; arreterMinuteur(); boutons(false);
-    if (e.coup) ambiance.raquette(e.coup.a, grandMoment(m) || issueSmash(e.coup.smash, gagnantCoup(e.coup.a, e.coup.b)) === "gagne");   // le coup de raquette au moment où les deux signes se dévoilent
+    if (e.coup) { if (issueSmash(e.coup.smash, gagnantCoup(e.coup.a, e.coup.b)) === "gagne") ambiance.smash(e.coup.a); else ambiance.raquette(e.coup.a, grandMoment(m)); }   // le coup de raquette au moment où les deux signes se dévoilent
     montrer(e, {});
     if (!coherent(m, duel, D.moi)) {   // ne devrait jamais arriver : on se recale sur le serveur
       const r = rejouer(duel, D.moi); S.match = r.match; render(); renderHistorique();
