@@ -18,11 +18,15 @@ export const FICHIERS_AMBIANCE = {
   tension: "public_tension_01",     // balles de set et de match
   ooh: "public_ooh_01",             // point disputé
   sifflets: "stade_sifflet_01",     // le public siffle (rare ; l'arbitre le rappelle à l'ordre)
+  // Les huées (vrais sons de foule, Pixabay, choisis par le porteur du projet le 3 novembre) : longues (avec les gros sifflets),
+  // courtes (un point de pénalité, un moment chaud).
+  huees: "public_huees_01",
+  hueesCourtes: "public_huees_02",
 };
 // Les réactions variées du public après un point (plusieurs versions de chacune, pour ne pas se répéter).
 export const FICHIERS_REACTIONS = {
   allez: ["public_allez_01"],   // (28 octobre : le « Allez ! » n° 1 de l'essai, gardé à l'écoute ; les anciens sont dans l'historique)
-  ohDecu: ["public_oh_decu_01", "public_oh_decu_02"],
+  ohDecu: ["public_oh_decu_01", "public_oh_decu_02", "public_oh_decu_03"],   // (le 3 : un vrai son de foule, Pixabay)
   bravo: ["public_bravo_01", "public_bravo_02"],
   brouhaha: ["public_brouhaha_01", "public_brouhaha_02"],
   rires: ["public_rires_01", "public_rires_02"],
@@ -343,6 +347,14 @@ export class Ambiance {
   // Le « ooh » sur un point disputé.
   ooh() { this.jouer(this.buf.ooh, 0.5, true, { delai: 0.15 }); }
   // Les sifflets du public (renvoie leur durée en secondes, 0 s'ils ne sont pas prêts).
+  // Les huées : courtes (environ 6 secondes) ou longues ; coupe : les faire taire en douceur au bout de tant de secondes
+  // (l'arbitre a parlé).
+  huees({ court = true, delai = 0.3, vol = 0.35, coupe = null } = {}) {
+    const son = this.jouer(court ? this.buf.hueesCourtes : this.buf.huees, vol, true, { delai, vitesse: 0.97 + Math.random() * 0.06 });
+    if (!son || coupe === null) return !!son;
+    try { son.g.gain.setTargetAtTime(0, this.ctx.currentTime + delai + coupe, 0.5); son.src.stop(this.ctx.currentTime + delai + coupe + 4); } catch { /* rien */ }
+    return true;
+  }
   // Quelques sifflets courts, sans l'arbitre : le public s'agite à un moment chaud (ils s'éteignent au bout d'environ une seconde).
   siffletsCourts(delai = 0.3) {
     const son = this.buf.sifflets && this.jouer(this.buf.sifflets, 0.3, true, { delai, vitesse: 0.95 + Math.random() * 0.1 });
