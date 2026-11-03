@@ -251,6 +251,14 @@ export class Ambiance {
     else this.jouer(this.raquettes[signe], fort ? 0.9 : 0.7, true, { salle: false });
   }
 
+  // Le smash gagnant (3 novembre, demande du porteur du projet : un son plus fort) : la raquette, version forte, doublée d'un
+  // second impact avec l'écho du stade, et la clameur du public juste après.
+  smash(signe = 2) {
+    const f = this.raquettesFichiers[signe] || [], b = f[1] || f[0] || this.raquettes[signe];
+    if (b) { this.jouer(b, 1, true, { salle: false }); this.jouer(b, 0.6, true, { delai: 0.06, vitesse: 0.85, salle: false }); }
+    if (this.buf.clameur) this.jouer(this.buf.clameur, 0.55, true, { delai: 0.25 });
+  }
+
   // Le murmure du public, en boucle pendant le match (seulement avec l'enregistrement).
   fond(on) {
     this.fondVoulu = on;
