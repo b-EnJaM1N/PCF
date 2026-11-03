@@ -821,7 +821,6 @@ restent lus par la voix de synthèse.
 | `commentatrice_set_ecrasant_01.mp3` | Sèche correction. |
 | `commentatrice_set_ecrasant_02.mp3` | Il n'y a pas eu de match dans ce set. |
 | `commentatrice_set_ecrasant_03.mp3` | Il aurait dû rester au vestiaire. |
-| `commentatrice_set_ecrasant_04.mp3` | Vous êtes le maillon faible. Au revoir ! |
 | `commentatrice_set_ecrasant_05.mp3` | Un set à oublier. Je l'ai déjà oublié. |
 | `commentatrice_set_ecrasant_06.mp3` | Qu'on m'apporte un café. Et un autre match. |
 | `commentatrice_set_ecrasant_07.mp3` | Bref. Il a perdu le set. |
@@ -870,6 +869,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_defaite_08.mp3` | Il a le seum. Comme disent les jeunes. |
 | `commentatrice_defaite_08_f.mp3` | Elle a le seum. Comme disent les jeunes. |
 | `commentatrice_defaite_09.mp3` | Le vainqueur repart avec la gloire. Le vaincu repart avec une remise en question existentielle. |
+| `commentatrice_defaite_10.mp3` | Vous êtes le maillon faible. Au revoir ! |
 | `commentatrice_memoire_ouverture_01_pierre.mp3` | Il avait ouvert avec la Pierre la dernière fois. Il a peut-être appris. Peut-être. |
 | `commentatrice_memoire_ouverture_01_pierre_f.mp3` | Elle avait ouvert avec la Pierre la dernière fois. Elle a peut-être appris. Peut-être. |
 | `commentatrice_memoire_ouverture_01_ciseaux.mp3` | Il avait ouvert avec les Ciseaux la dernière fois. Il a peut-être appris. Peut-être. |
