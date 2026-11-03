@@ -267,7 +267,7 @@ export const MOMENTS = {
     { r: "d", t: "Sèche correction." },
     { r: "d", t: "Il n'y a pas eu de match dans ce set." },
     { r: "d", t: "Il aurait dû rester au vestiaire." },
-    { r: "d", t: "Vous êtes le maillon faible. Au revoir !", clin: "cine" },
+    { r: "d", t: "Vous êtes le maillon faible. Au revoir !", clin: "cine", retiree: true },   // (déplacée en fin de match, « defaite », le 3 novembre)
     { r: "d", t: "Un set à oublier. Je l'ai déjà oublié." },
     { r: "d", t: "Qu'on m'apporte un café. Et un autre match." },
     { r: "d", t: "Bref. Il a perdu le set.", f: "Bref. Elle a perdu le set.", clin: "cine" },
@@ -383,6 +383,8 @@ export const MOMENTS = {
     { r: "d", t: "Il a le seum. Comme disent les jeunes.", f: "Elle a le seum. Comme disent les jeunes." },
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
     { r: "d", t: "Le vainqueur repart avec la gloire. Le vaincu repart avec une remise en question existentielle." },
+    // (le 3 novembre : seulement en fin de match, à la demande du porteur du projet ; avant, en fin de set écrasant)
+    { r: "d", t: "Vous êtes le maillon faible. Au revoir !", clin: "cine" },
   ],
   // (« domination », « Je suis ton père », dit avant le match quand l'adversaire dominait nos face-à-face : retiré le 2 novembre,
   // à la demande du porteur du projet)
