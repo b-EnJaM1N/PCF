@@ -96,17 +96,3 @@ test("les surnoms d'exploit : gagnés avec un trophée précis", async () => {
   for (const x of [...NOMS, ...QUALIFICATIFS].filter(v => v.famille === "exploit")) assert.ok(TITRES.some(t => t.id === x.trophee), x.id);
 });
 
-test("les surnoms dits par Roland : la fonction « Surnom » connaît exactement les mêmes surnoms que l'appli", async () => {
-  const f = await import("../supabase/functions/surnom/index.ts");
-  assert.deepEqual(Object.entries(f.NOMS), NOMS.map(x => [x.id, x.t]));
-  assert.deepEqual(Object.entries(f.QUALIFICATIFS), QUALIFICATIFS.map(x => [x.id, x.t]));
-  assert.equal(f.cleSurnom("la_quiche", "du_pmu"), "la_quiche__du_pmu");
-  assert.equal(f.cleSurnom("la_quiche", "inconnu"), null);
-  assert.equal(f.cleSurnom("__proto__", "du_pmu"), null);
-  assert.match(f.texteSurnom("la_quiche", "du_pmu"), /\] La Quiche du PMU !$/);
-  const { repliqueSurnom, cleSurnom } = await import("../app/js/surnom-voix.js");
-  const s = surnomDe({ surnom: { nom: "la_quiche", complement: "du_pmu" } });
-  assert.equal(cleSurnom(s), "la_quiche__du_pmu");
-  assert.deepEqual(repliqueSurnom(s), { id: "surnom:la_quiche__du_pmu", role: "speaker", texte: "La Quiche du PMU !",
-    url: "https://fvfdcyglwngosxfougje.supabase.co/storage/v1/object/public/surnoms/la_quiche__du_pmu.mp3" });
-});

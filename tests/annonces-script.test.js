@@ -167,7 +167,7 @@ test("le speaker présente les joueurs par leur côté et leur surnom", () => {
   const moi = { surnom: surnomDe(P), genre: "f", etiquette: etiquetteDe(P) };
   const { speaker, commentaires } = annoncesAvantMatch({ moi, adv: { bot: "rocky" }, tour: "finale" }, () => 0);
   assert.deepEqual(speaker.map(l => l.id), ["speaker_finale_01", "speaker_coin_jaune_01", "speaker_debutant_01",
-    "surnom:le_cobra__du_pmu", "speaker_coin_rouge_01", "speaker_bot_rocky_01", "speaker_cloture_01"]);
+    "speaker_coin_rouge_01", "speaker_bot_rocky_01", "speaker_cloture_01"]);
   assert.ok(speaker.every(l => l.role === "speaker"));
   assert.ok(commentaires.every(l => CATALOGUE.has(l.id)));
   // deux joueurs au même surnom : le speaker le remarque
@@ -467,21 +467,6 @@ test("les commentaires du smash : réussi, sonné, raté, bloqué ; jamais « il
   for (const mo of ["smash_reussi", "smash_sonne", "smash_rate", "smash_bloque", "smash_double"]) assert.ok(vus.get(mo) > 0, mo);
 });
 
-test("Roland présente les joueurs par leur surnom (ou le nom du bot) ; sans surnom, pas de présentation", () => {
-  const sur = surnomDe(profilParDefaut());
-  const contreBot = annoncesAvantMatch({ moi: { surnom: sur }, adv: { bot: "tictac" } }).presentation.map(r => r.id);
-  assert.ok(/^speaker_presente_jaune_/.test(contreBot[0]) && /^speaker_presente_rouge_/.test(contreBot[2]));
-  assert.equal(contreBot[1], `surnom:${sur.nom.id}__${sur.complement.id}`, "le surnom, d'un trait");
-  assert.equal(contreBot[3], "speaker_bot_tictac_01");
-  assert.equal(annoncesAvantMatch({ moi: { surnom: sur }, adv: { surnom: sur }, humain: true }).presentation.length, 4);
-  assert.equal(annoncesAvantMatch({ adv: { bot: "tictac" } }).presentation.length, 0);
-  // seulement les versions enregistrées des phrases de liaison
-  const enreg = id => !/_02$/.test(id);
-  for (let k = 0; k < 20; k++) {
-    const p = annoncesAvantMatch({ moi: { surnom: sur }, adv: { bot: "tictac" }, audible: enreg }).presentation.map(r => r.id);
-    assert.ok(p.length === 4 && p.every(enreg), p.join());
-  }
-});
 
 test("« mauvais départ » : pas dès le premier point perdu, seulement à 0-3 en début de match", () => {
   const depart = /mauvais départ|Ça commence mal/;

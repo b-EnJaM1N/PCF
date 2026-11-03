@@ -1,4 +1,4 @@
--- Tests de supabase/etape-55-surnoms-voix.sql : le stockage public des surnoms, la table des enregistrements fermée aux joueurs.
+-- Tests des étapes 55 et 56 : les surnoms dits par Roland, puis leur retrait.
 \set QUIET on
 \echo Tests de la base de données (étape 55 : les voix des surnoms)
 create or replace function pg_temp.verifier(ok boolean, msg text) returns void language plpgsql as $$
@@ -8,8 +8,6 @@ begin
   begin execute sql; exception when others then raise notice 'ok : %', msg; return; end;
   raise exception 'ÉCHEC : accepté alors que ça devait être refusé : %', msg;
 end $$;
-select pg_temp.verifier((select public from storage.buckets where id = 'surnoms'), 'le stockage « surnoms » est public');
-set role authenticated;
-select pg_temp.interdit('select count(*) from surnoms_voix', 'un joueur ne lit pas la table des enregistrements');
-select pg_temp.interdit($$insert into surnoms_voix (cle) values ('la_quiche__du_pmu')$$, 'un joueur n''écrit pas dans la table');
-reset role;
+-- (l'étape 56 défait l'étape 55 : les surnoms dits par Roland sont abandonnés)
+select pg_temp.verifier(not exists (select 1 from storage.buckets where id = 'surnoms'), 'étape 56 : le stockage « surnoms » est retiré');
+select pg_temp.verifier(to_regclass('public.surnoms_voix') is null, 'étape 56 : la table des enregistrements est retirée');
