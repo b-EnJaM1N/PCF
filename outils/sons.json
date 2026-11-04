@@ -227,6 +227,18 @@
       "salle": false,
       "vrai": true
     },
+    "public_bronca_01": {
+      "texte": "Bronca : sifflets et huées de tout un stade (ElevenLabs Sound Effects, porteur du projet, 4 novembre, version 4) : ne pas régénérer.",
+      "duree": 10.4,
+      "salle": false,
+      "vrai": true
+    },
+    "public_bronca_02": {
+      "texte": "Bronca : sifflets et huées de tout un stade (ElevenLabs Sound Effects, porteur du projet, 4 novembre, version 3) : ne pas régénérer.",
+      "duree": 10.4,
+      "salle": false,
+      "vrai": true
+    },
     "stade_hymne_01": {
       "texte": "Hymne « Que vivent nos héros » chanté par le stade (ElevenLabs Music, version 2 du porteur du projet, voix renforcées, 3 novembre) : ne pas régénérer.",
       "duree": 40,

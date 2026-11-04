@@ -22,6 +22,9 @@ export const FICHIERS_AMBIANCE = {
   // courtes (un point de pénalité, un moment chaud).
   huees: "public_huees_01",
   hueesCourtes: "public_huees_02",
+  // La bronca : sifflets et huées de tout le stade (ElevenLabs Sound Effects, porteur du projet, 4 novembre), avec les gros sifflets,
+  // à la place des longues huées (l'une puis l'autre).
+  bronca1: "public_bronca_01", bronca2: "public_bronca_02",
 };
 // Les réactions variées du public après un point (plusieurs versions de chacune, pour ne pas se répéter).
 export const FICHIERS_REACTIONS = {
@@ -475,6 +478,16 @@ export class Ambiance {
     this.porter(delai + (coupe ?? b.duration));
     if (coupe !== null) try { son.g.gain.setTargetAtTime(0, this.ctx.currentTime + delai + coupe, 0.4); son.src.stop(this.ctx.currentTime + delai + coupe + 3); } catch { /* rien */ }
     return b.duration;
+  }
+  // La bronca (avec les gros sifflets) : l'une puis l'autre ; sans elles, les longues huées. coupe : comme pour les huées.
+  bronca({ delai = 0.6, vol = 0.45, coupe = null } = {}) {
+    const dispo = ["bronca1", "bronca2"].filter(k => this.buf[k]);
+    if (!dispo.length) return this.huees({ court: false, delai, vol: 0.32, coupe });
+    this.broncaSuivante = dispo[(dispo.indexOf(this.broncaSuivante) + 1) % dispo.length];
+    const son = this.jouer(this.buf[this.broncaSuivante], vol, true, { delai });
+    if (!son || coupe === null) return !!son;
+    try { son.g.gain.setTargetAtTime(0, this.ctx.currentTime + delai + coupe, 0.5); son.src.stop(this.ctx.currentTime + delai + coupe + 4); } catch { /* rien */ }
+    return true;
   }
   // Les huées : courtes (environ 6 secondes) ou longues ; coupe : les faire taire en douceur au bout de tant de secondes
   // (l'arbitre a parlé).
