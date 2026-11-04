@@ -541,7 +541,13 @@ function apresPoint(evt, a, cel, rp) {
       S.chantCourt = extraits[(extraits.indexOf(S.chantCourt) + 1) % (extraits.length || 1)];
       ambiance.stade(S.chantCourt, { vol: 0.65, delai: 0.4, salle: false });
     }
+  } else if (!evt.finSet && !m.termine && evt.gagnant !== null && (S.pointsSansChant || 0) >= 5 && Math.random() < 0.25 + 0.35 * chaud
+    && ambiance.extraitMatch()) {
+    // Les supporters chantent quelques secondes entre deux points (au moins 5 points d'écart, plus souvent quand ça chauffe ;
+    // 4 novembre, demande du porteur du projet).
+    S.pointsSansChant = 0;
   }
+  if (evt.gagnant !== null) S.pointsSansChant = (S.pointsSansChant || 0) + 1;
   annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
   render(); renderHistorique(); renderLecture();
   if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);
