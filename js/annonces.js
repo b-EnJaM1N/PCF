@@ -408,6 +408,17 @@ export function silenceAvantBalle(etat, set, rng = Math.random) {
   return true;
 }
 
+// L'arbitre demande le calme : une des 4 façons enregistrées (dispo : le fichier existe), jamais deux fois de suite la même ;
+// « Silence, s'il vous plaît » reste la plus fréquente (4 novembre, demande du porteur du projet) : environ une fois sur trois.
+export const SILENCES_ARBITRE = ["arbitre_silence_01", "arbitre_silence_02", "arbitre_silence_05", "arbitre_silence_06"];
+export function choisirSilence(dispo, dernier = null, rng = Math.random) {
+  let ids = SILENCES_ARBITRE.filter(dispo);
+  if (ids.length > 1) ids = ids.filter(id => id !== dernier);
+  const classique = "arbitre_silence_01", autres = ids.filter(id => id !== classique);
+  const id = !ids.length ? classique : ids.includes(classique) && (!autres.length || rng() < 0.45) ? classique : autres[Math.floor(rng() * autres.length)];
+  return id;
+}
+
 // Annonce du début d'un set : « Premier set. », « Set décisif. »…
 export function annonceDebutSet(match) {
   if (match.format.setsGagnants === 1) return replique("arbitre_set_unique_01");
