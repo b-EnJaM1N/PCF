@@ -228,6 +228,8 @@ export const MOMENTS = {
     { r: "d", t: "Coup de maître.", clin: "sport", rare: true },
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
     { r: "d", t: "Bien vu l'aveugle.", clin: "sport" },
+    // (4 novembre, réplique du porteur du projet)
+    { r: "c", t: "Il l'attendait dans le zig, il lui a mis dans le zag !", f: "Il l'attendait dans le zig, elle lui a mis dans le zag !" },
   ],
   temps_ecoule: [
     { r: "c", t: "Il a oublié de jouer !", f: "Elle a oublié de jouer !" },

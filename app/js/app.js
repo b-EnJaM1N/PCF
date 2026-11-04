@@ -200,11 +200,11 @@ function dialogueCriAuChoix(hasard = Math.random) {
 }
 // Les commentaires entendus aux derniers matchs (environ huit), pour ne pas recommencer chaque match par les mêmes.
 function commentairesRecents() { try { return lire("commentairesRecents", []) || []; } catch { return []; } }
-// Les sifflets et « Je vous demande de vous arrêter » (l'arbitre) : rare. Jamais deux fois en moins de 12 heures (même d'un match à l'autre),
-// et jamais pendant le premier match après l'ouverture de l'appli (sinon on l'entendait à chaque reprise).
-const HUEES_ECART_MS = 12 * 60 * 60 * 1000;
+// La bronca (gros sifflets, puis l'arbitre demande le calme) : moins rare depuis le 4 novembre (demande du porteur du projet) :
+// jamais deux fois en moins de 30 minutes (même d'un match à l'autre), dès le premier match.
+const HUEES_ECART_MS = 30 * 60 * 1000;
 let matchsDepuisOuverture = 0;
-function hueesPermises() { if (matchsDepuisOuverture < 1) return false; try { return Date.now() - (Number(lire("hueesLe", 0)) || 0) > HUEES_ECART_MS; } catch { return true; } }
+function hueesPermises() { try { return Date.now() - (Number(lire("hueesLe", 0)) || 0) > HUEES_ECART_MS; } catch { return true; } }
 // (seulement les répliques vraiment dites : une réplique écartée faute de temps n'est pas « déjà entendue »)
 function retenirCommentaires(lignes) {
   const ids = lignes.filter(l => l.role === "commentateur" || l.role === "commentatrice").map(l => baseDe(l.id));
@@ -418,7 +418,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   // il parle à la fin des sifflets (une de ses façons de demander le calme ; « Je vous demande de vous arrêter » retiré le
   // 4 novembre), et c'est le seul commentaire de ce point.
   const chaud = intensiteMatch(m);
-  if (rp.ooh && hueesPermises() && Math.random() < 0.12 && voix.fichiers.has("arbitre_silence_01")) {
+  if (rp.ooh && hueesPermises() && Math.random() < 0.25 && voix.fichiers.has("arbitre_silence_01")) {
     const duree = ambiance.sifflets(0.9);
     if (duree) {
       try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
