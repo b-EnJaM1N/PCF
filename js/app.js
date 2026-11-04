@@ -4,7 +4,7 @@ import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
-import { voirTournoi, mesAmis, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours } from "./social-serveur.js";
+import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours } from "./social-serveur.js";
 import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
@@ -541,7 +541,7 @@ function apresPoint(evt, a, cel, rp) {
       S.chantCourt = extraits[(extraits.indexOf(S.chantCourt) + 1) % (extraits.length || 1)];
       ambiance.stade(S.chantCourt, { vol: 0.65, delai: 0.4, salle: false });
     }
-  } else if (!evt.finSet && !m.termine && evt.gagnant !== null && (S.pointsSansChant || 0) >= 5 && Math.random() < 0.25 + 0.35 * chaud
+  } else if (!evt.finSet && !m.termine && evt.gagnant !== null && (S.pointsSansChant || 0) >= 5 && Math.random() < 0.25 + 0.35 * intensiteMatch(m)
     && ambiance.extraitMatch()) {
     // Les supporters chantent quelques secondes entre deux points (au moins 5 points d'écart, plus souvent quand ça chauffe ;
     // 4 novembre, demande du porteur du projet).
