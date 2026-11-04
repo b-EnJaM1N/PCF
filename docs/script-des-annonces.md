@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (594 répliques)
+## Commentateur — vif, enthousiaste, plein de références (596 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -266,6 +266,8 @@ restent lus par la voix de synthèse.
 | `commentateur_lecture_reussie_04_f.mp3` | Elle vous a compris ! |
 | `commentateur_lecture_reussie_05.mp3` | Il est entré dans son cerveau ! |
 | `commentateur_lecture_reussie_05_f.mp3` | Elle est entrée dans son cerveau ! |
+| `commentateur_lecture_reussie_06.mp3` | Il l'attendait dans le zig, il lui a mis dans le zag ! |
+| `commentateur_lecture_reussie_06_f.mp3` | Il l'attendait dans le zig, elle lui a mis dans le zag ! |
 | `commentateur_temps_ecoule_01.mp3` | Il a oublié de jouer ! |
 | `commentateur_temps_ecoule_01_f.mp3` | Elle a oublié de jouer ! |
 | `commentateur_temps_ecoule_02.mp3` | Calé sur la grille de départ ! |
