@@ -26,6 +26,9 @@ jobs:
         with:
           node-version: 22
       - run: npm test
+      # Les variables inconnues (ESLint, règle no-undef ; ajouté le 4 novembre après « chaud is not defined » en plein match)
+      - run: npm ci
+      - run: npm run lint
 
   base-de-donnees:
     runs-on: ubuntu-latest

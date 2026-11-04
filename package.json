@@ -7,7 +7,46 @@
   "scripts": {
     "test": "node --test \"tests/**/*.test.js\"",
     "script-voix": "node outils/generer-script.js",
-    "demarrer": "npx --yes serve app"
+    "demarrer": "npx --yes serve app",
+    "lint": "eslint app/js app/sw.js outils"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "eslint": "8.57.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "browser": true,
+      "es2022": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "sourceType": "module"
+    },
+    "rules": {
+      "no-undef": "error"
+    },
+    "overrides": [
+      {
+        "files": [
+          "outils/**/*.js",
+          "outils/**/*.mjs"
+        ],
+        "env": {
+          "node": true
+        }
+      },
+      {
+        "files": [
+          "app/sw.js"
+        ],
+        "env": {
+          "serviceworker": true
+        }
+      }
+    ]
+  }
 }
