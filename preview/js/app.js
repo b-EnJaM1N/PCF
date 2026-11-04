@@ -2,7 +2,7 @@
 import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, SONNE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, issueSmash, gagnantCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, MERCIS_ARBITRE, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
 import { voirTournoi, mesAmis, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours } from "./social-serveur.js";
 import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch } from "./visites.js";
@@ -429,6 +429,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
       for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
       const seance = S, huees = CATALOGUE.get("arbitre_huees_01");
       setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([huees]); }, (0.9 + duree * 0.8) * 1000);
+      if (!S.duel) S.merciReprise = true;
     }
   } else if ((rp.ooh || evt.balleAvant) && chaud >= 0.5 && !(S.siffletsSet ||= new Set()).has(m.scoresSets.length) && Math.random() < 0.6) {
     // Aux moments chauds (point disputé, balle sauvée), le public s'agite : quelques sifflets courts, sans l'arbitre
@@ -508,8 +509,8 @@ function apresPoint(evt, a, cel, rp) {
   const coupe = chant === "ole" ? (S.duel ? 2.5 : 4) : 3.2;
   if (chant && ambiance.stade(chant, { vol: chant === "ole" ? 0.85 : 0.6, delai: 0.4, coupe, salle: false })) {   // (plus fort le 3 novembre : on l'entendait à peine)
     S.chantSet.add(nSet);
-    for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].id === "arbitre_silence_01") a.lignes.splice(k, 1);
-    const seance = S, silence = CATALOGUE.get("arbitre_silence_01");
+    for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].id.startsWith("arbitre_silence_")) a.lignes.splice(k, 1);
+    const seance = S, silence = silenceArbitre();
     // (si Roland ou Monique parlent encore, l'arbitre attend un peu qu'ils aient fini)
     setTimeout(() => voix.finiDeParler(() => { if (S === seance && !S.match.termine) voix.dire([silence]); }, 1500), (0.4 + coupe) * 1000);
     if (!S.duel) S.silenceJusqu = Date.now() + (0.4 + coupe + 3.5) * 1000;
@@ -521,7 +522,8 @@ function apresPoint(evt, a, cel, rp) {
     ambiance.stade("defense", { vol: 0.7, delai: 0.4, coupe: 6, salle: false });
   } else if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length)) {
     // Sinon, parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
-    a.lignes.unshift(CATALOGUE.get("arbitre_silence_01"));
+    a.lignes.unshift(silenceArbitre());
+    if (S) S.merciReprise = false;   // (ici, le jeu ne s'arrête pas : pas de « Merci » à la reprise)
   } else if (!evt.finSet && !m.termine && evt.gagnant !== null && series(m.coups).serie === 5 && !(S.oleSet ||= new Set()).has(nSet) && Math.random() < 0.6) {
     // « Olé ! » : le public salue une série de 5 points d'affilée (une fois par set au plus).
     S.oleSet.add(nSet);
@@ -591,9 +593,27 @@ function apresPoint(evt, a, cel, rp) {
     if (S !== seance) return;
     if (S.duel) { duelReprendre(); return; }
     if ($("verdict").textContent.startsWith("🤫")) $("verdict").textContent = "À toi de jouer !";
+    if (attente > 900) merciReprise();   // (après un arrêt du jeu, l'arbitre remercie le public)
     S.occupe = false; boutons(true); lancerMinuteur();
   }, attente);
   return evt;
+}
+
+// L'arbitre demande le calme (une phrase tirée au hasard, pas deux fois de suite la même) ; contre un bot, « Merci » à la reprise.
+let dernierSilence = null;
+function silenceArbitre() {
+  const { id, merci } = choisirSilence(i => voix.fichiers.has(i), dernierSilence);
+  dernierSilence = id;
+  if (S && !S.duel) S.merciReprise = merci;
+  return CATALOGUE.get(id);
+}
+function merciReprise() {
+  if (!S.merciReprise) return;
+  S.merciReprise = false;
+  const ids = MERCIS_ARBITRE.filter(i => voix.fichiers.has(i));
+  if (!ids.length || Math.random() < 0.4) return;
+  const seance = S, merci = CATALOGUE.get(ids[Math.floor(Math.random() * ids.length)]);
+  voix.finiDeParler(() => { if (S === seance && !S.match.termine) voix.dire([merci]); }, 1500);
 }
 
 // ---------------------------------------------------------------- célébrations (le cri du vainqueur)

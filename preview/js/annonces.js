@@ -408,6 +408,18 @@ export function silenceAvantBalle(etat, set, rng = Math.random) {
   return true;
 }
 
+// L'arbitre demande le calme : une des 7 façons enregistrées (dispo : le fichier existe), jamais deux fois de suite la même.
+// Renvoie l'identifiant, et s'il faudra dire « Merci » à la reprise (pas si la phrase le dit déjà).
+export const SILENCES_ARBITRE = [1, 2, 3, 4, 5, 6, 7].map(n => `arbitre_silence_0${n}`);
+const AVEC_MERCI = new Set(["arbitre_silence_03", "arbitre_silence_04"]);
+export function choisirSilence(dispo, dernier = null, rng = Math.random) {
+  let ids = SILENCES_ARBITRE.filter(dispo);
+  if (ids.length > 1) ids = ids.filter(id => id !== dernier);
+  const id = ids.length ? ids[Math.floor(rng() * ids.length)] : "arbitre_silence_01";
+  return { id, merci: !AVEC_MERCI.has(id) };
+}
+export const MERCIS_ARBITRE = ["arbitre_merci_01", "arbitre_merci_02"];
+
 // Annonce du début d'un set : « Premier set. », « Set décisif. »…
 export function annonceDebutSet(match) {
   if (match.format.setsGagnants === 1) return replique("arbitre_set_unique_01");
