@@ -53,12 +53,15 @@ export const FICHIERS_STADE = {
   // Les chants de supporters « Hand-Slam » (ElevenLabs Music, créés par le porteur du projet le 3 novembre) : en entier pendant
   // la pause entre les sets et avant les grands matchs ; un extrait court pendant le match (une balle sauvée).
   hymne: "stade_hymne_01",         // l'hymne « Que vivent nos héros » (avant les finales, pendant la cérémonie du champion)
-  chant1: "stade_chant_01", chant2: "stade_chant_02", chant3: "stade_chant_03", chant4: "stade_chant_04", chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
+  chant1: "stade_chant_01", chant2: "stade_chant_02", chant3: "stade_chant_03", chant4: "stade_chant_04",
+  // Le stade au début du match (ElevenLabs Music, 4 novembre, sans instruments) : un chœur sans paroles, une clameur avec claquements.
+  debut1: "stade_debut_01", debut2: "stade_debut_02",
+  chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
 };
 
 // Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série) ;
 // « Défense ! » quand je dois sauver une balle de set ou de match.
-export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chantCourt1", "chantCourt2"];
+export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "debut1", "debut2", "chantCourt1", "chantCourt2"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
@@ -417,6 +420,17 @@ export class Ambiance {
     this.chantEnCours = son;
     this.porter(delai + b.duration);
     return this.dernierPerso ? "perso" : "habituel";
+  }
+  // Le stade pendant la présentation d'un match ordinaire (4 novembre, demande du porteur du projet) : le chœur ou la clameur, l'un
+  // après l'autre ; il baisse sous les commentaires et s'éteint quand le jeu commence (comme un chant).
+  debutMatch({ vol = 0.4, delai = 0.3 } = {}) {
+    this.arreterChant();
+    this.debutSuivant = this.debutSuivant === "debut1" ? "debut2" : "debut1";
+    const b = this.buf[this.debutSuivant] || this.buf.debut1 || this.buf.debut2, son = b && this.jouer(b, vol, true, { delai, fondu: 1.2 });
+    if (!son) return false;
+    this.chantEnCours = son;
+    this.porter(delai + b.duration);
+    return true;
   }
   // L'hymne du stade (avant une finale, pendant la cérémonie du champion) : comme un chant, il s'éteint quand le jeu reprend
   // ou quand on l'arrête (arreterChant).

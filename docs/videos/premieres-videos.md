@@ -9,6 +9,12 @@ Ordre conseillé : vidéo 1 (les commentateurs) en premier, puis 2, puis 3 (le t
 Toutes les vidéos finissent sur le logo et « Rejoins le club ! » (décision du 28 octobre).
 Les vidéos 1 et 3 existent aussi en **version animée** (28 octobre, choix du porteur du projet) : de vrais passages de l'appli filmés en action, à vitesse normale, reliés par des fondus enchaînés, avec des arrêts sur image (léger zoom, sans flash) sur les commentaires forts (`v1-monique-a-dit-anime.mp4`, 29 s ; `v3-tuto-anime.mp4`, 44 s, avec « Personnalise ta main » et le triple loop de Roland et Monique).
 
+**Refaites le 4 novembre (validées par le porteur du projet)** : nouveau son (fond de stade qui baisse sous les voix, ancien
+murmure atténué ; V1 : applaudissements, « Défense ! » sur la balle de match, hymne sur le logo ; V2 : « Ohhh » à chaque réflexe,
+« Pour les vainqueurs » sur le logo ; V3 : trompette en ouverture, applaudissements, hymne de la Carrière au logo), **plus aucun
+commentaire écrit** (on entend Roland et Monique), captures agrandies (de 16 à 40 % selon les écrans), logo de fin de la V2 agrandi.
+Fichiers : `v1-monique-a-dit-grand.mp4`, `v2-trois-reflexes-grand.mp4`, `v3-tuto-grand.mp4` (envoyés dans la conversation).
+
 ## Vidéo 1 — « Monique a dit » (`v1-monique-a-dit.mp4`, 24 s)
 Pendant un vrai match : Roland ouvre la retransmission ; Monique : « Un pur produit de l'école hongroise. Très propre. » ;
 Roland : « Il est en train de craquer sous la pression ! », Monique : « Quel mental de chips. » ; Roland : « Mesdames et

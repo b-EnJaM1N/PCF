@@ -203,6 +203,18 @@
       "salle": false,
       "vrai": true
     },
+    "stade_debut_01": {
+      "texte": "Le stade chante en chœur, sans paroles ni instruments (ElevenLabs Music, porteur du projet, 4 novembre) : ne pas régénérer.",
+      "duree": 30,
+      "salle": false,
+      "vrai": true
+    },
+    "stade_debut_02": {
+      "texte": "Clameur du stade avec claquements de mains, sans instruments (ElevenLabs Music, porteur du projet, 4 novembre) : ne pas régénérer.",
+      "duree": 30,
+      "salle": false,
+      "vrai": true
+    },
     "stade_hymne_01": {
       "texte": "Hymne « Que vivent nos héros » chanté par le stade (ElevenLabs Music, version 2 du porteur du projet, voix renforcées, 3 novembre) : ne pas régénérer.",
       "duree": 40,
