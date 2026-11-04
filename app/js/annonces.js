@@ -202,8 +202,10 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       if (evt.balleAvant && evt.balleAvant.joueur !== g && peutCommenter(3, 0.5)) {
         moment = evt.balleAvant.joueur === 0 ? "craquage" : "balle_sauvee"; ctx.quand = evt.balleAvant.type;
         if (moment === "balle_sauvee" && evt.balleAvant.type === "match" && rng() < 0.5) moment = "main_legendaire";
-      } else if (a === b && a >= 4 && etat.ecartMin <= -4 && peutCommenter(3, 0.5)) {
-        moment = "remontee"; etat.ecartMin = 0;
+      } else if (g === 0 && etat.ecartMin <= -4 && (a - b) - etat.ecartMin >= 3 && a - b >= -1 && peutCommenter(3, 0.5)) {
+        // La remontée (4 novembre : on ne l'entendait presque jamais, il fallait revenir à égalité après 4 points de retard) :
+        // mené d'au moins 4 points, je reviens à un point ou moins (ex. de 1-5 à 4-5) ; une fois par remontée.
+        moment = "remontee"; etat.ecartMin = a - b;
       } else if (g === 1 && !c.slice(0, n - 1).some(x => x.gagnant !== null) && rng() < 0.35) {   // (le tout premier point du match)
         moment = "premier_point_perdu"; ctx.premierPoint = true;
       } else if (g === 1 && !match.scoresSets.length && a === 0 && b === 3 && rng() < 0.6) {   // 0-3 d'entrée : là, c'est un mauvais départ
