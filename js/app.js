@@ -423,6 +423,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
       try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
       // Contre un bot, le coup suivant attend la fin des sifflets et de l'arbitre ; en duel, le serveur tient le temps : le jeu continue.
       if (!S.duel) S.silenceJusqu = Date.now() + (0.9 + duree * 0.8 + 3) * 1000;
+      if (!S.duel) S.arretAfficheA = Date.now() + (0.9 + duree * 0.8) * 1000;   // « Jeu arrêté » quand l'arbitre intervient
       // Des huées avec les sifflets, qui se taisent quand l'arbitre a parlé.
       ambiance.huees({ court: false, delai: 0.6, vol: 0.32, coupe: duree * 0.8 + 2.2 });
       for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
@@ -512,6 +513,7 @@ function apresPoint(evt, a, cel, rp) {
     // (si Roland ou Monique parlent encore, l'arbitre attend un peu qu'ils aient fini)
     setTimeout(() => voix.finiDeParler(() => { if (S === seance && !S.match.termine) voix.dire([silence]); }, 1500), (0.4 + coupe) * 1000);
     if (!S.duel) S.silenceJusqu = Date.now() + (0.4 + coupe + 3.5) * 1000;
+    if (!S.duel) S.arretAfficheA = Date.now() + (0.4 + coupe) * 1000;   // « Jeu arrêté » quand l'arbitre intervient
   } else if (evt.balleApres && evt.balleApres.joueur === 1 && !m.termine && !evt.finSet && !(S.defenseSet ||= new Set()).has(nSet)
     && ambiance.buf?.defense && Math.random() < 0.5) {
     // « Défense ! » : je dois sauver une balle de set ou de match, le public me pousse (une fois par set au plus ; 3 novembre).
@@ -580,8 +582,12 @@ function apresPoint(evt, a, cel, rp) {
   }
   // Après de gros sifflets, le jeu est arrêté le temps que l'arbitre rappelle le public à l'ordre (demande du porteur du projet).
   const seance = S, attente = S.duel ? 900 : Math.max(900, (S.silenceJusqu || 0) - Date.now());
-  if (attente > 900) $("verdict").textContent = "🤫 Jeu arrêté : l'arbitre rappelle le public à l'ordre…";
+  // (le texte n'apparaît qu'au moment où l'arbitre intervient, pour ne pas gâcher la surprise des sifflets ou de la trompette)
+  let repris = false;
+  if (attente > 900) setTimeout(() => { if (S === seance && !repris) $("verdict").textContent = "🤫 Jeu arrêté : l'arbitre rappelle le public à l'ordre…"; },
+    Math.max(0, (S.arretAfficheA || 0) - Date.now()));
   setTimeout(() => {
+    repris = true;
     if (S !== seance) return;
     if (S.duel) { duelReprendre(); return; }
     if ($("verdict").textContent.startsWith("🤫")) $("verdict").textContent = "À toi de jouer !";
