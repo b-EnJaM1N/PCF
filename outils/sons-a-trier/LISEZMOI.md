@@ -29,3 +29,4 @@ Chants personnalisés (ElevenLabs Music, porteur du projet, 3 novembre) : `chant
 Cri court « Allez le Ki-ro-man-cien ! » (ElevenLabs Music, 3 novembre) → `cri_perso_chiromancien_01` (balle sauvée, dans ses matchs).
 Hymne « Que vivent nos héros » (ElevenLabs Music, porteur du projet, 3 novembre) : `hymne_1.mp3`, `hymne_2.mp3` (essais : d'origine et voix renforcées).
 Chanson « Pour les vainqueurs » (Suno, forfait Pro du porteur du projet, 3 novembre) : `pour_les_vainqueurs.mp3` (1 min 33) → `stade_chant_04` (les 53 premières secondes, jusqu'à la coupure, fondu de sortie), pendant la pause entre les sets, une fois sur deux quand un chant est joué.
+Le stade au début du match (ElevenLabs Music, porteur du projet, 4 novembre, sans instruments) : `stade_en_choeur.mp3` → `stade_debut_01`, `stadium_roar.mp3` → `stade_debut_02` ; pendant la présentation d'un match ordinaire (6 fois sur 10, l'un après l'autre).
