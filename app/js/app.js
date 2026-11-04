@@ -42,7 +42,7 @@ import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerProgrammes } from "./ecran-programmes.js";
 import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
 import { installerTutos } from "./tutos.js";
-import { chantsPerso, courtsPerso, soutenu } from "./chants-perso.js";
+import { chantsPerso, courtsPerso, soutenu, clePseudo } from "./chants-perso.js";
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
@@ -535,7 +535,9 @@ function apresPoint(evt, a, cel, rp) {
     const courts = courtsPerso(joueursDuMatch()[evt.gagnant]).filter(id => ambiance.persoBuf?.[id]);   // (seulement si c'est lui qui a sauvé la balle)
     if (courts.length) ambiance.jouerPerso(courts[Math.floor(Math.random() * courts.length)], { vol: 0.7, delai: 0.4 });
     else {
-      S.chantCourt = S.chantCourt === "chantCourt1" ? "chantCourt2" : "chantCourt1";
+      // (les extraits tournent ; « Pierre, feuille, ciseaux… » en premier, 4 novembre)
+      const extraits = ["chantCourt3", "chantCourt1", "chantCourt2"].filter(c => ambiance.buf?.[c]);
+      S.chantCourt = extraits[(extraits.indexOf(S.chantCourt) + 1) % (extraits.length || 1)];
       ambiance.stade(S.chantCourt, { vol: 0.65, delai: 0.4, salle: false });
     }
   }
@@ -607,7 +609,10 @@ function silenceArbitre() {
 // ---------------------------------------------------------------- célébrations (le cri du vainqueur)
 // joueur 0 : moi ; 1 : l'adversaire (humain : son cri choisi dans sa fiche ; bot : le sien).
 const criDe = g => (g === 0 ? P.cri : OPP.humain ? criValide(OPP.fiche?.cri) : (S.criBot ||= criDuBot(OPP.id, P.cri)));
-const avDe = g => (g === 0 ? P.av : OPP.av);
+// (avec la clé de leur broderie : le pseudo brodé sur le poignet, gants-brodes.js)
+const avMoi = () => ({ ...P.av, brode: clePseudo(P.pseudo, P.numero) });
+const avAdv = () => (OPP?.humain ? { ...OPP.av, brode: clePseudo(OPP.nom, OPP.numero) } : OPP.av);
+const avDe = g => (g === 0 ? avMoi() : avAdv());
 // Le geste de victoire (boutique) : la forme de la main et son animation ; par défaut, le poing serré.
 const gesteDe = g => (g === 0 ? gesteValide(P.geste) : OPP.humain ? gesteValide(OPP.fiche?.geste) : "poing");
 const poingDe = g => { const geste = gesteDe(g); return `<span class="geste-${geste}">${avatarSVG({ ...avDe(g), symbole: GESTES[geste].symbole })}</span>`; };
@@ -834,7 +839,7 @@ function poigneeDeMain(apres) {
   const seance = S;
   if (!S || (S.duel && (!D || D.finSpeciale))) { apres(); return; }
   const ov = $("poignee"), scene = $("pmScene"), choix = $("pmChoix");
-  $("pmMoi").innerHTML = avatarSVG(P.av); $("pmAdv").innerHTML = avatarSVG(OPP.av);
+  $("pmMoi").innerHTML = avatarSVG(avMoi()); $("pmAdv").innerHTML = avatarSVG(avAdv());
   $("pmStyleMoi").textContent = ""; $("pmStyleAdv").textContent = "";
   scene.className = "pm-scene"; choix.hidden = false; $("pmTemps").hidden = false;
   choix.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === P.poignee)));
@@ -1026,8 +1031,8 @@ $("btnUne").addEventListener("click", async () => {
   const u = S?.pourUne; if (!u) return;
   const m = S.match, unSet = m.format.setsGagnants === 1;
   const sn = surnomDe(P).texte, snAdv = OPP.humain ? OPP.surnom?.texte : null;
-  const moi = { nom: nomAffiche(P), surnom: sn, legende: sn, genre: P.genre, av: avatarSVG(P.av) };
-  const adv = { nom: OPP.nom, surnom: snAdv, legende: snAdv || OPP.style, genre: OPP.genre, av: avatarSVG(OPP.av) };
+  const moi = { nom: nomAffiche(P), surnom: sn, legende: sn, genre: P.genre, av: avatarSVG(avMoi()) };
+  const adv = { nom: OPP.nom, surnom: snAdv, legende: snAdv || OPP.style, genre: OPP.genre, av: avatarSVG(avAdv()) };
   const h = histoireDuMatch(m, S.stats, moi, adv, { etape: u.etape, finale: u.finale, citations: S.citations || [], enjeu: u.enjeu });
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
   $("une").classList.add("show");
@@ -1073,6 +1078,10 @@ async function ouvrirFicheAdv(id, nom, { jouer = true } = {}) {
     $("faInfo").textContent = /🤖/.test(nom) ? "Bot en ligne" : "Joueur en ligne";
     const uid = String(id).replace(/^h:/, ""), moi = compteUI?.session()?.user?.id;
     $("faCarte").hidden = !moi || /🤖/.test(nom); $("faCarte").dataset.uid = uid;
+    // Son vrai gant (avec son pseudo brodé, s'il en a un), dès que sa fiche en ligne est arrivée (4 novembre).
+    if (!/🤖/.test(nom)) profilsEnLigne([uid]).then(([l]) => {
+      if (l && demande === ficheDemande) $("faAv").innerHTML = avatarSVG({ ...profilDepuisLigne(l).av, brode: clePseudo(l.pseudo, l.numero) });
+    }).catch(() => { /* on garde le petit bonhomme */ });
     const v = f?.v || 0, d = f?.d || 0;
     const local = v + d ? `<div class="ff-tete"><span>Toi</span><b>${v} – ${d}</b><span>${esc(court)}</span></div>` : `<p class="hint">Pas encore de duel enregistré contre ${esc(court)}.</p>`;
     $("faCorps").innerHTML = moi ? `<p class="hint">Chargement…</p>` : local;
@@ -1132,7 +1141,7 @@ function renderCarte() {
   carteT = setTimeout(async () => {
     const jeton = ++carteJeton;
     const c = carteDe(P, { niveauOfficiel: monClassement, provisoire: monClassement !== null && provisoire(mesDuelsOfficiels), surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
-    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(P.av), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur });
+    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(avMoi()), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur });
     if (jeton !== carteJeton) return;
     $("carteRarete").textContent = texteRang(c.rang);
     $("carteNotes").innerHTML = notesDe(P).map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
@@ -1155,7 +1164,7 @@ async function voirCarteDe(uid) {
   const c = carteDe(J, { niveauOfficiel: cl ? cl.points : null, provisoire: !!cl && provisoire(cl.joues), surnom: surnomDe(J).texte, titre: J.matchs ? dernierTitre(J) : "" });
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
   $("une").classList.add("show");
-  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG(J.av), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur });
+  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG({ ...J.av, brode: clePseudo(ligne.pseudo, ligne.numero) }), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur });
   await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
     fichier: "carte-de-joueur.png", alt: `Carte de joueur de ${nom} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
   return null;
@@ -1261,7 +1270,7 @@ function ouvrirFaceAFace() {
   if (S.carriere) $("foStage").textContent = S.carriere.coupe ? `🏆 ${S.carriere.etape}` : `🏅 ${CIRCUITS[S.carriere.circuit]} · ${S.carriere.etape}`;
   else if (S.contreBotRapide) $("foStage").textContent = "Partie rapide · 🤖 contre un bot";
   else if (D?.duel?.rapide) $("foStage").textContent = /🤖$/.test(OPP.nom || "") ? "Partie rapide · 🤖 contre un bot" : `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}`;
-  $("foAvMe").innerHTML = avatarSVG(P.av); $("foAvBot").innerHTML = avatarSVG(OPP.av);
+  $("foAvMe").innerHTML = avatarSVG(avMoi()); $("foAvBot").innerHTML = avatarSVG(avAdv());
   $("foNameMe").textContent = pr.joueur.nom; $("foSubMe").textContent = pr.joueur.sous; $("foRecMe").textContent = pr.joueur.bilan;
   $("foNameBot").textContent = pr.adversaire.nom; $("foSubBot").textContent = pr.adversaire.sous; $("foRecBot").textContent = pr.adversaire.bilan;
   const cellule = (texte, n, adv) => `<span class="${adv ? "adv" : ""}${n === undefined && texte.length > 3 ? " txt" : ""}"${n !== null && n !== undefined ? ` data-n="${n}"` : ""}>${esc(texte)}</span>`;
@@ -1386,9 +1395,11 @@ function presenterSpeaker() {
   } else if (S.annonces?.enjeu && ambiance.chanter({ vol: 0.5, delai: 0.3 })) {
     const l = unDe("avant_ambiance");
     if (l) av.commentaires.unshift(l);
-  } else if (Math.random() < 0.6) {
-    // Un match ordinaire : souvent, le stade chante ou gronde pendant la présentation (4 novembre, demande du porteur du projet).
-    ambiance.debutMatch({ vol: 0.4, delai: 0.3 });
+  } else if (Math.random() < 0.6 && ambiance.debutMatch({ vol: 0.4, delai: 0.3 })) {
+    // Un match ordinaire : souvent, le stade chante ou gronde pendant la présentation (4 novembre, demande du porteur du projet) ;
+    // une fois sur deux, Roland ou Monique en parlent.
+    const l = Math.random() < 0.5 ? unDe("avant_ambiance") : null;
+    if (l) av.commentaires.unshift(l);
   }
   voixIntro = setTimeout(() => { if (faceAFaceOuvert && !S.passe) voix.dire(av.commentaires); }, reduitMouvement() ? 0 : 1300);
 }
@@ -1444,8 +1455,8 @@ $("foBack").addEventListener("click", () => {
 
 // ---------------------------------------------------------------- fiche joueur
 function rafraichirAvatars() {
-  $("miniBot").innerHTML = avatarSVG(OPP.av); $("botName").textContent = OPP.nom;
-  $("miniAv").innerHTML = avatarSVG(P.av); $("pseudoMe").textContent = nomAffiche(P);
+  $("miniBot").innerHTML = avatarSVG(avAdv()); $("botName").textContent = OPP.nom;
+  $("miniAv").innerHTML = avatarSVG(avMoi()); $("pseudoMe").textContent = nomAffiche(P);
   majDecouverte();   // (la fiche a pu changer : le menu s'ouvre au fil des matchs)
 }
 
@@ -1614,7 +1625,7 @@ $("inCadre").addEventListener("change", e => { P.cadre = e.target.value in CADRE
 function renderFiche() {
   renderSurnom(); renderCarte();
   $("vitrineFiche").innerHTML = vitrineHTML() + (C ? "" : `<p class="hint">Gagne-les dans Jouer › 🏅 Carrière solo.</p>`);
-  $("pAv").innerHTML = avatarSVG(P.av);
+  $("pAv").innerHTML = avatarSVG(avMoi());
   afficherNomFiche();
   $("pTitle").textContent = dernierTitre(P);
   $("pElo").textContent = `Niveau d'entraînement : ${P.elo}`;
@@ -1684,7 +1695,7 @@ function renderFiche() {
 }
 
 function renderEditeur() {
-  $("avApercu").innerHTML = avatarSVG(P.av);             // l'aperçu reste visible pendant qu'on fait défiler les choix
+  $("avApercu").innerHTML = avatarSVG(avMoi());             // l'aperçu reste visible pendant qu'on fait défiler les choix
   const mk = (el, type, table, texte) => {
     el.innerHTML = Object.keys(table).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
@@ -1939,7 +1950,7 @@ function ouvrirCeremonie({ sur = "", titre, sous = "", coupe = "", voix: ligne =
   ov.classList.toggle("enjeu", enjeu); ov.classList.toggle("triste", triste);
   $("cerSur").textContent = sur; $("cerTitre").textContent = titre; $("cerSous").textContent = sous;
   // Un titre gagné : les deux mains du champion (son gant) soulèvent la coupe, et la brandissent (3 novembre, idée du porteur du projet).
-  const champion = coupe && !enjeu && !triste, poing = () => avatarSVG({ ...P.av, symbole: "pierre", sansFond: true });
+  const champion = coupe && !enjeu && !triste, poing = () => avatarSVG({ ...avMoi(), symbole: "pierre", sansFond: true });
   $("cerCoupe").innerHTML = champion ? `<div class="cer-brandir"><span class="cer-main g">${poing()}</span>${coupe}<span class="cer-main d">${poing()}</span></div>` : coupe;
   $("cerCoupe").classList.toggle("brandie", !!champion);
   $("cerOk").textContent = enjeu ? "Au match !" : "Continuer";
