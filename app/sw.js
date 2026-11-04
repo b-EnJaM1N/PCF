@@ -13,6 +13,7 @@ const FICHIERS = [
   "essais-sons.html",
   "revue.html",
   "revue-modele.html",
+  "revue-humain-trop-humain.html",
   "revue-ouverture-feinte-contre-feinte.html",
   "revue-perdre-contre-un-debutant.html",
   "revue-precis-des-ouvertures.html",
