@@ -53,12 +53,12 @@ export const FICHIERS_STADE = {
   // Les chants de supporters « Hand-Slam » (ElevenLabs Music, créés par le porteur du projet le 3 novembre) : en entier pendant
   // la pause entre les sets et avant les grands matchs ; un extrait court pendant le match (une balle sauvée).
   hymne: "stade_hymne_01",         // l'hymne « Que vivent nos héros » (avant les finales, pendant la cérémonie du champion)
-  chant1: "stade_chant_01", chant2: "stade_chant_02", chant3: "stade_chant_03", chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
+  chant1: "stade_chant_01", chant2: "stade_chant_02", chant3: "stade_chant_03", chant4: "stade_chant_04", chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
 };
 
 // Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série) ;
 // « Défense ! » quand je dois sauver une balle de set ou de match.
-export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chantCourt1", "chantCourt2"];
+export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chantCourt1", "chantCourt2"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
@@ -392,6 +392,7 @@ export class Ambiance {
   // perso : les chants personnalisés des joueurs du match (chants-perso.js) : s'ils sont prêts, c'est eux qu'on chante.
   // alterner : une fois un chant personnalisé, une fois un chant habituel (la pause entre les sets).
   // Renvoie « perso », « habituel » ou false (rien de prêt).
+  // (pendant la pause entre les sets, alterner : une fois sur deux, « Pour les vainqueurs », chant4 ; 4 novembre, choix du porteur du projet)
   chanter({ vol = 0.55, delai = 0.6, perso = [], alterner = false } = {}) {
     this.arreterChant();
     let persos = perso.filter(id => this.persoBuf?.[id]);
@@ -403,9 +404,13 @@ export class Ambiance {
       b = this.persoBuf[this.persoSuivant];
     } else {
       // (les chants entiers tournent : 1, 2, 3, puis on recommence ; le 3, « Let's go, Hand-Slam », ajouté le 3 novembre)
-      const chants = ["chant1", "chant2", "chant3"].filter(c => this.buf[c]);
-      this.chantSuivant = chants[(chants.indexOf(this.chantSuivant) + 1) % (chants.length || 1)];
-      b = this.buf[this.chantSuivant];
+      if (alterner && this.buf.chant4 && !this.vainqueursJoue) { this.vainqueursJoue = true; b = this.buf.chant4; }
+      else {
+        this.vainqueursJoue = false;
+        const chants = ["chant1", "chant2", "chant3"].filter(c => this.buf[c]);
+        this.chantSuivant = chants[(chants.indexOf(this.chantSuivant) + 1) % (chants.length || 1)];
+        b = this.buf[this.chantSuivant];
+      }
     }
     const son = b && this.jouer(b, vol, true, { delai, fondu: 1.5 });
     if (!son) return false;
