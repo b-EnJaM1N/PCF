@@ -464,6 +464,19 @@ export const MOMENTS = {
     { r: "d", t: "On ne s'entend plus. C'est presque agréable." },
     { r: "d", t: "Autant de bruit pour trois signes. J'adore ce sport." },
     { r: "c", t: "Quelle ferveur ! On se croirait en finale de Coupe du monde !" },
+    // (4 novembre, choisies par le porteur du projet : aussi au début d'un match ordinaire quand le stade chante)
+    { r: "c", t: "Les supporters sont chauds bouillants aujourd'hui !" },
+    { r: "c", t: "Les supporters se sont déplacés en masse, et ça s'entend !" },
+    { r: "c", t: "Chaude ambiance ce soir dans les gradins !" },
+    { r: "c", t: "Les tribunes sont pleines à craquer ! Quel accueil pour les joueurs !" },
+    { r: "c", t: "Ça chante dans tous les coins du stade ! Les joueurs vont avoir des frissons !" },
+    { r: "c", t: "Le virage est en feu, et on n'a pas encore joué un seul point !" },
+    { r: "c", t: "Les supporters donnent de la voix avant même le premier signe !" },
+    { r: "d", t: "Beaucoup d'énergie dans les tribunes. Espérons qu'il en reste sur le court." },
+    { r: "d", t: "Ils ont plus de souffle que certains joueurs." },
+    { r: "d", t: "Le public est prêt. Les joueurs, on verra." },
+    { r: "d", t: "Ça chante faux, mais avec conviction." },
+    { r: "d", t: "Tout ce monde pour trois signes. J'en suis presque émue." },
   ],
   // Un joueur a ses chants de supporters personnalisés (chants-perso.js) : dit au début de ses matchs, pendant son chant
   // (3 novembre, répliques validées par le porteur du projet). « Il » : le joueur que le public soutient.
