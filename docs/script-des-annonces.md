@@ -1365,3 +1365,5 @@ Fabriqués par le code en attendant. Un vrai enregistrement portant ce nom les r
 | `stade_sifflet_01.mp3` | undefined |
 | `public_huees_01.mp3` | undefined |
 | `public_huees_02.mp3` | undefined |
+| `public_bronca_01.mp3` | undefined |
+| `public_bronca_02.mp3` | undefined |
