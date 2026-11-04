@@ -248,14 +248,15 @@ export class Ambiance {
   }
 
   // fondu : le son monte en douceur pendant tant de secondes (il sort de la foule au lieu d'arriver d'un coup).
-  jouer(buffer, vol, echo, { delai = 0, vitesse = 1, salle = true, fondu = 0 } = {}) {
+  // depuis : commencer le son à tant de secondes (un extrait pris au milieu d'un chant).
+  jouer(buffer, vol, echo, { delai = 0, vitesse = 1, salle = true, fondu = 0, depuis = 0 } = {}) {
     const ctx = this.ctx; if (!ctx || !buffer) return null;
     try {
       const src = ctx.createBufferSource(); src.buffer = buffer; src.playbackRate.value = vitesse;
       const g = ctx.createGain(); g.gain.value = vol;
       if (fondu > 0) { const t = ctx.currentTime + delai; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + fondu); }
       src.connect(g); g.connect(salle ? this.salle : this.master); if (echo) g.connect(this.echo);
-      src.start(ctx.currentTime + delai);
+      src.start(ctx.currentTime + delai, depuis);
       return { src, g };
     } catch { return null; /* un son raté ne doit jamais bloquer le match */ }
   }
@@ -436,6 +437,21 @@ export class Ambiance {
     if (!son) return false;
     this.chantEnCours = son;
     this.porter(delai + b.duration);
+    return true;
+  }
+  // Pendant le match, de temps en temps entre deux points (4 novembre, demande du porteur du projet : des supporters plus présents) :
+  // quelques secondes prises au hasard dans les chants de la pause et du début de match, qui sortent de la foule puis s'éteignent.
+  // Ils continuent sous l'échange (comme un vrai public) et baissent sous les commentaires.
+  extraitMatch({ vol = 0.38, delai = 0.6, duree = 7 } = {}) {
+    const chants = ["chant5", "debut1", "chant1", "chant4", "debut2", "chant2", "chant3"].filter(c => this.buf[c]);
+    if (!chants.length) return false;
+    this.extraitSuivant = chants[(chants.indexOf(this.extraitSuivant) + 1) % chants.length];
+    const b = this.buf[this.extraitSuivant], marge = Math.max(0, b.duration - duree - 2.5);
+    const depuis = Math.min(marge, 1 + Math.random() * Math.max(0, marge - 1));
+    const son = this.jouer(b, vol, true, { delai, fondu: 1.2, depuis });
+    if (!son) return false;
+    this.porter(delai + duree);
+    try { son.g.gain.setTargetAtTime(0, this.ctx.currentTime + delai + duree - 1, 0.5); son.src.stop(this.ctx.currentTime + delai + duree + 3); } catch { /* rien */ }
     return true;
   }
   // L'hymne du stade (avant une finale, pendant la cérémonie du champion) : comme un chant, il s'éteint quand le jeu reprend
