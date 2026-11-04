@@ -54,14 +54,16 @@ export const FICHIERS_STADE = {
   // la pause entre les sets et avant les grands matchs ; un extrait court pendant le match (une balle sauvée).
   hymne: "stade_hymne_01",         // l'hymne « Que vivent nos héros » (avant les finales, pendant la cérémonie du champion)
   chant1: "stade_chant_01", chant2: "stade_chant_02", chant3: "stade_chant_03", chant4: "stade_chant_04",
+  chant5: "stade_chant_05",   // « Pierre, feuille, ciseaux, hissez haut le drapeau ! » (ElevenLabs Music, porteur du projet, 4 novembre)
   // Le stade au début du match (ElevenLabs Music, 4 novembre, sans instruments) : un chœur sans paroles, une clameur avec claquements.
   debut1: "stade_debut_01", debut2: "stade_debut_02",
   chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
+  chantCourt3: "stade_chant_court_03",   // (les 7 premières secondes de « Pierre, feuille, ciseaux… », 4 novembre)
 };
 
 // Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série) ;
 // « Défense ! » quand je dois sauver une balle de set ou de match.
-export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "debut1", "debut2", "chantCourt1", "chantCourt2"];
+export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "debut1", "debut2", "chantCourt1", "chantCourt2", "chantCourt3"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
@@ -406,11 +408,12 @@ export class Ambiance {
       this.persoSuivant = persos[(persos.indexOf(this.persoSuivant) + 1) % persos.length];
       b = this.persoBuf[this.persoSuivant];
     } else {
-      // (les chants entiers tournent : 1, 2, 3, puis on recommence ; le 3, « Let's go, Hand-Slam », ajouté le 3 novembre)
+      // (les chants entiers tournent : 5, 1, 2, 3, puis on recommence ; le 3, « Let's go, Hand-Slam », ajouté le 3 novembre ; le 5,
+        // « Pierre, feuille, ciseaux… », le 4 novembre)
       if (alterner && this.buf.chant4 && !this.vainqueursJoue) { this.vainqueursJoue = true; b = this.buf.chant4; }
       else {
         this.vainqueursJoue = false;
-        const chants = ["chant1", "chant2", "chant3"].filter(c => this.buf[c]);
+        const chants = ["chant5", "chant1", "chant2", "chant3"].filter(c => this.buf[c]);
         this.chantSuivant = chants[(chants.indexOf(this.chantSuivant) + 1) % (chants.length || 1)];
         b = this.buf[this.chantSuivant];
       }
