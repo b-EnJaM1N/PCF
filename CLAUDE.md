@@ -9,6 +9,7 @@
 ## Façon de travailler
 - On travaille sur la branche indiquée par la session, on pousse, puis on donne le lien de test https://handslam.fr/preview/ et on ouvre une demande de fusion (dépôt b-EnJaM1N/PCF). Il valide lui-même la fusion → version officielle https://handslam.fr/.
 - Après une fusion, repartir de `origin/main` (même nom de branche). Toujours `git fetch` pour vérifier si la fusion a eu lieu avant de lui demander de valider.
+- Le robot « Voix » (enregistrement des répliques avec ElevenLabs) : Claude le lance lui-même (décision du 4 novembre), sur la branche de la session, en annonçant les répliques et les crédits estimés ; pour un gros lot (plus de 1 000 crédits environ), lui demander d'abord.
 - Avant de pousser : `npm test` (tests de l'appli). Les tests de la base (`tests/base-de-donnees/lancer.sh`) demandent un PostgreSQL local. Après un changement de répliques : `npm run script-voix`.
 - Tout nouveau fichier de l'appli doit être ajouté à la liste de `app/sw.js` (un test le vérifie).
 - L'appli : JavaScript sans étape de compilation (`app/`), base et serveur : Supabase (`supabase/`, étapes SQL numérotées + LISEZMOI.md), fonction « Notifier » (N majuscule).
