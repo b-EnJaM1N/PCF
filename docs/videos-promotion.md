@@ -77,3 +77,16 @@ Préparées le 8 octobre 2026. Format vertical, 15 à 40 secondes, **son activé
 - **Répondre aux commentaires**, surtout ceux qui disent « c'est du hasard » : c'est l'occasion d'une nouvelle vidéo.
 - **Regarder ce qui marche** après 2 semaines (vues, partages) et refaire plus de vidéos du type qui marche le mieux.
 - Les vidéos peuvent être publiées **dès maintenant** en renvoyant vers https://handslam.fr, puis vers le Play Store quand l'appli y sera.
+
+## Avec le nouveau son (4 novembre)
+Le son de l'appli a changé depuis les premières vidéos (fond de stade, chants « Hand-Slam », hymne, « Pour les vainqueurs »,
+sifflets et arbitre, trompette et « Olé », « Défense ! ») : les 3 vidéos prêtes (`docs/videos/premieres-videos.md`) sont à
+rafraîchir (même image, son refait par Claude à partir des fichiers de l'appli). Nouvelles idées :
+1. **« Silence, s'il vous plaît »** (12 s) : balle de match, la trompette, le stade qui chante, l'arbitre qui calme tout le monde,
+   le jeu arrêté. Texte : « On est sur un jeu de chifoumi. »
+2. **Le KO du smash** (8 s) : smash gagnant, écran flou, « Sonné », la clameur.
+3. **« Le chifoumi a son hymne »** (20 s) : la cérémonie du champion de la carrière, la coupe brandie pendant l'hymne.
+4. **« Défense ! »** (15 s) : balle de match contre moi, le public crie « Défense ! », je la sauve, Roland s'emballe.
+5. **La pause entre les sets** (15 s) : « Pendant la pause, le public chante » sur « Pour les vainqueurs ».
+6. **« Ton pseudo chanté par le stade »** (15 s, plus tard) : un chant personnalisé (avec l'accord du joueur).
+Ordre conseillé autour de la sortie : V1 rafraîchie le jour J, puis « Silence, s'il vous plaît », puis le KO du smash.
