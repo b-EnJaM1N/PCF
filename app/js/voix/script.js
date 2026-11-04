@@ -54,6 +54,15 @@ const ARBITRE = {
   arbitre_les_joueurs_sont_prets_01: "Les joueurs sont prêts. Premier set.",
   arbitre_troisieme_et_dernier_set_01: "Troisième et dernier set.",
   arbitre_silence_01: "Silence, s'il vous plaît.",
+  // D'autres façons de demander le calme (4 novembre, choix du porteur du projet), tirées au hasard ; puis « Merci » à la reprise.
+  arbitre_silence_02: "Mesdames et messieurs, s'il vous plaît.",
+  arbitre_silence_03: "S'il vous plaît… Merci.",
+  arbitre_silence_04: "Un peu de silence, s'il vous plaît. Merci.",
+  arbitre_silence_05: "Mesdames et messieurs, les joueurs sont prêts.",
+  arbitre_silence_06: "Merci de respecter les joueurs.",
+  arbitre_silence_07: "S'il vous plaît, pas pendant le point.",
+  arbitre_merci_01: "Merci.",
+  arbitre_merci_02: "Merci, mesdames et messieurs.",
   arbitre_temps_01: "Temps.",
   arbitre_coup_joue_d_office_01: "Coup joué d'office.",
   // La réserve de temps épuisée (28 octobre) : avertissement, puis point de pénalité.
