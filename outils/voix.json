@@ -164,29 +164,8 @@
       "tons": []
     }
   },
-  "stabilites": {
-    "_explication": "Facultatif : la stabilité de la voix pour une réplique précise (0 = libre, 0,5 = naturel, 1 = très régulier) ; sinon celle du rôle. 4 novembre : l'arbitre en « naturel » pour suivre l'indication de ton.",
-    "arbitre_huees_01": 0.5,
-    "arbitre_silence_02": 0.5,
-    "arbitre_silence_03": 0.5,
-    "arbitre_silence_04": 0.5,
-    "arbitre_silence_05": 0.5,
-    "arbitre_silence_06": 0.5,
-    "arbitre_silence_07": 0.5,
-    "arbitre_merci_01": 0.5,
-    "arbitre_merci_02": 0.5
-  },
   "textes": {
     "_explication": "Texte pour la voix d'une réplique, quand il doit être différent du texte affiché (prononciation, autre indication de jeu). Clé : l'identifiant de la réplique.",
-    "arbitre_huees_01": "[calm] [firm and authoritative, like a tennis chair umpire speaking into the microphone to a noisy crowd, unhurried, not angry] Je vous demande de vous arrêter.",
-    "arbitre_silence_02": "[calm] [polite but firm, like a tennis chair umpire speaking softly into the microphone, unhurried] Mesdames et messieurs, s'il vous plaît.",
-    "arbitre_silence_03": "[calm] [polite but firm, like a tennis chair umpire speaking softly into the microphone, unhurried] S'il vous plaît… Merci.",
-    "arbitre_silence_04": "[calm] [polite but firm, like a tennis chair umpire speaking softly into the microphone, unhurried] Un peu de silence, s'il vous plaît. Merci.",
-    "arbitre_silence_05": "[calm] [polite but firm, like a tennis chair umpire speaking softly into the microphone, unhurried] Mesdames et messieurs, les joueurs sont prêts.",
-    "arbitre_silence_06": "[calm] [polite but firm, like a tennis chair umpire speaking softly into the microphone, unhurried] Merci de respecter les joueurs.",
-    "arbitre_silence_07": "[calm] [polite but firm, like a tennis chair umpire speaking softly into the microphone, unhurried] S'il vous plaît, pas pendant le point.",
-    "arbitre_merci_01": "[softly] [like a tennis chair umpire into the microphone, once the crowd is quiet] Merci.",
-    "arbitre_merci_02": "[softly] [like a tennis chair umpire into the microphone, once the crowd is quiet] Merci, mesdames et messieurs.",
     "commentateur_lecture_reussie_03_pierre": "[frantic] [screaming at the top of his lungs like a South American football commentator, completely losing control] SECOND POTEAU !!! LA PIÈÈÈÈÈÈÈRRE !!! LA PIERRE !!!",
     "commentateur_lecture_reussie_03_ciseaux": "[frantic] [screaming at the top of his lungs like a South American football commentator, completely losing control] SECOND POTEAU !!! LES CISÔÔÔÔÔÔÔ !!! LES CISEAUX !!!",
     "commentateur_lecture_reussie_03_feuille": "[frantic] [screaming at the top of his lungs like a South American football commentator, completely losing control] SECOND POTEAU !!! LA FEUIIIIIIIILLE !!! LA FEUILLE !!!",

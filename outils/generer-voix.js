@@ -53,7 +53,7 @@ async function generer(r, cle) {
   const reponse = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${role.voice_id}?output_format=${config.format}`, {
     method: "POST",
     headers: { "xi-api-key": cle, "content-type": "application/json", accept: "audio/mpeg" },
-    body: JSON.stringify({ text: texteVoix(r), model_id: config.modele, language_code: "fr", voice_settings: { stability: config.stabilites?.[r.id] ?? role.stability } }),
+    body: JSON.stringify({ text: texteVoix(r), model_id: config.modele, language_code: "fr", voice_settings: { stability: role.stability } }),
   });
   if (!reponse.ok) throw new Error(`${r.id} : erreur ${reponse.status} ${(await reponse.text()).slice(0, 300)}`);
   writeFileSync(new URL(`${r.id}.mp3`, dossier), Buffer.from(await reponse.arrayBuffer()));
