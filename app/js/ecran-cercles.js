@@ -8,6 +8,7 @@ import { avatarSVG, FONDS } from "./avatar.js";
 import { DIVISIONS, texteDivision, divisionDe, pointPresence, textePresence, parPresence } from "./social-logique.js";
 import { EMBLEMES, blasonSVG, normaliserBlason, blasonParDefaut, erreurNomCercle, lienCercle, codeCercleDepuisAdresse, rang, CLASSEMENT_DEPART, texteNiveau, texteCalibrage, provisoire } from "./social-logique.js";
 import { lire, ecrire } from "./stockage.js";
+import { clePseudo } from "./chants-perso.js";
 import { installerTournois } from "./ecran-tournois.js";
 import { championDuCercle } from "./tournoi-logique.js";
 import { profils } from "./duel-serveur.js";
@@ -211,7 +212,7 @@ export function installerCercles(ctx) {
     const a = amis.find(x => x.id === id); if (!a) return;
     amiOuvert = id;
     montrer("socAmi");
-    $("aAvatar").innerHTML = avatarSVG(a.avatar || {});
+    $("aAvatar").innerHTML = avatarSVG({ ...(a.avatar || {}), brode: clePseudo(a.pseudo, a.numero) });   // (avec son pseudo brodé, s'il en a un)
     $("aNom").innerHTML = `${esc(a.drapeau || "")} ${nomComplet(a)}`;
     $("aInfo").textContent = `${textePresence(a)}Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`;
     $("aStats").innerHTML = `<p class="hint">Chargement…</p>`; dire("aMsg", "");
