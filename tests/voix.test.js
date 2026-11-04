@@ -72,8 +72,8 @@ test("attendre la fin des commentaires (avant la poignée de main) : tout de sui
   } finally { globalThis.Audio = avant; }
 });
 
-test("l'arbitre dit à voix haute « Je vous demande de vous arrêter » après les sifflets", async () => {
+test("l'arbitre dit à voix haute ses demandes de calme", async () => {
   const { ditAVoixHaute } = await import("../app/js/voix/lecteur.js");
-  assert.ok(ditAVoixHaute(CATALOGUE.get("arbitre_huees_01")));
+  assert.ok(ditAVoixHaute(CATALOGUE.get("arbitre_silence_06")));
   assert.ok(!ditAVoixHaute(CATALOGUE.get("arbitre_poignee_franche_01")), "ses autres annonces restent écrites");
 });

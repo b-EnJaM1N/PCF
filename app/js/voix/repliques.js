@@ -389,7 +389,7 @@ export const MOMENTS = {
   // (« domination », « Je suis ton père », dit avant le match quand l'adversaire dominait nos face-à-face : retiré le 2 novembre,
   // à la demande du porteur du projet)
   // (« Je vous demande de vous arrêter », de Monique, est retirée le 28 octobre : c'est désormais l'arbitre qui le dit, après
-  // les sifflets du public : arbitre_huees_01)
+  // les sifflets du public ; retirée aussi chez lui le 4 novembre : il demande le calme)
   // La mémoire du dernier match entre les deux mêmes joueurs (28 octobre, idée du porteur du projet) : dite avant le match,
   // une fois de temps en temps (annonces.js, memoireAvantMatch). « Il » : le joueur dont on parle (voir chaque moment).
   // L'ouverture de l'adversaire au dernier match (par signe : celui qu'il avait joué en premier).
