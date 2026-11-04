@@ -425,8 +425,9 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
       // Contre un bot, le coup suivant attend la fin des sifflets et de l'arbitre ; en duel, le serveur tient le temps : le jeu continue.
       if (!S.duel) S.silenceJusqu = Date.now() + (0.9 + duree * 0.8 + 3) * 1000;
       if (!S.duel) S.arretAfficheA = Date.now() + (0.9 + duree * 0.8) * 1000;   // « Jeu arrêté » quand l'arbitre intervient
-      // Des huées avec les sifflets, qui se taisent quand l'arbitre a parlé.
-      ambiance.huees({ court: false, delai: 0.6, vol: 0.32, coupe: duree * 0.8 + 2.2 });
+      // La bronca (sifflets et huées de tout le stade) avec les sifflets, qui se tait quand l'arbitre a parlé (4 novembre : plus forte
+      // que les anciennes huées, demande du porteur du projet).
+      ambiance.bronca({ delai: 0.6, vol: 0.45, coupe: duree * 0.8 + 2.2 });
       for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
       const seance = S, calme = silenceArbitre();
       setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([calme]); }, (0.9 + duree * 0.8) * 1000);
