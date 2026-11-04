@@ -1,3 +1,4 @@
+import { BRODERIES, broderieSVG } from "./gants-brodes.js";
 // Avatar : une main stylisée (pas de photo), personnalisable.
 // Le symbole est au choix : poing fermé (Pierre), main ouverte (Feuille) ou V de la victoire (Ciseaux) ;
 // les gestes de victoire (boutique) ajoutent le doigt levé (« index ») et le pouce levé (« pouce »).
@@ -96,7 +97,8 @@ function accessoires(a, nue = false) {
 export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
   const cle = a.poignet in POIGNETS ? a.poignet : "rouge";
-  const id = "av" + (++n), ink = "rgba(0,0,0,.22)", gm = nue ? "uni" : a.gantMotif;   // (pas de motif de gant sur la peau)
+  const id = "av" + (++n), ink = "rgba(0,0,0,.22)", gm = nue ? "uni" : a.gantMotif;
+  const brode = !nue && BRODERIES[a.brode];   // (le pseudo brodé sur le poignet : gants-brodes.js ; pas sur la main nue)   // (pas de motif de gant sur la peau)
   // Gant rayé, à pois ou bicolore : on le remplit avec un motif SVG.
   const remplissage = {
     rayures: `<pattern id="${id}g" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="8" height="8" fill="${gant}"/><rect width="3" height="8" fill="${poignet}"/></pattern>`,
@@ -146,9 +148,10 @@ export function avatarSVG(a) {
     <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath>${remplissage}${poignetDef}${fondDef}</defs>
     ${a.sansFond ? "" : `<circle cx="50" cy="50" r="48" fill="${fillFond}"/>${decorFond}${motif}
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
-    ${nue ? "" : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
+    ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
+    <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     <rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}
-    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${nue ? "</g>" : ""}
+    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}
   </svg>`;
 }
 
