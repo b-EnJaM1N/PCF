@@ -15,6 +15,7 @@ const FICHIERS = [
   "revue-modele.html",
   "revue-humain-trop-humain.html",
   "revue-ouverture-feinte-contre-feinte.html",
+  "revue-petit-atlas-des-ecoles.html",
   "revue-perdre-contre-un-debutant.html",
   "revue-precis-des-ouvertures.html",
   "manifest.webmanifest",
