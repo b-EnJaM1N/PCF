@@ -1078,6 +1078,10 @@ async function ouvrirFicheAdv(id, nom, { jouer = true } = {}) {
     $("faInfo").textContent = /🤖/.test(nom) ? "Bot en ligne" : "Joueur en ligne";
     const uid = String(id).replace(/^h:/, ""), moi = compteUI?.session()?.user?.id;
     $("faCarte").hidden = !moi || /🤖/.test(nom); $("faCarte").dataset.uid = uid;
+    // Son vrai gant (avec son pseudo brodé, s'il en a un), dès que sa fiche en ligne est arrivée (4 novembre).
+    if (!/🤖/.test(nom)) profilsEnLigne([uid]).then(([l]) => {
+      if (l && demande === ficheDemande) $("faAv").innerHTML = avatarSVG({ ...profilDepuisLigne(l).av, brode: clePseudo(l.pseudo, l.numero) });
+    }).catch(() => { /* on garde le petit bonhomme */ });
     const v = f?.v || 0, d = f?.d || 0;
     const local = v + d ? `<div class="ff-tete"><span>Toi</span><b>${v} – ${d}</b><span>${esc(court)}</span></div>` : `<p class="hint">Pas encore de duel enregistré contre ${esc(court)}.</p>`;
     $("faCorps").innerHTML = moi ? `<p class="hint">Chargement…</p>` : local;
