@@ -203,6 +203,12 @@
       "salle": false,
       "vrai": true
     },
+    "stade_chant_05": {
+      "texte": "Chant de supporters « Pierre, feuille, ciseaux, hissez haut le drapeau ! » a cappella, avec claquements de mains (ElevenLabs Music, paroles du porteur du projet, 4 novembre) : ne pas régénérer.",
+      "duree": 30,
+      "salle": false,
+      "vrai": true
+    },
     "stade_debut_01": {
       "texte": "Le stade chante en chœur, sans paroles ni instruments (ElevenLabs Music, porteur du projet, 4 novembre) : ne pas régénérer.",
       "duree": 30,
