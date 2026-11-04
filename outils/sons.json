@@ -197,6 +197,12 @@
       "salle": false,
       "vrai": true
     },
+    "stade_chant_04": {
+      "texte": "Chanson « Pour les vainqueurs » (Suno, forfait Pro du porteur du projet, 3 novembre), les 53 premières secondes avec un fondu : ne pas régénérer.",
+      "duree": 53.2,
+      "salle": false,
+      "vrai": true
+    },
     "stade_hymne_01": {
       "texte": "Hymne « Que vivent nos héros » chanté par le stade (ElevenLabs Music, version 2 du porteur du projet, voix renforcées, 3 novembre) : ne pas régénérer.",
       "duree": 40,

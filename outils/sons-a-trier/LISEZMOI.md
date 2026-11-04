@@ -28,3 +28,4 @@ Chant n° 3 « Let's go, Hand-Slam » (ElevenLabs Music, porteur du projet, 3 no
 Chants personnalisés (ElevenLabs Music, porteur du projet, 3 novembre) : `chant_chiromancien_01..03` → `chant_perso_chiromancien_01..03`, chantés seulement dans les matchs de Le Chiromancien#6047 (`app/js/chants-perso.js`).
 Cri court « Allez le Ki-ro-man-cien ! » (ElevenLabs Music, 3 novembre) → `cri_perso_chiromancien_01` (balle sauvée, dans ses matchs).
 Hymne « Que vivent nos héros » (ElevenLabs Music, porteur du projet, 3 novembre) : `hymne_1.mp3`, `hymne_2.mp3` (essais : d'origine et voix renforcées).
+Chanson « Pour les vainqueurs » (Suno, forfait Pro du porteur du projet, 3 novembre) : `pour_les_vainqueurs.mp3` (1 min 33) → `stade_chant_04` (les 53 premières secondes, jusqu'à la coupure, fondu de sortie), pendant la pause entre les sets, une fois sur deux quand un chant est joué.
