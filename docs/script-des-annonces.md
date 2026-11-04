@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (587 répliques)
+## Commentateur — vif, enthousiaste, plein de références (594 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -387,6 +387,13 @@ restent lus par la voix de synthèse.
 | `commentateur_avant_ambiance_01.mp3` | Écoutez-moi cette ambiance ! Les supporters sont déchaînés ce soir ! |
 | `commentateur_avant_ambiance_02.mp3` | Vous entendez ça, Madame ? Le public est déjà chaud bouillant ! |
 | `commentateur_avant_ambiance_03.mp3` | Quelle ferveur ! On se croirait en finale de Coupe du monde ! |
+| `commentateur_avant_ambiance_04.mp3` | Les supporters sont chauds bouillants aujourd'hui ! |
+| `commentateur_avant_ambiance_05.mp3` | Les supporters se sont déplacés en masse, et ça s'entend ! |
+| `commentateur_avant_ambiance_06.mp3` | Chaude ambiance ce soir dans les gradins ! |
+| `commentateur_avant_ambiance_07.mp3` | Les tribunes sont pleines à craquer ! Quel accueil pour les joueurs ! |
+| `commentateur_avant_ambiance_08.mp3` | Ça chante dans tous les coins du stade ! Les joueurs vont avoir des frissons ! |
+| `commentateur_avant_ambiance_09.mp3` | Le virage est en feu, et on n'a pas encore joué un seul point ! |
+| `commentateur_avant_ambiance_10.mp3` | Les supporters donnent de la voix avant même le premier signe ! |
 | `commentateur_perso_supporters_01.mp3` | Écoutez ça ! Les supporters ont fait le déplacement pour lui ! |
 | `commentateur_perso_supporters_01_f.mp3` | Écoutez ça ! Les supporters ont fait le déplacement pour elle ! |
 | `commentateur_perso_supporters_02.mp3` | Ils sont venus nombreux pour le soutenir ce soir ! Quelle ferveur ! |
@@ -710,7 +717,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (525 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (530 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -921,6 +928,11 @@ restent lus par la voix de synthèse.
 | `commentatrice_memoire_habitude_01_f.mp3` | Elle a gagné les derniers face-à-face. À ce stade, ce n'est plus un duel, c'est une habitude. |
 | `commentatrice_avant_ambiance_01.mp3` | On ne s'entend plus. C'est presque agréable. |
 | `commentatrice_avant_ambiance_02.mp3` | Autant de bruit pour trois signes. J'adore ce sport. |
+| `commentatrice_avant_ambiance_03.mp3` | Beaucoup d'énergie dans les tribunes. Espérons qu'il en reste sur le court. |
+| `commentatrice_avant_ambiance_04.mp3` | Ils ont plus de souffle que certains joueurs. |
+| `commentatrice_avant_ambiance_05.mp3` | Le public est prêt. Les joueurs, on verra. |
+| `commentatrice_avant_ambiance_06.mp3` | Ça chante faux, mais avec conviction. |
+| `commentatrice_avant_ambiance_07.mp3` | Tout ce monde pour trois signes. J'en suis presque émue. |
 | `commentatrice_perso_supporters_01.mp3` | Il a son fan-club. Je me demande combien il les paie. |
 | `commentatrice_perso_supporters_01_f.mp3` | Elle a son fan-club. Je me demande combien elle les paie. |
 | `commentatrice_perso_supporters_02.mp3` | Des supporters rien que pour lui. Il ne faudra pas les décevoir. |
