@@ -59,3 +59,6 @@ Sans doute pas, si l'on s'en tient au classement. Mais c'est peut-être le mauva
 Narcisse s'est noyé dans son image. Contre Miroir, on apprend à nager à contre-courant de la sienne. Et si, à la fin, il pousse votre cri de victoire, ne lui en voulez pas : il ne fait que vous le rendre.
 
 *Exact pour le jeu : Miroir rejoue le dernier signe 3 fois sur 4 (sinon au hasard), copie le cri et la poignée de main (`app/js/bots.js`, `celebrations.js`, `poignee.js`). Tirésias : Ovide, Métamorphoses, livre III.*
+
+## « Petit atlas des écoles » (4 novembre, en attente)
+Prêt, mais pas encore publié (décision du porteur du projet) : `docs/revue-brouillon-petit-atlas-des-ecoles.html`. Pour le publier : le remettre dans `app/` sous le nom `revue-petit-atlas-des-ecoles.html`, l'ajouter au sommaire de `app/revue.html` (rubrique « technique ») et à la liste de `app/sw.js`. Les citations sont propres à l'article (sauf l'école vénitienne et « C'est surtout inconscient »).
