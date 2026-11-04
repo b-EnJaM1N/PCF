@@ -50,10 +50,13 @@ export function aFaire({ roles, ids, refaire = false, limite = Infinity, existe 
 
 async function generer(r, cle) {
   const role = config.roles[r.role];
+  // (un rôle peut avoir son propre modèle : l'arbitre, depuis le 4 novembre, en eleven_multilingual_v2, plus régulier sur les phrases
+  // courtes ; ce modèle ne prend pas l'option de langue)
+  const modele = role.modele || config.modele, langue = modele === "eleven_multilingual_v2" ? {} : { language_code: "fr" };
   const reponse = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${role.voice_id}?output_format=${config.format}`, {
     method: "POST",
     headers: { "xi-api-key": cle, "content-type": "application/json", accept: "audio/mpeg" },
-    body: JSON.stringify({ text: texteVoix(r), model_id: config.modele, language_code: "fr", voice_settings: { stability: role.stability } }),
+    body: JSON.stringify({ text: texteVoix(r), model_id: modele, ...langue, voice_settings: { stability: role.stability } }),
   });
   if (!reponse.ok) throw new Error(`${r.id} : erreur ${reponse.status} ${(await reponse.text()).slice(0, 300)}`);
   writeFileSync(new URL(`${r.id}.mp3`, dossier), Buffer.from(await reponse.arrayBuffer()));

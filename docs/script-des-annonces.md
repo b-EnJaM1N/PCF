@@ -16,7 +16,7 @@ L'arbitre ne prononce jamais de pseudo : il nomme les joueurs par leur côté
 (jaune = le joueur, rouge = l'adversaire). Les scores rares au-delà de 20–18
 restent lus par la voix de synthèse.
 
-## Arbitre — grave et sobre (95 répliques)
+## Arbitre — grave et sobre (97 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -49,13 +49,15 @@ restent lus par la voix de synthèse.
 | `arbitre_les_joueurs_sont_prets_01.mp3` | Les joueurs sont prêts. Premier set. |
 | `arbitre_troisieme_et_dernier_set_01.mp3` | Troisième et dernier set. |
 | `arbitre_silence_01.mp3` | Silence, s'il vous plaît. |
+| `arbitre_silence_02.mp3` | Mesdames et messieurs, s'il vous plaît. |
+| `arbitre_silence_05.mp3` | Mesdames et messieurs, les joueurs sont prêts. |
+| `arbitre_silence_06.mp3` | Merci de respecter les joueurs. |
 | `arbitre_temps_01.mp3` | Temps. |
 | `arbitre_coup_joue_d_office_01.mp3` | Coup joué d'office. |
 | `arbitre_avertissement_jaune_01.mp3` | Avertissement, dépassement de temps, côté jaune. |
 | `arbitre_avertissement_rouge_01.mp3` | Avertissement, dépassement de temps, côté rouge. |
 | `arbitre_penalite_jaune_01.mp3` | Point de pénalité, côté jaune. |
 | `arbitre_penalite_rouge_01.mp3` | Point de pénalité, côté rouge. |
-| `arbitre_huees_01.mp3` | Je vous demande de vous arrêter. |
 | `arbitre_temps_mort_jaune_01.mp3` | Temps mort, côté jaune. |
 | `arbitre_temps_mort_rouge_01.mp3` | Temps mort, côté rouge. |
 | `arbitre_reprise_du_jeu_01.mp3` | Reprise du jeu. |
