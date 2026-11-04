@@ -191,6 +191,12 @@
       "salle": false,
       "vrai": true
     },
+    "stade_chant_court_03": {
+      "texte": "Extrait court (7,5 s) du chant « Pierre, feuille, ciseaux… » : ne pas régénérer.",
+      "duree": 7.5,
+      "salle": false,
+      "vrai": true
+    },
     "stade_chant_03": {
       "texte": "Chant de supporters « Let's go, Hand-Slam » n° 3 (ElevenLabs Music, créé par le porteur du projet le 3 novembre) : ne pas régénérer.",
       "duree": 28.5,

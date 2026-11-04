@@ -58,11 +58,12 @@ export const FICHIERS_STADE = {
   // Le stade au début du match (ElevenLabs Music, 4 novembre, sans instruments) : un chœur sans paroles, une clameur avec claquements.
   debut1: "stade_debut_01", debut2: "stade_debut_02",
   chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
+  chantCourt3: "stade_chant_court_03",   // (les 7 premières secondes de « Pierre, feuille, ciseaux… », 4 novembre)
 };
 
 // Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série) ;
 // « Défense ! » quand je dois sauver une balle de set ou de match.
-export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "debut1", "debut2", "chantCourt1", "chantCourt2"];
+export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "debut1", "debut2", "chantCourt1", "chantCourt2", "chantCourt3"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).

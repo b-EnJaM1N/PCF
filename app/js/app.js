@@ -535,7 +535,9 @@ function apresPoint(evt, a, cel, rp) {
     const courts = courtsPerso(joueursDuMatch()[evt.gagnant]).filter(id => ambiance.persoBuf?.[id]);   // (seulement si c'est lui qui a sauvé la balle)
     if (courts.length) ambiance.jouerPerso(courts[Math.floor(Math.random() * courts.length)], { vol: 0.7, delai: 0.4 });
     else {
-      S.chantCourt = S.chantCourt === "chantCourt1" ? "chantCourt2" : "chantCourt1";
+      // (les extraits tournent ; « Pierre, feuille, ciseaux… » en premier, 4 novembre)
+      const extraits = ["chantCourt3", "chantCourt1", "chantCourt2"].filter(c => ambiance.buf?.[c]);
+      S.chantCourt = extraits[(extraits.indexOf(S.chantCourt) + 1) % (extraits.length || 1)];
       ambiance.stade(S.chantCourt, { vol: 0.65, delai: 0.4, salle: false });
     }
   }
