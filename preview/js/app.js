@@ -1386,6 +1386,9 @@ function presenterSpeaker() {
   } else if (S.annonces?.enjeu && ambiance.chanter({ vol: 0.5, delai: 0.3 })) {
     const l = unDe("avant_ambiance");
     if (l) av.commentaires.unshift(l);
+  } else if (Math.random() < 0.6) {
+    // Un match ordinaire : souvent, le stade chante ou gronde pendant la présentation (4 novembre, demande du porteur du projet).
+    ambiance.debutMatch({ vol: 0.4, delai: 0.3 });
   }
   voixIntro = setTimeout(() => { if (faceAFaceOuvert && !S.passe) voix.dire(av.commentaires); }, reduitMouvement() ? 0 : 1300);
 }
