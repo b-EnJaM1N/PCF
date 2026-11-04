@@ -19,3 +19,14 @@ test("pas deux fois de suite la même ; sans enregistrements, l'ancienne phrase"
   assert.equal(choisirSilence(() => false).id, "arbitre_silence_01");
   assert.equal(choisirSilence(id => id === "arbitre_silence_03").merci, false);   // « S'il vous plaît… Merci. »
 });
+
+test("« Silence, s'il vous plaît » reste la plus fréquente (environ une fois sur trois)", () => {
+  let dernier = null, n = 0, autres = {};
+  let graine = 7; const rng = () => (graine = (graine * 1103515245 + 12345) % 2147483648) / 2147483648;
+  for (let i = 0; i < 3000; i++) {
+    dernier = choisirSilence(() => true, dernier, rng).id;
+    if (dernier === "arbitre_silence_01") n++; else autres[dernier] = (autres[dernier] || 0) + 1;
+  }
+  assert.ok(n > 800 && n < 1100, `${n} fois sur 3000`);
+  for (const k of Object.values(autres)) assert.ok(k < n / 2);
+});
