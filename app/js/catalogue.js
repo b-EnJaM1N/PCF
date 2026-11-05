@@ -9,7 +9,7 @@ export const RARETES = {
   legendaire: { nom: "Légendaire", prix: 5000 },
 };
 export const CATEGORIES = [
-  { id: "avatar", nom: "🧤 Avatar" },
+  { id: "avatar", nom: "🧤 Main" },
   { id: "cri", nom: "📣 Cris" },
   { id: "geste", nom: "✊ Gestes" },
   { id: "celebration", nom: "🎉 Célébrations" },
