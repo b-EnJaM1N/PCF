@@ -816,7 +816,7 @@ function finir() {
   }
   if (enCarriere && S.carriere.coupe) $("news").textContent = `🏆 ${gagne ? texteCoupe(C) : `Éliminé de la Coupe Monique-Latour.`} ${$("news").textContent}`.trim();
   else if (enCarriere && C.phase !== phaseAvant) $("news").textContent = `🏅 ${C.phase === "fin" ? `Fin de saison : ${texteBilan(C)}` : C.phase === "barrage" ? `Direction le barrage contre ${botParId(C.barrage.adv).nom} !` : C.phase === "petite" ? `Direction le match pour la 3e place contre ${botParId(C.petite.adv).nom} !` : phaseAvant === "saison" ? `Saison terminée à la ${C.place}${C.place === 1 ? "re" : "e"} place${C.poules ? " de ta poule" : ""} : ${C.phase === "playoffs" ? "qualifié pour les playoffs !" : C.phase === "maintien7" ? `le match pour le maintien contre ${botParId(C.duel.adv).nom}.` : "place au maintien."}` : ""} ${$("news").textContent}`.trim();
-  if (premierGant) $("news").textContent = `🧤 Ton premier gant t'est offert ! Change sa couleur (ou garde ta main nue) dans Ma fiche › Mon avatar. ${$("news").textContent}`.trim();
+  if (premierGant) $("news").textContent = `🧤 Ton premier gant t'est offert ! Change sa couleur (ou garde ta main nue) dans Ma fiche › Vestiaire. ${$("news").textContent}`.trim();
   // Défi avec enjeu (entre amis) : qui s'y colle, en grand.
   $("endEnjeu").hidden = !(S.duel && D?.duel?.enjeu);
   if (S.duel && D?.duel?.enjeu) $("endEnjeu").textContent = annonceEnjeu(D.duel.enjeu, gagne, OPP.nom);
@@ -1470,11 +1470,11 @@ function rafraichirAvatars() {
 // ---------------------------------------------------------------- Ma fiche : 3 sous-onglets (Ma carte, Mes stats, Palmarès)
 function ongletFiche(o) {
   document.querySelectorAll("#ficheOnglets button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.o === o)));
-  [["carte", "ficheCarte"], ["stats", "ficheStats"], ["palmares", "fichePalmares"]].forEach(([k, id]) => { $(id).hidden = k !== o; });
+  [["carte", "ficheCarte"], ["vestiaire", "ficheVestiaire"], ["stats", "ficheStats"], ["palmares", "fichePalmares"]].forEach(([k, id]) => { $(id).hidden = k !== o; });
   ecrire("ongletFiche", o);
 }
 $("ficheOnglets").addEventListener("click", e => { const b = e.target.closest("button[data-o]"); if (b) ongletFiche(b.dataset.o); });
-ongletFiche(["carte", "stats", "palmares"].includes(lire("ongletFiche", "carte")) ? lire("ongletFiche", "carte") : "carte");
+ongletFiche(["carte", "vestiaire", "stats", "palmares"].includes(lire("ongletFiche", "carte")) ? lire("ongletFiche", "carte") : "carte");
 
 // ---------------------------------------------------------------- créer son compte, facilement
 // Sans compte : un bouton bien visible dans le menu Jouer, un encadré à la fin des matchs, et « Mon compte » en haut de Ma fiche.
