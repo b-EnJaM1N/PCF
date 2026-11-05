@@ -85,6 +85,11 @@ export const MOMENTS = {
     { r: "c", t: "Il était au fond du trou, le revoilà à la surface !", f: "Elle était au fond du trou, la revoilà à la surface !" },
     { r: "c", t: "Magnifique remontada !" },
     { r: "c", t: "Encore un point ! Le doute change de camp !" },
+    // (5 novembre, répliques du porteur du projet)
+    { r: "c", t: "Il est revenu du diable Vauvert !", f: "Elle est revenue du diable Vauvert !" },
+    { r: "c", t: "Il revient de nulle part !", f: "Elle revient de nulle part !" },
+    { r: "c", t: "Nous assistons à une véritable remontada !" },
+    { r: "c", t: "C'est un retour d'entre les morts !" },
   ],
   serie_pour: [
     { r: "c", t: "Plus rien ne l'arrête !" },
@@ -115,12 +120,20 @@ export const MOMENTS = {
     { r: "c", t: "Il est en train de ridiculiser son adversaire !", f: "Elle est en train de ridiculiser son adversaire !", long: 7 },
     { r: "c", t: "C'est le Mozart du chifoumi !", long: 8 },
     { r: "c", t: "Ce n'est plus un match, c'est une légende !", long: 8 },
+    // (5 novembre, répliques du porteur du projet)
+    { r: "c", t: "Il est en feu !", f: "Elle est en feu !", long: 3 },
+    { r: "c", t: "Il martyrise son adversaire !", f: "Elle martyrise son adversaire !", long: 3 },
+    { r: "c", t: "Il est en train de produire son effort !", f: "Elle est en train de produire son effort !", long: 3 },
+    { r: "c", t: "Il est en jambes !", f: "Elle est en jambes !", long: 3 },
+    { r: "c", t: "Il est en train de nous faire un sacré numéro !", f: "Elle est en train de nous faire un sacré numéro !", long: 3 },
+    { r: "c", t: "Il creuse l'écart !", f: "Elle creuse l'écart !", long: 3 },
+    { r: "c", t: "Il dicte le tempo !", f: "Elle dicte le tempo !", long: 3 },
   ],
   serie_contre: [
     { r: "c", t: "Quelqu'un peut arrêter ça ?!" },
     { r: "c", t: "Il est dans les cordes ! Il faut réagir !", f: "Elle est dans les cordes ! Il faut réagir !", clin: "sport" },
-    { r: "c", t: "Allez, petit bonhomme !", f: "Allez, petite bonne femme !" },
-    { r: "c", t: "Oublie que t'as aucune chance, vas-y, fonce !!", clin: "cine" },
+    { r: "c", t: "Allez, petit bonhomme !", f: "Allez, petite bonne femme !", retiree: true },   // (retirée le 5 novembre)
+    { r: "c", t: "Oublie que t'as aucune chance, vas-y, fonce !!", clin: "cine", retiree: true },   // (retirée le 5 novembre)
     { r: "d", t: "Ça commence à ressembler à une correction." },
     { r: "d", t: "Muscle ton jeu, Robert. Muscle ton jeu.", clin: "sport" },
     { r: "d", t: "Jusqu'ici, tout va bien… jusqu'ici.", clin: "cine" },
@@ -147,6 +160,16 @@ export const MOMENTS = {
     { r: "c", t: "C'est une boucherie !", long: 7 },
     { r: "d", t: "Ce n'est plus un match, c'est une exécution.", long: 7 },
     { r: "c", t: "Appelez les secours, il ne répond plus !", f: "Appelez les secours, elle ne répond plus !", long: 8 },
+    // (5 novembre, répliques du porteur du projet)
+    { r: "c", t: "Il pédale avec les oreilles !", f: "Elle pédale avec les oreilles !", long: 3 },
+    { r: "c", t: "C'est terrible !", long: 3 },
+    { r: "c", t: "C'est un long chemin de croix !", long: 3 },
+    { r: "c", t: "Le calvaire se poursuit !", long: 3 },
+    { r: "c", t: "Il est à la peine !", f: "Elle est à la peine !", long: 3 },
+    { r: "d", t: "Il doit avoir le moral dans les chaussettes.", f: "Elle doit avoir le moral dans les chaussettes.", long: 3 },
+    { r: "d", t: "Il tend le bâton pour se faire battre.", f: "Elle tend le bâton pour se faire battre.", long: 3 },
+    { r: "c", t: "Et un vieux ciseau rouillé pour finir : attention au tétanos !", long: 3, seul: 1 },
+    { r: "d", t: "Ciseaux mal affûtés, échec assuré.", long: 3, seul: 1 },
   ],
   obstination: [
     { r: "c", t: ["Troisième Pierre d'affilée ! C'est audacieux !", "Troisièmes Ciseaux d'affilée ! C'est audacieux !", "Troisième Feuille d'affilée ! C'est audacieux !"] },
@@ -173,6 +196,9 @@ export const MOMENTS = {
     { r: "c", t: "Magnifique dégagement !" },
     { r: "d", t: "Il a changé. Il était temps.", f: "Elle a changé. Il était temps." },
     { r: "d", t: "Une autre idée. Enfin." },
+    // (5 novembre, répliques du porteur du projet)
+    { r: "c", t: "Il renverse complètement le jeu !", f: "Elle renverse complètement le jeu !" },
+    { r: "c", t: ["Belle transition vers la Pierre !", "Belle transition vers les Ciseaux !", "Belle transition vers la Feuille !"] },
   ],
   duel_esprits: [
     { r: "c", t: "Ils se lisent dans les pensées !" },
@@ -201,6 +227,13 @@ export const MOMENTS = {
     { r: "c", t: "Ils se regardent, ils se jaugent… Qui va craquer ?" },
     { r: "d", t: "Même signe. Une prolongation que personne n'a demandée." },
     { r: "d", t: ["Deux Pierres, égalité. Trois semaines d'étude pour ça…", "Deux Ciseaux, égalité. Trois semaines d'étude pour ça…", "Deux Feuilles, égalité. Trois semaines d'étude pour ça…"] },
+    // (5 novembre, répliques du porteur du projet)
+    { r: "c", t: "Les adversaires se jaugent !" },
+    { r: "c", t: "Ils se regardent en chiens de faïence !" },
+    { r: "c", t: "On assiste à une rencontre très fermée !" },
+    { r: "c", t: "Une véritable partie de poker menteur !" },
+    { r: "c", t: "Il y a du KO dans l'air !" },
+    { r: "d", t: "Les supporters s'impatientent." },
   ],
   // L'adversaire a lu mon réflexe.
   lecture_subie: [
@@ -295,6 +328,9 @@ export const MOMENTS = {
     { r: "d", t: "L'un a pris les commandes. À l'autre de réagir. S'il sait comment." },
     { r: "d", t: "Il faudra changer de plan. Ou en avoir un." },
     { r: "d", t: "Le rapport de force est clair. Pour l'instant." },
+    // (5 novembre, répliques du porteur du projet)
+    { r: "c", t: "Attention, je crois qu'il s'est foulé le poignet… non, rien de grave a priori.", f: "Attention, je crois qu'elle s'est foulé le poignet… non, rien de grave a priori.", rare: "true" },
+    { r: "d", t: "Il revient bien depuis la tendinite qui l'a éloigné du central pendant plusieurs mois.", f: "Elle revient bien depuis la tendinite qui l'a éloignée du central pendant plusieurs mois.", rare: "true" },
   ],
   set_decisif: [
     { r: "c", t: "Set décisif ! Tout se joue maintenant !" },
@@ -313,7 +349,7 @@ export const MOMENTS = {
     { r: "c", t: "C'est la remontada !", clin: "sport" },
   ],
   balle_match_convertie: [
-    { r: "c", t: ["Pieeeeerre ! Pierre ! Pierre !", "Ciseaaaaux ! Ciseaux ! Ciseaux !", "Feuiiiiille ! Feuille ! Feuille !"], clin: "sport" },
+    { r: "c", t: ["Pieeeeerre ! Pierre ! Pierre !", "Ciseaaaaux ! Ciseaux ! Ciseaux !", "Feuiiiiille ! Feuille ! Feuille !"], clin: "sport", retiree: true },   // (retirée le 5 novembre)
     { r: "c", t: "Il franchit la ligne les bras levés !", f: "Elle franchit la ligne les bras levés !", clin: "sport" },
     { r: "c", t: "Après avoir vu ça, on peut dormir tranquille !", clin: "sport" },
     { r: "d", t: "Échec et mat.", clin: "sport" },
@@ -537,10 +573,16 @@ export const MOMENTS = {
     { r: "c", t: "La Feuille enveloppe tout !", seul: 2 },
     { r: "c", t: "Un coup tout en douceur ! La Feuille a parlé !", seul: 2 },
     { r: "d", t: "Une feuille. Et la pierre n'y peut rien.", seul: 2 },
-    { r: "d", t: "Emballé, c'est pesé.", seul: 2 },
+    { r: "d", t: "Emballé, c'est pesé.", seul: 2, retiree: true },   // (retirée le 5 novembre, à la demande du porteur du projet)
+    // (5 novembre, répliques du porteur du projet)
+    { r: "c", t: "Il reste solide sur ses appuis !", f: "Elle reste solide sur ses appuis !", seul: 0 },
   ],
   // Trois points d'affilée gagnés avec la Pierre.
-  trois_pierres: [{ r: "d", t: "Pierre qui roule n'amasse pas mousse." }],
+  trois_pierres: [
+    { r: "d", t: "Pierre qui roule n'amasse pas mousse." },
+    // (5 novembre, répliques du porteur du projet)
+    { r: "c", t: "Il opte pour une défense en catenaccio !", f: "Elle opte pour une défense en catenaccio !" },
+  ],
   // Trois points d'affilée gagnés avec les Ciseaux, avec la Feuille.
   trois_ciseaux: [{ r: "d", t: "Trois Ciseaux, trois points. Le coiffeur est en forme." }],
   trois_feuilles: [
@@ -573,11 +615,82 @@ export const MOMENTS = {
   // Le premier point du match perdu (de temps en temps). L'ouverture Kolodrov est inventée : l'érudition de Monique.
   // « Mauvais départ » et « Ça commence mal » : seulement à 0-3 au début du match, pas dès le premier point (remarque du
   // porteur du projet, 3 novembre : perdre le premier coup n'est pas forcément un mauvais départ).
+  // Situations ajoutées le 5 novembre (répliques du porteur du projet). « Il » : moi, sauf mention.
+  // 1 ou 2 points gagnés d'entrée de match.
+  cueilli_a_froid: [
+    { r: "c", t: "Il a cueilli à froid son adversaire !", f: "Elle a cueilli à froid son adversaire !" },
+    { r: "c", t: "Il vient de climatiser l'arène !", f: "Elle vient de climatiser l'arène !" },
+  ],
+  // Égalités sur les premiers coups du match.
+  ouverture_egalites: [
+    { r: "c", t: "On est en plein round d'observation !" },
+    { r: "c", t: "Duel à haute intensité !" },
+    { r: "c", t: "Personne ne recule !" },
+  ],
+  // Un point gagné alors que l'adversaire venait d'en gagner 3 ou plus d'affilée.
+  contre_cours: [
+    { r: "c", t: "Il marque contre le cours du jeu !", f: "Elle marque contre le cours du jeu !" },
+  ],
+  // Un point repris juste après en avoir perdu un.
+  riposte: [
+    { r: "c", t: "La réponse du berger à la bergère !" },
+    { r: "c", t: "Il répond du tac au tac !", f: "Elle répond du tac au tac !" },
+    { r: "c", t: "Retour à l'envoyeur !" },
+  ],
+  // Feuille gagnante, puis Pierre gagnante.
+  cadrage: [
+    { r: "c", t: "Cadrage avec la Feuille et débordement avec la Pierre !" },
+  ],
+  // Quatre fois le même signe d'affilée.
+  quatre_meme: [
+    { r: "d", t: "Il s'enferme dans un jeu stéréotypé.", f: "Elle s'enferme dans un jeu stéréotypé." },
+    { r: "d", t: "Il est en panne d'inspiration.", f: "Elle est en panne d'inspiration." },
+  ],
+  // Revenu plusieurs fois à égalité dans le set.
+  chasse_patate: [
+    { r: "c", t: "Il est en chasse-patate !", f: "Elle est en chasse-patate !" },
+    { r: "c", t: "Il reste dans la roue de son adversaire !", f: "Elle reste dans la roue de son adversaire !" },
+  ],
+  // 8-8 (5-5 dans un set de 7).
+  money_time: [
+    { r: "c", t: "On entre dans le money time, chaque main compte !" },
+  ],
+  // Un point perdu à 8-8 (5-5 dans un set de 7).
+  rate_money_time: [
+    { r: "c", t: "Oh non, pas ça, pas maintenant !" },
+  ],
+  // Deux points d'avance pour la première fois du set.
+  le_break: [
+    { r: "c", t: "Il fait le break !", f: "Elle fait le break !" },
+  ],
+  // Gagné, gagné, perdu, perdu.
+  tout_a_refaire: [
+    { r: "c", t: "Il avait fait le plus dur, et tout est à refaire !", f: "Elle avait fait le plus dur, et tout est à refaire !" },
+  ],
+  // J'avais lu le réflexe de l'adversaire (il rejoue son signe), il a changé : point perdu.
+  faille_ratee: [
+    { r: "d", t: "Il a vu la faille, mais ça n'a pas souri.", f: "Elle a vu la faille, mais ça n'a pas souri." },
+  ],
+  // Quand rien d'autre n'est à dire (rarement) ; « varie » : mes trois derniers signes sont différents ; « mene » : je suis mené.
+  divers: [
+    { r: "c", t: "Il alterne bien son jeu !", f: "Elle alterne bien son jeu !", si: "varie" },
+    { r: "c", t: "Il varie bien son jeu !", f: "Elle varie bien son jeu !", si: "varie" },
+    { r: "c", t: "Il est en rythme, en jambes !", f: "Elle est en rythme, en jambes !" },
+    { r: "c", t: "Un enchaînement parfaitement exécuté !" },
+    { r: "c", t: "Il se bat comme un beau diable !", f: "Elle se bat comme un beau diable !", si: "mene" },
+    { r: "c", t: "Il joue juste, gros QI chi-fou-mi sur le central !", f: "Elle joue juste, gros QI chi-fou-mi sur le central !" },
+    { r: "c", t: "Le joueur affiche une très belle attitude.", f: "La joueuse affiche une très belle attitude." },
+    { r: "c", t: "Si vous n'aimez pas ça, vous n'aimez pas le chi-fou-mi !" },
+    { r: "d", t: "Il a faux, et ça lui réussit.", f: "Elle a faux, et ça lui réussit." },
+    { r: "d", t: "Le chi-fou-mi, c'est très simple et c'est très compliqué." },
+  ],
   premier_point_perdu: [
     { r: "d", t: "L'ouverture de Kolodrov, 1956… mais ça ne lui sourit pas.", clin: "sport", si: "premier_point" },
     { r: "c", t: "Premier point pour l'adversaire ! Rien n'est joué !", si: "premier_point" },
     { r: "d", t: "Un mauvais départ. Il reste du temps. Heureusement.", si: "depart_rate" },
     { r: "d", t: "Ça commence mal. On a déjà vu pire. Rarement.", si: "depart_rate" },
+    // (5 novembre, répliques du porteur du projet)
+    { r: "c", t: "Il se fait surprendre !", f: "Elle se fait surprendre !", si: "premier_point" },
   ],
   // Avant le match, parfois une seule phrase au lieu d'un dialogue : tous les matchs, les grands matchs, une revanche, entre amis.
   avant_seul: [
@@ -630,6 +743,9 @@ export const MOMENTS = {
     { r: "d", t: "La cisaille. Net et sans bavure.", seul: 1 },
     { r: "c", t: "Le rocher dévale ! Rien ne l'arrête !", seul: 0 },
     { r: "d", t: "Un rocher. L'adversaire ne s'en relèvera pas tout de suite.", seul: 0 },
+    // (5 novembre, répliques du porteur du projet)
+    { r: "c", t: "Il secoue le cocotier !", f: "Elle secoue le cocotier !", si: "apres_egalites" },
+    { r: "c", t: "Il tape du poing sur la table !", f: "Elle tape du poing sur la table !", si: "apres_egalites" },
   ],
   // Le smash de l'adversaire gagne le point : je suis sonné.
   smash_sonne: [
