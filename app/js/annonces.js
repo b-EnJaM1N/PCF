@@ -6,7 +6,7 @@
 // plupart du temps, et leurs dialogues sont réservés aux temps morts (fin de set, fin de match).
 // Ils parlent toujours du joueur côté jaune (celui qui tient le téléphone) : « il » ou « elle ».
 import { COTE, ecartRequis, pointDecisif, issueSmash } from "./regles.js";
-import { lectureReussie, indiceImprevisibilite } from "./analyse.js";
+import { lectureReussie, lectureRatee, indiceImprevisibilite } from "./analyse.js";
 import {
   replique, repliqueScore, repliquePartout, ORDINAUX, slug,
   POOLS, ligneMoment, DIALOGUES_IDS, ligneDialogue, ligneSpeaker, nbSpeaker, ligneJournaliste, CATALOGUE,
@@ -48,6 +48,7 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
 const CONDITIONS = {
   premier_point: c => c.premierPoint, depart_rate: c => c.departRate,
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, pile4: c => c.pile4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
+  apres_egalites: c => c.apresEgalites, varie: c => c.varie, mene: c => c.mene,   // (5 novembre)
   balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
   // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
@@ -167,13 +168,17 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       const d = rng() < 0.5 && dialogue(etat, "premiere_egalite", rng);
       if (d) { dialogueFin = d; etat.dernierCom = n; } else moment = "premiere_egalite";
     }
+    // Les premiers coups du match sont tous des égalités : un round d'observation (5 novembre).
+    else if ((n === 2 || n === 3) && c.slice(0, n).every(x => x.gagnant === null) && n - etat.dernierCom >= 2 && !etat.ouvertureDite && rng() < 0.6) {
+      moment = "ouverture_egalites"; etat.ouvertureDite = true;
+    }
     // (une fois par set au plus : sinon c'est le commentaire qu'on entend le plus)
-    else if ((etat.egalitesDeSuite >= 3 && etat.egalitesDeSuite <= 5) && !etat.dejaSet.has("duel_esprits") && peutCommenter(3)) {
+    else if ((etat.egalitesDeSuite >= 3 && etat.egalitesDeSuite <= 5) && !etat.dejaSet.has("duel_esprits") && peutCommenter(3) && rng() < 0.75) {   // (toujours jusqu'au 5 novembre : 3 fois sur 4, pour laisser la place aux nouvelles situations)
       moment = "duel_esprits"; ctx.cinqEgalites = etat.egalitesDeSuite === 5; etat.dejaSet.add("duel_esprits");
     }
   } else {
     etat.egalitesDeSuite = 0;
-    const g = evt.gagnant, cote = COTE[g];
+    const g = evt.gagnant, cote = COTE[g], serieAvant = { ...etat.serie };
     etat.serie = etat.serie.joueur === g ? { joueur: g, n: etat.serie.n + 1 } : { joueur: g, n: 1 };
     etat.serieMaxSet[g] = Math.max(etat.serieMaxSet[g], etat.serie.n);
 
@@ -198,6 +203,12 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       else if (!court && a === b && a >= len - 1) lignes.push(repliquePartout(a));
 
       etat.ecartMin = Math.min(etat.ecartMin, a - b);
+      // (5 novembre) les situations ajoutées : 8-8 (5-5 en sets de 7), mes égalisations dans le set, mes points décisifs
+      const seuilMT = len === 11 ? 8 : len === 7 ? 5 : null, decisifs = c.filter(x => x.gagnant !== null);
+      if (g === 0 && a === b && a >= 1) etat.egalisations = (etat.egalisations || 0) + 1;
+      const quatreMeme = n >= 4 && c.slice(n - 4).every(x => x.a === c[n - 1].a);
+      const ggpp = decisifs.length >= 4 && decisifs.slice(-4).map(x => x.gagnant).join() === "0,0,1,1";
+      const cadrage = g === 0 && decisifs.length >= 2 && decisifs[decisifs.length - 2].gagnant === 0 && decisifs[decisifs.length - 2].a === 2 && dernier.a === 0;
       const obstination = n >= 3 && c[n - 1].a === c[n - 2].a && c[n - 2].a === c[n - 3].a && (n < 4 || c[n - 4].a !== c[n - 1].a);
       if (evt.balleAvant && evt.balleAvant.joueur !== g && peutCommenter(3, 0.5)) {
         moment = evt.balleAvant.joueur === 0 ? "craquage" : "balle_sauvee"; ctx.quand = evt.balleAvant.type;
@@ -232,8 +243,33 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
         moment = "tension"; ctx.balleContre = h.joueur === 1;
       } else if (!h && pointDecisif(match) && peutCommenter(3, 0.5) && rng() < 0.5) {
         moment = "point_decisif";
-      } else if (g === 0 && etat.beauSet < 3 && etat.dernierMoment !== "beau_coup" && peutCommenter(3) && rng() < (ctx.ciseauRetourne ? 0.5 : 0.15)) {
-        moment = "beau_coup"; etat.beauSet++;   // un beau coup, selon le signe gagnant (quand rien d'autre n'est à dire)
+      } else if (g === 0 && !match.scoresSets.length && b === 0 && (a === 1 || a === 2) && decisifs.length === a && !etat.cueilliDit && n - etat.dernierCom >= 2 && rng() < 0.25) {
+        moment = "cueilli_a_froid"; etat.cueilliDit = true;   // (1 ou 2 points gagnés d'entrée de match)
+      } else if (seuilMT && a === b && a === seuilMT && !etat.dejaSet.has("money_time") && peutCommenter(2, 0.5) && rng() < 0.7) {
+        moment = "money_time"; etat.dejaSet.add("money_time");
+      } else if (seuilMT && g === 1 && a === seuilMT && b === seuilMT + 1 && peutCommenter(2, 0.5) && rng() < 0.6) {
+        moment = "rate_money_time";
+      } else if (g === 0 && serieAvant.joueur === 1 && serieAvant.n >= 3 && peutCommenter(3) && rng() < 0.3) {
+        moment = "contre_cours";   // (un point gagné alors que l'adversaire en avait gagné 3 ou plus d'affilée)
+      } else if (g === 1 && ggpp && peutCommenter(3) && rng() < 0.1) {
+        moment = "tout_a_refaire";
+      } else if (g === 1 && lectureRatee(c) && peutCommenter(5) && rng() < 0.15) {
+        moment = "faille_ratee";
+      } else if (g === 0 && a - b === 2 && !etat.dejaSet.has("le_break") && peutCommenter(3) && rng() < 0.1) {
+        moment = "le_break"; etat.dejaSet.add("le_break");
+      } else if (g === 0 && a === b && (etat.egalisations || 0) >= 3 && !etat.dejaSet.has("chasse_patate") && peutCommenter(3) && rng() < 0.6) {
+        moment = "chasse_patate"; etat.dejaSet.add("chasse_patate");
+      } else if (quatreMeme && !etat.dejaSet.has("quatre_meme") && peutCommenter(3) && rng() < 0.3) {
+        moment = "quatre_meme"; etat.dejaSet.add("quatre_meme");
+      } else if (cadrage && !etat.cadrageDit && peutCommenter(3) && rng() < 0.35) {
+        moment = "cadrage"; etat.cadrageDit = true;
+      } else if (g === 0 && serieAvant.joueur === 1 && serieAvant.n === 1 && peutCommenter(4) && rng() < 0.03) {
+        moment = "riposte";   // (un point repris juste après en avoir perdu un)
+      } else if (g === 0 && etat.beauSet < 3 && etat.dernierMoment !== "beau_coup" && peutCommenter(3) && rng() < (ctx.ciseauRetourne ? 0.5 : 0.04)) {
+        moment = "beau_coup"; etat.beauSet++;   // un beau coup, selon le signe gagnant (quand rien d'autre n'est à dire ; 0,04 au lieu de 0,15 depuis le 5 novembre, pour laisser la place aux nouvelles situations)
+      } else if (peutCommenter(6) && rng() < 0.03) {
+        // (5 novembre) quand rien d'autre n'est à dire, rarement : une réplique générale
+        moment = "divers"; ctx.varie = n >= 3 && new Set(c.slice(n - 3).map(x => x.a)).size === 3; ctx.mene = a < b;
       }
       // Sur une balle de match pour moi, parfois le dialogue « l'immortalité » plutôt qu'une réplique.
       if (moment === "tension" && !ctx.balleContre && rng() < 0.3) {
@@ -243,7 +279,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
     }
     // Le public applaudit une série de 4 points d'affilée (puis 8, 12…), mais se tait avant une balle de match.
     if (!evt.finSet && etat.serie.n % 4 === 0 && !(evt.balleApres && evt.balleApres.type === "match")) pub = "serie";
-    if (evt.finSet) { etat.ecartMin = 0; etat.serieMaxSet = [0, 0]; etat.dejaSet.clear(); etat.beauSet = 0; }
+    if (evt.finSet) { etat.ecartMin = 0; etat.serieMaxSet = [0, 0]; etat.dejaSet.clear(); etat.beauSet = 0; etat.egalisations = 0; }
   }
   // Sur une égalité, il peut aussi avoir changé de signe : on n'attend plus.
   if (evt.egalite && etat.obstine && n >= 2 && c[n - 1].a !== c[n - 2].a) etat.obstine = false;
@@ -261,6 +297,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
   // Le smash passe avant tout le reste (8 fois sur 10) : réussi (l'adversaire est sonné), sonné (le smash réussi de l'adversaire),
   // raté, bloqué (égalité), ou double. Pas sur la balle de match gagnée : le commentaire de fin de match a la place.
   const issue = issueSmash(smash, evt.gagnant);
+  ctx.apresEgalites = egalitesAvant >= 2;   // (le smash gagné juste après 2 égalités : « Il secoue le cocotier ! », 5 novembre)
   if (issue && !evt.finMatch && rng() < 0.8) {
     const smasheur = smash[0] ? 0 : 1;
     moment = smash[0] && smash[1] ? "smash_double" : issue === "gagne" ? (evt.gagnant === 0 ? "smash_reussi" : "smash_sonne")
