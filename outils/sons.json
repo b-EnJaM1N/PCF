@@ -215,6 +215,30 @@
       "salle": false,
       "vrai": true
     },
+    "stade_chant_06": {
+      "texte": "Chant de supporters n° 6 (envoyé par le porteur du projet le 5 novembre, avec un tambour) : ne pas régénérer.",
+      "duree": 10.8,
+      "salle": false,
+      "vrai": true
+    },
+    "stade_chant_07": {
+      "texte": "Chant de supporters n° 7 (envoyé par le porteur du projet le 5 novembre, avec un tambour) : ne pas régénérer.",
+      "duree": 21.2,
+      "salle": false,
+      "vrai": true
+    },
+    "stade_chant_08": {
+      "texte": "Chant de supporters n° 8 (envoyé par le porteur du projet le 5 novembre, avec un tambour) : ne pas régénérer.",
+      "duree": 14.4,
+      "salle": false,
+      "vrai": true
+    },
+    "stade_chant_09": {
+      "texte": "Chant de supporters n° 9 (envoyé par le porteur du projet le 5 novembre, avec un tambour) : ne pas régénérer.",
+      "duree": 10.9,
+      "salle": false,
+      "vrai": true
+    },
     "stade_debut_01": {
       "texte": "Le stade chante en chœur, sans paroles ni instruments (ElevenLabs Music, porteur du projet, 4 novembre) : ne pas régénérer.",
       "duree": 30,
