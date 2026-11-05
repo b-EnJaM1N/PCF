@@ -70,6 +70,14 @@ export class Suivi {
 
 // J'ai lu un réflexe de l'adversaire : il a rejoué le signe avec lequel il venait de gagner,
 // ou le même signe pour la troisième fois, et je l'ai contré. coups : ceux du match (le dernier vient d'être joué).
+// L'inverse (5 novembre) : la même situation de réflexe, j'ai joué ce qui battait son signe… et il a changé : point perdu.
+export function lectureRatee(coups) {
+  const n = coups.length;
+  if (n < 2 || coups[n - 1].gagnant !== 1) return false;
+  const [p, d] = [coups[n - 2], coups[n - 1]];
+  const reflexe = p.gagnant === 1 || (n >= 3 && coups[n - 3].b === p.b);
+  return reflexe && d.b !== p.b && (p.b + 2) % 3 === d.a;   // (Pierre 0 bat Ciseaux 1, Ciseaux 1 bat Feuille 2, Feuille 2 bat Pierre 0)
+}
 export function lectureReussie(coups) {
   const n = coups.length;
   if (n < 2 || coups[n - 1].gagnant !== 0) return false;
