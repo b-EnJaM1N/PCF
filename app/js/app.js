@@ -411,7 +411,11 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   // Le public : il reprend entre les points, « ooh » sur un point disputé ; il s'agite selon l'enjeu (intensiteMatch).
   ambiance.intensite(intensiteMatch(m)); ambiance.calmer(false);
   // (au premier point, le son est prêt : on charge les chants personnalisés des joueurs, pour la pause entre les sets)
-  if (!S.persoCharge) { S.persoCharge = true; ambiance.prechargerPerso([...persoDuMatch(), ...courtsPerso(...joueursDuMatch())]); }
+  if (!S.persoCharge) {
+    S.persoCharge = true; ambiance.prechargerPerso([...persoDuMatch(), ...courtsPerso(...joueursDuMatch())]);
+    // (les chants chargés à la demande : le prochain de chaque tour, et l'hymne si on joue un grand match ; 5 novembre)
+    ambiance.prechargerChants({ hymne: !!S.annonces?.enjeu || !!S.carriere });
+  }
   const rp = reactionsPublic(evt, egalitesAvantDernier(m.coups));
   if (rp.ooh) ambiance.ooh();
   // Après le « ooh », parfois, le public siffle et l'arbitre le rappelle à l'ordre (pas plus d'une fois en 12 heures) :
@@ -1391,7 +1395,7 @@ function presenterSpeaker() {
     const l = (POOLS[moment] || []).map(it => ligneMoment(it, { genre })).filter(x => x && voix.fichiers.has(x.id));
     return l.length ? l[Math.floor(Math.random() * l.length)] : null;
   };
-  if (S.annonces?.enjeu === "finale" && ambiance.hymne({ vol: 0.5, delai: 0.3 })) {
+  if (S.annonces?.enjeu === "finale" && ambiance.hymne({ vol: 0.5, delai: 0.3, attendre: true, encore: () => faceAFaceOuvert && !S.passe })) {
     // Avant une finale : le stade chante l'hymne « Que vivent nos héros » (3 novembre, choix du porteur du projet).
     const l = unDe("avant_ambiance");
     if (l) av.commentaires.unshift(l);
@@ -1966,7 +1970,7 @@ function ouvrirCeremonie({ sur = "", titre, sous = "", coupe = "", voix: ligne =
     `<i style="left:${hasard(0, 100).toFixed(1)}%;background:${couleurs[i % couleurs.length]};--d:${hasard(2.2, 3.6).toFixed(2)}s;--r:${hasard(0, 1.2).toFixed(2)}s;--x:${Math.round(hasard(-80, 80))}px;--t:${Math.round(hasard(360, 900))}deg"></i>`).join("");
   ov.hidden = false; $("cerOk").focus();
   // (la cérémonie du champion : l'ovation, puis le stade chante l'hymne « Que vivent nos héros », jusqu'à « Continuer »)
-  try { ambiance.initialiser(); if (triste) ambiance.reagir("ohDecu"); else if (!enjeu) { ambiance.public("ovation", 0.6); ambiance.hymne({ vol: 0.55, delai: 2.5 }); } } catch { /* sans son */ }
+  try { ambiance.initialiser(); if (triste) ambiance.reagir("ohDecu"); else if (!enjeu) { ambiance.public("ovation", 0.6); ambiance.hymne({ vol: 0.55, delai: 2.5, attendre: true }); } } catch { /* sans son */ }
   if (ligne && CATALOGUE.has(ligne)) setTimeout(() => { if (!ov.hidden) voix.dire([CATALOGUE.get(ligne)]); }, 400);
   let fini = false;
   const fermer = () => { if (fini) return; fini = true; ov.hidden = true; $("cerConfettis").innerHTML = ""; if (!enjeu && !triste) ambiance.arreterChant(); apres(); };
