@@ -33,3 +33,4 @@ Le stade au début du match (ElevenLabs Music, porteur du projet, 4 novembre, sa
 Chant « Pierre, feuille, ciseaux, hissez haut le drapeau ! » (ElevenLabs Music, paroles du porteur du projet, 4 novembre, a cappella) : `chant_pierre_feuille_ciseaux.mp3` → `stade_chant_05`, dans la rotation des chants entiers (pause entre les sets, grands matchs). Extrait court (les 7,5 premières secondes) → `stade_chant_court_03`, après une balle de set ou de match sauvée.
 
 Bronca (ElevenLabs Sound Effects, porteur du projet, 4 novembre) : `bronca_4.mp3` → `public_bronca_01`, `bronca_3.mp3` → `public_bronca_02`, amplifiées ; avec les gros sifflets, à la place des longues huées (l'une puis l'autre).
+Quatre chants de supporters (porteur du projet, 5 novembre, avec un tambour) : `chant_supporters_wa6.mp3` à `wa9.mp3` → `stade_chant_06` à `09`, dans la rotation des chants (pause entre les sets, grands matchs) et des extraits joués pendant le match.
