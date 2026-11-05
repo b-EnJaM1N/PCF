@@ -68,6 +68,12 @@ export const FICHIERS_STADE = {
 
 // Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série) ;
 // « Défense ! » quand je dois sauver une balle de set ou de match.
+// Les gros fichiers (chants entiers, hymne, stade du début de match) ne sont pas chargés au démarrage : chacun est téléchargé
+// la première fois qu'on en a besoin, et le suivant de chaque tour est préparé à l'avance (5 novembre : 6,4 Mo au premier match
+// avant, environ 2,5 Mo maintenant, pour les nouveaux joueurs en 4G).
+export const STADE_A_LA_DEMANDE = new Set(["hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "debut1", "debut2"]);
+const TOUR_PAUSE = ["chant5", "chant6", "chant1", "chant7", "chant2", "chant8", "chant3", "chant9"];
+const TOUR_EXTRAITS = ["chant6", "chant5", "chant7", "debut1", "chant8", "chant1", "chant9", "chant4", "debut2", "chant2", "chant3"];
 export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "debut1", "debut2", "chantCourt1", "chantCourt2", "chantCourt3"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
@@ -206,7 +212,7 @@ export class Ambiance {
     // Les sons de stade joués par l'appli (3 novembre : la trompette et le « Olé », vrais sons choisis par le porteur du projet).
     for (const type of STADE_JOUES) {
       const id = FICHIERS_STADE[type];
-      if (!this.fichiers.includes(id) || this.charges?.has(id)) continue;
+      if (STADE_A_LA_DEMANDE.has(type) || !this.fichiers.includes(id) || this.charges?.has(id)) continue;
       try { this.buf[type] = await charger(id); (this.charges ||= new Set()).add(id); } catch { /* sans ce son */ }
     }
     for (const [type, ids] of Object.entries(FICHIERS_REACTIONS)) {
@@ -234,6 +240,7 @@ export class Ambiance {
       }
     }
     if (this.fondVoulu) this.fond(true);   // le murmure arrive pendant le match : on le lance
+    this.preparer("debut1");   // (le stade de la présentation du tout premier match, chargé après l'essentiel)
   }
 
   activer(on) {
@@ -404,8 +411,24 @@ export class Ambiance {
   // alterner : une fois un chant personnalisé, une fois un chant habituel (la pause entre les sets).
   // Renvoie « perso », « habituel » ou false (rien de prêt).
   // (pendant la pause entre les sets, alterner : une fois sur deux, « Pour les vainqueurs », chant4 ; 4 novembre, choix du porteur du projet)
+  // Un son de stade chargé à la demande : téléchargé une seule fois (renvoie une promesse ; rien si le fichier n'existe pas).
+  preparer(type) {
+    const id = FICHIERS_STADE[type];
+    if (!this.ctx || this.buf[type] || !id || !this.fichiers?.includes(id)) return Promise.resolve(this.buf[type] || null);
+    return (this.enCours ||= {})[type] ||= fetch(`audio/${id}.mp3`).then(r => r.arrayBuffer()).then(a => this.ctx.decodeAudioData(a))
+      .then(b => { this.buf[type] = b; return b; }).catch(() => { delete this.enCours[type]; return null; });
+  }
+  disponible(type) { return !!this.fichiers?.includes(FICHIERS_STADE[type]); }
+  suivantDans(tour, courant) {
+    const t = tour.filter(k => this.disponible(k));
+    return t.length ? t[(t.indexOf(courant) + 1) % t.length] : null;
+  }
+  // Prépare le prochain son de chaque tour (pause, extraits, début de match ; l'hymne si on approche d'une finale).
+  prechargerChants({ hymne = false } = {}) {
+    for (const k of [this.suivantDans(TOUR_PAUSE, this.chantSuivant), this.suivantDans(TOUR_EXTRAITS, this.extraitSuivant),
+      this.debutSuivant === "debut1" ? "debut2" : "debut1", "chant4", hymne && "hymne"]) if (k) this.preparer(k);
+  }
   chanter({ vol = 0.55, delai = 0.6, perso = [], alterner = false } = {}) {
-    this.arreterChant();
     let persos = perso.filter(id => this.persoBuf?.[id]);
     if (alterner && persos.length && this.dernierPerso) persos = [];
     this.dernierPerso = persos.length > 0;
@@ -416,15 +439,20 @@ export class Ambiance {
     } else {
       // (les chants entiers tournent : 5, 1, 2, 3, puis on recommence ; le 3, « Let's go, Hand-Slam », ajouté le 3 novembre ; le 5,
         // « Pierre, feuille, ciseaux… », le 4 novembre)
-      if (alterner && this.buf.chant4 && !this.vainqueursJoue) { this.vainqueursJoue = true; b = this.buf.chant4; }
-      else {
-        this.vainqueursJoue = false;
-        const chants = ["chant5", "chant6", "chant1", "chant7", "chant2", "chant8", "chant3", "chant9"].filter(c => this.buf[c]);
-        this.chantSuivant = chants[(chants.indexOf(this.chantSuivant) + 1) % (chants.length || 1)];
-        b = this.buf[this.chantSuivant];
+      // (un chant pas encore téléchargé : on le prépare pour la prochaine fois, et on se tait cette fois-ci)
+      if (alterner && this.disponible("chant4") && !this.vainqueursJoue) {
+        if (!this.buf.chant4) { this.preparer("chant4"); return false; }
+        this.vainqueursJoue = true; b = this.buf.chant4;
+      } else {
+        const k = this.suivantDans(TOUR_PAUSE, this.chantSuivant);
+        if (!k) return false;
+        if (!this.buf[k]) { this.preparer(k); return false; }
+        this.vainqueursJoue = false; this.chantSuivant = k; b = this.buf[k];
       }
     }
+    this.arreterChant();
     const son = b && this.jouer(b, vol, true, { delai, fondu: 1.5 });
+    this.prechargerChants();
     if (!son) return false;
     this.chantEnCours = son;
     this.porter(delai + b.duration);
@@ -433,9 +461,12 @@ export class Ambiance {
   // Le stade pendant la présentation d'un match ordinaire (4 novembre, demande du porteur du projet) : le chœur ou la clameur, l'un
   // après l'autre ; il baisse sous les commentaires et s'éteint quand le jeu commence (comme un chant).
   debutMatch({ vol = 0.4, delai = 0.3 } = {}) {
+    const k = this.debutSuivant === "debut1" ? "debut2" : "debut1";
+    if (!this.buf[k]) { this.preparer(k); return false; }
     this.arreterChant();
-    this.debutSuivant = this.debutSuivant === "debut1" ? "debut2" : "debut1";
-    const b = this.buf[this.debutSuivant] || this.buf.debut1 || this.buf.debut2, son = b && this.jouer(b, vol, true, { delai, fondu: 1.2 });
+    this.debutSuivant = k;
+    const b = this.buf[k], son = this.jouer(b, vol, true, { delai, fondu: 1.2 });
+    this.prechargerChants();
     if (!son) return false;
     this.chantEnCours = son;
     this.porter(delai + b.duration);
@@ -445,10 +476,12 @@ export class Ambiance {
   // quelques secondes prises au hasard dans les chants de la pause et du début de match, qui sortent de la foule puis s'éteignent.
   // Ils continuent sous l'échange (comme un vrai public) et baissent sous les commentaires.
   extraitMatch({ vol = 0.38, delai = 0.6, duree = 7 } = {}) {
-    const chants = ["chant6", "chant5", "chant7", "debut1", "chant8", "chant1", "chant9", "chant4", "debut2", "chant2", "chant3"].filter(c => this.buf[c]);
-    if (!chants.length) return false;
-    this.extraitSuivant = chants[(chants.indexOf(this.extraitSuivant) + 1) % chants.length];
-    const b = this.buf[this.extraitSuivant], marge = Math.max(0, b.duration - duree - 2.5);
+    const k = this.suivantDans(TOUR_EXTRAITS, this.extraitSuivant);
+    if (!k) return false;
+    if (!this.buf[k]) { this.preparer(k); return false; }
+    this.extraitSuivant = k;
+    this.prechargerChants();
+    const b = this.buf[k], marge = Math.max(0, b.duration - duree - 2.5);
     const depuis = Math.min(marge, 1 + Math.random() * Math.max(0, marge - 1));
     const son = this.jouer(b, vol, true, { delai, fondu: 1.2, depuis });
     if (!son) return false;
@@ -458,7 +491,14 @@ export class Ambiance {
   }
   // L'hymne du stade (avant une finale, pendant la cérémonie du champion) : comme un chant, il s'éteint quand le jeu reprend
   // ou quand on l'arrête (arreterChant).
-  hymne({ vol = 0.55, delai = 0.5 } = {}) {
+  // attendre : s'il n'est pas encore téléchargé, il part dès qu'il est prêt (si encore() le permet toujours) ; renvoie true.
+  hymne({ vol = 0.55, delai = 0.5, attendre = false, encore = () => true } = {}) {
+    if (!this.buf.hymne) {
+      if (!this.disponible("hymne")) return false;
+      const debut = Date.now();
+      this.preparer("hymne").then(b => { if (b && attendre && encore()) this.hymne({ vol, delai: Math.max(0, delai - (Date.now() - debut) / 1000) }); });
+      return attendre;
+    }
     this.arreterChant();
     const b = this.buf.hymne, son = b && this.jouer(b, vol, true, { delai, fondu: 1.5 });
     if (!son) return false;

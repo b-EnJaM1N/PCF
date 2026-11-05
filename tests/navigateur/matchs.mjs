@@ -15,7 +15,7 @@ const serveur = createServer(async (req, res) => {
   try {
     const fichier = chemin.endsWith("/") ? chemin + "index.html" : chemin;
     const corps = await readFile(join(RACINE, fichier));
-    res.writeHead(200, { "content-type": TYPES[extname(fichier)] || "application/octet-stream" }); res.end(corps);
+    res.writeHead(200, { "content-type": TYPES[extname(fichier)] || "application/octet-stream", "content-length": corps.length }); res.end(corps);
   } catch { res.writeHead(404); res.end(); }
 });
 await new Promise(ok => serveur.listen(0, ok));
@@ -25,6 +25,9 @@ const navigateur = await chromium.launch();
 const page = await navigateur.newPage({ viewport: { width: 400, height: 860 }, reducedMotion: "reduce" });
 const erreurs = [];
 page.on("pageerror", e => erreurs.push(`erreur dans la page : ${e.message}`));
+// (pour information : ce que pèsent les sons téléchargés pendant le premier match d'un nouveau joueur)
+let sons = 0, sonsPremierMatch = null;
+page.on("response", async r => { if (r.url().endsWith(".mp3")) sons += Number(r.headers()["content-length"] || 0); });
 // (le serveur en ligne n'est pas joignable ici : on coupe ces appels, sans que ce soit une erreur de l'appli)
 await page.route(url => !url.href.startsWith(adresse), route => route.abort());
 
@@ -53,6 +56,7 @@ try {
   await page.goto(adresse);
   await page.locator("#premierMatch").click({ timeout: 15000 });
   await jouerJusquALaFin("premier match contre Bambi", 240000);
+  sonsPremierMatch = sons;
   if (!erreurs.length) {
     // Un match d'entraînement en un set de 11 points (assez long pour passer par toutes les ambiances du match).
     await page.goto(adresse + "#");
@@ -72,4 +76,5 @@ try {
   await navigateur.close(); serveur.close();
 }
 if (erreurs.length) { console.error("ÉCHEC :\n" + erreurs.map(e => "  " + e).join("\n")); process.exit(1); }
+console.log(`  (sons téléchargés : ${(sonsPremierMatch / 1e6).toFixed(1)} Mo au premier match, ${(sons / 1e6).toFixed(1)} Mo en tout)`);
 console.log("Les matchs dans le navigateur se sont joués sans erreur.");
