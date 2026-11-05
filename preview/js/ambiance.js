@@ -57,7 +57,9 @@ export const FICHIERS_STADE = {
   // la pause entre les sets et avant les grands matchs ; un extrait court pendant le match (une balle sauvée).
   hymne: "stade_hymne_01",         // l'hymne « Que vivent nos héros » (avant les finales, pendant la cérémonie du champion)
   chant1: "stade_chant_01", chant2: "stade_chant_02", chant3: "stade_chant_03", chant4: "stade_chant_04",
-  chant5: "stade_chant_05",   // « Pierre, feuille, ciseaux, hissez haut le drapeau ! » (ElevenLabs Music, porteur du projet, 4 novembre)
+  chant5: "stade_chant_05",
+  // Quatre chants de supporters envoyés par le porteur du projet le 5 novembre (avec un tambour), « pour animer les matchs ».
+  chant6: "stade_chant_06", chant7: "stade_chant_07", chant8: "stade_chant_08", chant9: "stade_chant_09",   // « Pierre, feuille, ciseaux, hissez haut le drapeau ! » (ElevenLabs Music, porteur du projet, 4 novembre)
   // Le stade au début du match (ElevenLabs Music, 4 novembre, sans instruments) : un chœur sans paroles, une clameur avec claquements.
   debut1: "stade_debut_01", debut2: "stade_debut_02",
   chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
@@ -66,7 +68,7 @@ export const FICHIERS_STADE = {
 
 // Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série) ;
 // « Défense ! » quand je dois sauver une balle de set ou de match.
-export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "debut1", "debut2", "chantCourt1", "chantCourt2", "chantCourt3"];
+export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "debut1", "debut2", "chantCourt1", "chantCourt2", "chantCourt3"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
@@ -417,7 +419,7 @@ export class Ambiance {
       if (alterner && this.buf.chant4 && !this.vainqueursJoue) { this.vainqueursJoue = true; b = this.buf.chant4; }
       else {
         this.vainqueursJoue = false;
-        const chants = ["chant5", "chant1", "chant2", "chant3"].filter(c => this.buf[c]);
+        const chants = ["chant5", "chant6", "chant1", "chant7", "chant2", "chant8", "chant3", "chant9"].filter(c => this.buf[c]);
         this.chantSuivant = chants[(chants.indexOf(this.chantSuivant) + 1) % (chants.length || 1)];
         b = this.buf[this.chantSuivant];
       }
@@ -443,7 +445,7 @@ export class Ambiance {
   // quelques secondes prises au hasard dans les chants de la pause et du début de match, qui sortent de la foule puis s'éteignent.
   // Ils continuent sous l'échange (comme un vrai public) et baissent sous les commentaires.
   extraitMatch({ vol = 0.38, delai = 0.6, duree = 7 } = {}) {
-    const chants = ["chant5", "debut1", "chant1", "chant4", "debut2", "chant2", "chant3"].filter(c => this.buf[c]);
+    const chants = ["chant6", "chant5", "chant7", "debut1", "chant8", "chant1", "chant9", "chant4", "debut2", "chant2", "chant3"].filter(c => this.buf[c]);
     if (!chants.length) return false;
     this.extraitSuivant = chants[(chants.indexOf(this.extraitSuivant) + 1) % chants.length];
     const b = this.buf[this.extraitSuivant], marge = Math.max(0, b.duration - duree - 2.5);
