@@ -81,3 +81,8 @@ Captures refaites le 6 novembre 2026 dans l'appli (version de lancement), en 1 0
 - **Règles de confidentialité** : https://handslam.fr/mentions.html#confidentialite
 - **Suppression du compte** : https://handslam.fr/suppression-compte.html
 - **Publicités** : non. **Achats dans l'appli** : non.
+
+## À faire juste après l'accord de Google (pas avant : toute modification relance un examen)
+- **Les mots que les gens tapent dans la recherche** (6 novembre) : le porteur du projet a trouvé un concurrent (« Pierre, papier, ciseaux », 500 000 téléchargements depuis 2015) en cherchant **« shifumi »**. La fiche dit « chifoumi » partout mais jamais « shifumi » : ajouter cette orthographe une ou deux fois dans la description, naturellement (ex. « le chifoumi (ou shifumi) »). « Pierre papier ciseaux » est surtout une traduction de l'anglais (« rock, paper, scissors ») ; en France on dit « pierre-feuille-ciseaux » (déjà dans la fiche).
+- **Tester un titre** qui contient un mot cherché (30 caractères au plus), par exemple « HandSlam : shifumi en duel ».
+
