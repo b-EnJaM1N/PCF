@@ -5,7 +5,8 @@
 
 // « pseudo#numero » (en minuscules) → les fichiers de ses chants.
 export const CHANTS_PERSO = {
-  "le chiromancien#6047": ["chant_perso_chiromancien_01", "chant_perso_chiromancien_02", "chant_perso_chiromancien_03"],
+  "le chiromancien#6047": ["chant_perso_chiromancien_01", "chant_perso_chiromancien_02", "chant_perso_chiromancien_03", "chant_perso_chiromancien_04", "chant_perso_chiromancien_05"],
+  "benja-main#3528": ["chant_perso_benjamain_01", "chant_perso_benjamain_02"],   // (le porteur du projet, 6 novembre)
 };
 
 // Les cris courts (« Allez le Chiromancien ! »), pendant le match, aux moments forts (une balle de set ou de match sauvée).
@@ -15,7 +16,14 @@ export const COURTS_PERSO = {
 
 export const clePseudo = (pseudo, numero) => (pseudo && numero ? `${String(pseudo).trim().toLowerCase()}#${numero}` : null);
 // Les chants des joueurs du match ({ pseudo, numero } ou null).
-export const chantsPerso = (...joueurs) => joueurs.flatMap(j => (j ? CHANTS_PERSO[clePseudo(j.pseudo, j.numero)] || [] : []));
+// En duel entre deux joueurs qui ont leurs chants, les deux listes alternent (un chant de l'un, un chant de l'autre…) : chacun
+// entend aussi le chant de son adversaire (6 novembre, demande du porteur du projet). Seulement entre amis : entre inconnus
+// (partie rapide, tournois…), chacun n'entend que ses chants à lui (joueursDuMatch, dans app.js).
+export const chantsPerso = (...joueurs) => {
+  const listes = joueurs.map(j => (j ? CHANTS_PERSO[clePseudo(j.pseudo, j.numero)] || [] : [])), l = [];
+  for (let i = 0; i < Math.max(0, ...listes.map(x => x.length)); i++) for (const x of listes) if (x[i]) l.push(x[i]);
+  return l;
+};
 export const courtsPerso = (...joueurs) => joueurs.flatMap(j => (j ? COURTS_PERSO[clePseudo(j.pseudo, j.numero)] || [] : []));
 // Le joueur du match que le public soutient (le premier qui a des chants), ou null : pour les répliques (« pour lui », « pour elle »).
 export const soutenu = (...joueurs) => joueurs.find(j => j && CHANTS_PERSO[clePseudo(j.pseudo, j.numero)]) || null;

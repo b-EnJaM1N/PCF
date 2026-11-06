@@ -918,6 +918,15 @@ function puces(zone, moment) {
   zone.innerHTML = `<button class="btn alt msg-ouvrir" data-moment="${moment}">💬 Envoyer un message à ${esc(OPP.nom)}</button>`;
 }
 // La fenêtre : les phrases fair-play, puis, entre amis, le chambrage et le message écrit soi-même.
+// Les annonces bien alignées (6 novembre, demande du porteur du projet) : une ligne par annonce (« J'ouvre avec… »), puis les trois signes.
+const LIGNES_ANNONCES = [["ouvre", "J'ouvre avec…"], ["sais", "Je sais : tu ouvres avec…"], ["pas", "Ne joue pas…"], ["joue", "Joue… !"]];
+const SIGNES_ANNONCES = [["p", "🪨", "Pierre"], ["f", "📄", "Feuille"], ["c", "✂️", "Ciseaux"]];
+function grilleAnnonces(annonces) {
+  const ids = new Set(annonces.map(m => m.id)), texte = id => annonces.find(m => m.id === id)?.texte || "";
+  return `<div class="msg-annonces">` + LIGNES_ANNONCES.filter(([l]) => SIGNES_ANNONCES.some(([s]) => ids.has(`${l}_${s}`))).map(([l, titre]) =>
+    `<span class="msg-annonce-titre">${esc(titre)}</span>` + SIGNES_ANNONCES.map(([s, emoji, nom]) => ids.has(`${l}_${s}`)
+      ? `<button data-msg="${l}_${s}" aria-label="${esc(texte(`${l}_${s}`))}"><span aria-hidden="true">${emoji}</span> ${nom}</button>` : "<span></span>").join("")).join("") + `</div>`;
+}
 function ouvrirMessages(moment) {
   if (!D) return;
   const ami = !!D.ami, liste = messagesPossibles(moment, ami), rubrique = (titre, l) => `<p class="msg-rubrique">${titre}</p><div class="msg-puces">`
@@ -926,7 +935,7 @@ function ouvrirMessages(moment) {
   // (le message écrit en premier, entre amis : avant, il fallait faire défiler jusqu'en bas de la fenêtre ; puis les annonces)
   const annonces = liste.filter(m => m.annonce);
   $("msgFenetreCorps").innerHTML = (ami ? `<p class="msg-rubrique">✍️ Écrire mon message</p><div class="msg-libre"><input type="text" id="msgLibre" maxlength="${MESSAGE_LIBRE_MAX}" placeholder="Ton message (${MESSAGE_LIBRE_MAX} max.)" autocomplete="off"><button class="btn" id="msgLibreEnvoyer">Envoyer</button></div>` : "")
-    + (annonces.length ? rubrique("🧠 Annonces (vraies ou fausses…)", annonces) : "")
+    + (annonces.length ? `<p class="msg-rubrique">🧠 Annonces (vraies ou fausses…)</p>` + grilleAnnonces(annonces) : "")
     + rubrique("😊 Fair-play", liste.filter(m => !m.amis && !m.annonce))
     + (ami ? rubrique("😈 Chambrage, entre amis", liste.filter(m => m.amis))
       : `<p class="hint">Le chambrage et les messages écrits, c'est entre amis : ajoute ${esc(OPP.nom)} à tes amis pour en profiter.</p>`);
@@ -1359,7 +1368,8 @@ async function afficherDossier() {
   } catch { montrer(null, null, "Dossier indisponible pour l'instant."); }
 }
 // Les chants de supporters personnalisés des joueurs de ce match (moi, et mon adversaire en duel) : voir chants-perso.js.
-const joueursDuMatch = () => [{ pseudo: P.pseudo, numero: P.numero, genre: P.genre }, OPP?.humain ? { pseudo: OPP.nom, numero: OPP.numero, genre: OPP.genre } : null];
+// (l'adversaire compte pour les chants personnalisés seulement entre amis : entre inconnus, chacun n'entend que les siens ; 6 novembre)
+const joueursDuMatch = () => [{ pseudo: P.pseudo, numero: P.numero, genre: P.genre }, OPP?.humain && D?.ami ? { pseudo: OPP.nom, numero: OPP.numero, genre: OPP.genre } : null];
 const persoDuMatch = () => chantsPerso(...joueursDuMatch());
 // Les commentateurs lancent le match, à voix haute (pas de speaker : sa présentation n'est ni dite ni affichée ; les surnoms
 // dits par Roland ont été abandonnés le 3 novembre).
@@ -1402,7 +1412,8 @@ function presenterSpeaker() {
   } else if (fan) {
     const l = unDe("perso_supporters", fan.genre);
     if (l) av.commentaires.unshift(l);
-    ambiance.prechargerPerso(perso).then(() => { if (faceAFaceOuvert && !S.passe) ambiance.chanter({ vol: 0.5, delai: 0.3, perso }); });
+    // (seulement le chant qui va passer, pour qu'il soit prêt avant la fin de la présentation ; les autres au premier point)
+    ambiance.prechargerPerso([ambiance.persoProchain(perso)].filter(Boolean)).then(() => { if (faceAFaceOuvert && !S.passe) ambiance.chanter({ vol: 0.5, delai: 0.3, perso }); });
   } else if (S.annonces?.enjeu && ambiance.chanter({ vol: 0.5, delai: 0.3 })) {
     const l = unDe("avant_ambiance");
     if (l) av.commentaires.unshift(l);
