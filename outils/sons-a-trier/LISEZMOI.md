@@ -34,3 +34,4 @@ Chant « Pierre, feuille, ciseaux, hissez haut le drapeau ! » (ElevenLabs Music
 
 Bronca (ElevenLabs Sound Effects, porteur du projet, 4 novembre) : `bronca_4.mp3` → `public_bronca_01`, `bronca_3.mp3` → `public_bronca_02`, amplifiées ; avec les gros sifflets, à la place des longues huées (l'une puis l'autre).
 Quatre chants de supporters (porteur du projet, 5 novembre, avec un tambour) : `chant_supporters_wa6.mp3` à `wa9.mp3` → `stade_chant_06` à `09`, dans la rotation des chants (pause entre les sets, grands matchs) et des extraits joués pendant le match.
+Deux virages qui se répondent, a cappella (ElevenLabs Music, porteur du projet, 6 novembre) : `chant_virages_10.mp3` (« Hand-Slam ! ») → `stade_chant_10`, `chant_virages_11.mp3` (« Allez Hand-Slam ! ») → `stade_chant_11` ; au début des matchs ordinaires, à la pause entre les sets et en extraits pendant le match.

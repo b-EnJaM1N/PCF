@@ -239,6 +239,18 @@
       "salle": false,
       "vrai": true
     },
+    "stade_chant_10": {
+      "texte": "Deux virages qui se répondent, a cappella : « Hand-Slam ! » (ElevenLabs Music, porteur du projet, 6 novembre) : ne pas régénérer.",
+      "duree": 30,
+      "salle": false,
+      "vrai": true
+    },
+    "stade_chant_11": {
+      "texte": "Deux virages qui se répondent, a cappella : « Allez Hand-Slam ! » (ElevenLabs Music, porteur du projet, 6 novembre) : ne pas régénérer.",
+      "duree": 30,
+      "salle": false,
+      "vrai": true
+    },
     "stade_debut_01": {
       "texte": "Le stade chante en chœur, sans paroles ni instruments (ElevenLabs Music, porteur du projet, 4 novembre) : ne pas régénérer.",
       "duree": 30,

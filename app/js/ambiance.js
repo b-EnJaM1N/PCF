@@ -59,7 +59,9 @@ export const FICHIERS_STADE = {
   chant1: "stade_chant_01", chant2: "stade_chant_02", chant3: "stade_chant_03", chant4: "stade_chant_04",
   chant5: "stade_chant_05",
   // Quatre chants de supporters envoyés par le porteur du projet le 5 novembre (avec un tambour), « pour animer les matchs ».
-  chant6: "stade_chant_06", chant7: "stade_chant_07", chant8: "stade_chant_08", chant9: "stade_chant_09",   // « Pierre, feuille, ciseaux, hissez haut le drapeau ! » (ElevenLabs Music, porteur du projet, 4 novembre)
+  chant6: "stade_chant_06", chant7: "stade_chant_07", chant8: "stade_chant_08", chant9: "stade_chant_09",
+  // Deux virages qui se répondent, a cappella (« Hand-Slam ! », « Allez Hand-Slam ! » ; ElevenLabs Music, porteur du projet, 6 novembre).
+  chant10: "stade_chant_10", chant11: "stade_chant_11",   // « Pierre, feuille, ciseaux, hissez haut le drapeau ! » (ElevenLabs Music, porteur du projet, 4 novembre)
   // Le stade au début du match (ElevenLabs Music, 4 novembre, sans instruments) : un chœur sans paroles, une clameur avec claquements.
   debut1: "stade_debut_01", debut2: "stade_debut_02",
   chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
@@ -71,10 +73,12 @@ export const FICHIERS_STADE = {
 // Les gros fichiers (chants entiers, hymne, stade du début de match) ne sont pas chargés au démarrage : chacun est téléchargé
 // la première fois qu'on en a besoin, et le suivant de chaque tour est préparé à l'avance (5 novembre : 6,4 Mo au premier match
 // avant, environ 2,5 Mo maintenant, pour les nouveaux joueurs en 4G).
-export const STADE_A_LA_DEMANDE = new Set(["hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "debut1", "debut2"]);
-const TOUR_PAUSE = ["chant5", "chant6", "chant1", "chant7", "chant2", "chant8", "chant3", "chant9"];
-const TOUR_EXTRAITS = ["chant6", "chant5", "chant7", "debut1", "chant8", "chant1", "chant9", "chant4", "debut2", "chant2", "chant3"];
-export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "debut1", "debut2", "chantCourt1", "chantCourt2", "chantCourt3"];
+export const STADE_A_LA_DEMANDE = new Set(["hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "chant10", "chant11", "debut1", "debut2"]);
+// (6 novembre, demande du porteur du projet : tous les chants à égalité ; « Pour les vainqueurs », chant4, n'a plus une pause sur deux)
+const TOUR_PAUSE = ["chant10", "chant5", "chant6", "chant4", "chant1", "chant11", "chant7", "chant2", "chant8", "chant3", "chant9"];
+const TOUR_EXTRAITS = ["chant10", "chant6", "chant5", "chant11", "chant7", "debut1", "chant8", "chant1", "chant9", "chant4", "debut2", "chant2", "chant3"];
+const TOUR_DEBUT = ["debut1", "chant10", "debut2", "chant11"];   // (le stade pendant la présentation d'un match ordinaire)
+export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "chant10", "chant11", "debut1", "debut2", "chantCourt1", "chantCourt2", "chantCourt3"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
@@ -410,7 +414,6 @@ export class Ambiance {
   // perso : les chants personnalisés des joueurs du match (chants-perso.js) : s'ils sont prêts, c'est eux qu'on chante.
   // alterner : une fois un chant personnalisé, une fois un chant habituel (la pause entre les sets).
   // Renvoie « perso », « habituel » ou false (rien de prêt).
-  // (pendant la pause entre les sets, alterner : une fois sur deux, « Pour les vainqueurs », chant4 ; 4 novembre, choix du porteur du projet)
   // Un son de stade chargé à la demande : téléchargé une seule fois (renvoie une promesse ; rien si le fichier n'existe pas).
   preparer(type) {
     const id = FICHIERS_STADE[type];
@@ -419,14 +422,21 @@ export class Ambiance {
       .then(b => { this.buf[type] = b; return b; }).catch(() => { delete this.enCours[type]; return null; });
   }
   disponible(type) { return !!this.fichiers?.includes(FICHIERS_STADE[type]); }
+  // Le prochain son d'un tour ; au premier, un point de départ au hasard (sinon, à chaque ouverture de l'appli, on entendrait
+  // toujours les premiers de la liste ; 6 novembre).
   suivantDans(tour, courant) {
     const t = tour.filter(k => this.disponible(k));
-    return t.length ? t[(t.indexOf(courant) + 1) % t.length] : null;
+    if (!t.length) return null;
+    const i = t.indexOf(courant);
+    if (i >= 0) return t[(i + 1) % t.length];
+    const departs = (this.departs ||= new Map());
+    if (!departs.has(tour)) departs.set(tour, Math.floor(Math.random() * t.length));
+    return t[departs.get(tour) % t.length];
   }
   // Prépare le prochain son de chaque tour (pause, extraits, début de match ; l'hymne si on approche d'une finale).
   prechargerChants({ hymne = false } = {}) {
     for (const k of [this.suivantDans(TOUR_PAUSE, this.chantSuivant), this.suivantDans(TOUR_EXTRAITS, this.extraitSuivant),
-      this.debutSuivant === "debut1" ? "debut2" : "debut1", "chant4", hymne && "hymne"]) if (k) this.preparer(k);
+      this.suivantDans(TOUR_DEBUT, this.debutSuivant), hymne && "hymne"]) if (k) this.preparer(k);
   }
   chanter({ vol = 0.55, delai = 0.6, perso = [], alterner = false } = {}) {
     let persos = perso.filter(id => this.persoBuf?.[id]);
@@ -437,18 +447,12 @@ export class Ambiance {
       this.persoSuivant = persos[(persos.indexOf(this.persoSuivant) + 1) % persos.length];
       b = this.persoBuf[this.persoSuivant];
     } else {
-      // (les chants entiers tournent : 5, 1, 2, 3, puis on recommence ; le 3, « Let's go, Hand-Slam », ajouté le 3 novembre ; le 5,
-        // « Pierre, feuille, ciseaux… », le 4 novembre)
-      // (un chant pas encore téléchargé : on le prépare pour la prochaine fois, et on se tait cette fois-ci)
-      if (alterner && this.disponible("chant4") && !this.vainqueursJoue) {
-        if (!this.buf.chant4) { this.preparer("chant4"); return false; }
-        this.vainqueursJoue = true; b = this.buf.chant4;
-      } else {
-        const k = this.suivantDans(TOUR_PAUSE, this.chantSuivant);
-        if (!k) return false;
-        if (!this.buf[k]) { this.preparer(k); return false; }
-        this.vainqueursJoue = false; this.chantSuivant = k; b = this.buf[k];
-      }
+      // (les chants entiers tournent, tous à égalité (TOUR_PAUSE) ; un chant pas encore téléchargé : on le prépare pour la prochaine
+      // fois, et on se tait cette fois-ci)
+      const k = this.suivantDans(TOUR_PAUSE, this.chantSuivant);
+      if (!k) return false;
+      if (!this.buf[k]) { this.preparer(k); return false; }
+      this.chantSuivant = k; b = this.buf[k];
     }
     this.arreterChant();
     const son = b && this.jouer(b, vol, true, { delai, fondu: 1.5 });
@@ -461,7 +465,8 @@ export class Ambiance {
   // Le stade pendant la présentation d'un match ordinaire (4 novembre, demande du porteur du projet) : le chœur ou la clameur, l'un
   // après l'autre ; il baisse sous les commentaires et s'éteint quand le jeu commence (comme un chant).
   debutMatch({ vol = 0.4, delai = 0.3 } = {}) {
-    const k = this.debutSuivant === "debut1" ? "debut2" : "debut1";
+    const k = this.suivantDans(TOUR_DEBUT, this.debutSuivant);
+    if (!k) return false;
     if (!this.buf[k]) { this.preparer(k); return false; }
     this.arreterChant();
     this.debutSuivant = k;
