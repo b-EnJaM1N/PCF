@@ -37,8 +37,11 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   d'arrivée (`compterVisite`, `compterPremierMatch`, `retoursParcours` dans `app/js/visites.js`) ; seuls les téléphones arrivés
   avec cette version sont suivis. Mentions légales mises à jour. Lecture (une ligne) :
   `select to_char(arrivee,'DD/MM') arrivee, sum(nouveaux) n, sum(premier_match) fini_1er_match, sum(retour_1j) revenu_j1, sum(retour_7j) revenu_j7 from parcours group by arrivee order by arrivee desc limit 30;`
-  Le chiffre « revenu à 7 jours » d'un jour d'arrivée n'est complet que 13 jours plus tard. Prochaine priorité : la sortie
-  sur le Play Store vers le 9 novembre (relance des testeurs, questionnaire Google). Fiche du Store revue le 6 novembre (accord du
+  Le chiffre « revenu à 7 jours » d'un jour d'arrivée n'est complet que 13 jours plus tard.
+  Étape 59 (6 novembre) : le parcours compte aussi les nouveaux qui lancent leur premier match et ceux qui y jouent un coup
+  (1 nouveau sur 5 seulement finissait son premier match). Lecture :
+  `select to_char(arrivee,'DD/MM') arrivee, sum(nouveaux) n, sum(premier_lance) lance, sum(premier_coup) un_coup, sum(premier_match) fini, sum(retour_1j) j1, sum(retour_7j) j7 from parcours group by arrivee order by arrivee desc limit 30;`
+  Prochaine priorité : la sortie sur le Play Store vers le 9 novembre (relance des testeurs, questionnaire Google). Fiche du Store revue le 6 novembre (accord du
   porteur du projet) : description courte avec « chifoumi », plus de tournois dans la description, 6 captures refaites dont la Carrière
   solo à la place des tournois (`docs/play-store/fiche.md`) ; déposée dans la Play Console et envoyée pour examen le 6 novembre.
 - **Messages entre les sets** (1er novembre, étape SQL 53) : en duel, pendant la pause entre deux sets, un bouton « 💬 Envoyer un message »
