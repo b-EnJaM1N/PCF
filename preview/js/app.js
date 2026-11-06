@@ -47,6 +47,7 @@ import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
 import { modeleFantome } from "./fantome.js";
+import { replayVisible, momentDuCoup, tempsForts, momentDuSet, TITRES as TITRES_REPLAY } from "./replay.js";
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
@@ -396,6 +397,12 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   S.suivi.figer();
   smash.forEach((x, j) => { if (x) noterSmash(m, j); });
   const evt = jouerCoup(m, signe, signeAdv, auto);
+  // Le replay (replay.js) : on garde les actions marquantes du match.
+  if (replayVisible()) {
+    const mo = momentDuCoup(evt, m.coups, { smash, smashGagne: issueSmash(smash, evt.gagnant) === "gagne", serie: series(m.coups).serie,
+      set: m.scoresSets.length - (evt.finSet ? 1 : 0), score: m.points });
+    if (mo) (S.moments ||= []).push(mo);
+  }
   S.suivi.enregistrer(signe, evt.gagnant === null ? "e" : evt.gagnant === 0 ? "g" : "p");
   suivreCoup(S.stats, m, evt);
   const a = annoncerCoup(m, evt, S.annonces, { recents: S.suivi.recents, auto: !!auto[0], smash });
@@ -476,6 +483,39 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   if (!S.duel) S.sonne = issueSmash(smash, evt.gagnant) === "gagne" && evt.gagnant === 1 && !evt.finSet;   // (pas de KO au début du set suivant)
   return apresPoint(evt, a, cel, rp);
 }
+
+// ---------------------------------------------------------------- le replay (replay.js)
+// Chaque action : les deux poings se secouent au ralenti, puis les signes s'ouvrent ; le score du moment et le bandeau REPLAY.
+function jouerReplay(liste, apres = () => {}) {
+  if (!liste.length) { apres(); return; }
+  const ov = $("replay"), vite = reduitMouvement();
+  let i = 0, t = null, fini = false;
+  const fermer = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; apres(); };
+  $("rpPasser").onclick = fermer;
+  ov.hidden = false;
+  const montrer = () => {
+    if (fini) return;
+    if (i >= liste.length) { fermer(); return; }
+    const mo = liste[i++], moi = $("rpMoi"), adv = $("rpAdv");
+    $("rpTitre").textContent = TITRES_REPLAY[mo.type];
+    $("rpScore").innerHTML = mo.score ? `${esc(nomAffiche(P))} <b>${mo.score[0]} – ${mo.score[1]}</b> ${esc(OPP.nom)}` : "";
+    $("rpCompte").textContent = liste.length > 1 ? `${i} / ${liste.length}` : "";
+    $("rpVerdict").textContent = ""; $("rpCom").textContent = "";
+    moi.className = "replay-main secoue"; adv.className = "replay-main adv secoue";
+    moi.innerHTML = mainGantee(0, 0, "Poing"); adv.innerHTML = mainGantee(1, 0, "Poing");
+    t = setTimeout(() => {
+      if (fini) return;
+      moi.className = `replay-main revele${mo.gagnant === 1 ? " perd" : ""}`; adv.className = `replay-main adv revele${mo.gagnant === 0 ? " perd" : ""}`;
+      moi.innerHTML = mainGantee(0, mo.a, NOM[mo.a]); adv.innerHTML = mainGantee(1, mo.b, NOM[mo.b]);
+      const [w, l] = mo.gagnant === 0 ? [mo.a, mo.b] : [mo.b, mo.a];
+      $("rpVerdict").textContent = `${mo.smash[mo.gagnant] ? "💥 Smash ! " : ""}${NOM[w]} bat ${NOM[l]}`;
+      try { ambiance.public("clameur", 0.4); } catch { /* sans son */ }
+      t = setTimeout(montrer, vite ? 2500 : 2800);
+    }, vite ? 300 : 1900);
+  };
+  montrer();
+}
+$("btnTempsForts").addEventListener("click", () => { if (S?.moments?.length) jouerReplay(tempsForts(S.moments)); });
 
 // Le smash : selon ce qu'il donne (voir issueSmash), un verdict et une vibration (Android ; l'iPhone ne vibre pas depuis une
 // page web). Gagnant : « 💥 Smash ! », grande vibration et secousse de l'arène ; perdu : « 💨 Smash raté ! » ; égalité :
@@ -595,6 +635,8 @@ function apresPoint(evt, a, cel, rp) {
       onGo: S.duel ? duelPret : () => { nouveauSet(); decompteSolo(); },
     });
       if (S.duel) { majBoutonsPret(); afficherMessages(D.duel); }   // (le bouton des messages de la pause, étape 53)
+      // Le moment du set, au ralenti (replay.js ; en solo : en duel, la pause est chronométrée).
+      if (!S.duel && replayVisible()) { const mo = momentDuSet(S.moments || [], n - 1), seance = S; if (mo) setTimeout(() => { if (S === seance && panneauOuvert) jouerReplay([mo]); }, 900); }
     }, cel ? 2400 : 1200);                                  // on laisse le temps de voir le cri
     return evt;
   }
@@ -742,6 +784,7 @@ function finir() {
   const lues = lecturesReussies(c);
   $("endRead").textContent = `Ton coup était prévisible ${Math.round(100 * (S.suivi.taux || 0))} % du temps.${habitude}${lues ? ` 🔎 Tu as lu ${OPP.nom} ${lues} fois : tu as joué la bonne piste et gagné le point.` : ""}`;
   $("end").hidden = false;
+  $("btnTempsForts").hidden = !(replayVisible() && (S.moments || []).length);   // le replay des temps forts (replay.js)
   $("nomFin").hidden = !!P.pseudo; $("inNomFin").value = "";   // pas encore de pseudo : on le propose ici
   $("compteFin").hidden = !!compteUI.session()?.user;          // pas encore de compte : on le propose aussi
   if (S.duel && D) { afficherMessages(D.duel); guetterMessageFin(); }   // le mot de la fin (messages rapides)
