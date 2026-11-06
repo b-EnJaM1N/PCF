@@ -191,6 +191,7 @@
       </div>
       <p class="news" id="news"></p>
       <button class="btn une-btn" id="btnUne" hidden>📰 Voir la Une du journal</button>
+      <button class="btn alt" id="btnTempsForts" hidden>▶️ Les temps forts</button>
       <button class="btn" id="mdjPartagerFin" hidden>📤 Partager mon résultat du jour</button>
       <p style="margin-top:12px"><button class="btn" id="again">Rejouer un match</button><button class="btn" id="tNext" hidden></button><button class="btn" id="revanche" hidden>🔁 Revanche</button><button class="btn alt" id="retourDuels" hidden>Retour aux duels</button><button class="btn" id="encoreRapide" hidden>Nouvelle partie rapide</button><button class="btn" id="voirTournoi" hidden>Voir le tableau du tournoi</button><button class="btn" id="carSuite" hidden>🏅 Continuer ma carrière</button><button class="btn alt" id="finAccueil">🏠 Retour au menu</button></p>
       <p style="text-align:center;margin:6px 0 0" id="signalerZone" hidden><button class="linkbtn" id="signalerAdv">⚑ Signaler ce joueur</button></p>
@@ -830,6 +831,19 @@
   <div class="cel-cri" id="celCri"></div>
 </div>
 
+<!-- Le replay (replay.js) : une action au ralenti, avec le score du moment et le bandeau REPLAY. -->
+<div class="replay" id="replay" role="dialog" aria-modal="true" aria-label="Replay" hidden>
+  <div class="replay-boite">
+    <div class="replay-bandeau"><span class="replay-point" aria-hidden="true"></span>REPLAY</div>
+    <p class="replay-titre" id="rpTitre"></p>
+    <p class="replay-score" id="rpScore"></p>
+    <div class="replay-mains"><span class="replay-main" id="rpMoi"></span><span class="replay-contre">contre</span><span class="replay-main" id="rpAdv"></span></div>
+    <p class="replay-verdict" id="rpVerdict"></p>
+    <p class="replay-com" id="rpCom"></p>
+    <p class="replay-compte" id="rpCompte"></p>
+    <button class="btn alt" id="rpPasser">Passer ⏭</button>
+  </div>
+</div>
 <div class="inter" id="une" role="dialog" aria-modal="true" aria-label="La Une du journal">
   <div class="panel une-panel">
     <img id="uneImg" alt="">
