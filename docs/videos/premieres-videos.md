@@ -58,3 +58,11 @@ de l'Amateur à l'Élite ; La Une.
 - Répondre aux commentaires la première heure (ça aide beaucoup la diffusion).
 - Noter les vues, les abonnés gagnés et surtout les visites de handslam.fr le lendemain (compteur de visites).
 - Ce qui marche le mieux sera décliné en série (« Monique a dit #2 », « 3 réflexes #2 »…).
+
+## Bandes-annonces sur l'hymne « La Main sacrée » (6 novembre, gardées toutes les deux par le porteur du projet)
+Images de la vraie appli filmées en mouvement (présentation contre Chaos, le court avec un smash et « Sonné ! », la cérémonie
+« CHAMPION ! ») et captures du Store, fondus enchaînés, textes « Le chifoumi. » puis « Comme un sport. », fin sur le logo,
+« Rejoins le club ! » et handslam.fr (ajouter « Gratuit sur Google Play » après la sortie). Seul son : l'hymne (`outils/sons-a-trier/la_main_sacree.m4a`).
+- `bande-annonce-hymne.mp4` (25 s, passage 1:40 → 2:05) : pour TikTok.
+- `bande-annonce-hymne-2b.mp4` (45 s, passage 2:05 → 2:50, avec le dossier de l'adversaire, la carrière et les amis en plus) : pour Instagram et YouTube.
+Fichiers envoyés dans la conversation (trop lourds pour le projet).
