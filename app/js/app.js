@@ -492,26 +492,35 @@ function jouerReplay(liste, apres = () => {}) {
   let i = 0, t = null, fini = false;
   const fermer = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; apres(); };
   $("rpPasser").onclick = fermer;
+  $("rpNomMoi").textContent = nomAffiche(P); $("rpNomAdv").textContent = OPP.nom;
+  $("rpMiniMoi").innerHTML = avatarSVG(avMoi()); $("rpMiniAdv").innerHTML = avatarSVG(avAdv());
   ov.hidden = false;
   const montrer = () => {
     if (fini) return;
     if (i >= liste.length) { fermer(); return; }
     const mo = liste[i++], moi = $("rpMoi"), adv = $("rpAdv");
+    // Le score juste avant le point, puis le point marqué au dévoilement (comme pendant le match).
+    const apresPt = mo.score || [0, 0], avant = apresPt.map((v, j) => (j === mo.gagnant ? v - 1 : v));
     $("rpTitre").textContent = TITRES_REPLAY[mo.type];
-    $("rpScore").innerHTML = mo.score ? `${esc(nomAffiche(P))} <b>${mo.score[0]} – ${mo.score[1]}</b> ${esc(OPP.nom)}` : "";
+    $("rpScoreMoi").textContent = avant[0]; $("rpScoreAdv").textContent = avant[1];
+    $("rpStatus").textContent = `Set ${mo.set + 1}`;
     $("rpCompte").textContent = liste.length > 1 ? `${i} / ${liste.length}` : "";
     $("rpVerdict").textContent = ""; $("rpCom").textContent = "";
-    moi.className = "replay-main secoue"; adv.className = "replay-main adv secoue";
-    moi.innerHTML = mainGantee(0, 0, "Poing"); adv.innerHTML = mainGantee(1, 0, "Poing");
+    [[moi, 0], [adv, 1]].forEach(([el, g]) => { el.innerHTML = mainGantee(g, 0, "Poing serré"); el.className = "hand secoue"; });
     t = setTimeout(() => {
       if (fini) return;
-      moi.className = `replay-main revele${mo.gagnant === 1 ? " perd" : ""}`; adv.className = `replay-main adv revele${mo.gagnant === 0 ? " perd" : ""}`;
       moi.innerHTML = mainGantee(0, mo.a, NOM[mo.a]); adv.innerHTML = mainGantee(1, mo.b, NOM[mo.b]);
+      moi.className = "hand ouvre"; adv.className = "hand ouvre";
       const [w, l] = mo.gagnant === 0 ? [mo.a, mo.b] : [mo.b, mo.a];
       $("rpVerdict").textContent = `${mo.smash[mo.gagnant] ? "💥 Smash ! " : ""}${NOM[w]} bat ${NOM[l]}`;
-      try { ambiance.public("clameur", 0.4); } catch { /* sans son */ }
-      t = setTimeout(montrer, vite ? 2500 : 2800);
-    }, vite ? 300 : 1900);
+      t = setTimeout(() => {
+        if (fini) return;
+        (mo.gagnant === 0 ? moi : adv).classList.add("win"); (mo.gagnant === 0 ? adv : moi).classList.add("lose");
+        $("rpScoreMoi").textContent = apresPt[0]; $("rpScoreAdv").textContent = apresPt[1];
+        try { ambiance.public("clameur", 0.4); } catch { /* sans son */ }
+        t = setTimeout(montrer, vite ? 2200 : 2600);
+      }, vite ? 0 : 700);
+    }, vite ? 300 : 2000);
   };
   montrer();
 }
