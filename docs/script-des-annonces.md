@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (675 répliques)
+## Commentateur — vif, enthousiaste, plein de références (674 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -194,7 +194,6 @@ restent lus par la voix de synthèse.
 | `commentateur_serie_pour_04.mp3` | Il a mis une mine, ça explose derrière ! |
 | `commentateur_serie_pour_04_f.mp3` | Elle a mis une mine, ça explose derrière ! |
 | `commentateur_serie_pour_05.mp3` | C'est du Pierre-Feuille-Ciseaux champagne ! |
-| `commentateur_serie_pour_06.mp3` | Vers l'infini et au-delà ! |
 | `commentateur_serie_pour_07.mp3` | Cours, Forrest, cours ! |
 | `commentateur_serie_pour_08.mp3` | Il marche sur son adversaire ! |
 | `commentateur_serie_pour_08_f.mp3` | Elle marche sur son adversaire ! |

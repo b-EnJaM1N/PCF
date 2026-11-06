@@ -97,7 +97,7 @@ export const MOMENTS = {
     { r: "c", t: "Ça déroule, ça déroule !" },
     { r: "c", t: "Il a mis une mine, ça explose derrière !", f: "Elle a mis une mine, ça explose derrière !", clin: "sport" },
     { r: "c", t: "C'est du Pierre-Feuille-Ciseaux champagne !", clin: "sport" },
-    { r: "c", t: "Vers l'infini et au-delà !", clin: "cine" },
+    { r: "c", t: "Vers l'infini et au-delà !", clin: "cine", retiree: true },
     { r: "c", t: "Cours, Forrest, cours !", clin: "cine", si: "serie6" },
     { r: "d", t: "Il a trouvé la faille. Il appuie dessus. Enfin quelqu'un de sérieux.", f: "Elle a trouvé la faille. Elle appuie dessus. Enfin quelqu'un de sérieux." },
     { r: "d", t: "Il gagne dans un fauteuil.", f: "Elle gagne dans un fauteuil.", clin: "sport" },
