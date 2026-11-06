@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (678 répliques)
+## Commentateur — vif, enthousiaste, plein de références (675 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -235,7 +235,6 @@ restent lus par la voix de synthèse.
 | `commentateur_serie_contre_02_f.mp3` | Elle est dans les cordes ! Il faut réagir ! |
 | `commentateur_serie_contre_05.mp3` | T'es pas venu ici pour souffrir, ok ? |
 | `commentateur_serie_contre_05_f.mp3` | T'es pas venue ici pour souffrir, ok ? |
-| `commentateur_serie_contre_06.mp3` | Houston, on a un problème ! |
 | `commentateur_serie_contre_07.mp3` | Il est en train de perdre le fil ! |
 | `commentateur_serie_contre_07_f.mp3` | Elle est en train de perdre le fil ! |
 | `commentateur_serie_contre_08.mp3` | Attention, il se fait acculer ! |
@@ -396,8 +395,6 @@ restent lus par la voix de synthèse.
 | `commentateur_defaite_01_f.mp3` | Battue, mais pas abattue ! |
 | `commentateur_defaite_02.mp3` | Il reviendra ! |
 | `commentateur_defaite_02_f.mp3` | Elle reviendra ! |
-| `commentateur_defaite_03.mp3` | Il cherche encore où il a perdu la Feuille ! |
-| `commentateur_defaite_03_f.mp3` | Elle cherche encore où elle a perdu la Feuille ! |
 | `commentateur_memoire_ouverture_01_pierre.mp3` | La dernière fois, il avait ouvert avec la Pierre ! |
 | `commentateur_memoire_ouverture_01_pierre_f.mp3` | La dernière fois, elle avait ouvert avec la Pierre ! |
 | `commentateur_memoire_ouverture_01_ciseaux.mp3` | La dernière fois, il avait ouvert avec les Ciseaux ! |
@@ -801,7 +798,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (546 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (545 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -975,7 +972,6 @@ restent lus par la voix de synthèse.
 | `commentatrice_victoire_03.mp3` | Rien à dire. Et je trouve toujours quelque chose à dire. |
 | `commentatrice_victoire_04.mp3` | Propre. Net. Sans bavure. |
 | `commentatrice_victoire_05.mp3` | On ne reverra peut-être jamais ça. Tant mieux, j'ai eu mon compte. |
-| `commentatrice_defaite_01.mp3` | Au revoir. |
 | `commentatrice_defaite_02.mp3` | Il faudra revoir ce match. Ou l'oublier. Je conseille l'oubli. |
 | `commentatrice_defaite_03.mp3` | On apprend plus d'une défaite. Il a beaucoup appris, ce soir. |
 | `commentatrice_defaite_03_f.mp3` | On apprend plus d'une défaite. Elle a beaucoup appris, ce soir. |
