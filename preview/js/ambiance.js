@@ -453,8 +453,9 @@ export class Ambiance {
       const l = perso.filter(id => this.persoBuf?.[id]), i = perso.indexOf(k);
       k = l.find(id => perso.indexOf(id) > i) || l[0] || null;
     }
+    // (l'alternance ne compte que les pauses : le chant du début de match n'y entre pas ; 6 novembre, demande du porteur du projet)
     if (alterner && k && this.dernierPerso) k = null;
-    this.dernierPerso = !!k;
+    if (alterner) this.dernierPerso = !!k;
     let b;
     if (k) {
       this.persoSuivant = k; b = this.persoBuf[k];
@@ -472,7 +473,7 @@ export class Ambiance {
     if (!son) return false;
     this.chantEnCours = son;
     this.porter(delai + b.duration);
-    return this.dernierPerso ? "perso" : "habituel";
+    return k ? "perso" : "habituel";
   }
   // Le stade pendant la présentation d'un match ordinaire (4 novembre, demande du porteur du projet) : le chœur ou la clameur, l'un
   // après l'autre ; il baisse sous les commentaires et s'éteint quand le jeu commence (comme un chant).
