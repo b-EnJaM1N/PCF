@@ -486,11 +486,18 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
 
 // ---------------------------------------------------------------- le replay (replay.js)
 // Chaque action : les deux poings se secouent au ralenti, puis les signes s'ouvrent ; le score du moment et le bandeau REPLAY.
+// Les répliques du replay (replay_intro, replay_sauvee…) : une au hasard parmi celles qui sont enregistrées.
+const POOL_REPLAY = { match: "replay_set", set: "replay_set", sauvee_match: "replay_sauvee", sauvee_set: "replay_sauvee", smash: "replay_smash", serie: "replay_serie", egalites: "replay_serie" };
+function ligneReplay(pool, genre = "m") {
+  const l = (POOLS[pool] || []).map(it => ligneMoment(it, { genre })).filter(x => x && voix.fichiers.has(x.id));
+  return l.length ? l[Math.floor(Math.random() * l.length)] : null;
+}
 function jouerReplay(liste, apres = () => {}) {
   if (!liste.length) { apres(); return; }
+  voix.arreter();
   const ov = $("replay"), vite = reduitMouvement();
   let i = 0, t = null, fini = false;
-  const fermer = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; apres(); };
+  const fermer = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); apres(); };
   $("rpPasser").onclick = fermer;
   $("rpNomMoi").textContent = nomAffiche(P); $("rpNomAdv").textContent = OPP.nom;
   $("rpMiniMoi").innerHTML = avatarSVG(avMoi()); $("rpMiniAdv").innerHTML = avatarSVG(avAdv());
@@ -507,18 +514,23 @@ function jouerReplay(liste, apres = () => {}) {
     $("rpCompte").textContent = liste.length > 1 ? `${i} / ${liste.length}` : "";
     $("rpVerdict").textContent = ""; $("rpCom").textContent = "";
     [[moi, 0], [adv, 1]].forEach(([el, g]) => { el.innerHTML = mainGantee(g, 0, "Poing serré"); el.className = "hand secoue"; });
+    // Roland ou Monique : « Revoyons ça ! » pour la première action, puis un mot sur l'action au dévoilement.
+    const genre = mo.gagnant === 0 ? P.genre : OPP.humain ? OPP.genre : botAuFeminin(OPP) ? "f" : "m";
+    if (i === 1) { const l = ligneReplay("replay_intro"); if (l) voix.dire([l]); }
     t = setTimeout(() => {
       if (fini) return;
       moi.innerHTML = mainGantee(0, mo.a, NOM[mo.a]); adv.innerHTML = mainGantee(1, mo.b, NOM[mo.b]);
       moi.className = "hand ouvre"; adv.className = "hand ouvre";
       const [w, l] = mo.gagnant === 0 ? [mo.a, mo.b] : [mo.b, mo.a];
       $("rpVerdict").textContent = `${mo.smash[mo.gagnant] ? "💥 Smash ! " : ""}${NOM[w]} bat ${NOM[l]}`;
+      const c = ligneReplay(POOL_REPLAY[mo.type], genre);
+      if (c) voix.finiDeParler(() => { if (!fini) voix.dire([c]); }, 1200);
       t = setTimeout(() => {
         if (fini) return;
         (mo.gagnant === 0 ? moi : adv).classList.add("win"); (mo.gagnant === 0 ? adv : moi).classList.add("lose");
         $("rpScoreMoi").textContent = apresPt[0]; $("rpScoreAdv").textContent = apresPt[1];
         try { ambiance.public("clameur", 0.4); } catch { /* sans son */ }
-        t = setTimeout(montrer, vite ? 2200 : 2600);
+        t = setTimeout(montrer, vite ? 2600 : 3200);
       }, vite ? 0 : 700);
     }, vite ? 300 : 2000);
   };
