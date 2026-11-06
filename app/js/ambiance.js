@@ -438,14 +438,26 @@ export class Ambiance {
     for (const k of [this.suivantDans(TOUR_PAUSE, this.chantSuivant), this.suivantDans(TOUR_EXTRAITS, this.extraitSuivant),
       this.suivantDans(TOUR_DEBUT, this.debutSuivant), hymne && "hymne"]) if (k) this.preparer(k);
   }
+  // Le prochain chant personnalisé de la liste (au hasard la première fois ; en duel, la liste alterne les deux joueurs, 6 novembre).
+  persoProchain(perso = []) {
+    const l = perso.filter(id => this.fichiers?.includes(id));
+    if (!l.length) return null;
+    const i = l.indexOf(this.persoSuivant);
+    return l[i < 0 ? Math.floor(Math.random() * l.length) : (i + 1) % l.length];
+  }
   chanter({ vol = 0.55, delai = 0.6, perso = [], alterner = false } = {}) {
-    let persos = perso.filter(id => this.persoBuf?.[id]);
-    if (alterner && persos.length && this.dernierPerso) persos = [];
-    this.dernierPerso = persos.length > 0;
+    // (le prochain de la liste ; s'il n'est pas encore téléchargé, on le prépare et on prend le suivant qui est prêt)
+    let k = this.persoProchain(perso);
+    if (k && !this.persoBuf?.[k]) {
+      this.prechargerPerso([k]);
+      const l = perso.filter(id => this.persoBuf?.[id]), i = perso.indexOf(k);
+      k = l.find(id => perso.indexOf(id) > i) || l[0] || null;
+    }
+    if (alterner && k && this.dernierPerso) k = null;
+    this.dernierPerso = !!k;
     let b;
-    if (persos.length) {
-      this.persoSuivant = persos[(persos.indexOf(this.persoSuivant) + 1) % persos.length];
-      b = this.persoBuf[this.persoSuivant];
+    if (k) {
+      this.persoSuivant = k; b = this.persoBuf[k];
     } else {
       // (les chants entiers tournent, tous à égalité (TOUR_PAUSE) ; un chant pas encore téléchargé : on le prépare pour la prochaine
       // fois, et on se tait cette fois-ci)
