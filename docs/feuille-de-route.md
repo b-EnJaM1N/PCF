@@ -38,7 +38,9 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   avec cette version sont suivis. Mentions légales mises à jour. Lecture (une ligne) :
   `select to_char(arrivee,'DD/MM') arrivee, sum(nouveaux) n, sum(premier_match) fini_1er_match, sum(retour_1j) revenu_j1, sum(retour_7j) revenu_j7 from parcours group by arrivee order by arrivee desc limit 30;`
   Le chiffre « revenu à 7 jours » d'un jour d'arrivée n'est complet que 13 jours plus tard. Prochaine priorité : la sortie
-  sur le Play Store vers le 9 novembre (relance des testeurs, fiche du Store avec « chifoumi », questionnaire Google).
+  sur le Play Store vers le 9 novembre (relance des testeurs, questionnaire Google). Fiche du Store revue le 6 novembre (accord du
+  porteur du projet) : description courte avec « chifoumi », plus de tournois dans la description, 6 captures refaites dont la Carrière
+  solo à la place des tournois (`docs/play-store/fiche.md`) ; reste à les déposer dans la Play Console.
 - **Messages entre les sets** (1er novembre, étape SQL 53) : en duel, pendant la pause entre deux sets, un bouton « 💬 Envoyer un message »
   dans la fenêtre de fin de set ; ouvrir la fenêtre laisse 30 secondes au moins avant le set suivant ; les messages sortent des
   avatars au début du set. Des **annonces** au début de chaque set (avant le match et entre les sets, avec n'importe quel joueur) :

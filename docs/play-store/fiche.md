@@ -12,11 +12,13 @@ Tout ce qu'il faut copier dans la Play Console (Croissance › Présence sur le 
 
 **Envoyé pour examen le 22 octobre** : le nom, la description courte et la description complète (avec la Carrière solo).
 
-**Description courte** (80 caractères au plus, choisie le 22 octobre) :
+**Mise à jour du 6 novembre** (avant la sortie, accord du porteur du projet) : nouvelle description courte avec « chifoumi », description complète sans « Des tournois chaque jour » (le bouton Tournois est caché pour le lancement), avec le stade et les répliques, et les 6 captures refaites.
 
-> Pierre-Feuille-Ciseaux devient un sport : duels et tournois commentés en direct.
+**Description courte** (80 caractères au plus, choisie le 6 novembre) :
 
-(80 caractères tout juste, d'où l'absence de « Le » au début. Ancienne, du 3 octobre : « Le hasard n'existe pas : lis ton adversaire et deviens champion de Chifoumi. »)
+> Le chifoumi devient un sport : duels, carrière et matchs commentés en direct.
+
+(77 caractères. Ancienne, du 22 octobre : « Pierre-Feuille-Ciseaux devient un sport : duels et tournois commentés en direct. »)
 
 **Description complète** (4 000 caractères au plus ; le texte seul, prêt à copier, est dans `description.txt`) :
 
@@ -26,20 +28,21 @@ Tout ce qu'il faut copier dans la Play Console (Croissance › Présence sur le 
 >
 > Sur HandSlam, deviner ces réflexes devient un art : observe, anticipe, frappe au bon moment. Et méfie-toi : ton adversaire te lit aussi.
 >
-> Sets, balles de match, arbitre, commentateurs survoltés, tournois et classements : bienvenue dans le Pierre-Feuille-Ciseaux joué comme un sport de haut niveau. 🎾✂️
+> Sets, balles de match, arbitre, commentateurs survoltés, stade en délire et classements : bienvenue dans le chifoumi joué comme un sport de haut niveau. 🎾✂️
 >
 > UN VRAI MATCH
-> • Des sets de 11 points, des balles de set et de match, un arbitre et deux commentateurs, Roland et Monique, qui ne laissent rien passer.
+> • Des sets de 11 points, des balles de set et de match, un arbitre et deux commentateurs, Roland et Monique, qui ne laissent rien passer : plus de 1 000 répliques enregistrées.
+> • Un vrai stade : chants de supporters, huées, bronca, et l'hymne avant les finales.
 > • 8 secondes pour choisir ton coup : de quoi réfléchir, pas de quoi hésiter.
 > • À la fin de chaque match, ta Une de « L'Écho du HandSlam » à partager.
 >
 > LIS TON ADVERSAIRE
-> • L'encadré « Lire l'adversaire » te montre ses signes préférés et ses réflexes, par exemple « Après une défaite, il change de signe (6 fois sur 7) ».
+> • Avant chaque match, son dossier : ses signes préférés et ses réflexes, par exemple « Après une défaite, il change de signe (6 fois sur 7) ».
 > • L'appli te dit aussi quand c'est toi qui deviens prévisible.
 >
 > TA CARRIÈRE EN SOLO
-> • Pars du Circuit Amateur et grimpe jusqu'à l'Élite : 5 circuits de 12 joueurs, contre 64 bots qui ont chacun leur caractère.
-> • Une saison de 11 journées, puis les playoffs pour monter, ou le maintien pour ne pas descendre, avec barrages à la clé.
+> • Pars du Circuit Amateur et grimpe jusqu'à l'Élite : 5 circuits, contre 64 bots qui ont chacun leur caractère.
+> • Une saison, puis les playoffs pour monter, et des barrages pour ne pas descendre.
 > • La Coupe Monique-Latour : 64 joueurs, toutes divisions confondues, tirage au sort à chaque tour. Le petit poucet peut faire tomber le roi.
 > • Coupes, boucliers et trophées à collectionner dans ta vitrine, et des récompenses qui ne s'achètent pas : il faut les gagner.
 >
@@ -47,16 +50,12 @@ Tout ce qu'il faut copier dans la Play Console (Croissance › Présence sur le 
 > • Entraîne-toi contre des bots au caractère bien trempé : Bambi le débutant, Chaos l'imprévisible, Rancune, le Professeur, Titan…
 > • Le match du jour : le même défi pour tout le monde, un seul essai, un résultat à partager.
 > • Défie tes amis en direct, par pseudo ou par lien, ou lance une partie rapide contre un joueur de ton niveau.
->
-> DES TOURNOIS CHAQUE JOUR
-> • Le freeroll gratuit chaque soir à 20 h.
-> • Des heads-up et des Sit & Go qui démarrent dès que la salle est pleine.
-> • Des tournois et des championnats entre amis, avec un niveau officiel et des classements.
+> • Crée des cercles avec tes amis : votre classement, vos tournois et vos championnats.
 >
 > TON STYLE
 > • Ta carte de joueur, de Bois à Légende, avec tes notes et ton surnom.
-> • Ton avatar, ton cri de victoire, ta poignée de main, et plus de 40 trophées à débloquer.
-> • Crée des cercles avec tes amis et affrontez-vous dans leur classement.
+> • Ta main (gant, couleurs, motifs), ton cri de victoire, ta poignée de main, et plus de 40 trophées à débloquer.
+> • Les Cahiers du HandSlam : la revue du chifoumi, entre philosophie, technique et chroniques.
 >
 > BON À SAVOIR
 > • Gratuit, sans publicité.
@@ -70,9 +69,9 @@ Tout ce qu'il faut copier dans la Play Console (Croissance › Présence sur le 
 |---|---|
 | Icône de l'appli (512 × 512) | `icone-512.png` |
 | Image de présentation (1 024 × 500) | `banniere-1024x500.png` |
-| Captures d'écran du téléphone (dans cet ordre) | `capture-1-match.png`, `capture-2-lire.png`, `capture-3-une.png`, `capture-4-carte.png`, `capture-5-tournois.png`, `capture-6-amis.png` |
+| Captures d'écran du téléphone (dans cet ordre) | `capture-1-match.png`, `capture-2-lire.png`, `capture-3-une.png`, `capture-4-carte.png`, `capture-5-carriere.png`, `capture-6-amis.png` |
 
-Captures faites dans l'appli (version du 7 octobre 2026), en 1 080 × 1 920. Il manque des écrans en ligne (Sit & Go, tournois programmés) : à ajouter avec un compte, plus tard.
+Captures refaites le 6 novembre 2026 dans l'appli (version de lancement), en 1 080 × 1 920 : le match, le dossier de l'adversaire, la Une, la carte de joueur, la Carrière solo (à la place des tournois), le menu Jouer. Dans la Play Console, remplacer les 6 anciennes captures par celles-ci (supprimer l'ancienne n° 5, « Des tournois chaque jour »).
 
 ## Autres renseignements
 
