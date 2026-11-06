@@ -836,9 +836,13 @@
   <div class="replay-boite">
     <div class="replay-bandeau"><span class="replay-point" aria-hidden="true"></span>REPLAY</div>
     <p class="replay-titre" id="rpTitre"></p>
-    <p class="replay-score" id="rpScore"></p>
-    <div class="replay-mains"><span class="replay-main" id="rpMoi"></span><span class="replay-contre">contre</span><span class="replay-main" id="rpAdv"></span></div>
-    <p class="replay-verdict" id="rpVerdict"></p>
+    <section class="board">
+      <div class="side me"><div class="name"><span class="mini" id="rpMiniMoi"></span><span id="rpNomMoi"></span></div><div class="score" id="rpScoreMoi">0</div></div>
+      <div class="side bot"><div class="name"><span class="mini" id="rpMiniAdv"></span><span id="rpNomAdv"></span></div><div class="score" id="rpScoreAdv">0</div></div>
+      <div class="status" id="rpStatus"></div>
+    </section>
+    <div class="arena"><div class="hand" id="rpMoi"></div><div class="vs">contre</div><div class="hand" id="rpAdv"></div></div>
+    <div class="verdict" id="rpVerdict"></div>
     <p class="replay-com" id="rpCom"></p>
     <p class="replay-compte" id="rpCompte"></p>
     <button class="btn alt" id="rpPasser">Passer ⏭</button>
