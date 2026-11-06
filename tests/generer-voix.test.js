@@ -12,8 +12,9 @@ test("les voix : un identifiant ElevenLabs pour chaque rôle, et aucune clé sec
 });
 
 test("le texte pour la voix : l'indication de jeu du personnage, puis la réplique", () => {
-  const monique = [...CATALOGUE.values()].find(r => r.texte === "Muscle ton jeu, Robert. Muscle ton jeu.");
-  assert.equal(texteVoix(monique), "[sarcastic] Muscle ton jeu, Robert. Muscle ton jeu.", "Monique cassante sur une série de points perdus");
+  const monique = [...CATALOGUE.values()].find(r => r.texte === "Ça commence à ressembler à une correction.");
+  assert.equal(texteVoix(monique), "[sarcastic] Ça commence à ressembler à une correction.", "Monique cassante sur une série de points perdus");
+  assert.match(texteVoix(CATALOGUE.get("commentatrice_serie_contre_02")), /^\[stern\] /, "un ton visé par identifiant passe avant celui de la situation");
   assert.match(texteVoix(CATALOGUE.get("commentatrice_dialogue_avant_match_01")), /^\[deadpan\] /, "sinon, son ton par défaut");
   assert.match(texteVoix(CATALOGUE.get("commentateur_balle_match_convertie_03")), /^\[excited\] \[shouting\] /, "Roland enflammé sur la balle de match");
   assert.match(texteVoix(CATALOGUE.get("commentateur_tension_01")), /^\[nervous\] \[whispers\] /, "Roland fébrile dans la tension");

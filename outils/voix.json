@@ -82,6 +82,14 @@
             "commentatrice_dialogue_figure_marteau_02",
             "commentatrice_dialogue_figure_parapluie_02"
           ]
+        },
+        {
+          "nom": "remontée de bretelles",
+          "indication": "[stern] [scolding, firm and commanding, like a coach giving orders]",
+          "situations": [],
+          "ids": [
+            "commentatrice_serie_contre_02"
+          ]
         }
       ]
     },
