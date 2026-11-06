@@ -473,6 +473,14 @@ sans aucun identifiant : le téléphone garde lui-même son jour d'arrivée. Seu
 sont suivis. **À coller avant la fusion.** Pour lire les chiffres (une ligne) :
 `select to_char(arrivee,'DD/MM') arrivee, sum(nouveaux) n, sum(premier_match) fini_1er_match, sum(retour_1j) revenu_j1, sum(retour_7j) revenu_j7 from parcours group by arrivee order by arrivee desc limit 30;`
 
+## 1 quinquagies nonies. Le premier match des nouveaux : lancé, un coup joué (étape 59)
+
+Même manipulation que d'habitude avec [`etape-59-premier-match-lance.sql`](etape-59-premier-match-lance.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-59-premier-match-lance.sql).
+Deux colonnes de plus dans « parcours » : les nouveaux qui ont **lancé** leur premier match, et ceux qui y ont **joué un coup**
+(pour savoir où décrochent ceux qui ne le finissent pas). Toujours anonyme. **À coller avant la fusion.** Pour lire (une ligne) :
+`select to_char(arrivee,'DD/MM') arrivee, sum(nouveaux) n, sum(premier_lance) lance, sum(premier_coup) un_coup, sum(premier_match) fini, sum(retour_1j) j1, sum(retour_7j) j7 from parcours group by arrivee order by arrivee desc limit 30;`
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
