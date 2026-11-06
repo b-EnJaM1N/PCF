@@ -10,6 +10,7 @@ import { EMBLEMES, blasonSVG, normaliserBlason, blasonParDefaut, erreurNomCercle
 import { lire, ecrire } from "./stockage.js";
 import { clePseudo } from "./chants-perso.js";
 import { installerTournois } from "./ecran-tournois.js";
+import { fantomeVisible } from "./fantome.js";
 import { championDuCercle } from "./tournoi-logique.js";
 import { profils } from "./duel-serveur.js";
 
@@ -218,6 +219,13 @@ export function installerCercles(ctx) {
     $("aStats").innerHTML = `<p class="hint">Chargement…</p>`; dire("aMsg", "");
     const deja = !!ctx.dejaDefie?.(id);
     $("aDefier").disabled = deja; $("aDefier").textContent = deja ? texteAttente(a) : "Défier";
+    // Son fantôme (fantome.js) : un bot qui joue comme lui, d'après ses matchs en ligne (pour l'instant sur la version de test).
+    $("aFantome").hidden = true;
+    if (fantomeVisible() && ctx.fantomeDe) ctx.fantomeDe(id).then(ok => {
+      if (amiOuvert !== id) return;
+      $("aFantome").hidden = false; $("aFantome").disabled = !ok;
+      $("aFantome").textContent = ok ? "👻 Défier son fantôme" : "👻 Son fantôme : pas encore assez de matchs en ligne";
+    });
     let duels = null;
     try {
       duels = await duelsAvec(id); const r = statsFaceAFace(duels, uid);
@@ -241,6 +249,7 @@ export function installerCercles(ctx) {
     $("aCarte").disabled = false;
     if (msg) dire("aMsg", msg);
   });
+  $("aFantome").addEventListener("click", () => { const a = amis.find(x => x.id === amiOuvert); if (a) ctx.jouerFantome?.(a); });
   $("aDefier").addEventListener("click", async () => {
     const a = amis.find(x => x.id === amiOuvert); if (!a) return;
     $("aDefier").disabled = true;
