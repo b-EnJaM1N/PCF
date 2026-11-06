@@ -1402,7 +1402,8 @@ function presenterSpeaker() {
   } else if (fan) {
     const l = unDe("perso_supporters", fan.genre);
     if (l) av.commentaires.unshift(l);
-    ambiance.prechargerPerso(perso).then(() => { if (faceAFaceOuvert && !S.passe) ambiance.chanter({ vol: 0.5, delai: 0.3, perso }); });
+    // (seulement le chant qui va passer, pour qu'il soit prêt avant la fin de la présentation ; les autres au premier point)
+    ambiance.prechargerPerso([ambiance.persoProchain(perso)].filter(Boolean)).then(() => { if (faceAFaceOuvert && !S.passe) ambiance.chanter({ vol: 0.5, delai: 0.3, perso }); });
   } else if (S.annonces?.enjeu && ambiance.chanter({ vol: 0.5, delai: 0.3 })) {
     const l = unDe("avant_ambiance");
     if (l) av.commentaires.unshift(l);

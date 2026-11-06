@@ -16,7 +16,13 @@ export const COURTS_PERSO = {
 
 export const clePseudo = (pseudo, numero) => (pseudo && numero ? `${String(pseudo).trim().toLowerCase()}#${numero}` : null);
 // Les chants des joueurs du match ({ pseudo, numero } ou null).
-export const chantsPerso = (...joueurs) => joueurs.flatMap(j => (j ? CHANTS_PERSO[clePseudo(j.pseudo, j.numero)] || [] : []));
+// En duel entre deux joueurs qui ont leurs chants, les deux listes alternent (un chant de l'un, un chant de l'autre…) : chacun
+// entend aussi le chant de son adversaire (6 novembre, demande du porteur du projet).
+export const chantsPerso = (...joueurs) => {
+  const listes = joueurs.map(j => (j ? CHANTS_PERSO[clePseudo(j.pseudo, j.numero)] || [] : [])), l = [];
+  for (let i = 0; i < Math.max(0, ...listes.map(x => x.length)); i++) for (const x of listes) if (x[i]) l.push(x[i]);
+  return l;
+};
 export const courtsPerso = (...joueurs) => joueurs.flatMap(j => (j ? COURTS_PERSO[clePseudo(j.pseudo, j.numero)] || [] : []));
 // Le joueur du match que le public soutient (le premier qui a des chants), ou null : pour les répliques (« pour lui », « pour elle »).
 export const soutenu = (...joueurs) => joueurs.find(j => j && CHANTS_PERSO[clePseudo(j.pseudo, j.numero)]) || null;
