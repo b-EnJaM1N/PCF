@@ -111,3 +111,13 @@ test("les chants personnalisés : seulement pour les joueurs du match, quelle qu
   const { COURTS_PERSO } = await import("../app/js/chants-perso.js");
   for (const id of [...Object.values(CHANTS_PERSO).flat(), ...Object.values(COURTS_PERSO).flat()]) assert.ok(existsSync(new URL(`../app/audio/${id}.mp3`, import.meta.url)), id);
 });
+
+test("en duel, les deux téléphones font le même tirage de chants", async () => {
+  const { chantsPersoCommuns, hashTexte } = await import("../app/js/chants-perso.js");
+  const benja = { pseudo: "Benja-Main", numero: 3528 }, chiro = { pseudo: "Le Chiromancien", numero: 6047 };
+  assert.deepEqual(chantsPersoCommuns(benja, chiro), chantsPersoCommuns(chiro, benja), "même liste, dans le même ordre, des deux côtés");
+  assert.equal(chantsPersoCommuns(benja, chiro).length, 7);
+  assert.equal(hashTexte("duel-42:pause1"), hashTexte("duel-42:pause1"));
+  assert.notEqual(hashTexte("duel-42:pause1"), hashTexte("duel-42:pause2"));
+});
+
