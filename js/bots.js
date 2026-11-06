@@ -3,6 +3,7 @@
 // la découvrir en lisant l'historique fait partie du plaisir.
 import { contre, signeAuHasard, balle as balleDe, PIERRE, FEUILLE, CISEAUX } from "./regles.js";
 import { Lecteur } from "./analyse.js";
+import { coupFantome } from "./fantome.js";
 
 export const BOTS = [
   { id: "rocky", nom: "Rocky", style: "L'agressif", desc: "adore la Pierre. Beaucoup trop.", elo: 850, specialite: "La Pierre", imprevisibilite: 30, av: { symbole: "pierre", fond: "terre", gant: "rouge", poignet: "noir", motif: "uni" } },
@@ -126,6 +127,7 @@ const finDeSet = ctx => !!ctx && (ctx.balle || Math.max(...ctx.points) >= ctx.po
 // hist : coups vus par le bot, { moi, adv, res: "g"|"p"|"e" }.
 // ctx (facultatif) : { points: [bot, adversaire], pointsParSet, set (0 pour le premier), balle } — pour les bots qui tiennent compte du score.
 export function choisirCoup(bot, hist, rng = Math.random, ctx = null) {
+  if (bot.modele) return coupFantome(bot.modele, hist, rng);   // le fantôme d'un ami (fantome.js)
   const n = hist.length, dernier = hist[n - 1], R = rng();
   switch (bot.id) {
     case "bambi": {
