@@ -46,6 +46,7 @@ import { chantsPerso, courtsPerso, soutenu, clePseudo } from "./chants-perso.js"
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
+import { modeleFantome } from "./fantome.js";
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
@@ -756,7 +757,7 @@ function finir() {
   const nouveaux = n ? enregistrerMatch(P, {
     match: m, stats: S.stats, devines: S.suivi.devines, lisibles: S.suivi.lisibles,
     adversaire: { id: OPP.id, elo: OPP.elo, nom: S.duel ? `${OPP.nom}#${OPP.numero}` : OPP.nom },
-    finaleTournoi: enTournoi && tourDe(T, S.tour).finale, compteNiveau: !S.duel,
+    finaleTournoi: enTournoi && tourDe(T, S.tour).finale, compteNiveau: !S.duel && !S.contreFantome,   // (le fantôme : ni niveau ni duel)
     abandon: !!special && !gagne, officiel: !!(S.duel && D?.duel?.classe), niveauMoi: monClassement ?? 1200, niveauAdv: OPP.classement ?? 1200,
     finaleEnLigne: !!(S.duel && D?.tourVoix === "finale"), sitAndGo: !!(S.duel && D?.direct), grandChelem: !!(S.duel && D?.grandChelem),
   }) : [];
@@ -778,7 +779,7 @@ function finir() {
   if (n && !special) compterPremierMatch(envoyerParcours);   // le parcours des nouveaux : premier match fini, sans abandon (anonyme, une seule fois)
   // « La Une » : on garde de quoi raconter ce match.
   S.pourUne = n && !special ? {
-    etape: S.carriere ? S.carriere.coupe ? S.carriere.etape.replace(" · ", ", ") : `${CIRCUITS[S.carriere.circuit]}, ${S.carriere.etape.charAt(0).toLowerCase()}${S.carriere.etape.slice(1)}` : S.contreBotRapide ? "Partie rapide contre un bot" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.direct ? (D.tourVoix === "finale" && D.nbTours > 1 ? "Finale de Sit & Go" : "Sit & Go") : D.championnat ? "Championnat du cercle" : D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
+    etape: S.carriere ? S.carriere.coupe ? S.carriere.etape.replace(" · ", ", ") : `${CIRCUITS[S.carriere.circuit]}, ${S.carriere.etape.charAt(0).toLowerCase()}${S.carriere.etape.slice(1)}` : S.contreBotRapide ? "Partie rapide contre un bot" : S.contreFantome ? "Contre un fantôme" : S.duel && D?.duel?.rapide ? `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}` : S.duel ? (D?.duel?.tournoi_id ? (D.direct ? (D.tourVoix === "finale" && D.nbTours > 1 ? "Finale de Sit & Go" : "Sit & Go") : D.championnat ? "Championnat du cercle" : D.tourVoix === "finale" ? "Finale du tournoi" : "Tournoi en ligne") : D?.duel?.classe === false ? "Duel amical" : "Duel officiel")
       : enTournoi ? `${tourDe(T, S.tour).singulier} du HandSlam Open` : "Match d'entraînement",
     finale: !!S.annonces.finale, numero: P.matchs, enjeu: S.duel ? D?.duel?.enjeu || null : null,
   } : null;
@@ -789,7 +790,7 @@ function finir() {
   $("revanche").hidden = !S.duel || !!tournoiId; $("retourDuels").hidden = !S.duel || !!tournoiId || rapide; $("revanche").disabled = false;
   $("revanche").textContent = D?.duel?.enjeu ? "🔁 Revanche, même enjeu" : "🔁 Revanche";   // en un geste, avec le même format et le même enjeu
   $("encoreRapide").hidden = !rapide;
-  if (S.contreBotRapide || S.matchJour || S.carriere) $("again").hidden = true;
+  if (S.contreBotRapide || S.matchJour || S.carriere || S.contreFantome) $("again").hidden = true;
   $("carSuite").hidden = !S.carriere;
   $("mdjPartagerFin").hidden = !S.matchJour;
   $("voirTournoi").hidden = !tournoiId;
@@ -1291,6 +1292,7 @@ function ouvrirFaceAFace() {
   if (D?.duel?.enjeu) $("foFmt").textContent += ` · 🎯 Enjeu : « ${D.duel.enjeu} »`;
   if (S.carriere) $("foStage").textContent = S.carriere.coupe ? `🏆 ${S.carriere.etape}` : `🏅 ${CIRCUITS[S.carriere.circuit]} · ${S.carriere.etape}`;
   else if (S.contreBotRapide) $("foStage").textContent = "Partie rapide · 🤖 contre un bot";
+  else if (S.contreFantome) $("foStage").textContent = "👻 Contre un fantôme";
   else if (D?.duel?.rapide) $("foStage").textContent = /🤖$/.test(OPP.nom || "") ? "Partie rapide · 🤖 contre un bot" : `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}`;
   $("foAvMe").innerHTML = avatarSVG(avMoi()); $("foAvBot").innerHTML = avatarSVG(avAdv());
   $("foNameMe").textContent = pr.joueur.nom; $("foSubMe").textContent = pr.joueur.sous; $("foRecMe").textContent = pr.joueur.bilan;
@@ -1358,6 +1360,7 @@ async function afficherDossier() {
     bloc.hidden = false; corps.innerHTML = corpsDossier(d, source, vide);
   };
   bloc.hidden = true;
+  if (adv.fantome) { montrer(dossier(adv.dossierK, { elle: false }), d => `Le fantôme joue comme lui, d'après ses ${d.matchs} derniers matchs en ligne (${d.coups} coups).`, ""); return; }
   if (!adv.humain) { bloc.hidden = false; corps.innerHTML = corpsDossierBot(adv); return; }
   if (!adv.uid || !compteUI?.session()) return;
   corps.innerHTML = `<p class="hint">Ouverture du dossier…</p>`; bloc.hidden = false;
@@ -1702,7 +1705,8 @@ function renderFiche() {
       const adv = botParId(d.adv);
       const nom = adv ? adv.nom : d.nomAdv;
       // Le nom de l'adversaire se touche : notre face-à-face.
-      const qui = nom ? ` contre <button class="linkbtn nom-adv" data-adv="${esc(d.adv)}" data-nom="${esc(nom)}">${esc(nom)}</button>` : "";
+      const qui = !nom ? "" : String(d.adv).startsWith("fantome:") ? ` contre ${esc(nom)}`   // (un fantôme : pas de fiche à ouvrir)
+        : ` contre <button class="linkbtn nom-adv" data-adv="${esc(d.adv)}" data-nom="${esc(nom)}">${esc(nom)}</button>`;
       return `<div class="ln"><span>${d.gagne ? "✅ Victoire" : "❌ Défaite"} ${d.sets}${qui}</span><span style="font-weight:400;color:var(--muted)">${esc(d.detail)}</span></div>`;
     }).join("");
   }
@@ -2498,6 +2502,8 @@ cerclesUI = installerCercles({
   dejaDefie: id => !!duelsUI?.dejaDefie(id),
   voirCarte: id => voirCarteDe(id),
   dossierEtMains: (uid, nom, duels, elle) => dossierEtMains(uid, nom, duels, elle),
+  fantomeDe: id => chargerFantome(id).then(f => !!f),
+  jouerFantome,
   lancerDuel,
   trophees: donnees => gagnerTrophees(accorderTitres(P, titresEnLigne(donnees))),
   surClassement: (points, joues = 0, division = null) => {
@@ -2522,6 +2528,44 @@ $("toast").addEventListener("click", () => { $("toast").hidden = true; });
 
 // ---------------------------------------------------------------- Sit & Go
 // Partie rapide : personne n'est disponible, on joue contre le bot du niveau le plus proche (et on le dit).
+// ---------------------------------------------------------------- le fantôme d'un ami (fantome.js)
+// Un bot qui joue comme lui, d'après ses derniers matchs en ligne ; un set de 7. Le match compte dans le total de matchs joués,
+// mais ni dans le niveau, ni dans les duels, ni dans le classement (6 novembre, décisions du porteur du projet).
+const fantomes = new Map();
+async function chargerFantome(id) {
+  if (fantomes.has(id)) return fantomes.get(id);
+  let matchs = null;
+  try { matchs = await dossierJoueur(id); } catch { return null; }   // (sans réseau : on réessaiera)
+  const modele = modeleFantome(matchs);
+  let k = compteVide();
+  for (const m of matchs || []) k = additionner(k, compterMatch(m.map(c => ({ a: c.a, b: c.b, gagnant: c.g ?? null }))));
+  const f = modele ? { modele, k } : null;
+  fantomes.set(id, f);
+  return f;
+}
+async function jouerFantome(a) {
+  if (D && !D.fini) return;
+  const f = await chargerFantome(a.id); if (!f) return;
+  voix.arreter(); arreterMinuteur(); if (S) clearTimeout(S.decompte);
+  const nom = String(a.pseudo || "").replace(/#\d+$/, "");
+  OPP = {
+    id: `fantome:${a.id}`, fantome: true, modele: f.modele, dossierK: f.k, nom: `Fantôme de ${nom}`, style: "👻 Le fantôme",
+    desc: `joue comme ${nom}, d'après ses ${f.modele.matchs} derniers matchs en ligne`, elo: a.classement ?? 1200,
+    specialite: `${EMOJI[f.modele.favori]} ${NOM[f.modele.favori]}`, imprevisibilite: null, av: { ...(a.avatar || {}), fantome: true },
+  };
+  WIN = 1;
+  S = {
+    match: nouveauMatch({ pointsParSet: 7, setsGagnants: 1 }),
+    stats: nouvellesStats(), annonces: avecAudible(nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre })), suivi: new Suivi(),
+    tour: null, occupe: false, enJeu: false, contreFantome: true,
+  };
+  preparerEcranMatch();
+  $("startCard").hidden = true; $("tourCard").hidden = true;
+  $("ruleTxt").textContent = `Contre le fantôme de ${nom} · ${texteFormat(S.match.format)}`;
+  rafraichirAvatars(); render();
+  aller("viewMatch");
+  ouvrirFaceAFace();
+}
 function jouerBotRapide(format) {
   if (D && !D.fini) return;
   const f = FORMATS_RAPIDES[format] || FORMATS_RAPIDES.officiel;
