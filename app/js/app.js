@@ -572,7 +572,8 @@ function apresPoint(evt, a, cel, rp) {
   if (evt.finSet) {
     // La pause entre les sets : une fois sur deux, les supporters chantent (le chant baisse sous les commentaires, s'éteint au
     // premier échange du set suivant ; 3 novembre).
-    if (Math.random() < 0.5) ambiance.chanter({ vol: 0.5, delai: 2.5, perso: persoDuMatch(), alterner: true });
+    // (3 fois sur 4 ; un chant personnalisé d'abord, puis un habituel, en alternance : 6 novembre, demande du porteur du projet)
+    if (Math.random() < 0.75) ambiance.chanter({ vol: 0.5, delai: 2.5, perso: persoDuMatch(), alterner: true });
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
     const suivant = annonceDebutSet(m), decisif = setDecisif(m);
     const nouveauSet = () => {
