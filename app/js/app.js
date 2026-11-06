@@ -974,9 +974,14 @@ $("masquerMessages").checked = masquerMessages();
 $("masquerMessages").addEventListener("change", e => { ecrire("masquerMessages", e.target.checked); if (D?.duel) afficherMessages(D.duel); });
 
 // Mon ami ? (une demande d'ami acceptée) — cherché une fois par duel.
-async function verifierAmi() {
+function verifierAmi() {
   const d = D;
   if (!d) return;
+  d.amiPret = verifierAmiDe(d);
+}
+// (la présentation attend la réponse, au plus 1,5 s : les chants des deux amis en dépendent ; 6 novembre)
+const attendreAmi = () => (S?.duel && D?.amiPret ? Promise.race([D.amiPret, new Promise(ok => setTimeout(ok, 1500))]) : Promise.resolve());
+async function verifierAmiDe(d) {
   try { const amis = await mesAmis(); if (D === d) { d.ami = amis.some(a => a.id === OPP.uid && a.statut === "amis"); afficherMessages(d.duel); } }
   catch { /* sans la liste, pas de chambrage */ }
 }
@@ -1482,8 +1487,12 @@ function presenterSpeaker() {
   } else if (fan) {
     const l = unDe("perso_supporters", fan.genre);
     if (l) av.commentaires.unshift(l);
-    // (seulement le chant qui va passer, pour qu'il soit prêt avant la fin de la présentation ; les autres au premier point)
-    ambiance.prechargerPerso([ambiance.persoProchain(perso)].filter(Boolean)).then(() => { if (faceAFaceOuvert && !S.passe) ambiance.chanter({ vol: 0.5, delai: 0.3, perso }); });
+    // (seulement le chant qui va passer, pour qu'il soit prêt avant la fin de la présentation ; les autres au premier point ;
+    // en duel, une fois qu'on sait si l'adversaire est un ami : ses chants passent aussi)
+    attendreAmi().then(() => {
+      const liste = persoDuMatch();
+      return ambiance.prechargerPerso([ambiance.persoProchain(liste)].filter(Boolean)).then(() => { if (faceAFaceOuvert && !S.passe) ambiance.chanter({ vol: 0.5, delai: 0.3, perso: liste }); });
+    });
   } else if (S.annonces?.enjeu && ambiance.chanter({ vol: 0.5, delai: 0.3 })) {
     const l = unDe("avant_ambiance");
     if (l) av.commentaires.unshift(l);
