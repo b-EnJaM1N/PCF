@@ -760,6 +760,10 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .fenetre-msg h2 { margin-bottom: 4px; }
 .msg-rubrique { margin: 14px 0 6px; font-size: .85rem; font-weight: 700; color: var(--muted); }
 .fenetre-msg .msg-puces { justify-content: flex-start; }
+.msg-annonces { display: grid; grid-template-columns: minmax(0, 1.1fr) repeat(3, minmax(0, 1fr)); gap: 5px; align-items: center; }
+.msg-annonce-titre { font-size: .85rem; line-height: 1.2; }
+.msg-annonces button { font: inherit; color: var(--line); background: var(--panel); border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; padding: 7px 2px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .8rem; }
+.msg-annonces button:disabled { opacity: .5; }
 .fenetre-msg .msg-puces button { font-size: .95rem; padding: 8px 13px; }
 .msg-libre { display: flex; gap: 8px; }
 .msg-libre input { flex: 1; min-width: 0; font: inherit; font-size: 1rem; padding: 9px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .3); background: var(--panel); color: var(--line); }
