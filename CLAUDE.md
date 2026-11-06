@@ -4,7 +4,7 @@
 - Il est français, non-développeur, sur un téléphone Android. Explique simplement, en français, une étape à la fois.
 - **Demande-lui avant tout choix qui coûte de l'argent ou qui est difficile à changer ensuite.**
 - **Aucun mot de passe ni clé secrète dans le code : le projet GitHub est public.** Pas non plus de détails sur ses démarches commerciales ou administratives (prestataires, remboursements, prix, budgets, dotations, statut d'entreprise) dans les fichiers du dépôt : il les garde de son côté (décision du 27 octobre). (La clé « publishable » de Supabase dans `app/js/config.js` est publique par nature.)
-- Quand il faut coller du SQL dans Supabase depuis son téléphone, donne un lien `raw.githubusercontent.com` vers le fichier, ou une requête sur une seule ligne (le collage de plusieurs lignes se passe mal sur téléphone). Éditeur SQL : https://supabase.com/dashboard/project/fvfdcyglwngosxfougje/sql/new
+- Quand il faut coller du SQL dans Supabase depuis son téléphone, donne un lien `raw.githubusercontent.com` vers le fichier, ou une requête sur une seule ligne (le collage de plusieurs lignes se passe mal sur téléphone). Éditeur SQL (le redonner **à chaque fois** qu'on lui donne une requête, demande du 6 novembre) : https://supabase.com/dashboard/project/fvfdcyglwngosxfougje/sql/new
 
 ## Façon de travailler
 - On travaille sur la branche indiquée par la session, on pousse, puis on donne le lien de test https://handslam.fr/preview/ et on ouvre une demande de fusion (dépôt b-EnJaM1N/PCF). Il valide lui-même la fusion → version officielle https://handslam.fr/.
