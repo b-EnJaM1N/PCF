@@ -1359,7 +1359,8 @@ async function afficherDossier() {
   } catch { montrer(null, null, "Dossier indisponible pour l'instant."); }
 }
 // Les chants de supporters personnalisés des joueurs de ce match (moi, et mon adversaire en duel) : voir chants-perso.js.
-const joueursDuMatch = () => [{ pseudo: P.pseudo, numero: P.numero, genre: P.genre }, OPP?.humain ? { pseudo: OPP.nom, numero: OPP.numero, genre: OPP.genre } : null];
+// (l'adversaire compte pour les chants personnalisés seulement entre amis : entre inconnus, chacun n'entend que les siens ; 6 novembre)
+const joueursDuMatch = () => [{ pseudo: P.pseudo, numero: P.numero, genre: P.genre }, OPP?.humain && D?.ami ? { pseudo: OPP.nom, numero: OPP.numero, genre: OPP.genre } : null];
 const persoDuMatch = () => chantsPerso(...joueursDuMatch());
 // Les commentateurs lancent le match, à voix haute (pas de speaker : sa présentation n'est ni dite ni affichée ; les surnoms
 // dits par Roland ont été abandonnés le 3 novembre).
@@ -1402,7 +1403,8 @@ function presenterSpeaker() {
   } else if (fan) {
     const l = unDe("perso_supporters", fan.genre);
     if (l) av.commentaires.unshift(l);
-    ambiance.prechargerPerso(perso).then(() => { if (faceAFaceOuvert && !S.passe) ambiance.chanter({ vol: 0.5, delai: 0.3, perso }); });
+    // (seulement le chant qui va passer, pour qu'il soit prêt avant la fin de la présentation ; les autres au premier point)
+    ambiance.prechargerPerso([ambiance.persoProchain(perso)].filter(Boolean)).then(() => { if (faceAFaceOuvert && !S.passe) ambiance.chanter({ vol: 0.5, delai: 0.3, perso }); });
   } else if (S.annonces?.enjeu && ambiance.chanter({ vol: 0.5, delai: 0.3 })) {
     const l = unDe("avant_ambiance");
     if (l) av.commentaires.unshift(l);

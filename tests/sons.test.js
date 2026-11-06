@@ -101,10 +101,13 @@ test("le public s'agite avec l'enjeu : calme en début de set, plus fort en fin 
 test("les chants personnalisés : seulement pour les joueurs du match, quelle que soit la casse du pseudo", async () => {
   const { chantsPerso, CHANTS_PERSO } = await import("../app/js/chants-perso.js");
   const { existsSync } = await import("node:fs");
-  assert.equal(chantsPerso({ pseudo: "Le Chiromancien", numero: 6047 }).length, 3);
-  assert.equal(chantsPerso({ pseudo: "le chiromancien ", numero: "6047" }).length, 3);
+  assert.equal(chantsPerso({ pseudo: "Le Chiromancien", numero: 6047 }).length, 5);
+  assert.equal(chantsPerso({ pseudo: "le chiromancien ", numero: "6047" }).length, 5);
   assert.equal(chantsPerso({ pseudo: "Le Chiromancien", numero: 1234 }).length, 0, "un autre joueur du même pseudo : rien");
   assert.equal(chantsPerso({ pseudo: "Ben", numero: 1 }, null).length, 0);
+  const duel = chantsPerso({ pseudo: "Benja-Main", numero: 3528 }, { pseudo: "Le Chiromancien", numero: 6047 });
+  assert.equal(duel.length, 7, "les deux joueurs du match");
+  assert.deepEqual(duel.slice(0, 4).map(id => id.includes("benjamain")), [true, false, true, false], "un chant de l'un, un chant de l'autre");
   const { COURTS_PERSO } = await import("../app/js/chants-perso.js");
   for (const id of [...Object.values(CHANTS_PERSO).flat(), ...Object.values(COURTS_PERSO).flat()]) assert.ok(existsSync(new URL(`../app/audio/${id}.mp3`, import.meta.url)), id);
 });

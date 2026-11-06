@@ -13,7 +13,7 @@ Règle d'or : **répondre ce qui est vrai**. Une fausse réponse peut faire reti
 - « Une partie de votre appli est-elle limitée ? » : **Oui** (connexion par e-mail avec un code à usage unique). Laisser vides nom d'utilisateur et mot de passe.
 - Instructions pour l'équipe de Google (à copier) :
 
-> Most features work without an account (training against bots, daily match, HandSlam Open). Online features (duels, quick match, tournaments, circles) need a free account: open the "Ma fiche" tab › "Mon compte", enter any email address you can read, then type the 6-digit code received by email. No password, no payment.
+> Most features work without an account (training against bots, solo career, daily match). Online features (duels, quick match, circles) need a free account: open the "Ma fiche" tab › "Mon compte", enter any email address you can read, then type the 6-digit code received by email. No password, no payment.
 
   (En anglais, car ce sont des équipes de Google partout dans le monde.)
 
@@ -54,7 +54,7 @@ Données **collectées** (toutes : traitées de façon éphémère **Non**, coll
 | Infos personnelles › Adresse e-mail | e-mail du compte, pour se connecter | Fonctionnalités de l'appli ; Gestion du compte |
 | Infos personnelles › ID utilisateur | identifiant du compte, pseudo et numéro (ex. Benji#4821) | Fonctionnalités de l'appli ; Gestion du compte ; Prévention des fraudes, sécurité et conformité |
 | Infos personnelles › Autres infos | pays choisi par le joueur (affiché sur sa fiche) | Fonctionnalités de l'appli |
-| Activité dans les applis › Interactions avec l'appli | duels et coups joués, niveau, tournois, jetons, achats en jetons, trophées ; compteur de visites anonyme (une ouverture par jour, sans identifiant, depuis le 12 octobre) | Fonctionnalités de l'appli ; Analyse |
+| Activité dans les applis › Interactions avec l'appli | duels et coups joués, niveau, tournois, jetons, achats en jetons, trophées ; compteur de visites anonyme (une ouverture par jour, sans identifiant, depuis le 12 octobre ; et depuis le 5 novembre, des totaux anonymes par jour d'arrivée : nouveaux joueurs, premier match fini, retour le lendemain et 7 jours plus tard, étape 58) | Fonctionnalités de l'appli ; Analyse |
 | Activité dans les applis › Autre contenu généré par l'utilisateur | noms de cercles, texte facultatif d'un signalement | Fonctionnalités de l'appli ; Prévention des fraudes, sécurité et conformité |
 | Appareil ou autres ID | abonnement aux notifications de ce téléphone (seulement si on les active) | Fonctionnalités de l'appli ; Communications du développeur (rappels de tournoi) |
 

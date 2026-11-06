@@ -221,11 +221,11 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
         moment = "premier_point_perdu"; ctx.premierPoint = true;
       } else if (g === 1 && !match.scoresSets.length && a === 0 && b === 3 && rng() < 0.6) {   // 0-3 d'entrée : là, c'est un mauvais départ
         moment = "premier_point_perdu"; ctx.departRate = true;
-      } else if (egalitesAvant >= 2 && peutCommenter(2) && rng() < 0.5) {   // un point enfin gagné après des égalités
+      } else if (egalitesAvant >= 2 && peutCommenter(2) && rng() < 0.42) {   // un point enfin gagné après des égalités
         moment = g === 0 ? "apres_egalites_gagne" : "apres_egalites_perdu";
       } else if (g === 0 && !etat.troisPierres && troisMemeSigne(c) !== null && rng() < 0.7) {
         moment = ["trois_pierres", "trois_ciseaux", "trois_feuilles"][troisMemeSigne(c)]; etat.troisPierres = true;   // (une fois par match)
-      } else if (etat.serie.n >= 3 && peutCommenter(3) && rng() < (etat.serie.n === 3 ? 0.45 : 0.75)) {   // une réplique par longueur de série
+      } else if (etat.serie.n >= 3 && peutCommenter(3) && rng() < (etat.serie.n === 3 ? 0.4 : 0.75)) {   // une réplique par longueur de série
         moment = g === 0 ? "serie_pour" : "serie_contre"; ctx.longueur = etat.serie.n; ctx.serie6 = etat.serie.n === 6; ctx.pile4 = etat.serie.n === 4;
       } else if (auto && peutCommenter(4) && rng() < 0.6) {
         moment = "temps_ecoule"; ctx.balleMatch = evt.balleAvant?.type === "match";

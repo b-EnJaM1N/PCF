@@ -146,7 +146,7 @@ export const MOMENTS = {
     { r: "d", t: "Fidèle à lui-même : toujours du mauvais côté.", f: "Fidèle à elle-même : toujours du mauvais côté." },
     { r: "d", t: "Les calculs sont pas bons, Kevin.", clin: "cine" },
     { r: "c", t: "T'es pas venu ici pour souffrir, ok ?", f: "T'es pas venue ici pour souffrir, ok ?", clin: "cine" },
-    { r: "c", t: "Houston, on a un problème !", clin: "cine" },
+    { r: "c", t: "Houston, on a un problème !", clin: "cine", retiree: true },
     { r: "d", t: "Il est en PLS. Comme disent les jeunes.", f: "Elle est en PLS. Comme disent les jeunes." },
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
     { r: "c", t: "Il est en train de perdre le fil !", f: "Elle est en train de perdre le fil !", long: 3 },
@@ -408,7 +408,7 @@ export const MOMENTS = {
     { r: "d", t: "On ne reverra peut-être jamais ça. Tant mieux, j'ai eu mon compte." },
   ],
   defaite: [
-    { r: "d", t: "Au revoir.", clin: "cine" },
+    { r: "d", t: "Au revoir.", clin: "cine", retiree: true },
     { r: "c", t: "Battu, mais pas abattu !", f: "Battue, mais pas abattue !" },
     { r: "c", t: "Il reviendra !", f: "Elle reviendra !", clin: "cine" },
     { r: "d", t: "Il faudra revoir ce match. Ou l'oublier. Je conseille l'oubli." },
@@ -416,7 +416,7 @@ export const MOMENTS = {
     { r: "d", t: "Quelqu'un peut lui expliquer les règles ?" },
     { r: "d", t: "C'est officiel : la stratégie n'était pas au rendez-vous.", retiree: true },   // (retirée le 28 octobre)
     { r: "d", t: "Il va falloir se remettre en question. Ou changer de main." },
-    { r: "c", t: "Il cherche encore où il a perdu la Feuille !", f: "Elle cherche encore où elle a perdu la Feuille !", seul: 2 },
+    { r: "c", t: "Il cherche encore où il a perdu la Feuille !", f: "Elle cherche encore où elle a perdu la Feuille !", seul: 2, retiree: true },
     { r: "d", t: "La sentence est irrévocable.", clin: "cine" },
     { r: "d", t: "Il a le seum. Comme disent les jeunes.", f: "Elle a le seum. Comme disent les jeunes." },
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
