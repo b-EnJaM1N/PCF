@@ -12,7 +12,7 @@ Tout ce qu'il faut copier dans la Play Console (Croissance › Présence sur le 
 
 **Envoyé pour examen le 22 octobre** : le nom, la description courte et la description complète (avec la Carrière solo).
 
-**Mise à jour du 6 novembre** (avant la sortie, accord du porteur du projet) : nouvelle description courte avec « chifoumi », description complète sans « Des tournois chaque jour » (le bouton Tournois est caché pour le lancement), avec le stade et les répliques, et les 6 captures refaites.
+**Mise à jour du 6 novembre** (avant la sortie, accord du porteur du projet) : nouvelle description courte avec « chifoumi », description complète sans « Des tournois chaque jour » (le bouton Tournois est caché pour le lancement), avec le stade et les répliques, et les 6 captures refaites. **Envoyé pour examen le 6 novembre.**
 
 **Description courte** (80 caractères au plus, choisie le 6 novembre) :
 
