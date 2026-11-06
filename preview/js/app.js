@@ -5,7 +5,7 @@ import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
 import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours } from "./social-serveur.js";
-import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch } from "./visites.js";
+import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
 import { carteDe, notesDe, texteRang, rangDe } from "./carte-logique.js";
@@ -358,6 +358,8 @@ function jouer(signe, auto = false, smash = false) {
   if (!S || !S.enJeu || S.occupe || S.match.termine || panneauOuvert || faceAFaceOuvert) return;
   S.occupe = true; arreterMinuteur(); boutons(false);
   const m = S.match;
+  // (le parcours des nouveaux, anonyme : un premier coup joué ; « lancé » aussi, s'il est venu par un autre chemin)
+  if (!m.coups.length && !P.matchs) { compterEtapePremier(envoyerParcours, "premier_lance"); compterEtapePremier(envoyerParcours, "premier_coup"); }
   smash = !!smash && peutSmasher(m, 0);
   // Le bot smashe lui aussi, une fois par set au plus, de temps en temps.
   const smashBot = peutSmasher(m, 1) && Math.random() < 0.1;
@@ -1579,6 +1581,7 @@ $("toutLeMenu").addEventListener("click", toutLeMenu);
 $("toutLeMenu2").addEventListener("click", toutLeMenu);
 $("premierMatch").addEventListener("click", () => {
   if (D && !D.fini) return;
+  compterEtapePremier(envoyerParcours, "premier_lance");   // le parcours des nouveaux (anonyme, une seule fois ; étape 59)
   voix.arreter(); arreterMinuteur(); if (S) clearTimeout(S.decompte);
   OPP = botParId(PREMIER_MATCH.bot); WIN = PREMIER_MATCH.setsGagnants;
   S = {

@@ -2,7 +2,7 @@
 // dit « j'ai ouvert l'appli », avec son origine (site, appli Android, appli installée), s'il s'agit de la toute première fois
 // et s'il était déjà venu la veille ; une seule fois, « je viens de jouer mon 3e match » ; et « un match terminé » à chaque match.
 // Le parcours des nouveaux (etape-58-parcours-nouveaux.sql) : le téléphone garde son jour d'arrivée et signale, rangé à ce jour,
-// la fin de son premier match, son retour le lendemain et son retour une semaine plus tard (du 7e au 13e jour).
+// le lancement de son premier match, son premier coup, la fin de son premier match, son retour le lendemain et son retour une semaine plus tard (du 7e au 13e jour).
 // Rien d'autre n'est envoyé : ni compte, ni identifiant.
 import { lire, ecrire } from "./stockage.js";
 import { jourParis } from "./match-du-jour.js";
@@ -63,15 +63,19 @@ export function compterVisite(envoyer, premiereFois, envoyerParcours = null) {
   } catch { /* sans réseau ou sans stockage : tant pis */ }
 }
 
-// Le premier match terminé d'un nouveau (étape 58) : signalé une seule fois, rangé à son jour d'arrivée.
-export function compterPremierMatch(envoyerParcours) {
+// Une étape du premier match d'un nouveau, signalée une seule fois, rangée à son jour d'arrivée : « premier_lance » (il touche
+// « Jouer mon premier match », étape 59), « premier_coup » (il y joue un coup, étape 59), « premier_match » (il finit un match, étape 58).
+const CLES_PREMIER = { premier_lance: "visitePremierLance", premier_coup: "visitePremierCoup", premier_match: "visitePremierMatch" };
+export function compterEtapePremier(envoyerParcours, etape) {
   try {
-    const a = lire("visiteArrivee", null);
-    if (!a || lire("visitePremierMatch", false) || !aCompter({ dernierJour: null, jour: "", chemin: location.pathname, hote: location.hostname })) return;
-    if (ecartJours(a.jour, jourParis()) > 30) { ecrire("visitePremierMatch", true); return; }
-    envoyerParcours(a.origine, a.jour, "premier_match").then(() => ecrire("visitePremierMatch", true)).catch(() => {});
+    const a = lire("visiteArrivee", null), cle = CLES_PREMIER[etape];
+    if (!a || !cle || lire(cle, false) || !aCompter({ dernierJour: null, jour: "", chemin: location.pathname, hote: location.hostname })) return;
+    if (ecartJours(a.jour, jourParis()) > 30) { ecrire(cle, true); return; }
+    ecrire(cle, true);   // (marqué tout de suite : un seul envoi, même si on touche deux fois)
+    envoyerParcours(a.origine, a.jour, etape).catch(() => ecrire(cle, false));
   } catch { /* sans réseau ou sans stockage : tant pis */ }
 }
+export const compterPremierMatch = envoyerParcours => compterEtapePremier(envoyerParcours, "premier_match");
 
 // Un match terminé (étape 50 : le nombre de matchs joués chaque jour, anciens joueurs compris). envoyer(origine) : l'appel au serveur.
 export function compterMatchJoue(envoyer) {
