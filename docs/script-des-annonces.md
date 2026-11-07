@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (674 répliques)
+## Commentateur — vif, enthousiaste, plein de références (683 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -432,6 +432,15 @@ restent lus par la voix de synthèse.
 | `commentateur_perso_supporters_02_f.mp3` | Ils sont venus nombreux pour la soutenir ce soir ! Quelle ferveur ! |
 | `commentateur_perso_supporters_03.mp3` | Tout le public scande son nom ! Il joue à domicile ce soir ! |
 | `commentateur_perso_supporters_03_f.mp3` | Tout le public scande son nom ! Elle joue à domicile ce soir ! |
+| `commentateur_replay_intro_01.mp3` | Revoyons ça ! |
+| `commentateur_replay_intro_02.mp3` | On le revoit au ralenti… Regardez-moi ça ! |
+| `commentateur_replay_intro_03.mp3` | Attention, on revoit l'action ! |
+| `commentateur_replay_sauvee_01.mp3` | Regardez ce sang-froid ! Il était au bord du gouffre ! |
+| `commentateur_replay_sauvee_01_f.mp3` | Regardez ce sang-froid ! Elle était au bord du gouffre ! |
+| `commentateur_replay_smash_01.mp3` | Regardez cette belle technique ! Le geste est parfait ! |
+| `commentateur_replay_set_01.mp3` | Le coup qui fait basculer le set ! |
+| `commentateur_replay_serie_01.mp3` | Il ne lâche rien ! |
+| `commentateur_replay_serie_01_f.mp3` | Elle ne lâche rien ! |
 | `commentateur_memoire_serie_3_01.mp3` | Trois victoires de suite ! Il arrive en confiance ! |
 | `commentateur_memoire_serie_3_01_f.mp3` | Trois victoires de suite ! Elle arrive en confiance ! |
 | `commentateur_memoire_serie_4_01.mp3` | Quatre victoires d'affilée ! Qui va enfin l'arrêter ? |
@@ -797,7 +806,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (545 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (551 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1025,6 +1034,12 @@ restent lus par la voix de synthèse.
 | `commentatrice_perso_supporters_02.mp3` | Des supporters rien que pour lui. Il ne faudra pas les décevoir. |
 | `commentatrice_perso_supporters_02_f.mp3` | Des supporters rien que pour elle. Il ne faudra pas les décevoir. |
 | `commentatrice_perso_supporters_03.mp3` | Un chant à son nom. Moi, à mes débuts, j'avais juste un thermos. |
+| `commentatrice_replay_intro_01.mp3` | Revoyons les images. Calmement. |
+| `commentatrice_replay_intro_02.mp3` | Au ralenti, c'est encore plus clair. |
+| `commentatrice_replay_sauvee_01.mp3` | Au ralenti, on voit la peur. Et puis non. |
+| `commentatrice_replay_smash_01.mp3` | Toute la puissance est dans le poignet. |
+| `commentatrice_replay_set_01.mp3` | Tout s'est joué là. |
+| `commentatrice_replay_serie_01.mp3` | La patience a payé. |
 | `commentatrice_memoire_serie_3_01.mp3` | Il reste sur trois victoires d'affilée contre lui. |
 | `commentatrice_memoire_serie_3_01_f.mp3` | Elle reste sur trois victoires d'affilée contre lui. |
 | `commentatrice_memoire_serie_4_01.mp3` | Quatre de suite. L'autre commence à le prendre personnellement. |

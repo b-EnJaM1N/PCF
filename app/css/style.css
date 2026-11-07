@@ -90,6 +90,25 @@ body:not(.en-match) .rule { display: none; }
 #hMe.secoue .poing-av svg, #hBot.secoue .poing-av svg { transform: none; }
 .hand.ouvre .poing-av { animation: ouvrir-main .22s ease-out; }   /* la main s'ouvre */
 @keyframes ouvrir-main { from { transform: scale(.82); } to { transform: scale(1); } }
+/* Le replay (replay.js) : l'action rejouée au ralenti, avec le bandeau REPLAY. */
+.replay { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; padding: 16px;
+  background: radial-gradient(ellipse at 50% 40%, #173F73, #050E1E 75%); }
+.replay[hidden] { display: none; }
+.replay-boite { width: 100%; max-width: 420px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.replay-bandeau { font-family: "Barlow Condensed", sans-serif; font-weight: 800; letter-spacing: 6px; font-size: 1.1rem; color: #fff;
+  background: var(--bot); padding: 4px 16px 4px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; }
+.replay-point { width: 10px; height: 10px; border-radius: 50%; background: #fff; animation: attendre-coup .7s ease-in-out infinite alternate; }
+.replay-titre { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.9rem; margin: 2px 0 6px; color: var(--me); line-height: 1.05; }
+.replay-boite .board, .replay-boite .arena, .replay-boite .verdict { width: 100%; }
+/* Les mains comme pendant le match (face à face), mais au ralenti. */
+#rpMoi .poing-av svg { transform: rotate(90deg); }
+#rpAdv .poing-av svg { transform: rotate(-90deg) scaleX(-1); }
+#rpMoi.secoue .poing-av svg, #rpAdv.secoue .poing-av svg { transform: none; }
+.replay .hand.secoue { animation-duration: .5s; }
+.replay .hand.ouvre { transition-duration: .9s; }
+.replay .hand.ouvre .poing-av { animation-duration: .9s; }
+.replay-com { margin: 0; font-style: italic; color: var(--muted); min-height: 1.3em; }
+.replay-compte { margin: 0; color: var(--muted); font-size: .85rem; }
 @keyframes secouer-poing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px) rotate(-8deg); } }
 @keyframes attendre-coup { from { opacity: .35; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .hand.attend { animation: none; opacity: .6; } .hand.secoue, .hand.ouvre .poing-av { animation: none; } .hand.ouvre { transition: none; } }

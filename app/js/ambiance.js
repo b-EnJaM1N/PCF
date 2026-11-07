@@ -453,8 +453,9 @@ export class Ambiance {
       const l = perso.filter(id => this.persoBuf?.[id]), i = perso.indexOf(k);
       k = l.find(id => perso.indexOf(id) > i) || l[0] || null;
     }
+    // (l'alternance ne compte que les pauses : le chant du début de match n'y entre pas ; 6 novembre, demande du porteur du projet)
     if (alterner && k && this.dernierPerso) k = null;
-    this.dernierPerso = !!k;
+    if (alterner) this.dernierPerso = !!k;
     let b;
     if (k) {
       this.persoSuivant = k; b = this.persoBuf[k];
@@ -472,7 +473,31 @@ export class Ambiance {
     if (!son) return false;
     this.chantEnCours = son;
     this.porter(delai + b.duration);
-    return this.dernierPerso ? "perso" : "habituel";
+    return k ? "perso" : "habituel";
+  }
+  // En duel (6 novembre, demande du porteur du projet) : les deux téléphones jouent le même chant au même moment. Le choix vient
+  // d'un tirage commun (fait dans app.js à partir du numéro du duel) ; ici, les listes à piocher et la lecture d'un chant précis.
+  listePause() { return TOUR_PAUSE.filter(k => this.disponible(k)); }
+  listeDebut() { return TOUR_DEBUT.filter(k => this.disponible(k)); }
+  // Prépare un chant précis : un chant du stade (« chant5 », « debut1 »…) ou un chant personnalisé (son nom de fichier).
+  preparerChant(id) {
+    if (!id) return Promise.resolve(null);
+    if (FICHIERS_STADE[id]) return this.preparer(id);
+    return this.prechargerPerso([id]).then(() => this.persoBuf?.[id] || null);
+  }
+  // Joue un chant précis dès qu'il est prêt (si encore() le permet toujours) ; renvoie une promesse (true s'il a été joué).
+  chanterChoisi(id, { vol = 0.5, delai = 0.5, fondu = 1.5, encore = () => true } = {}) {
+    if (!this.ctx || !id) return Promise.resolve(false);
+    return this.preparerChant(id).then(() => {
+      const b = this.persoBuf?.[id] || this.buf[id];
+      if (!b || !encore()) return false;
+      this.arreterChant();
+      const son = this.jouer(b, vol, true, { delai, fondu });
+      if (!son) return false;
+      this.chantEnCours = son;
+      this.porter(delai + b.duration);
+      return true;
+    }).catch(() => false);
   }
   // Le stade pendant la présentation d'un match ordinaire (4 novembre, demande du porteur du projet) : le chœur ou la clameur, l'un
   // après l'autre ; il baisse sous les commentaires et s'éteint quand le jeu commence (comme un chant).
