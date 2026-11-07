@@ -485,6 +485,18 @@ export function resumePalmares(p) {
   return "—";
 }
 
+// Le tour atteint en Coupe Monique-Latour, en un mot (tiré du texte de la saison) : « 🏆 », « Finale », « Demi », « Quart »,
+// « 8e », « 16e », « 32e » (le tour où l'on a été éliminé), ou « – » (pas de coupe cette saison-là).
+export function resumeCoupe(p) {
+  const t = p.coupeML?.texte || "";
+  if (!t) return "–";
+  if (/Vainqueur/.test(t)) return "🏆";
+  if (/Finaliste/.test(t)) return "Finale";
+  const e = t.match(/Éliminé en (.+?) de la Coupe/i);
+  if (e) return /demi/i.test(e[1]) ? "Demi" : /quart/i.test(e[1]) ? "Quart" : e[1].replace(/ de finale$/, "");
+  return "–";
+}
+
 export function bilanCarriere(C) {
   const atteints = [C.ou, ...C.palmares.map(p => p.circuit + (p.mouvement || 0))];
   return { meilleur: Math.max(...atteints), titres: C.palmares.filter(p => p.titre === "champion").length };

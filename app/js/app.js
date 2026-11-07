@@ -19,7 +19,7 @@ import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
-import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
+import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
@@ -2224,10 +2224,10 @@ function renderCarriere() {
     $("carPalmares").innerHTML = `<div class="rnd">Mon palmarès</div><p class="hint" style="margin:0">Meilleur circuit atteint : ${CIRCUITS[b.meilleur]}${b.titres ? ` · 🏆 ${b.titres} titre${b.titres > 1 ? "s" : ""} de champion de l'Élite` : ""}</p>`
       + (coupesML(C).length ? `<p class="hint" style="margin:4px 0 0">🏆 Coupe Monique-Latour : saison${coupesML(C).length > 1 ? "s" : ""} ${coupesML(C).join(", ")}</p>` : "")
       // (7 novembre, demande du porteur du projet : un tableau simple, une ligne par saison)
-      + `<table class="car-palmares-tab"><thead><tr><th>Saison</th><th>Circuit</th><th>Classement</th><th>Playoffs</th></tr></thead><tbody>`
+      + `<table class="car-palmares-tab"><thead><tr><th>Saison</th><th>Circuit</th><th>Class.</th><th>Playoffs</th><th>Coupe</th></tr></thead><tbody>`
       + [...C.palmares].reverse().map(p => `<tr${resumePalmares(p).includes("Champion") ? ' class="titre"' : ""}><td>${p.saison}</td><td>${CIRCUITS[p.circuit].replace("Circuit ", "")}</td>`
-        + `<td>${p.place ? `${p.place}${p.place === 1 ? "er" : "e"}` : "–"}</td><td>${resumePalmares(p)}${p.mouvement === 1 ? " ⬆️" : p.mouvement === -1 ? " ⬇️" : ""}</td></tr>`).join("")
-      + `</tbody></table><p class="hint" style="margin:6px 0 0">Classement : la saison régulière (dans ta poule en Amateur et en Future). ⬆️ promu, ⬇️ relégué.</p>`
+        + `<td>${p.place ? `${p.place}${p.place === 1 ? "er" : "e"}` : "–"}</td><td>${resumePalmares(p)}${p.mouvement === 1 ? " ⬆️" : p.mouvement === -1 ? " ⬇️" : ""}</td><td>${resumeCoupe(p)}</td></tr>`).join("")
+      + `</tbody></table><p class="hint" style="margin:6px 0 0">Class. : le classement de la saison régulière (dans ta poule en Amateur et en Future). ⬆️ promu, ⬇️ relégué. Coupe : le tour atteint en Coupe Monique-Latour.</p>`
       // Le palmarès de chaque saison : les champions, qui monte et qui descend, du haut vers le bas.
       + [...C.palmares].reverse().filter(p => p.circuits).map((p, i) => `<details class="regles car-saison"${i === 0 ? " open" : ""}><summary>🏆 Palmarès de la saison ${p.saison}</summary>`
         + (p.coupeML?.vainqueur ? `<div class="car-saison-circuit"><b>Coupe Monique-Latour</b><br>🏆 ${esc(infoJoueur(p.coupeML.vainqueur).nom)} <span class="car-sec">(finaliste : ${esc(infoJoueur(p.coupeML.finaliste).nom)})</span></div>` : "")

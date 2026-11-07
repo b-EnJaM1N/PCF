@@ -957,7 +957,7 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .mdj-serie { display: block; margin-top: 4px; color: #FFB067; font-size: .85rem; }
 .mdj-serie b { display: inline; font-size: inherit; color: #FF8A3D; }
 /* Le palmarès de la carrière en tableau (7 novembre) : une ligne par saison. */
-.car-palmares-tab { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: .92rem; }
+.car-palmares-tab { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: .88rem; }
 .car-palmares-tab th { text-align: left; font-weight: 600; color: var(--muted); font-size: .8rem; padding: 4px 6px; border-bottom: 1px solid rgba(255, 255, 255, .15); }
-.car-palmares-tab td { padding: 6px; border-bottom: 1px solid rgba(255, 255, 255, .07); }
+.car-palmares-tab td { padding: 6px 4px; border-bottom: 1px solid rgba(255, 255, 255, .07); }
 .car-palmares-tab tr.titre td { color: var(--me); font-weight: 700; }
