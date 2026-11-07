@@ -67,6 +67,21 @@ export async function dessinerCarte(canvas, c, j) {
   // Cadre à deux couleurs (le cadre Élite : or et noir) : un filet intérieur.
   if (j.cadre && j.cadreInterieur) { ctx.save(); ctx.lineWidth = 6; ctx.strokeStyle = j.cadreInterieur; arrondi(ctx, 30, 30, L - 60, H - 60, 50); ctx.stroke(); ctx.restore(); }
   else { ctx.lineWidth = 10; ctx.strokeStyle = T.lisere; arrondi(ctx, 34, 34, L - 68, H - 68, 48); ctx.stroke(); }
+  // Le cadre « Feu sacré » (série de 30 jours) : des flammes dorées tout autour.
+  if (j.cadreFlammes) {
+    ctx.save();
+    const flamme = (x, y, ang, h) => {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+      const g = ctx.createLinearGradient(0, 0, 0, -h); g.addColorStop(0, "#C2361C"); g.addColorStop(0.5, "#F4A93B"); g.addColorStop(1, "#FFE08A");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-17, 0); ctx.quadraticCurveTo(-20, -h * 0.55, 0, -h); ctx.quadraticCurveTo(20, -h * 0.55, 17, 0); ctx.closePath(); ctx.fill(); ctx.restore();
+    };
+    // (elles partent du liseré vers l'intérieur de la carte, de hauteurs variées)
+    let k = 0;
+    const haut = i => 26 + ((i * 7) % 5) * 6;
+    for (let x = 110; x <= L - 110; x += 56) { flamme(x, 34, Math.PI, haut(k++)); flamme(x, H - 34, 0, Math.min(20, haut(k++))); }   // (en bas, basses : le pied de carte reste lisible)
+    for (let y = 130; y <= H - 130; y += 56) { flamme(34, y, Math.PI / 2, haut(k++)); flamme(L - 34, y, -Math.PI / 2, haut(k++)); }
+    ctx.restore();
+  }
   if (T.eclat) {
     // Des étincelles, toujours au même endroit (la carte ne change pas d'un affichage à l'autre).
     let graine = 7; const hasard = () => ((graine = (graine * 16807) % 2147483647) / 2147483647);
@@ -114,7 +129,7 @@ export async function dessinerCarte(canvas, c, j) {
   // Le pied de carte : rareté, titres, marque
   ctx.textAlign = "center"; ctx.font = `700 34px ${COND}`;
   const pied = [`CARTE ${MAJ(c.rang ? c.rang.rang.nom : c.rarete)}`,
-    `${c.titres} TITRE${c.titres > 1 ? "S" : ""}`, `${c.matchs} MATCH${c.matchs > 1 ? "S" : ""}`].join("  ·  ");
+    `${c.titres} TITRE${c.titres > 1 ? "S" : ""}`, `${c.matchs} MATCH${c.matchs > 1 ? "S" : ""}`, ...(c.serie > 1 ? [`🔥 ${c.serie} JOURS`] : [])].join("  ·  ");
   ctx.fillText(pied, L / 2, H - 140);
   if (c.titre) { ctx.font = `italic 400 30px ${TEXTE}`; ctx.fillText(c.titre, L / 2, H - 96); }
   ctx.font = `800 30px ${COND}`; ctx.globalAlpha = 0.7; ctx.fillText(MAJ(MARQUE.nom), L / 2, H - 56); ctx.globalAlpha = 1;
