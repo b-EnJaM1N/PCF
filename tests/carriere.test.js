@@ -393,3 +393,17 @@ test("Challenger : 3e à 6e, on commence en quart ; 7e à 9e, rien à jouer", ()
   assert.equal(C.phase, "fin"); assert.equal(C.bilan.mouvement, 0); assert.match(texteBilan(C), /pas de playoffs/);
   assert.ok(C.issues[2].champion && C.issues[2].troisieme && C.issues[2].relegues.length === 2 && C.issues[2].barragiste);
 });
+
+test("le palmarès en tableau : le résultat des playoffs en un mot, même pour les anciennes saisons", async () => {
+  const { resumePalmares } = await import("../app/js/carriere-logique.js");
+  const r = texte => resumePalmares({ texte });
+  assert.equal(r("🏆 Champion du Circuit Élite !"), "🏆 Champion");
+  assert.equal(r("🏆 Vainqueur des playoffs : promu en Circuit Pro !"), "🏆 Champion");
+  assert.equal(r("🥈 Finaliste des playoffs : promu en Circuit Pro !"), "Finale");
+  assert.equal(r("Éliminé en quart de finale des playoffs : tu restes en Circuit Élite."), "Quart");
+  assert.equal(r("Éliminé en demi-finale des playoffs : tu restes en Circuit Élite."), "Demi");
+  assert.equal(r("8e de la saison, pas de playoffs : tu restes en Circuit Élite."), "—");
+  assert.equal(r("✅ Barrage gagné : maintenu en Circuit Élite !"), "Barrage");
+  assert.equal(r("Match pour la 3e place perdu : tu restes en Circuit Pro."), "3e place");
+  assert.equal(r("✅ Match pour le maintien gagné : tu restes en Circuit Future !"), "Maintien");
+});
