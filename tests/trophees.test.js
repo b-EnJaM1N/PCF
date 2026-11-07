@@ -5,9 +5,9 @@ import { compterPoignee } from "../app/js/poignee.js";
 import { nouvellesStats, suivreCoup } from "../app/js/stats-match.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX } from "../app/js/regles.js";
 import { FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, SYMBOLES, avatarSVG } from "../app/js/avatar.js";
-import { GESTES, CADRES } from "../app/js/catalogue.js";
+import { GESTES, CADRES, CELEBRATIONS } from "../app/js/catalogue.js";
 
-const TABLES = { fond: FONDS, gant: GANTS, poignet: POIGNETS, motif: MOTIFS, gantMotif: MOTIFS_GANT, symbole: SYMBOLES, geste: GESTES, cadre: CADRES };
+const TABLES = { fond: FONDS, gant: GANTS, poignet: POIGNETS, motif: MOTIFS, gantMotif: MOTIFS_GANT, symbole: SYMBOLES, geste: GESTES, cadre: CADRES, celebration: CELEBRATIONS };
 
 // Un match joué : "a" = point pour moi, "b" = pour l'adversaire.
 // Un seul point : match en 1 set de 1 point (sinon, 1 set de 11 points).
@@ -18,9 +18,9 @@ function match(suite) {
 }
 const fin = (P, suite, extra = {}) => enregistrerMatch(P, { ...match(suite), devines: 0, lisibles: 0, adversaire: { id: "rocky", elo: 850, nom: "Rocky" }, date: 1, ...extra }).map(t => t.id);
 
-test("43 trophées en 8 familles, chaque élément à débloquer existe dans l'avatar", () => {
-  assert.equal(TITRES.length, 43);
-  assert.equal(new Set(TITRES.map(t => t.id)).size, 43);
+test("46 trophées en 8 familles, chaque élément à débloquer existe dans l'avatar", () => {
+  assert.equal(TITRES.length, 46);
+  assert.equal(new Set(TITRES.map(t => t.id)).size, 46);
   for (const t of TITRES) assert.ok(FAMILLES.some(f => f.id === t.famille), t.id);
   for (const t of TITRES.filter(x => x.objet)) assert.ok(TABLES[t.objet[0]]?.[t.objet[1]], `${t.id} : ${t.objet}`);
   // chaque famille a au moins un trophée qui débloque quelque chose
@@ -93,3 +93,13 @@ test("cercles et tournois en ligne, d'après les données du serveur", () => {
   assert.deepEqual(accorderTitres(P, ["fondateur", "inconnu"], 5).map(t => t.id), ["fondateur"]);
   assert.deepEqual(accorderTitres(P, ["fondateur"]), [], "déjà obtenu");
 });
+
+test("la série de jours : les trois objets restent verrouillés tant que le trophée n'est pas gagné", () => {
+  const P = profilParDefaut();
+  for (const [type, cle, id] of [["poignet", "braise", "serie_3"], ["celebration", "flammes", "serie_7"], ["cadre", "feu_sacre", "serie_30"]]) {
+    assert.ok(estVerrouille(P, type, cle), `${type} ${cle}`);
+    accorderTitres(P, [id]);
+    assert.ok(!estVerrouille(P, type, cle), `${type} ${cle} débloqué`);
+  }
+});
+

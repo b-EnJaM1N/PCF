@@ -46,9 +46,9 @@ import { chantsPerso, courtsPerso, soutenu, clePseudo, hashTexte, chantsPersoCom
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
-import { modeleFantome } from "./fantome.js";
+import { modeleFantome, fantomeVisible as apresSortie } from "./fantome.js";   // (apresSortie : les nouveautés prévues après la sortie, visibles seulement sur la version de test)
 import { replayVisible, momentDuCoup, tempsForts, momentDuSet, TITRES as TITRES_REPLAY } from "./replay.js";
-import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder } from "./match-du-jour.js";
+import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder, titresSerie, prochainPalier } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
 import { GESTES, CELEBRATIONS, CADRES, gesteValide, celebrationValide, articleDe, possede } from "./catalogue.js";
@@ -839,6 +839,9 @@ function finir() {
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("coach").hidden = true;
   if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
+  // La série de jours (match-du-jour.js) : ses paliers donnent un trophée et un objet (version de test seulement, pour l'instant).
+  const serieFin = S.matchJour && n && apresSortie() ? serie(resultatsDuJour(), jourParis()) : 0;
+  if (serieFin) { nouveaux.push(...accorderTitres(P, titresSerie(serieFin))); sauverP(); }
   // La première visite : ce qui vient de s'ouvrir dans le menu.
   const ouvert = menuComplet() ? [] : nouveautes(matchsAvant, P.matchs);
   if (matchsAvant < 3 && P.matchs >= 3) compterTroisMatchs(envoyerTroisMatchs);   // pour savoir si les nouveaux joueurs accrochent (anonyme)
@@ -866,6 +869,7 @@ function finir() {
   $("abandonDuelZone").hidden = true;
   if (enTournoi) $("tNext").textContent = gagne ? (tourDe(T, S.tour).finale ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
   $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (texteDeblocage(t) ? ` (débloque ${texteDeblocage(t)})` : "")).join(", ") + " !" : "";
+  if (serieFin > 1) $("news").textContent = `🔥 Série : ${serieFin} jours d'affilée ! ${$("news").textContent}`.trim();
   const paliers = retenirRang();
   if (paliers.length) $("news").textContent = `${$("news").textContent} ${paliers.join(" ")}`.trim();
   if (ouvert.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${ouvert.join(" ")} ${$("news").textContent}`.trim();
@@ -1236,7 +1240,8 @@ function renderCarte() {
   carteT = setTimeout(async () => {
     const jeton = ++carteJeton;
     const c = carteDe(P, { niveauOfficiel: monClassement, provisoire: monClassement !== null && provisoire(mesDuelsOfficiels), surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
-    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(avMoi()), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur });
+    if (apresSortie()) c.serie = serie(resultatsDuJour(), jourParis());   // (ma série de jours, au pied de ma carte)
+    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(avMoi()), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur, cadreFlammes: CADRES[P.cadre]?.flammes });
     if (jeton !== carteJeton) return;
     $("carteRarete").textContent = texteRang(c.rang);
     $("carteNotes").innerHTML = notesDe(P).map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
@@ -1259,7 +1264,7 @@ async function voirCarteDe(uid) {
   const c = carteDe(J, { niveauOfficiel: cl ? cl.points : null, provisoire: !!cl && provisoire(cl.joues), surnom: surnomDe(J).texte, titre: J.matchs ? dernierTitre(J) : "" });
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
   $("une").classList.add("show");
-  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG({ ...J.av, brode: clePseudo(ligne.pseudo, ligne.numero) }), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur });
+  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG({ ...J.av, brode: clePseudo(ligne.pseudo, ligne.numero) }), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur, cadreFlammes: CADRES[J.cadre]?.flammes });
   await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
     fichier: "carte-de-joueur.png", alt: `Carte de joueur de ${nom} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
   return null;
@@ -1638,9 +1643,15 @@ function renderMatchDuJour() {
   $("mdjAv").innerHTML = avatarSVG(b.av);
   $("mdjTitre").textContent = `📅 Match du jour n° ${m.numero}`;
   $("mdjJouer").hidden = !!r; $("mdjPartager").hidden = !r;
-  const feu = s > 1 ? ` · 🔥 ${s} jours` : "";
+  const enValeur = apresSortie();   // (la série mise en valeur : version de test seulement, pour l'instant)
+  const feu = !enValeur && s > 1 ? ` · 🔥 ${s} jours` : "";
   $("mdjEtat").textContent = r ? `${r.abandon ? "🏳️ Abandon" : `${r.gagne ? "✅ Victoire" : "❌ Défaite"} ${r.score.join("–")}`}${feu} · nouveau match demain`
-    : `Contre ${b.nom} 🤖 · un set de 7, un seul essai${s ? ` · 🔥 ${s} jour${s > 1 ? "s" : ""}` : ""}`;
+    : `Contre ${b.nom} 🤖 · un set de 7, un seul essai${!enValeur && s ? ` · 🔥 ${s} jour${s > 1 ? "s" : ""}` : ""}`;
+  // La série : le badge et le prochain palier (« encore 2 jours pour le poignet Braise »).
+  const p = prochainPalier(s), badge = $("mdjSerie");
+  badge.hidden = !enValeur || (!s && r);
+  badge.innerHTML = !s ? `🔥 ${p.jours} jours d'affilée : ${esc(p.objet)}`
+    : `<b>🔥 ${s} jour${s > 1 ? "s" : ""}</b>${p ? ` · encore ${p.jours - s} pour ${esc(p.objet)}` : " · tous les paliers atteints !"}`;
 }
 $("mdjJouer").addEventListener("click", () => {
   if (D && !D.fini) return;

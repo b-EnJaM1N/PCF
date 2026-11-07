@@ -80,10 +80,12 @@ export const CELEBRATIONS = {
   eclairs: { nom: "Éclairs", formes: ["⚡"], couleurs: ["#FFD34D", "#4DA3FF"] },
   feu: { nom: "Feu d'artifice", formes: ["✦", "✸", "•"], couleurs: ["#FF3EA5", "#22D3EE", "#FFD34D", "#6BD49A"] },
   or: { nom: "Pluie d'or", formes: ["●", "◆"], couleurs: ["#FFD34D", "#E0B12A", "#FFF1B8"] },
+  flammes: { nom: "Pluie de flammes", formes: ["🔥"], couleurs: ["#FF7A1A", "#FFD34D", "#E8572A"] },   // (série de jours : trophée « Une semaine sans faute »)
 };
 export const celebrationValide = c => (CELEBRATIONS[c] ? c : "confettis");
 
 // Les cadres de la carte de joueur : la couleur du liseré.
 export const CADRES = { aucun: { nom: "Selon le rang" }, bronze: { nom: "Bronze", couleur: "#C27A3A" }, argent: { nom: "Argent", couleur: "#D3D9E2" }, neon: { nom: "Néon", couleur: "#FF3EA5" }, or: { nom: "Or", couleur: "#FFD34D" },
-  elite: { nom: "Élite (or et noir)", couleur: "#E9C046", interieur: "#14121F" } };   // (carrière : trophée « Élite »)
+  elite: { nom: "Élite (or et noir)", couleur: "#E9C046", interieur: "#14121F" },   // (carrière : trophée « Élite »)
+  feu_sacre: { nom: "Feu sacré", couleur: "#F4A93B", interieur: "#C2361C", flammes: true } };   // (série de jours : trophée « Le feu sacré »)
 export const cadreValide = c => (CADRES[c] ? c : "aucun");

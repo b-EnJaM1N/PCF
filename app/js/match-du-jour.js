@@ -59,6 +59,16 @@ export function serie(resultats = {}, aujourdhui) {
   return n;
 }
 
+// Les paliers de la série (7 novembre, choix du porteur du projet) : un trophée et un objet à gagner (profil.js).
+export const PALIERS_SERIE = [
+  { jours: 3, titre: "serie_3", objet: "le poignet Braise" },
+  { jours: 7, titre: "serie_7", objet: "la Pluie de flammes" },
+  { jours: 30, titre: "serie_30", objet: "le cadre Feu sacré" },
+];
+// Les trophées gagnés avec une série de s jours ; le prochain palier (ou null s'ils sont tous atteints).
+export const titresSerie = s => PALIERS_SERIE.filter(p => s >= p.jours).map(p => p.titre);
+export const prochainPalier = s => PALIERS_SERIE.find(p => s < p.jours) || null;
+
 // Le texte à partager.
 export function texteAPartager(r, { nomBot, serie: s = 0, adresse = "handslam.fr" } = {}) {
   const lignes = [`HandSlam · Match du jour n° ${r.numero} · 🤖 ${nomBot}`];
