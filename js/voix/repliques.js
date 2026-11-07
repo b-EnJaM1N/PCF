@@ -97,7 +97,7 @@ export const MOMENTS = {
     { r: "c", t: "Ça déroule, ça déroule !" },
     { r: "c", t: "Il a mis une mine, ça explose derrière !", f: "Elle a mis une mine, ça explose derrière !", clin: "sport" },
     { r: "c", t: "C'est du Pierre-Feuille-Ciseaux champagne !", clin: "sport" },
-    { r: "c", t: "Vers l'infini et au-delà !", clin: "cine" },
+    { r: "c", t: "Vers l'infini et au-delà !", clin: "cine", retiree: true },
     { r: "c", t: "Cours, Forrest, cours !", clin: "cine", si: "serie6" },
     { r: "d", t: "Il a trouvé la faille. Il appuie dessus. Enfin quelqu'un de sérieux.", f: "Elle a trouvé la faille. Elle appuie dessus. Enfin quelqu'un de sérieux." },
     { r: "d", t: "Il gagne dans un fauteuil.", f: "Elle gagne dans un fauteuil.", clin: "sport" },
@@ -525,6 +525,31 @@ export const MOMENTS = {
     { r: "d", t: "Il a son fan-club. Je me demande combien il les paie.", f: "Elle a son fan-club. Je me demande combien elle les paie." },
     { r: "d", t: "Des supporters rien que pour lui. Il ne faudra pas les décevoir.", f: "Des supporters rien que pour elle. Il ne faudra pas les décevoir." },
     { r: "d", t: "Un chant à son nom. Moi, à mes débuts, j'avais juste un thermos." },
+  ],
+  // Le replay (replay.js ; 6 novembre, répliques validées par le porteur du projet) : pour lancer le replay, puis selon l'action
+  // (« il » : le joueur qui a fait l'action).
+  replay_intro: [
+    { r: "c", t: "Revoyons ça !" },
+    { r: "c", t: "On le revoit au ralenti… Regardez-moi ça !" },
+    { r: "c", t: "Attention, on revoit l'action !" },
+    { r: "d", t: "Revoyons les images. Calmement." },
+    { r: "d", t: "Au ralenti, c'est encore plus clair." },
+  ],
+  replay_sauvee: [
+    { r: "c", t: "Regardez ce sang-froid ! Il était au bord du gouffre !", f: "Regardez ce sang-froid ! Elle était au bord du gouffre !" },
+    { r: "d", t: "Au ralenti, on voit la peur. Et puis non." },
+  ],
+  replay_smash: [
+    { r: "c", t: "Regardez cette belle technique ! Le geste est parfait !" },
+    { r: "d", t: "Toute la puissance est dans le poignet." },
+  ],
+  replay_set: [
+    { r: "c", t: "Le coup qui fait basculer le set !" },
+    { r: "d", t: "Tout s'est joué là." },
+  ],
+  replay_serie: [
+    { r: "c", t: "Il ne lâche rien !", f: "Elle ne lâche rien !" },
+    { r: "d", t: "La patience a payé." },
   ],
   // La série en cours dans leurs face-à-face (3 novembre, répliques validées par le porteur du projet) : victoires d'affilée
   // (« il » : le joueur qui enchaîne) et défaites d'affilée (« il » : le joueur qui les subit), à 3, 4, 5 et plus.

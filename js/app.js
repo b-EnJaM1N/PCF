@@ -42,11 +42,12 @@ import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerProgrammes } from "./ecran-programmes.js";
 import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
 import { installerTutos } from "./tutos.js";
-import { chantsPerso, courtsPerso, soutenu, clePseudo } from "./chants-perso.js";
+import { chantsPerso, courtsPerso, soutenu, clePseudo, hashTexte, chantsPersoCommuns } from "./chants-perso.js";
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
 import { modeleFantome } from "./fantome.js";
+import { replayVisible, momentDuCoup, tempsForts, momentDuSet, TITRES as TITRES_REPLAY } from "./replay.js";
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
@@ -396,6 +397,12 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   S.suivi.figer();
   smash.forEach((x, j) => { if (x) noterSmash(m, j); });
   const evt = jouerCoup(m, signe, signeAdv, auto);
+  // Le replay (replay.js) : on garde les actions marquantes du match.
+  if (replayVisible()) {
+    const mo = momentDuCoup(evt, m.coups, { smash, smashGagne: issueSmash(smash, evt.gagnant) === "gagne", serie: series(m.coups).serie,
+      set: m.scoresSets.length - (evt.finSet ? 1 : 0), score: m.points });
+    if (mo) (S.moments ||= []).push(mo);
+  }
   S.suivi.enregistrer(signe, evt.gagnant === null ? "e" : evt.gagnant === 0 ? "g" : "p");
   suivreCoup(S.stats, m, evt);
   const a = annoncerCoup(m, evt, S.annonces, { recents: S.suivi.recents, auto: !!auto[0], smash });
@@ -416,6 +423,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   // (au premier point, le son est prêt : on charge les chants personnalisés des joueurs, pour la pause entre les sets)
   if (!S.persoCharge) {
     S.persoCharge = true; ambiance.prechargerPerso([...persoDuMatch(), ...courtsPerso(...joueursDuMatch())]);
+    if (S.duel && D) for (let p = 1; p < 2 * WIN - 1; p++) ambiance.preparerChant(chantPauseDuel(p));   // (les chants des pauses du duel)
     // (les chants chargés à la demande : le prochain de chaque tour, et l'hymne si on joue un grand match ; 5 novembre)
     ambiance.prechargerChants({ hymne: !!S.annonces?.enjeu || !!S.carriere });
   }
@@ -476,6 +484,60 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   if (!S.duel) S.sonne = issueSmash(smash, evt.gagnant) === "gagne" && evt.gagnant === 1 && !evt.finSet;   // (pas de KO au début du set suivant)
   return apresPoint(evt, a, cel, rp);
 }
+
+// ---------------------------------------------------------------- le replay (replay.js)
+// Chaque action : les deux poings se secouent au ralenti, puis les signes s'ouvrent ; le score du moment et le bandeau REPLAY.
+// Les répliques du replay (replay_intro, replay_sauvee…) : une au hasard parmi celles qui sont enregistrées.
+const POOL_REPLAY = { match: "replay_set", set: "replay_set", sauvee_match: "replay_sauvee", sauvee_set: "replay_sauvee", smash: "replay_smash", serie: "replay_serie", egalites: "replay_serie" };
+function ligneReplay(pool, genre = "m") {
+  const l = (POOLS[pool] || []).map(it => ligneMoment(it, { genre })).filter(x => x && voix.fichiers.has(x.id));
+  return l.length ? l[Math.floor(Math.random() * l.length)] : null;
+}
+function jouerReplay(liste, apres = () => {}) {
+  if (!liste.length) { apres(); return; }
+  voix.arreter();
+  const ov = $("replay"), vite = reduitMouvement();
+  let i = 0, t = null, fini = false;
+  const fermer = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); apres(); };
+  $("rpPasser").onclick = fermer;
+  $("rpNomMoi").textContent = nomAffiche(P); $("rpNomAdv").textContent = OPP.nom;
+  $("rpMiniMoi").innerHTML = avatarSVG(avMoi()); $("rpMiniAdv").innerHTML = avatarSVG(avAdv());
+  ov.hidden = false;
+  const montrer = () => {
+    if (fini) return;
+    if (i >= liste.length) { fermer(); return; }
+    const mo = liste[i++], moi = $("rpMoi"), adv = $("rpAdv");
+    // Le score juste avant le point, puis le point marqué au dévoilement (comme pendant le match).
+    const apresPt = mo.score || [0, 0], avant = apresPt.map((v, j) => (j === mo.gagnant ? v - 1 : v));
+    $("rpTitre").textContent = TITRES_REPLAY[mo.type];
+    $("rpScoreMoi").textContent = avant[0]; $("rpScoreAdv").textContent = avant[1];
+    $("rpStatus").textContent = `Set ${mo.set + 1}`;
+    $("rpCompte").textContent = liste.length > 1 ? `${i} / ${liste.length}` : "";
+    $("rpVerdict").textContent = ""; $("rpCom").textContent = "";
+    [[moi, 0], [adv, 1]].forEach(([el, g]) => { el.innerHTML = mainGantee(g, 0, "Poing serré"); el.className = "hand secoue"; });
+    // Roland ou Monique : « Revoyons ça ! » pour la première action, puis un mot sur l'action au dévoilement.
+    const genre = mo.gagnant === 0 ? P.genre : OPP.humain ? OPP.genre : botAuFeminin(OPP) ? "f" : "m";
+    if (i === 1) { const l = ligneReplay("replay_intro"); if (l) voix.dire([l]); }
+    t = setTimeout(() => {
+      if (fini) return;
+      moi.innerHTML = mainGantee(0, mo.a, NOM[mo.a]); adv.innerHTML = mainGantee(1, mo.b, NOM[mo.b]);
+      moi.className = "hand ouvre"; adv.className = "hand ouvre";
+      const [w, l] = mo.gagnant === 0 ? [mo.a, mo.b] : [mo.b, mo.a];
+      $("rpVerdict").textContent = `${mo.smash[mo.gagnant] ? "💥 Smash ! " : ""}${NOM[w]} bat ${NOM[l]}`;
+      const c = ligneReplay(POOL_REPLAY[mo.type], genre);
+      if (c) voix.finiDeParler(() => { if (!fini) voix.dire([c]); }, 1200);
+      t = setTimeout(() => {
+        if (fini) return;
+        (mo.gagnant === 0 ? moi : adv).classList.add("win"); (mo.gagnant === 0 ? adv : moi).classList.add("lose");
+        $("rpScoreMoi").textContent = apresPt[0]; $("rpScoreAdv").textContent = apresPt[1];
+        try { ambiance.public("clameur", 0.4); } catch { /* sans son */ }
+        t = setTimeout(montrer, vite ? 2600 : 3200);
+      }, vite ? 0 : 700);
+    }, vite ? 300 : 2000);
+  };
+  montrer();
+}
+$("btnTempsForts").addEventListener("click", () => { if (S?.moments?.length) jouerReplay(tempsForts(S.moments)); });
 
 // Le smash : selon ce qu'il donne (voir issueSmash), un verdict et une vibration (Android ; l'iPhone ne vibre pas depuis une
 // page web). Gagnant : « 💥 Smash ! », grande vibration et secousse de l'arène ; perdu : « 💨 Smash raté ! » ; égalité :
@@ -572,7 +634,9 @@ function apresPoint(evt, a, cel, rp) {
   if (evt.finSet) {
     // La pause entre les sets : une fois sur deux, les supporters chantent (le chant baisse sous les commentaires, s'éteint au
     // premier échange du set suivant ; 3 novembre).
-    if (Math.random() < 0.5) ambiance.chanter({ vol: 0.5, delai: 2.5, perso: persoDuMatch(), alterner: true });
+    // (3 fois sur 4 ; un chant personnalisé d'abord, puis un habituel, en alternance : 6 novembre, demande du porteur du projet)
+    if (S.duel && D) { const id = chantPauseDuel(m.scoresSets.length); if (id) ambiance.chanterChoisi(id, { vol: 0.5, delai: 2.5 }); }
+    else if (Math.random() < 0.75) ambiance.chanter({ vol: 0.5, delai: 2.5, perso: persoDuMatch(), alterner: true });
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
     const suivant = annonceDebutSet(m), decisif = setDecisif(m);
     const nouveauSet = () => {
@@ -594,6 +658,8 @@ function apresPoint(evt, a, cel, rp) {
       onGo: S.duel ? duelPret : () => { nouveauSet(); decompteSolo(); },
     });
       if (S.duel) { majBoutonsPret(); afficherMessages(D.duel); }   // (le bouton des messages de la pause, étape 53)
+      // Le moment du set, au ralenti (replay.js ; en solo : en duel, la pause est chronométrée).
+      if (!S.duel && replayVisible()) { const mo = momentDuSet(S.moments || [], n - 1), seance = S; if (mo) setTimeout(() => { if (S === seance && panneauOuvert) jouerReplay([mo]); }, 900); }
     }, cel ? 2400 : 1200);                                  // on laisse le temps de voir le cri
     return evt;
   }
@@ -741,6 +807,7 @@ function finir() {
   const lues = lecturesReussies(c);
   $("endRead").textContent = `Ton coup était prévisible ${Math.round(100 * (S.suivi.taux || 0))} % du temps.${habitude}${lues ? ` 🔎 Tu as lu ${OPP.nom} ${lues} fois : tu as joué la bonne piste et gagné le point.` : ""}`;
   $("end").hidden = false;
+  $("btnTempsForts").hidden = !(replayVisible() && (S.moments || []).length);   // le replay des temps forts (replay.js)
   $("nomFin").hidden = !!P.pseudo; $("inNomFin").value = "";   // pas encore de pseudo : on le propose ici
   $("compteFin").hidden = !!compteUI.session()?.user;          // pas encore de compte : on le propose aussi
   if (S.duel && D) { afficherMessages(D.duel); guetterMessageFin(); }   // le mot de la fin (messages rapides)
@@ -909,9 +976,14 @@ $("masquerMessages").checked = masquerMessages();
 $("masquerMessages").addEventListener("change", e => { ecrire("masquerMessages", e.target.checked); if (D?.duel) afficherMessages(D.duel); });
 
 // Mon ami ? (une demande d'ami acceptée) — cherché une fois par duel.
-async function verifierAmi() {
+function verifierAmi() {
   const d = D;
   if (!d) return;
+  d.amiPret = verifierAmiDe(d);
+}
+// (la présentation attend la réponse, au plus 1,5 s : les chants des deux amis en dépendent ; 6 novembre)
+const attendreAmi = () => (S?.duel && D?.amiPret ? Promise.race([D.amiPret, new Promise(ok => setTimeout(ok, 1500))]) : Promise.resolve());
+async function verifierAmiDe(d) {
   try { const amis = await mesAmis(); if (D === d) { d.ami = amis.some(a => a.id === OPP.uid && a.statut === "amis"); afficherMessages(d.duel); } }
   catch { /* sans la liste, pas de chambrage */ }
 }
@@ -1376,6 +1448,19 @@ async function afficherDossier() {
 // (l'adversaire compte pour les chants personnalisés seulement entre amis : entre inconnus, chacun n'entend que les siens ; 6 novembre)
 const joueursDuMatch = () => [{ pseudo: P.pseudo, numero: P.numero, genre: P.genre }, OPP?.humain && D?.ami ? { pseudo: OPP.nom, numero: OPP.numero, genre: OPP.genre } : null];
 const persoDuMatch = () => chantsPerso(...joueursDuMatch());
+// En duel, les deux téléphones font le même tirage pour les chants (6 novembre) : le numéro du duel et le moment, et les deux
+// joueurs rangés dans le même ordre (par pseudo) des deux côtés.
+const tirageDuel = cle => hashTexte(`${D?.duel?.id}:${cle}`);
+const persoDuelCommun = () => chantsPersoCommuns(...joueursDuMatch());
+// Le chant d'une pause du duel (p : 1 pour la première), ou null si le stade se tait : 3 fois sur 4 ; un chant personnalisé d'abord,
+// puis un habituel, en alternance (comme en solo).
+function chantPauseDuel(p) {
+  if (tirageDuel(`pause${p}`) % 100 >= 75) return null;
+  const perso = persoDuelCommun();
+  if (perso.length && p % 2 === 1) return perso[(tirageDuel("debut") + p) % perso.length];
+  const l = ambiance.listePause();
+  return l.length ? l[tirageDuel(`pauseChant${p}`) % l.length] : null;
+}
 // Les commentateurs lancent le match, à voix haute (pas de speaker : sa présentation n'est ni dite ni affichée ; les surnoms
 // dits par Roland ont été abandonnés le 3 novembre).
 function presenterSpeaker() {
@@ -1414,6 +1499,21 @@ function presenterSpeaker() {
     // Avant une finale : le stade chante l'hymne « Que vivent nos héros » (3 novembre, choix du porteur du projet).
     const l = unDe("avant_ambiance");
     if (l) av.commentaires.unshift(l);
+  } else if (S.duel && D) {
+    // En duel : le même chant au même moment sur les deux téléphones (tirage commun, 6 novembre). On attend de savoir si
+    // l'adversaire est un ami (ses chants comptent alors aussi), puis : un chant personnalisé s'il y en a, sinon, 6 fois sur 10,
+    // le stade du début de match (ou un chant entier avant un grand match).
+    const encore = () => faceAFaceOuvert && !S.passe;
+    attendreAmi().then(() => {
+      if (!encore()) return;
+      const perso = persoDuelCommun(), f = soutenu(...joueursDuMatch());
+      let id = null, ligne = null, vol = 0.5, fondu = 1.5;
+      if (perso.length) { id = perso[tirageDuel("debut") % perso.length]; ligne = f && unDe("perso_supporters", f.genre); }
+      else if (S.annonces?.enjeu) { const l = ambiance.listePause(); id = l.length ? l[tirageDuel("debutChant") % l.length] : null; ligne = unDe("avant_ambiance"); }
+      else if (tirageDuel("debutChante") % 100 < 60) { const l = ambiance.listeDebut(); id = l.length ? l[tirageDuel("debutChant") % l.length] : null; vol = 0.4; fondu = 1.2; ligne = Math.random() < 0.5 ? unDe("avant_ambiance") : null; }
+      if (id) ambiance.chanterChoisi(id, { vol, delai: 0.3, fondu, encore });
+      if (ligne) voix.finiDeParler(() => { if (encore()) voix.dire([ligne]); }, 4000);
+    });
   } else if (fan) {
     const l = unDe("perso_supporters", fan.genre);
     if (l) av.commentaires.unshift(l);

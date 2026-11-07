@@ -27,3 +27,8 @@ export const chantsPerso = (...joueurs) => {
 export const courtsPerso = (...joueurs) => joueurs.flatMap(j => (j ? COURTS_PERSO[clePseudo(j.pseudo, j.numero)] || [] : []));
 // Le joueur du match que le public soutient (le premier qui a des chants), ou null : pour les répliques (« pour lui », « pour elle »).
 export const soutenu = (...joueurs) => joueurs.find(j => j && CHANTS_PERSO[clePseudo(j.pseudo, j.numero)]) || null;
+
+// En duel, les deux téléphones font le même tirage pour les chants (6 novembre) : un nombre tiré du numéro du duel et du moment,
+// et les deux joueurs rangés dans le même ordre (par pseudo) des deux côtés.
+export const hashTexte = t => { let h = 2166136261; for (const c of String(t)) { h ^= c.codePointAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+export const chantsPersoCommuns = (...joueurs) => chantsPerso(...joueurs.filter(Boolean).sort((x, y) => (clePseudo(x.pseudo, x.numero) < clePseudo(y.pseudo, y.numero) ? -1 : 1)));
