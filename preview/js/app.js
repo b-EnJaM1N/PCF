@@ -42,7 +42,7 @@ import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerProgrammes } from "./ecran-programmes.js";
 import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
 import { installerTutos } from "./tutos.js";
-import { chantsPerso, courtsPerso, soutenu, clePseudo } from "./chants-perso.js";
+import { chantsPerso, courtsPerso, soutenu, clePseudo, hashTexte, chantsPersoCommuns } from "./chants-perso.js";
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
@@ -423,6 +423,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   // (au premier point, le son est prêt : on charge les chants personnalisés des joueurs, pour la pause entre les sets)
   if (!S.persoCharge) {
     S.persoCharge = true; ambiance.prechargerPerso([...persoDuMatch(), ...courtsPerso(...joueursDuMatch())]);
+    if (S.duel && D) for (let p = 1; p < 2 * WIN - 1; p++) ambiance.preparerChant(chantPauseDuel(p));   // (les chants des pauses du duel)
     // (les chants chargés à la demande : le prochain de chaque tour, et l'hymne si on joue un grand match ; 5 novembre)
     ambiance.prechargerChants({ hymne: !!S.annonces?.enjeu || !!S.carriere });
   }
@@ -634,7 +635,8 @@ function apresPoint(evt, a, cel, rp) {
     // La pause entre les sets : une fois sur deux, les supporters chantent (le chant baisse sous les commentaires, s'éteint au
     // premier échange du set suivant ; 3 novembre).
     // (3 fois sur 4 ; un chant personnalisé d'abord, puis un habituel, en alternance : 6 novembre, demande du porteur du projet)
-    if (Math.random() < 0.75) ambiance.chanter({ vol: 0.5, delai: 2.5, perso: persoDuMatch(), alterner: true });
+    if (S.duel && D) { const id = chantPauseDuel(m.scoresSets.length); if (id) ambiance.chanterChoisi(id, { vol: 0.5, delai: 2.5 }); }
+    else if (Math.random() < 0.75) ambiance.chanter({ vol: 0.5, delai: 2.5, perso: persoDuMatch(), alterner: true });
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
     const suivant = annonceDebutSet(m), decisif = setDecisif(m);
     const nouveauSet = () => {
@@ -974,9 +976,14 @@ $("masquerMessages").checked = masquerMessages();
 $("masquerMessages").addEventListener("change", e => { ecrire("masquerMessages", e.target.checked); if (D?.duel) afficherMessages(D.duel); });
 
 // Mon ami ? (une demande d'ami acceptée) — cherché une fois par duel.
-async function verifierAmi() {
+function verifierAmi() {
   const d = D;
   if (!d) return;
+  d.amiPret = verifierAmiDe(d);
+}
+// (la présentation attend la réponse, au plus 1,5 s : les chants des deux amis en dépendent ; 6 novembre)
+const attendreAmi = () => (S?.duel && D?.amiPret ? Promise.race([D.amiPret, new Promise(ok => setTimeout(ok, 1500))]) : Promise.resolve());
+async function verifierAmiDe(d) {
   try { const amis = await mesAmis(); if (D === d) { d.ami = amis.some(a => a.id === OPP.uid && a.statut === "amis"); afficherMessages(d.duel); } }
   catch { /* sans la liste, pas de chambrage */ }
 }
@@ -1441,6 +1448,19 @@ async function afficherDossier() {
 // (l'adversaire compte pour les chants personnalisés seulement entre amis : entre inconnus, chacun n'entend que les siens ; 6 novembre)
 const joueursDuMatch = () => [{ pseudo: P.pseudo, numero: P.numero, genre: P.genre }, OPP?.humain && D?.ami ? { pseudo: OPP.nom, numero: OPP.numero, genre: OPP.genre } : null];
 const persoDuMatch = () => chantsPerso(...joueursDuMatch());
+// En duel, les deux téléphones font le même tirage pour les chants (6 novembre) : le numéro du duel et le moment, et les deux
+// joueurs rangés dans le même ordre (par pseudo) des deux côtés.
+const tirageDuel = cle => hashTexte(`${D?.duel?.id}:${cle}`);
+const persoDuelCommun = () => chantsPersoCommuns(...joueursDuMatch());
+// Le chant d'une pause du duel (p : 1 pour la première), ou null si le stade se tait : 3 fois sur 4 ; un chant personnalisé d'abord,
+// puis un habituel, en alternance (comme en solo).
+function chantPauseDuel(p) {
+  if (tirageDuel(`pause${p}`) % 100 >= 75) return null;
+  const perso = persoDuelCommun();
+  if (perso.length && p % 2 === 1) return perso[(tirageDuel("debut") + p) % perso.length];
+  const l = ambiance.listePause();
+  return l.length ? l[tirageDuel(`pauseChant${p}`) % l.length] : null;
+}
 // Les commentateurs lancent le match, à voix haute (pas de speaker : sa présentation n'est ni dite ni affichée ; les surnoms
 // dits par Roland ont été abandonnés le 3 novembre).
 function presenterSpeaker() {
@@ -1479,6 +1499,21 @@ function presenterSpeaker() {
     // Avant une finale : le stade chante l'hymne « Que vivent nos héros » (3 novembre, choix du porteur du projet).
     const l = unDe("avant_ambiance");
     if (l) av.commentaires.unshift(l);
+  } else if (S.duel && D) {
+    // En duel : le même chant au même moment sur les deux téléphones (tirage commun, 6 novembre). On attend de savoir si
+    // l'adversaire est un ami (ses chants comptent alors aussi), puis : un chant personnalisé s'il y en a, sinon, 6 fois sur 10,
+    // le stade du début de match (ou un chant entier avant un grand match).
+    const encore = () => faceAFaceOuvert && !S.passe;
+    attendreAmi().then(() => {
+      if (!encore()) return;
+      const perso = persoDuelCommun(), f = soutenu(...joueursDuMatch());
+      let id = null, ligne = null, vol = 0.5, fondu = 1.5;
+      if (perso.length) { id = perso[tirageDuel("debut") % perso.length]; ligne = f && unDe("perso_supporters", f.genre); }
+      else if (S.annonces?.enjeu) { const l = ambiance.listePause(); id = l.length ? l[tirageDuel("debutChant") % l.length] : null; ligne = unDe("avant_ambiance"); }
+      else if (tirageDuel("debutChante") % 100 < 60) { const l = ambiance.listeDebut(); id = l.length ? l[tirageDuel("debutChant") % l.length] : null; vol = 0.4; fondu = 1.2; ligne = Math.random() < 0.5 ? unDe("avant_ambiance") : null; }
+      if (id) ambiance.chanterChoisi(id, { vol, delai: 0.3, fondu, encore });
+      if (ligne) voix.finiDeParler(() => { if (encore()) voix.dire([ligne]); }, 4000);
+    });
   } else if (fan) {
     const l = unDe("perso_supporters", fan.genre);
     if (l) av.commentaires.unshift(l);
