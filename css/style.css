@@ -953,3 +953,11 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .tuto-actions { display: flex; align-items: center; justify-content: flex-end; gap: 14px; }
 .tuto-actions .btn { width: auto; margin: 0; padding: 10px 18px; }
 @media (prefers-reduced-motion: reduce) { .tuto-cadre, .tuto-bulle { transition: none; } }
+/* La série de jours du match du jour (match-du-jour.js, 7 novembre) : le badge sous le match du jour. */
+.mdj-serie { display: block; margin-top: 4px; color: #FFB067; font-size: .85rem; }
+.mdj-serie b { display: inline; font-size: inherit; color: #FF8A3D; }
+/* Le palmarès de la carrière en tableau (7 novembre) : une ligne par saison. */
+.car-palmares-tab { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: .92rem; }
+.car-palmares-tab th { text-align: left; font-weight: 600; color: var(--muted); font-size: .8rem; padding: 4px 6px; border-bottom: 1px solid rgba(255, 255, 255, .15); }
+.car-palmares-tab td { padding: 6px; border-bottom: 1px solid rgba(255, 255, 255, .07); }
+.car-palmares-tab tr.titre td { color: var(--me); font-weight: 700; }

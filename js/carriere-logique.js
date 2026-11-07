@@ -470,6 +470,21 @@ export function saisonSuivante(C, rng = Math.random) {
 }
 
 // Le meilleur circuit atteint et le nombre de titres de champion de l'Élite.
+// Le palmarès en tableau (7 novembre, demande du porteur du projet : plus simple) : pour une saison, son résultat de playoffs en
+// un mot, tiré du texte du bilan (les anciennes saisons n'ont que lui) : « Champion », « Finale », « Demi », « Quart », « 3e place »,
+// « Barrage », « Maintien » ou « — » (pas de playoffs).
+export function resumePalmares(p) {
+  const t = p.texte || "";
+  if (/Champion du|Vainqueur des playoffs/.test(t)) return "🏆 Champion";
+  if (/Finaliste/.test(t)) return "Finale";
+  const e = t.match(/Éliminé en (.+?) des playoffs/);
+  if (e) return /demi/.test(e[1]) ? "Demi" : /quart/.test(e[1]) ? "Quart" : e[1].replace(/ de finale$/, "");
+  if (/3e place/.test(t)) return "3e place";
+  if (/[Bb]arrage/.test(t)) return "Barrage";
+  if (/maintien|[Mm]aintenu/.test(t)) return "Maintien";
+  return "—";
+}
+
 export function bilanCarriere(C) {
   const atteints = [C.ou, ...C.palmares.map(p => p.circuit + (p.mouvement || 0))];
   return { meilleur: Math.max(...atteints), titres: C.palmares.filter(p => p.titre === "champion").length };

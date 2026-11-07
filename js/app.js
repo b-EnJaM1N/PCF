@@ -19,7 +19,7 @@ import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
-import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
+import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
 import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
@@ -46,9 +46,9 @@ import { chantsPerso, courtsPerso, soutenu, clePseudo, hashTexte, chantsPersoCom
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
-import { modeleFantome } from "./fantome.js";
+import { modeleFantome, fantomeVisible as apresSortie } from "./fantome.js";   // (apresSortie : les nouveautés prévues après la sortie, visibles seulement sur la version de test)
 import { replayVisible, momentDuCoup, tempsForts, momentDuSet, TITRES as TITRES_REPLAY } from "./replay.js";
-import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder } from "./match-du-jour.js";
+import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder, titresSerie, prochainPalier } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
 import { GESTES, CELEBRATIONS, CADRES, gesteValide, celebrationValide, articleDe, possede } from "./catalogue.js";
@@ -839,6 +839,9 @@ function finir() {
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("coach").hidden = true;
   if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
+  // La série de jours (match-du-jour.js) : ses paliers donnent un trophée et un objet (version de test seulement, pour l'instant).
+  const serieFin = S.matchJour && n && apresSortie() ? serie(resultatsDuJour(), jourParis()) : 0;
+  if (serieFin) { nouveaux.push(...accorderTitres(P, titresSerie(serieFin))); sauverP(); }
   // La première visite : ce qui vient de s'ouvrir dans le menu.
   const ouvert = menuComplet() ? [] : nouveautes(matchsAvant, P.matchs);
   if (matchsAvant < 3 && P.matchs >= 3) compterTroisMatchs(envoyerTroisMatchs);   // pour savoir si les nouveaux joueurs accrochent (anonyme)
@@ -866,6 +869,7 @@ function finir() {
   $("abandonDuelZone").hidden = true;
   if (enTournoi) $("tNext").textContent = gagne ? (tourDe(T, S.tour).finale ? "Voir le palmarès" : "Continuer le tournoi") : "Voir la suite du tournoi";
   $("news").textContent = nouveaux.length ? "Nouveau titre : " + nouveaux.map(t => t.nom + (texteDeblocage(t) ? ` (débloque ${texteDeblocage(t)})` : "")).join(", ") + " !" : "";
+  if (serieFin > 1) $("news").textContent = `🔥 Série : ${serieFin} jours d'affilée ! ${$("news").textContent}`.trim();
   const paliers = retenirRang();
   if (paliers.length) $("news").textContent = `${$("news").textContent} ${paliers.join(" ")}`.trim();
   if (ouvert.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${ouvert.join(" ")} ${$("news").textContent}`.trim();
@@ -1236,7 +1240,8 @@ function renderCarte() {
   carteT = setTimeout(async () => {
     const jeton = ++carteJeton;
     const c = carteDe(P, { niveauOfficiel: monClassement, provisoire: monClassement !== null && provisoire(mesDuelsOfficiels), surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
-    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(avMoi()), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur });
+    if (apresSortie()) c.serie = serie(resultatsDuJour(), jourParis());   // (ma série de jours, au pied de ma carte)
+    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(avMoi()), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur, cadreFlammes: CADRES[P.cadre]?.flammes });
     if (jeton !== carteJeton) return;
     $("carteRarete").textContent = texteRang(c.rang);
     $("carteNotes").innerHTML = notesDe(P).map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
@@ -1259,7 +1264,7 @@ async function voirCarteDe(uid) {
   const c = carteDe(J, { niveauOfficiel: cl ? cl.points : null, provisoire: !!cl && provisoire(cl.joues), surnom: surnomDe(J).texte, titre: J.matchs ? dernierTitre(J) : "" });
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
   $("une").classList.add("show");
-  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG({ ...J.av, brode: clePseudo(ligne.pseudo, ligne.numero) }), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur });
+  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG({ ...J.av, brode: clePseudo(ligne.pseudo, ligne.numero) }), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur, cadreFlammes: CADRES[J.cadre]?.flammes });
   await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
     fichier: "carte-de-joueur.png", alt: `Carte de joueur de ${nom} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
   return null;
@@ -1638,9 +1643,15 @@ function renderMatchDuJour() {
   $("mdjAv").innerHTML = avatarSVG(b.av);
   $("mdjTitre").textContent = `📅 Match du jour n° ${m.numero}`;
   $("mdjJouer").hidden = !!r; $("mdjPartager").hidden = !r;
-  const feu = s > 1 ? ` · 🔥 ${s} jours` : "";
+  const enValeur = apresSortie();   // (la série mise en valeur : version de test seulement, pour l'instant)
+  const feu = !enValeur && s > 1 ? ` · 🔥 ${s} jours` : "";
   $("mdjEtat").textContent = r ? `${r.abandon ? "🏳️ Abandon" : `${r.gagne ? "✅ Victoire" : "❌ Défaite"} ${r.score.join("–")}`}${feu} · nouveau match demain`
-    : `Contre ${b.nom} 🤖 · un set de 7, un seul essai${s ? ` · 🔥 ${s} jour${s > 1 ? "s" : ""}` : ""}`;
+    : `Contre ${b.nom} 🤖 · un set de 7, un seul essai${!enValeur && s ? ` · 🔥 ${s} jour${s > 1 ? "s" : ""}` : ""}`;
+  // La série : le badge et le prochain palier (« encore 2 jours pour le poignet Braise »).
+  const p = prochainPalier(s), badge = $("mdjSerie");
+  badge.hidden = !enValeur || (!s && r);
+  badge.innerHTML = !s ? `🔥 ${p.jours} jours d'affilée : ${esc(p.objet)}`
+    : `<b>🔥 ${s} jour${s > 1 ? "s" : ""}</b>${p ? ` · encore ${p.jours - s} pour ${esc(p.objet)}` : " · tous les paliers atteints !"}`;
 }
 $("mdjJouer").addEventListener("click", () => {
   if (D && !D.fini) return;
@@ -1811,10 +1822,11 @@ function renderFiche() {
     }).join("");
   }
   // Le palmarès : les trophées, famille par famille.
-  const obtenus = TITRES.filter(t => P.titres[t.id]).length;
-  $("palmaresCompte").textContent = `${obtenus} trophée${obtenus > 1 ? "s" : ""} sur ${TITRES.length}`;
+  const visibles = TITRES.filter(t => !t.bientot || apresSortie());   // (les trophées de la série : seulement sur la version de test, pour l'instant)
+  const obtenus = visibles.filter(t => P.titres[t.id]).length;
+  $("palmaresCompte").textContent = `${obtenus} trophée${obtenus > 1 ? "s" : ""} sur ${visibles.length}`;
   $("badges").innerHTML = FAMILLES.map(f => {
-    const liste = TITRES.filter(t => t.famille === f.id), n = liste.filter(t => P.titres[t.id]).length;
+    const liste = visibles.filter(t => t.famille === f.id), n = liste.filter(t => P.titres[t.id]).length;
     return `<h3 class="famille">${f.icone} ${f.nom} <small>${n} / ${liste.length}</small></h3>` + liste.map(t => {
       const on = !!P.titres[t.id];
       return `<div class="badge ${on ? "on" : "off"}"><div class="bn">${on ? "🏅" : "🔒"} ${t.nom}</div><div class="bd">${t.desc}</div>${texteDeblocage(t) ? `<div class="bu">Débloque ${esc(texteDeblocage(t))}</div>` : ""}</div>`;
@@ -2210,7 +2222,12 @@ function renderCarriere() {
   if (C.palmares.length) {
     const b = bilanCarriere(C);
     $("carPalmares").innerHTML = `<div class="rnd">Mon palmarès</div><p class="hint" style="margin:0">Meilleur circuit atteint : ${CIRCUITS[b.meilleur]}${b.titres ? ` · 🏆 ${b.titres} titre${b.titres > 1 ? "s" : ""} de champion de l'Élite` : ""}</p>`
-      + `<ul class="car-palmares">${[...C.palmares].reverse().map(p => `<li>Saison ${p.saison} · ${CIRCUITS[p.circuit]} : ${esc(p.texte)}${p.coupeML ? ` ${esc(p.coupeML.texte)}` : ""}</li>`).join("")}</ul>`
+      + (coupesML(C).length ? `<p class="hint" style="margin:4px 0 0">🏆 Coupe Monique-Latour : saison${coupesML(C).length > 1 ? "s" : ""} ${coupesML(C).join(", ")}</p>` : "")
+      // (7 novembre, demande du porteur du projet : un tableau simple, une ligne par saison)
+      + `<table class="car-palmares-tab"><thead><tr><th>Saison</th><th>Circuit</th><th>Classement</th><th>Playoffs</th></tr></thead><tbody>`
+      + [...C.palmares].reverse().map(p => `<tr${resumePalmares(p).includes("Champion") ? ' class="titre"' : ""}><td>${p.saison}</td><td>${CIRCUITS[p.circuit].replace("Circuit ", "")}</td>`
+        + `<td>${p.place ? `${p.place}${p.place === 1 ? "er" : "e"}` : "–"}</td><td>${resumePalmares(p)}${p.mouvement === 1 ? " ⬆️" : p.mouvement === -1 ? " ⬇️" : ""}</td></tr>`).join("")
+      + `</tbody></table><p class="hint" style="margin:6px 0 0">Classement : la saison régulière (dans ta poule en Amateur et en Future). ⬆️ promu, ⬇️ relégué.</p>`
       // Le palmarès de chaque saison : les champions, qui monte et qui descend, du haut vers le bas.
       + [...C.palmares].reverse().filter(p => p.circuits).map((p, i) => `<details class="regles car-saison"${i === 0 ? " open" : ""}><summary>🏆 Palmarès de la saison ${p.saison}</summary>`
         + (p.coupeML?.vainqueur ? `<div class="car-saison-circuit"><b>Coupe Monique-Latour</b><br>🏆 ${esc(infoJoueur(p.coupeML.vainqueur).nom)} <span class="car-sec">(finaliste : ${esc(infoJoueur(p.coupeML.finaliste).nom)})</span></div>` : "")
