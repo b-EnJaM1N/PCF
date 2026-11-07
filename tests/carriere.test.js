@@ -407,3 +407,15 @@ test("le palmarès en tableau : le résultat des playoffs en un mot, même pour 
   assert.equal(r("Match pour la 3e place perdu : tu restes en Circuit Pro."), "3e place");
   assert.equal(r("✅ Match pour le maintien gagné : tu restes en Circuit Future !"), "Maintien");
 });
+
+test("le palmarès en tableau : le tour atteint en Coupe Monique-Latour", async () => {
+  const { resumeCoupe } = await import("../app/js/carriere-logique.js");
+  const r = texte => resumeCoupe({ coupeML: texte === null ? null : { texte } });
+  assert.equal(r("🏆 Vainqueur de la Coupe Monique-Latour !"), "🏆");
+  assert.equal(r("🥈 Finaliste de la Coupe Monique-Latour."), "Finale");
+  assert.equal(r("Éliminé en demi-finale de la Coupe Monique-Latour."), "Demi");
+  assert.equal(r("Éliminé en quart de finale de la Coupe Monique-Latour."), "Quart");
+  assert.equal(r("Éliminé en 16e de finale de la Coupe Monique-Latour."), "16e");
+  assert.equal(r("Éliminé en 32e de finale de la Coupe Monique-Latour."), "32e");
+  assert.equal(r(null), "–");
+});
