@@ -42,6 +42,10 @@ export const TITRES = [
 
   { id: "habitue", famille: "endurance", nom: "Habitué", desc: "Jouer 10 matchs." },
   { id: "pilier", famille: "endurance", nom: "Pilier", desc: "Jouer 100 matchs.", debloque: "le gant argent", objet: ["gant", "argent"] },
+  // La série de jours du match du jour (7 novembre, choix du porteur du projet) : des objets à gagner, pas dans la boutique.
+  { id: "serie_3", famille: "endurance", nom: "Le rendez-vous", desc: "Jouer le match du jour 3 jours d'affilée.", debloque: "le poignet Braise", objet: ["poignet", "braise"] },
+  { id: "serie_7", famille: "endurance", nom: "Une semaine sans faute", desc: "Jouer le match du jour 7 jours d'affilée.", debloque: "la célébration « Pluie de flammes »", objet: ["celebration", "flammes"] },
+  { id: "serie_30", famille: "endurance", nom: "Le feu sacré", desc: "Jouer le match du jour 30 jours d'affilée.", debloque: "le cadre de carte « Feu sacré »", objet: ["cadre", "feu_sacre"] },
   { id: "marathon", famille: "endurance", nom: "Marathonien", desc: "Jouer un match de 60 coups ou plus." },
   { id: "oiseau_de_nuit", famille: "endurance", nom: "Oiseau de nuit", desc: "Jouer 10 matchs entre 23 h et 5 h." },
   { id: "leve_tot", famille: "endurance", nom: "Lève-tôt", desc: "Jouer 10 matchs entre 5 h et 9 h." },

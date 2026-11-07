@@ -18,7 +18,8 @@ export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc"
 export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], bronze: ["Bronze", "#C27A3A"], blanc: ["Blanc", "#F5F7FA"], bleu: ["Bleu", "#2C6FD1"], jaune: ["Jaune", "#F4C542"], noir: ["Noir", "#23262B"], or: ["Or", "#E0B12A"], argent: ["Argent", "#AEB6C2"],
   tricolore: ["Tricolore", "#F5F7FA", "linear-gradient(90deg,#2C5CC5 33%,#F5F7FA 33% 66%,#E1342B 66%)"],
   arcenciel: ["Arc-en-ciel", "#F4C542", "linear-gradient(90deg,#E8574A,#F4C542,#6BD49A,#4DA3FF,#9B6BD6)"],
-  leopard: ["Léopard", "#E2A74B", "radial-gradient(circle at 30% 40%,#3A2A1A 18%,transparent 20%),radial-gradient(circle at 70% 65%,#3A2A1A 18%,transparent 20%),#E2A74B"] };
+  leopard: ["Léopard", "#E2A74B", "radial-gradient(circle at 30% 40%,#3A2A1A 18%,transparent 20%),radial-gradient(circle at 70% 65%,#3A2A1A 18%,transparent 20%),#E2A74B"],
+  braise: ["Braise", "#E8572A", "linear-gradient(90deg,#7A1F12,#E8572A,#F4A93B,#E8572A,#7A1F12)"] };   // (série de jours : trophée « Le rendez-vous »)
 // Les couleurs de peau de la main nue : toutes gratuites, toujours.
 export const PEAUX = { neutre: ["Neutre (comme les emojis)", "#FFCC4D"], claire: ["Claire", "#F7D9C4"], rosee: ["Rosée", "#EDB894"], doree: ["Dorée", "#D49A6A"],
   mate: ["Mate", "#A86B42"], brune: ["Brune", "#7A4A2A"], ebene: ["Ébène", "#4A2C1A"] };
@@ -119,6 +120,7 @@ export function avatarSVG(a) {
     tricolore: `<linearGradient id="${id}p" x1="0" x2="1"><stop offset=".33" stop-color="#2C5CC5"/><stop offset=".33" stop-color="#F5F7FA"/><stop offset=".66" stop-color="#F5F7FA"/><stop offset=".66" stop-color="#E1342B"/></linearGradient>`,
     arcenciel: `<linearGradient id="${id}p" x1="0" x2="1"><stop offset="0" stop-color="#E8574A"/><stop offset=".25" stop-color="#F4C542"/><stop offset=".5" stop-color="#6BD49A"/><stop offset=".75" stop-color="#4DA3FF"/><stop offset="1" stop-color="#9B6BD6"/></linearGradient>`,
     leopard: `<pattern id="${id}p" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#E2A74B"/><circle cx="2.5" cy="2.5" r="1.6" fill="#3A2A1A"/><circle cx="6" cy="6" r="1.4" fill="#3A2A1A"/></pattern>`,
+    braise: `<linearGradient id="${id}p" x1="0" x2="1"><stop offset="0" stop-color="#7A1F12"/><stop offset=".3" stop-color="#E8572A"/><stop offset=".5" stop-color="#F4A93B"/><stop offset=".7" stop-color="#E8572A"/><stop offset="1" stop-color="#7A1F12"/></linearGradient>`,
   }[cle] || "";
   const fillPoignet = poignetDef ? `url(#${id}p)` : poignet;
   const fondDef = {
