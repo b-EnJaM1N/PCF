@@ -4,7 +4,7 @@ Google pose ces questions à la fin du test fermé (Tableau de bord › « Deman
 **Le formulaire ne s'enregistre pas en cours de route** : tout remplir d'une traite, puis « Appliquer ».
 Brouillon mis à jour le 8 novembre avec les vrais chiffres du test (compteur de visites, 26 octobre – 8 novembre).
 
-**Le test** : 12 testeurs inscrits en même temps depuis le 26 octobre environ (10 jours au compteur de Google le 5 novembre) : les 14 jours sont atteints vers le 9 novembre. [Vérifier le compteur du Tableau de bord avant d'envoyer.]
+**Le test** : 12 testeurs inscrits en même temps depuis le dimanche 25 octobre vers 21 h (13 jours au compteur de Google le 8 novembre à 20 h) : les 14 jours sont atteints le 8 novembre au soir.
 
 ## Journal du test (à tenir pendant les 14 jours)
 
@@ -62,4 +62,4 @@ Brouillon mis à jour le 8 novembre avec les vrais chiffres du test (compteur de
 > - Palmarès de la carrière simplifié en tableau, à la demande d'un testeur.
 
 **2. Comment on a décidé que l'appli était prête** (proposition) :
-> Tous les retours bloquants des testeurs ont été corrigés et revérifiés par eux. Plus de 300 tests automatiques vérifient les règles du jeu et le serveur à chaque changement ; chaque nouveauté passe d'abord par une version de test avant d'être publiée. Avant chaque mise en ligne, un robot joue aussi deux vrais matchs dans un navigateur. Le seul bug bloquant signalé pendant le test (une erreur en plein match, le 4 novembre) a été corrigé le soir même, et rien de bloquant n'a été signalé depuis [à vérifier le jour de la demande]. Les testeurs ont joué régulièrement : de 10 à près de 30 matchs par jour [mettre à jour avec le compteur de visites].
+> Tous les retours bloquants des testeurs ont été corrigés et revérifiés par eux. Plus de 300 tests automatiques vérifient les règles du jeu et le serveur à chaque changement ; chaque nouveauté passe d'abord par une version de test avant d'être publiée. Avant chaque mise en ligne, un robot joue aussi deux vrais matchs dans un navigateur. Le seul bug bloquant signalé pendant le test (une erreur en plein match, le 4 novembre) a été corrigé le soir même, et rien de bloquant n'a été signalé depuis. Les testeurs ont joué régulièrement : 4 à 6 joueurs fidèles chaque jour, 22 matchs par jour en moyenne sur les 11 derniers jours, jusqu'à 38.
