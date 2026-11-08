@@ -17,6 +17,8 @@ Brouillon mis à jour le 8 novembre avec les vrais chiffres du test (compteur de
 | 20 oct. | porteur du projet | La carte de joueur n'était visible que par soi | Bouton « Voir sa carte » sur la page d'un ami, option pour la cacher |
 | 22 oct. | porteur du projet | Carrière solo : « on gagne tous les matchs du Circuit Amateur, c'est vite lassant » | Amateur en un set de 7, en poules ; les bots faibles contrent de temps en temps le signe préféré du joueur |
 | 3-4 nov. | porteur du projet, testeurs | L'ambiance restait trop calme pour un « sport » | Vrais sons de foule (applaudissements, huées, « Ohhh »), chants de supporters, hymne avant les finales |
+| oct. | testeurs | Les tournois de cercle ne fonctionnaient pas | Corrigés |
+| oct. | testeurs | Les commentateurs traitaient chaque match comme une finale | Commentaires de grand enjeu réservés aux vrais matchs décisifs |
 | 4 nov. | porteur du projet | Les remontées n'étaient presque jamais commentées | Règle élargie : une remontée de 4 points ou plus est commentée dès qu'on revient à un point |
 | 4 nov. | testeurs | « Jeu arrêté » s'affichait avant que l'arbitre parle, et gâchait la surprise | Affiché seulement quand l'arbitre intervient |
 | 4 nov. | 2 testeurs | Une erreur (« bandeau rouge ») en plein match, 3 fois dans la soirée | Corrigée le soir même ; ajout d'une vérification automatique du code et d'un robot qui joue deux vrais matchs dans un navigateur avant chaque mise en ligne |
@@ -33,7 +35,7 @@ Brouillon mis à jour le 8 novembre avec les vrais chiffres du test (compteur de
 > Différences avec l'usage attendu en production : le test s'est fait entre gens qui se connaissent, donc plus de duels entre amis et moins de parties contre des inconnus ; avec peu de joueurs, les salles de tournoi sont complétées par des bots (annoncés comme tels). En production, on attend davantage de parties rapides et de tournois entre inconnus.
 
 **3. Résumé des commentaires et façon de les recueillir** (proposition) :
-> Retours recueillis par messages (WhatsApp), de vive voix et par l'adresse de contact indiquée dans l'appli (contact.handslam@gmail.com), notés au fur et à mesure dans un journal. Principaux retours : le temps pour jouer un coup était trop court ; l'aide « Lire l'adversaire » pendant le match perturbait plus qu'elle n'aidait ; trop de silence entre les commentaires ; une ambiance de stade trop calme ; la Carrière trop facile au début ; une erreur en plein match (corrigée le soir même) ; trop de menus pour un nouveau joueur.
+> Retours recueillis par messages (WhatsApp), de vive voix et par l'adresse de contact indiquée dans l'appli (contact.handslam@gmail.com), notés au fur et à mesure dans un journal. Principaux retours : le temps pour jouer un coup était trop court ; l'aide « Lire l'adversaire » pendant le match perturbait plus qu'elle n'aidait ; trop de silence entre les commentaires ; une ambiance de stade trop calme ; les commentateurs traitaient chaque match comme une finale ; les tournois de cercle ne fonctionnaient pas au début ; la Carrière trop facile au début ; une erreur en plein match (corrigée le soir même) ; trop de menus pour un nouveau joueur.
 
 ## Partie 2 : à propos de l'appli/du jeu
 
@@ -50,6 +52,8 @@ Brouillon mis à jour le 8 novembre avec les vrais chiffres du test (compteur de
 **1. Modifications apportées grâce au test** (proposition, à compléter avec le journal) :
 > - Temps pour jouer un coup porté de 5 à 8 secondes (plusieurs testeurs n'avaient pas le temps de réfléchir).
 > - L'aide « Lire l'adversaire » n'est plus affichée pendant le match (elle perturbait) ; l'analyse reste disponible à la fin, et le dossier de l'adversaire avant.
+> - Les commentaires de grand enjeu (« finale », « entrer dans l'histoire ») sont réservés aux vrais matchs décisifs : au début du test, les commentateurs traitaient chaque match comme une finale.
+> - Les tournois de cercle, qui ne fonctionnaient pas au début du test, ont été corrigés.
 > - Ambiance sonore plus présente (murmure du public, réactions après les points, rires sur les égalités à répétition), pour que les commentaires ne sortent plus du silence.
 > - Version simplifiée pour le lancement : les modes qui demandent beaucoup de joueurs (grands tournois, divisions) sont masqués, et il n'y a plus aucune mise de jetons entre joueurs (les jetons se gagnent en jouant).
 > - Carte de joueur visible par les amis, avec une option pour la cacher.
