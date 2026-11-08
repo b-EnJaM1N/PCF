@@ -138,13 +138,29 @@ const appliquerReglagesSon = () => {
 };
 voix.actif = sonActif; ambiance.actif = sonActif && bruitagesActifs;
 voix.rolesCoupes = new Set(commentairesActifs ? [] : ROLES_COMMENTAIRES);
+// L'introduction instrumentale de l'hymne à l'ouverture (8 novembre, demande du porteur du projet ; 4 s à 20 s de « La Main
+// sacrée ») : au premier toucher (un téléphone n'accepte pas de son avant), une fois par jour, si le son et les bruitages sont
+// allumés ; elle s'éteint dès qu'un match commence. Seulement sur la version de test, pour l'instant (apresSortie).
+let introHymne = null;
+function jouerIntroHymne() {
+  const jour = jourParis();
+  if (!apresSortie() || !sonActif || !bruitagesActifs || lire("introHymneJour", null) === jour) return;
+  ecrire("introHymneJour", jour);
+  try { const a = new Audio("audio/stade_intro_01.mp3"); a.volume = 0.6; a.play().catch(() => {}); introHymne = a; } catch { /* sans son */ }
+}
+function arreterIntroHymne() {
+  const a = introHymne; if (!a) return;
+  introHymne = null;
+  let v = a.volume; const t = setInterval(() => { v -= 0.1; if (v <= 0) { clearInterval(t); a.pause(); } else a.volume = v; }, 60);
+}
+document.addEventListener("pointerdown", jouerIntroHymne, { once: true, capture: true });
 // (La voix de synthèse du téléphone, robotique, n'est plus proposée : les répliques sont enregistrées.)
 voix.synthese = false;
 $("snd").checked = sonActif;
 voix.charger().then(() => { ambiance.utiliserFichiers([...voix.fichiers.keys()]); });
 
 $("snd").addEventListener("change", e => {
-  sonActif = e.target.checked; ecrire("son", sonActif);
+  sonActif = e.target.checked; ecrire("son", sonActif); if (!sonActif) arreterIntroHymne();
   voix.actif = sonActif; if (!sonActif) voix.arreter();
   appliquerReglagesSon();
 });
@@ -1358,6 +1374,7 @@ document.querySelectorAll("#segWin button").forEach(b => b.addEventListener("cli
 // ---------------------------------------------------------------- face-à-face
 let minuteriesIntro = [], voixIntro = 0;
 function ouvrirFaceAFace() {
+  arreterIntroHymne();
   $("startCard").hidden = true; $("tourCard").hidden = true;
   try { ambiance.initialiser(); } catch { /* le match se joue aussi sans son */ } // geste de l'utilisateur : le son peut démarrer
   const pr = presentation(P, OPP, { tour: S.tour !== null && T ? tourDe(T, S.tour).singulier : null, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN, classementMoi: monClassement, classe: D?.duel?.classe !== false, tournoi: !!D?.duel?.tournoi_id });
