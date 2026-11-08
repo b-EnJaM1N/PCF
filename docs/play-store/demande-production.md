@@ -35,7 +35,7 @@ Brouillon mis à jour le 8 novembre avec les vrais chiffres du test (compteur de
 > Différences avec l'usage attendu en production : le test s'est fait entre gens qui se connaissent, donc plus de duels entre amis et moins de parties contre des inconnus ; avec peu de joueurs, les salles de tournoi sont complétées par des bots (annoncés comme tels). En production, on attend davantage de parties rapides et de tournois entre inconnus.
 
 **3. Résumé des commentaires et façon de les recueillir** (proposition) :
-> Retours recueillis par messages (WhatsApp), de vive voix et par l'adresse de contact indiquée dans l'appli (contact.handslam@gmail.com), notés au fur et à mesure dans un journal. Principaux retours : le temps pour jouer un coup était trop court ; l'aide « Lire l'adversaire » pendant le match perturbait plus qu'elle n'aidait ; trop de silence entre les commentaires ; une ambiance de stade trop calme ; les commentateurs traitaient chaque match comme une finale ; les tournois de cercle ne fonctionnaient pas au début ; la Carrière trop facile au début ; une erreur en plein match (corrigée le soir même) ; trop de menus pour un nouveau joueur.
+> Retours recueillis par messages (WhatsApp), de vive voix et par l'adresse de contact indiquée dans l'appli (contact.handslam@gmail.com), notés au fur et à mesure dans un journal. Principaux retours : le temps pour jouer un coup était trop court ; l'aide « Lire l'adversaire » pendant le match perturbait plus qu'elle n'aidait ; trop de silence entre les commentaires ; une ambiance de stade trop calme ; les commentateurs traitaient chaque match comme une finale, et certains commentaires ne correspondaient pas à la situation du match ; les tournois de cercle ne fonctionnaient pas au début ; la Carrière trop facile au début ; une erreur en plein match (corrigée le soir même) ; trop de menus pour un nouveau joueur.
 
 ## Partie 2 : à propos de l'appli/du jeu
 
@@ -53,6 +53,7 @@ Brouillon mis à jour le 8 novembre avec les vrais chiffres du test (compteur de
 > - Temps pour jouer un coup porté de 5 à 8 secondes (plusieurs testeurs n'avaient pas le temps de réfléchir).
 > - L'aide « Lire l'adversaire » n'est plus affichée pendant le match (elle perturbait) ; l'analyse reste disponible à la fin, et le dossier de l'adversaire avant.
 > - Les commentaires de grand enjeu (« finale », « entrer dans l'histoire ») sont réservés aux vrais matchs décisifs : au début du test, les commentateurs traitaient chaque match comme une finale.
+> - Les commentaires qui ne correspondaient pas à la situation du match (score, série, moment du set) ont été revus : certains retirés, d'autres réservés aux bons moments, et une soixantaine de nouvelles répliques ajoutées.
 > - Les tournois de cercle, qui ne fonctionnaient pas au début du test, ont été corrigés.
 > - Ambiance sonore plus présente (murmure du public, réactions après les points, rires sur les égalités à répétition), pour que les commentaires ne sortent plus du silence.
 > - Version simplifiée pour le lancement : les modes qui demandent beaucoup de joueurs (grands tournois, divisions) sont masqués, et il n'y a plus aucune mise de jetons entre joueurs (les jetons se gagnent en jouant).
