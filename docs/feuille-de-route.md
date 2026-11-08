@@ -41,7 +41,7 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
   Étape 59 (6 novembre) : le parcours compte aussi les nouveaux qui lancent leur premier match et ceux qui y jouent un coup
   (1 nouveau sur 5 seulement finissait son premier match). Lecture :
   `select to_char(arrivee,'DD/MM') arrivee, sum(nouveaux) n, sum(premier_lance) lance, sum(premier_coup) un_coup, sum(premier_match) fini, sum(retour_1j) j1, sum(retour_7j) j7 from parcours group by arrivee order by arrivee desc limit 30;`
-  Prochaine priorité : la sortie sur le Play Store vers le 9 novembre (relance des testeurs, questionnaire Google). Fiche du Store revue le 6 novembre (accord du
+  **Demande d'accès en production envoyée le 8 novembre à 21 h 04** (14 jours de test fermé avec 12 testeurs atteints le même soir ; réponses dans `docs/play-store/demande-production.md`) : examen de Google en « sept jours ou moins ». Ensuite : créer la version de production (promouvoir la version du test fermé), choisir les pays, envoyer pour examen. Fiche du Store revue le 6 novembre (accord du
   porteur du projet) : description courte avec « chifoumi », plus de tournois dans la description, 6 captures refaites dont la Carrière
   solo à la place des tournois (`docs/play-store/fiche.md`) ; déposée dans la Play Console et envoyée pour examen le 6 novembre.
 - **Messages entre les sets** (1er novembre, étape SQL 53) : en duel, pendant la pause entre deux sets, un bouton « 💬 Envoyer un message »
