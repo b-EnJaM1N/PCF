@@ -154,6 +154,23 @@ function arreterIntroHymne() {
   let v = a.volume; const t = setInterval(() => { v -= 0.1; if (v <= 0) { clearInterval(t); a.pause(); } else a.volume = v; }, 60);
 }
 document.addEventListener("pointerdown", jouerIntroHymne, { once: true, capture: true });
+// L'écran titre (8 novembre, demande du porteur du projet) : à la première ouverture de la journée, le grand logo du démarrage
+// reste à l'écran (« Touche l'écran pour entrer ») ; au toucher, l'hymne démarre, le logo reste quelques secondes en musique,
+// puis s'efface et l'accueil apparaît.
+(function ecranTitre() {
+  const el = $("demarrage");
+  if (!el || !apresSortie() || !sonActif || !bruitagesActifs || lire("introHymneJour", null) === jourParis()) return;
+  el.classList.add("titre"); el.setAttribute("aria-hidden", "false"); el.setAttribute("role", "button"); el.tabIndex = 0;
+  el.querySelector(".demarrage-entrer").hidden = false;
+  const entrer = () => {
+    if (el.classList.contains("entre")) return;
+    el.classList.add("entre");
+    jouerIntroHymne();
+    setTimeout(() => { el.classList.add("part"); setTimeout(() => { el.hidden = true; }, 950); }, reduitMouvement() ? 300 : 2800);
+  };
+  el.addEventListener("click", entrer);
+  el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") entrer(); });
+})();
 // (La voix de synthèse du téléphone, robotique, n'est plus proposée : les répliques sont enregistrées.)
 voix.synthese = false;
 $("snd").checked = sonActif;
@@ -2294,7 +2311,7 @@ document.addEventListener("keydown", e => {
 
 // ---------------------------------------------------------------- application installable
 $("version").textContent = `Version ${VERSION}`;
-setTimeout(() => $("demarrage")?.remove(), 3600);   // l'écran de démarrage a fini de s'effacer
+setTimeout(() => { const d = $("demarrage"); if (d && !d.classList.contains("titre")) d.remove(); }, 3600);   // l'écran de démarrage a fini de s'effacer (sauf l'écran titre, qui attend le toucher)
 let invitation = null;
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); invitation = e; $("installBtn").hidden = false; });
 $("installBtn").addEventListener("click", async () => { if (!invitation) return; invitation.prompt(); await invitation.userChoice; invitation = null; $("installBtn").hidden = true; });
