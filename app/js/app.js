@@ -159,6 +159,9 @@ document.addEventListener("pointerdown", jouerIntroHymne, { once: true, capture:
 // puis s'efface et l'accueil apparaît.
 (function ecranTitre() {
   const el = $("demarrage");
+  // (« ?titre » dans l'adresse : l'écran titre et l'hymne quand même, pour les essayer ; version de test seulement)
+  const force = apresSortie() && new URLSearchParams(location.search).has("titre");
+  if (force) ecrire("introHymneJour", null);
   if (!el || !apresSortie() || !sonActif || !bruitagesActifs || lire("introHymneJour", null) === jourParis()) return;
   el.classList.add("titre"); el.setAttribute("aria-hidden", "false"); el.setAttribute("role", "button"); el.tabIndex = 0;
   el.querySelector(".demarrage-entrer").hidden = false;
