@@ -39,7 +39,7 @@ export const SYMBOLES = { pierre: "✊ Pierre", feuille: "✋ Feuille", ciseaux:
 export const MOTIFS = { uni: "Uni", rayures: "Rayures", etoile: "Étoile", eclair: "Éclair" };
 // Le motif du gant (la seconde couleur est celle du poignet).
 export const MOTIFS_GANT = { uni: "Uni", rayures: "Rayé", pois: "À pois", bicolore: "Bicolore", coutures: "Coutures dorées", bandeau: "Bandeau de champion",
-  damier: "Damier", flammes: "Flammes", tigre: "Tigré", zebre: "Zébré", coeurs: "Cœurs", etoiles: "Étoiles", camouflage: "Camouflage", carbone: "Carbone", lauriers: "Lauriers", signes: "Trois signes", club: "Club HandSlam" };
+  damier: "Damier", flammes: "Flammes", tigre: "Tigré", zebre: "Zébré", coeurs: "Cœurs", etoiles: "Étoiles", camouflage: "Camouflage", carbone: "Carbone", lauriers: "Lauriers", signes: "Trois signes", signe_pierre: "Pierre", signe_feuille: "Feuille", signe_ciseaux: "Ciseaux", club: "Club HandSlam" };
 export const PAYS = [["🇫🇷", "France"], ["🇧🇪", "Belgique"], ["🇨🇭", "Suisse"], ["🇨🇦", "Canada"], ["🇱🇺", "Luxembourg"], ["🇲🇦", "Maroc"], ["🇩🇿", "Algérie"], ["🇹🇳", "Tunisie"], ["🇸🇳", "Sénégal"], ["🇨🇮", "Côte d'Ivoire"], ["🇪🇸", "Espagne"], ["🇮🇹", "Italie"], ["🇩🇪", "Allemagne"], ["🇬🇧", "Royaume-Uni"], ["🇺🇸", "États-Unis"], ["🇧🇷", "Brésil"], ["🇯🇵", "Japon"], ["🌍", "Autre"]];
 
 // Le symbole de l'appli (icons/icon.svg : la main en V dans le médaillon), centré en (cx, cy), de rayon r.
@@ -52,6 +52,17 @@ function chaton(type, cx, cy) {
   if (type === "symbole") return `<circle cx="${cx}" cy="${cy}" r="4.3" fill="#E9C046" stroke="#8A6A12" stroke-width=".6"/>` + symboleHandSlam(cx, cy, 3.6, { anneau: false });
   return "";
 }
+
+// Les petits signes dorés des gants « Pierre », « Feuille », « Ciseaux » et « Trois signes », dessinés dans une case de 10 × 10.
+const OR_SIGNE = "#E9C046";
+const ICONES_SIGNE = {
+  pierre: fond => `<rect x="1" y="2" width="8" height="6.5" rx="2.2" fill="${OR_SIGNE}"/><path d="M3.3 3 V5.2 M5 3 V5.2 M6.7 3 V5.2" stroke="${fond}" stroke-width=".7"/>`,
+  feuille: () => `<rect x="2" y="5" width="6.5" height="4.5" rx="1.5" fill="${OR_SIGNE}"/>${[2, 3.7, 5.4, 7.1].map((x, i) => `<rect x="${x}" y="${[1.2, .5, .9, 1.9][i]}" width="1.4" height="5" rx=".7" fill="${OR_SIGNE}"/>`).join("")}`,
+  ciseaux: () => `<rect x="2.5" y="5.5" width="5.5" height="4" rx="1.4" fill="${OR_SIGNE}"/><path d="M4 6 L2.7 .9 M6.6 6 L7.9 .9" stroke="${OR_SIGNE}" stroke-width="1.5" stroke-linecap="round"/>`,
+};
+const icone = (signe, fond, x, y, k = 1) => `<g transform="translate(${x} ${y}) scale(${k})">${ICONES_SIGNE[signe](fond)}</g>`;
+// Un seul signe, en quinconce sur tout le gant.
+const motifUnSigne = (id, signe, gant) => `<pattern id="${id}g" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="${gant}"/>${icone(signe, gant, .5, .5, 1)}${icone(signe, gant, 11.5, 11.5, 1)}</pattern>`;
 
 let n = 0;
 function dessinerMain(a, fill, ink, nue) {
@@ -132,7 +143,8 @@ export function avatarSVG(a) {
     camouflage: `<pattern id="${id}g" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="#6B7B4A"/><circle cx="6" cy="6" r="5" fill="#4A5632"/><circle cx="16" cy="14" r="6" fill="#8E9A63"/><circle cx="4" cy="18" r="3.5" fill="#3B2F22"/></pattern>`,
     lauriers: `<pattern id="${id}g" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(20)"><rect width="12" height="12" fill="${gant}"/><path d="M6 1 V11" stroke="#B08A1E" stroke-width=".8"/><ellipse cx="4.3" cy="4" rx="1.3" ry="2.6" fill="#E9C046" transform="rotate(-35 4.3 4)"/><ellipse cx="7.7" cy="4" rx="1.3" ry="2.6" fill="#E9C046" transform="rotate(35 7.7 4)"/><ellipse cx="4.3" cy="8.5" rx="1.3" ry="2.6" fill="#E9C046" transform="rotate(-35 4.3 8.5)"/><ellipse cx="7.7" cy="8.5" rx="1.3" ry="2.6" fill="#E9C046" transform="rotate(35 7.7 8.5)"/></pattern>`,
     carbone: `<pattern id="${id}g" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#26292E"/><rect width="3" height="3" fill="#3A3E45"/><rect x="3" y="3" width="3" height="3" fill="#3A3E45"/></pattern>`,
-    signes: `<pattern id="${id}g" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="${gant}"/><g fill="#E9C046"><rect x="1.5" y="2.5" width="8" height="6.5" rx="2.2"/><rect x="14" y="6" width="6.5" height="4.5" rx="1.5"/><rect x="14" y="1.5" width="1.4" height="5" rx=".7"/><rect x="15.7" y=".8" width="1.4" height="5.5" rx=".7"/><rect x="17.4" y="1.2" width="1.4" height="5" rx=".7"/><rect x="19.1" y="2.2" width="1.4" height="4.5" rx=".7"/><rect x="6" y="18" width="6" height="4.5" rx="1.5"/></g><path d="M3.8 3.5 V5.6 M5.6 3.5 V5.6 M7.4 3.5 V5.6" stroke="${gant}" stroke-width=".7"/><path d="M7.6 18.5 L6.3 13 M10.4 18.5 L11.7 13" stroke="#E9C046" stroke-width="1.6" stroke-linecap="round"/></pattern>`,
+    signes: `<pattern id="${id}g" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="${gant}"/>${icone("pierre", gant, .5, .5, .9)}${icone("feuille", gant, 12.5, 0, .9)}${icone("ciseaux", gant, 6, 12.5, .9)}</pattern>`,
+    signe_pierre: motifUnSigne(id, "pierre", gant), signe_feuille: motifUnSigne(id, "feuille", gant), signe_ciseaux: motifUnSigne(id, "ciseaux", gant),
     club: `<pattern id="${id}g" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#14533A"/></pattern>`,
   }[gm] || (a.gant === "elite" ? `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3358"/><stop offset="1" stop-color="#14121F"/></linearGradient>` : "");
   // Poignets et fonds spéciaux (boutique).
