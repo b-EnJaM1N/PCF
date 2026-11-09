@@ -17,7 +17,7 @@ import { etatNotifications, activerNotifications, desactiverNotifications, ratta
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
-import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
+import { TITRES, FAMILLES, accorderTitres, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
@@ -878,6 +878,8 @@ function finir() {
   // La série de jours (match-du-jour.js) : ses paliers donnent un trophée et un objet (version de test seulement, pour l'instant).
   const serieFin = S.matchJour && n && apresSortie() ? serie(resultatsDuJour(), jourParis()) : 0;
   if (serieFin) { nouveaux.push(...accorderTitres(P, titresSerie(serieFin))); sauverP(); }
+  // « Fondé en 2026 » : 50 matchs joués avant la fin de 2026 (version de test seulement, pour l'instant).
+  if (n && apresSortie()) { const t = accorderTitres(P, titresAnnee(P)); if (t.length) { nouveaux.push(...t); sauverP(); } }
   // La première visite : ce qui vient de s'ouvrir dans le menu.
   const ouvert = menuComplet() ? [] : nouveautes(matchsAvant, P.matchs);
   if (matchsAvant < 3 && P.matchs >= 3) compterTroisMatchs(envoyerTroisMatchs);   // pour savoir si les nouveaux joueurs accrochent (anonyme)
@@ -1875,7 +1877,8 @@ function renderFiche() {
 function renderEditeur() {
   $("avApercu").innerHTML = avatarSVG(avMoi());             // l'aperçu reste visible pendant qu'on fait défiler les choix
   const mk = (el, type, table, texte) => {
-    el.innerHTML = Object.keys(table).map(k => {
+    // (les objets « bientôt » : seulement sur la version de test, sauf s'il les a déjà)
+    el.innerHTML = Object.keys(table).filter(k => apresSortie() || P.av[type] === k || !(articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot)).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
       return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
     }).join("");
@@ -2748,7 +2751,7 @@ rapideUI = installerRapide({
 
 jetonsUI = installerJetons({ compte: compteUI });
 defisUI = installerDefis({ compte: compteUI, jetons: () => jetonsUI?.rafraichir() });
-boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, jetons: () => jetonsUI?.rafraichir(),
+boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, nouveautes: apresSortie, jetons: () => jetonsUI?.rafraichir(),
   apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); } });
 // Au départ d'un Sit & Go, du freeroll ou d'un tournoi programmé, la page du tournoi s'ouvre… sauf si mon premier match
 // est déjà lancé : elle passait sous la présentation du match, et « Passer » faisait alors quitter le match.

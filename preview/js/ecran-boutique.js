@@ -20,6 +20,7 @@ export function apercu(x, av) {
 }
 
 // ctx : { compte, lireP(), sauverP(), apresChangement(), jetons() }
+// ctx.nouveautes() : vrai si les articles « bientôt » sont en vente (version de test).
 export function installerBoutique(ctx) {
   let uid = null, etat = null, categorie = "avatar";
   const dire = (t, erreur = false) => { $("boutiqueMsg").textContent = t; $("boutiqueMsg").classList.toggle("erreur", erreur); };
@@ -52,10 +53,10 @@ export function installerBoutique(ctx) {
   function render() {
     $("boutiqueHors").hidden = !!uid;
     $("boutiqueSolde").textContent = uid && etat ? texteJetons(etat.solde) : "";
-    $("boutiqueVitrine").innerHTML = uid && etat?.vitrine ? etat.vitrine.map(v => article(v.id) && carte(article(v.id), v.prix_remise)).join("") : "";
+    $("boutiqueVitrine").innerHTML = uid && etat?.vitrine ? etat.vitrine.filter(v => article(v.id)).map(v => carte(article(v.id), v.prix_remise)).join("") : "";
     $("boutiqueVitrineCarte").hidden = !(uid && etat?.vitrine);
     $("boutiqueOnglets").innerHTML = CATEGORIES.map(c => `<button data-cat="${c.id}" aria-pressed="${c.id === categorie}">${c.nom}</button>`).join("");
-    $("boutiqueArticles").innerHTML = ARTICLES.filter(x => x.categorie === categorie).map(x => carte(x)).join("");
+    $("boutiqueArticles").innerHTML = ARTICLES.filter(x => x.categorie === categorie && (!x.bientot || ctx.nouveautes?.())).map(x => carte(x)).join("");
   }
 
   $("boutiqueOnglets").addEventListener("click", e => { const b = e.target.closest("[data-cat]"); if (b) { categorie = b.dataset.cat; render(); } });
