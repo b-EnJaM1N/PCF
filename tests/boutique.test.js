@@ -7,8 +7,8 @@ import { CRIS } from "../app/js/celebrations.js";
 import { profilParDefaut, normaliserProfil, estVerrouille, remettreAZero } from "../app/js/profil.js";
 
 test("les prix de l'appli et du serveur correspondent", () => {
-  // le catalogue le plus récent du serveur (étape 61, qui remplace ceux des étapes 17 et 47)
-  const sql = readFileSync(new URL("../supabase/etape-61-objets-du-club.sql", import.meta.url), "utf8").split("_vitrine")[0];
+  // le catalogue le plus récent du serveur (étape 62, qui remplace ceux des étapes 17, 47 et 61)
+  const sql = readFileSync(new URL("../supabase/etape-62-gants-un-signe.sql", import.meta.url), "utf8").split("_vitrine")[0];
   const serveur = new Map([...sql.matchAll(/\('([a-zA-Z]+:[a-z_]+)', (\d+)\)/g)].map(m => [m[1], +m[2]]));
   assert.equal(serveur.size, ARTICLES.length);
   for (const x of ARTICLES) assert.equal(serveur.get(x.id), x.prix, x.id);

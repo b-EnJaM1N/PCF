@@ -496,6 +496,13 @@ Quatre articles de plus : le gant « Trois signes » (800), le gant Club HandSla
 poignet Club (300). Ils ne se vendent que sur la version de test pour l'instant, et restent hors de la vitrine du jour
 (le tirage des autres articles ne change pas). **À coller avant de les essayer sur la version de test.**
 
+## 1 sexagies bis. Les gants à un seul signe (étape 62)
+
+Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-gants-un-signe.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-62-gants-un-signe.sql).
+Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
+version de test seulement, hors de la vitrine du jour.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
