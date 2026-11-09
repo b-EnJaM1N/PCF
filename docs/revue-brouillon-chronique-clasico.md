@@ -58,7 +58,9 @@ C'est absurde, bien sûr. La Feuille a autant de chances que les autres. Mieux :
 
 Les Cahiers consacreront bientôt une étude entière à ce mystère. Pour ce soir, retenons ceci : ce 5 novembre, au moment où tout pouvait finir, la balle de match a été sauvée. Le Chiromancien a remporté le troisième set 13-11, au bout d'un échange de nerfs que Roland Pignon a résumé d'un seul cri, et que nous ne pouvons pas reproduire ici. *L'Écho du HandSlam* a titré le lendemain : « Le Chiromancien revient d'entre les morts ».
 
-[À COMPLÉTER : avec quel signe la balle de match a-t-elle été sauvée ? Si c'était une Feuille, la chute est toute trouvée ; sinon, on garde le mystère.]
+Avec quel signe ? Avec une Feuille. La main ouverte, au pire moment, devant le seul adversaire qui partage la même peur. Le Chiromancien a tremblé, il nous l'a dit. Il l'a jouée quand même.
+
+« Le courage, au chifoumi, ce n'est pas de frapper fort, commente Monique Latour. C'est d'ouvrir la main quand tout le monde s'attend à ce qu'on la ferme. »
 
 ### Le 65e
 
@@ -66,6 +68,6 @@ Où en est-on ? À 36-28. À trente-deux points près. À un faux rebond près.
 
 La saison continue, et rien ne dit que la marée ne va pas tourner encore. Benja-Main a l'avance, Le Chiromancien a les supporters, et tous les deux ont la même petite peur au creux de la main.
 
-« Une grande rivalité, conclut Monique Latour, c'est deux joueurs qui se connaissent par cœur et qui continuent quand même à se surprendre. Ceux-là y arrivent encore. Profitons-en : un jour, l'un des deux finira par jouer Feuille sans trembler. Et ce sera la fin d'une époque. »
+« Une grande rivalité, conclut Monique Latour, c'est deux joueurs qui se connaissent par cœur et qui continuent quand même à se surprendre. Ceux-là y arrivent encore. Profitons-en : le jour où l'un des deux jouera Feuille sans trembler, ce sera la fin d'une époque. »
 
 Le 65e duel se jouera sans doute ce soir.
