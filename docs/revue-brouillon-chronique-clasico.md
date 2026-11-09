@@ -2,6 +2,10 @@
 
 *Proposé le 9 novembre 2026, à valider par le porteur du projet avant toute publication. Les deux joueurs ont donné leur accord.*
 
+**Mis de côté le 9 novembre** (le porteur du projet le relira et dira ses modifications). Changements déjà demandés : retirer le
+chambrage (« Je t'ai fait la musique » / « Il y avait un faux rebond ! ») ; n'évoquer la peur de la Feuille qu'une fois, dans
+l'introduction et au moment de la balle de match sauvée avec une Feuille (aujourd'hui, elle revient trop souvent).
+
 ---
 
 **Rubrique** : Chroniques du court central · Grand match
