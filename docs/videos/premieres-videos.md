@@ -71,4 +71,9 @@ Fichiers envoyés dans la conversation (trop lourds pour le projet).
   la salle… », « QUEL SMASH ! », « Il titube ! Il est groggy ! », puis dans la longue « Ça déroule, ça déroule ! », l'arbitre
   « Balle de match, côté jaune. », « Un point. Un seul. Pour tout ! », et pour finir « C'est fini ! Quel combat ! »), écrits à
   l'écran dans un bandeau doré. Les voix à la vitesse de l'appli (Roland ×1,4, l'arbitre ×1). Répliques déjà enregistrées : aucun
-  crédit utilisé. La longue est validée.
+  crédit utilisé. Les deux sont validées (9 novembre) :
+  - la longue (45 s) : en plus, Monique à 9 s (« C'est maintenant que les champions se révèlent. Et les autres aussi. », ×1,65) et
+    Roland à 12 s (« La réponse du berger à la bergère ! ») ;
+  - la courte (28 s) : début sur l'instrumental (1:40) ; un raccord caché sous le match (vers 10 s, la musique reprend 6 s plus tôt)
+    pour que « Cette main sacrée » (1:55) tombe à 21 s, sur le logo vu de près (la main en V) qui recule jusqu'au logo entier
+    sur « veille sur toi ».
