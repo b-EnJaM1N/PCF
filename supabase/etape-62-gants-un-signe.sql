@@ -1,7 +1,7 @@
 -- HandSlam — Étape 62 : les gants à un seul signe à la boutique (le gant « Pierre », le gant « Feuille », le gant « Ciseaux »).
 -- À coller dans Supabase : « SQL Editor » → « New query » → coller → « Run ». Nécessite l'étape 61. Peut être relancé sans risque.
 --
--- Demande du porteur du projet (9 novembre) : à côté du gant « Trois signes », pouvoir choisir un seul signe.
+-- Demande du porteur du projet (9 novembre) : à la place du gant « Trois signes » (retiré), un gant par signe, au choix.
 -- Comme les autres objets du club : en vente seulement sur la version de test, hors de la vitrine du jour (à la sortie, ils
 -- deviendront des récompenses de fidélité).
 -- Le catalogue complet (remplace celui de l'étape 61) ; un test vérifie qu'il correspond à app/js/catalogue.js.
@@ -20,14 +20,14 @@ create or replace function public._catalogue() returns table (id text, prix int)
          ('celebration:feu', 2000), ('celebration:or', 5000), ('cadre:bronze', 300), ('cadre:argent', 800),
          ('cadre:neon', 2000), ('cadre:or', 5000),
          ('geste:coeur', 800), ('geste:salut_militaire', 2000), ('geste:micro', 5000),
-         ('gantMotif:signes', 800), ('gantMotif:club', 2000), ('bague:symbole', 800), ('poignet:club', 300),
+         ('gantMotif:club', 2000), ('bague:symbole', 800), ('poignet:club', 300),
          ('gantMotif:signe_pierre', 800), ('gantMotif:signe_feuille', 800), ('gantMotif:signe_ciseaux', 800)
 $$;
 
 -- La vitrine du jour : sans les objets du club (le tirage des autres articles ne change pas).
 create or replace function public._vitrine(p_jour date) returns table (id text, prix int, prix_remise int) language sql immutable as $$
   select id, prix, (round(prix * 0.7 / 10) * 10)::int from _catalogue()
-  where id not in ('gantMotif:signes', 'gantMotif:club', 'bague:symbole', 'poignet:club',
+  where id not in ('gantMotif:club', 'bague:symbole', 'poignet:club',
                    'gantMotif:signe_pierre', 'gantMotif:signe_feuille', 'gantMotif:signe_ciseaux')
   order by md5(id || p_jour::text) limit 3
 $$;

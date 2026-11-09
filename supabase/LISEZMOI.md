@@ -501,7 +501,7 @@ poignet Club (300). Ils ne se vendent que sur la version de test pour l'instant,
 Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-gants-un-signe.sql)
 (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-62-gants-un-signe.sql).
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
-version de test seulement, hors de la vitrine du jour.
+version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
 ## 2. Adresses du site (connexion par lien)
 

@@ -6,7 +6,7 @@ create or replace function pg_temp.verifier(ok boolean, msg text) returns void l
 begin if not coalesce(ok, false) then raise exception 'ÉCHEC : %', msg; end if; raise notice 'ok : %', msg; end $$;
 
 do $$ begin
-  perform pg_temp.verifier((select count(*) from _catalogue() where id in ('gantMotif:signes', 'gantMotif:club', 'bague:symbole', 'poignet:club')) = 4, 'les 4 objets du club au catalogue');
+  perform pg_temp.verifier((select count(*) from _catalogue() where id in ('gantMotif:club', 'bague:symbole', 'poignet:club')) = 3, 'les objets du club au catalogue');
   perform pg_temp.verifier((select prix from _catalogue() where id = 'gantMotif:club') = 2000, 'le gant Club HandSlam : 2 000 jetons');
   perform pg_temp.verifier((select prix from _catalogue() where id = 'bague:symbole') = 800, 'la chevalière HandSlam : 800 jetons');
   -- sur une année entière, jamais dans la vitrine (la version officielle ne sait pas encore les dessiner)
