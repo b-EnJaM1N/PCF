@@ -58,7 +58,7 @@ C'est absurde, bien sûr. La Feuille a autant de chances que les autres. Mieux :
 
 Les Cahiers consacreront bientôt une étude entière à ce mystère. Pour ce soir, retenons ceci : ce 5 novembre, au moment où tout pouvait finir, la balle de match a été sauvée. Le Chiromancien a remporté le troisième set 13-11, au bout d'un échange de nerfs que Roland Pignon a résumé d'un seul cri, et que nous ne pouvons pas reproduire ici. *L'Écho du HandSlam* a titré le lendemain : « Le Chiromancien revient d'entre les morts ».
 
-Avec quel signe ? Avec une Feuille. La main ouverte, au pire moment, devant le seul adversaire qui partage la même peur. Le Chiromancien a tremblé, il nous l'a dit. Il l'a jouée quand même.
+Avec quel signe ? Avec une Feuille. La main ouverte, au pire moment, devant le seul adversaire qui partage la même peur. Le Chiromancien a sans doute tremblé. Il l'a jouée quand même.
 
 « Le courage, au chifoumi, ce n'est pas de frapper fort, commente Monique Latour. C'est d'ouvrir la main quand tout le monde s'attend à ce qu'on la ferme. »
 
