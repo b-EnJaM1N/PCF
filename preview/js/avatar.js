@@ -73,7 +73,7 @@ function mainNue(symbole, peau, vernis, bague, cleBague) {
     <path d="M${bx - 4.5} ${by} L${bx - 4.5} ${by - L + 4.5} A4.5 4.5 0 0 1 ${bx + 4.5} ${by - L + 4.5} L${bx + 4.5} ${by} Z" fill="${peau}" stroke="${tr}" stroke-width="${T}" stroke-linejoin="round"/>
     ${sansOngle ? "" : `<rect x="${bx - 2.9}" y="${by - L + 1.6}" width="5.8" height="${Math.min(7, L * .2)}" rx="2.7" fill="${ongle}"/>`}
     <path d="M${bx - 2.9} ${by - L * .42} q2.9 1.6 5.8 0" fill="none" stroke="${tr}" stroke-width=".8" stroke-linecap="round" opacity=".55"/>
-    ${avecBague ? anneau(bx - 4.5, by - 9 - Math.max(0, by - 50), 9) : ""}</g>`;   // (un peu plus haut si la base du doigt est cachée par la paume)
+    ${avecBague ? anneau(bx - 4.5, by - 9 - Math.max(0, by - 50) * 3, 9) : ""}</g>`;   // (un peu plus haut si la base du doigt est cachée par la paume)
   // la paume (ou le dos de la main) et le poignet, jusqu'en bas
   const paume = (y0, pli = true) => `<path d="M28 ${y0 + 6} Q28 ${y0} 34 ${y0} L66 ${y0} Q72 ${y0} 72 ${y0 + 6} L71 72 Q69 81 61 83 L61 100 L39 100 L39 83 Q31 81 29 72 Z" fill="${peau}" stroke="${tr}" stroke-width="${T}" stroke-linejoin="round"/>
     ${pli ? `<path d="M40 76 q10 4 20 0" fill="none" stroke="${tr}" stroke-width=".85" stroke-linecap="round" opacity=".45"/>` : ""}`;
@@ -96,7 +96,7 @@ function mainNue(symbole, peau, vernis, bague, cleBague) {
 // pour les ciseaux, sur l'index (9 novembre, demande du porteur du projet : sur le majeur, elle chevauchait les doigts repliés).
 // (Sur la main nue, elle est dessinée avec la main : voir mainNue.)
 const PLACE_MEDAILLON = { pierre: [50, 69, 6.6], ciseaux: [50, 69, 6.6], feuille: [50, 62, 10], "feuille-dos": [50, 61, 10], "ciseaux-dos": [52, 60, 10], dos: [50, 60, 10], index: [52, 69.5, 6.2], pouce: [45, 61, 8] };
-const PLACE_BAGUE = { feuille: [50.5, 38], index: [29.5, 37], pouce: [43, 57.5], dos: [50, 33], "ciseaux-dos": [30.75, 40, "-12 36 50"], "feuille-dos": [50.5, 37, "7 55 54"], ciseaux: [30.75, 37, "-14 36 50"], pierre: [50, 39.5] };
+const PLACE_BAGUE = { feuille: [50.5, 38], index: [29.5, 37], pouce: [43, 57.5], dos: [50, 33], "ciseaux-dos": [30.75, 35.5, "-12 36 50"], "feuille-dos": [50.5, 37, "7 55 54"], ciseaux: [30.75, 32.5, "-14 36 50"], pierre: [50, 39.5] };
 function accessoires(a, nue = false) {
   let s = "";
   const yb = nue ? 84 : 68;   // le bracelet : au poignet (plus bas sur la main nue, juste au-dessus du bandeau)
