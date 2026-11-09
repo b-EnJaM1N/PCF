@@ -18,9 +18,9 @@ function match(suite) {
 }
 const fin = (P, suite, extra = {}) => enregistrerMatch(P, { ...match(suite), devines: 0, lisibles: 0, adversaire: { id: "rocky", elo: 850, nom: "Rocky" }, date: 1, ...extra }).map(t => t.id);
 
-test("46 trophées en 8 familles, chaque élément à débloquer existe dans l'avatar", () => {
-  assert.equal(TITRES.length, 46);
-  assert.equal(new Set(TITRES.map(t => t.id)).size, 46);
+test("47 trophées en 8 familles, chaque élément à débloquer existe dans l'avatar", () => {
+  assert.equal(TITRES.length, 47);
+  assert.equal(new Set(TITRES.map(t => t.id)).size, 47);
   for (const t of TITRES) assert.ok(FAMILLES.some(f => f.id === t.famille), t.id);
   for (const t of TITRES.filter(x => x.objet)) assert.ok(TABLES[t.objet[0]]?.[t.objet[1]], `${t.id} : ${t.objet}`);
   // chaque famille a au moins un trophée qui débloque quelque chose

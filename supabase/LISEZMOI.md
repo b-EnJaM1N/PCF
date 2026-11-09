@@ -488,6 +488,14 @@ Même manipulation que d'habitude avec [`etape-60-defis-sans-freeroll.sql`](etap
 Le freeroll étant caché dans la version de lancement, le défi « Participe au freeroll de 20 h » n'est plus tiré au sort ;
 les 3 défis du jour sont tirés parmi les 8 autres. Rien à changer dans l'appli.
 
+## 1 sexagies semel. Les objets du club à la boutique (étape 61)
+
+Même manipulation que d'habitude avec [`etape-61-objets-du-club.sql`](etape-61-objets-du-club.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-61-objets-du-club.sql).
+Quatre articles de plus : le gant « Trois signes » (800), le gant Club HandSlam (2 000), la chevalière HandSlam (800) et le
+poignet Club (300). Ils ne se vendent que sur la version de test pour l'instant, et restent hors de la vitrine du jour
+(le tirage des autres articles ne change pas). **À coller avant de les essayer sur la version de test.**
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
