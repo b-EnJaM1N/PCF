@@ -43,8 +43,7 @@ export const ARTICLES = [
   a("celebration", "or", "Pluie d'or", "legendaire", "celebration"),
   a("cadre", "bronze", "Cadre bronze", "courant", "cadre"), a("cadre", "argent", "Cadre argent", "rare", "cadre"),
   a("cadre", "neon", "Cadre néon", "epique", "cadre"), a("cadre", "or", "Cadre or", "legendaire", "cadre"),
-  // Les objets du club (9 novembre, choix du porteur du projet) : les trois signes et le symbole de l'appli.
-  club("gantMotif", "signes", "Gant « Trois signes »", "rare"),
+  // Les objets du club (9 novembre, choix du porteur du projet) : les signes (pierre, feuille, ciseaux) et le symbole de l'appli.
   club("gantMotif", "signe_pierre", "Gant « Pierre »", "rare"), club("gantMotif", "signe_feuille", "Gant « Feuille »", "rare"), club("gantMotif", "signe_ciseaux", "Gant « Ciseaux »", "rare"), club("gantMotif", "club", "Gant Club HandSlam", "epique"),
   club("bague", "symbole", "Chevalière HandSlam", "rare"), club("poignet", "club", "Poignet Club", "courant"),
 ];
