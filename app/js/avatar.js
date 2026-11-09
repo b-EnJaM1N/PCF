@@ -73,7 +73,7 @@ function mainNue(symbole, peau, vernis, bague, cleBague) {
     <path d="M${bx - 4.5} ${by} L${bx - 4.5} ${by - L + 4.5} A4.5 4.5 0 0 1 ${bx + 4.5} ${by - L + 4.5} L${bx + 4.5} ${by} Z" fill="${peau}" stroke="${tr}" stroke-width="${T}" stroke-linejoin="round"/>
     ${sansOngle ? "" : `<rect x="${bx - 2.9}" y="${by - L + 1.6}" width="5.8" height="${Math.min(7, L * .2)}" rx="2.7" fill="${ongle}"/>`}
     <path d="M${bx - 2.9} ${by - L * .42} q2.9 1.6 5.8 0" fill="none" stroke="${tr}" stroke-width=".8" stroke-linecap="round" opacity=".55"/>
-    ${avecBague ? anneau(bx - 4.5, by - 9, 9) : ""}</g>`;
+    ${avecBague ? anneau(bx - 4.5, by - 9 - Math.max(0, by - 50), 9) : ""}</g>`;   // (un peu plus haut si la base du doigt est cachée par la paume)
   // la paume (ou le dos de la main) et le poignet, jusqu'en bas
   const paume = (y0, pli = true) => `<path d="M28 ${y0 + 6} Q28 ${y0} 34 ${y0} L66 ${y0} Q72 ${y0} 72 ${y0 + 6} L71 72 Q69 81 61 83 L61 100 L39 100 L39 83 Q31 81 29 72 Z" fill="${peau}" stroke="${tr}" stroke-width="${T}" stroke-linejoin="round"/>
     ${pli ? `<path d="M40 76 q10 4 20 0" fill="none" stroke="${tr}" stroke-width=".85" stroke-linecap="round" opacity=".45"/>` : ""}`;
@@ -85,17 +85,18 @@ function mainNue(symbole, peau, vernis, bague, cleBague) {
   if (symbole === "feuille") return doigt(33, 70, 27, -52) + paume(46) + doigt(33.5, 52, 30, -6) + doigt(44, 50, 36, -2, { avecBague: true }) + doigt(54.5, 50, 34, 2) + doigt(64.5, 53, 26, 7);
   if (symbole === "feuille-dos") return doigt(33, 52, 30, -14) + doigt(43.5, 50, 35, -5, { avecBague: true }) + doigt(54, 50, 34, 5) + doigt(64, 53, 27, 14) + paume(46, false) + tendons;
   // les ciseaux : toujours vus de dos (choix du porteur du projet), l'annulaire et l'auriculaire repliés restent cachés derrière la main
-  if (symbole === "ciseaux" || symbole === "ciseaux-dos") return doigt(30, 70, 18, -25, { sansOngle: true }) + doigt(37, 52, 38, -14) + doigt(50, 50, 40, 9, { avecBague: true }) + paume(46, false) + tendons;
+  if (symbole === "ciseaux" || symbole === "ciseaux-dos") return doigt(30, 70, 18, -25, { sansOngle: true }) + doigt(37, 52, 38, -14, { avecBague: true }) + doigt(50, 50, 40, 9) + paume(46, false) + tendons;
   if (symbole === "index") return doigt(41, 50, 40, -4, { avecBague: true }) + paume(46) + replie(46.5, 42, 9.5, 18) + replie(55.5, 43, 9, 17) + replie(64.5, 46, 8, 15) + doigt(33, 66, 26, 74);
   if (symbole === "dos") return doigt(29, 68, 20, -20, { sansOngle: true }) + paume(42, false) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [36, 34, 35, 37][i], 10.5, 14, { pli: false, avecBague: i === 2 })).join("") + tendons;
   const poing = paume(42) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [38, 35, 36, 39][i], 10.5, 22, { avecBague: i === 2 })).join("");
   if (symbole === "pouce") return poing + doigt(33, 50, 30, -10);
   return poing + doigt(31, 61, 28, 80);   // pierre : le pouce replié devant les doigts
 }
-// La bague sur un gant : sur le doigt du milieu, à sa base (là où il sort de la paume), selon la forme de la main.
+// La bague sur un gant : sur le doigt du milieu, à sa base (là où il sort de la paume), selon la forme de la main ;
+// pour les ciseaux, sur l'index (9 novembre, demande du porteur du projet : sur le majeur, elle chevauchait les doigts repliés).
 // (Sur la main nue, elle est dessinée avec la main : voir mainNue.)
 const PLACE_MEDAILLON = { pierre: [50, 69, 6.6], ciseaux: [50, 69, 6.6], feuille: [50, 62, 10], "feuille-dos": [50, 61, 10], "ciseaux-dos": [52, 60, 10], dos: [50, 60, 10], index: [52, 69.5, 6.2], pouce: [45, 61, 8] };
-const PLACE_BAGUE = { feuille: [50.5, 38], index: [29.5, 37], pouce: [43, 57.5], dos: [50, 33], "ciseaux-dos": [44, 40, "10 49 50"], "feuille-dos": [50.5, 37, "7 55 54"], ciseaux: [44, 37, "12 49 50"], pierre: [50, 39.5] };
+const PLACE_BAGUE = { feuille: [50.5, 38], index: [29.5, 37], pouce: [43, 57.5], dos: [50, 33], "ciseaux-dos": [30.75, 40, "-12 36 50"], "feuille-dos": [50.5, 37, "7 55 54"], ciseaux: [30.75, 37, "-14 36 50"], pierre: [50, 39.5] };
 function accessoires(a, nue = false) {
   let s = "";
   const yb = nue ? 84 : 68;   // le bracelet : au poignet (plus bas sur la main nue, juste au-dessus du bandeau)
