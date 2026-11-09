@@ -481,6 +481,13 @@ Deux colonnes de plus dans « parcours » : les nouveaux qui ont **lancé** leur
 (pour savoir où décrochent ceux qui ne le finissent pas). Toujours anonyme. **À coller avant la fusion.** Pour lire (une ligne) :
 `select to_char(arrivee,'DD/MM') arrivee, sum(nouveaux) n, sum(premier_lance) lance, sum(premier_coup) un_coup, sum(premier_match) fini, sum(retour_1j) j1, sum(retour_7j) j7 from parcours group by arrivee order by arrivee desc limit 30;`
 
+## 1 sexagies. Plus de défi « freeroll » dans les défis du jour (étape 60)
+
+Même manipulation que d'habitude avec [`etape-60-defis-sans-freeroll.sql`](etape-60-defis-sans-freeroll.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-60-defis-sans-freeroll.sql).
+Le freeroll étant caché dans la version de lancement, le défi « Participe au freeroll de 20 h » n'est plus tiré au sort ;
+les 3 défis du jour sont tirés parmi les 8 autres. Rien à changer dans l'appli.
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
