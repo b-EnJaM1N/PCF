@@ -10,6 +10,7 @@ export const CHANTS_PERSO = {
   "kikou#1743": ["chant_perso_kikou_01"],   // (une testeuse, 10 novembre)
   "emi#6263": ["chant_perso_emi_01", "chant_perso_emi_02"],   // (un testeur, 10 novembre)
   "shishyo#2931": ["chant_perso_shishyo_01"],   // (un testeur, 10 novembre)
+  "pierre la feuill#1473": ["chant_perso_pierrelafeuille_01"],   // (un testeur, 10 novembre)
 };
 
 // Les cris courts (« Allez le Chiromancien ! »), pendant le match, aux moments forts (une balle de set ou de match sauvée).
