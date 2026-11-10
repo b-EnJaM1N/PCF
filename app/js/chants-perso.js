@@ -7,7 +7,8 @@
 export const CHANTS_PERSO = {
   "le chiromancien#6047": ["chant_perso_chiromancien_01", "chant_perso_chiromancien_02", "chant_perso_chiromancien_03", "chant_perso_chiromancien_04", "chant_perso_chiromancien_05"],
   "benja-main#3528": ["chant_perso_benjamain_01", "chant_perso_benjamain_02"],   // (le porteur du projet, 6 novembre)
-  "kikou#1743": ["chant_perso_kikou_01"],   // (un testeur, 10 novembre)
+  "kikou#1743": ["chant_perso_kikou_01"],   // (une testeuse, 10 novembre)
+  "emi#6263": ["chant_perso_emi_01", "chant_perso_emi_02"],   // (un testeur, 10 novembre)
 };
 
 // Les cris courts (« Allez le Chiromancien ! »), pendant le match, aux moments forts (une balle de set ou de match sauvée).
