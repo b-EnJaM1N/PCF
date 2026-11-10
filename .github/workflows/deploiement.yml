@@ -75,6 +75,7 @@ jobs:
           VERSION="$(git rev-parse --short HEAD) du $(date -u +%d/%m/%Y)"
           if [ "$GITHUB_REF_NAME" != "main" ]; then VERSION="$VERSION (test)"; fi
           sed -i "s|export const VERSION = \"dev\";|export const VERSION = \"$VERSION\";|" app/js/version.js
+          sed -i "s|<meta name=\"version\" content=\"dev\">|<meta name=\"version\" content=\"$VERSION\">|" app/index.html
           if [ "$GITHUB_REF_NAME" != "main" ]; then
             sed -i 's|"name": "PCF — Pierre-Ciseaux-Feuille"|"name": "PCF (test)"|; s|"short_name": "PCF"|"short_name": "PCF test"|' app/manifest.webmanifest
           fi
