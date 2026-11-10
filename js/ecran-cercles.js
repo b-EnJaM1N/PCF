@@ -227,7 +227,7 @@ export function installerCercles(ctx) {
     $("aInfo").textContent = `${textePresence(a)}Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`;
     $("aStats").innerHTML = `<p class="hint">Chargement…</p>`; dire("aMsg", "");
     const deja = !!ctx.dejaDefie?.(id);
-    $("aDefier").disabled = deja; $("aDefier").textContent = deja ? texteAttente(a) : "Défier"; $("aAnnulerDefi").hidden = !deja;
+    $("aDefier").disabled = deja; $("aDefier").textContent = deja ? texteAttente(a) : "Défier"; if ($("aAnnulerDefi")) $("aAnnulerDefi").hidden = !deja;
     // Son fantôme (fantome.js) : un bot qui joue comme lui, d'après ses matchs en ligne (pour l'instant sur la version de test).
     $("aFantome").hidden = true;
     if (fantomeVisible() && ctx.fantomeDe) ctx.fantomeDe(id).then(ok => {
@@ -258,7 +258,7 @@ export function installerCercles(ctx) {
     $("aCarte").disabled = false;
     if (msg) dire("aMsg", msg);
   });
-  $("aAnnulerDefi").addEventListener("click", async () => {
+  $("aAnnulerDefi")?.addEventListener("click", async () => {
     const a = amis.find(x => x.id === amiOuvert); if (!a || !confirm(`Annuler ton défi à ${a.pseudo} ?`)) return;
     $("aAnnulerDefi").disabled = true;
     try { await ctx.annulerDefi?.(a.id); dire("aMsg", `Défi à ${a.pseudo} annulé.`); $("aDefier").disabled = false; $("aDefier").textContent = "Défier"; $("aAnnulerDefi").hidden = true; }
@@ -266,7 +266,7 @@ export function installerCercles(ctx) {
     $("aAnnulerDefi").disabled = false;
   });
   // Retirer un ami : seulement en bas de sa page, avec confirmation (10 novembre, demande du porteur du projet).
-  $("aRetirer").addEventListener("click", async () => {
+  $("aRetirer")?.addEventListener("click", async () => {
     const a = amis.find(x => x.id === amiOuvert); if (!a) return;
     if (!confirm(`Retirer ${a.pseudo}#${a.numero} de tes amis ? Vous ne pourrez plus vous défier depuis « Mes amis » (il faudra lui renvoyer une demande).`)) return;
     $("aRetirer").disabled = true;
@@ -278,7 +278,7 @@ export function installerCercles(ctx) {
   $("aDefier").addEventListener("click", async () => {
     const a = amis.find(x => x.id === amiOuvert); if (!a) return;
     $("aDefier").disabled = true;
-    try { const t = await ctx.defier(a); if (t) { dire("aMsg", t); $("aDefier").textContent = texteAttente(a); $("aAnnulerDefi").hidden = false; return; } }
+    try { const t = await ctx.defier(a); if (t) { dire("aMsg", t); $("aDefier").textContent = texteAttente(a); if ($("aAnnulerDefi")) $("aAnnulerDefi").hidden = false; return; } }
     catch (err) { dire("aMsg", err.message, true); }
     $("aDefier").disabled = false;
   });

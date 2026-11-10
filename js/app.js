@@ -84,6 +84,16 @@ document.body.classList.toggle("lancement", LANCEMENT.actif);
 })();
 
 const $ = id => document.getElementById(id);
+// Une page gardée en mémoire par le téléphone (version d'avant une mise en ligne) avec le programme de la nouvelle version : les
+// boutons nouveaux manquent (10 novembre, bandeau « Cannot read properties of null » chez un testeur). On recharge alors la page,
+// une seule fois, pour avoir la page et le programme de la même version.
+{
+  const v = document.querySelector('meta[name="version"]')?.content;
+  if (v && v !== VERSION && VERSION !== "dev") {
+    let deja = false; try { deja = sessionStorage.getItem("rechargeVersion") === VERSION; sessionStorage.setItem("rechargeVersion", VERSION); } catch { /* sans stockage */ }
+    if (!deja) location.reload();
+  }
+}
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const ORD = ["Premier", "Deuxième", "Troisième", "Quatrième", "Cinquième"];
 const reduitMouvement = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2321,12 +2331,12 @@ $("version").textContent = `Version ${VERSION}`;
 // « Ton avis sur HandSlam » (Options) : une note de 1 à 5 et/ou un petit mot, avec ou sans compte (étape 63).
 {
   let note = null;
-  $("avisNotes").addEventListener("click", e => {
+  $("avisNotes")?.addEventListener("click", e => {
     const b = e.target.closest("[data-note]"); if (!b) return;
     note = note === +b.dataset.note ? null : +b.dataset.note;
     $("avisNotes").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.note === note)));
   });
-  $("avisEnvoyer").addEventListener("click", async () => {
+  $("avisEnvoyer")?.addEventListener("click", async () => {
     const texte = $("avisTexte").value.trim();
     if (!note && !texte) { $("avisMsg").textContent = "Choisis une note ou écris un petit mot."; return; }
     $("avisEnvoyer").disabled = true; $("avisMsg").textContent = "Envoi…";
