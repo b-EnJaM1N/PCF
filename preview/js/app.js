@@ -1179,8 +1179,9 @@ $("btnUne").addEventListener("click", async () => {
   const u = S?.pourUne; if (!u) return;
   const m = S.match, unSet = m.format.setsGagnants === 1;
   const sn = surnomDe(P).texte, snAdv = OPP.humain ? OPP.surnom?.texte : null;
-  const moi = { nom: nomAffiche(P), surnom: sn, legende: sn, genre: P.genre, av: avatarSVG(avMoi()) };
-  const adv = { nom: OPP.nom, surnom: snAdv, legende: snAdv || OPP.style, genre: OPP.genre, av: avatarSVG(avAdv()) };
+  // (La Une sans les surnoms, 10 novembre ; sous la main d'un bot, son style de jeu reste)
+  const moi = { nom: nomAffiche(P), surnom: sn, legende: null, genre: P.genre, av: avatarSVG(avMoi()) };
+  const adv = { nom: OPP.nom, surnom: snAdv, legende: OPP.humain ? null : OPP.style, genre: OPP.genre, av: avatarSVG(avAdv()) };
   const h = histoireDuMatch(m, S.stats, moi, adv, { etape: u.etape, finale: u.finale, citations: S.citations || [], enjeu: u.enjeu });
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
   $("une").classList.add("show");
