@@ -54,6 +54,9 @@ async function jouerJusquALaFin(nom, limite) {
 
 try {
   await page.goto(adresse);
+  // (l'écran titre, à la première ouverture de la journée : on touche l'écran pour entrer)
+  const titre = page.locator("#demarrage.titre");
+  if (await titre.isVisible({ timeout: 3000 }).catch(() => false)) { await titre.click(); await page.waitForTimeout(4000); }
   await page.locator("#premierMatch").click({ timeout: 15000 });
   await jouerJusquALaFin("premier match contre Bambi", 240000);
   sonsPremierMatch = sons;

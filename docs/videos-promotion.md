@@ -90,3 +90,9 @@ rafraîchir (même image, son refait par Claude à partir des fichiers de l'appl
 5. **La pause entre les sets** (15 s) : « Pendant la pause, le public chante » sur « Pour les vainqueurs ».
 6. **« Ton pseudo chanté par le stade »** (15 s, plus tard) : un chant personnalisé (avec l'accord du joueur).
 Ordre conseillé autour de la sortie : V1 rafraîchie le jour J, puis « Silence, s'il vous plaît », puis le KO du smash.
+
+## Les comptes sur les réseaux (8 novembre)
+Instagram, TikTok, YouTube (et Facebook en option), au nom de handslam, créés par le porteur du projet (guide donné dans la conversation).
+Réponses aux commentaires : pas d'IA qui répond seule (risque de mauvais ton, TikTok l'interdit pratiquement) ; à préparer quand
+il le demandera : une **banque de réponses** dans le ton de HandSlam (« c'est du hasard », « dispo sur iPhone ? », « c'est gratuit ? »,
+« comment jouer contre un ami ? »…), à enregistrer dans Instagram ; les commentaires délicats, il les copie à Claude.

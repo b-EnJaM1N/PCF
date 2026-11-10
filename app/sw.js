@@ -57,6 +57,7 @@ const FICHIERS = [
   "js/social-serveur.js",
   "js/ecran-cercles.js",
   "js/fantome.js",
+  "js/nouveautes.js",
   "js/replay.js",
   "js/ecran-tournois.js",
   "js/ecran-sng.js",

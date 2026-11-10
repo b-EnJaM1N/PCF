@@ -1,9 +1,9 @@
 // Le replay (6 novembre, idée du porteur du projet) : pendant la pause entre les sets, « le moment du set » ; à la fin du match,
 // « les temps forts » (3 actions marquantes, rejouées au ralenti avec le score du moment et le bandeau REPLAY).
-// Pour l'instant, seulement sur la version de test (comme le fantôme).
-import { fantomeVisible } from "./fantome.js";
+// Sur la version de test, et partout une fois ouvert (nouveautes.js).
+import { ouvert } from "./nouveautes.js";
 
-export const replayVisible = fantomeVisible;
+export const replayVisible = loc => ouvert("replay", loc);
 
 // Ce qui rend une action marquante, du plus fort au moins fort.
 export const PRIORITES = { match: 10, sauvee_match: 9, sauvee_set: 8, smash: 7, set: 6, serie: 5, egalites: 4 };

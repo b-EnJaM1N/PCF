@@ -66,3 +66,14 @@ Images de la vraie appli filmées en mouvement (présentation contre Chaos, le c
 - `bande-annonce-hymne.mp4` (25 s, passage 1:40 → 2:05) : pour TikTok.
 - `bande-annonce-hymne-2b.mp4` (45 s, passage 2:05 → 2:50, avec le dossier de l'adversaire, la carrière et les amis en plus) : pour Instagram et YouTube.
 Fichiers envoyés dans la conversation (trop lourds pour le projet).
+- **Nouvelle version (9 novembre, demande du porteur du projet)** : l'hymne seulement au début et à la fin ; au milieu, la musique
+  baisse (sans s'arrêter) sous la foule, les bruits de match et des commentaires de plus en plus intenses (Roland : « Silence dans
+  la salle… », « QUEL SMASH ! », « Il titube ! Il est groggy ! », puis dans la longue « Ça déroule, ça déroule ! », l'arbitre
+  « Balle de match, côté jaune. », « Un point. Un seul. Pour tout ! », et pour finir « C'est fini ! Quel combat ! »), écrits à
+  l'écran dans un bandeau doré. Les voix à la vitesse de l'appli (Roland ×1,4, l'arbitre ×1). Répliques déjà enregistrées : aucun
+  crédit utilisé. Les deux sont validées (9 novembre) :
+  - la longue (45 s) : en plus, Monique à 9 s (« C'est maintenant que les champions se révèlent. Et les autres aussi. », ×1,65) et
+    Roland à 12 s (« La réponse du berger à la bergère ! ») ;
+  - la courte (28 s) : début sur l'instrumental (1:40) ; un raccord caché sous le match (vers 10 s, la musique reprend 6 s plus tôt)
+    pour que « Cette main sacrée » (1:55) tombe à 21 s, sur le logo vu de près (la main en V) qui recule jusqu'au logo entier
+    sur « veille sur toi ».

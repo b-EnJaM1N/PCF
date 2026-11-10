@@ -481,6 +481,36 @@ Deux colonnes de plus dans « parcours » : les nouveaux qui ont **lancé** leur
 (pour savoir où décrochent ceux qui ne le finissent pas). Toujours anonyme. **À coller avant la fusion.** Pour lire (une ligne) :
 `select to_char(arrivee,'DD/MM') arrivee, sum(nouveaux) n, sum(premier_lance) lance, sum(premier_coup) un_coup, sum(premier_match) fini, sum(retour_1j) j1, sum(retour_7j) j7 from parcours group by arrivee order by arrivee desc limit 30;`
 
+## 1 sexagies. Plus de défi « freeroll » dans les défis du jour (étape 60)
+
+Même manipulation que d'habitude avec [`etape-60-defis-sans-freeroll.sql`](etape-60-defis-sans-freeroll.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-60-defis-sans-freeroll.sql).
+Le freeroll étant caché dans la version de lancement, le défi « Participe au freeroll de 20 h » n'est plus tiré au sort ;
+les 3 défis du jour sont tirés parmi les 8 autres. Rien à changer dans l'appli.
+
+## 1 sexagies semel. Les objets du club à la boutique (étape 61)
+
+Même manipulation que d'habitude avec [`etape-61-objets-du-club.sql`](etape-61-objets-du-club.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-61-objets-du-club.sql).
+Quatre articles de plus : le gant « Trois signes » (800), le gant Club HandSlam (2 000), la chevalière HandSlam (800) et le
+poignet Club (300). Ils ne se vendent que sur la version de test pour l'instant, et restent hors de la vitrine du jour
+(le tirage des autres articles ne change pas). **À coller avant de les essayer sur la version de test.**
+
+## 1 sexagies bis. Les gants à un seul signe (étape 62)
+
+Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-gants-un-signe.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-62-gants-un-signe.sql).
+Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
+version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
+
+## 1 sexagies ter. « Ton avis sur HandSlam » (étape 63)
+
+Même manipulation que d'habitude avec [`etape-63-avis.sql`](etape-63-avis.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-63-avis.sql).
+Dans Options, chacun (avec ou sans compte) peut envoyer une note de 1 à 5 et/ou un petit mot. Personne ne peut les lire depuis
+l'appli. **À coller avant la fusion.** Pour les lire (une ligne) :
+`select to_char(cree_le at time zone 'Europe/Paris','DD/MM HH24:MI') quand, pseudo, note, texte, origine from avis order by cree_le desc limit 50;`
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :
