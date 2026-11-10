@@ -19,7 +19,7 @@ test("une victoire écrasante : Fanny", () => {
   const { m, st } = jouer("aaaaaaa" + "aaaaaaa");
   const h = histoireDuMatch(m, st, moi, adv);
   assert.equal(h.titre, "ROCKY EMBRASSE FANNY");
-  assert.equal(h.chapo, "Zoé, « Le Roc du Grand Nord », s'impose 2 sets à 0 face à Rocky (7–0, 7–0).");
+  assert.equal(h.chapo, "Zoé s'impose 2 sets à 0 face à Rocky (7–0, 7–0).", "sans les surnoms");
   assert.deepEqual(h.chiffre, { valeur: 14, legende: "points d'affilée" });
 });
 
@@ -40,7 +40,7 @@ test("revenir d'une balle de match", () => {
 
 test("match en un set : le score du set dans le chapô", () => {
   const { m, st } = jouer("aabba", { pointsParSet: 3, setsGagnants: 1 });
-  assert.equal(histoireDuMatch(m, st, moi, adv).chapo, "Zoé, « Le Roc du Grand Nord », s'impose 3–2 face à Rocky.");
+  assert.equal(histoireDuMatch(m, st, moi, adv).chapo, "Zoé s'impose 3–2 face à Rocky.");
 });
 
 test("la phrase du match : la commentatrice d'abord", () => {
@@ -76,4 +76,15 @@ test("le titre d'un enjeu, quelle que soit sa forme", async () => {
   assert.equal(t("Se lever en premier demain"), "BENJA-MAIN DOIT SE LEVER EN PREMIER DEMAIN");
   assert.equal(t("Les poubelles"), "BENJA-MAIN S'Y COLLE : « LES POUBELLES »");
   assert.equal(t(""), null);
+});
+
+test("La Une : « face au Chiromancien », « la remontada du Chiromancien »", async () => {
+  const { devant } = await import("../app/js/une-logique.js");
+  assert.equal(devant("à", "Le Chiromancien"), "au Chiromancien");
+  assert.equal(devant("à", "Les Bleus"), "aux Bleus");
+  assert.equal(devant("DE", "LE CHIROMANCIEN"), "DU CHIROMANCIEN");
+  assert.equal(devant("À", "LE CHIROMANCIEN"), "AU CHIROMANCIEN");
+  assert.equal(devant("à", "Rocky"), "à Rocky");
+  assert.equal(devant("à", "La Mante"), "à La Mante");
+  assert.equal(devant("de", "Lena"), "de Lena");
 });

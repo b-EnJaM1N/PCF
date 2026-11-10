@@ -5,6 +5,13 @@
 import { MARQUE } from "./marque.js";
 const MAJ = t => t.toLocaleUpperCase("fr-FR");
 const setsTexte = (a, b) => `${a} set${a > 1 ? "s" : ""} à ${b}`;
+// « à » ou « de » devant un nom qui commence par « Le » ou « Les » : « face au Chiromancien », « la remontada du Chiromancien ».
+export const devant = (prep, nom) => {
+  const x = String(nom).match(/^(le|les)\s+(.+)$/i), haut = prep === prep.toUpperCase();
+  if (!x) return `${prep} ${nom}`;
+  const mot = { à: { le: "au", les: "aux" }, de: { le: "du", les: "des" } }[prep.toLowerCase()][x[1].toLowerCase()];
+  return `${haut ? MAJ(mot) : mot} ${x[2]}`;
+};
 
 // m : le match terminé ; stats : stats-match.js ; moi / adv : { nom, surnom (texte), genre }
 // contexte : { etape (« Finale du PCF Open », « Duel officiel »…), finale, citations (répliques dites pendant le match),
@@ -22,11 +29,11 @@ export function histoireDuMatch(m, stats, moi, adv, { etape = "Match amical", fi
   if (gagne) {
     if (finale) titre = `${A} ${f ? "SACRÉE" : "SACRÉ"} !`;
     else if (stats.ballesDeMatchSauvees > 0) titre = `${A} REVIENT D'ENTRE LES MORTS`;
-    else if (stats.premierSetPerdu && !unSet) titre = `LA REMONTADA DE ${A}`;
+    else if (stats.premierSetPerdu && !unSet) titre = `LA REMONTADA ${devant("DE", A)}`;
     else if (fanny === "moi") titre = `${B} EMBRASSE FANNY`;
     else if (ecarts.every(e => e >= 5)) titre = `${A} ÉCRASE ${B}`;
     else if (decisif) titre = `${A} AU BOUT DU SUSPENSE`;
-    else titre = au([`${A} FAIT TOMBER ${B}`, `${A} DOMPTE ${B}`, `${A} S'IMPOSE FACE À ${B}`]);
+    else titre = au([`${A} FAIT TOMBER ${B}`, `${A} DOMPTE ${B}`, `${A} S'IMPOSE FACE ${devant("À", B)}`]);
   } else {
     if (finale) titre = `${A} ${f ? "TOMBÉE" : "TOMBÉ"} EN FINALE`;
     else if (fanny === "adv") titre = `${A} EMBRASSE FANNY`;
@@ -41,10 +48,10 @@ export function histoireDuMatch(m, stats, moi, adv, { etape = "Match amical", fi
 
   const detail = sets.map(([a, b]) => `${a}–${b}`).join(", ");
   const verbe = gagne ? "s'impose" : "s'incline";
-  const qui = j => (j.surnom ? `${j.nom}, « ${j.surnom} »,` : j.nom);
+  // (sans les surnoms depuis le 10 novembre, demande du porteur du projet : la phrase devenait trop lourde)
   const chapo = unSet
-    ? `${qui(moi)} ${verbe} ${detail} face à ${qui(adv).replace(/,$/, "")}.`
-    : `${qui(moi)} ${verbe} ${setsTexte(m.sets[0], m.sets[1])} face à ${qui(adv).replace(/,$/, "")} (${detail}).`;
+    ? `${moi.nom} ${verbe} ${detail} face ${devant("à", adv.nom)}.`
+    : `${moi.nom} ${verbe} ${setsTexte(m.sets[0], m.sets[1])} face ${devant("à", adv.nom)} (${detail}).`;
   // L'enjeu du défi (25 octobre) : le journal dit qui s'y colle.
   const gage = enjeu ? ` L'enjeu était « ${enjeu.replace(/[.!?\s]+$/, "")} » : c'est ${gagne ? adv.nom : moi.nom} qui s'y colle !` : "";
 
