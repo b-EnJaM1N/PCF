@@ -35,6 +35,10 @@ export function histoireDuMatch(m, stats, moi, adv, { etape = "Match amical", fi
     else titre = au([`${B} FAIT PLIER ${A}`, `${A} ${f ? "BATTUE" : "BATTU"} PAR ${B}`]);
   }
 
+  // Un défi avec enjeu (10 novembre, demande du porteur du projet) : le gros titre, c'est l'enjeu (« BENJA-MAIN SORT LES POUBELLES »).
+  const te = enjeu ? titreEnjeu(enjeu, gagne ? B : A, gagne ? A : B) : null;
+  if (te) titre = te;
+
   const detail = sets.map(([a, b]) => `${a}–${b}`).join(", ");
   const verbe = gagne ? "s'impose" : "s'incline";
   const qui = j => (j.surnom ? `${j.nom}, « ${j.surnom} »,` : j.nom);
@@ -45,6 +49,26 @@ export function histoireDuMatch(m, stats, moi, adv, { etape = "Match amical", fi
   const gage = enjeu ? ` L'enjeu était « ${enjeu.replace(/[.!?\s]+$/, "")} » : c'est ${gagne ? adv.nom : moi.nom} qui s'y colle !` : "";
 
   return { etape, titre, chapo: chapo + gage, chiffre: chiffreDuMatch(m, stats), citation: citationDuMatch(citations), gagne };
+}
+
+// Le titre d'un enjeu : PERDANT et GAGNANT (en majuscules) ; null si l'enjeu ne se laisse pas tourner en titre.
+//   « Qui sort les poubelles ? »      → BENJA-MAIN SORT LES POUBELLES
+//   « Le perdant paie le café »        → BENJA-MAIN PAIE LE CAFÉ (« la perdante », « celui qui perd »… aussi)
+//   « Le gagnant choisit le film »     → LE CHIROMANCIEN CHOISIT LE FILM
+//   « Sortir les poubelles »           → BENJA-MAIN DOIT SORTIR LES POUBELLES
+//   autre chose (« Les poubelles »)    → BENJA-MAIN S'Y COLLE : « LES POUBELLES »
+export function titreEnjeu(enjeu, PERDANT, GAGNANT) {
+  const t = String(enjeu || "").replace(/\s+/g, " ").trim().replace(/[\s.!?…]+$/, "");
+  if (!t) return null;
+  const reste = (re) => { const x = t.match(re); return x ? x[1].trim() : null; };
+  const suite = s => MAJ(s);
+  let r;
+  if ((r = reste(/^(?:qui|lequel|laquelle|lequel de nous)\s+(.+)$/i))) return `${PERDANT} ${suite(r)}`;
+  if ((r = reste(/^(?:le|la)\s+(?:perdant|perdante|vaincu|vaincue|loser)\s+(.+)$/i)) || (r = reste(/^(?:celui|celle)\s+qui\s+perd\s+(.+)$/i))) return `${PERDANT} ${suite(r)}`;
+  if ((r = reste(/^(?:le|la)\s+(?:gagnant|gagnante|vainqueur|vainqueure)\s+(.+)$/i)) || (r = reste(/^(?:celui|celle)\s+qui\s+gagne\s+(.+)$/i))) return `${GAGNANT} ${suite(r)}`;
+  // un verbe à l'infinitif en tête (« sortir les poubelles », « se lever tôt », « faire la vaisselle »)
+  if (/^(?:se\s+|s'|m'|me\s+)?[a-zàâçéèêëîïôûùüÿœ-]+(?:er|ir|re|oir)\b/i.test(t) && !/^(?:le|la|les|un|une|des|du|mon|ma|mes|ton|ta|tes|notre|votre)\b/i.test(t)) return `${PERDANT} DOIT ${suite(t)}`;
+  return `${PERDANT} S'Y COLLE : « ${suite(t)} »`;
 }
 
 // Le chiffre à retenir : le plus remarquable du match.
