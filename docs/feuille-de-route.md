@@ -2,6 +2,30 @@
 
 Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ · contact : contact.handslam@gmail.com
 
+## Pour reprendre (session du 10 novembre au soir)
+
+Test fermé prolongé de 14 jours (refus de Google du 10 novembre) : **nouvelle demande d'accès à la production vers le 24 novembre**,
+avec le journal `docs/play-store/retours-testeurs.md` (avis des testeurs → mises à jour). Tout ce qui suit est fusionné et en ligne.
+
+**Fait le 10 novembre** : la série de jours ouverte à tous ; « 💬 Ton avis sur HandSlam » (Options, étape 63) ; les nouveautés
+s'ouvrent une par une (`app/js/nouveautes.js` : seule « serie » est ouverte) ; Mes amis (3 plus joués en tête, « Annuler » un défi,
+retirer un ami en bas de sa page : idée d'un testeur) ; chants personnalisés de Kikou#1743, Emi#6263, Shishyo#2931,
+Pierre la feuill#1473 ; chants équilibrés entre amis ; correctif du bandeau « Cannot read properties of null » (la page se recharge
+si sa version diffère du programme) ; couleur du motif du gant ; La Une : gros titre d'après l'enjeu, sans les surnoms ; bijoux
+redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du club et gants à un signe (version de test seulement,
+étapes 61-62) ; trophée « Fondé en 2026 » (version de test seulement) ; bandes-annonces sur l'hymne refaites (validées).
+
+**À faire** :
+1. Le porteur du projet : une nouvelle version du paquet Android dans le test fermé (PWABuilder, code de version + 1, sa clé ;
+   note de version : la série de jours et le bouton d'avis) ; puis une à chaque nouveauté ouverte.
+2. Envoyer le questionnaire aux testeurs (texte proposé le 10 novembre, à valider) ; noter chaque retour dans le journal.
+3. Ouvrir la nouveauté suivante vers le 13 novembre (le fantôme proposé), puis le replay, l'écran titre avec l'hymne, les objets du
+   club (et à la sortie : boutique → récompenses de fidélité en jours de jeu, voir plus bas).
+4. Les chants des autres testeurs (le porteur du projet les envoie ensemble ; pseudo#numéro exact, « il »/« elle » dans Ma fiche).
+5. Idée validée, pas encore faite : le bracelet gravé à son pseudo.
+6. À regarder : les nouveaux arrivés des 8 et 9 novembre n'ont lancé aucun match (requête par origine proposée le 10 novembre).
+7. Toujours en attente : les 7 répliques du replay (crédits ElevenLabs), la chronique « Le Clasico » (mise de côté).
+
 ## En bref (14 octobre 2026)
 
 **Le cap (audit du 28 octobre, décisions du porteur du projet)** :
