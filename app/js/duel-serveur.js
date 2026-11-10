@@ -43,6 +43,10 @@ export const duelsAvec = adv => essayer(async () => verifier(await client().from
   .select("j0, j1, vainqueur, fin, scores_sets, coups, classe, rapide, tournoi_id, maj_le")
   .eq("phase", "termine").or(`j0.eq.${adv},j1.eq.${adv}`).order("maj_le", { ascending: false }).limit(300)));
 
+// Mes duels terminés des 30 derniers jours (seulement les deux joueurs) : pour mettre en tête de « Mes amis » ceux avec qui je joue le plus.
+export const mesDuelsRecents = () => essayer(async () => verifier(await client().from("duels")
+  .select("j0, j1").eq("phase", "termine").gte("maj_le", new Date(Date.now() - 30 * 864e5).toISOString()).limit(2000)));
+
 export const lireDuel = id => essayer(async () => verifier(await client().from("duels").select("*").eq("id", id).single()));
 
 // Fiches des joueurs, avec leur niveau officiel (champ « classement »).

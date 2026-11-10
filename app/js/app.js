@@ -2678,6 +2678,7 @@ cerclesUI = installerCercles({
   ouvrirOnglet,
   defier: p => duelsUI.defier(p),
   dejaDefie: id => !!duelsUI?.dejaDefie(id),
+  annulerDefi: id => duelsUI.annulerDefi(id),
   voirCarte: id => voirCarteDe(id),
   dossierEtMains: (uid, nom, duels, elle) => dossierEtMains(uid, nom, duels, elle),
   fantomeDe: id => chargerFantome(id).then(f => !!f),

@@ -1,11 +1,11 @@
 // Onglet « Amis » (anciennement « Cercles ») : mon niveau officiel, mes amis, et mes cercles
 // (groupes privés avec leur propre classement).
 import * as social from "./social-serveur.js";
-import { chercher, duelsAvec } from "./duel-serveur.js";
+import { chercher, duelsAvec, mesDuelsRecents } from "./duel-serveur.js";
 import { statsFaceAFace, texteDefie } from "./duel-logique.js";
 import { EMOJI, NOM } from "./regles.js";
 import { avatarSVG, FONDS } from "./avatar.js";
-import { DIVISIONS, texteDivision, divisionDe, pointPresence, textePresence, parPresence } from "./social-logique.js";
+import { DIVISIONS, texteDivision, divisionDe, pointPresence, textePresence, amisEnTete, compterEchanges } from "./social-logique.js";
 import { EMBLEMES, blasonSVG, normaliserBlason, blasonParDefaut, erreurNomCercle, lienCercle, codeCercleDepuisAdresse, rang, CLASSEMENT_DEPART, texteNiveau, texteCalibrage, provisoire } from "./social-logique.js";
 import { lire, ecrire } from "./stockage.js";
 import { clePseudo } from "./chants-perso.js";
@@ -67,7 +67,7 @@ function corpsFaceAFace(r, nom, officiels = false) {
 }
 
 export function installerCercles(ctx) {
-  let uid = null, minuterie = 0, recherche = 0, amis = [], cercleOuvert = null, detail = null;
+  let uid = null, minuterie = 0, recherche = 0, amis = [], echanges = new Map(), cercleOuvert = null, detail = null;
   const base = () => location.origin + location.pathname;
   const dire = (id, t, erreur = false) => {
     $(id).textContent = t; $(id).classList.toggle("erreur", erreur);
@@ -131,10 +131,11 @@ export function installerCercles(ctx) {
   // ------------------------------------------------ la page principale
   async function rafraichir() {
     if (!uid) return;
-    const [cl, listeAmis, cercles, mesTournois] = await Promise.all([
+    const [cl, listeAmis, cercles, mesTournois, recents] = await Promise.all([
       social.classements([uid]).catch(() => null), social.mesAmis().catch(() => null), social.mesCercles().catch(() => null),
-      social.mesTournois().catch(() => null),
+      social.mesTournois().catch(() => null), mesDuelsRecents().catch(() => null),
     ]);
+    if (recents) echanges = compterEchanges(recents, uid);
     if (mesTournois) {
       $("socTournoisVide").hidden = mesTournois.length > 0;
       tournois.liste($("socTournois"), mesTournois);
@@ -169,6 +170,9 @@ export function installerCercles(ctx) {
 
   // « Défier », ou « Défié ✓ » tant que mon défi à ce joueur attend (on ne relance pas un deuxième défi par erreur).
   const boutonDefier = p => ctx.dejaDefie?.(p.id) ? `<button class="petit alt" data-a="defie" disabled>${texteDefie(p)}</button>` : `<button class="petit" data-a="defier">Défier</button>`;
+  // Dans « Mes amis » : à côté, « Annuler » pour retirer un défi en attente (10 novembre : la croix qui retirait l'ami est partie,
+  // trop de fausses manips ; on retire un ami en bas de sa page).
+  const boutonsAmi = p => boutonDefier(p) + (ctx.dejaDefie?.(p.id) ? `<button class="petit alt" data-a="annuler-defi">Annuler</button>` : "");
   const marquerDefie = (b, p) => { b.textContent = texteDefie(p); b.classList.add("alt"); b.dataset.a = "defie"; b.disabled = true; };
   const texteAttente = p => `${texteDefie(p)} (en attente de sa réponse)`;
   const ligneJoueur = (p, sous, boutons) => `<div class="joueur" data-id="${p.id}">
@@ -176,13 +180,18 @@ export function installerCercles(ctx) {
     <div style="min-width:0"><div class="jn">${esc(p.drapeau || "")} ${nomComplet(p)}${pointPresence(p)}</div><div class="jd">${sous}</div></div>
     <div class="actions">${boutons}</div></div>`;
 
+  let tousLesAmis = false;   // la liste dépliée (gardée tant que l'appli reste ouverte)
   function renderAmis() {
-    const liste = parPresence(amis.filter(a => !a.recue));
-    $("socAmisVide").hidden = liste.length > 0;
-    $("socAmis").innerHTML = liste.map(a => a.statut === "amis"
-      ? ligneJoueur(a, `${textePresence(a)}Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`,
-        `${boutonDefier(a)}<button class="petit alt" data-a="retirer" aria-label="Retirer de mes amis">✕</button>`)
-      : ligneJoueur(a, "Demande envoyée", `<button class="petit alt" data-a="annuler">Annuler</button>`)).join("");
+    const { devant, autres } = amisEnTete(amis, echanges);
+    const ligne = a => a.statut === "amis"
+      ? ligneJoueur(a, `${textePresence(a)}Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`, boutonsAmi(a))
+      : ligneJoueur(a, "Demande envoyée", `<button class="petit alt" data-a="annuler">Annuler</button>`);
+    $("socAmisVide").hidden = devant.length + autres.length > 0;
+    const nAmis = autres.filter(a => a.statut === "amis").length, nDemandes = autres.length - nAmis;
+    const titre = [nAmis && pluriel(nAmis, "autre ami"), nDemandes && `${nDemandes} ${nDemandes > 1 ? "demandes envoyées" : "demande envoyée"}`].filter(Boolean).join(" · ");
+    $("socAmis").innerHTML = devant.map(ligne).join("")
+      + (autres.length ? `<details class="amis-autres"${tousLesAmis ? " open" : ""}><summary>Voir ${titre}</summary>${autres.map(ligne).join("")}</details>` : "");
+    $("socAmis").querySelector(".amis-autres")?.addEventListener("toggle", e => { tousLesAmis = e.target.open; });
   }
 
   // ---------------------------------------------------------------- le classement par division
@@ -218,7 +227,7 @@ export function installerCercles(ctx) {
     $("aInfo").textContent = `${textePresence(a)}Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`;
     $("aStats").innerHTML = `<p class="hint">Chargement…</p>`; dire("aMsg", "");
     const deja = !!ctx.dejaDefie?.(id);
-    $("aDefier").disabled = deja; $("aDefier").textContent = deja ? texteAttente(a) : "Défier";
+    $("aDefier").disabled = deja; $("aDefier").textContent = deja ? texteAttente(a) : "Défier"; $("aAnnulerDefi").hidden = !deja;
     // Son fantôme (fantome.js) : un bot qui joue comme lui, d'après ses matchs en ligne (pour l'instant sur la version de test).
     $("aFantome").hidden = true;
     if (fantomeVisible() && ctx.fantomeDe) ctx.fantomeDe(id).then(ok => {
@@ -249,11 +258,27 @@ export function installerCercles(ctx) {
     $("aCarte").disabled = false;
     if (msg) dire("aMsg", msg);
   });
+  $("aAnnulerDefi").addEventListener("click", async () => {
+    const a = amis.find(x => x.id === amiOuvert); if (!a || !confirm(`Annuler ton défi à ${a.pseudo} ?`)) return;
+    $("aAnnulerDefi").disabled = true;
+    try { await ctx.annulerDefi?.(a.id); dire("aMsg", `Défi à ${a.pseudo} annulé.`); $("aDefier").disabled = false; $("aDefier").textContent = "Défier"; $("aAnnulerDefi").hidden = true; }
+    catch (err) { dire("aMsg", err.message, true); }
+    $("aAnnulerDefi").disabled = false;
+  });
+  // Retirer un ami : seulement en bas de sa page, avec confirmation (10 novembre, demande du porteur du projet).
+  $("aRetirer").addEventListener("click", async () => {
+    const a = amis.find(x => x.id === amiOuvert); if (!a) return;
+    if (!confirm(`Retirer ${a.pseudo}#${a.numero} de tes amis ? Vous ne pourrez plus vous défier depuis « Mes amis » (il faudra lui renvoyer une demande).`)) return;
+    $("aRetirer").disabled = true;
+    try { await social.retirerAmi(a.id); amiOuvert = null; montrer("socListe"); dire("socMsg", `${a.pseudo} ne fait plus partie de tes amis.`); await rafraichir(); }
+    catch (err) { dire("aMsg", err.message, true); }
+    $("aRetirer").disabled = false;
+  });
   $("aFantome").addEventListener("click", () => { const a = amis.find(x => x.id === amiOuvert); if (a) ctx.jouerFantome?.(a); });
   $("aDefier").addEventListener("click", async () => {
     const a = amis.find(x => x.id === amiOuvert); if (!a) return;
     $("aDefier").disabled = true;
-    try { const t = await ctx.defier(a); if (t) { dire("aMsg", t); $("aDefier").textContent = texteAttente(a); return; } }
+    try { const t = await ctx.defier(a); if (t) { dire("aMsg", t); $("aDefier").textContent = texteAttente(a); $("aAnnulerDefi").hidden = false; return; } }
     catch (err) { dire("aMsg", err.message, true); }
     $("aDefier").disabled = false;
   });
@@ -276,11 +301,12 @@ export function installerCercles(ctx) {
     if (!b) return;
     const id = ligne.dataset.id, cercle = ligne.dataset.cercle, a = b.dataset.a;
     const joueur = amis.find(x => x.id === id);
-    if (a === "retirer" && !confirm(`Retirer ${joueur.pseudo} de tes amis ?`)) return;
+    if (a === "annuler-defi" && !confirm(`Annuler ton défi à ${joueur.pseudo} ?`)) return;
     b.disabled = true;
     try {
+      if (a === "annuler-defi") { await ctx.annulerDefi?.(id); dire("socMsg", `Défi à ${joueur.pseudo} annulé.`); return renderAmis(); }
       if (a === "defier") { const t = await ctx.defier(joueur); if (!t) { b.disabled = false; return; } dire("socMsg", t); return marquerDefie(b, joueur); }
-      if (a === "retirer" || a === "annuler") await social.retirerAmi(id);
+      if (a === "annuler") await social.retirerAmi(id);
       if (a === "ami-oui") { await social.repondreAmi(id, true); dire("socMsg", `${joueur.pseudo} et toi êtes maintenant amis.`); }
       if (a === "ami-non") await social.repondreAmi(id, false);
       if (a === "cercle-oui") { await social.repondreCercle(cercle, true); await rafraichir(); return ouvrirCercle(cercle); }
