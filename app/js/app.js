@@ -1909,6 +1909,7 @@ function renderEditeur() {
   mk($("swSymbole"), "symbole", SYMBOLES, true); mk($("swBg"), "fond", FONDS); mk($("swGlove"), "gant", GANTS); mk($("swWrist"), "poignet", POIGNETS); mk($("swMotif"), "motif", MOTIFS, true); mk($("swGantMotif"), "gantMotif", MOTIFS_GANT, true);
   if ($("swMotifCouleur")) { mk($("swMotifCouleur"), "gantMotifCouleur", MOTIF_COULEURS); $("choixMotifCouleur").hidden = P.av.gant === "nu" || !MOTIFS_COLORABLES.has(P.av.gantMotif); }   // (seulement pour les motifs qui ont une couleur)
   $("choixPoignet").hidden = P.av.gant === "nu";   // pas de bandeau sur la main nue
+  for (const [id, nue] of [["choixGantMotif", false], ["choixPeau", true], ["choixOngles", true]]) if ($(id)) $(id).hidden = (P.av.gant === "nu") !== nue;   // (la peau et le vernis : main nue ; le motif : avec un gant)
   mk($("swPeau"), "peau", PEAUX); mk($("swOngles"), "ongles", ONGLES); mk($("swBracelet"), "bracelet", BRACELETS); mk($("swBague"), "bague", BAGUES);
   if ($("swBraceletCouleur")) { mk($("swBraceletCouleur"), "braceletCouleur", MOTIF_COULEURS); $("choixBraceletCouleur").hidden = !BRACELETS_COLORABLES.has(P.av.bracelet); }   // (cuir et perles : la couleur au choix)
 }
