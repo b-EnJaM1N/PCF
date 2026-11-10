@@ -17,8 +17,8 @@ export const CATEGORIES = [
 ];
 
 const a = (type, cle, nom, rarete, categorie = "avatar", bientot = false) => ({ id: `${type}:${cle}`, type, cle, nom, rarete, categorie, prix: RARETES[rarete].prix, ...(bientot ? { bientot } : {}) });
-// bientot : en vente seulement sur la version de test, pour l'instant (comme les autres nouveautés prévues après la sortie).
-const club = (type, cle, nom, rarete) => a(type, cle, nom, rarete, "avatar", true);
+// bientot : le nom de la nouveauté (nouveautes.js) ; en vente sur la version de test, et partout une fois ouverte.
+const club = (type, cle, nom, rarete) => a(type, cle, nom, rarete, "avatar", "club");
 export const ARTICLES = [
   a("gant", "rose", "Gant rose", "courant"), a("gant", "violet", "Gant violet", "courant"), a("gant", "noir", "Gant noir mat", "courant"), a("gant", "turquoise", "Gant turquoise", "courant"),
   a("gantMotif", "damier", "Gant à damier", "rare"), a("gantMotif", "flammes", "Gant en flammes", "rare"), a("gantMotif", "tigre", "Gant tigré", "rare"),
