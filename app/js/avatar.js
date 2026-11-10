@@ -38,6 +38,13 @@ export const couleurMain = a => a.gant === "nu" ? (PEAUX[a.peau] || PEAUX.neutre
 export const SYMBOLES = { pierre: "✊ Pierre", feuille: "✋ Feuille", ciseaux: "✌️ Ciseaux" };
 export const MOTIFS = { uni: "Uni", rayures: "Rayures", etoile: "Étoile", eclair: "Éclair" };
 // Le motif du gant (la seconde couleur est celle du poignet).
+// La couleur du motif du gant (10 novembre, demande du porteur du projet) : « Par défaut », la couleur habituelle (celle du poignet
+// pour les rayures, les pois, le bicolore et le damier ; l'or des signes, le rose des cœurs, le jaune des étoiles), ou une couleur au choix.
+export const MOTIF_COULEURS = { defaut: ["Par défaut (comme le poignet)", null, "repeating-linear-gradient(45deg,#C9CED6 0 5px,#5B6270 5px 10px)"],
+  blanc: ["Blanc", "#F5F7FA"], noir: ["Noir", "#23262B"], rouge: ["Rouge", "#D63A2F"], bleu: ["Bleu", "#2C6FD1"], ciel: ["Bleu ciel", "#4DA3FF"],
+  vert: ["Vert", "#2E9E5B"], jaune: ["Jaune", "#F4C542"], or: ["Or", "#E9C046"], orange: ["Orange", "#F28C28"], rose: ["Rose", "#F28DB2"], violet: ["Violet", "#9B6BD6"] };
+// Les motifs qui ont une couleur à choisir.
+export const MOTIFS_COLORABLES = new Set(["rayures", "pois", "bicolore", "damier", "coeurs", "etoiles", "signe_pierre", "signe_feuille", "signe_ciseaux"]);
 export const MOTIFS_GANT = { uni: "Uni", rayures: "Rayé", pois: "À pois", bicolore: "Bicolore", coutures: "Coutures dorées", bandeau: "Bandeau de champion",
   damier: "Damier", flammes: "Flammes", tigre: "Tigré", zebre: "Zébré", coeurs: "Cœurs", etoiles: "Étoiles", camouflage: "Camouflage", carbone: "Carbone", lauriers: "Lauriers", signe_pierre: "Pierre", signe_feuille: "Feuille", signe_ciseaux: "Ciseaux", club: "Club HandSlam" };
 export const PAYS = [["🇫🇷", "France"], ["🇧🇪", "Belgique"], ["🇨🇭", "Suisse"], ["🇨🇦", "Canada"], ["🇱🇺", "Luxembourg"], ["🇲🇦", "Maroc"], ["🇩🇿", "Algérie"], ["🇹🇳", "Tunisie"], ["🇸🇳", "Sénégal"], ["🇨🇮", "Côte d'Ivoire"], ["🇪🇸", "Espagne"], ["🇮🇹", "Italie"], ["🇩🇪", "Allemagne"], ["🇬🇧", "Royaume-Uni"], ["🇺🇸", "États-Unis"], ["🇧🇷", "Brésil"], ["🇯🇵", "Japon"], ["🌍", "Autre"]];
@@ -57,13 +64,13 @@ function chaton(type, cx, cy) {
 // pas du signe que montre la main (un gant « Ciseaux » peut montrer la feuille).
 const OR_SIGNE = "#E9C046";
 const ICONES_SIGNE = {
-  pierre: fond => `<rect x="1" y="2" width="8" height="6.5" rx="2.2" fill="${OR_SIGNE}"/><path d="M3.3 3 V5.2 M5 3 V5.2 M6.7 3 V5.2" stroke="${fond}" stroke-width=".7"/>`,
-  feuille: () => `<rect x="2" y="5" width="6.5" height="4.5" rx="1.5" fill="${OR_SIGNE}"/>${[2, 3.7, 5.4, 7.1].map((x, i) => `<rect x="${x}" y="${[1.2, .5, .9, 1.9][i]}" width="1.4" height="5" rx=".7" fill="${OR_SIGNE}"/>`).join("")}`,
-  ciseaux: () => `<rect x="2.5" y="5.5" width="5.5" height="4" rx="1.4" fill="${OR_SIGNE}"/><path d="M4 6 L2.7 .9 M6.6 6 L7.9 .9" stroke="${OR_SIGNE}" stroke-width="1.5" stroke-linecap="round"/>`,
+  pierre: (fond, c) => `<rect x="1" y="2" width="8" height="6.5" rx="2.2" fill="${c}"/><path d="M3.3 3 V5.2 M5 3 V5.2 M6.7 3 V5.2" stroke="${fond}" stroke-width=".7"/>`,
+  feuille: (fond, c) => `<rect x="2" y="5" width="6.5" height="4.5" rx="1.5" fill="${c}"/>${[2, 3.7, 5.4, 7.1].map((x, i) => `<rect x="${x}" y="${[1.2, .5, .9, 1.9][i]}" width="1.4" height="5" rx=".7" fill="${c}"/>`).join("")}`,
+  ciseaux: (fond, c) => `<rect x="2.5" y="5.5" width="5.5" height="4" rx="1.4" fill="${c}"/><path d="M4 6 L2.7 .9 M6.6 6 L7.9 .9" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/>`,
 };
-const icone = (signe, fond, x, y, k = 1) => `<g transform="translate(${x} ${y}) scale(${k})">${ICONES_SIGNE[signe](fond)}</g>`;
+const icone = (signe, fond, x, y, k = 1, c = OR_SIGNE) => `<g transform="translate(${x} ${y}) scale(${k})">${ICONES_SIGNE[signe](fond, c)}</g>`;
 // Un seul signe, en quinconce sur tout le gant.
-const motifUnSigne = (id, signe, gant) => `<pattern id="${id}g" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="${gant}"/>${icone(signe, gant, .5, .5, 1)}${icone(signe, gant, 11.5, 11.5, 1)}</pattern>`;
+const motifUnSigne = (id, signe, gant, c = OR_SIGNE) => `<pattern id="${id}g" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="${gant}"/>${icone(signe, gant, .5, .5, 1, c)}${icone(signe, gant, 11.5, 11.5, 1, c)}</pattern>`;
 
 let n = 0;
 function dessinerMain(a, fill, ink, nue) {
@@ -129,22 +136,23 @@ export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
   const cle = a.poignet in POIGNETS ? a.poignet : "rouge";
   const id = "av" + (++n), ink = "rgba(0,0,0,.22)", gm = nue ? "uni" : a.gantMotif;
+  const mc = (MOTIF_COULEURS[a.gantMotifCouleur] || [])[1] || null;   // la couleur du motif choisie (sinon : la couleur habituelle)
   const brode = !nue && BRODERIES[a.brode];   // (le pseudo brodé sur le poignet : gants-brodes.js ; pas sur la main nue)   // (pas de motif de gant sur la peau)
   // Gant rayé, à pois ou bicolore : on le remplit avec un motif SVG.
   const remplissage = {
-    rayures: `<pattern id="${id}g" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="8" height="8" fill="${gant}"/><rect width="3" height="8" fill="${poignet}"/></pattern>`,
-    pois: `<pattern id="${id}g" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="${gant}"/><circle cx="4.5" cy="4.5" r="1.9" fill="${poignet}"/></pattern>`,
-    bicolore: `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0"><stop offset=".5" stop-color="${gant}"/><stop offset=".5" stop-color="${poignet}"/></linearGradient>`,
-    damier: `<pattern id="${id}g" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="${gant}"/><rect width="5" height="5" fill="${poignet}"/><rect x="5" y="5" width="5" height="5" fill="${poignet}"/></pattern>`,
+    rayures: `<pattern id="${id}g" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="8" height="8" fill="${gant}"/><rect width="3" height="8" fill="${mc || poignet}"/></pattern>`,
+    pois: `<pattern id="${id}g" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="${gant}"/><circle cx="4.5" cy="4.5" r="1.9" fill="${mc || poignet}"/></pattern>`,
+    bicolore: `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0"><stop offset=".5" stop-color="${gant}"/><stop offset=".5" stop-color="${mc || poignet}"/></linearGradient>`,
+    damier: `<pattern id="${id}g" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="${gant}"/><rect width="5" height="5" fill="${mc || poignet}"/><rect x="5" y="5" width="5" height="5" fill="${mc || poignet}"/></pattern>`,
     flammes: `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="0" y1="80" x2="0" y2="10"><stop offset="0" stop-color="#E8574A"/><stop offset=".45" stop-color="#F28C28"/><stop offset=".75" stop-color="#F4C542"/><stop offset="1" stop-color="${gant}"/></linearGradient>`,
     tigre: `<pattern id="${id}g" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(-20)"><rect width="12" height="12" fill="#F28C28"/><path d="M0 2 Q6 5 12 2 M0 8 Q6 11 12 8" stroke="#2B1D10" stroke-width="2" fill="none"/></pattern>`,
     zebre: `<pattern id="${id}g" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(25)"><rect width="12" height="12" fill="#F5F7FA"/><path d="M0 3 Q6 6 12 3 M0 9 Q6 12 12 9" stroke="#1E2024" stroke-width="2.6" fill="none"/></pattern>`,
-    coeurs: `<pattern id="${id}g" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="${gant}"/><path d="M6 9 L2.6 5.6 A1.8 1.8 0 0 1 6 3.4 A1.8 1.8 0 0 1 9.4 5.6 Z" fill="#E8395E"/></pattern>`,
-    etoiles: `<pattern id="${id}g" width="13" height="13" patternUnits="userSpaceOnUse"><rect width="13" height="13" fill="${gant}"/><path d="M6.5 2 L7.7 5.3 L11 5.4 L8.4 7.4 L9.3 10.6 L6.5 8.7 L3.7 10.6 L4.6 7.4 L2 5.4 L5.3 5.3 Z" fill="#FFD34D"/></pattern>`,
+    coeurs: `<pattern id="${id}g" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="${gant}"/><path d="M6 9 L2.6 5.6 A1.8 1.8 0 0 1 6 3.4 A1.8 1.8 0 0 1 9.4 5.6 Z" fill="${mc || "#E8395E"}"/></pattern>`,
+    etoiles: `<pattern id="${id}g" width="13" height="13" patternUnits="userSpaceOnUse"><rect width="13" height="13" fill="${gant}"/><path d="M6.5 2 L7.7 5.3 L11 5.4 L8.4 7.4 L9.3 10.6 L6.5 8.7 L3.7 10.6 L4.6 7.4 L2 5.4 L5.3 5.3 Z" fill="${mc || "#FFD34D"}"/></pattern>`,
     camouflage: `<pattern id="${id}g" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="#6B7B4A"/><circle cx="6" cy="6" r="5" fill="#4A5632"/><circle cx="16" cy="14" r="6" fill="#8E9A63"/><circle cx="4" cy="18" r="3.5" fill="#3B2F22"/></pattern>`,
     lauriers: `<pattern id="${id}g" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(20)"><rect width="12" height="12" fill="${gant}"/><path d="M6 1 V11" stroke="#B08A1E" stroke-width=".8"/><ellipse cx="4.3" cy="4" rx="1.3" ry="2.6" fill="#E9C046" transform="rotate(-35 4.3 4)"/><ellipse cx="7.7" cy="4" rx="1.3" ry="2.6" fill="#E9C046" transform="rotate(35 7.7 4)"/><ellipse cx="4.3" cy="8.5" rx="1.3" ry="2.6" fill="#E9C046" transform="rotate(-35 4.3 8.5)"/><ellipse cx="7.7" cy="8.5" rx="1.3" ry="2.6" fill="#E9C046" transform="rotate(35 7.7 8.5)"/></pattern>`,
     carbone: `<pattern id="${id}g" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#26292E"/><rect width="3" height="3" fill="#3A3E45"/><rect x="3" y="3" width="3" height="3" fill="#3A3E45"/></pattern>`,
-    signe_pierre: motifUnSigne(id, "pierre", gant), signe_feuille: motifUnSigne(id, "feuille", gant), signe_ciseaux: motifUnSigne(id, "ciseaux", gant),
+    signe_pierre: motifUnSigne(id, "pierre", gant, mc || OR_SIGNE), signe_feuille: motifUnSigne(id, "feuille", gant, mc || OR_SIGNE), signe_ciseaux: motifUnSigne(id, "ciseaux", gant, mc || OR_SIGNE),
     club: `<pattern id="${id}g" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#14533A"/></pattern>`,
   }[gm] || (a.gant === "elite" ? `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3358"/><stop offset="1" stop-color="#14121F"/></linearGradient>` : "");
   // Poignets et fonds spéciaux (boutique).

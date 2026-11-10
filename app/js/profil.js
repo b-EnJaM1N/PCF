@@ -114,7 +114,7 @@ export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); 
 export function profilParDefaut() {
   return {
     v: 1, pseudo: "", drapeau: "🇫🇷",
-    av: { symbole: "pierre", fond: "court", gant: "nu", peau: "neutre", ongles: "aucun", bracelet: "aucun", bague: "aucune", poignet: "rouge", motif: "uni", gantMotif: "uni" },   // main nue jusqu'au premier gant
+    av: { symbole: "pierre", fond: "court", gant: "nu", peau: "neutre", ongles: "aucun", bracelet: "aucun", bague: "aucune", poignet: "rouge", motif: "uni", gantMotif: "uni", gantMotifCouleur: "defaut" },   // main nue jusqu'au premier gant
     elo: ELO_DEPART, historiqueElo: [ELO_DEPART],
     matchs: 0, victoires: 0, serieEnCours: 0, meilleureSerieVictoires: 0,
     sets: [0, 0], coups: 0, signes: [0, 0, 0], signesAdv: [0, 0, 0],
