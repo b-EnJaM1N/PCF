@@ -46,6 +46,13 @@ export const ARTICLES = [
   // Les objets du club (9 novembre, choix du porteur du projet) : les signes (pierre, feuille, ciseaux) et le symbole de l'appli.
   club("gantMotif", "signe_pierre", "Gant « Pierre »", "rare"), club("gantMotif", "signe_feuille", "Gant « Feuille »", "rare"), club("gantMotif", "signe_ciseaux", "Gant « Ciseaux »", "rare"), club("gantMotif", "club", "Gant Club HandSlam", "epique"),
   club("bague", "symbole", "Chevalière HandSlam", "rare"), club("poignet", "club", "Poignet Club", "courant"),
+  // Les bijoux (10 novembre, redessinés et diversifiés à la demande du porteur du projet) ; les simples restent gratuits.
+  a("bracelet", "jonc", "Jonc or", "rare"), a("bracelet", "gourmette_or", "Gourmette or", "rare"), a("bracelet", "gourmette_argent", "Gourmette argent", "rare"),
+  a("bracelet", "clous_noir", "Bracelet clouté", "rare"), a("bracelet", "clous_rouge", "Cuir rouge clouté or", "rare"),
+  a("bracelet", "tresse", "Bracelet brésilien", "courant"), a("bracelet", "tresse_club", "Bracelet tressé HandSlam", "rare"),
+  a("bracelet", "breloque_pierre", "Breloque Pierre", "rare"), a("bracelet", "breloque_feuille", "Breloque Feuille", "rare"), a("bracelet", "breloque_ciseaux", "Breloque Ciseaux", "rare"),
+  a("bague", "saphir", "Bague au saphir", "rare"), a("bague", "emeraude", "Bague à l'émeraude", "rare"), a("bague", "diamant", "Bague au diamant", "epique"),
+  a("bague", "signe_pierre", "Chevalière Pierre", "rare"), a("bague", "signe_feuille", "Chevalière Feuille", "rare"), a("bague", "signe_ciseaux", "Chevalière Ciseaux", "rare"),
 ];
 const PAR_ID = new Map(ARTICLES.map(x => [x.id, x]));
 export const article = id => PAR_ID.get(id) || null;

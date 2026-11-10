@@ -1,3 +1,4 @@
+import { braceletSVG, bagueSVG } from "./bijoux.js";
 import { BRODERIES, broderieSVG } from "./gants-brodes.js";
 // Avatar : une main stylisée (pas de photo), personnalisable.
 // Le symbole est au choix : poing fermé (Pierre), main ouverte (Feuille) ou V de la victoire (Ciseaux) ;
@@ -30,9 +31,47 @@ export const PEAUX = { neutre: ["Neutre (comme les emojis)", "#FFCC4D"], claire:
 const AUCUN = SANS;
 export const ONGLES = { aucun: ["Sans vernis", null, AUCUN], rouge: ["Vernis rouge", "#D7263D"], rose: ["Vernis rose", "#F28DB2"], noir: ["Vernis noir", "#1E1E24"],
   bleu: ["Vernis bleu", "#2C6FD1"], or: ["Vernis or", "#E0B12A"] };
-export const BRACELETS = { aucun: ["Sans bracelet", null, AUCUN], cuir: ["Bracelet en cuir", "#7A4A2A"], perles: ["Bracelet de perles", "#EFE9DA"], argent: ["Bracelet argent", "#C9CED6"], or: ["Bracelet or", "#E0B12A"] };
-export const BAGUES = { aucune: ["Sans bague", null, AUCUN], argent: ["Bague argent", "#D5DAE1"], or: ["Bague or", "#E9C046"], rubis: ["Bague au rubis", "#E9C046", "radial-gradient(circle,#C2183A 35%,#E9C046 40%)"],
-  symbole: ["Chevalière HandSlam", "#E9C046", "radial-gradient(circle,#F5EFE0 22%,#0F3D2B 26% 40%,#E9C046 44%)"] };
+// Les bracelets et les bagues (10 novembre : redessinés et diversifiés, bijoux.js) : [nom, couleur, aperçu du bouton, dessin].
+const metal = (c1, c2) => `linear-gradient(${c1},${c2})`;
+export const BRACELETS = { aucun: ["Sans bracelet", null, AUCUN],
+  or: ["Bracelet or", "#E9C046", metal("#FFF1B8", "#A9801A"), { type: "metal", metal: "or" }], argent: ["Bracelet argent", "#C9CED6", metal("#FFFFFF", "#7E8794"), { type: "metal", metal: "argent" }],
+  orrose: ["Bracelet or rose", "#E8A08A", metal("#FFE0D6", "#A5604C"), { type: "metal", metal: "orrose" }], noir: ["Bracelet noir", "#2B2E34", metal("#6B707A", "#111215"), { type: "metal", metal: "noir" }],
+  cuir: ["Bracelet en cuir", "#6B3E22", null, { type: "cuir", couleur: "#6B3E22" }], cuir_noir: ["Cuir noir", "#23262B", null, { type: "cuir", couleur: "#23262B" }],
+  perles: ["Perles de nacre", "#EFE9DA", "radial-gradient(circle at 35% 30%,#fff 15%,#EFE9DA 45%)", { type: "perles", couleurs: ["#EFE9DA"] }],
+  perles_arcenciel: ["Perles arc-en-ciel", "#F4C542", "linear-gradient(90deg,#E8574A,#F4C542,#6BD49A,#4DA3FF,#9B6BD6)", { type: "perles", couleurs: ["#E8574A", "#F4C542", "#6BD49A", "#4DA3FF", "#9B6BD6"] }],
+  perles_tricolore: ["Perles bleu-blanc-rouge", "#F5F7FA", "linear-gradient(90deg,#2C5CC5 33%,#F5F7FA 33% 66%,#E1342B 66%)", { type: "perles", couleurs: ["#2C5CC5", "#F5F7FA", "#E1342B"] }],
+  montre: ["Montre de sport", "#23262B", "radial-gradient(circle,#F5F7FA 30%,#3A3E45 34% 45%,#23262B 48%)", { type: "montre", couleur: "#23262B" }],
+  montre_blanche: ["Montre blanche", "#F5F7FA", "radial-gradient(circle,#F5F7FA 30%,#3A3E45 34% 45%,#F5F7FA 48%)", { type: "montre", couleur: "#E9ECF1" }],
+  montre_rouge: ["Montre rouge", "#D63A2F", "radial-gradient(circle,#F5F7FA 30%,#3A3E45 34% 45%,#D63A2F 48%)", { type: "montre", couleur: "#D63A2F" }],
+  // à la boutique (catalogue.js)
+  jonc: ["Jonc or", "#E9C046", "repeating-linear-gradient(#FFF1B8 0 3px,#A9801A 3px 6px)", { type: "jonc", metal: "or" }],
+  gourmette_or: ["Gourmette or", "#E9C046", "radial-gradient(circle,transparent 30%,#E9C046 34% 55%,transparent 58%) 0 0/10px 10px,#A9801A", { type: "gourmette", metal: "or" }],
+  gourmette_argent: ["Gourmette argent", "#C9CED6", "radial-gradient(circle,transparent 30%,#E6E9EE 34% 55%,transparent 58%) 0 0/10px 10px,#7E8794", { type: "gourmette", metal: "argent" }],
+  clous_noir: ["Cuir clouté", "#23262B", "radial-gradient(circle,#E6E9EE 22%,transparent 26%) 0 0/9px 9px,#23262B", { type: "clous", couleur: "#23262B", metal: "argent" }],
+  clous_rouge: ["Cuir rouge clouté or", "#9B1B30", "radial-gradient(circle,#E9C046 22%,transparent 26%) 0 0/9px 9px,#9B1B30", { type: "clous", couleur: "#9B1B30", metal: "or" }],
+  tresse: ["Brésilien tressé", "#E8574A", "repeating-linear-gradient(-55deg,#E8574A 0 4px,#F4C542 4px 8px,#2E9E5B 8px 12px)", { type: "tresse", couleurs: ["#E8574A", "#F4C542", "#2E9E5B"] }],
+  tresse_club: ["Tressé HandSlam", "#14533A", "repeating-linear-gradient(-55deg,#14533A 0 4px,#E9C046 4px 8px,#F5EFE0 8px 12px)", { type: "tresse", couleurs: ["#14533A", "#E9C046", "#F5EFE0"] }],
+  breloque_pierre: ["Breloque Pierre", "#E9C046", "radial-gradient(circle,#1D2330 30%,#E9C046 34%)", { type: "breloque", metal: "or", signe: "pierre" }],
+  breloque_feuille: ["Breloque Feuille", "#C9CED6", "radial-gradient(circle,#1D2330 30%,#C9CED6 34%)", { type: "breloque", metal: "argent", signe: "feuille" }],
+  breloque_ciseaux: ["Breloque Ciseaux", "#E9C046", "radial-gradient(circle,#1D2330 30%,#E9C046 34%)", { type: "breloque", metal: "or", signe: "ciseaux" }],
+  // gagné avec un trophée (profil.js)
+  capitaine: ["Brassard de capitaine", "#F4C542", null, { type: "capitaine" }] };
+// Les bracelets dont on choisit la couleur (cuir, perles).
+export const BRACELETS_COLORABLES = new Set(["cuir", "cuir_noir", "perles", "clous_noir", "clous_rouge"]);
+export const BAGUES = { aucune: ["Sans bague", null, AUCUN],
+  or: ["Anneau or", "#E9C046", metal("#FFF1B8", "#A9801A"), { type: "anneau", metal: "or" }], argent: ["Anneau argent", "#C9CED6", metal("#FFFFFF", "#7E8794"), { type: "anneau", metal: "argent" }],
+  noir: ["Anneau noir", "#2B2E34", metal("#6B707A", "#111215"), { type: "anneau", metal: "noir" }],
+  rubis: ["Bague au rubis", "#E9C046", "radial-gradient(circle,#C2183A 35%,#E9C046 40%)", { type: "pierre", metal: "or", couleur: "#C2183A" }],
+  // à la boutique (catalogue.js)
+  saphir: ["Bague au saphir", "#C9CED6", "radial-gradient(circle,#1F4FB8 35%,#C9CED6 40%)", { type: "pierre", metal: "argent", couleur: "#1F4FB8" }],
+  emeraude: ["Bague à l'émeraude", "#E9C046", "radial-gradient(circle,#108A54 35%,#E9C046 40%)", { type: "pierre", metal: "or", couleur: "#108A54" }],
+  diamant: ["Bague au diamant", "#C9CED6", "radial-gradient(circle,#F2F8FF 25%,#9FC3F5 35%,#C9CED6 42%)", { type: "pierre", metal: "argent", couleur: "#DDEBFF" }],
+  signe_pierre: ["Chevalière Pierre", "#E9C046", "radial-gradient(circle,#E9C046 20%,#1D2330 24% 40%,#E9C046 44%)", { type: "signe", metal: "or", signe: "pierre" }],
+  signe_feuille: ["Chevalière Feuille", "#C9CED6", "radial-gradient(circle,#C9CED6 20%,#1D2330 24% 40%,#C9CED6 44%)", { type: "signe", metal: "argent", signe: "feuille" }],
+  signe_ciseaux: ["Chevalière Ciseaux", "#E9C046", "radial-gradient(circle,#E9C046 20%,#1D2330 24% 40%,#E9C046 44%)", { type: "signe", metal: "or", signe: "ciseaux" }],
+  symbole: ["Chevalière HandSlam", "#E9C046", "radial-gradient(circle,#F5EFE0 22%,#0F3D2B 26% 40%,#E9C046 44%)", { type: "anneau", metal: "or" }],
+  // gagnée avec un trophée (profil.js)
+  champion: ["Bague de champion", "#E9C046", "radial-gradient(circle,#fff 12%,#1F4FB8 16% 34%,#E9C046 38%)", { type: "champion", metal: "or" }] };
 // La couleur de la main (gant ou peau), pour les dessins qui en ont besoin (confettis…).
 export const couleurMain = a => a.gant === "nu" ? (PEAUX[a.peau] || PEAUX.neutre)[1] : (GANTS[a.gant] || GANTS.blanc)[1];
 export const SYMBOLES = { pierre: "✊ Pierre", feuille: "✋ Feuille", ciseaux: "✌️ Ciseaux" };
@@ -74,7 +113,7 @@ const motifUnSigne = (id, signe, gant, c = OR_SIGNE) => `<pattern id="${id}g" wi
 
 let n = 0;
 function dessinerMain(a, fill, ink, nue) {
-  if (nue) return mainNue(a.symbole, (PEAUX[a.peau] || PEAUX.neutre)[1], (ONGLES[a.ongles] || [])[1] || null, (BAGUES[a.bague] || [])[1] || null, a.bague);
+  if (nue) return mainNue(a.symbole, (PEAUX[a.peau] || PEAUX.neutre)[1], (ONGLES[a.ongles] || [])[1] || null, (BAGUES[a.bague] || [])[3] || null, a.bague);
   return main(a.symbole, fill, ink);
 }
 
@@ -84,22 +123,21 @@ function dessinerMain(a, fill, ink, nue) {
 const rvb = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16));
 const melange = (a, b, t) => "#" + rvb(a).map((v, i) => Math.round(v + (rvb(b)[i] - v) * t).toString(16).padStart(2, "0")).join("");
 function mainNue(symbole, peau, vernis, bague, cleBague) {
-  const rubis = cleBague === "rubis";
   const tr = melange(peau, "#2a1608", .45), ongle = vernis || melange(melange(peau, "#ffffff", .55), "#F3B7B0", .35), T = 1.4;
-  const anneau = (x, y, w) => bague ? `<rect x="${x - .6}" y="${y}" width="${w + 1.2}" height="4" rx="1.6" fill="${bague}" stroke="rgba(0,0,0,.3)" stroke-width=".8"/>${rubis ? `<circle cx="${x + w / 2}" cy="${y + 2}" r="2" fill="#C2183A" stroke="#fff" stroke-width=".5"/>` : ""}${chaton(cleBague, x + w / 2, y + 2)}` : "";
+  const anneau = (x, y, w) => bague ? bagueSVG(bague, x - .6, y, w + 1.2, 4, cleBague === "symbole" ? (cx, cy) => chaton("symbole", cx, cy) : null) : "";
   // un doigt tendu, de sa base (bx, by) vers le haut, longueur L, tourné de rot degrés ; avecBague : la bague à sa base
   const doigt = (bx, by, L, rot, { avecBague = false, sansOngle = false } = {}) => `<g transform="rotate(${rot} ${bx} ${by})">
     <path d="M${bx - 4.5} ${by} L${bx - 4.5} ${by - L + 4.5} A4.5 4.5 0 0 1 ${bx + 4.5} ${by - L + 4.5} L${bx + 4.5} ${by} Z" fill="${peau}" stroke="${tr}" stroke-width="${T}" stroke-linejoin="round"/>
     ${sansOngle ? "" : `<rect x="${bx - 2.9}" y="${by - L + 1.6}" width="5.8" height="${Math.min(7, L * .2)}" rx="2.7" fill="${ongle}"/>`}
     <path d="M${bx - 2.9} ${by - L * .42} q2.9 1.6 5.8 0" fill="none" stroke="${tr}" stroke-width=".8" stroke-linecap="round" opacity=".55"/>
-    ${avecBague ? anneau(bx - 4.5, by - 9 - Math.max(0, by - 50) * 3, 9) : ""}</g>`;   // (un peu plus haut si la base du doigt est cachée par la paume)
+    ${avecBague ? anneau(bx - 4.5, by - 12 - Math.max(0, by - 50) * 3, 9) : ""}</g>`;   // (un peu plus haut si la base du doigt est cachée par la paume)
   // la paume (ou le dos de la main) et le poignet, jusqu'en bas
   const paume = (y0, pli = true) => `<path d="M28 ${y0 + 6} Q28 ${y0} 34 ${y0} L66 ${y0} Q72 ${y0} 72 ${y0 + 6} L71 72 Q69 81 61 83 L61 100 L39 100 L39 83 Q31 81 29 72 Z" fill="${peau}" stroke="${tr}" stroke-width="${T}" stroke-linejoin="round"/>
     ${pli ? `<path d="M40 76 q10 4 20 0" fill="none" stroke="${tr}" stroke-width=".85" stroke-linecap="round" opacity=".45"/>` : ""}`;
   // un doigt replié vu de face (ou une jointure vue de dos)
   const replie = (x, y, w, h, { avecBague = false, pli = true } = {}) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${w / 2.2}" fill="${peau}" stroke="${tr}" stroke-width="${T}"/>
     ${pli ? `<path d="M${x + 2} ${y + h * .55} q${w / 2 - 2} 1.5 ${w - 4} 0" fill="none" stroke="${tr}" stroke-width=".8" opacity=".5" stroke-linecap="round"/>` : ""}
-    ${avecBague ? anneau(x, y + h - 7, w) : ""}`;
+    ${avecBague ? anneau(x, y + h - 9.5, w) : ""}`;
   const tendons = `<g stroke="${tr}" stroke-width=".8" stroke-linecap="round" opacity=".3" fill="none">${[0, 1, 2].map(i => `<path d="M${40 + i * 10} 50 l-${1 + i} 15"/>`).join("")}</g>`;
   if (symbole === "feuille") return doigt(33, 70, 27, -52) + paume(46) + doigt(33.5, 52, 30, -6) + doigt(44, 50, 36, -2, { avecBague: true }) + doigt(54.5, 50, 34, 2) + doigt(64.5, 53, 26, 7);
   if (symbole === "feuille-dos") return doigt(33, 52, 30, -14) + doigt(43.5, 50, 35, -5, { avecBague: true }) + doigt(54, 50, 34, 5) + doigt(64, 53, 27, 14) + paume(46, false) + tendons;
@@ -115,19 +153,17 @@ function mainNue(symbole, peau, vernis, bague, cleBague) {
 // pour les ciseaux, sur l'index (9 novembre, demande du porteur du projet : sur le majeur, elle chevauchait les doigts repliés).
 // (Sur la main nue, elle est dessinée avec la main : voir mainNue.)
 const PLACE_MEDAILLON = { pierre: [50, 69, 6.6], ciseaux: [50, 69, 6.6], feuille: [50, 62, 10], "feuille-dos": [50, 61, 10], "ciseaux-dos": [52, 60, 10], dos: [50, 60, 10], index: [52, 69.5, 6.2], pouce: [45, 61, 8] };
-const PLACE_BAGUE = { feuille: [50.5, 38], index: [29.5, 37], pouce: [43, 57.5], dos: [50, 33], "ciseaux-dos": [30.75, 35.5, "-12 36 50"], "feuille-dos": [50.5, 37, "7 55 54"], ciseaux: [30.75, 32.5, "-14 36 50"], pierre: [50, 39.5] };
+// (10 novembre, demande du porteur du projet : la bague remontée sur le doigt, elle était à la jointure avec la paume)
+const PLACE_BAGUE = { feuille: [50.5, 34], index: [29.5, 33], pouce: [43, 57.5], dos: [50, 30.5], "ciseaux-dos": [30.75, 32.5, "-12 36 50"], "feuille-dos": [50.5, 33, "7 55 54"], ciseaux: [30.75, 29.5, "-14 36 50"], pierre: [50, 35.5] };
 function accessoires(a, nue = false) {
   let s = "";
-  const yb = nue ? 84 : 68;   // le bracelet : au poignet (plus bas sur la main nue, juste au-dessus du bandeau)
-  const br = (BRACELETS[a.bracelet] || [])[1];
-  if (br) s += a.bracelet === "perles"
-    ? [0, 1, 2, 3, 4, 5].map(i => `<circle cx="${nue ? 39.5 + i * 4.2 : 39 + i * 4.4}" cy="${yb + 2.5}" r="2.3" fill="${br}" stroke="rgba(0,0,0,.25)" stroke-width=".8"/>`).join("")
-    : `<rect x="${nue ? 37.5 : 35.5}" y="${yb}" width="${nue ? 25 : 29}" height="5" rx="2.5" fill="${br}" stroke="rgba(0,0,0,.25)" stroke-width="1"/><rect x="${nue ? 39 : 37}" y="${yb + 1}" width="${nue ? 22 : 26}" height="1.2" rx=".6" fill="rgba(255,255,255,.5)"/>`;
-  const bg = (BAGUES[a.bague] || [])[1];
+  const yb = nue ? 84 : 67;   // le bracelet : au poignet (plus bas sur la main nue, juste au-dessus du bandeau)
+  const br = (BRACELETS[a.bracelet] || [])[3];
+  if (br) s += braceletSVG(br, nue ? 37.5 : 35.5, yb, nue ? 25 : 29, BRACELETS_COLORABLES.has(a.bracelet) ? (MOTIF_COULEURS[a.braceletCouleur] || [])[1] || null : null);
+  const bg = (BAGUES[a.bague] || [])[3];
   if (bg && !nue) {
     const [x, y, rot] = PLACE_BAGUE[a.symbole] || PLACE_BAGUE.pierre;
-    s += `<g${rot ? ` transform="rotate(${rot})"` : ""}><rect x="${x - .5}" y="${y}" width="11.5" height="4.2" rx="1.6" fill="${bg}" stroke="rgba(0,0,0,.3)" stroke-width=".9"/>`
-      + (a.bague === "rubis" ? `<circle cx="${x + 5.25}" cy="${y + 2.1}" r="2.2" fill="#C2183A" stroke="#fff" stroke-width=".6"/>` : "") + chaton(a.bague, x + 5.25, y + 2.1) + `</g>`;
+    s += `<g${rot ? ` transform="rotate(${rot})"` : ""}>${bagueSVG(bg, x - .5, y, 11.5, 4.2, a.bague === "symbole" ? (cx, cy) => chaton("symbole", cx, cy) : null)}</g>`;
   }
   return s;
 }
