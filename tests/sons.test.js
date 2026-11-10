@@ -108,6 +108,7 @@ test("les chants personnalisés : seulement pour les joueurs du match, quelle qu
   assert.deepEqual(chantsPerso({ pseudo: "Kikou", numero: 1743 }), ["chant_perso_kikou_01"], "le chant de Kikou#1743");
   assert.deepEqual(chantsPerso({ pseudo: "Emi", numero: 6263 }), ["chant_perso_emi_01", "chant_perso_emi_02"], "les chants d'Emi#6263");
   assert.deepEqual(chantsPerso({ pseudo: "Shishyo", numero: 2931 }), ["chant_perso_shishyo_01"], "le chant de Shishyo#2931");
+  assert.deepEqual(chantsPerso({ pseudo: "Pierre la feuill", numero: 1473 }), ["chant_perso_pierrelafeuille_01"], "le chant de Pierre la feuill#1473");
   const duel = chantsPerso({ pseudo: "Benja-Main", numero: 3528 }, { pseudo: "Le Chiromancien", numero: 6047 });
   assert.equal(duel.length, 10, "les deux joueurs du match");
   assert.deepEqual(duel.map(id => id.includes("benjamain")), [true, false, true, false, true, false, true, false, true, false], "un chant de l'un, un chant de l'autre, jusqu'au bout");
