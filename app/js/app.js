@@ -882,7 +882,7 @@ function finir() {
   // « Fondé en 2026 » : 50 matchs joués avant la fin de 2026 (nouveautes.js : « club »).
   if (n && ouvert("club")) { const t = accorderTitres(P, titresAnnee(P)); if (t.length) { nouveaux.push(...t); sauverP(); } }
   // La première visite : ce qui vient de s'ouvrir dans le menu.
-  const ouvert = menuComplet() ? [] : nouveautes(matchsAvant, P.matchs);
+  const menusOuverts = menuComplet() ? [] : nouveautes(matchsAvant, P.matchs);
   if (matchsAvant < 3 && P.matchs >= 3) compterTroisMatchs(envoyerTroisMatchs);   // pour savoir si les nouveaux joueurs accrochent (anonyme)
   if (n) compterMatchJoue(envoyerMatch);   // le nombre de matchs joués chaque jour (anonyme)
   if (n && !special) compterPremierMatch(envoyerParcours);   // le parcours des nouveaux : premier match fini, sans abandon (anonyme, une seule fois)
@@ -911,7 +911,7 @@ function finir() {
   if (serieFin > 1) $("news").textContent = `🔥 Série : ${serieFin} jours d'affilée ! ${$("news").textContent}`.trim();
   const paliers = retenirRang();
   if (paliers.length) $("news").textContent = `${$("news").textContent} ${paliers.join(" ")}`.trim();
-  if (ouvert.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${ouvert.join(" ")} ${$("news").textContent}`.trim();
+  if (menusOuverts.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${menusOuverts.join(" ")} ${$("news").textContent}`.trim();
   // Un titre : la cérémonie de la coupe, peu après l'écran de fin.
   // La montée sans le titre : finaliste de l'Amateur, ou barrage d'accession gagné.
   if (enCarriere && !S.carriere.coupe && C.phase === "fin" && C.bilan?.mouvement === 1 && C.issues?.[C.ou]?.champion !== "moi") {
