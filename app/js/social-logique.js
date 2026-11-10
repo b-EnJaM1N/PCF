@@ -95,3 +95,17 @@ export const pointPresence = p => (PRESENCES[p?.presence] ? `<span class="presen
 export const textePresence = p => (PRESENCES[p?.presence] ? `${PRESENCES[p.presence]} · ` : "");
 // Les amis en ligne d'abord, puis en match, puis les autres (sans changer l'ordre à l'intérieur).
 export const parPresence = liste => [...liste].sort((a, b) => ({ ligne: 0, match: 1 }[a.presence] ?? 2) - ({ ligne: 0, match: 1 }[b.presence] ?? 2));
+
+// « Mes amis » (10 novembre, demande du porteur du projet) : en tête, les 3 amis avec qui je joue le plus (duels terminés des
+// 30 derniers jours ; à égalité, ceux qui sont en ligne d'abord) ; les autres amis et mes demandes envoyées dans une liste à déplier.
+export const AMIS_EN_TETE = 3;
+export function compterEchanges(duels, moi) {
+  const n = new Map();
+  for (const d of duels || []) { const adv = d.j0 === moi ? d.j1 : d.j1 === moi ? d.j0 : null; if (adv) n.set(adv, (n.get(adv) || 0) + 1); }
+  return n;
+}
+export function amisEnTete(amis, echanges = new Map(), n = AMIS_EN_TETE) {
+  const confirmes = parPresence(amis.filter(a => a.statut === "amis" && !a.recue));
+  const tries = confirmes.map((a, i) => [a, echanges.get(a.id) || 0, i]).sort((x, y) => y[1] - x[1] || x[2] - y[2]).map(x => x[0]);
+  return { devant: tries.slice(0, n), autres: [...tries.slice(n), ...amis.filter(a => a.statut !== "amis" && !a.recue)] };
+}
