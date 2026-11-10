@@ -56,4 +56,24 @@ test("un défi avec enjeu : La Une dit qui s'y colle", () => {
   assert.match(h.chapo, /L'enjeu était « Le perdant paie les pizzas » : c'est Rocky qui s'y colle !$/);
   const q = histoireDuMatch(m, st, moi, adv, { enjeu: "Qui fait la vaisselle ce soir ?" });
   assert.match(q.chapo, /« Qui fait la vaisselle ce soir » : c'est Rocky/);
+  // le gros titre, c'est l'enjeu (10 novembre)
+  assert.equal(h.titre, "ROCKY PAIE LES PIZZAS");
+  assert.equal(q.titre, "ROCKY FAIT LA VAISSELLE CE SOIR");
+  assert.equal(histoireDuMatch(m, st, moi, adv, { enjeu: "Le gagnant choisit le film" }).titre, "ZOÉ CHOISIT LE FILM");
+  assert.equal(histoireDuMatch(m, st, moi, adv).titre.includes("PIZZAS"), false, "sans enjeu : les titres habituels");
+});
+
+test("le titre d'un enjeu, quelle que soit sa forme", async () => {
+  const { titreEnjeu } = await import("../app/js/une-logique.js");
+  const t = e => titreEnjeu(e, "BENJA-MAIN", "LE CHIROMANCIEN");
+  assert.equal(t("Qui sort les poubelles ?"), "BENJA-MAIN SORT LES POUBELLES");
+  assert.equal(t("Sortir les poubelles"), "BENJA-MAIN DOIT SORTIR LES POUBELLES");
+  assert.equal(t("sortir les poubelles !"), "BENJA-MAIN DOIT SORTIR LES POUBELLES");
+  assert.equal(t("Le perdant dort sur le canapé"), "BENJA-MAIN DORT SUR LE CANAPÉ");
+  assert.equal(t("La perdante paie le café"), "BENJA-MAIN PAIE LE CAFÉ");
+  assert.equal(t("Celui qui perd fait les courses"), "BENJA-MAIN FAIT LES COURSES");
+  assert.equal(t("Le gagnant choisit le film"), "LE CHIROMANCIEN CHOISIT LE FILM");
+  assert.equal(t("Se lever en premier demain"), "BENJA-MAIN DOIT SE LEVER EN PREMIER DEMAIN");
+  assert.equal(t("Les poubelles"), "BENJA-MAIN S'Y COLLE : « LES POUBELLES »");
+  assert.equal(t(""), null);
 });
