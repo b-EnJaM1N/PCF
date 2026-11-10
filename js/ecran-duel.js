@@ -21,7 +21,7 @@ export function installerDuels(ctx) {
   let salle = null;
   const quittes = new Set();
   // Les joueurs que j'ai défiés et qui n'ont pas encore joué (pour afficher « Défié ✓ » dans les cercles et les amis).
-  let defiesA = new Set();
+  let defiesA = new Map();   // les joueurs que j'ai défiés (défi en attente) → le numéro du duel
   // Mes amis, sous la barre de recherche (rechargés au plus une fois par minute).
   let amis = [], amisLus = 0;
   // Les défis reçus déjà montrés dans la fenêtre (une seule fois chacun, même après avoir fermé l'appli).
@@ -118,7 +118,7 @@ export function installerDuels(ctx) {
     const recus = duels.filter(d => d.phase === "attente" && d.j1 === uid && !d.accepte_le);
     const envoyes = duels.filter(d => d.phase === "attente" && d.j0 === uid && !d.accepte_le);
     const rdvs = duels.filter(d => enRendezVous(d));
-    defiesA = new Set(duels.filter(d => d.phase === "attente" && d.j0 === uid && d.j1).map(d => d.j1));
+    defiesA = new Map(duels.filter(d => d.phase === "attente" && d.j0 === uid && d.j1).map(d => [d.j1, d.id]));
     chargerAmis();
 
     // Un défi vient d'être accepté (ou je reviens dans l'appli) : on y va.
@@ -294,9 +294,17 @@ export function installerDuels(ctx) {
     $("duelAmis").innerHTML = amis.map(a => `<div class="joueur cliquable" data-id="${a.id}" role="button" tabindex="0">
       <span class="mini">${avatarSVG(a.avatar || {})}</span>
       <div style="min-width:0"><div class="jn">${esc(a.drapeau || "")} ${nomComplet(a)}${pointPresence(a)}</div><div class="jd">${textePresence(a)}Niveau ${a.classement}</div></div>
-      <div class="actions">${defiesA.has(a.id) ? `<button class="petit alt" disabled>${texteDefie(a)}</button>` : `<button class="petit" data-a="defier">Défier</button>`}</div></div>`).join("");
+      <div class="actions">${defiesA.has(a.id) ? `<button class="petit alt" disabled>${texteDefie(a)}</button><button class="petit alt" data-a="annuler-defi">Annuler</button>` : `<button class="petit" data-a="defier">Défier</button>`}</div></div>`).join("");
   }
   $("duelAmis").addEventListener("click", async e => {
+    const x = e.target.closest("button[data-a=annuler-defi]");
+    if (x) {
+      const a = amis.find(y => y.id === x.closest(".joueur").dataset.id);
+      if (!a || !confirm(`Annuler ton défi à ${a.pseudo} ?`)) return;
+      x.disabled = true;
+      try { await annulerDefi(a.id); dire(`Défi à ${a.pseudo} annulé.`); } catch (err) { dire(err.message, true); x.disabled = false; }
+      return;
+    }
     const b = e.target.closest("button[data-a=defier]");
     // Toucher un ami (ailleurs que sur le bouton) : notre face-à-face, avec l'historique de nos duels.
     if (!b) { const l = e.target.closest(".joueur"); if (l && !e.target.closest("button")) ctx.ouvrirAmi?.(l.dataset.id); return; }
@@ -373,8 +381,8 @@ export function installerDuels(ctx) {
 
   async function envoyerDefi(p) {
     const enjeu = enjeuChoisi();
-    await serveur.creer(p.id, format.len, format.win, format.classe, format.mise, enjeu);
-    defiesA.add(p.id);
+    const d = await serveur.creer(p.id, format.len, format.win, format.classe, format.mise, enjeu);
+    defiesA.set(p.id, d?.id ?? null);
     if (enjeu) viderEnjeu();
     const texte = `Défi ${format.classe && !formatCourt(format.len, format.win) ? "officiel" : "amical"}${format.mise ? ` avec une mise de ${format.mise} jetons` : ""}${enjeu ? ` et l'enjeu « ${enjeu} »` : ""} envoyé à ${p.pseudo}#${p.numero} ! Il apparaîtra en haut de son menu « Jouer ». Quand ${p.genre === "f" ? "elle" : "il"} l'acceptera, tu seras prévenu : le match démarrera dès que vous serez là tous les deux.`;
     dire(texte); rafraichir();
@@ -422,5 +430,11 @@ export function installerDuels(ctx) {
   });
 
   surSession(ctx.compte.session());
-  return { rafraichir, defier, uid: () => uid, dejaDefie: id => defiesA.has(id) };
+  // Annuler mon défi en attente à un joueur (« Annuler », à côté de « Défié ✓ » dans Mes amis).
+  async function annulerDefi(id) {
+    if (!defiesA.get(id)) await rafraichir();
+    const duel = defiesA.get(id); if (!duel) return;
+    await serveur.annuler(duel); defiesA.delete(id); rafraichir();
+  }
+  return { rafraichir, defier, annulerDefi, uid: () => uid, dejaDefie: id => defiesA.has(id) };
 }

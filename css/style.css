@@ -974,3 +974,7 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .avis-notes button{flex:1;font-size:28px;line-height:1;padding:8px 0;border-radius:12px;border:2px solid transparent;background:rgba(255,255,255,.06);cursor:pointer;filter:grayscale(.6);opacity:.75}
 .avis-notes button[aria-pressed="true"]{border-color:var(--me);background:rgba(255,255,255,.14);filter:none;opacity:1}
 #avisTexte { font: inherit; padding: 10px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: var(--line); resize: vertical; }
+
+/* « Mes amis » : les autres amis, dans une liste à déplier (10 novembre) */
+.amis-autres { margin-top: 6px; }
+.amis-autres > summary { cursor: pointer; padding: 10px 4px; color: var(--me); font-weight: 600; list-style-position: inside; }
