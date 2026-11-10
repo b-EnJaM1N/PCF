@@ -2,13 +2,13 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { ARTICLES, RARETES, articleDe, possede, prixRemise, GESTES, CELEBRATIONS, CADRES } from "../app/js/catalogue.js";
-import { FONDS, GANTS, POIGNETS, MOTIFS_GANT, BAGUES, avatarSVG } from "../app/js/avatar.js";
+import { FONDS, GANTS, POIGNETS, MOTIFS_GANT, BAGUES, BRACELETS, avatarSVG } from "../app/js/avatar.js";
 import { CRIS } from "../app/js/celebrations.js";
 import { profilParDefaut, normaliserProfil, estVerrouille, remettreAZero } from "../app/js/profil.js";
 
 test("les prix de l'appli et du serveur correspondent", () => {
-  // le catalogue le plus récent du serveur (étape 62, qui remplace ceux des étapes 17, 47 et 61)
-  const sql = readFileSync(new URL("../supabase/etape-62-gants-un-signe.sql", import.meta.url), "utf8").split("_vitrine")[0];
+  // le catalogue le plus récent du serveur (étape 64, qui remplace ceux des étapes 17, 47, 61 et 62)
+  const sql = readFileSync(new URL("../supabase/etape-64-bijoux.sql", import.meta.url), "utf8").split("_vitrine")[0];
   const serveur = new Map([...sql.matchAll(/\('([a-zA-Z]+:[a-z_]+)', (\d+)\)/g)].map(m => [m[1], +m[2]]));
   assert.equal(serveur.size, ARTICLES.length);
   for (const x of ARTICLES) assert.equal(serveur.get(x.id), x.prix, x.id);
@@ -16,7 +16,7 @@ test("les prix de l'appli et du serveur correspondent", () => {
 });
 
 test("chaque article existe vraiment dans l'appli", () => {
-  const tables = { gant: GANTS, gantMotif: MOTIFS_GANT, fond: FONDS, poignet: POIGNETS, bague: BAGUES, geste: GESTES, celebration: CELEBRATIONS, cadre: CADRES };
+  const tables = { gant: GANTS, gantMotif: MOTIFS_GANT, fond: FONDS, poignet: POIGNETS, bague: BAGUES, bracelet: BRACELETS, geste: GESTES, celebration: CELEBRATIONS, cadre: CADRES };
   for (const x of ARTICLES) {
     if (x.type === "cri") assert.ok(CRIS.find(c => c.id === x.cle && c.boutique), x.id);
     else assert.ok(tables[x.type][x.cle], x.id);
@@ -59,12 +59,12 @@ test("nouveaux gestes : trois à la boutique, deux gagnés avec un trophée", ()
   assert.ok(!estVerrouille(P, "geste", "poing"), "le poing serré reste libre");
 });
 
-test("main nue : toutes les peaux et les petits accessoires sont gratuits (sauf la chevalière HandSlam), et se dessinent", async () => {
+test("main nue : toutes les peaux et les petits accessoires simples sont gratuits (les bijoux de la boutique et des trophées à part), et se dessinent", async () => {
   const { PEAUX, ONGLES, BRACELETS, BAGUES } = await import("../app/js/avatar.js");
   const P = profilParDefaut();
   assert.equal(P.av.gant, "nu", "un nouveau joueur commence main nue");
   for (const [type, table] of [["peau", PEAUX], ["ongles", ONGLES], ["bracelet", BRACELETS], ["bague", BAGUES]])
-    for (const k of Object.keys(table).filter(k => !(type === "bague" && k === "symbole"))) { assert.ok(!estVerrouille(P, type, k), `${type} ${k} : gratuit`); assert.equal(articleDe(type, k), null, `${type} ${k} : pas à la boutique`); }
+    for (const k of Object.keys(table).filter(k => !articleDe(type, k) && !["capitaine", "champion"].includes(k))) { assert.ok(!estVerrouille(P, type, k), `${type} ${k} : gratuit`); assert.equal(articleDe(type, k), null, `${type} ${k} : pas à la boutique`); }
   for (const symbole of ["pierre", "feuille", "ciseaux", "index", "pouce", "dos", "ciseaux-dos", "feuille-dos"]) {
     const svg = avatarSVG({ ...P.av, symbole, peau: "brune", ongles: "rouge", bracelet: "perles", bague: "rubis" });
     assert.match(svg, /#7A4A2A/, `${symbole} : la peau`); assert.match(svg, /#C2183A/, `${symbole} : la bague`);

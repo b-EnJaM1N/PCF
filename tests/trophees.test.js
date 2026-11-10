@@ -4,10 +4,10 @@ import { TITRES, FAMILLES, profilParDefaut, enregistrerMatch, accorderTitres, ti
 import { compterPoignee } from "../app/js/poignee.js";
 import { nouvellesStats, suivreCoup } from "../app/js/stats-match.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX } from "../app/js/regles.js";
-import { FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, SYMBOLES, avatarSVG } from "../app/js/avatar.js";
+import { FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, SYMBOLES, BRACELETS, BAGUES, avatarSVG } from "../app/js/avatar.js";
 import { GESTES, CADRES, CELEBRATIONS } from "../app/js/catalogue.js";
 
-const TABLES = { fond: FONDS, gant: GANTS, poignet: POIGNETS, motif: MOTIFS, gantMotif: MOTIFS_GANT, symbole: SYMBOLES, geste: GESTES, cadre: CADRES, celebration: CELEBRATIONS };
+const TABLES = { bracelet: BRACELETS, bague: BAGUES, fond: FONDS, gant: GANTS, poignet: POIGNETS, motif: MOTIFS, gantMotif: MOTIFS_GANT, symbole: SYMBOLES, geste: GESTES, cadre: CADRES, celebration: CELEBRATIONS };
 
 // Un match joué : "a" = point pour moi, "b" = pour l'adversaire.
 // Un seul point : match en 1 set de 1 point (sinon, 1 set de 11 points).
@@ -23,6 +23,7 @@ test("47 trophées en 8 familles, chaque élément à débloquer existe dans l'a
   assert.equal(new Set(TITRES.map(t => t.id)).size, 47);
   for (const t of TITRES) assert.ok(FAMILLES.some(f => f.id === t.famille), t.id);
   for (const t of TITRES.filter(x => x.objet)) assert.ok(TABLES[t.objet[0]]?.[t.objet[1]], `${t.id} : ${t.objet}`);
+  for (const t of TITRES.filter(x => x.objet2)) assert.ok(TABLES[t.objet2[0]]?.[t.objet2[1]], `${t.id} : ${t.objet2}`);
   // chaque famille a au moins un trophée qui débloque quelque chose
   for (const f of FAMILLES) assert.ok(TITRES.some(t => t.famille === f.id && t.objet), f.id);
 });
