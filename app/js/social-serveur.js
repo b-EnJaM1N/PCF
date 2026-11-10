@@ -10,6 +10,9 @@ export const classements = ids => essayer(async () => new Map(ids.length
   : []));
 
 export const mesAmis = () => rpc("mes_amis");
+// « Donner ton avis » (supabase/etape-63-avis.sql), avec ou sans compte.
+export const donnerAvis = ({ note = null, texte = "", pseudo = "", origine = null, version = null }) =>
+  rpc("donner_avis", { p_note: note, p_texte: texte, p_pseudo: pseudo, p_origine: origine, p_version: version });
 // Le compteur de visites (supabase/etape-43-visites.sql), anonyme : une fois par jour, avec ou sans compte.
 export const compterVisite = (origine, nouveau, revenu) => rpc("compter_visite", { p_origine: origine, p_nouveau: !!nouveau, p_revenu: !!revenu });
 export const compterTroisMatchs = origine => rpc("compter_trois_matchs", { p_origine: origine });

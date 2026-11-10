@@ -39,7 +39,7 @@ export function retoursParcours({ arrivee, jour, retour7Fait = false }) {
 }
 
 // D'où vient ce téléphone (on se souvient de l'appli Android, qui ne l'indique qu'à la première page).
-function origineIci() {
+export function origineIci() {
   if (document.referrer.startsWith("android-app://")) ecrire("visiteAndroid", true);
   return origineVisite({ referrer: document.referrer, standalone: matchMedia("(display-mode: standalone)").matches, androidVu: !!lire("visiteAndroid", false) });
 }

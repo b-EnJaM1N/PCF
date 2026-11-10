@@ -503,6 +503,14 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 sexagies ter. « Ton avis sur HandSlam » (étape 63)
+
+Même manipulation que d'habitude avec [`etape-63-avis.sql`](etape-63-avis.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-63-avis.sql).
+Dans Options, chacun (avec ou sans compte) peut envoyer une note de 1 à 5 et/ou un petit mot. Personne ne peut les lire depuis
+l'appli. **À coller avant la fusion.** Pour les lire (une ligne) :
+`select to_char(cree_le at time zone 'Europe/Paris','DD/MM HH24:MI') quand, pseudo, note, texte, origine from avis order by cree_le desc limit 50;`
+
 ## 2. Adresses du site (connexion par lien)
 
 Sans service d'envoi personnel (« custom SMTP »), Supabase n'autorise pas à modifier les e-mails :

@@ -8,14 +8,13 @@
 //     ou par rapport au signe d'en face (le copier, jouer ce qui le bat…), selon ce qui décrit le mieux ses habitudes.
 // Il tire ses coups au hasard selon ces fréquences (comme lui, il n'est pas une machine), avec un peu de hasard pur en plus.
 
+import { ouvert } from "./nouveautes.js";
+
 export const MATCHS_MIN = 3, COUPS_MIN = 40;
 const BRUIT = 0.08;
 
-// Visible seulement sur la version de test (et en local), en attendant la sortie sur le Play Store.
-export function fantomeVisible(loc = typeof location !== "undefined" ? location : null) {
-  if (!loc) return false;
-  return /\/preview\//.test(loc.pathname) || /^(localhost|127\.)/.test(loc.hostname);
-}
+// Visible sur la version de test (et en local), et partout une fois ouvert (nouveautes.js).
+export const fantomeVisible = loc => ouvert("fantome", loc);
 
 const RES = g => (g === 1 ? "g" : g === 0 ? "p" : "e");
 
