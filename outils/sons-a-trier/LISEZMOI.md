@@ -43,3 +43,4 @@ Introduction de l'hymne à l'ouverture (8 novembre, demande du porteur du projet
 Chant personnalisé de Kikou#1743 (un testeur, 10 novembre) : `Ki-Cou.mp3` → `chant_kikou_01.mp3` → `chant_perso_kikou_01` (de 0 à 46 s, fondu de fin).
 Chants personnalisés d'Emi#6263 (un testeur, 10 novembre) : `Allée Allée Emi.mp3` → `chant_emi_01.mp3` → `chant_perso_emi_01` (58 s, fondu de fin), `Émi Émi.mp3` → `chant_emi_02.mp3` → `chant_perso_emi_02` (20 s, fondu de fin).
 Chant personnalisé de Shishyo#2931 (un testeur, 10 novembre) : `Le Drapeau Bien Haut.mp3` → `chant_shishyo_01.mp3` → `chant_perso_shishyo_01` (20 s, fondu de fin).
+Chant personnalisé de Pierre la feuill#1473 (un testeur, 10 novembre) : `Ce match est pour toi.mp3` → `chant_pierrelafeuille_01.mp3` → `chant_perso_pierrelafeuille_01` (27 s, fondu de fin).

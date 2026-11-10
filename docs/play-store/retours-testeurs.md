@@ -11,5 +11,6 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 ## Les mises à jour pendant le test prolongé
 
 - 10 nov. : la série de jours du match du jour ouverte à tous (🔥, trophées à 3, 7 et 30 jours) ; « Ton avis sur HandSlam » dans Options.
-- 10 nov. : des chants de supporters à leur pseudo pour trois testeurs (Kikou, Emi, Shishyo), d'autres à venir pour chaque testeur.
+- 10 nov. : des chants de supporters à leur pseudo pour quatre testeurs (Kikou, Emi, Shishyo, Pierre la feuill), d'autres à venir pour chaque testeur.
 - 10 nov. : la liste d'amis (voir le tableau).
+- 10 nov. : entre amis qui ont chacun leurs chants, autant de chances pour chacun (remarque du porteur du projet en jouant contre un testeur).
