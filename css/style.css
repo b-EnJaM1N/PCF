@@ -911,6 +911,13 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 @keyframes demarrage-fin { to { opacity: 0; visibility: hidden; } }
 @keyframes demarrage-logo { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .demarrage { animation-delay: 1s; } .demarrage img { animation: none; } }
+/* L'écran titre (8 novembre) : à la première ouverture de la journée, le logo du démarrage reste jusqu'au toucher, qui lance l'hymne. */
+.demarrage { flex-direction: column; gap: 24px; }
+.demarrage.titre { animation: none; pointer-events: auto; cursor: pointer; transition: opacity .9s ease, visibility .9s; }
+.demarrage.titre.part { opacity: 0; visibility: hidden; pointer-events: none; }
+.demarrage-entrer { margin: 0; color: #F3E6C4; font-weight: 600; letter-spacing: .5px; animation: attendre-coup 1.1s ease-in-out infinite alternate; }
+.demarrage.entre .demarrage-entrer { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) { .demarrage-entrer { animation: none; } .demarrage.titre { transition: none; } }
 /* À propos (Options) */
 .a-propos { text-align: center; }
 .a-propos img { display: block; width: 170px; height: 170px; margin: 4px auto 10px; }
@@ -961,3 +968,9 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .car-palmares-tab th { text-align: left; font-weight: 600; color: var(--muted); font-size: .8rem; padding: 4px 6px; border-bottom: 1px solid rgba(255, 255, 255, .15); }
 .car-palmares-tab td { padding: 6px 4px; border-bottom: 1px solid rgba(255, 255, 255, .07); }
 .car-palmares-tab tr.titre td { color: var(--me); font-weight: 700; }
+
+/* « Ton avis sur HandSlam » (Options) */
+.avis-notes{display:flex;gap:8px;margin-top:6px}
+.avis-notes button{flex:1;font-size:28px;line-height:1;padding:8px 0;border-radius:12px;border:2px solid transparent;background:rgba(255,255,255,.06);cursor:pointer;filter:grayscale(.6);opacity:.75}
+.avis-notes button[aria-pressed="true"]{border-color:var(--me);background:rgba(255,255,255,.14);filter:none;opacity:1}
+#avisTexte { font: inherit; padding: 10px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, .2); background: var(--panel); color: var(--line); resize: vertical; }

@@ -16,7 +16,9 @@ export const CATEGORIES = [
   { id: "cadre", nom: "🪪 Cadres" },
 ];
 
-const a = (type, cle, nom, rarete, categorie = "avatar") => ({ id: `${type}:${cle}`, type, cle, nom, rarete, categorie, prix: RARETES[rarete].prix });
+const a = (type, cle, nom, rarete, categorie = "avatar", bientot = false) => ({ id: `${type}:${cle}`, type, cle, nom, rarete, categorie, prix: RARETES[rarete].prix, ...(bientot ? { bientot } : {}) });
+// bientot : le nom de la nouveauté (nouveautes.js) ; en vente sur la version de test, et partout une fois ouverte.
+const club = (type, cle, nom, rarete) => a(type, cle, nom, rarete, "avatar", "club");
 export const ARTICLES = [
   a("gant", "rose", "Gant rose", "courant"), a("gant", "violet", "Gant violet", "courant"), a("gant", "noir", "Gant noir mat", "courant"), a("gant", "turquoise", "Gant turquoise", "courant"),
   a("gantMotif", "damier", "Gant à damier", "rare"), a("gantMotif", "flammes", "Gant en flammes", "rare"), a("gantMotif", "tigre", "Gant tigré", "rare"),
@@ -41,6 +43,9 @@ export const ARTICLES = [
   a("celebration", "or", "Pluie d'or", "legendaire", "celebration"),
   a("cadre", "bronze", "Cadre bronze", "courant", "cadre"), a("cadre", "argent", "Cadre argent", "rare", "cadre"),
   a("cadre", "neon", "Cadre néon", "epique", "cadre"), a("cadre", "or", "Cadre or", "legendaire", "cadre"),
+  // Les objets du club (9 novembre, choix du porteur du projet) : les signes (pierre, feuille, ciseaux) et le symbole de l'appli.
+  club("gantMotif", "signe_pierre", "Gant « Pierre »", "rare"), club("gantMotif", "signe_feuille", "Gant « Feuille »", "rare"), club("gantMotif", "signe_ciseaux", "Gant « Ciseaux »", "rare"), club("gantMotif", "club", "Gant Club HandSlam", "epique"),
+  club("bague", "symbole", "Chevalière HandSlam", "rare"), club("poignet", "club", "Poignet Club", "courant"),
 ];
 const PAR_ID = new Map(ARTICLES.map(x => [x.id, x]));
 export const article = id => PAR_ID.get(id) || null;

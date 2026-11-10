@@ -4,8 +4,8 @@ import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
-import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours } from "./social-serveur.js";
-import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier } from "./visites.js";
+import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis } from "./social-serveur.js";
+import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier, origineIci } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { dessinerUne } from "./une.js";
 import { carteDe, notesDe, texteRang, rangDe } from "./carte-logique.js";
@@ -17,7 +17,7 @@ import { etatNotifications, activerNotifications, desactiverNotifications, ratta
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
-import { TITRES, FAMILLES, accorderTitres, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
+import { TITRES, FAMILLES, accorderTitres, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
@@ -46,7 +46,8 @@ import { chantsPerso, courtsPerso, soutenu, clePseudo, hashTexte, chantsPersoCom
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
-import { modeleFantome, fantomeVisible as apresSortie } from "./fantome.js";   // (apresSortie : les nouveautés prévues après la sortie, visibles seulement sur la version de test)
+import { modeleFantome } from "./fantome.js";
+import { ouvert } from "./nouveautes.js";   // (les nouveautés : sur la version de test, puis ouvertes à tous une par une)
 import { replayVisible, momentDuCoup, tempsForts, momentDuSet, TITRES as TITRES_REPLAY } from "./replay.js";
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder, titresSerie, prochainPalier } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
@@ -138,13 +139,49 @@ const appliquerReglagesSon = () => {
 };
 voix.actif = sonActif; ambiance.actif = sonActif && bruitagesActifs;
 voix.rolesCoupes = new Set(commentairesActifs ? [] : ROLES_COMMENTAIRES);
+// L'introduction instrumentale de l'hymne à l'ouverture (8 novembre, demande du porteur du projet ; 4 s à 20 s de « La Main
+// sacrée ») : au premier toucher (un téléphone n'accepte pas de son avant), une fois par jour, si le son et les bruitages sont
+// allumés ; elle s'éteint dès qu'un match commence. Sur la version de test, et partout une fois ouvert (ouvert("hymne")).
+let introHymne = null;
+function jouerIntroHymne() {
+  const jour = jourParis();
+  if (!ouvert("hymne") || !sonActif || !bruitagesActifs || lire("introHymneJour", null) === jour) return;
+  ecrire("introHymneJour", jour);
+  try { const a = new Audio("audio/stade_intro_01.mp3"); a.volume = 0.6; a.play().catch(() => {}); introHymne = a; } catch { /* sans son */ }
+}
+function arreterIntroHymne() {
+  const a = introHymne; if (!a) return;
+  introHymne = null;
+  let v = a.volume; const t = setInterval(() => { v -= 0.1; if (v <= 0) { clearInterval(t); a.pause(); } else a.volume = v; }, 60);
+}
+document.addEventListener("pointerdown", jouerIntroHymne, { once: true, capture: true });
+// L'écran titre (8 novembre, demande du porteur du projet) : à la première ouverture de la journée, le grand logo du démarrage
+// reste à l'écran (« Touche l'écran pour entrer ») ; au toucher, l'hymne démarre, le logo reste quelques secondes en musique,
+// puis s'efface et l'accueil apparaît.
+(function ecranTitre() {
+  const el = $("demarrage");
+  // (« ?titre » dans l'adresse : l'écran titre et l'hymne quand même, pour les essayer ; version de test seulement)
+  const force = ouvert("hymne") && new URLSearchParams(location.search).has("titre");
+  if (force) ecrire("introHymneJour", null);
+  if (!el || !ouvert("hymne") || !sonActif || !bruitagesActifs || lire("introHymneJour", null) === jourParis()) return;
+  el.classList.add("titre"); el.setAttribute("aria-hidden", "false"); el.setAttribute("role", "button"); el.tabIndex = 0;
+  el.querySelector(".demarrage-entrer").hidden = false;
+  const entrer = () => {
+    if (el.classList.contains("entre")) return;
+    el.classList.add("entre");
+    jouerIntroHymne();
+    setTimeout(() => { el.classList.add("part"); setTimeout(() => { el.hidden = true; }, 950); }, reduitMouvement() ? 300 : 2800);
+  };
+  el.addEventListener("click", entrer);
+  el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") entrer(); });
+})();
 // (La voix de synthèse du téléphone, robotique, n'est plus proposée : les répliques sont enregistrées.)
 voix.synthese = false;
 $("snd").checked = sonActif;
 voix.charger().then(() => { ambiance.utiliserFichiers([...voix.fichiers.keys()]); });
 
 $("snd").addEventListener("change", e => {
-  sonActif = e.target.checked; ecrire("son", sonActif);
+  sonActif = e.target.checked; ecrire("son", sonActif); if (!sonActif) arreterIntroHymne();
   voix.actif = sonActif; if (!sonActif) voix.arreter();
   appliquerReglagesSon();
 });
@@ -839,11 +876,13 @@ function finir() {
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("coach").hidden = true;
   if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
-  // La série de jours (match-du-jour.js) : ses paliers donnent un trophée et un objet (version de test seulement, pour l'instant).
-  const serieFin = S.matchJour && n && apresSortie() ? serie(resultatsDuJour(), jourParis()) : 0;
+  // La série de jours (match-du-jour.js) : ses paliers donnent un trophée et un objet (nouveautes.js : « serie »).
+  const serieFin = S.matchJour && n && ouvert("serie") ? serie(resultatsDuJour(), jourParis()) : 0;
   if (serieFin) { nouveaux.push(...accorderTitres(P, titresSerie(serieFin))); sauverP(); }
+  // « Fondé en 2026 » : 50 matchs joués avant la fin de 2026 (nouveautes.js : « club »).
+  if (n && ouvert("club")) { const t = accorderTitres(P, titresAnnee(P)); if (t.length) { nouveaux.push(...t); sauverP(); } }
   // La première visite : ce qui vient de s'ouvrir dans le menu.
-  const ouvert = menuComplet() ? [] : nouveautes(matchsAvant, P.matchs);
+  const menusOuverts = menuComplet() ? [] : nouveautes(matchsAvant, P.matchs);
   if (matchsAvant < 3 && P.matchs >= 3) compterTroisMatchs(envoyerTroisMatchs);   // pour savoir si les nouveaux joueurs accrochent (anonyme)
   if (n) compterMatchJoue(envoyerMatch);   // le nombre de matchs joués chaque jour (anonyme)
   if (n && !special) compterPremierMatch(envoyerParcours);   // le parcours des nouveaux : premier match fini, sans abandon (anonyme, une seule fois)
@@ -872,7 +911,7 @@ function finir() {
   if (serieFin > 1) $("news").textContent = `🔥 Série : ${serieFin} jours d'affilée ! ${$("news").textContent}`.trim();
   const paliers = retenirRang();
   if (paliers.length) $("news").textContent = `${$("news").textContent} ${paliers.join(" ")}`.trim();
-  if (ouvert.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${ouvert.join(" ")} ${$("news").textContent}`.trim();
+  if (menusOuverts.length) $("news").textContent = `${S.premier ? "🎉 Ton premier match est joué ! " : ""}${menusOuverts.join(" ")} ${$("news").textContent}`.trim();
   // Un titre : la cérémonie de la coupe, peu après l'écran de fin.
   // La montée sans le titre : finaliste de l'Amateur, ou barrage d'accession gagné.
   if (enCarriere && !S.carriere.coupe && C.phase === "fin" && C.bilan?.mouvement === 1 && C.issues?.[C.ou]?.champion !== "moi") {
@@ -1240,7 +1279,7 @@ function renderCarte() {
   carteT = setTimeout(async () => {
     const jeton = ++carteJeton;
     const c = carteDe(P, { niveauOfficiel: monClassement, provisoire: monClassement !== null && provisoire(mesDuelsOfficiels), surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
-    if (apresSortie()) c.serie = serie(resultatsDuJour(), jourParis());   // (ma série de jours, au pied de ma carte)
+    if (ouvert("serie")) c.serie = serie(resultatsDuJour(), jourParis());   // (ma série de jours, au pied de ma carte)
     const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(avMoi()), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur, cadreFlammes: CADRES[P.cadre]?.flammes });
     if (jeton !== carteJeton) return;
     $("carteRarete").textContent = texteRang(c.rang);
@@ -1358,6 +1397,7 @@ document.querySelectorAll("#segWin button").forEach(b => b.addEventListener("cli
 // ---------------------------------------------------------------- face-à-face
 let minuteriesIntro = [], voixIntro = 0;
 function ouvrirFaceAFace() {
+  arreterIntroHymne();
   $("startCard").hidden = true; $("tourCard").hidden = true;
   try { ambiance.initialiser(); } catch { /* le match se joue aussi sans son */ } // geste de l'utilisateur : le son peut démarrer
   const pr = presentation(P, OPP, { tour: S.tour !== null && T ? tourDe(T, S.tour).singulier : null, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN, classementMoi: monClassement, classe: D?.duel?.classe !== false, tournoi: !!D?.duel?.tournoi_id });
@@ -1643,7 +1683,7 @@ function renderMatchDuJour() {
   $("mdjAv").innerHTML = avatarSVG(b.av);
   $("mdjTitre").textContent = `📅 Match du jour n° ${m.numero}`;
   $("mdjJouer").hidden = !!r; $("mdjPartager").hidden = !r;
-  const enValeur = apresSortie();   // (la série mise en valeur : version de test seulement, pour l'instant)
+  const enValeur = ouvert("serie");   // (la série mise en valeur)
   const feu = !enValeur && s > 1 ? ` · 🔥 ${s} jours` : "";
   $("mdjEtat").textContent = r ? `${r.abandon ? "🏳️ Abandon" : `${r.gagne ? "✅ Victoire" : "❌ Défaite"} ${r.score.join("–")}`}${feu} · nouveau match demain`
     : `Contre ${b.nom} 🤖 · un set de 7, un seul essai${!enValeur && s ? ` · 🔥 ${s} jour${s > 1 ? "s" : ""}` : ""}`;
@@ -1822,7 +1862,7 @@ function renderFiche() {
     }).join("");
   }
   // Le palmarès : les trophées, famille par famille.
-  const visibles = TITRES.filter(t => !t.bientot || apresSortie());   // (les trophées de la série : seulement sur la version de test, pour l'instant)
+  const visibles = TITRES.filter(t => !t.bientot || ouvert(t.bientot));   // (les trophées des nouveautés pas encore ouvertes : version de test seulement)
   const obtenus = visibles.filter(t => P.titres[t.id]).length;
   $("palmaresCompte").textContent = `${obtenus} trophée${obtenus > 1 ? "s" : ""} sur ${visibles.length}`;
   $("badges").innerHTML = FAMILLES.map(f => {
@@ -1838,7 +1878,8 @@ function renderFiche() {
 function renderEditeur() {
   $("avApercu").innerHTML = avatarSVG(avMoi());             // l'aperçu reste visible pendant qu'on fait défiler les choix
   const mk = (el, type, table, texte) => {
-    el.innerHTML = Object.keys(table).map(k => {
+    // (les objets « bientôt » : seulement sur la version de test, sauf s'il les a déjà)
+    el.innerHTML = Object.keys(table).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot; return !b || ouvert(b) || P.av[type] === k; }).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
       return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
     }).join("");
@@ -2277,7 +2318,27 @@ document.addEventListener("keydown", e => {
 
 // ---------------------------------------------------------------- application installable
 $("version").textContent = `Version ${VERSION}`;
-setTimeout(() => $("demarrage")?.remove(), 3600);   // l'écran de démarrage a fini de s'effacer
+// « Ton avis sur HandSlam » (Options) : une note de 1 à 5 et/ou un petit mot, avec ou sans compte (étape 63).
+{
+  let note = null;
+  $("avisNotes").addEventListener("click", e => {
+    const b = e.target.closest("[data-note]"); if (!b) return;
+    note = note === +b.dataset.note ? null : +b.dataset.note;
+    $("avisNotes").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.note === note)));
+  });
+  $("avisEnvoyer").addEventListener("click", async () => {
+    const texte = $("avisTexte").value.trim();
+    if (!note && !texte) { $("avisMsg").textContent = "Choisis une note ou écris un petit mot."; return; }
+    $("avisEnvoyer").disabled = true; $("avisMsg").textContent = "Envoi…";
+    try {
+      await donnerAvis({ note, texte, pseudo: P.pseudo || "", origine: origineIci(), version: VERSION });
+      $("avisMsg").textContent = "Merci ! Ton avis est bien arrivé. 🙏";
+      $("avisTexte").value = ""; note = null; $("avisNotes").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false"));
+    } catch (err) { $("avisMsg").textContent = /donner_avis|function/i.test(err.message) ? "L'envoi des avis ouvre bientôt." : err.message; }
+    $("avisEnvoyer").disabled = false;
+  });
+}
+setTimeout(() => { const d = $("demarrage"); if (d && !d.classList.contains("titre")) d.remove(); }, 3600);   // l'écran de démarrage a fini de s'effacer (sauf l'écran titre, qui attend le toucher)
 let invitation = null;
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); invitation = e; $("installBtn").hidden = false; });
 $("installBtn").addEventListener("click", async () => { if (!invitation) return; invitation.prompt(); await invitation.userChoice; invitation = null; $("installBtn").hidden = true; });
@@ -2711,7 +2772,7 @@ rapideUI = installerRapide({
 
 jetonsUI = installerJetons({ compte: compteUI });
 defisUI = installerDefis({ compte: compteUI, jetons: () => jetonsUI?.rafraichir() });
-boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, jetons: () => jetonsUI?.rafraichir(),
+boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, nouveautes: () => ouvert("club"), jetons: () => jetonsUI?.rafraichir(),
   apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); } });
 // Au départ d'un Sit & Go, du freeroll ou d'un tournoi programmé, la page du tournoi s'ouvre… sauf si mon premier match
 // est déjà lancé : elle passait sous la présentation du match, et « Passer » faisait alors quitter le match.
