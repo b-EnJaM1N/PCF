@@ -22,9 +22,11 @@ export const clePseudo = (pseudo, numero) => (pseudo && numero ? `${String(pseud
 // En duel entre deux joueurs qui ont leurs chants, les deux listes alternent (un chant de l'un, un chant de l'autre…) : chacun
 // entend aussi le chant de son adversaire (6 novembre, demande du porteur du projet). Seulement entre amis : entre inconnus
 // (partie rapide, tournois…), chacun n'entend que ses chants à lui (joueursDuMatch, dans app.js).
+// Chacun autant de chances (10 novembre, remarque du porteur du projet : contre un ami qui a 5 chants, on entendait surtout les
+// siens) : la liste de celui qui en a le moins est reprise depuis le début, jusqu'à la longueur de l'autre.
 export const chantsPerso = (...joueurs) => {
-  const listes = joueurs.map(j => (j ? CHANTS_PERSO[clePseudo(j.pseudo, j.numero)] || [] : [])), l = [];
-  for (let i = 0; i < Math.max(0, ...listes.map(x => x.length)); i++) for (const x of listes) if (x[i]) l.push(x[i]);
+  const listes = joueurs.map(j => (j ? CHANTS_PERSO[clePseudo(j.pseudo, j.numero)] || [] : [])).filter(x => x.length), l = [];
+  for (let i = 0; i < Math.max(0, ...listes.map(x => x.length)); i++) for (const x of listes) l.push(x[i % x.length]);
   return l;
 };
 export const courtsPerso = (...joueurs) => joueurs.flatMap(j => (j ? COURTS_PERSO[clePseudo(j.pseudo, j.numero)] || [] : []));
