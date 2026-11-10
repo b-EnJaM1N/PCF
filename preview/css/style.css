@@ -978,3 +978,6 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 /* « Mes amis » : les autres amis, dans une liste à déplier (10 novembre) */
 .amis-autres { margin-top: 6px; }
 .amis-autres > summary { cursor: pointer; padding: 10px 4px; color: var(--me); font-weight: 600; list-style-position: inside; }
+
+/* Le vestiaire, rangé en groupes (10 novembre) */
+.vest-groupe { margin: 16px 0 2px; font-weight: 700; font-size: 15px; color: var(--me); letter-spacing: .3px; }
