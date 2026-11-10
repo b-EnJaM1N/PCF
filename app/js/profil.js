@@ -61,7 +61,7 @@ export const TITRES = [
 
   { id: "fondateur", famille: "cercles", nom: "Fondateur", desc: "Créer un cercle." },
   { id: "rassembleur", famille: "cercles", nom: "Rassembleur", desc: "Être responsable d'un cercle de 10 membres.", debloque: "le fond minuit", objet: ["fond", "minuit"] },
-  { id: "patron", famille: "cercles", nom: "Patron", desc: "Être 1er du classement d'un cercle d'au moins 5 membres." },
+  { id: "patron", famille: "cercles", nom: "Patron", desc: "Être 1er du classement d'un cercle d'au moins 5 membres.", debloque: "le brassard de capitaine", objet: ["bracelet", "capitaine"] },
   { id: "champion_cercle", famille: "cercles", nom: "Champion du cercle", desc: "Remporter un championnat de cercle." },
   { id: "derby", famille: "cercles", nom: "Derby", desc: "Jouer 10 duels contre les membres d'un de tes cercles." },
 
@@ -72,7 +72,7 @@ export const TITRES = [
   { id: "national", famille: "carriere", nom: "Joueur Challenger", desc: "Monter en Circuit Challenger.", debloque: "le fond tribunes", objet: ["fond", "tribunes"] },
   { id: "professionnel", famille: "carriere", nom: "Professionnel", desc: "Monter en Circuit Pro.", debloque: "le geste « brandir la coupe »", objet: ["geste", "brandir_coupe"] },
   { id: "elite", famille: "carriere", nom: "Élite", desc: "Monter en Circuit Élite.", debloque: "le cadre Élite", objet: ["cadre", "elite"] },
-  { id: "vainqueur_coupe", famille: "carriere", nom: "Vainqueur de la Coupe", desc: "Remporter la Coupe Monique-Latour.", debloque: "le motif de gant lauriers", objet: ["gantMotif", "lauriers"] },
+  { id: "vainqueur_coupe", famille: "carriere", nom: "Vainqueur de la Coupe", desc: "Remporter la Coupe Monique-Latour.", debloque: "le motif de gant lauriers et la bague de champion", objet: ["gantMotif", "lauriers"], objet2: ["bague", "champion"] },
   { id: "leader", famille: "carriere", nom: "Leader", desc: "Finir 1er d'une saison régulière en carrière." },
   { id: "champion_elite", famille: "carriere", nom: "Champion de l'Élite", desc: "Remporter les playoffs du Circuit Élite en carrière.", debloque: "le gant de l'Élite", objet: ["gant", "elite"] },
   { id: "revanche", famille: "duels", nom: "Revanche", desc: "Battre un joueur juste après avoir perdu contre lui." },
@@ -105,7 +105,7 @@ export function titresEnLigne({ cercles = [], tournois = [], duelsCercle = 0, cr
 }
 
 // Titre qui débloque un élément d'avatar (ou undefined si l'élément est libre).
-export const verrouDe = (type, cle) => TITRES.find(t => t.objet && t.objet[0] === type && t.objet[1] === cle);
+export const verrouDe = (type, cle) => TITRES.find(t => [t.objet, t.objet2].some(o => o && o[0] === type && o[1] === cle));
 // Verrouillé : réservé à un trophée pas encore obtenu, ou article de la boutique pas encore acheté.
 // Les gants : après le premier match (avant, la main nue).
 export const gantAttendPremierMatch = (P, type, cle) => type === "gant" && cle !== "nu" && !(P.matchs > 0);
@@ -114,7 +114,7 @@ export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); 
 export function profilParDefaut() {
   return {
     v: 1, pseudo: "", drapeau: "🇫🇷",
-    av: { symbole: "pierre", fond: "court", gant: "nu", peau: "neutre", ongles: "aucun", bracelet: "aucun", bague: "aucune", poignet: "rouge", motif: "uni", gantMotif: "uni", gantMotifCouleur: "defaut" },   // main nue jusqu'au premier gant
+    av: { symbole: "pierre", fond: "court", gant: "nu", peau: "neutre", ongles: "aucun", bracelet: "aucun", bague: "aucune", poignet: "rouge", motif: "uni", gantMotif: "uni", gantMotifCouleur: "defaut", braceletCouleur: "defaut" },   // main nue jusqu'au premier gant
     elo: ELO_DEPART, historiqueElo: [ELO_DEPART],
     matchs: 0, victoires: 0, serieEnCours: 0, meilleureSerieVictoires: 0,
     sets: [0, 0], coups: 0, signes: [0, 0, 0], signesAdv: [0, 0, 0],

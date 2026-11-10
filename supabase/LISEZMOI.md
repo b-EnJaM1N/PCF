@@ -503,6 +503,14 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 sexagies quater. Les nouveaux bijoux à la boutique (étape 64)
+
+Même manipulation que d'habitude avec [`etape-64-bijoux.sql`](etape-64-bijoux.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-64-bijoux.sql).
+16 bijoux de plus : gourmettes, jonc, cuir clouté, bracelets tressés, breloques Pierre, Feuille et Ciseaux (800, le brésilien 300) ;
+bagues au saphir, à l'émeraude (800), au diamant (2 000), chevalières Pierre, Feuille et Ciseaux (800). Ils peuvent passer dans la
+vitrine du jour. **À coller avant la fusion.**
+
 ## 1 sexagies ter. « Ton avis sur HandSlam » (étape 63)
 
 Même manipulation que d'habitude avec [`etape-63-avis.sql`](etape-63-avis.sql)
