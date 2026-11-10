@@ -294,9 +294,17 @@ export function installerDuels(ctx) {
     $("duelAmis").innerHTML = amis.map(a => `<div class="joueur cliquable" data-id="${a.id}" role="button" tabindex="0">
       <span class="mini">${avatarSVG(a.avatar || {})}</span>
       <div style="min-width:0"><div class="jn">${esc(a.drapeau || "")} ${nomComplet(a)}${pointPresence(a)}</div><div class="jd">${textePresence(a)}Niveau ${a.classement}</div></div>
-      <div class="actions">${defiesA.has(a.id) ? `<button class="petit alt" disabled>${texteDefie(a)}</button>` : `<button class="petit" data-a="defier">Défier</button>`}</div></div>`).join("");
+      <div class="actions">${defiesA.has(a.id) ? `<button class="petit alt" disabled>${texteDefie(a)}</button><button class="petit alt" data-a="annuler-defi">Annuler</button>` : `<button class="petit" data-a="defier">Défier</button>`}</div></div>`).join("");
   }
   $("duelAmis").addEventListener("click", async e => {
+    const x = e.target.closest("button[data-a=annuler-defi]");
+    if (x) {
+      const a = amis.find(y => y.id === x.closest(".joueur").dataset.id);
+      if (!a || !confirm(`Annuler ton défi à ${a.pseudo} ?`)) return;
+      x.disabled = true;
+      try { await annulerDefi(a.id); dire(`Défi à ${a.pseudo} annulé.`); } catch (err) { dire(err.message, true); x.disabled = false; }
+      return;
+    }
     const b = e.target.closest("button[data-a=defier]");
     // Toucher un ami (ailleurs que sur le bouton) : notre face-à-face, avec l'historique de nos duels.
     if (!b) { const l = e.target.closest(".joueur"); if (l && !e.target.closest("button")) ctx.ouvrirAmi?.(l.dataset.id); return; }
