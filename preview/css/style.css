@@ -94,7 +94,7 @@ body:not(.en-match) .rule { display: none; }
 .replay { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; padding: 16px;
   background: radial-gradient(ellipse at 50% 40%, #173F73, #050E1E 75%); }
 .replay[hidden] { display: none; }
-.replay-boite { width: 100%; max-width: 420px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.replay-boite { width: 100%; max-width: 420px; max-height: 100%; overflow-y: auto; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .replay-bandeau { font-family: "Barlow Condensed", sans-serif; font-weight: 800; letter-spacing: 6px; font-size: 1.1rem; color: #fff;
   background: var(--bot); padding: 4px 16px 4px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; }
 .replay-point { width: 10px; height: 10px; border-radius: 50%; background: #fff; animation: attendre-coup .7s ease-in-out infinite alternate; }
@@ -109,6 +109,25 @@ body:not(.en-match) .rule { display: none; }
 .replay .hand.ouvre .poing-av { animation-duration: .9s; }
 .replay-com { margin: 0; font-style: italic; color: var(--muted); min-height: 1.3em; }
 .replay-compte { margin: 0; color: var(--muted); font-size: .85rem; }
+/* La palette (replay.js) : les 5 coups d'avant et le point rejoué, l'habitude surlignée, le verdict de Monique. */
+.palette { width: 100%; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.15); border-radius: 10px; padding: 8px 10px;
+  display: flex; flex-direction: column; gap: 6px; animation: pal-entree .4s ease-out; }
+.palette[hidden] { display: none; }
+@keyframes pal-entree { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.pal-titre { margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; font-size: .8rem; color: var(--muted); }
+.pal-coups { display: flex; flex-direction: column; gap: 4px; }
+.pal-ligne { display: flex; align-items: center; gap: 4px; border-radius: 6px; padding: 2px; }
+.pal-ligne.pal-lue { background: rgba(255,214,0,.12); outline: 1px dashed rgba(255,214,0,.6); }
+.pal-nom { flex: 1; min-width: 0; text-align: left; font-size: .8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pal-case { width: 30px; height: 30px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 6px;
+  background: rgba(0,0,0,.25); border: 2px solid transparent; font-size: 1rem; }
+.pal-case.pal-g0 { border-color: var(--me); }
+.pal-case.pal-g1 { border-color: var(--bot); }
+.pal-case.pal-point { margin-left: 6px; box-shadow: 0 0 0 2px #fff; }
+.pal-habitude { margin: 0; font-size: .85rem; }
+.pal-etiquette { margin: 0 auto; padding: 2px 10px; border-radius: 999px; font-weight: 700; font-size: .85rem; color: #0b1a2e; }
+.pal-pertinent { background: #4CC38A; } .pal-propre { background: #6CB4FF; } .pal-mauvais { background: #FF7A6B; } .pal-pas_la { background: #D8DEE6; }
+.pal-com { margin: 0; font-style: italic; font-size: .9rem; }
 @keyframes secouer-poing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px) rotate(-8deg); } }
 @keyframes attendre-coup { from { opacity: .35; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .hand.attend { animation: none; opacity: .6; } .hand.secoue, .hand.ouvre .poing-av { animation: none; } .hand.ouvre { transition: none; } }
