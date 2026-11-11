@@ -146,3 +146,15 @@ commentatrice_perso_supporters_03
 # commentateur_dialogue_apres_majeur_finale_defaite_06_f
 # commentatrice_dialogue_apres_majeur_finale_defaite_06
 # commentatrice_dialogue_apres_majeur_finale_defaite_06_f
+
+# 11 novembre : la palette du replay, le verdict de Monique (répliques validées par le porteur du projet ; à enregistrer quand il y aura des crédits).
+# commentatrice_replay_palette_pertinent_01
+# commentatrice_replay_palette_pertinent_01_f
+# commentatrice_replay_palette_pertinent_02
+# commentatrice_replay_palette_pertinent_02_f
+# commentatrice_replay_palette_propre_01
+# commentatrice_replay_palette_propre_01_f
+# commentatrice_replay_palette_mauvais_01
+# commentatrice_replay_palette_mauvais_01_f
+# commentatrice_replay_palette_pas_la_01
+# commentatrice_replay_palette_pas_la_01_f

@@ -14,3 +14,20 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 - 10 nov. : des chants de supporters à leur pseudo pour quatre testeurs (Kikou, Emi, Shishyo, Pierre la feuill), d'autres à venir pour chaque testeur.
 - 10 nov. : la liste d'amis (voir le tableau).
 - 10 nov. : entre amis qui ont chacun leurs chants, autant de chances pour chacun (remarque du porteur du projet en jouant contre un testeur).
+- 11 nov. : questionnaire envoyé aux testeurs (texte plus bas).
+- 11 nov. : nouvelle version Android dans le test fermé, 2 (1.0.0.1), avec une note de version (série de jours, bouton d'avis, Mes amis, chants).
+
+## Le questionnaire (envoyé aux testeurs le 11 novembre)
+
+> Salut ! Merci de tester HandSlam 🙏 Google veut voir que l'appli s'améliore grâce à vos avis avant de la laisser sortir sur le
+> Play Store. Ça me rendrait un gros service si tu répondais à ces quelques questions (une ligne suffit, réponds juste à ce message,
+> ou dans l'appli : Options › 💬 Ton avis sur HandSlam) :
+>
+> 1. Tu joues à peu près combien de fois par semaine ?
+> 2. Qu'est-ce qui te plaît le plus ?
+> 3. Qu'est-ce qui t'agace, te bloque, ou que tu n'as pas compris ? (un bug, un bouton, une règle…)
+> 4. La première fois, est-ce que c'était clair comment lancer un match ?
+> 5. Créer un compte pour défier un ami, ça t'a freiné ?
+> 6. Une idée, un truc que tu aimerais voir ?
+>
+> Chaque avis compte : je note tout et je corrige au fur et à mesure. Il y a une nouveauté presque chaque jour en ce moment 😉

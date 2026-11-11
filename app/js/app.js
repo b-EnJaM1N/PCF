@@ -48,7 +48,7 @@ import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
 import { modeleFantome } from "./fantome.js";
 import { ouvert } from "./nouveautes.js";   // (les nouveautés : sur la version de test, puis ouvertes à tous une par une)
-import { replayVisible, momentDuCoup, tempsForts, momentDuSet, TITRES as TITRES_REPLAY } from "./replay.js";
+import { replayVisible, momentDuCoup, tempsForts, momentDuSet, TITRES as TITRES_REPLAY, VERDICTS, texteHabitude } from "./replay.js";
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder, titresSerie, prochainPalier } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
@@ -536,9 +536,31 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
 // Chaque action : les deux poings se secouent au ralenti, puis les signes s'ouvrent ; le score du moment et le bandeau REPLAY.
 // Les répliques du replay (replay_intro, replay_sauvee…) : une au hasard parmi celles qui sont enregistrées.
 const POOL_REPLAY = { match: "replay_set", set: "replay_set", sauvee_match: "replay_sauvee", sauvee_set: "replay_sauvee", smash: "replay_smash", serie: "replay_serie", egalites: "replay_serie" };
-function ligneReplay(pool, genre = "m") {
-  const l = (POOLS[pool] || []).map(it => ligneMoment(it, { genre })).filter(x => x && voix.fichiers.has(x.id));
+// role : seulement Roland (« commentateur ») quand la palette suit : c'est Monique qui donne le verdict.
+function ligneReplay(pool, genre = "m", role = null) {
+  const l = (POOLS[pool] || []).map(it => ligneMoment(it, { genre })).filter(x => x && voix.fichiers.has(x.id) && (!role || x.role === role));
   return l.length ? l[Math.floor(Math.random() * l.length)] : null;
+}
+const genreJoueur = j => (j === 0 ? P.genre : OPP.humain ? OPP.genre : botAuFeminin(OPP) ? "f" : "m");
+// La palette (replay.js) : les 5 coups d'avant, l'habitude surlignée, le verdict de Monique.
+// Décision du porteur du projet (11 novembre) : pas de palette sans la voix de Monique ; elle n'apparaît que si la réplique du
+// verdict est enregistrée (elle viendra d'elle-même avec les fichiers audio, version de test comprise).
+function lignePalette(pa) {
+  const l = (POOLS[`replay_palette_${pa.verdict}`] || []).filter(it => !it.cle || it.cle === pa.habitude?.cle)
+    .map(it => ligneMoment(it, { genre: genreJoueur(pa.joueur) })).filter(x => x && voix.fichiers.has(x.id));
+  return l.length ? l[Math.floor(Math.random() * l.length)] : null;
+}
+function montrerPalette(pa, mo, l) {
+  const nom = j => (j === 0 ? nomAffiche(P) : OPP.nom), hab = pa.habitude;
+  const ligne = (j, cle) => `<div class="pal-ligne${hab?.joueur === j ? " pal-lue" : ""}"><span class="pal-nom">${esc(nom(j))}</span>`
+    + pa.coups.map(c => `<span class="pal-case${c.gagnant === j ? " pal-g" + j : ""}">${EMOJIS[c[cle]]}</span>`).join("")
+    + `<span class="pal-case pal-point${mo.gagnant === j ? " pal-g" + j : ""}">${EMOJIS[j === 0 ? mo.a : mo.b]}</span></div>`;
+  $("rpPalCoups").innerHTML = ligne(0, "a") + ligne(1, "b");
+  $("rpPalHab").textContent = hab ? texteHabitude(hab, nom(hab.joueur)) : "Aucune habitude à lire.";
+  $("rpPalEtiquette").textContent = VERDICTS[pa.verdict]; $("rpPalEtiquette").className = `pal-etiquette pal-${pa.verdict}`;
+  $("rpPalCom").textContent = `« ${l.texte} » — Monique`;
+  $("rpPalette").hidden = false;
+  voix.finiDeParler(() => voix.dire([l]), 600);
 }
 function jouerReplay(liste, apres = () => {}) {
   if (!liste.length) { apres(); return; }
@@ -560,25 +582,27 @@ function jouerReplay(liste, apres = () => {}) {
     $("rpScoreMoi").textContent = avant[0]; $("rpScoreAdv").textContent = avant[1];
     $("rpStatus").textContent = `Set ${mo.set + 1}`;
     $("rpCompte").textContent = liste.length > 1 ? `${i} / ${liste.length}` : "";
-    $("rpVerdict").textContent = ""; $("rpCom").textContent = "";
+    $("rpVerdict").textContent = ""; $("rpCom").textContent = ""; $("rpPalette").hidden = true;
+    const lp = mo.palette ? lignePalette(mo.palette) : null, pa = lp ? mo.palette : null, roland = pa ? "commentateur" : null;
     [[moi, 0], [adv, 1]].forEach(([el, g]) => { el.innerHTML = mainGantee(g, 0, "Poing serré"); el.className = "hand secoue"; });
     // Roland ou Monique : « Revoyons ça ! » pour la première action, puis un mot sur l'action au dévoilement.
-    const genre = mo.gagnant === 0 ? P.genre : OPP.humain ? OPP.genre : botAuFeminin(OPP) ? "f" : "m";
-    if (i === 1) { const l = ligneReplay("replay_intro"); if (l) voix.dire([l]); }
+    const genre = genreJoueur(mo.gagnant);
+    if (i === 1) { const l = ligneReplay("replay_intro", "m", roland); if (l) voix.dire([l]); }
     t = setTimeout(() => {
       if (fini) return;
       moi.innerHTML = mainGantee(0, mo.a, NOM[mo.a]); adv.innerHTML = mainGantee(1, mo.b, NOM[mo.b]);
       moi.className = "hand ouvre"; adv.className = "hand ouvre";
       const [w, l] = mo.gagnant === 0 ? [mo.a, mo.b] : [mo.b, mo.a];
       $("rpVerdict").textContent = `${mo.smash[mo.gagnant] ? "💥 Smash ! " : ""}${NOM[w]} bat ${NOM[l]}`;
-      const c = ligneReplay(POOL_REPLAY[mo.type], genre);
+      const c = ligneReplay(POOL_REPLAY[mo.type], genre, roland);
       if (c) voix.finiDeParler(() => { if (!fini) voix.dire([c]); }, 1200);
       t = setTimeout(() => {
         if (fini) return;
         (mo.gagnant === 0 ? moi : adv).classList.add("win"); (mo.gagnant === 0 ? adv : moi).classList.add("lose");
         $("rpScoreMoi").textContent = apresPt[0]; $("rpScoreAdv").textContent = apresPt[1];
         try { ambiance.public("clameur", 0.4); } catch { /* sans son */ }
-        t = setTimeout(montrer, vite ? 2600 : 3200);
+        if (pa) t = setTimeout(() => { if (fini) return; montrerPalette(pa, mo, lp); t = setTimeout(montrer, 6500); }, vite ? 300 : 900);
+        else t = setTimeout(montrer, vite ? 2600 : 3200);
       }, vite ? 0 : 700);
     }, vite ? 300 : 2000);
   };
