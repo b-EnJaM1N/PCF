@@ -1,5 +1,5 @@
 // Écran principal : relie les règles, les bots, les annonces, le son et la fiche joueur.
-import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, SONNE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, issueSmash, gagnantCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
+import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, SONNE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, recupererSmash, issueSmash, gagnantCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
@@ -443,7 +443,9 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   const m = S.match;
   S.suivi.figer();
   smash.forEach((x, j) => { if (x) noterSmash(m, j); });
-  const evt = jouerCoup(m, signe, signeAdv, auto);
+  const setDuCoup = m.scoresSets.length, evt = jouerCoup(m, signe, signeAdv, auto);
+  // Double smash : le gagnant du point récupère un smash pour la suite du set (pas annoncé s'il vient de finir le set).
+  const recup = recupererSmash(m, smash, evt.gagnant, setDuCoup);
   // Le replay (replay.js) : on garde les actions marquantes du match.
   if (replayVisible()) {
     const mo = momentDuCoup(evt, m.coups, { smash, smashGagne: issueSmash(smash, evt.gagnant) === "gagne", serie: series(m.coups).serie,
@@ -525,7 +527,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   }, silencieux || reduitMouvement() ? 0 : 500);
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
-  if (smash[0] || smash[1]) effetSmash(smash, evt.gagnant);
+  if (smash[0] || smash[1]) effetSmash(smash, evt.gagnant, evt.finSet ? null : recup);
   // Mes smashs, pour la fiche ; un smash réussi « sonne » l'adversaire au coup suivant, sauf s'il donne le set (en solo ici ; en duel, le serveur le dit).
   if (smash[0]) { S.stats.smashsTentes++; if (evt.gagnant === 0) S.stats.smashsReussis++; }
   if (!S.duel) S.sonne = issueSmash(smash, evt.gagnant) === "gagne" && evt.gagnant === 1 && !evt.finSet;   // (pas de KO au début du set suivant)
@@ -622,14 +624,16 @@ function sonDuCoup(a, b, smash, m) {
 // Le smash : selon ce qu'il donne (voir issueSmash), un verdict et une vibration (Android ; l'iPhone ne vibre pas depuis une
 // page web). Gagnant : « 💥 Smash ! », grande vibration et secousse de l'arène ; perdu : « 💨 Smash raté ! » ; égalité :
 // « 🧱 Smash bloqué ! » (sans vibration, depuis le 3 novembre).
-function effetSmash(smash, gagnant) {
+// Double smash gagné (11 novembre) : « 🔄 Smash récupéré ! » pour celui qui gagne le point, s'il reste du jeu dans le set.
+function effetSmash(smash, gagnant, recup = null) {
   const issue = issueSmash(smash, gagnant), double = smash[0] && smash[1];
   const de = j => (j === 0 ? "" : ` de ${OPP.nom}`);
   const sonneAdv = `${OPP.nom} est ${OPP.genre === "f" ? "sonnée" : "sonné"} ! `;
   const texte = issue === "gagne" ? (double ? `💥 Double smash ! ${gagnant === 0 ? sonneAdv : ""}` : gagnant === 0 ? `💥 Smash ! ${sonneAdv}` : `💥 Smash${de(gagnant)} ! `)
     : issue === "bloque" ? (double ? "🧱 Double smash bloqué ! " : `🧱 Smash${de(smash[0] ? 0 : 1)} bloqué ! `)
     : `💨 Smash raté${de(smash[0] ? 0 : 1)} ! `;
-  $("verdict").textContent = `${texte}${$("verdict").textContent}`;
+  const recupTexte = recup === 0 ? "🔄 Smash récupéré ! " : recup === 1 ? `🔄 ${OPP.nom} récupère un smash ! ` : "";
+  $("verdict").textContent = `${texte}${recupTexte}${$("verdict").textContent}`;
   // La vibration seulement quand le smash marque le point (3 novembre, demande du porteur du projet ; plus rien pour un smash
   // raté ou bloqué), plus longue qu'avant.
   if (issue !== "gagne") return;

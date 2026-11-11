@@ -503,6 +503,13 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 sexagies novies. Le smash récupéré (étape 69)
+
+Même manipulation que d'habitude avec [`etape-69-smash-recupere.sql`](etape-69-smash-recupere.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-69-smash-recupere.sql).
+Double smash (les deux smashent au même coup) : celui qui gagne le point récupère un smash pour la suite du set.
+**À coller avant la fusion.**
+
 ## 1 sexagies octies. La fiche complète d'un joueur (étape 68)
 
 Même manipulation que d'habitude avec [`etape-68-fiche-joueur.sql`](etape-68-fiche-joueur.sql)

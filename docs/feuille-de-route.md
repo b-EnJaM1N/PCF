@@ -82,6 +82,10 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    ajoute un craquement et une déchirure ; le smash bloqué (renvoyé) a son impact sourd et la balle qui rebondit, le smash raté
    un souffle dans le vide (sons fabriqués, `sons.js` : `dechirure`, `smashBloque`, `smashRate`). Le gros son du smash gagnant
    suit maintenant le signe de celui qui a smashé (avant : toujours le signe du joueur, même quand le bot smashait).
+15. **Le smash récupéré** (11 novembre, décision du porteur du projet ; étape SQL 69, à coller avant la fusion) : quand les deux
+   joueurs smashent au même coup, celui qui gagne le point récupère le smash adverse : un smash de plus pour la suite du set
+   (perdu à la fin du set, comme le smash normal ; on dépense d'abord le smash du set). Smash bloqué ou smash simple repoussé :
+   rien. « 🔄 Smash récupéré ! » s'affiche (`regles.js` : `recupererSmash` ; le serveur : colonne `recups`). Le bot s'en sert aussi.
 
 ## En bref (14 octobre 2026)
 
