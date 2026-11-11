@@ -25,9 +25,10 @@ export function ilYA(quand, maintenant = Date.now()) {
 // Les événements du fil, du plus récent au plus ancien.
 // fil : ce que renvoie fil_cercle ({ duels, arrivees }) ; champion : { id, quand } (dernier championnat du cercle terminé) ou null ;
 // membres : les ids des membres actuels (Set).
+// autres : des événements en plus (le 1er de la saison, celui qui s'y colle : voir evenementsChampionnat).
 // → [{ type: "duel", quand, duel } | { type: "arrivee", quand, joueur } | { type: "champion", quand, joueur }
-//    | { type: "serie", quand, joueur, n }]
-export function evenementsDuFil(fil, { champion = null, membres = null } = {}) {
+//    | { type: "serie", quand, joueur, n } | { type: "saison", quand, joueur } | { type: "gage", quand, joueur, enjeu, playouts }]
+export function evenementsDuFil(fil, { champion = null, membres = null, autres = [] } = {}) {
   const liste = [];
   const duels = [...(fil?.duels || [])].sort((a, b) => Date.parse(a.quand) - Date.parse(b.quand));
   // Les séries : victoires d'affilée dans les duels du cercle (dans la période du fil), annoncées à 3, 5 et 10.
@@ -41,10 +42,23 @@ export function evenementsDuFil(fil, { champion = null, membres = null } = {}) {
   }
   for (const a of fil?.arrivees || []) liste.push({ type: "arrivee", quand: a.quand, joueur: a.joueur });
   if (champion?.id && champion.quand) liste.push({ type: "champion", quand: champion.quand, joueur: champion.id });
+  liste.push(...autres);
   const garder = e => !membres || e.type === "duel" || membres.has(e.joueur);
   // (à la même heure, la série juste au-dessus du duel qui l'a faite)
   const rang = e => (e.type === "serie" ? 1 : 0);
   return liste.filter(garder).sort((a, b) => Date.parse(b.quand) - Date.parse(a.quand) || rang(b) - rang(a)).slice(0, MAX_FIL);
+}
+
+// Le dernier championnat terminé du cercle (tournois_cercle) : son champion, et (étape 66) le 1er de la saison quand il n'est pas
+// champion, et celui qui s'y colle quand il y avait un enjeu. → { champion: { id, quand } | null, autres: [événements] }
+export function evenementsChampionnat(tournois) {
+  const fini = (tournois || []).filter(t => t.mode === "championnat" && t.phase === "termine" && t.vainqueur)
+    .sort((a, b) => Date.parse(b.fini_le || 0) - Date.parse(a.fini_le || 0))[0];
+  if (!fini?.fini_le) return { champion: null, autres: [] };
+  const autres = [];
+  if (fini.premier_saison?.id && fini.premier_saison.id !== fini.vainqueur.id) autres.push({ type: "saison", quand: fini.fini_le, joueur: fini.premier_saison.id });
+  if (fini.enjeu && fini.dernier?.id) autres.push({ type: "gage", quand: fini.fini_le, joueur: fini.dernier.id, enjeu: fini.enjeu, playouts: !!fini.playoffs });
+  return { champion: { id: fini.vainqueur.id, quand: fini.fini_le }, autres };
 }
 
 // La ligne d'un résultat : « 7–5, 7–4 » (ou le score d'un set unique).

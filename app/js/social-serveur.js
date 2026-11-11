@@ -60,8 +60,10 @@ export const annulerTournoi = id => rpc("annuler_tournoi", { p_id: id });
 export const jouerMatchTournoi = id => rpc("jouer_match_tournoi", { p_match: id });                        // → le duel
 // Championnat du cercle (supabase/etape-35-championnat.sql) : p_jours = 3, 7 ou 14 ; enjeu facultatif.
 // hebdo (étape 36) : une édition chaque semaine, du lundi 12 h au dimanche 22 h.
-export const creerChampionnat = (nom, cercle, points, sets, jours, allerRetour, enjeu = null, hebdo = false) =>
-  rpc("creer_championnat", { p_nom: nom, p_cercle: cercle, p_points: points, p_sets: sets, p_jours: jours, p_aller_retour: allerRetour, p_enjeu: enjeu, p_hebdo: hebdo });   // → { id, code }
+// options (étape 66, seulement si on en donne) : { poules, playoffs, ko_points, ko_sets, fin_points, fin_sets, garder_poules }.
+export const creerChampionnat = (nom, cercle, points, sets, jours, allerRetour, enjeu = null, hebdo = false, options = null) =>
+  rpc("creer_championnat", { p_nom: nom, p_cercle: cercle, p_points: points, p_sets: sets, p_jours: jours, p_aller_retour: allerRetour, p_enjeu: enjeu, p_hebdo: hebdo,
+    ...(options ? { p_options: options } : {}) });   // → { id, code }
 export const arreterSerie = id => rpc("arreter_serie", { p_id: id });
 export const effacerEnjeuTournoi = id => rpc("effacer_enjeu_tournoi", { p_id: id });
 

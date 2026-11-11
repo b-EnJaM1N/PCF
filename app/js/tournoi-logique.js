@@ -39,7 +39,9 @@ export function monMatch(t, uid) {
 }
 
 // Mes matchs pas encore décidés.
-export const mesMatchsRestants = (t, uid) => (t?.matchs || []).filter(x => !x.fin && [x.j0?.id, x.j1?.id].includes(uid));
+// (championnat avec playoffs : seulement le tour en cours ; les matchs des tours suivants sont déjà dans le tableau)
+export const mesMatchsRestants = (t, uid) => (t?.matchs || []).filter(x => !x.fin && [x.j0?.id, x.j1?.id].includes(uid)
+  && (t.mode !== "championnat" || !t.tour || (x.tour || 1) === t.tour));
 
 // Les matchs rangés par tour : [[tour 1…], [tour 2…], …]
 export function tableau(t) {
@@ -76,6 +78,48 @@ export function championDuCercle(tournois) {
 export const texteDepart = depart => `${new Date(depart).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Paris" })} à 12 h`;
 // Le dernier du classement (celui qui s'y colle), ou null.
 export const dernierDuClassement = classement => (classement?.length ? classement[classement.length - 1].joueur : null);
+
+// ---------------------------------------------------------------- poules, playoffs et playouts (supabase/etape-66, 11 novembre)
+export const LETTRES_POULES = ["A", "B", "C", "D"];
+export const MIN_PAR_POULE = 3;
+// Le nombre de poules qu'on aura vraiment avec n joueurs (au moins 3 par poule), comme _composer_poules.
+export const poulesReelles = (n, poules) => Math.max(1, Math.min(poules, Math.floor(n / MIN_PAR_POULE)));
+// Le nombre de tours d'élimination directe, comme _tours_ko.
+export function toursKo(poules, n) {
+  if (poules === 1) return n <= 3 ? 1 : n <= 5 ? 2 : 3;
+  if (poules === 2) return Math.floor(n / 2) >= 5 ? 3 : 2;
+  return 3;
+}
+// Qui se qualifie, en mots.
+export function textePlayoffs(n, poules) {
+  const p = poulesReelles(n, poules);
+  if (p === 1) return n <= 3 ? "finale entre les 2 premiers" : n <= 5 ? "demi-finales (1er contre 4e, 2e contre 3e), puis la finale"
+    : "façon Top 14 : le 1er et le 2e directement en demi-finales, barrages 3e contre 6e et 4e contre 5e";
+  if (p === 2) return Math.floor(n / 2) >= 5 ? "les 4 premiers de chaque poule en quarts de finale croisés"
+    : "les 2 premiers de chaque poule en demi-finales croisées";
+  if (p === 3) return "les 2 premiers de chaque poule et les 2 meilleurs 3es en quarts de finale";
+  return "les 2 premiers de chaque poule en quarts de finale croisés";
+}
+// Où en est le championnat : « Saison », ou l'étape du tour en cours (« Demi-finales »…).
+export function phaseChampionnat(t) {
+  if (!t || (t.tour || 1) <= 1) return "Saison";
+  const m = (t.matchs || []).find(x => x.tour === t.tour && x.phase === "playoff");
+  const e = m?.etape || "Playoffs";
+  return e === "Finale" ? "Finale" : e.replace(/^Quart de finale$/, "Quarts de finale").replace(/^Demi-finale$/, "Demi-finales").replace(/^Barrage$/, "Barrages");
+}
+// Le tableau final : les matchs des playoffs et des playouts rangés par tour, avec leur étape.
+// → { playoffs: [{ etape, matchs }], playouts: [{ etape, matchs }] }
+export function tableauFinal(t) {
+  const ranger = phase => {
+    const tours = new Map();
+    for (const m of (t?.matchs || []).filter(x => x.phase === phase)) (tours.get(m.tour) || tours.set(m.tour, []).get(m.tour)).push(m);
+    return [...tours.entries()].sort((a, b) => a[0] - b[0])
+      .map(([, ms]) => ({ etape: ms[0].etape || "", matchs: ms.sort((a, b) => a.position - b.position) }));
+  };
+  return { playoffs: ranger("playoff"), playouts: ranger("playout") };
+}
+// Celui qui s'y colle : décidé par le serveur (playouts), sinon le dernier du classement.
+export const quiSyColle = t => t?.dernier || (t?.phase === "termine" ? dernierDuClassement(t.classement) : null);
 
 // Liens d'invitation : https://…/PCF/?tournoi=CODE
 export const lienTournoi = (base, code) => `${base}?tournoi=${encodeURIComponent(code)}`;

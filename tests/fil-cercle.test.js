@@ -60,3 +60,19 @@ test("le hasard fixe : la même graine, la même suite", () => {
   assert.notDeepEqual([c(), c(), c()], x);
   assert.ok(x.every(v => v >= 0 && v < 1));
 });
+
+test("le fil : le dernier championnat terminé (champion, 1er de la saison, celui qui s'y colle)", async () => {
+  const { evenementsChampionnat } = await import("../app/js/fil-cercle.js");
+  const ts = [
+    { mode: "championnat", phase: "termine", fini_le: T(5), vainqueur: { id: "A" }, premier_saison: { id: "A" } },
+    { mode: "championnat", phase: "termine", fini_le: T(9), playoffs: true, enjeu: "Le dernier paie", vainqueur: { id: "B" }, premier_saison: { id: "C" }, dernier: { id: "D" } },
+    { mode: "libre", phase: "termine", fini_le: T(11), vainqueur: { id: "E" } },
+  ];
+  const r = evenementsChampionnat(ts);
+  assert.deepEqual(r.champion, { id: "B", quand: T(9) });
+  assert.deepEqual(r.autres.map(e => [e.type, e.joueur]), [["saison", "C"], ["gage", "D"]]);
+  assert.equal(r.autres[1].playouts, true);
+  assert.deepEqual(evenementsChampionnat([ts[0]]).autres, [], "champion et 1er de la saison : un seul événement");
+  const e = evenementsDuFil({ duels: [] }, { champion: r.champion, autres: r.autres, membres: new Set(["B", "C", "D"]) });
+  assert.deepEqual(e.map(x => x.type).sort(), ["champion", "gage", "saison"]);
+});
