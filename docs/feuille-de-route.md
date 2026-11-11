@@ -22,7 +22,12 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    (code de version 3, puis 4…).
 2. Questionnaire validé et envoyé aux testeurs le 11 novembre (texte dans `docs/play-store/retours-testeurs.md`) ; noter chaque
    réponse dans le journal.
-3. Ouvrir la nouveauté suivante vers le 13 novembre (le fantôme proposé), puis le replay, l'écran titre avec l'hymne, les objets du
+3. **Le 13 novembre : ouvrir le fantôme à tous** (accord du porteur du projet le 11 novembre ; ajouter « fantome » à `OUVERTES`
+   dans `app/js/nouveautes.js`), puis paquet Android 3 (1.0.0.2) avec la note validée :
+   `<fr-FR>` « • Nouveau : le fantôme 👻 Sur la page d'un ami, défie son fantôme : un bot qui joue comme lui, d'après ses matchs.
+   Pas besoin qu'il soit connecté ! » « • Le match du jour : ta série de jours continue 🔥 » `</fr-FR>` ; message aux testeurs validé :
+   « Nouveauté dans HandSlam : le fantôme 👻 Va sur la page d'un ami et défie son fantôme : il joue comme lui, avec ses habitudes.
+   Tu arrives à le battre ? Dis-moi ce que tu en penses ! ». Ensuite le replay (seul, sans la palette), l'écran titre avec l'hymne, les objets du
    club (et à la sortie : boutique → récompenses de fidélité en jours de jeu, voir plus bas).
 4. Les chants des autres testeurs (le porteur du projet les envoie ensemble ; pseudo#numéro exact, « il »/« elle » dans Ma fiche).
 5. Idée validée, pas encore faite : le bracelet gravé à son pseudo.
