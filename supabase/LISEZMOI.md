@@ -503,6 +503,13 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 sexagies octies. La fiche complète d'un joueur (étape 68)
+
+Même manipulation que d'habitude avec [`etape-68-fiche-joueur.sql`](etape-68-fiche-joueur.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-68-fiche-joueur.sql).
+Sur la fiche d'un joueur en ligne : 📊 ses stats, 🤝 ses face-à-face, 📜 son historique (seulement les duels entre joueurs, jamais
+contre un bot) ; option « Cacher mes adversaires sur ma fiche » dans Options › Confidentialité. **À coller avant la fusion.**
+
 ## 1 sexagies septies. « Tu vas pleurer. » (étape 67)
 
 Même manipulation que d'habitude avec [`etape-67-message-pleurer.sql`](etape-67-message-pleurer.sql)

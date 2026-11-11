@@ -4,7 +4,8 @@ import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
-import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne } from "./social-serveur.js";
+import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache } from "./social-serveur.js";
+import { ficheVisible, htmlFiche } from "./fiche-joueur.js";
 import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier, origineIci } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { filVisible, matchDuDuel, hasardFixe, etapeDuDuel } from "./fil-cercle.js";
@@ -1313,8 +1314,10 @@ let nOngletsMains = 0;
 async function dossierEtMains(uid, nom, duels, elle) {
   const moi = compteUI?.session()?.user?.id, n = esc(nom);
   if (elle === undefined) { try { elle = normaliserProfil((await profilsEnLigne([uid]))[0]?.fiche).genre === "f"; } catch { elle = false; } }
-  let matchs = null;
-  try { matchs = await dossierJoueur(uid); } catch { /* ci-dessous : dossier indisponible */ }
+  let matchs = null, fiche = null;
+  // (la fiche complète, étape 68 : sur la version de test d'abord, nouveautes.js : « fiche »)
+  await Promise.all([dossierJoueur(uid).then(m => { matchs = m; }).catch(() => {}),
+    ficheVisible() ? ficheJoueur(uid).then(f => { fiche = f; }).catch(() => {}) : null]);
   let k = compteVide();
   for (const m of matchs || []) k = additionner(k, compterMatch(m.map(c => ({ a: c.a, b: c.b, gagnant: c.g ?? null }))));
   const dos = matchs ? corpsDossier(dossier(k, { elle: !!elle }), d => `D'après ses ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).`,
@@ -1324,7 +1327,7 @@ async function dossierEtMains(uid, nom, duels, elle) {
     .map(d => { const p = maPlace(d, moi); try { return mainDuel(d, rejouer(d, p).match, p); } catch { return null; } }).filter(Boolean);
   const tous = (matchs || []).slice(0, MAX_MAINS).map(mainDossier).filter(e => e.c);
   const il = elle ? "Elle" : "Il", x = ++nOngletsMains;
-  return `<h3 class="ff-titre">📁 Son dossier</h3>${dos}<h3 class="ff-titre">🖐️ Historique des mains</h3>`
+  return (fiche ? htmlFiche(fiche, nom, x, avatarSVG) : "") + `<h3 class="ff-titre">📁 Son dossier</h3>${dos}<h3 class="ff-titre">🖐️ Historique des mains</h3>`
     + `<div class="ff-choix"><input type="radio" name="fm${x}" id="fmMoi${x}" checked><label for="fmMoi${x}">Contre toi (${contre.length})</label>`
     + `<input type="radio" name="fm${x}" id="fmTous${x}"><label for="fmTous${x}">Tous ses matchs (${tous.length})</label>`
     + `<div class="ff-vue-tous">${htmlMains(contre, { noms: ["Toi", nom], vide: `Pas encore de duel contre ${nom}.` })}</div>`
@@ -2902,15 +2905,21 @@ function signalerPresence() {
 setInterval(signalerPresence, 60000);
 document.addEventListener("visibilitychange", signalerPresence);
 function surSessionPresence(session) {
-  $("presenceZone").hidden = !session?.user; $("carteCacheeZone").hidden = !session?.user;
+  $("presenceZone").hidden = !session?.user; $("carteCacheeZone").hidden = !session?.user; $("historiqueZone").hidden = true;
   $("carteCachee").checked = !!P.carteCachee;
   if (!session?.user) return;
   signalerPresence();
   maPresenceVisible().then(v => { $("presenceVisible").checked = v !== false; }).catch(() => {});
+  $("historiqueZone").hidden = !ficheVisible();
+  if (ficheVisible()) monHistoriqueCache().then(v => { $("historiqueCache").checked = !!v; }).catch(() => {});
 }
 compteUI.surConnexion(surSessionPresence);
 surSessionPresence(compteUI.session());
 $("carteCachee").addEventListener("change", e => { P.carteCachee = e.target.checked; sauverP(); });   // gardé dans la fiche en ligne
+$("historiqueCache").addEventListener("change", async e => {   // (étape 68)
+  try { await reglerHistorique(e.target.checked); }
+  catch { e.target.checked = !e.target.checked; }
+});
 $("presenceVisible").addEventListener("change", async e => {
   try { await reglerPresence(e.target.checked); }
   catch { e.target.checked = !e.target.checked; }

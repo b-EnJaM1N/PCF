@@ -1026,3 +1026,13 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .avis-carte { margin: 12px 0; padding: 12px 14px; border: 1px solid rgba(255,214,0,.6); border-radius: 12px; background: rgba(255,214,0,.08); text-align: center; }
 .avis-carte p { margin: 0 0 10px; }
 .avis-carte[hidden] { display: none; }
+/* La fiche d'un joueur en ligne : 3 onglets (fiche-joueur.js) */
+.ff-choix.trois { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ff-choix.trois > .ff-v1, .ff-choix.trois > .ff-v2, .ff-choix.trois > .ff-v3 { display: none; }
+.ff-choix.trois > input:nth-of-type(1):checked ~ .ff-v1, .ff-choix.trois > input:nth-of-type(2):checked ~ .ff-v2,
+.ff-choix.trois > input:nth-of-type(3):checked ~ .ff-v3 { display: block; }
+.fiche-stats { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.fiche-stats td { padding: 5px 4px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.fiche-stats td:last-child { text-align: right; }
+.fiche-bilan { white-space: nowrap; }
+.fiche-bilan.gagne { color: var(--me); } .fiche-bilan.perdu { color: var(--bot); }
