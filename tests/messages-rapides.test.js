@@ -13,14 +13,16 @@ test("chaque message tient dans une bulle et chaque identifiant est unique à so
 });
 
 test("les mêmes messages dans l'appli et sur le serveur", () => {
-  // (la liste la plus récente : étape 53, qui ajoute les annonces et la pause entre les sets ; les annonces comptent parmi « tous »)
-  const sql = readFileSync(new URL("../supabase/etape-53-messages-entre-sets.sql", import.meta.url), "utf8");
+  // (la liste la plus récente : étape 67, « Tu vas pleurer. » ; l'étape 53 avait ajouté les annonces et la pause entre les sets ;
+  // les annonces comptent parmi « tous »)
+  const sql = readFileSync(new URL("../supabase/etape-67-message-pleurer.sql", import.meta.url), "utf8");
   for (const [moment, m] of Object.entries(MESSAGES)) {
     for (const [registre, amis] of [["tous", false], ["amis", true]]) {
       const ligne = sql.match(new RegExp(`p_moment = '${moment}' and ${amis ? "" : "not "}p_amis then array\\[([^\\]]*)\\]`));
       assert.ok(ligne, `${moment} ${registre}`);
-      const attendus = (registre === "tous" ? [...(m.annonces || []), ...m.tous] : m.amis).map(([id]) => id);
-      assert.deepEqual([...ligne[1].matchAll(/'([a-z_]+)'/g)].map(x => x[1]), attendus, `${moment} ${registre}`);
+      // (les messages retirés de l'appli le 11 novembre restent acceptés par le serveur : on compare sans l'ordre)
+      const attendus = (registre === "tous" ? [...(m.annonces || []), ...m.tous] : [...m.amis, ...(m.retires || [])]).map(([id]) => id);
+      assert.deepEqual([...ligne[1].matchAll(/'([a-z_]+)'/g)].map(x => x[1]).sort(), attendus.sort(), `${moment} ${registre}`);
     }
   }
 });
@@ -36,7 +38,9 @@ test("après le match, le vainqueur et le vaincu n'ont pas les mêmes messages",
   assert.equal(momentApres(false), "vaincu");
   assert.equal(texteMessage("vainqueur", "deculottee"), "Déculottée !");
   assert.equal(texteMessage("vaincu", "deculottee"), null);
-  assert.equal(texteMessage("vaincu", "chatoune"), "Quelle chatoune !");
+  assert.equal(texteMessage("vaincu", "chatoune"), "Quelle chatoune !", "un message retiré reçu d'une ancienne version s'affiche encore");
+  assert.ok(!messagesPossibles("vaincu", true).some(x => ["chatoune", "faux_rebond"].includes(x.id)), "chatoune et faux rebond ne sont plus proposés");
+  assert.ok(!messagesPossibles("vainqueur", true).some(x => ["ton_pere", "padawan", "deculottee"].includes(x.id)), "ni ton père, padawan, déculottée");
 });
 
 test("le message écrit entre amis : les garde-fous de l'enjeu, et le même préfixe que le serveur", () => {
