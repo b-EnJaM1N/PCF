@@ -11,7 +11,7 @@ import { lire, ecrire } from "./stockage.js";
 import { clePseudo } from "./chants-perso.js";
 import { installerTournois } from "./ecran-tournois.js";
 import { fantomeVisible } from "./fantome.js";
-import { filVisible, evenementsDuFil, scoreDuDuel, ilYA, REACTIONS } from "./fil-cercle.js";
+import { filVisible, evenementsDuFil, evenementsChampionnat, scoreDuDuel, ilYA, REACTIONS } from "./fil-cercle.js";
 import { championDuCercle } from "./tournoi-logique.js";
 import { profils } from "./duel-serveur.js";
 
@@ -396,10 +396,9 @@ export function installerCercles(ctx) {
       tournois.liste($("cTournois"), ts);
       // Le champion du cercle (dernier championnat terminé) : 🏆 à côté de son nom, jusqu'au championnat suivant.
       const champion = championDuCercle(ts);
-      // (pour le fil : la date du dernier championnat terminé)
-      const fini = ts.filter(t => t.mode === "championnat" && t.phase === "termine" && t.vainqueur)
-        .sort((a, b) => Date.parse(b.fini_le || 0) - Date.parse(a.fini_le || 0))[0];
-      if (fini?.vainqueur?.id && fini.fini_le) { championFil = { id: fini.vainqueur.id, quand: fini.fini_le }; renderFil(); }
+      // (pour le fil : le dernier championnat terminé, son champion, le 1er de la saison et celui qui s'y colle)
+      const ec = evenementsChampionnat(ts);
+      if (ec.champion) { championFil = ec; renderFil(); }
       const ligne = champion && $("cClassement").querySelector(`li[data-id="${champion.id}"] .jn`);
       if (ligne && !ligne.querySelector(".champion")) ligne.insertAdjacentHTML("beforeend", ' <span class="champion" title="Champion du cercle">🏆</span>');
     }).catch(() => {});
@@ -447,12 +446,15 @@ export function installerCercles(ctx) {
     if (!fil || !detail) return;
     const membres = new Map((detail.membres || []).map(m => [m.id, m]));
     const nom = id => { const m = membres.get(id); return m ? `<b>${esc(m.pseudo)}</b>` : "<b>?</b>"; };
-    const evts = evenementsDuFil(fil, { champion: championFil, membres: new Set(membres.keys()) });
+    const evts = evenementsDuFil(fil, { champion: championFil?.champion, autres: championFil?.autres || [], membres: new Set(membres.keys()) });
+    const elle = id => membres.get(id)?.genre === "f";
     $("cFilCarte").hidden = false; $("cFilVide").hidden = evts.length > 0;
     $("cFil").innerHTML = evts.map(e => {
       const quand = `<span class="fil-quand">${ilYA(e.quand)}</span>`;
       if (e.type === "arrivee") return `<div class="fil-item"><span class="fil-ic">👋</span><div class="fil-corps"><div>${nom(e.joueur)} a rejoint le cercle</div></div>${quand}</div>`;
       if (e.type === "champion") return `<div class="fil-item fil-fort"><span class="fil-ic">🏆</span><div class="fil-corps"><div>${nom(e.joueur)} est champion${membres.get(e.joueur)?.genre === "f" ? "ne" : ""} du cercle !</div></div>${quand}</div>`;
+      if (e.type === "saison") return `<div class="fil-item"><span class="fil-ic">🥇</span><div class="fil-corps"><div>${nom(e.joueur)} a fini la saison en tête</div></div>${quand}</div>`;
+      if (e.type === "gage") return `<div class="fil-item fil-fort"><span class="fil-ic">😬</span><div class="fil-corps"><div>${nom(e.joueur)} ${e.playouts ? "perd le match des derniers" : `finit dernier${elle(e.joueur) ? "e" : ""}`} : c'est ${elle(e.joueur) ? "elle" : "lui"} qui s'y colle ! « ${esc(e.enjeu)} »</div></div>${quand}</div>`;
       if (e.type === "serie") return `<div class="fil-item fil-fort"><span class="fil-ic">🔥</span><div class="fil-corps"><div>${nom(e.joueur)} enchaîne ${e.n} victoires d'affilée dans le cercle</div></div>${quand}</div>`;
       const d = e.duel, g = d.vainqueur === 0 ? d.j0 : d.j1, p = d.vainqueur === 0 ? d.j1 : d.j0;
       const titre = d.une ? ctx.titreUneFil?.(d, membres) : null;

@@ -3,7 +3,8 @@
 // du projet a choisi d'ouvrir les nouveautés au fil de ces 14 jours.)
 //   serie : la série de jours du match du jour et ses trophées ;  fantome : le fantôme d'un ami ;  replay : le moment du set et
 //   les temps forts ;  hymne : l'écran titre avec l'hymne ;  club : les objets du club et le trophée « Fondé en 2026 » ;
-//   fil : le fil d'actualité du cercle et « Publier la Une » (11 novembre ; à ouvrir avec le fantôme le 13 novembre).
+//   fil : le fil d'actualité du cercle et « Publier la Une » (11 novembre ; à ouvrir avec le fantôme le 13 novembre) ;
+//   poules : le championnat du cercle avec poules, playoffs et playouts (11 novembre, étape SQL 66).
 export const OUVERTES = new Set(["serie"]);
 
 export function versionDeTest(loc = typeof location !== "undefined" ? location : null) {
