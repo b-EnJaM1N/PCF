@@ -46,6 +46,21 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    des deux joueurs (« 📰 Publier dans le fil du cercle » sous La Une ; refaite sur chaque téléphone à partir des coups, sans
    aucun texte libre), réactions 👏 🔥 😂 😱 (une par joueur), nouveaux membres, champion du cercle, séries de 3, 5 et 10 victoires
    (`app/js/fil-cercle.js`, `nouveautes.js` : « fil »). Pas les trophées (choix du porteur du projet).
+10. **Le championnat du cercle avec poules et playoffs** (11 novembre, idée et décisions du porteur du projet ; *défini, pas encore
+   fait*, étape SQL 66 à prévoir) : une option du championnat (pas un nouveau type). Formule : une seule poule (3 à 10 joueurs)
+   ou 2, 3, 4 poules (3 à 10 joueurs chacune, aller simple), composées en serpentin par niveau officiel ; à chaque nouvelle
+   édition, l'organisateur garde les mêmes poules ou les recompose. Playoffs (obligatoires avec des poules) : une poule → finale
+   1er-2e à 3 joueurs, demies 1-4 / 2-3 à 4-5 joueurs, façon Top 14 dès 6 (1er et 2e en demies, barrages 3-6 et 4-5) ; 2 poules →
+   les 2 premiers en demies croisées (1A-2B, 1B-2A), ou les 4 premiers en quarts croisés dès 5 joueurs par poule (1A-4B, 2B-3A,
+   1B-4A, 2A-3B) ; 3 poules → les 2 premiers et les 2 meilleurs 3es en quarts (pas deux joueurs d'une même poule en quart) ;
+   4 poules → les 2 premiers en quarts croisés (1A-2B, 1B-2A, 1C-2D, 1D-2C). Format des matchs au choix à trois endroits :
+   poules (ou championnat), élimination directe, finale (pré-remplis avec la phase d'avant). Calendrier : deux tiers pour les
+   poules, un tiers pour les playoffs ; 10 jours minimum avec des quarts ; répétition chaque semaine, ou toutes les 2 semaines
+   avec des quarts. Match de playoffs non joué : le mieux classé passe. Playouts seulement avec un enjeu : les derniers de chaque
+   poule entre eux (une poule : le dernier contre l'avant-dernier), en même temps que les playoffs, le perdant s'y colle (match
+   non joué : le meilleur bilan est sauvé). Classement final : le haut par les playoffs, le dernier par les playouts, les autres
+   par leur bilan (pas de matchs de classement). Champion = vainqueur de la finale (trophée, 🏆, fil) ; le 1er de la saison cité
+   dans le fil ; le perdant des playouts aussi.
 
 ## En bref (14 octobre 2026)
 
