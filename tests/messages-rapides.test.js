@@ -19,8 +19,9 @@ test("les mêmes messages dans l'appli et sur le serveur", () => {
     for (const [registre, amis] of [["tous", false], ["amis", true]]) {
       const ligne = sql.match(new RegExp(`p_moment = '${moment}' and ${amis ? "" : "not "}p_amis then array\\[([^\\]]*)\\]`));
       assert.ok(ligne, `${moment} ${registre}`);
-      const attendus = (registre === "tous" ? [...(m.annonces || []), ...m.tous] : m.amis).map(([id]) => id);
-      assert.deepEqual([...ligne[1].matchAll(/'([a-z_]+)'/g)].map(x => x[1]), attendus, `${moment} ${registre}`);
+      // (les messages retirés de l'appli le 11 novembre restent acceptés par le serveur : on compare sans l'ordre)
+      const attendus = (registre === "tous" ? [...(m.annonces || []), ...m.tous] : [...m.amis, ...(m.retires || [])]).map(([id]) => id);
+      assert.deepEqual([...ligne[1].matchAll(/'([a-z_]+)'/g)].map(x => x[1]).sort(), attendus.sort(), `${moment} ${registre}`);
     }
   }
 });
@@ -36,7 +37,9 @@ test("après le match, le vainqueur et le vaincu n'ont pas les mêmes messages",
   assert.equal(momentApres(false), "vaincu");
   assert.equal(texteMessage("vainqueur", "deculottee"), "Déculottée !");
   assert.equal(texteMessage("vaincu", "deculottee"), null);
-  assert.equal(texteMessage("vaincu", "chatoune"), "Quelle chatoune !");
+  assert.equal(texteMessage("vaincu", "chatoune"), "Quelle chatoune !", "un message retiré reçu d'une ancienne version s'affiche encore");
+  assert.ok(!messagesPossibles("vaincu", true).some(x => ["chatoune", "faux_rebond"].includes(x.id)), "chatoune et faux rebond ne sont plus proposés");
+  assert.ok(!messagesPossibles("vainqueur", true).some(x => ["ton_pere", "padawan", "deculottee"].includes(x.id)), "ni ton père, padawan, déculottée");
 });
 
 test("le message écrit entre amis : les garde-fous de l'enjeu, et le même préfixe que le serveur", () => {

@@ -61,6 +61,10 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    non joué : le meilleur bilan est sauvé). Classement final : le haut par les playoffs, le dernier par les playouts, les autres
    par leur bilan (pas de matchs de classement). Champion = vainqueur de la finale (trophée, 🏆, fil) ; le 1er de la saison cité
    dans le fil ; le perdant des playouts aussi.
+11. **Messages rapides** (11 novembre, demande du porteur du projet) : retirés « Quelle chatoune ! », « Il y avait un faux rebond ! »,
+   « Je suis ton père ! », « Déculottée ! », « Bien joué jeune padawan. » (plus proposés ; encore affichés s'ils arrivent d'une
+   ancienne version, le serveur les accepte toujours) ; les messages de la fenêtre rangés en deux colonnes de même largeur.
+   Le championnat avec poules s'ouvre à tous le 13 novembre, avec le fantôme et le fil (décision du porteur du projet).
 
 ## En bref (14 octobre 2026)
 

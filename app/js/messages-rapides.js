@@ -44,20 +44,18 @@ export const MESSAGES = {
       ["merci_match", "Merci pour le match !"], ["beau_duel", "Beau duel !"], ["toi_aussi", "Bien joué à toi aussi !"],
       ["serre", "C'était serré !"], ["revanche", "Revanche quand tu veux !"], ["gg", "GG !"],
     ],
-    amis: [
-      ["et_oui", "Et oui !!!"], ["boss", "C'est qui le boss ?"], ["ton_pere", "Je suis ton père !"],
-      ["padawan", "Bien joué jeune padawan."], ["regles", "Tu connais les règles ?"], ["deculottee", "Déculottée !"],
-    ],
+    amis: [["et_oui", "Et oui !!!"], ["boss", "C'est qui le boss ?"], ["regles", "Tu connais les règles ?"]],
+    // Retirés le 11 novembre (demande du porteur du projet) : plus proposés, mais encore affichés s'ils arrivent d'une ancienne
+    // version de l'appli (le serveur les accepte toujours : étape 53).
+    retires: [["ton_pere", "Je suis ton père !"], ["padawan", "Bien joué jeune padawan."], ["deculottee", "Déculottée !"]],
   },
   vaincu: {
     tous: [
       ["bien_joue", "Bien joué !"], ["bravo", "Bravo !"], ["beau_duel", "Beau duel !"],
       ["bravo_victoire", "Bravo pour ta victoire !"], ["merci_duel", "Merci pour le duel !"], ["meritee", "Victoire méritée !"],
     ],
-    amis: [
-      ["chatoune", "Quelle chatoune !"], ["laisse_gagner", "Je t'ai laissé gagner."], ["une_main", "Je jouais d'une main."],
-      ["bug", "J'ai eu un bug."], ["faux_rebond", "Il y avait un faux rebond !"], ["tactile", "Mon tactile déconne."],
-    ],
+    amis: [["laisse_gagner", "Je t'ai laissé gagner."], ["une_main", "Je jouais d'une main."], ["bug", "J'ai eu un bug."], ["tactile", "Mon tactile déconne."]],
+    retires: [["chatoune", "Quelle chatoune !"], ["faux_rebond", "Il y avait un faux rebond !"]],   // (11 novembre, voir plus haut)
   },
 };
 
@@ -93,6 +91,6 @@ export function erreurMessageLibre(brut) {
 export function texteMessage(moment, id) {
   if (typeof id === "string" && id.startsWith(PREFIXE_LIBRE)) return id.slice(PREFIXE_LIBRE.length);
   const m = MESSAGES[moment];
-  const x = m && [...(m.annonces || []), ...m.tous, ...m.amis].find(([i]) => i === id);
+  const x = m && [...(m.annonces || []), ...m.tous, ...m.amis, ...(m.retires || [])].find(([i]) => i === id);
   return x ? x[1] : null;
 }
