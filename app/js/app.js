@@ -48,7 +48,7 @@ import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
 import { modeleFantome } from "./fantome.js";
-import { ouvert } from "./nouveautes.js";   // (les nouveautés : sur la version de test, puis ouvertes à tous une par une)
+import { ouvert, proposerAvis } from "./nouveautes.js";   // (les nouveautés : sur la version de test, puis ouvertes à tous une par une)
 import { replayVisible, momentDuCoup, tempsForts, momentDuSet, TITRES as TITRES_REPLAY, VERDICTS, texteHabitude } from "./replay.js";
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder, titresSerie, prochainPalier } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
@@ -928,6 +928,10 @@ function finir() {
     finale: !!S.annonces.finale, numero: P.matchs, enjeu: S.duel ? D?.duel?.enjeu || null : null,
   } : null;
   $("btnUne").hidden = !S.pourUne;
+  // « Ton avis ? » : une seule fois, à partir du 5e match (nouveautes.js : « avis »).
+  const avisCarte = !!n && ouvert("avis") && proposerAvis({ matchs: P.matchs, dejaProposee: !!lire("avisPropose"), dejaDonne: !!lire("avisDonne") });
+  $("avisCarte").hidden = !avisCarte;
+  if (avisCarte) ecrire("avisPropose", Date.now());
   $("again").hidden = enTournoi || !!S.duel; $("tNext").hidden = !enTournoi;
   const tournoiId = S.duel && D ? D.duel.tournoi_id : null;   // match de tournoi en ligne
   const rapide = !!(S.duel && D?.duel?.rapide) || !!S.contreBotRapide;
@@ -2027,6 +2031,12 @@ function aller(vue) {
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => aller({ jouer: "viewJouer", cercles: "viewCercles", profile: "viewProfile" }[b.dataset.v])));
 document.addEventListener("click", e => { const b = e.target.closest("[data-aller]"); if (b) aller(b.dataset.aller); });
 $("btnOptions").addEventListener("click", () => aller(vueCourante === "viewOptions" ? avantOptions : "viewOptions"));
+// La carte « Ton avis ? » de l'écran de fin : elle ouvre « 💬 Ton avis sur HandSlam » dans les Options.
+$("avisCarteOui").addEventListener("click", () => {
+  $("avisCarte").hidden = true; aller("viewOptions");
+  $("cAvis").open = true; setTimeout(() => $("cAvis").scrollIntoView({ block: "start", behavior: "smooth" }), 50);
+});
+$("avisCarteNon").addEventListener("click", () => { $("avisCarte").hidden = true; });
 $("optionsRetour").addEventListener("click", () => aller(avantOptions));
 
 // Les alertes en haut du menu « Jouer » (et la pastille de l'onglet).
@@ -2405,7 +2415,7 @@ $("version").textContent = `Version ${VERSION}`;
     $("avisEnvoyer").disabled = true; $("avisMsg").textContent = "Envoi…";
     try {
       await donnerAvis({ note, texte, pseudo: P.pseudo || "", origine: origineIci(), version: VERSION });
-      $("avisMsg").textContent = "Merci ! Ton avis est bien arrivé. 🙏";
+      $("avisMsg").textContent = "Merci ! Ton avis est bien arrivé. 🙏"; ecrire("avisDonne", Date.now());
       $("avisTexte").value = ""; note = null; $("avisNotes").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false"));
     } catch (err) { $("avisMsg").textContent = /donner_avis|function/i.test(err.message) ? "L'envoi des avis ouvre bientôt." : err.message; }
     $("avisEnvoyer").disabled = false;
