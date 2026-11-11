@@ -3,7 +3,7 @@
 //
 // Sur le serveur, joueur 0 = celui qui a lancé le défi. À l'écran, on est
 // toujours le côté 0 (jaune) : on retourne donc les coups si on est le joueur 1.
-import { nouveauMatch, jouerCoup, penaliser, noterSmash, EMOJI, NOM, texteFormat } from "./regles.js";
+import { nouveauMatch, jouerCoup, penaliser, noterSmash, recupererSmash, EMOJI, NOM, texteFormat } from "./regles.js";
 import { indiceImprevisibilite } from "./analyse.js";
 import { normaliserProfil, signeFavori, dernierTitre, titresObtenus, tauxSmash } from "./profil.js";
 import { surnomDe } from "./surnoms.js";
@@ -35,7 +35,9 @@ export function evenementsDuel(duel, moi) {
 export function appliquerEvenement(match, e) {
   if (!e.coup) return penaliser(match, e.penalite);
   (e.coup.smash || []).forEach((s, j) => { if (s) noterSmash(match, j); });
-  return jouerCoup(match, e.coup.a, e.coup.b, e.coup.auto);
+  const set = match.scoresSets.length, evt = jouerCoup(match, e.coup.a, e.coup.b, e.coup.auto);
+  recupererSmash(match, e.coup.smash, evt.gagnant, set);
+  return evt;
 }
 // Combien d'événements le match a déjà vus (coups et pénalités).
 export const nbEvenements = match => match.coups.length + (match.penalites?.length || 0);

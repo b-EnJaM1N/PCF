@@ -48,6 +48,7 @@ export function nouveauMatch({ pointsParSet = 11, setsGagnants = 2 } = {}) {
     reserve: [RESERVE_MS, RESERVE_MS],   // la réserve de temps de chacun (ms)
     avertis: [false, false],             // déjà averti pour dépassement de temps
     smashs: [-1, -1],                    // le set (son numéro, à partir de 0) du dernier smash de chacun
+    recups: [-1, -1],                    // le set où chacun a un smash récupéré (-1 : aucun)
     termine: false,
     vainqueur: null,
   };
@@ -145,8 +146,23 @@ export function penaliser(match, fautif) {
 
 // Le smash (décision du 30 octobre) : un coup joué « plus fort » (appui long), pour le spectacle seulement (gros son,
 // secousse, vibration), un par set et par joueur. Il ne change rien au point.
-export const peutSmasher = (match, joueur) => !match.termine && (match.smashs?.[joueur] ?? -1) !== match.scoresSets.length;
-export function noterSmash(match, joueur) { (match.smashs ||= [-1, -1])[joueur] = match.scoresSets.length; }
+// Le smash récupéré (11 novembre, décision du porteur du projet) : quand les deux smashent au même coup, celui qui gagne le point
+// récupère le smash adverse : un smash de plus pour la suite du set (perdu à la fin du set). recups : le set où chacun en a un.
+export const peutSmasher = (match, joueur) => !match.termine
+  && ((match.smashs?.[joueur] ?? -1) !== match.scoresSets.length || (match.recups?.[joueur] ?? -1) === match.scoresSets.length);
+// On dépense d'abord le smash du set, puis le smash récupéré.
+export function noterSmash(match, joueur) {
+  const s = match.scoresSets.length;
+  if ((match.smashs ||= [-1, -1])[joueur] !== s) match.smashs[joueur] = s;
+  else if (match.recups?.[joueur] === s) match.recups[joueur] = -1;
+}
+// Après le coup : le smash récupéré du gagnant d'un double smash. set : le set où le coup a été joué (avant le point marqué).
+// Renvoie le joueur qui récupère un smash (0 ou 1), ou null.
+export function recupererSmash(match, smash, gagnant, set) {
+  if (!smash?.[0] || !smash?.[1] || (gagnant !== 0 && gagnant !== 1)) return null;
+  (match.recups ||= [-1, -1])[gagnant] = set;
+  return gagnant;
+}
 // Ce qu'a donné le smash d'un coup (smash : [moi, l'adversaire] ; gagnant : 0, 1 ou null pour une égalité) :
 // "gagne" (un smash qui gagne le point, le grand effet), "bloque" (égalité) ou "rate" (le smash perd le point) ; null sans smash.
 export function issueSmash(smash, gagnant) {

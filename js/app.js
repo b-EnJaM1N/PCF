@@ -1,5 +1,5 @@
 // Écran principal : relie les règles, les bots, les annonces, le son et la fiche joueur.
-import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, SONNE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, issueSmash, gagnantCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
+import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, SONNE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, recupererSmash, issueSmash, gagnantCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
@@ -417,9 +417,7 @@ function jouer(signe, auto = false, smash = false) {
   // Le bot choisit sans connaître le coup du joueur.
   const histBot = m.coups.map(c => ({ moi: c.b, adv: c.a, res: c.gagnant === null ? "e" : c.gagnant === 1 ? "g" : "p" }));
   const signeBot = (S.carriere ? coupCarriere : choisirCoup)(OPP, histBot, S.hasard || Math.random, contexteBot(m));   // (carrière : les bots faibles renforcés)   // (match du jour : le même tirage pour tout le monde)
-  // (le gros son de raquette seulement pour un smash qui gagne le point)
-  const smashGagnant = issueSmash([smash, smashBot], gagnantCoup(signe, signeBot)) === "gagne";
-  const reveler = () => { if (smashGagnant) ambiance.smash(signe); else ambiance.raquette(signe, grandMoment(m)); afficherCoup(signe, signeBot, [auto, false], { smash: [smash, smashBot] }); };
+  const reveler = () => { sonDuCoup(signe, signeBot, [smash, smashBot], m); afficherCoup(signe, signeBot, [auto, false], { smash: [smash, smashBot] }); };
   if (reduitMouvement()) { reveler(); return; }
   // Comme au chifoumi : les deux poings se secouent, puis les deux signes s'ouvrent ensemble (pareil en duel).
   const seance = S;
@@ -445,7 +443,9 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   const m = S.match;
   S.suivi.figer();
   smash.forEach((x, j) => { if (x) noterSmash(m, j); });
-  const evt = jouerCoup(m, signe, signeAdv, auto);
+  const setDuCoup = m.scoresSets.length, evt = jouerCoup(m, signe, signeAdv, auto);
+  // Double smash : le gagnant du point récupère un smash pour la suite du set (pas annoncé s'il vient de finir le set).
+  const recup = recupererSmash(m, smash, evt.gagnant, setDuCoup);
   // Le replay (replay.js) : on garde les actions marquantes du match.
   if (replayVisible()) {
     const mo = momentDuCoup(evt, m.coups, { smash, smashGagne: issueSmash(smash, evt.gagnant) === "gagne", serie: series(m.coups).serie,
@@ -527,7 +527,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   }, silencieux || reduitMouvement() ? 0 : 500);
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
-  if (smash[0] || smash[1]) effetSmash(smash, evt.gagnant);
+  if (smash[0] || smash[1]) effetSmash(smash, evt.gagnant, evt.finSet ? null : recup);
   // Mes smashs, pour la fiche ; un smash réussi « sonne » l'adversaire au coup suivant, sauf s'il donne le set (en solo ici ; en duel, le serveur le dit).
   if (smash[0]) { S.stats.smashsTentes++; if (evt.gagnant === 0) S.stats.smashsReussis++; }
   if (!S.duel) S.sonne = issueSmash(smash, evt.gagnant) === "gagne" && evt.gagnant === 1 && !evt.finSet;   // (pas de KO au début du set suivant)
@@ -612,17 +612,28 @@ function jouerReplay(liste, apres = () => {}) {
 }
 $("btnTempsForts").addEventListener("click", () => { if (S?.moments?.length) jouerReplay(tempsForts(S.moments)); });
 
+// Le son du coup, au moment où les deux signes se dévoilent : le coup de raquette ; pour un smash qui gagne le point, le gros son
+// (avec le signe gagnant : la déchirure des Ciseaux) ; pour un smash bloqué ou raté (11 novembre), la raquette puis son bruit.
+function sonDuCoup(a, b, smash, m) {
+  const g = gagnantCoup(a, b), issue = issueSmash(smash, g);
+  if (issue === "gagne") { ambiance.smash(g === 0 ? a : b); return; }
+  ambiance.raquette(a, grandMoment(m));
+  if (issue) ambiance.smashManque(issue);
+}
+
 // Le smash : selon ce qu'il donne (voir issueSmash), un verdict et une vibration (Android ; l'iPhone ne vibre pas depuis une
 // page web). Gagnant : « 💥 Smash ! », grande vibration et secousse de l'arène ; perdu : « 💨 Smash raté ! » ; égalité :
 // « 🧱 Smash bloqué ! » (sans vibration, depuis le 3 novembre).
-function effetSmash(smash, gagnant) {
+// Double smash gagné (11 novembre) : « 🔄 Smash récupéré ! » pour celui qui gagne le point, s'il reste du jeu dans le set.
+function effetSmash(smash, gagnant, recup = null) {
   const issue = issueSmash(smash, gagnant), double = smash[0] && smash[1];
   const de = j => (j === 0 ? "" : ` de ${OPP.nom}`);
   const sonneAdv = `${OPP.nom} est ${OPP.genre === "f" ? "sonnée" : "sonné"} ! `;
   const texte = issue === "gagne" ? (double ? `💥 Double smash ! ${gagnant === 0 ? sonneAdv : ""}` : gagnant === 0 ? `💥 Smash ! ${sonneAdv}` : `💥 Smash${de(gagnant)} ! `)
     : issue === "bloque" ? (double ? "🧱 Double smash bloqué ! " : `🧱 Smash${de(smash[0] ? 0 : 1)} bloqué ! `)
     : `💨 Smash raté${de(smash[0] ? 0 : 1)} ! `;
-  $("verdict").textContent = `${texte}${$("verdict").textContent}`;
+  const recupTexte = recup === 0 ? "🔄 Smash récupéré ! " : recup === 1 ? `🔄 ${OPP.nom} récupère un smash ! ` : "";
+  $("verdict").textContent = `${texte}${recupTexte}${$("verdict").textContent}`;
   // La vibration seulement quand le smash marque le point (3 novembre, demande du porteur du projet ; plus rien pour un smash
   // raté ou bloqué), plus longue qu'avant.
   if (issue !== "gagne") return;
@@ -2545,7 +2556,7 @@ function majDuel(duel) {
     while (nbEvenements(m) < n - 1) montrer(ev[nbEvenements(m)], { silencieux: true });
     const e = ev[n - 1];
     S.occupe = true; arreterMinuteur(); boutons(false);
-    if (e.coup) { if (issueSmash(e.coup.smash, gagnantCoup(e.coup.a, e.coup.b)) === "gagne") ambiance.smash(e.coup.a); else ambiance.raquette(e.coup.a, grandMoment(m)); }   // le coup de raquette au moment où les deux signes se dévoilent
+    if (e.coup) sonDuCoup(e.coup.a, e.coup.b, e.coup.smash, m);   // le coup de raquette au moment où les deux signes se dévoilent
     montrer(e, {});
     if (!coherent(m, duel, D.moi)) {   // ne devrait jamais arriver : on se recale sur le serveur
       const r = rejouer(duel, D.moi); S.match = r.match; render(); renderHistorique();
