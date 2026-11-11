@@ -49,7 +49,7 @@ export function habitudes(coups) {
 }
 
 // Le réflexe qui s'applique au prochain coup (« après une victoire » ne vaut que s'il vient de gagner…).
-const s_applique = (h, dernier) => (h.cle === "rejoue_victoire" ? dernier.gagnant === 1 : h.cle === "change_defaite" ? dernier.gagnant === 0 : true);
+export const s_applique = (h, dernier) => (h.cle === "rejoue_victoire" ? dernier.gagnant === 1 : h.cle === "change_defaite" ? dernier.gagnant === 0 : true);
 
 // La piste pour le prochain coup, ou null : { signe à jouer, texte }.
 export function piste(coups) {

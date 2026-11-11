@@ -551,6 +551,21 @@ export const MOMENTS = {
     { r: "c", t: "Il ne lâche rien !", f: "Elle ne lâche rien !" },
     { r: "d", t: "La patience a payé." },
   ],
+  // La palette du replay (11 novembre, répliques validées par le porteur du projet) : le verdict de Monique sur le point
+  // (« il » : le gagnant ; pour « mauvais », le perdant). cle : seulement quand l'habitude lue est celle-là.
+  replay_palette_pertinent: [
+    { r: "d", t: "Il l'avait lu. Après une défaite, l'autre change toujours.", f: "Elle l'avait lu. Après une défaite, l'autre change toujours.", cle: "change_defaite" },
+    { r: "d", t: "Tout était sur la palette. Il n'a eu qu'à se servir.", f: "Tout était sur la palette. Elle n'a eu qu'à se servir." },
+  ],
+  replay_palette_propre: [
+    { r: "d", t: "Il casse sa propre habitude au bon moment. Très propre.", f: "Elle casse sa propre habitude au bon moment. Très propre." },
+  ],
+  replay_palette_mauvais: [
+    { r: "d", t: "Il rejoue la même chose. On ne peut pas faire ça à ce niveau.", f: "Elle rejoue la même chose. On ne peut pas faire ça à ce niveau." },
+  ],
+  replay_palette_pas_la: [
+    { r: "d", t: "Honnêtement ? Il n'y avait rien à lire. Il a eu raison d'oser.", f: "Honnêtement ? Il n'y avait rien à lire. Elle a eu raison d'oser." },
+  ],
   // La série en cours dans leurs face-à-face (3 novembre, répliques validées par le porteur du projet) : victoires d'affilée
   // (« il » : le joueur qui enchaîne) et défaites d'affilée (« il » : le joueur qui les subit), à 3, 4, 5 et plus.
   memoire_serie_3: [
