@@ -28,6 +28,10 @@ export const retirerAmi = id => rpc("retirer_ami", { p_joueur: id });
 
 // Le dossier d'un joueur (supabase/etape-32-dossier.sql) : les coups de ses 50 derniers matchs en ligne, vus de son côté.
 export const dossierJoueur = id => rpc("dossier_joueur", { p_joueur: id });
+// La fiche complète d'un joueur (supabase/etape-68-fiche-joueur.sql) et l'option « Cacher mes adversaires ».
+export const ficheJoueur = id => rpc("fiche_joueur", { p_joueur: id });
+export const reglerHistorique = cache => rpc("regler_historique", { p_cache: !!cache });
+export const monHistoriqueCache = () => rpc("mon_historique_cache");
 
 export const mesCercles = () => rpc("mes_cercles");                                  // → { cercles, invitations }
 export const voirCercle = id => rpc("voir_cercle", { p_id: id });
