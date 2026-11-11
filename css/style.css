@@ -802,7 +802,9 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .msg-annonce-titre { font-size: .85rem; line-height: 1.2; }
 .msg-annonces button { font: inherit; color: var(--line); background: var(--panel); border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; padding: 7px 2px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .8rem; }
 .msg-annonces button:disabled { opacity: .5; }
-.fenetre-msg .msg-puces button { font-size: .95rem; padding: 8px 13px; }
+/* (11 novembre, demande du porteur du projet : des colonnes bien rangées) deux colonnes de même largeur */
+.fenetre-msg .msg-puces { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.fenetre-msg .msg-puces button { border-radius: 14px; font-size: .95rem; padding: 9px 8px; line-height: 1.2; text-align: center; overflow-wrap: anywhere; }
 .msg-libre { display: flex; gap: 8px; }
 .msg-libre input { flex: 1; min-width: 0; font: inherit; font-size: 1rem; padding: 9px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .3); background: var(--panel); color: var(--line); }
 .msg-libre .btn { width: auto; margin: 0; padding: 0 16px; }
