@@ -24,7 +24,7 @@ export const MESSAGES = {
     ],
     amis: [
       ["besoin", "Bonne chance… tu en auras besoin."], ["par_coeur", "Je te connais par cœur."], ["fumer", "Je vais te fumer."],
-      ["slip", "Tu vas finir en slip."], ["souffrir", "Prépare-toi à souffrir."],
+      ["slip", "Tu vas finir en slip."], ["souffrir", "Prépare-toi à souffrir."], ["pleurer", "Tu vas pleurer."],   // (pleurer : étape 67)
     ],
   },
   // Pendant la pause entre deux sets (étape 53).
