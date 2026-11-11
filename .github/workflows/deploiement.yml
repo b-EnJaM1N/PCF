@@ -56,7 +56,10 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      # Le navigateur des matchs d'essai. D'abord la méthode habituelle (avec les paquets Ubuntu), 3 minutes au plus ;
+      # si les serveurs Ubuntu ne répondent pas (panne du 11 novembre : 3 mises en ligne bloquées), le navigateur seul,
+      # téléchargé chez Playwright (les machines de GitHub ont déjà presque tout le reste). Accord du porteur du projet.
+      - run: timeout 180 npx playwright install --with-deps chromium || npx playwright install chromium
       - run: npm run test:navigateur
 
   mise-en-ligne:
