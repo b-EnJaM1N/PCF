@@ -7,6 +7,7 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 | Date | Avis du testeur | Ce qu'on a changé | Mise en ligne |
 |---|---|---|---|
 | 10 nov. | « Quand on a beaucoup d'amis, la liste prend tout l'écran ; et la croix à côté de Défier supprime l'ami : j'ai supprimé des amis par erreur en voulant annuler un défi. » (un testeur) | Les 3 amis avec qui on joue le plus en tête, les autres à déplier ; la croix remplacée par « Annuler » (le défi en attente), aussi dans Jouer › Défier un ami et sur la page de l'ami ; retirer un ami seulement en bas de sa page, avec confirmation | 10 nov. |
+| 11 nov. | Les messages tout faits (avant et après le match) sont mal rangés, et certains ne plaisent pas. (un testeur) | Cinq messages retirés (« Quelle chatoune ! », « Il y avait un faux rebond ! », « Je suis ton père ! », « Déculottée ! », « Bien joué jeune padawan. »), « Tu vas pleurer. » ajouté, la fenêtre des messages rangée en deux colonnes bien alignées | 11 nov. |
 
 ## Les mises à jour pendant le test prolongé
 
@@ -16,6 +17,7 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 - 10 nov. : entre amis qui ont chacun leurs chants, autant de chances pour chacun (remarque du porteur du projet en jouant contre un testeur).
 - 11 nov. : questionnaire envoyé aux testeurs (texte plus bas).
 - 11 nov. : nouvelle version Android dans le test fermé, 2 (1.0.0.1), avec une note de version (série de jours, bouton d'avis, Mes amis, chants).
+- 11 nov. : les messages rapides réorganisés (idée d'un testeur, voir le tableau).
 
 ## Le questionnaire (envoyé aux testeurs le 11 novembre)
 
