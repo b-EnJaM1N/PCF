@@ -46,6 +46,7 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    des deux joueurs (« 📰 Publier dans le fil du cercle » sous La Une ; refaite sur chaque téléphone à partir des coups, sans
    aucun texte libre), réactions 👏 🔥 😂 😱 (une par joueur), nouveaux membres, champion du cercle, séries de 3, 5 et 10 victoires
    (`app/js/fil-cercle.js`, `nouveautes.js` : « fil »). Pas les trophées (choix du porteur du projet).
+   Le fil est plié : les 3 dernières infos, « Voir tout le fil » pour déplier (demande du porteur du projet, 11 novembre).
 10. **Le championnat du cercle avec poules et playoffs** (11 novembre, idée et décisions du porteur du projet ; *fait, version de
    test* (`nouveautes.js` : « poules »), étape SQL 66 à coller avant la fusion ; `_construire_playoffs`, `tableauFinal`) : une option du championnat (pas un nouveau type). Formule : une seule poule (3 à 10 joueurs)
    ou 2, 3, 4 poules (3 à 10 joueurs chacune, aller simple), composées en serpentin par niveau officiel ; à chaque nouvelle

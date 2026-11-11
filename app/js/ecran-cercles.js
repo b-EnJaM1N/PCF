@@ -369,7 +369,7 @@ export function installerCercles(ctx) {
     cercleOuvert = id; detail = null;
     montrer("socCercle");
     $("cNom").textContent = "…"; $("cInfo").textContent = ""; $("cClassement").innerHTML = ""; $("cAmis").innerHTML = ""; $("cGestion").hidden = true;
-    $("cFilCarte").hidden = true; $("cFil").innerHTML = ""; dire("cFilMsg", ""); fil = null; championFil = null;
+    $("cFilCarte").hidden = true; $("cFil").innerHTML = ""; dire("cFilMsg", ""); fil = null; championFil = null; filDeplie = false;
     dire("cMsg", message); dire("cInvMsg", "");
     window.scrollTo(0, 0);
     chargerCercle();
@@ -436,7 +436,8 @@ export function installerCercles(ctx) {
   }
 
   // ---------------------------------------------------------------- le fil d'actualité du cercle (fil-cercle.js)
-  let fil = null, championFil = null;
+  let fil = null, championFil = null, filDeplie = false;   // (plié : les 3 dernières infos ; demande du porteur du projet, 11 novembre)
+  const FIL_PLIE = 3;
   async function chargerFil(id) {
     if (!filVisible()) return;
     try { const f = await social.filCercle(id); if (cercleOuvert !== id) return; fil = f; renderFil(); }
@@ -449,7 +450,10 @@ export function installerCercles(ctx) {
     const evts = evenementsDuFil(fil, { champion: championFil?.champion, autres: championFil?.autres || [], membres: new Set(membres.keys()) });
     const elle = id => membres.get(id)?.genre === "f";
     $("cFilCarte").hidden = false; $("cFilVide").hidden = evts.length > 0;
-    $("cFil").innerHTML = evts.map(e => {
+    const plus = evts.length - FIL_PLIE;
+    $("cFilPlus").hidden = plus <= 0;
+    $("cFilPlus").textContent = filDeplie ? "Replier le fil" : `Voir tout le fil (${plus} de plus)`;
+    $("cFil").innerHTML = evts.slice(0, filDeplie ? evts.length : FIL_PLIE).map(e => {
       const quand = `<span class="fil-quand">${ilYA(e.quand)}</span>`;
       if (e.type === "arrivee") return `<div class="fil-item"><span class="fil-ic">👋</span><div class="fil-corps"><div>${nom(e.joueur)} a rejoint le cercle</div></div>${quand}</div>`;
       if (e.type === "champion") return `<div class="fil-item fil-fort"><span class="fil-ic">🏆</span><div class="fil-corps"><div>${nom(e.joueur)} est champion${membres.get(e.joueur)?.genre === "f" ? "ne" : ""} du cercle !</div></div>${quand}</div>`;
@@ -468,6 +472,7 @@ export function installerCercles(ctx) {
         <div class="fil-reacs">${reac}</div></div>${quand}</div>`;
     }).join("");
   }
+  $("cFilPlus").addEventListener("click", () => { filDeplie = !filDeplie; renderFil(); });
   $("cFil").addEventListener("click", async e => {
     const une = e.target.closest("[data-une]"), r = e.target.closest("button[data-r]");
     const d = fil?.duels?.find(x => x.id === (une || r)?.closest("[data-duel]")?.dataset.duel);
