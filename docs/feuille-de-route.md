@@ -76,6 +76,16 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    tous les joueurs connectés ; option « Cacher mes adversaires sur ma fiche » (Options › Confidentialité : ses stats chiffrées
    restent visibles) ; mentions légales complétées.
    Le championnat avec poules s'ouvre à tous le 13 novembre, avec le fantôme et le fil (décision du porteur du projet).
+14. **Les sons du smash** (11 novembre, demande du porteur du projet : « le smash avec les ciseaux ne fait pas de bruit ») :
+   l'enregistrement « Ciseaux fort » est muet (l'appli prenait le normal) et le normal commençait par 0,6 s de silence, couvert
+   par les commentateurs : le silence du début de chaque coup de raquette est maintenant enlevé. Le smash gagnant des Ciseaux
+   ajoute un craquement et une déchirure ; le smash bloqué (renvoyé) a son impact sourd et la balle qui rebondit, le smash raté
+   un souffle dans le vide (sons fabriqués, `sons.js` : `dechirure`, `smashBloque`, `smashRate`). Le gros son du smash gagnant
+   suit maintenant le signe de celui qui a smashé (avant : toujours le signe du joueur, même quand le bot smashait).
+15. **Le smash récupéré** (11 novembre, décision du porteur du projet ; étape SQL 69, à coller avant la fusion) : quand les deux
+   joueurs smashent au même coup, celui qui gagne le point récupère le smash adverse : un smash de plus pour la suite du set
+   (perdu à la fin du set, comme le smash normal ; on dépense d'abord le smash du set). Smash bloqué ou smash simple repoussé :
+   rien. « 🔄 Smash récupéré ! » s'affiche (`regles.js` : `recupererSmash` ; le serveur : colonne `recups`). Le bot s'en sert aussi.
 
 ## En bref (14 octobre 2026)
 

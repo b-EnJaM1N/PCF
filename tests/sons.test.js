@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applaudissements, coupDeRaquette, echoStade, FOULES } from "../app/js/sons.js";
+import { applaudissements, coupDeRaquette, echoStade, FOULES, debutDuSon, dechirure, smashBloque, smashRate } from "../app/js/sons.js";
 import { FICHIERS_AMBIANCE, FICHIERS_RAQUETTE, FICHIERS_REACTIONS, reactionsPublic, egalitesAvantDernier, series, reactionPoint } from "../app/js/ambiance.js";
 import { rngFixe } from "./outils.js";
 
@@ -26,6 +26,23 @@ test("le coup de raquette est court et commence sans clic", () => {
   assert.ok(s.length < 44100 * 0.2);
   assert.ok(valide(s));
   assert.ok(Math.abs(s[0]) < 1e-9);
+});
+
+test("les sons du smash : la déchirure des Ciseaux, le smash bloqué, le smash raté", () => {
+  for (const [nom, f, max] of [["déchirure", dechirure, 0.5], ["bloqué", smashBloque, 0.55], ["raté", smashRate, 0.45]]) {
+    const s = f(22050, rngFixe(5));
+    assert.ok(s.length <= 22050 * max, nom);
+    assert.ok(valide(s), nom);
+    assert.ok(s.some(v => Math.abs(v) > 0.5), `${nom} n'est pas silencieux`);
+    assert.ok(Math.abs(s[0]) < 0.05, `${nom} commence sans clic`);
+  }
+});
+
+test("le silence au début d'un enregistrement est enlevé", () => {
+  const c = new Float32Array(1000); c[600] = 0.8; c[700] = -0.5;
+  assert.equal(debutDuSon([c]), 600);
+  assert.equal(debutDuSon([c], 0.1, 50), 550);
+  assert.equal(debutDuSon([new Float32Array(10)]), 0);
 });
 
 test("l'écho du stade et les noms de fichiers des sons", () => {

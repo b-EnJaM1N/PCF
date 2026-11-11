@@ -175,6 +175,24 @@ test("le smash : un par set et par joueur, pour le spectacle (le point ne change
   assert.ok(peutSmasher(m, 0), "nouveau set : un nouveau smash");
 });
 
+test("le smash récupéré : au double smash, le gagnant du point en récupère un pour la suite du set", async () => {
+  const { peutSmasher, noterSmash, recupererSmash } = await import("../app/js/regles.js");
+  const m = nouveauMatch({ pointsParSet: 3, setsGagnants: 2 });
+  noterSmash(m, 0); noterSmash(m, 1);
+  assert.equal(recupererSmash(m, [true, true], 0, 0), 0);
+  assert.ok(peutSmasher(m, 0) && !peutSmasher(m, 1), "Alice récupère un smash, Bob non");
+  noterSmash(m, 0);
+  assert.ok(!peutSmasher(m, 0), "le smash récupéré est dépensé");
+  assert.equal(recupererSmash(m, [true, true], null, 0), null, "double smash bloqué : rien");
+  assert.equal(recupererSmash(m, [false, true], 0, 0), null, "smash simple repoussé : rien");
+  assert.ok(!peutSmasher(m, 0));
+  // le smash récupéré se perd à la fin du set
+  recupererSmash(m, [true, true], 1, 0);
+  repeter(3, () => pointA(m));
+  noterSmash(m, 1);
+  assert.ok(!peutSmasher(m, 1), "au set suivant : seulement le smash du set");
+});
+
 test("ce que donne un smash : gagné, raté ou bloqué (égalité)", async () => {
   const { issueSmash } = await import("../app/js/regles.js");
   assert.equal(issueSmash([false, false], 0), null);

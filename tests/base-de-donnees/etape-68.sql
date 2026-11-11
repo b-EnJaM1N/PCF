@@ -1,6 +1,6 @@
 -- Tests de supabase/etape-68-fiche-joueur.sql : la fiche d'un joueur (stats, face-à-face, historique), sans les bots.
 \set QUIET on
-\echo Tests de la base de données (étape 68 : la fiche d'un joueur)
+\echo Tests de la base de données (étape 68 : la fiche joueur)
 
 insert into auth.users values
   ('aaaaaaaa-0000-0000-0000-000000000001', 'a@x.fr'), ('bbbbbbbb-0000-0000-0000-000000000002', 'b@x.fr'),

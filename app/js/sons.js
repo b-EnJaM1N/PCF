@@ -97,3 +97,68 @@ export const FOULES = {
   set: { duree: 3.4, spectateurs: 170, arret: [0.5, 1] },               // fin de set
 };
 // L'ovation de fin de match superpose les applaudissements de set et la clameur (voir ambiance.js).
+
+// Le début d'un enregistrement (en échantillons) : certains ont un long silence avant le son (le coup des Ciseaux : 0,6 s),
+// qui le faisait arriver trop tard, couvert par les commentateurs. On le joue à partir du premier vrai bruit.
+export function debutDuSon(canaux, seuil = 0.1, marge = 0) {
+  const crete = creteDe(canaux);
+  if (!crete) return 0;
+  let d = Infinity;
+  for (const c of canaux) for (let i = 0; i < c.length && i < d; i++) if (Math.abs(c[i]) >= crete * seuil) { d = i; break; }
+  return d === Infinity ? 0 : Math.max(0, d - marge);
+}
+
+// Le smash gagnant des Ciseaux (11 novembre, demande du porteur du projet) : un craquement sec, puis la toile qui se déchire.
+export function dechirure(fs, rng = Math.random) {
+  const duree = 0.45, len = Math.floor(fs * duree), s = new Float32Array(len);
+  const aigu = passeBande(fs, 3200, 0.8), medium = passeBande(fs, 1400, 1.2), craque = passeBande(fs, 2200, 0.6);
+  // le craquement : un claquement large, avec un coup sourd en dessous
+  for (let i = 0; i < Math.floor(fs * 0.05); i++) {
+    const t = i / fs;
+    s[i] += craque((rng() * 2 - 1) * Math.exp(-t / 0.004)) * 2.5 + Math.sin(2 * Math.PI * 140 * t) * Math.exp(-t / 0.015) * 0.6;
+  }
+  // la déchirure : des centaines de petits crépitements, de plus en plus serrés puis qui s'espacent, dans un souffle qui s'éteint
+  let t = 0.02;
+  while (t < duree - 0.03) {
+    const env = Math.min(1, (t - 0.02) / 0.04) * Math.exp(-(t - 0.06) / 0.16);
+    const i0 = Math.floor(t * fs), n = Math.floor(fs * (0.0008 + rng() * 0.0015)), amp = env * (1.5 + rng() * 2);
+    for (let i = 0; i < n && i0 + i < len; i++) s[i0 + i] += (rng() * 2 - 1) * amp * (1 - i / n);
+    t += 0.0008 + rng() * 0.0025 * (1 + t * 6);
+  }
+  for (let i = 0; i < len; i++) {
+    const t2 = i / fs, souffle = (rng() * 2 - 1) * 0.25 * Math.exp(-t2 / 0.12) * Math.min(1, t2 / 0.01);
+    s[i] = aigu(s[i] + souffle) * 1.2 + medium(s[i]) * 0.7;
+  }
+  for (let i = 0; i < 24; i++) s[i] *= i / 24;
+  for (let i = 0; i < fs * 0.03; i++) s[len - 1 - i] *= i / (fs * 0.03);   // fin en douceur
+  return normaliser([s])[0];
+}
+
+// Le smash bloqué (même signe : l'adversaire le renvoie) : un impact sourd, et la balle qui rebondit deux fois.
+export function smashBloque(fs, rng = Math.random) {
+  const len = Math.floor(fs * 0.5), s = new Float32Array(len), filtre = passeBande(fs, 900, 0.9);
+  for (const [debut, amp, f] of [[0, 1, 150], [0.17, 0.45, 190], [0.29, 0.2, 210]]) {
+    const i0 = Math.floor(debut * fs);
+    for (let i = 0; i < fs * 0.12 && i0 + i < len; i++) {
+      const t = i / fs;
+      s[i0 + i] += amp * (Math.sin(2 * Math.PI * f * t) * Math.exp(-t / 0.025) + (rng() * 2 - 1) * Math.exp(-t / 0.004) * 0.8);
+    }
+  }
+  for (let i = 0; i < len; i++) s[i] = s[i] * 0.7 + filtre(s[i]) * 0.6;
+  for (let i = 0; i < 24; i++) s[i] *= i / 24;
+  return normaliser([s], 0.8)[0];
+}
+
+// Le smash raté (l'adversaire gagne le point) : le bras qui fend l'air, dans le vide (un souffle qui descend).
+export function smashRate(fs, rng = Math.random) {
+  const len = Math.floor(fs * 0.4), s = new Float32Array(len);
+  let w1 = 0, w2 = 0;
+  for (let i = 0; i < len; i++) {
+    const t = i / fs, p = t / 0.4;
+    const f = 2600 * Math.pow(0.25, p);                                   // de l'aigu vers le grave
+    const k = 1 - Math.exp(-2 * Math.PI * f / fs);
+    w1 += k * ((rng() * 2 - 1) - w1); w2 += k * (w1 - w2);              // souffle filtré, qui s'assombrit
+    s[i] = (w1 - w2) * Math.sin(Math.PI * Math.min(1, p * 1.15)) ** 2;  // monte puis s'éteint
+  }
+  return normaliser([s], 0.7)[0];
+}
