@@ -16,9 +16,11 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
 étapes 61-62) ; trophée « Fondé en 2026 » (version de test seulement) ; bandes-annonces sur l'hymne refaites (validées).
 
 **À faire** :
-1. Le porteur du projet : une nouvelle version du paquet Android dans le test fermé (PWABuilder, code de version + 1, sa clé ;
-   note de version : la série de jours et le bouton d'avis) ; puis une à chaque nouveauté ouverte.
-2. Envoyer le questionnaire aux testeurs (texte proposé le 10 novembre, à valider) ; noter chaque retour dans le journal.
+1. Le porteur du projet, le 12 novembre sur PC : une nouvelle version du paquet Android dans le test fermé (PWABuilder,
+   « Use mine » avec sa clé `.keystore` et `signing-key-info.txt`, retrouvés le 11 novembre ; code de version + 1 ; note de version
+   proposée le 11 novembre : la série de jours, le bouton d'avis, Mes amis, les chants) ; puis une à chaque nouveauté ouverte.
+2. Questionnaire validé et envoyé aux testeurs le 11 novembre (texte dans `docs/play-store/retours-testeurs.md`) ; noter chaque
+   réponse dans le journal.
 3. Ouvrir la nouveauté suivante vers le 13 novembre (le fantôme proposé), puis le replay, l'écran titre avec l'hymne, les objets du
    club (et à la sortie : boutique → récompenses de fidélité en jours de jeu, voir plus bas).
 4. Les chants des autres testeurs (le porteur du projet les envoie ensemble ; pseudo#numéro exact, « il »/« elle » dans Ma fiche).
