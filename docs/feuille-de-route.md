@@ -68,6 +68,12 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
 12. **La carte « Ton avis ? »** (11 novembre, choix du porteur du projet : aucun testeur n'avait utilisé Options › 💬) : à la fin
    d'un match, une seule fois, à partir du 5e match et si l'avis n'est pas déjà donné ; « 💬 Donner mon avis » ouvre le
    formulaire des Options (`proposerAvis` dans `nouveautes.js` : « avis » ; version de test, à ouvrir le 13 novembre).
+13. **La fiche complète d'un joueur en ligne** (11 novembre, choix du porteur du projet ; étape SQL 68 ; `fiche-joueur.js`,
+   `nouveautes.js` : « fiche » ; version de test, à ouvrir le 13 novembre) : sur sa fiche (ami, cercle, « Derniers matchs »),
+   3 onglets : 📊 ses stats (tous ses duels contre des joueurs, jamais contre un bot ; les matchs hors ligne ne sont pas sur le
+   serveur), 🤝 ses face-à-face (ses 10 adversaires les plus fréquents), 📜 son historique (ses 20 derniers duels). Visible par
+   tous les joueurs connectés ; option « Cacher mes adversaires sur ma fiche » (Options › Confidentialité : ses stats chiffrées
+   restent visibles) ; mentions légales complétées.
    Le championnat avec poules s'ouvre à tous le 13 novembre, avec le fantôme et le fil (décision du porteur du projet).
 
 ## En bref (14 octobre 2026)

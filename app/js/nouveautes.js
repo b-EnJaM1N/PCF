@@ -5,7 +5,8 @@
 //   les temps forts ;  hymne : l'écran titre avec l'hymne ;  club : les objets du club et le trophée « Fondé en 2026 » ;
 //   fil : le fil d'actualité du cercle et « Publier la Une » (11 novembre ; à ouvrir avec le fantôme le 13 novembre) ;
 //   poules : le championnat du cercle avec poules, playoffs et playouts (11 novembre, étape SQL 66) ;
-//   avis : la carte « Ton avis ? » à la fin d'un match, une seule fois après le 5e match (11 novembre).
+//   avis : la carte « Ton avis ? » à la fin d'un match, une seule fois après le 5e match (11 novembre) ;
+//   fiche : la fiche complète d'un joueur en ligne, stats, face-à-face, historique (11 novembre, étape SQL 68).
 export const OUVERTES = new Set(["serie"]);
 
 export function versionDeTest(loc = typeof location !== "undefined" ? location : null) {
