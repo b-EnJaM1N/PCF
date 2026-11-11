@@ -806,7 +806,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (551 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (561 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1040,6 +1040,16 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_smash_01.mp3` | Toute la puissance est dans le poignet. |
 | `commentatrice_replay_set_01.mp3` | Tout s'est joué là. |
 | `commentatrice_replay_serie_01.mp3` | La patience a payé. |
+| `commentatrice_replay_palette_pertinent_01.mp3` | Il l'avait lu. Après une défaite, l'autre change toujours. |
+| `commentatrice_replay_palette_pertinent_01_f.mp3` | Elle l'avait lu. Après une défaite, l'autre change toujours. |
+| `commentatrice_replay_palette_pertinent_02.mp3` | Tout était sur la palette. Il n'a eu qu'à se servir. |
+| `commentatrice_replay_palette_pertinent_02_f.mp3` | Tout était sur la palette. Elle n'a eu qu'à se servir. |
+| `commentatrice_replay_palette_propre_01.mp3` | Il casse sa propre habitude au bon moment. Très propre. |
+| `commentatrice_replay_palette_propre_01_f.mp3` | Elle casse sa propre habitude au bon moment. Très propre. |
+| `commentatrice_replay_palette_mauvais_01.mp3` | Il rejoue la même chose. On ne peut pas faire ça à ce niveau. |
+| `commentatrice_replay_palette_mauvais_01_f.mp3` | Elle rejoue la même chose. On ne peut pas faire ça à ce niveau. |
+| `commentatrice_replay_palette_pas_la_01.mp3` | Honnêtement ? Il n'y avait rien à lire. Il a eu raison d'oser. |
+| `commentatrice_replay_palette_pas_la_01_f.mp3` | Honnêtement ? Il n'y avait rien à lire. Elle a eu raison d'oser. |
 | `commentatrice_memoire_serie_3_01.mp3` | Il reste sur trois victoires d'affilée contre lui. |
 | `commentatrice_memoire_serie_3_01_f.mp3` | Elle reste sur trois victoires d'affilée contre lui. |
 | `commentatrice_memoire_serie_4_01.mp3` | Quatre de suite. L'autre commence à le prendre personnellement. |

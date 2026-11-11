@@ -43,3 +43,36 @@ test("le replay : les 3 temps forts, dans l'ordre du match ; le moment de chaque
   assert.equal(momentDuSet(ms, 1).type, "match");
   assert.equal(momentDuSet(ms, 2), null);
 });
+
+// ---------------------------------------------------------------- la palette (11 novembre)
+import { paletteDuPoint, texteHabitude } from "../app/js/replay.js";
+const coup = ([a, b]) => ({ a, b, gagnant: a === b ? null : (a + 1) % 3 === b ? 0 : 1 });
+const palette = suite => paletteDuPoint(suite.map(coup));
+
+test("la palette : tactiquement pertinent (le gagnant a lu l'habitude de l'autre)", () => {
+  // Il joue toujours Pierre (0) ; je finis par jouer Feuille (2), qui le bat.
+  const pa = palette([[1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [2, 0]]);
+  assert.equal(pa.verdict, "pertinent");
+  assert.equal(pa.joueur, 0);
+  assert.equal(pa.habitude.joueur, 1);
+  assert.equal(pa.coups.length, 5);
+  assert.match(texteHabitude(pa.habitude, "Galet"), /^Galet joue souvent/);
+  assert.match(texteHabitude(pa.habitude, "Toi"), /^Tu joues souvent/);
+});
+
+test("la palette : mauvais choix (le perdant suit son habitude) et techniquement propre (le gagnant casse la sienne)", () => {
+  // Je joue toujours Pierre et je perds contre Feuille : il me lit… il gagne avec Feuille → pertinent pour lui.
+  assert.equal(palette([[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 2]]).verdict, "pertinent");
+  // Je joue toujours Pierre, puis je casse l'habitude avec Ciseaux et je gagne contre Feuille.
+  const propre = palette([[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [1, 2]]);
+  assert.equal(propre.verdict, "propre");
+  assert.equal(propre.habitude.joueur, 0);
+  // Il tourne en boucle (Pierre, Feuille, Ciseaux…) et continue ; je gagne avec un autre signe que celui conseillé : mauvais choix.
+  const v = palette([[2, 0], [1, 2], [0, 1], [2, 0], [1, 2], [0, 1], [2, 0]]).verdict;
+  assert.ok(["pertinent", "mauvais"].includes(v), v);
+});
+
+test("la palette : rien à lire en début de match, rien pour une égalité", () => {
+  assert.equal(palette([[0, 1], [2, 0]]).verdict, "pas_la");
+  assert.equal(palette([[0, 1], [0, 0]]), null);
+});
