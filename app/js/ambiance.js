@@ -3,7 +3,7 @@
 // La raquette et les applaudissements sont fabriqués par le code (sons.js), sauf si un vrai
 // enregistrement portant leur nom est déposé dans app/audio/ (ex. public_ovation_01.mp3).
 // Le murmure de fond, la tension et le « ooh » n'existent qu'en enregistrement : sans fichier, rien.
-import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe } from "./sons.js";
+import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe, debutDuSon, dechirure, smashBloque, smashRate } from "./sons.js";
 import { balle, pointDecisif } from "./regles.js";
 
 const AC = typeof window !== "undefined" ? window.AudioContext || window.webkitAudioContext : null;
@@ -190,6 +190,7 @@ export class Ambiance {
     // La fabrication des sons prend un moment : on la fait juste après, sans bloquer l'écran.
     const etapes = [
       () => { this.raquettes = HAUTEUR.map(h => this.tampon([coupDeRaquette(fs, h)])); },
+      () => { this.buf.dechirure = this.tampon([dechirure(fs)]); this.buf.smashBloque = this.tampon([smashBloque(fs)]); this.buf.smashRate = this.tampon([smashRate(fs)]); },
       ...["set", "clameur", "point"].map(type => () => { this.buf[type] = this.tampon(applaudissements(fs, FOULES[type])); }),
       () => this.chargerFichiers(),
     ];
@@ -239,7 +240,9 @@ export class Ambiance {
           // Un enregistrement presque muet (ça arrive avec ElevenLabs) : on garde le son fabriqué plutôt que d'amplifier du souffle.
           if (creteDe(canaux) < SEUIL_MUET) continue;
           normaliser(canaux, 0.95);
-          (this.raquettesFichiers[k] ||= [])[f] = b;
+          // (le silence du début enlevé : le coup claque au moment où les signes se dévoilent)
+          const d = debutDuSon(canaux, 0.1, Math.floor(b.sampleRate * 0.005));
+          (this.raquettesFichiers[k] ||= [])[f] = d ? this.tampon(canaux.map(c => c.subarray(d))) : b;
         } catch { /* son indisponible : le son fabriqué */ }
       }
     }
@@ -285,10 +288,19 @@ export class Ambiance {
 
   // Le smash gagnant (3 novembre, demande du porteur du projet : un son plus fort) : la raquette, version forte, doublée d'un
   // second impact avec l'écho du stade, et la clameur du public juste après.
+  // signe : celui du smash gagnant. Les Ciseaux (11 novembre) : en plus, un craquement et la toile qui se déchire.
   smash(signe = 2) {
     const f = this.raquettesFichiers[signe] || [], b = f[1] || f[0] || this.raquettes[signe];
     if (b) { this.jouer(b, 1, true, { salle: false }); this.jouer(b, 0.6, true, { delai: 0.06, vitesse: 0.85, salle: false }); }
+    if (signe === 1 && this.buf.dechirure) this.jouer(this.buf.dechirure, 0.9, true, { delai: 0.03, vitesse: 0.97 + Math.random() * 0.06, salle: false });
     if (this.buf.clameur) this.jouer(this.buf.clameur, 0.55, true, { delai: 0.25 });
+  }
+
+  // Le smash qui ne marque pas (11 novembre) : « bloque » (renvoyé : un impact sourd et la balle qui rebondit) ou
+  // « rate » (dans le vide : un souffle), juste après le coup de raquette.
+  smashManque(issue) {
+    const b = issue === "bloque" ? this.buf.smashBloque : this.buf.smashRate;
+    if (b) this.jouer(b, issue === "bloque" ? 0.8 : 0.7, true, { delai: 0.05, vitesse: 0.96 + Math.random() * 0.08, salle: false });
   }
 
   // Le murmure du public, en boucle pendant le match (seulement avec l'enregistrement).

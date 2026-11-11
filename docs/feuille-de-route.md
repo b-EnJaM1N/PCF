@@ -76,6 +76,12 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    tous les joueurs connectés ; option « Cacher mes adversaires sur ma fiche » (Options › Confidentialité : ses stats chiffrées
    restent visibles) ; mentions légales complétées.
    Le championnat avec poules s'ouvre à tous le 13 novembre, avec le fantôme et le fil (décision du porteur du projet).
+14. **Les sons du smash** (11 novembre, demande du porteur du projet : « le smash avec les ciseaux ne fait pas de bruit ») :
+   l'enregistrement « Ciseaux fort » est muet (l'appli prenait le normal) et le normal commençait par 0,6 s de silence, couvert
+   par les commentateurs : le silence du début de chaque coup de raquette est maintenant enlevé. Le smash gagnant des Ciseaux
+   ajoute un craquement et une déchirure ; le smash bloqué (renvoyé) a son impact sourd et la balle qui rebondit, le smash raté
+   un souffle dans le vide (sons fabriqués, `sons.js` : `dechirure`, `smashBloque`, `smashRate`). Le gros son du smash gagnant
+   suit maintenant le signe de celui qui a smashé (avant : toujours le signe du joueur, même quand le bot smashait).
 
 ## En bref (14 octobre 2026)
 
