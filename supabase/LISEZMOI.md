@@ -503,6 +503,15 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 sexagies sexies. Le championnat du cercle avec poules, playoffs et playouts (étape 66)
+
+Même manipulation que d'habitude avec [`etape-66-championnat-poules-playoffs.sql`](etape-66-championnat-poules-playoffs.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-66-championnat-poules-playoffs.sql).
+Supabase peut afficher « Potential issue detected » : c'est normal, confirmer. En créant un championnat : une poule ou 2, 3, 4 poules
+(serpentin par niveau, aller simple), playoffs à la fin (finale, demies, Top 14 ou quarts croisés selon le nombre), playouts entre les
+derniers quand il y a un enjeu, un format de match au choix pour les poules, l'élimination directe et la finale. Les championnats
+déjà créés ne changent pas. **À coller avant la fusion.**
+
 ## 1 sexagies quinquies. Le fil d'actualité du cercle (étape 65)
 
 Même manipulation que d'habitude avec [`etape-65-fil-du-cercle.sql`](etape-65-fil-du-cercle.sql)

@@ -120,3 +120,29 @@ test("championnat de chaque semaine : résumé et heure de départ", async () =>
   assert.equal(resume({ mode: "championnat", phase: "en_cours", hebdo: true, edition: 4, echeance: null }), "Semaine n° 4 · Championnat en cours");
   assert.equal(resume({ mode: "championnat", phase: "en_cours", edition: null, echeance: null }), "Championnat en cours", "championnat d'une seule fois");
 });
+
+// ---------------------------------------------------------------- poules et playoffs (étape 66)
+import { poulesReelles, toursKo, textePlayoffs, phaseChampionnat, tableauFinal, quiSyColle, mesMatchsRestants as restants66 } from "../app/js/tournoi-logique.js";
+test("championnat avec poules : nombre de poules, tours d'élimination directe, formule en mots", () => {
+  assert.equal(poulesReelles(5, 2), 1, "5 joueurs pour 2 poules : une seule");
+  assert.equal(poulesReelles(12, 4), 4);
+  assert.deepEqual([3, 4, 5, 6, 10].map(n => toursKo(1, n)), [1, 2, 2, 3, 3]);
+  assert.equal(toursKo(2, 8), 2); assert.equal(toursKo(2, 10), 3); assert.equal(toursKo(3, 9), 3);
+  assert.match(textePlayoffs(6, 1), /Top 14/);
+  assert.match(textePlayoffs(10, 2), /quarts/);
+  assert.match(textePlayoffs(8, 2), /demi-finales croisées/);
+});
+test("championnat avec playoffs : la phase, le tableau final, celui qui s'y colle, mes matchs du tour en cours", () => {
+  const m = (tour, position, phase, etape, j0, j1, fin = null) => ({ tour, position, phase, etape, j0: { id: j0 }, j1: { id: j1 }, fin });
+  const t = { mode: "championnat", phase: "en_cours", tour: 2, matchs: [m(1, 1, "poule", null, "a", "b", "score"), m(2, 1, "playoff", "Demi-finale", "a", "d"),
+    m(2, 101, "playout", "Match des derniers", "e", "f"), m(3, 1, "playoff", "Finale", "b", "x")] };
+  assert.equal(phaseChampionnat(t), "Demi-finales");
+  assert.equal(phaseChampionnat({ tour: 1 }), "Saison");
+  const f = tableauFinal(t);
+  assert.deepEqual(f.playoffs.map(r => r.etape), ["Demi-finale", "Finale"]);
+  assert.deepEqual(f.playouts.map(r => r.etape), ["Match des derniers"]);
+  assert.deepEqual(restants66(t, "b"), [], "la finale n'est pas encore à jouer");
+  assert.equal(restants66(t, "a").length, 1);
+  assert.equal(quiSyColle({ dernier: { id: "f" } }).id, "f");
+  assert.equal(quiSyColle({ phase: "termine", classement: [{ joueur: { id: "a" } }, { joueur: { id: "z" } }] }).id, "z");
+});

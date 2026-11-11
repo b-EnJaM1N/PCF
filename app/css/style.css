@@ -1019,3 +1019,4 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
   color: inherit; cursor: pointer; min-height: 30px; }
 .fil-r small { font-size: .75rem; color: var(--muted); }
 .fil-r.mienne { background: rgba(255,214,0,.18); border-color: rgba(255,214,0,.7); }
+#tClassement .cl-poule { text-align: left; padding-top: 10px; font-family: "Barlow Condensed", sans-serif; letter-spacing: 1px; }
