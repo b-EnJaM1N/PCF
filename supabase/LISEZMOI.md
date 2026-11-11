@@ -503,6 +503,14 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 sexagies quinquies. Le fil d'actualité du cercle (étape 65)
+
+Même manipulation que d'habitude avec [`etape-65-fil-du-cercle.sql`](etape-65-fil-du-cercle.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-65-fil-du-cercle.sql).
+Sur la page d'un cercle, « 📰 Le fil du cercle » : les résultats des duels entre membres, les nouveaux membres, le champion, les
+séries de victoires, des réactions (👏 🔥 😂 😱) et la Une d'un duel quand un des deux joueurs la publie (« 📰 Publier dans le fil du
+cercle » sous La Une). Aucun texte libre : rien à modérer. Seuls les membres voient le fil. **À coller avant la fusion.**
+
 ## 1 sexagies quater. Les nouveaux bijoux à la boutique (étape 64)
 
 Même manipulation que d'habitude avec [`etape-64-bijoux.sql`](etape-64-bijoux.sql)

@@ -11,6 +11,7 @@ import { lire, ecrire } from "./stockage.js";
 import { clePseudo } from "./chants-perso.js";
 import { installerTournois } from "./ecran-tournois.js";
 import { fantomeVisible } from "./fantome.js";
+import { filVisible, evenementsDuFil, scoreDuDuel, ilYA, REACTIONS } from "./fil-cercle.js";
 import { championDuCercle } from "./tournoi-logique.js";
 import { profils } from "./duel-serveur.js";
 
@@ -368,6 +369,7 @@ export function installerCercles(ctx) {
     cercleOuvert = id; detail = null;
     montrer("socCercle");
     $("cNom").textContent = "…"; $("cInfo").textContent = ""; $("cClassement").innerHTML = ""; $("cAmis").innerHTML = ""; $("cGestion").hidden = true;
+    $("cFilCarte").hidden = true; $("cFil").innerHTML = ""; dire("cFilMsg", ""); fil = null; championFil = null;
     dire("cMsg", message); dire("cInvMsg", "");
     window.scrollTo(0, 0);
     chargerCercle();
@@ -394,10 +396,15 @@ export function installerCercles(ctx) {
       tournois.liste($("cTournois"), ts);
       // Le champion du cercle (dernier championnat terminé) : 🏆 à côté de son nom, jusqu'au championnat suivant.
       const champion = championDuCercle(ts);
+      // (pour le fil : la date du dernier championnat terminé)
+      const fini = ts.filter(t => t.mode === "championnat" && t.phase === "termine" && t.vainqueur)
+        .sort((a, b) => Date.parse(b.fini_le || 0) - Date.parse(a.fini_le || 0))[0];
+      if (fini?.vainqueur?.id && fini.fini_le) { championFil = { id: fini.vainqueur.id, quand: fini.fini_le }; renderFil(); }
       const ligne = champion && $("cClassement").querySelector(`li[data-id="${champion.id}"] .jn`);
       if (ligne && !ligne.querySelector(".champion")) ligne.insertAdjacentHTML("beforeend", ' <span class="champion" title="Champion du cercle">🏆</span>');
     }).catch(() => {});
     const membres = c.membres || [];
+    chargerFil(id);
     const moi = membres.find(m => m.id === uid);
     if (moi) ctx.trophees?.({ duelsCercle: (moi.v || 0) + (moi.d || 0) });
     $("cBlason").innerHTML = blasonSVG(c.blason);
@@ -428,6 +435,46 @@ export function installerCercles(ctx) {
         `${m.role === "admin" ? "" : `<button class="petit alt" data-a="responsable" aria-label="Nommer responsable" title="Nommer responsable">👑</button>`}<button class="petit alt danger" data-a="exclure">Retirer</button>`)).join("");
     }
   }
+
+  // ---------------------------------------------------------------- le fil d'actualité du cercle (fil-cercle.js)
+  let fil = null, championFil = null;
+  async function chargerFil(id) {
+    if (!filVisible()) return;
+    try { const f = await social.filCercle(id); if (cercleOuvert !== id) return; fil = f; renderFil(); }
+    catch (err) { if (cercleOuvert === id) { $("cFilCarte").hidden = false; dire("cFilMsg", err.message, true); } }
+  }
+  function renderFil() {
+    if (!fil || !detail) return;
+    const membres = new Map((detail.membres || []).map(m => [m.id, m]));
+    const nom = id => { const m = membres.get(id); return m ? `<b>${esc(m.pseudo)}</b>` : "<b>?</b>"; };
+    const evts = evenementsDuFil(fil, { champion: championFil, membres: new Set(membres.keys()) });
+    $("cFilCarte").hidden = false; $("cFilVide").hidden = evts.length > 0;
+    $("cFil").innerHTML = evts.map(e => {
+      const quand = `<span class="fil-quand">${ilYA(e.quand)}</span>`;
+      if (e.type === "arrivee") return `<div class="fil-item"><span class="fil-ic">👋</span><div class="fil-corps"><div>${nom(e.joueur)} a rejoint le cercle</div></div>${quand}</div>`;
+      if (e.type === "champion") return `<div class="fil-item fil-fort"><span class="fil-ic">🏆</span><div class="fil-corps"><div>${nom(e.joueur)} est champion${membres.get(e.joueur)?.genre === "f" ? "ne" : ""} du cercle !</div></div>${quand}</div>`;
+      if (e.type === "serie") return `<div class="fil-item fil-fort"><span class="fil-ic">🔥</span><div class="fil-corps"><div>${nom(e.joueur)} enchaîne ${e.n} victoires d'affilée dans le cercle</div></div>${quand}</div>`;
+      const d = e.duel, g = d.vainqueur === 0 ? d.j0 : d.j1, p = d.vainqueur === 0 ? d.j1 : d.j0;
+      const titre = d.une ? ctx.titreUneFil?.(d, membres) : null;
+      const reac = REACTIONS.map(([cle, emo]) => {
+        const n = d.reactions?.[cle] || 0;
+        return `<button class="fil-r${d.ma_reaction === cle ? " mienne" : ""}" data-r="${cle}" aria-label="Réagir ${emo}" aria-pressed="${d.ma_reaction === cle}">${emo}${n ? ` <small>${n}</small>` : ""}</button>`;
+      }).join("");
+      return `<div class="fil-item" data-duel="${esc(d.id)}"><span class="fil-ic">⚔️</span><div class="fil-corps">
+        <div>${nom(g)} bat ${nom(p)} <span class="fil-score">${d.fin === "score" ? scoreDuDuel(d) : d.fin === "forfait" ? "par forfait" : "par abandon"}</span></div>
+        ${titre ? `<button class="fil-une" data-une="${esc(d.id)}"><small>📰 La Une</small><b>${esc(titre)}</b></button>` : ""}
+        <div class="fil-reacs">${reac}</div></div>${quand}</div>`;
+    }).join("");
+  }
+  $("cFil").addEventListener("click", async e => {
+    const une = e.target.closest("[data-une]"), r = e.target.closest("button[data-r]");
+    const d = fil?.duels?.find(x => x.id === (une || r)?.closest("[data-duel]")?.dataset.duel);
+    if (!d) return;
+    if (une) { ctx.ouvrirUneFil?.(d, new Map((detail?.membres || []).map(m => [m.id, m]))); return; }
+    r.disabled = true;
+    try { await social.reagirFil(cercleOuvert, d.id, r.dataset.r); await chargerFil(cercleOuvert); }
+    catch (err) { dire("cFilMsg", err.message, true); r.disabled = false; }
+  });
 
   $("cClassement").addEventListener("click", async e => {
     const b = e.target.closest("button[data-a=defier]"); if (!b || !detail) return;
