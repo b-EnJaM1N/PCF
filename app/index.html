@@ -314,6 +314,12 @@
           <span class="blason-grand" id="cBlason"></span>
           <div><h2 id="cNom"></h2><p class="hint" id="cInfo"></p></div>
         </section>
+        <section class="card" id="cFilCarte" hidden>
+          <h2>📰 Le fil du cercle</h2>
+          <div class="fil" id="cFil"></div>
+          <p class="hint" id="cFilVide" hidden>Rien pour l'instant : le prochain duel entre membres apparaîtra ici.</p>
+          <p class="hint" id="cFilMsg" role="status"></p>
+        </section>
         <section class="card">
           <h2>Classement du cercle</h2>
           <ol class="classement" id="cClassement"></ol>
@@ -882,6 +888,7 @@
     <img id="uneImg" alt="">
     <p class="hint" id="uneMsg" role="status"></p>
     <button class="btn" id="unePartager">Partager</button>
+    <button class="btn alt" id="unePublier" hidden>📰 Publier dans le fil du cercle</button>
     <a class="btn alt" id="uneEnregistrer" download="la-une.png" href="#">Enregistrer l'image</a>
     <button class="btn alt" id="uneFermer">Fermer</button>
   </div>

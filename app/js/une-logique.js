@@ -93,7 +93,7 @@ export function chiffreDuMatch(m, stats) {
 export function citationDuMatch(citations) {
   for (const role of ["commentatrice", "commentateur"]) {
     const r = [...citations].reverse().find(l => l.role === role && l.texte.length <= 90);
-    if (r) return { texte: r.texte, auteur: MARQUE[role] };
+    if (r) return { texte: r.texte, auteur: MARQUE[role], ...(r.id ? { id: r.id } : {}) };   // (id : pour la Une publiée dans le fil du cercle)
   }
   return null;
 }

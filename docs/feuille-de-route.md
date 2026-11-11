@@ -39,6 +39,12 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    (`paletteDuPoint` dans `app/js/replay.js`) : tactiquement pertinent, techniquement très propre, mauvais choix, « le jeu n'était
    pas là ». Roland lance le replay, Monique donne le verdict. La palette n'apparaît que si la réplique du verdict est
    enregistrée : elle viendra d'elle-même avec ses 10 répliques (en attente de crédits, `outils/a-refaire.txt`). À enrichir si besoin.
+9. **Le fil d'actualité du cercle** (11 novembre, idée du porteur du projet ; *fait, version de test*, à ouvrir avec le fantôme le
+   13 novembre ; étape SQL 65 à coller avant la fusion) : pas de chat (modération, déclarations Google : gardé pour après la sortie) ;
+   sur la page d'un cercle, « 📰 Le fil du cercle » : résultats des duels entre membres (automatiques), Une publiée au choix par un
+   des deux joueurs (« 📰 Publier dans le fil du cercle » sous La Une ; refaite sur chaque téléphone à partir des coups, sans
+   aucun texte libre), réactions 👏 🔥 😂 😱 (une par joueur), nouveaux membres, champion du cercle, séries de 3, 5 et 10 victoires
+   (`app/js/fil-cercle.js`, `nouveautes.js` : « fil »). Pas les trophées (choix du porteur du projet).
 
 ## En bref (14 octobre 2026)
 
