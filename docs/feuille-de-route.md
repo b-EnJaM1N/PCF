@@ -16,9 +16,10 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
 étapes 61-62) ; trophée « Fondé en 2026 » (version de test seulement) ; bandes-annonces sur l'hymne refaites (validées).
 
 **À faire** :
-1. Le porteur du projet, le 12 novembre sur PC : une nouvelle version du paquet Android dans le test fermé (PWABuilder,
-   « Use mine » avec sa clé `.keystore` et `signing-key-info.txt`, retrouvés le 11 novembre ; code de version + 1 ; note de version
-   proposée le 11 novembre : la série de jours, le bouton d'avis, Mes amis, les chants) ; puis une à chaque nouveauté ouverte.
+1. Paquet Android **2 (1.0.0.1)** envoyé dans le test fermé (Alpha) le 11 novembre au matin (PWABuilder, « Use mine » avec sa clé
+   d'octobre : empreinte 2C:47:F7:B9…, déjà dans `assetlinks.json` ; note de version : série de jours, bouton d'avis, Mes amis,
+   chants). C'était la première mise à jour depuis le 9 octobre. Ensuite : une nouvelle version à chaque nouveauté ouverte
+   (code de version 3, puis 4…).
 2. Questionnaire validé et envoyé aux testeurs le 11 novembre (texte dans `docs/play-store/retours-testeurs.md`) ; noter chaque
    réponse dans le journal.
 3. Ouvrir la nouveauté suivante vers le 13 novembre (le fantôme proposé), puis le replay, l'écran titre avec l'hymne, les objets du

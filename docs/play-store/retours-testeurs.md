@@ -14,6 +14,8 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 - 10 nov. : des chants de supporters à leur pseudo pour quatre testeurs (Kikou, Emi, Shishyo, Pierre la feuill), d'autres à venir pour chaque testeur.
 - 10 nov. : la liste d'amis (voir le tableau).
 - 10 nov. : entre amis qui ont chacun leurs chants, autant de chances pour chacun (remarque du porteur du projet en jouant contre un testeur).
+- 11 nov. : questionnaire envoyé aux testeurs (texte plus bas).
+- 11 nov. : nouvelle version Android dans le test fermé, 2 (1.0.0.1), avec une note de version (série de jours, bouton d'avis, Mes amis, chants).
 
 ## Le questionnaire (envoyé aux testeurs le 11 novembre)
 
