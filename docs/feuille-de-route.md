@@ -25,7 +25,8 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
 3. **Le 13 novembre : ouvrir le fantôme à tous** (accord du porteur du projet le 11 novembre ; ajouter « fantome » à `OUVERTES`
    dans `app/js/nouveautes.js`), puis paquet Android 3 (1.0.0.2) avec la note validée :
    `<fr-FR>` « • Nouveau : le fantôme 👻 Sur la page d'un ami, défie son fantôme : un bot qui joue comme lui, d'après ses matchs.
-   Pas besoin qu'il soit connecté ! » « • Le match du jour : ta série de jours continue 🔥 » `</fr-FR>` ; message aux testeurs validé :
+   Pas besoin qu'il soit connecté ! » « • Nouveau : le fil du cercle 📰 Les résultats entre membres, la Une de vos matchs et vos
+   réactions. » « • Le match du jour : ta série de jours continue 🔥 » `</fr-FR>` (ligne du fil validée le 11 novembre) ; message aux testeurs validé :
    « Nouveauté dans HandSlam : le fantôme 👻 Va sur la page d'un ami et défie son fantôme : il joue comme lui, avec ses habitudes.
    Tu arrives à le battre ? Dis-moi ce que tu en penses ! ». Ensuite le replay (seul, sans la palette), l'écran titre avec l'hymne, les objets du
    club (et à la sortie : boutique → récompenses de fidélité en jours de jeu, voir plus bas).
