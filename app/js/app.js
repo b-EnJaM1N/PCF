@@ -542,8 +542,15 @@ function ligneReplay(pool, genre = "m", role = null) {
   return l.length ? l[Math.floor(Math.random() * l.length)] : null;
 }
 const genreJoueur = j => (j === 0 ? P.genre : OPP.humain ? OPP.genre : botAuFeminin(OPP) ? "f" : "m");
-// La palette (replay.js) : les 5 coups d'avant, l'habitude surlignée, le verdict de Monique (écrit ; dit s'il est enregistré).
-function montrerPalette(pa, mo) {
+// La palette (replay.js) : les 5 coups d'avant, l'habitude surlignée, le verdict de Monique.
+// Décision du porteur du projet (11 novembre) : pas de palette sans la voix de Monique ; elle n'apparaît que si la réplique du
+// verdict est enregistrée (elle viendra d'elle-même avec les fichiers audio, version de test comprise).
+function lignePalette(pa) {
+  const l = (POOLS[`replay_palette_${pa.verdict}`] || []).filter(it => !it.cle || it.cle === pa.habitude?.cle)
+    .map(it => ligneMoment(it, { genre: genreJoueur(pa.joueur) })).filter(x => x && voix.fichiers.has(x.id));
+  return l.length ? l[Math.floor(Math.random() * l.length)] : null;
+}
+function montrerPalette(pa, mo, l) {
   const nom = j => (j === 0 ? nomAffiche(P) : OPP.nom), hab = pa.habitude;
   const ligne = (j, cle) => `<div class="pal-ligne${hab?.joueur === j ? " pal-lue" : ""}"><span class="pal-nom">${esc(nom(j))}</span>`
     + pa.coups.map(c => `<span class="pal-case${c.gagnant === j ? " pal-g" + j : ""}">${EMOJIS[c[cle]]}</span>`).join("")
@@ -551,11 +558,9 @@ function montrerPalette(pa, mo) {
   $("rpPalCoups").innerHTML = ligne(0, "a") + ligne(1, "b");
   $("rpPalHab").textContent = hab ? texteHabitude(hab, nom(hab.joueur)) : "Aucune habitude à lire.";
   $("rpPalEtiquette").textContent = VERDICTS[pa.verdict]; $("rpPalEtiquette").className = `pal-etiquette pal-${pa.verdict}`;
-  const items = (POOLS[`replay_palette_${pa.verdict}`] || []).filter(it => !it.cle || it.cle === hab?.cle);
-  const it = items[Math.floor(Math.random() * items.length)], l = it ? ligneMoment(it, { genre: genreJoueur(pa.joueur) }) : null;
-  $("rpPalCom").textContent = l ? `« ${l.texte} » — Monique` : "";
+  $("rpPalCom").textContent = `« ${l.texte} » — Monique`;
   $("rpPalette").hidden = false;
-  if (l && voix.fichiers.has(l.id)) voix.finiDeParler(() => voix.dire([l]), 600);
+  voix.finiDeParler(() => voix.dire([l]), 600);
 }
 function jouerReplay(liste, apres = () => {}) {
   if (!liste.length) { apres(); return; }
@@ -578,7 +583,7 @@ function jouerReplay(liste, apres = () => {}) {
     $("rpStatus").textContent = `Set ${mo.set + 1}`;
     $("rpCompte").textContent = liste.length > 1 ? `${i} / ${liste.length}` : "";
     $("rpVerdict").textContent = ""; $("rpCom").textContent = ""; $("rpPalette").hidden = true;
-    const pa = mo.palette || null, roland = pa ? "commentateur" : null;
+    const lp = mo.palette ? lignePalette(mo.palette) : null, pa = lp ? mo.palette : null, roland = pa ? "commentateur" : null;
     [[moi, 0], [adv, 1]].forEach(([el, g]) => { el.innerHTML = mainGantee(g, 0, "Poing serré"); el.className = "hand secoue"; });
     // Roland ou Monique : « Revoyons ça ! » pour la première action, puis un mot sur l'action au dévoilement.
     const genre = genreJoueur(mo.gagnant);
@@ -596,7 +601,7 @@ function jouerReplay(liste, apres = () => {}) {
         (mo.gagnant === 0 ? moi : adv).classList.add("win"); (mo.gagnant === 0 ? adv : moi).classList.add("lose");
         $("rpScoreMoi").textContent = apresPt[0]; $("rpScoreAdv").textContent = apresPt[1];
         try { ambiance.public("clameur", 0.4); } catch { /* sans son */ }
-        if (pa) t = setTimeout(() => { if (fini) return; montrerPalette(pa, mo); t = setTimeout(montrer, 6500); }, vite ? 300 : 900);
+        if (pa) t = setTimeout(() => { if (fini) return; montrerPalette(pa, mo, lp); t = setTimeout(montrer, 6500); }, vite ? 300 : 900);
         else t = setTimeout(montrer, vite ? 2600 : 3200);
       }, vite ? 0 : 700);
     }, vite ? 300 : 2000);
