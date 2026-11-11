@@ -31,6 +31,10 @@ export const dossierJoueur = id => rpc("dossier_joueur", { p_joueur: id });
 
 export const mesCercles = () => rpc("mes_cercles");                                  // → { cercles, invitations }
 export const voirCercle = id => rpc("voir_cercle", { p_id: id });
+// Le fil d'actualité du cercle (supabase/etape-65-fil-du-cercle.sql).
+export const filCercle = id => rpc("fil_cercle", { p_id: id });
+export const publierUne = (duel, graine, citation) => rpc("publier_une", { p_duel: duel, p_graine: graine, p_citation: citation || null });
+export const reagirFil = (cercle, duel, emoji) => rpc("reagir_fil", { p_cercle: cercle, p_duel: duel, p_emoji: emoji });
 export const creerCercle = (nom, blason) => rpc("creer_cercle", { p_nom: nom, p_blason: blason });
 export const modifierCercle = (id, nom, blason) => rpc("modifier_cercle", { p_id: id, p_nom: nom, p_blason: blason });
 export const inviterCercle = (id, joueur) => rpc("inviter_cercle", { p_id: id, p_joueur: joueur });

@@ -4,9 +4,10 @@ import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
-import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis } from "./social-serveur.js";
+import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne } from "./social-serveur.js";
 import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier, origineIci } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
+import { filVisible, matchDuDuel, hasardFixe, etapeDuDuel } from "./fil-cercle.js";
 import { dessinerUne } from "./une.js";
 import { carteDe, notesDe, texteRang, rangDe } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
@@ -1206,18 +1207,52 @@ $("btnUne").addEventListener("click", async () => {
   // (La Une sans les surnoms, 10 novembre ; sous la main d'un bot, son style de jeu reste)
   const moi = { nom: nomAffiche(P), surnom: sn, legende: null, genre: P.genre, av: avatarSVG(avMoi()) };
   const adv = { nom: OPP.nom, surnom: snAdv, legende: OPP.humain ? null : OPP.style, genre: OPP.genre, av: avatarSVG(avAdv()) };
-  const h = histoireDuMatch(m, S.stats, moi, adv, { etape: u.etape, finale: u.finale, citations: S.citations || [], enjeu: u.enjeu });
+  // (un hasard qui se rejoue : la même Une, titre compris, sur le téléphone de ceux qui la verront dans le fil du cercle)
+  u.graine ??= Math.floor(Math.random() * 10000);
+  const h = histoireDuMatch(m, S.stats, moi, adv, { etape: u.etape, finale: u.finale, citations: S.citations || [], enjeu: u.enjeu }, hasardFixe(u.graine));
+  // Publier la Une dans le fil du cercle (fil-cercle.js) : après un duel contre un joueur, allé au bout.
+  const duelId = S.duel && OPP.humain ? D?.duel?.id : null;
+  $("unePublier").hidden = !(filVisible() && duelId); $("unePublier").disabled = false;
+  $("unePublier").onclick = async () => {
+    $("unePublier").disabled = true;
+    try {
+      const r = await publierUne(duelId, u.graine, h.citation?.id);
+      $("uneMsg").textContent = !r.cercles ? "Vous n'avez aucun cercle en commun : cette Une n'apparaîtra dans aucun fil."
+        : r.publiee ? `📰 Publiée dans le fil ${r.cercles > 1 ? `de vos ${r.cercles} cercles communs` : "de votre cercle"} !`
+        : "La Une de ce match est déjà dans le fil de votre cercle.";
+    } catch (e) { $("uneMsg").textContent = e.message; $("unePublier").disabled = false; }
+  };
+  await montrerUne(h, { moi, adv }, {
+    sets: unSet ? m.scoresSets[0].join(" – ") : `${m.sets[0]} – ${m.sets[1]}`,
+    detail: unSet ? "Set unique" : m.scoresSets.map(([a, b]) => `${a}–${b}`).join(" · "),
+    numero: u.numero, date: new Date(),
+  });
+});
+async function montrerUne(h, joueurs, score) {
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
   $("une").classList.add("show");
   const adresse = (location.host + location.pathname).replace(/index\.html$/, "").replace(/preview\/$/, "");
-  const canvas = await dessinerUne(document.createElement("canvas"), h, { moi, adv }, {
-    sets: unSet ? m.scoresSets[0].join(" – ") : `${m.sets[0]} – ${m.sets[1]}`,
-    detail: unSet ? "Set unique" : m.scoresSets.map(([a, b]) => `${a}–${b}`).join(" · "),
-    numero: u.numero, date: new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }), adresse,
-  });
+  const canvas = await dessinerUne(document.createElement("canvas"), h, joueurs, { ...score, adresse,
+    date: score.date.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }) });
   await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
     fichier: "la-une.png", alt: `La Une : ${h.titre}. ${h.chapo}`, titre: MARQUE.journal });
-});
+}
+// La Une d'un duel du fil du cercle, refaite à partir des coups (fil-cercle.js) : membres = Map id → carte du membre.
+function uneDuFil(d, membres) {
+  const par = d.une.par, ids = par === 0 ? [d.j0, d.j1] : [d.j1, d.j0];
+  const [a, b] = ids.map(id => membres.get(id) || { pseudo: "?", avatar: {} });
+  const joueur = x => ({ nom: x.pseudo, surnom: null, legende: null, genre: x.genre === "f" ? "f" : "m", av: avatarSVG(x.avatar || {}) });
+  const moi = joueur(a), adv = joueur(b), { m, stats } = matchDuDuel(d, par), unSet = m.format.setsGagnants === 1;
+  const ligne = d.une.citation ? CATALOGUE.get(d.une.citation) : null;
+  const citations = ligne && /^commentat/.test(ligne.role) ? [ligne] : [];
+  const h = histoireDuMatch(m, stats, moi, adv, { etape: etapeDuDuel(d), citations, enjeu: d.une.enjeu || null }, hasardFixe(d.une.graine));
+  const score = {
+    sets: unSet ? (m.scoresSets[0] || [0, 0]).join(" – ") : `${m.sets[0]} – ${m.sets[1]}`,
+    detail: unSet ? "Set unique" : m.scoresSets.map(([x, y]) => `${x}–${y}`).join(" · "),
+    numero: parseInt(String(d.id).slice(0, 4), 16) % 1000 || 1, date: new Date(d.quand),
+  };
+  return { h, joueurs: { moi, adv }, score };
+}
 $("uneFermer").addEventListener("click", () => $("une").classList.remove("show"));
 
 // ---------------------------------------------------------------- face-à-face avec un adversaire (touché dans « Derniers matchs »)
@@ -2720,6 +2755,8 @@ cerclesUI = installerCercles({
   voirCarte: id => voirCarteDe(id),
   dossierEtMains: (uid, nom, duels, elle) => dossierEtMains(uid, nom, duels, elle),
   fantomeDe: id => chargerFantome(id).then(f => !!f),
+  titreUneFil: (d, membres) => { try { return uneDuFil(d, membres).h.titre; } catch { return null; } },
+  ouvrirUneFil: (d, membres) => { const u = uneDuFil(d, membres); $("unePublier").hidden = true; return montrerUne(u.h, u.joueurs, u.score); },
   jouerFantome,
   lancerDuel,
   trophees: donnees => gagnerTrophees(accorderTitres(P, titresEnLigne(donnees))),
