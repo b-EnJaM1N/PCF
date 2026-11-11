@@ -9,3 +9,11 @@ test("les nouveautés : toutes sur la version de test, seulement les ouvertes su
   assert.ok(ouvert("serie", officielle), "la série de jours est ouverte à tous (10 novembre)");
   for (const nom of ["fantome", "replay", "hymne", "club"]) assert.equal(ouvert(nom, officielle), OUVERTES.has(nom), nom);
 });
+
+test("la carte « Ton avis ? » : une seule fois, à partir du 5e match, si l'avis n'est pas déjà donné", async () => {
+  const { proposerAvis } = await import("../app/js/nouveautes.js");
+  assert.equal(proposerAvis({ matchs: 4 }), false);
+  assert.equal(proposerAvis({ matchs: 5 }), true);
+  assert.equal(proposerAvis({ matchs: 9, dejaProposee: true }), false);
+  assert.equal(proposerAvis({ matchs: 9, dejaDonne: true }), false);
+});

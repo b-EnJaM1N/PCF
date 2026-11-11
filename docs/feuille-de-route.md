@@ -65,6 +65,9 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    « Je suis ton père ! », « Déculottée ! », « Bien joué jeune padawan. » (plus proposés ; encore affichés s'ils arrivent d'une
    ancienne version, le serveur les accepte toujours) ; les messages de la fenêtre rangés en deux colonnes de même largeur.
    Ajouté « Tu vas pleurer. » à côté de « Prépare-toi à souffrir. » (étape SQL 67).
+12. **La carte « Ton avis ? »** (11 novembre, choix du porteur du projet : aucun testeur n'avait utilisé Options › 💬) : à la fin
+   d'un match, une seule fois, à partir du 5e match et si l'avis n'est pas déjà donné ; « 💬 Donner mon avis » ouvre le
+   formulaire des Options (`proposerAvis` dans `nouveautes.js` : « avis » ; version de test, à ouvrir le 13 novembre).
    Le championnat avec poules s'ouvre à tous le 13 novembre, avec le fantôme et le fil (décision du porteur du projet).
 
 ## En bref (14 octobre 2026)
