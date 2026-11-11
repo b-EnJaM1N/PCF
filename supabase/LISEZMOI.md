@@ -503,6 +503,12 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 sexagies septies. « Tu vas pleurer. » (étape 67)
+
+Même manipulation que d'habitude avec [`etape-67-message-pleurer.sql`](etape-67-message-pleurer.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-67-message-pleurer.sql).
+Un message de chambrage de plus avant le match, entre amis. **À coller avant la fusion.**
+
 ## 1 sexagies sexies. Le championnat du cercle avec poules, playoffs et playouts (étape 66)
 
 Même manipulation que d'habitude avec [`etape-66-championnat-poules-playoffs.sql`](etape-66-championnat-poules-playoffs.sql)

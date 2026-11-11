@@ -64,6 +64,7 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
 11. **Messages rapides** (11 novembre, demande du porteur du projet) : retirés « Quelle chatoune ! », « Il y avait un faux rebond ! »,
    « Je suis ton père ! », « Déculottée ! », « Bien joué jeune padawan. » (plus proposés ; encore affichés s'ils arrivent d'une
    ancienne version, le serveur les accepte toujours) ; les messages de la fenêtre rangés en deux colonnes de même largeur.
+   Ajouté « Tu vas pleurer. » à côté de « Prépare-toi à souffrir. » (étape SQL 67).
    Le championnat avec poules s'ouvre à tous le 13 novembre, avec le fantôme et le fil (décision du porteur du projet).
 
 ## En bref (14 octobre 2026)

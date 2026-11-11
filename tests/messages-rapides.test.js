@@ -13,8 +13,9 @@ test("chaque message tient dans une bulle et chaque identifiant est unique à so
 });
 
 test("les mêmes messages dans l'appli et sur le serveur", () => {
-  // (la liste la plus récente : étape 53, qui ajoute les annonces et la pause entre les sets ; les annonces comptent parmi « tous »)
-  const sql = readFileSync(new URL("../supabase/etape-53-messages-entre-sets.sql", import.meta.url), "utf8");
+  // (la liste la plus récente : étape 67, « Tu vas pleurer. » ; l'étape 53 avait ajouté les annonces et la pause entre les sets ;
+  // les annonces comptent parmi « tous »)
+  const sql = readFileSync(new URL("../supabase/etape-67-message-pleurer.sql", import.meta.url), "utf8");
   for (const [moment, m] of Object.entries(MESSAGES)) {
     for (const [registre, amis] of [["tous", false], ["amis", true]]) {
       const ligne = sql.match(new RegExp(`p_moment = '${moment}' and ${amis ? "" : "not "}p_amis then array\\[([^\\]]*)\\]`));
