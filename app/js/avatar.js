@@ -181,7 +181,7 @@ function mainNue(symbole, peau, vernis, bague, cleBague, tordu = 0) {
   if (symbole === "index") return doigt(41, 50, 40, -4, { avecBague: true }) + paume(46) + replie(46.5, 42, 9.5, 18) + replie(55.5, 43, 9, 17) + replie(64.5, 46, 8, 15) + doigt(33, 66, 26, 74);
   if (symbole === "dos") return doigt(29, 68, 20, -20, { sansOngle: true }) + paume(42, false) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [36, 34, 35, 37][i], 10.5, 14, { pli: false, avecBague: i === 2 })).join("") + tendons;
   const poing = paume(42) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [38, 35, 36, 39][i], 10.5, 22, { avecBague: i === 2 })).join("");
-  if (symbole === "pouce") return `<path d="M40 72 L40 100 L61 100 L61 72 Z" fill="${peau}" stroke="${tr}" stroke-width="${T}"/>` + pouceLeve(peau, tr, tr, T) + `<g transform="rotate(-5 41 35)">${anneau(35.6, 31.6, 11.5)}</g>`;
+  if (symbole === "pouce") return `<path d="M40 72 L40 100 L61 100 L61 72 Z" fill="${peau}" stroke="${tr}" stroke-width="${T}"/>` + pouceLeve(peau, tr, tr, T, ongle) + `<g transform="rotate(-5 41 35)">${anneau(35.6, 31.6, 11.5)}</g>`;
   return poing + doigt(31, 61, 28, 80);   // pierre : le pouce replié devant les doigts
 }
 // La bague sur un gant : sur le doigt du milieu, à sa base (là où il sort de la paume), selon la forme de la main ;
@@ -315,11 +315,13 @@ function lameTordue(x, y, h, gant, ink, rot, pli) {
 
 // Le pouce levé vu de côté, comme l'emoji 👍 : le poing (dos de la main à gauche), les quatre doigts repliés empilés à droite,
 // rentrés dans le poing, et le pouce dressé au-dessus, un peu penché. trait : le contour ; pli : les plis (plus discrets).
-function pouceLeve(fill, trait, pli, epaisseur = 1.5) {
+// L'ongle : à peine visible, sur le bord extérieur du pouce (à l'opposé des doigts ; 12 novembre, remarque du porteur du projet).
+function pouceLeve(fill, trait, pli, epaisseur = 1.5, ongleFill = "none") {
   const w = `stroke="${trait}" stroke-width="${epaisseur}" stroke-linejoin="round"`;
   return `<path d="M31 50 Q31 42 39 42 L60 42 Q70 42 70 50 L70 70 Q70 78 61 78 L41 78 Q31 78 31 69 Z" fill="${fill}" ${w}/>
     ${[0, 1, 2, 3].map(i => `<rect x="${47 + (i === 3 ? 2 : 0)}" y="${43.5 + i * 8.4}" width="${[26, 26, 25, 22][i]}" height="8.4" rx="4.2" fill="${fill}" ${w}/>`).join("")}
     <path d="M34 50 C32.5 41 33 30 36 21.5 C38 15.5 46.5 15.5 47.5 21.5 C48.5 29 49 37 50 45 C50.5 49 47.5 51 42 51 Z" fill="${fill}" ${w}/>
+    <path d="M36.6 20.4 Q34.7 25.2 35.3 30.6 Q36.9 31.1 38.1 30.3 Q37.5 25.3 38.9 20.7 Q37.7 19.9 36.6 20.4 Z" fill="${ongleFill}" stroke="${pli}" stroke-width=".9" stroke-linejoin="round" opacity=".6"/>
     <path d="M47.2 27 q-2.6 1.6 -4.2 .6" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".45"/>
     <path d="M35.5 36 q6 1.8 12.5 0" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".5"/>
     <path d="M36 60 q5 2 9 0" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".35"/>`;
