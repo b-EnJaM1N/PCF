@@ -144,8 +144,8 @@ export const MOMENTS = {
     { r: "d", t: "Une série noire. Absolument magnifique." },
     { r: "d", t: "Il faudrait peut-être essayer… autre chose." },
     { r: "d", t: "Fidèle à lui-même : toujours du mauvais côté.", f: "Fidèle à elle-même : toujours du mauvais côté." },
-    { r: "d", t: "Les calculs sont pas bons, Kevin.", clin: "cine" },
-    { r: "c", t: "T'es pas venu ici pour souffrir, ok ?", f: "T'es pas venue ici pour souffrir, ok ?", clin: "cine" },
+    { r: "d", t: "Les calculs sont pas bons, Kevin.", clin: "cine", retiree: true },   // (retirée le 12 novembre, demande du porteur du projet)
+    { r: "c", t: "T'es pas venu ici pour souffrir, ok ?", f: "T'es pas venue ici pour souffrir, ok ?", clin: "cine", retiree: true },   // (retirée le 12 novembre)
     { r: "c", t: "Houston, on a un problème !", clin: "cine", retiree: true },
     { r: "d", t: "Il est en PLS. Comme disent les jeunes.", f: "Elle est en PLS. Comme disent les jeunes." },
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
@@ -187,7 +187,7 @@ export const MOMENTS = {
     { r: "d", t: "Quand on veut, on peut. Quand on peut, on choisit Pierre, apparemment.", seul: 0 },
     { r: "d", t: "Mieux vaut une Feuille en main que deux Ciseaux dans le pot. C'est sa philosophie.", seul: 2 },
     { r: "c", t: ["Des pierres, des pierres, des pierres, des pierres, des pierres !", "Ciseaux, ciseaux, ciseaux, ciseaux, ciseaux !", "Des feuilles, des feuilles, des feuilles, des feuilles, des feuilles !"], clin: "cine" },
-    { r: "d", t: "Allô ? Non mais allô, quoi !", clin: "cine" },
+    { r: "d", t: "Allô ? Non mais allô, quoi !", clin: "cine", retiree: true },   // (retirée le 12 novembre, demande du porteur du projet)
   ],
   // Il change enfin de signe après une obstination.
   changement: [
