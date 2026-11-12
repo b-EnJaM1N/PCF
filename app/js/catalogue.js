@@ -24,6 +24,8 @@ export const ARTICLES = [
   a("gantMotif", "damier", "Gant à damier", "rare"), a("gantMotif", "flammes", "Gant en flammes", "rare"), a("gantMotif", "tigre", "Gant tigré", "rare"),
   a("gantMotif", "zebre", "Gant zébré", "rare"), a("gantMotif", "coeurs", "Gant à cœurs", "rare"), a("gantMotif", "etoiles", "Gant étoilé", "rare"),
   a("gantMotif", "camouflage", "Gant camouflage", "rare"), a("gantMotif", "carbone", "Gant carbone", "rare"),
+  // (12 novembre, demande du porteur du projet)
+  a("gantMotif", "vache", "Gant vache", "rare"), a("gantMotif", "girafe", "Gant girafe", "rare"), a("gantMotif", "leopard", "Gant léopard", "rare"),
   a("fond", "roland", "Fond terre de Roland", "rare"), a("fond", "londres", "Fond gazon de Londres", "rare"),
   a("fond", "neon", "Fond néon", "epique"), a("fond", "coucher", "Fond coucher de soleil", "epique"), a("fond", "stade", "Fond stade de nuit", "epique"),
   a("fond", "galaxie", "Fond galaxie", "legendaire"),

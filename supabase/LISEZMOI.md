@@ -503,6 +503,12 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 septuagies bis. Gants vache, girafe et léopard (étape 72)
+
+Même manipulation que d'habitude avec [`etape-72-motifs-animaux.sql`](etape-72-motifs-animaux.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-72-motifs-animaux.sql).
+Trois motifs de gant de plus à la boutique (rares, 800 jetons). **À coller avant la fusion** (sinon l'achat est refusé).
+
 ## 1 septuagies semel. Le Dossard 1 (étape 71)
 
 Même manipulation que d'habitude avec [`etape-71-dossard.sql`](etape-71-dossard.sql)

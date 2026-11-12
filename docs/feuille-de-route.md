@@ -107,6 +107,8 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    redevient jaune simple. Le fil du cercle affiche le tenant et annonce les passages (« 🟨 X prend le Dossard 1 à Y ! »).
    Nouveau trophée « Vainqueur de coupe » (coupe de cercle, au moins 3 vrais joueurs), à côté de « Champion du cercle » ;
    les trophées restent pour toujours, seul le gant change de main.
+19. **Gants vache, girafe et léopard** (12 novembre, demande du porteur du projet ; étape SQL 72) : trois motifs de gant de plus à
+   la boutique (rares, 800 jetons, comme tigré et zébré ; dans la vitrine du jour aussi). Le léopard n'existait qu'en poignet.
 
 ## En bref (14 octobre 2026)
 
