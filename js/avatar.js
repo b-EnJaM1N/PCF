@@ -181,15 +181,15 @@ function mainNue(symbole, peau, vernis, bague, cleBague, tordu = 0) {
   if (symbole === "index") return doigt(41, 50, 40, -4, { avecBague: true }) + paume(46) + replie(46.5, 42, 9.5, 18) + replie(55.5, 43, 9, 17) + replie(64.5, 46, 8, 15) + doigt(33, 66, 26, 74);
   if (symbole === "dos") return doigt(29, 68, 20, -20, { sansOngle: true }) + paume(42, false) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [36, 34, 35, 37][i], 10.5, 14, { pli: false, avecBague: i === 2 })).join("") + tendons;
   const poing = paume(42) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [38, 35, 36, 39][i], 10.5, 22, { avecBague: i === 2 })).join("");
-  if (symbole === "pouce") return poing + doigt(33, 50, 30, -10);
+  if (symbole === "pouce") return `<path d="M40 72 L40 100 L61 100 L61 72 Z" fill="${peau}" stroke="${tr}" stroke-width="${T}"/>` + pouceLeve(peau, tr, tr, T, ongle) + `<g transform="rotate(-5 41 35)">${anneau(35.6, 31.6, 11.5)}</g>`;
   return poing + doigt(31, 61, 28, 80);   // pierre : le pouce replié devant les doigts
 }
 // La bague sur un gant : sur le doigt du milieu, à sa base (là où il sort de la paume), selon la forme de la main ;
 // pour les ciseaux, sur l'index (9 novembre, demande du porteur du projet : sur le majeur, elle chevauchait les doigts repliés).
 // (Sur la main nue, elle est dessinée avec la main : voir mainNue.)
-const PLACE_MEDAILLON = { pierre: [50, 69, 6.6], ciseaux: [50, 69, 6.6], feuille: [50, 62, 10], "feuille-dos": [50, 61, 10], "ciseaux-dos": [52, 60, 10], dos: [50, 60, 10], index: [52, 69.5, 6.2], pouce: [45, 61, 8] };
+const PLACE_MEDAILLON = { pierre: [50, 69, 6.6], ciseaux: [50, 69, 6.6], feuille: [50, 62, 10], "feuille-dos": [50, 61, 10], "ciseaux-dos": [52, 60, 10], dos: [50, 60, 10], index: [52, 69.5, 6.2], pouce: [39.5, 64, 6.4] };
 // (10 novembre, demande du porteur du projet : la bague remontée sur le doigt, elle était à la jointure avec la paume)
-const PLACE_BAGUE = { feuille: [50.5, 34], index: [29.5, 33], pouce: [43, 57.5], dos: [50, 30.5], "ciseaux-dos": [30.75, 32.5, "-12 36 50"], "feuille-dos": [50.5, 33, "7 55 54"], ciseaux: [30.75, 29.5, "-14 36 50"], pierre: [50, 35.5] };
+const PLACE_BAGUE = { feuille: [50.5, 34], index: [29.5, 33], pouce: [35.6, 33.5, "-5 41 35"], dos: [50, 30.5], "ciseaux-dos": [30.75, 32.5, "-12 36 50"], "feuille-dos": [50.5, 33, "7 55 54"], ciseaux: [30.75, 29.5, "-14 36 50"], pierre: [50, 35.5] };
 function accessoires(a, nue = false) {
   let s = "";
   const yb = nue ? 84 : 67;   // le bracelet : au poignet (plus bas sur la main nue, juste au-dessus du bandeau)
@@ -313,6 +313,23 @@ function lameTordue(x, y, h, gant, ink, rot, pli) {
     <path d="M${x + 1.5} ${mi + 3} l7.5 -1.5" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".7"/></g>`;
 }
 
+// Le pouce levé vu de côté, comme l'emoji 👍 : le poing (dos de la main à gauche), les quatre doigts repliés empilés à droite,
+// rentrés dans le poing, et le pouce dressé au-dessus, un peu penché. trait : le contour ; pli : les plis (plus discrets).
+// L'ongle : à peine visible, sur le bord extérieur du pouce (à l'opposé des doigts ; 12 novembre, remarque du porteur du projet).
+function pouceLeve(fill, trait, pli, epaisseur = 1.5, ongleFill = "none") {
+  const w = `stroke="${trait}" stroke-width="${epaisseur}" stroke-linejoin="round"`;
+  // (redessiné le 12 novembre d'après l'emoji 👍 : le dos de la main arrondi, les doigts repliés de plus en plus courts,
+  // le pouce trapu et galbé)
+  const doigts = [[46.5, 41.5, 27, 10], [46, 51, 26.5, 9.6], [46, 60.2, 24.5, 9.2], [46.5, 69, 20, 8.2]];
+  return `<path d="M31 52 C30 44 34 41 41 41 L58 41 C64 41 66 46 66 52 L66 68 C66 75 61 79 53 79 L42 79 C34 79 30 74 30 66 Z" fill="${fill}" ${w}/>
+    ${doigts.slice().reverse().map(([x, y, l, h]) => `<path d="M${x} ${y} L${x + l - h / 2} ${y} A${h / 2} ${h / 2} 0 0 1 ${x + l - h / 2} ${y + h} L${x} ${y + h}" fill="${fill}" ${w}/>`).join("")}
+    ${doigts.slice(1).map(([x, y, l]) => `<path d="M${x + l - 7} ${y + .8} q2.5 -1.2 5.5 0" fill="none" stroke="${pli}" stroke-width="1" stroke-linecap="round" opacity=".35"/>`).join("")}
+    <path d="M32 50 C29.5 40 31 29 35 20 C37.5 14 46 13.5 47.5 19.5 C49 26 49.5 35 51.5 42 C52.5 46 50 49.5 44 49.5 C38 49.5 33 51 32 50 Z" fill="${fill}" ${w}/>
+    <path d="M36.4 20.6 Q34.3 25.6 34.8 31 Q36.4 31.5 37.6 30.7 Q37.1 25.5 38.7 20.9 Q37.5 20.1 36.4 20.6 Z" fill="${ongleFill}" stroke="${pli}" stroke-width=".9" stroke-linejoin="round" opacity=".6"/>
+    <path d="M34.5 36.5 q6.5 2.2 13.8 -.4" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".45"/>
+    <path d="M35 64 q5.5 2.4 10 0" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".3"/>`;
+}
+
 function main(symbole, gant, ink, tordu = 0) {
   if (symbole === "feuille") return `
     ${doigt(29.5, 20, 34, gant, ink)}${doigt(40, 12, 40, gant, ink)}${doigt(50.5, 14, 38, gant, ink)}${doigt(61, 22, 32, gant, ink)}
@@ -328,13 +345,8 @@ function main(symbole, gant, ink, tordu = 0) {
     <path d="M31.5 30 h7.5" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>
     <rect x="24" y="52" width="36" height="12" rx="6" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
     <path d="M58 68 q5 2.5 10 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
-  // Le poing vu de côté : les doigts repliés empilés, le pouce bien dressé au-dessus.
-  if (symbole === "pouce") return `
-    <rect x="30" y="40" width="30" height="36" rx="10" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
-    ${[0, 1, 2, 3].map(i => `<rect x="${i === 0 ? 40 : 43}" y="${41 + i * 8.5}" width="${[32, 28, 26, 23][i]}" height="9.5" rx="4.75" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`).join("")}
-    <path d="M30 48 C28.5 38 30.5 26 34.5 16.5 C37 11 45.5 11.5 46.5 17.5 C47.5 25 48.5 35 49 43 C49 47 46 48.5 41 48.5 Z" fill="${gant}" stroke="${ink}" stroke-width="1.5" stroke-linejoin="round"/>
-    <path d="M36.5 18.5 q4 -2.5 7.5 0.5 l0 5.5 q-3.5 1.5 -7.5 0 z" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linejoin="round" opacity=".55"/>
-    <path d="M33 34 q6.5 2 13.5 0" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>`;
+  // Le pouce levé (👍), vu de côté (redessiné le 12 novembre, demande du porteur du projet) : voir pouceLeve.
+  if (symbole === "pouce") return pouceLeve(gant, ink, ink);
   // Le poing vu de dos (la pierre pendant un match) : les jointures en haut, le dos de la main, le pouce sur le côté.
   if (symbole === "dos") return `
     <rect x="22" y="42" width="13" height="22" rx="6.5" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
