@@ -24,5 +24,5 @@ test("les marques se dessinent sur le gant et sur la main nue", () => {
   assert.notEqual(avatarSVG({ ...base, symbole: "dos", degats: { fissure: 1 } }), avatarSVG({ ...base, symbole: "dos" }));
   assert.notEqual(avatarSVG({ ...base, symbole: "ciseaux-dos", degats: { tordu: 1 } }), avatarSVG({ ...base, symbole: "ciseaux-dos" }));
   assert.match(avatarSVG({ ...base, gant: "nu", symbole: "feuille-dos", degats: { dechire: 1 } }), /F1CF9E/, "main nue : un pansement");
-  assert.doesNotMatch(avatarSVG({ ...base, symbole: "feuille-dos", degats: { fissure: 1 } }), /ellipse/, "la fissure seulement sur le poing");
+  for (const symbole of ["dos", "ciseaux-dos", "feuille-dos"]) assert.match(avatarSVG({ ...base, symbole, degats: { fissure: 1 } }), /ellipse/, `la fissure aussi en ${symbole}`);
 });

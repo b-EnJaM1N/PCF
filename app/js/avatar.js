@@ -141,7 +141,7 @@ export function marquesSVG(symbole, degats, nue) {
     s += trait("M43.5 62.5 l-1.5 3 M51.5 64 l.5 3.2 M58.5 53 l2 -2.5", .9) + (d > 1 ? trait("M62 43 l2.2 -2 M54.5 50 l-1.8 2", .9) : "");
   }
   const f = Math.min(2, degats.fissure || 0);
-  if (f && (symbole === "dos" || symbole === "pierre")) {   // la fissure du poing, depuis un petit creux
+  if (f) {   // la fissure sur le dos de la main, depuis un petit creux : sur tous les signes (12 novembre, remarque du porteur du projet)
     s += `<ellipse cx="55" cy="56" rx="${3 + f}" ry="${2.2 + f * .7}" fill="rgba(30,15,10,.4)" stroke="rgba(255,255,255,.35)" stroke-width=".8"/>`;
     s += trait("M55 56 L51 53 L48 54 L45 50 M55 56 L59.5 60 L60.5 64 L64.5 67 M55 56 L58 50.5 L62 49.5");
     if (f > 1) s += trait("M45 50 L41 49 L38.5 45 M60.5 64 L58 70 M62 49.5 L66 45 L68.5 46 M51 53 L50.5 47 L47.5 43.5");
