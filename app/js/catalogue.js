@@ -56,6 +56,9 @@ export const ARTICLES = [
   a("bague", "saphir", "Bague au saphir", "rare"), a("bague", "emeraude", "Bague à l'émeraude", "rare"), a("bague", "diamant", "Bague au diamant", "epique"),
   a("bague", "signe_pierre", "Chevalière Pierre", "rare"), a("bague", "signe_feuille", "Chevalière Feuille", "rare"), a("bague", "signe_ciseaux", "Chevalière Ciseaux", "rare"),
 ];
+// Les articles retirés de la vente (ils restent à ceux qui les ont achetés) : le pouce levé (12 novembre, décision du porteur
+// du projet : le dessin n'était pas assez beau). Plus dans la boutique ni dans la vitrine du jour (étape SQL 73).
+export const RETIRES = new Set(["geste:pouce_leve"]);
 const PAR_ID = new Map(ARTICLES.map(x => [x.id, x]));
 export const article = id => PAR_ID.get(id) || null;
 export const articleDe = (type, cle) => PAR_ID.get(`${type}:${cle}`) || null;
