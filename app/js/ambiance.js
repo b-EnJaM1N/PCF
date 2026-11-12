@@ -3,7 +3,7 @@
 // La raquette et les applaudissements sont fabriqués par le code (sons.js), sauf si un vrai
 // enregistrement portant leur nom est déposé dans app/audio/ (ex. public_ovation_01.mp3).
 // Le murmure de fond, la tension et le « ooh » n'existent qu'en enregistrement : sans fichier, rien.
-import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe, debutDuSon, dechirure, smashBloque, smashRate } from "./sons.js";
+import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe, debutDuSon, dechirure, claqueFeuille, smashBloque, smashRate } from "./sons.js";
 import { balle, pointDecisif } from "./regles.js";
 
 const AC = typeof window !== "undefined" ? window.AudioContext || window.webkitAudioContext : null;
@@ -190,7 +190,7 @@ export class Ambiance {
     // La fabrication des sons prend un moment : on la fait juste après, sans bloquer l'écran.
     const etapes = [
       () => { this.raquettes = HAUTEUR.map(h => this.tampon([coupDeRaquette(fs, h)])); },
-      () => { this.buf.dechirure = this.tampon([dechirure(fs)]); this.buf.smashBloque = this.tampon([smashBloque(fs)]); this.buf.smashRate = this.tampon([smashRate(fs)]); },
+      () => { this.buf.dechirure = this.tampon([dechirure(fs)]); this.buf.claque = this.tampon([claqueFeuille(fs)]); this.buf.smashBloque = this.tampon([smashBloque(fs)]); this.buf.smashRate = this.tampon([smashRate(fs)]); },
       ...["set", "clameur", "point"].map(type => () => { this.buf[type] = this.tampon(applaudissements(fs, FOULES[type])); }),
       () => this.chargerFichiers(),
     ];
@@ -293,6 +293,8 @@ export class Ambiance {
     const f = this.raquettesFichiers[signe] || [], b = f[1] || f[0] || this.raquettes[signe];
     if (b) { this.jouer(b, 1, true, { salle: false }); this.jouer(b, 0.6, true, { delai: 0.06, vitesse: 0.85, salle: false }); }
     if (signe === 1 && this.buf.dechirure) this.jouer(this.buf.dechirure, 0.9, true, { delai: 0.03, vitesse: 0.97 + Math.random() * 0.06, salle: false });
+    // la Feuille (12 novembre, demande du porteur du projet) : une grosse claque par-dessus son coup, plus doux que les autres
+    if (signe === 2 && this.buf.claque) this.jouer(this.buf.claque, 0.95, true, { delai: 0.01, vitesse: 0.96 + Math.random() * 0.06, salle: false });
     if (this.buf.clameur) this.jouer(this.buf.clameur, 0.55, true, { delai: 0.25 });
   }
 

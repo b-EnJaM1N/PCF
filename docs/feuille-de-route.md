@@ -98,6 +98,8 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    petit creux (visible aussi pendant que les poings se secouent). Au 2e smash du set, la marque grandit. La main touchée
    tremble au moment du smash. Contre les bots et en duel (chaque téléphone la calcule à partir des coups) ; pas dans le replay.
    Testeurs : les nouveaux sons du smash sont appréciés (retour du 12 novembre).
+   Le smash gagnant de la Feuille renforcé (même jour, demande du porteur du projet) : une grosse claque fabriquée (`claqueFeuille`
+   dans `sons.js`) par-dessus son coup de raquette, plus doux que ceux de la Pierre et des Ciseaux.
 
 ## En bref (14 octobre 2026)
 
