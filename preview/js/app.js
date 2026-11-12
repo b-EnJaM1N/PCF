@@ -1918,6 +1918,7 @@ function renderFiche() {
     $("gameBody").innerHTML = `<div class="bars">${barres(P.signes, tot)}</div>
       <div class="lines">
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
+        <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${P.smashsTentes ? `${P.smashsReussis} sur ${P.smashsTentes} (${tauxSmash(P)} %)` : "Aucun pour l'instant"}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
         <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
       </div>
@@ -1930,7 +1931,6 @@ function renderFiche() {
     $("mentalBody").innerHTML = `
       <div class="ln"><span>Balles de set et de match converties</span><span>${pc(P.ballesConverties, P.ballesObtenues)}</span></div>
       <div class="ln"><span>Balles adverses sauvées</span><span>${pc(P.ballesSauvees, P.ballesSubies)}</span></div>
-      <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${P.smashsTentes ? `${P.smashsReussis} sur ${P.smashsTentes} (${tauxSmash(P)} %)` : "Aucun pour l'instant"}</span></div>
       <div class="ln"><span>Sets décisifs gagnés</span><span>${P.decisifsJoues ? `${P.decisifsGagnes} sur ${P.decisifsJoues}` : "Aucun joué"}</span></div>
       <div class="ln"><span>Matchs gagnés après avoir perdu le 1er set</span><span>${P.remontadas}</span></div>`;
     $("recBody").innerHTML = `
