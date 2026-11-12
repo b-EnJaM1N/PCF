@@ -113,8 +113,37 @@ const motifUnSigne = (id, signe, gant, c = OR_SIGNE) => `<pattern id="${id}g" wi
 
 let n = 0;
 function dessinerMain(a, fill, ink, nue) {
-  if (nue) return mainNue(a.symbole, (PEAUX[a.peau] || PEAUX.neutre)[1], (ONGLES[a.ongles] || [])[1] || null, (BAGUES[a.bague] || [])[3] || null, a.bague);
-  return main(a.symbole, fill, ink);
+  const tordu = a.degats?.tordu || 0;
+  if (nue) return mainNue(a.symbole, (PEAUX[a.peau] || PEAUX.neutre)[1], (ONGLES[a.ongles] || [])[1] || null, (BAGUES[a.bague] || [])[3] || null, a.bague, tordu);
+  return main(a.symbole, fill, ink, tordu);
+}
+
+// ---------------------------------------------------------------- les marques du smash (degats.js ; 12 novembre)
+// Par-dessus la main : le gant déchiré (ou un pansement sur la main nue) et la fissure du poing. (Les lames tordues, elles,
+// changent le dessin des doigts : voir main et mainNue.) Un trait clair sous chaque trait sombre, pour les gants foncés.
+const trait = (d, w = 1.3) => `<path d="${d}" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="${w + 1.4}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="rgba(30,15,10,.75)" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+const ACCROC = [
+  "M41 57 L44.5 53 L47.5 56.5 L51 51.5 L54 55.5 L58.5 53 L57.5 58 L60 61 L55.5 60.5 L51.5 64 L48 60 L43.5 62.5 Z",
+  "M53 45 L56 42.5 L58.5 45.5 L62 43 L63.5 47 L61 49.5 L57.5 48.5 L54.5 50 Z",
+];
+export function marquesSVG(symbole, degats, nue) {
+  if (!degats) return "";
+  let s = "";
+  const d = Math.min(2, degats.dechire || 0);
+  if (d && nue) {   // la main nue : un pansement (deux en croix au 2e smash)
+    s += [-18, 22].slice(0, d).map(rot => `<g transform="rotate(${rot} 50 60)"><rect x="38" y="56" width="24" height="8" rx="3.5" fill="#F1CF9E" stroke="rgba(90,55,20,.45)" stroke-width=".9"/>
+      <rect x="45.5" y="57.2" width="9" height="5.6" rx="1.4" fill="#FBEBD2"/>${[40.5, 42.5, 57.5, 59.5].map(x => `<circle cx="${x}" cy="60" r=".55" fill="rgba(90,55,20,.4)"/>`).join("")}</g>`).join("");
+  } else if (d) {   // le gant déchiré : un accroc (la peau dessous), ses fils qui dépassent
+    s += ACCROC.slice(0, d).map(p => `<path d="${p}" fill="#E7B48C" stroke="rgba(30,15,10,.7)" stroke-width="1.1" stroke-linejoin="round"/>`).join("");
+    s += trait("M43.5 62.5 l-1.5 3 M51.5 64 l.5 3.2 M58.5 53 l2 -2.5", .9) + (d > 1 ? trait("M62 43 l2.2 -2 M54.5 50 l-1.8 2", .9) : "");
+  }
+  const f = Math.min(2, degats.fissure || 0);
+  if (f && (symbole === "dos" || symbole === "pierre")) {   // la fissure du poing, depuis un petit creux
+    s += `<ellipse cx="55" cy="56" rx="${3 + f}" ry="${2.2 + f * .7}" fill="rgba(30,15,10,.4)" stroke="rgba(255,255,255,.35)" stroke-width=".8"/>`;
+    s += trait("M55 56 L51 53 L48 54 L45 50 M55 56 L59.5 60 L60.5 64 L64.5 67 M55 56 L58 50.5 L62 49.5");
+    if (f > 1) s += trait("M45 50 L41 49 L38.5 45 M60.5 64 L58 70 M62 49.5 L66 45 L68.5 46 M51 53 L50.5 47 L47.5 43.5");
+  }
+  return s;
 }
 
 // ---------------------------------------------------------------- la vraie main (main nue), style « cartoon fin »
@@ -122,7 +151,7 @@ function dessinerMain(a, fill, ink, nue) {
 // le contour est la couleur de la peau, en plus foncé.
 const rvb = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16));
 const melange = (a, b, t) => "#" + rvb(a).map((v, i) => Math.round(v + (rvb(b)[i] - v) * t).toString(16).padStart(2, "0")).join("");
-function mainNue(symbole, peau, vernis, bague, cleBague) {
+function mainNue(symbole, peau, vernis, bague, cleBague, tordu = 0) {
   const tr = melange(peau, "#2a1608", .45), ongle = vernis || melange(melange(peau, "#ffffff", .55), "#F3B7B0", .35), T = 1.4;
   const anneau = (x, y, w) => bague ? bagueSVG(bague, x - .6, y, w + 1.2, 4, cleBague === "symbole" ? (cx, cy) => chaton("symbole", cx, cy) : null) : "";
   // un doigt tendu, de sa base (bx, by) vers le haut, longueur L, tourné de rot degrés ; avecBague : la bague à sa base
@@ -142,6 +171,9 @@ function mainNue(symbole, peau, vernis, bague, cleBague) {
   if (symbole === "feuille") return doigt(33, 70, 27, -52) + paume(46) + doigt(33.5, 52, 30, -6) + doigt(44, 50, 36, -2, { avecBague: true }) + doigt(54.5, 50, 34, 2) + doigt(64.5, 53, 26, 7);
   if (symbole === "feuille-dos") return doigt(33, 52, 30, -14) + doigt(43.5, 50, 35, -5, { avecBague: true }) + doigt(54, 50, 34, 5) + doigt(64, 53, 27, 14) + paume(46, false) + tendons;
   // les ciseaux : toujours vus de dos (choix du porteur du projet), l'annulaire et l'auriculaire repliés restent cachés derrière la main
+  // (les lames tordues : la base du doigt dans l'axe, le bout plié de travers ; degats.js)
+  const plie = (bx, by, L, rot, pli, opts = {}) => `<g transform="rotate(${rot} ${bx} ${by})">${doigt(bx, by, L * .56, 0, { ...opts, sansOngle: true })}<g transform="rotate(${pli} ${bx} ${by - L * .5})">${doigt(bx, by - L * .5 + 3, L * .5 + 3, 0)}</g></g>`;
+  if ((symbole === "ciseaux" || symbole === "ciseaux-dos") && tordu) return doigt(30, 70, 18, -25, { sansOngle: true }) + plie(37, 52, 38, -14, 18 + 14 * tordu, { avecBague: true }) + plie(50, 50, 40, 9, -(16 + 14 * tordu)) + paume(46, false) + tendons;
   if (symbole === "ciseaux" || symbole === "ciseaux-dos") return doigt(30, 70, 18, -25, { sansOngle: true }) + doigt(37, 52, 38, -14, { avecBague: true }) + doigt(50, 50, 40, 9) + paume(46, false) + tendons;
   if (symbole === "index") return doigt(41, 50, 40, -4, { avecBague: true }) + paume(46) + replie(46.5, 42, 9.5, 18) + replie(55.5, 43, 9, 17) + replie(64.5, 46, 8, 15) + doigt(33, 66, 26, 74);
   if (symbole === "dos") return doigt(29, 68, 20, -20, { sansOngle: true }) + paume(42, false) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [36, 34, 35, 37][i], 10.5, 14, { pli: false, avecBague: i === 2 })).join("") + tendons;
@@ -233,7 +265,7 @@ export function avatarSVG(a) {
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
-    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}
+    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}
   </svg>`;
 }
 
@@ -244,7 +276,15 @@ const ongle = (x, y, ink, rot = "") => `<rect x="${x + 2.6}" y="${y}" width="5.3
 const dosDeMain = ink => [0, 1, 2].map(i => `<path d="M${39.5 + i * 10.5} 50 l-${1 + i} 15" fill="none" stroke="${ink}" stroke-width="1.1" stroke-linecap="round" opacity=".28"/>`).join("");
 const pouce = (gant, ink) => `<rect x="25" y="50" width="28" height="12" rx="6" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`;
 
-function main(symbole, gant, ink) {
+// Un doigt du V plié de travers (les lames tordues) : la base dans l'axe, le bout tourné de « pli » degrés à mi-hauteur.
+function lameTordue(x, y, h, gant, ink, rot, pli) {
+  const mi = y + h * .5;
+  return `<g transform="rotate(${rot})"><rect x="${x}" y="${mi}" width="10.5" height="${y + h - mi}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
+    <g transform="rotate(${pli} ${x + 5.25} ${mi + 2})"><rect x="${x}" y="${y}" width="10.5" height="${mi - y + 4}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>${ongle(x, y + 1.5, ink)}</g>
+    <path d="M${x + 1.5} ${mi + 3} l7.5 -1.5" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".7"/></g>`;
+}
+
+function main(symbole, gant, ink, tordu = 0) {
   if (symbole === "feuille") return `
     ${doigt(29.5, 20, 34, gant, ink)}${doigt(40, 12, 40, gant, ink)}${doigt(50.5, 14, 38, gant, ink)}${doigt(61, 22, 32, gant, ink)}
     ${paume(44, gant, ink)}
@@ -276,11 +316,12 @@ function main(symbole, gant, ink) {
   // Les ciseaux vus de dos : le V, l'annulaire et l'auriculaire repliés (leurs jointures), le pouce rangé sur le côté.
   if (symbole === "ciseaux-dos") return `
     <rect x="22" y="44" width="13" height="20" rx="6.5" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
-    ${doigt(31, 19, 31, gant, ink, "-12 36 50")}${doigt(44, 18, 32, gant, ink, "10 49 50")}
+    ${tordu ? lameTordue(31, 19, 31, gant, ink, "-12 36 50", 18 + 14 * tordu) + lameTordue(44, 18, 32, gant, ink, "10 49 50", -(16 + 14 * tordu))
+    : doigt(31, 19, 31, gant, ink, "-12 36 50") + doigt(44, 18, 32, gant, ink, "10 49 50")}
     ${doigt(50, 33, 14, gant, ink)}${doigt(60.5, 35, 12, gant, ink)}
     <rect x="29" y="40" width="42" height="36" rx="11" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
     ${[0, 1].map(i => `<path d="M${52.5 + i * 10.5} 42 q2.75 -2.6 5.5 0" fill="none" stroke="${ink}" stroke-width="1.3" stroke-linecap="round" opacity=".6"/>`).join("")}
-    ${ongle(31, 20.5, ink, "-12 36 50")}${ongle(44, 19.5, ink, "10 49 50")}
+    ${tordu ? "" : ongle(31, 20.5, ink, "-12 36 50") + ongle(44, 19.5, ink, "10 49 50")}
     ${dosDeMain(ink)}`;
   // La feuille vue de dos : la main grande ouverte, quatre doigts écartés en éventail (avec leurs ongles, sans pouce), pour qu'on
   // ne la confonde pas avec le poing. (Proportions d'une vraie main : le majeur le plus long, l'auriculaire le plus court.)
