@@ -122,7 +122,7 @@ test("les chants personnalisés : seulement pour les joueurs du match, quelle qu
   assert.equal(chantsPerso({ pseudo: "le chiromancien ", numero: "6047" }).length, 6);
   assert.equal(chantsPerso({ pseudo: "Le Chiromancien", numero: 1234 }).length, 0, "un autre joueur du même pseudo : rien");
   assert.equal(chantsPerso({ pseudo: "Ben", numero: 1 }, null).length, 0);
-  assert.deepEqual(chantsPerso({ pseudo: "Kikou", numero: 1743 }), ["chant_perso_kikou_01"], "le chant de Kikou#1743");
+  assert.deepEqual(chantsPerso({ pseudo: "Kikou", numero: 1743 }), ["chant_perso_kikou_01", "chant_perso_kikou_02", "chant_perso_kikou_03"], "les chants de Kikou#1743");
   assert.deepEqual(chantsPerso({ pseudo: "Emi", numero: 6263 }), ["chant_perso_emi_01", "chant_perso_emi_02"], "les chants d'Emi#6263");
   assert.deepEqual(chantsPerso({ pseudo: "Shishyo", numero: 2931 }), ["chant_perso_shishyo_01"], "le chant de Shishyo#2931");
   assert.deepEqual(chantsPerso({ pseudo: "Pierre la feuill", numero: 1473 }), ["chant_perso_pierrelafeuille_01"], "le chant de Pierre la feuill#1473");
