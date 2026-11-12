@@ -94,7 +94,7 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
 17. **Les marques du smash** (12 novembre, idée et choix du porteur du projet ; `app/js/degats.js`, dessins dans `avatar.js`) :
    un smash qui gagne le point abîme la main de celui qui perd le point, jusqu'à la fin du set (décor seulement) :
    Ciseaux contre Feuille, le gant déchiré (sur la main nue : un pansement) ; Pierre contre Ciseaux, les lames tordues (les
-   deux doigts du V pliés vers l'extérieur, version B choisie sur aperçu) ; Feuille contre Pierre, une fissure qui part d'un
+   deux doigts du V pliés vers l'extérieur, version B choisie sur aperçu) ; Feuille contre Pierre, une fissure (sur tous les signes, le dos de la main) qui part d'un
    petit creux (visible aussi pendant que les poings se secouent). Au 2e smash du set, la marque grandit. La main touchée
    tremble au moment du smash. Contre les bots et en duel (chaque téléphone la calcule à partir des coups) ; pas dans le replay.
    Testeurs : les nouveaux sons du smash sont appréciés (retour du 12 novembre).
