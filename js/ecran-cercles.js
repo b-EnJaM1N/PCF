@@ -11,7 +11,8 @@ import { lire, ecrire } from "./stockage.js";
 import { clePseudo } from "./chants-perso.js";
 import { installerTournois } from "./ecran-tournois.js";
 import { fantomeVisible } from "./fantome.js";
-import { filVisible, evenementsDuFil, evenementsChampionnat, scoreDuDuel, ilYA, REACTIONS } from "./fil-cercle.js";
+import { ouvert } from "./nouveautes.js";
+import { filVisible, evenementsDuFil, evenementsChampionnat, evenementsDossard, scoreDuDuel, ilYA, REACTIONS } from "./fil-cercle.js";
 import { championDuCercle } from "./tournoi-logique.js";
 import { profils } from "./duel-serveur.js";
 
@@ -436,19 +437,24 @@ export function installerCercles(ctx) {
   }
 
   // ---------------------------------------------------------------- le fil d'actualité du cercle (fil-cercle.js)
-  let fil = null, championFil = null, filDeplie = false;   // (plié : les 3 dernières infos ; demande du porteur du projet, 11 novembre)
+  let fil = null, championFil = null, dossardFil = null, filDeplie = false;   // (plié : les 3 dernières infos ; demande du porteur du projet, 11 novembre)
   const FIL_PLIE = 3;
   async function chargerFil(id) {
     if (!filVisible()) return;
-    try { const f = await social.filCercle(id); if (cercleOuvert !== id) return; fil = f; renderFil(); }
+    // (le Dossard 1, étape 71 : s'il manque côté serveur, le fil s'affiche quand même, sans lui)
+    try { const [f, d] = await Promise.all([social.filCercle(id), (ouvert("dossard") ? social.dossardDuCercle(id) : Promise.resolve(null)).catch(() => null)]); if (cercleOuvert !== id) return; fil = f; dossardFil = d; renderFil(); }
     catch (err) { if (cercleOuvert === id) { $("cFilCarte").hidden = false; dire("cFilMsg", err.message, true); } }
   }
   function renderFil() {
     if (!fil || !detail) return;
     const membres = new Map((detail.membres || []).map(m => [m.id, m]));
     const nom = id => { const m = membres.get(id); return m ? `<b>${esc(m.pseudo)}</b>` : "<b>?</b>"; };
-    const evts = evenementsDuFil(fil, { champion: championFil?.champion, autres: championFil?.autres || [], membres: new Set(membres.keys()) });
+    const evts = evenementsDuFil(fil, { champion: championFil?.champion, autres: [...(championFil?.autres || []), ...evenementsDossard(dossardFil)], membres: new Set(membres.keys()) });
     const elle = id => membres.get(id)?.genre === "f";
+    // Le tenant du titre, en tête du fil.
+    const tenant = dossardFil?.tenant;
+    $("cDossard").hidden = !tenant;
+    if (tenant) $("cDossard").innerHTML = `🟨 <b>Dossard 1</b> : ${esc(tenant.pseudo)}${dossardFil.depuis ? ` <span class="fil-quand">depuis ${ilYA(dossardFil.depuis).replace(/^il y a /, "").replace("à l'instant", "un instant")}</span>` : ""}`;
     $("cFilCarte").hidden = false; $("cFilVide").hidden = evts.length > 0;
     const plus = evts.length - FIL_PLIE;
     $("cFilPlus").hidden = plus <= 0;
@@ -459,6 +465,7 @@ export function installerCercles(ctx) {
       if (e.type === "champion") return `<div class="fil-item fil-fort"><span class="fil-ic">🏆</span><div class="fil-corps"><div>${nom(e.joueur)} est champion${membres.get(e.joueur)?.genre === "f" ? "ne" : ""} du cercle !</div></div>${quand}</div>`;
       if (e.type === "saison") return `<div class="fil-item"><span class="fil-ic">🥇</span><div class="fil-corps"><div>${nom(e.joueur)} a fini la saison en tête</div></div>${quand}</div>`;
       if (e.type === "gage") return `<div class="fil-item fil-fort"><span class="fil-ic">😬</span><div class="fil-corps"><div>${nom(e.joueur)} ${e.playouts ? "perd le match des derniers" : `finit dernier${elle(e.joueur) ? "e" : ""}`} : c'est ${elle(e.joueur) ? "elle" : "lui"} qui s'y colle ! « ${esc(e.enjeu)} »</div></div>${quand}</div>`;
+      if (e.type === "dossard") return `<div class="fil-item fil-fort"><span class="fil-ic">🟨</span><div class="fil-corps"><div>${nom(e.joueur)} ${!e.avant ? "prend le Dossard 1 !" : e.avant === e.joueur ? "garde le Dossard 1 !" : `prend le Dossard 1 à ${nom(e.avant)} !`}</div></div>${quand}</div>`;
       if (e.type === "serie") return `<div class="fil-item fil-fort"><span class="fil-ic">🔥</span><div class="fil-corps"><div>${nom(e.joueur)} enchaîne ${e.n} victoires d'affilée dans le cercle</div></div>${quand}</div>`;
       const d = e.duel, g = d.vainqueur === 0 ? d.j0 : d.j1, p = d.vainqueur === 0 ? d.j1 : d.j0;
       const titre = d.une ? ctx.titreUneFil?.(d, membres) : null;

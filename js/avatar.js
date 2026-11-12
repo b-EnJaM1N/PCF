@@ -15,7 +15,10 @@ export const FONDS = { court: ["Court", "#1F5FA8"], gazon: ["Gazon", "#2E8B57"],
 const SANS = "linear-gradient(45deg,transparent 43%,#E8574A 43% 57%,transparent 57%),linear-gradient(-45deg,transparent 43%,#E8574A 43% 57%,transparent 57%),rgba(255,255,255,.14)";
 export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc", "#F5F7FA"], jaune: ["Jaune", "#F4C542"], rouge: ["Rouge", "#E8574A"], bleu: ["Bleu", "#4DA3FF"], vert: ["Vert", "#6BD49A"], or: ["Or", "#FFD34D"], argent: ["Argent", "#C9CED6"],
   rose: ["Rose", "#F28DB2"], violet: ["Violet", "#9B6BD6"], noir: ["Noir mat", "#33363D"], turquoise: ["Turquoise", "#2EC4B6"],
-  elite: ["Gant de l'Élite (champion de la carrière)", "#1D1A2E", "linear-gradient(135deg,#1D1A2E 0 45%,#E9C046 45% 55%,#1D1A2E 55%)"] };
+  elite: ["Gant de l'Élite (champion de la carrière)", "#1D1A2E", "linear-gradient(135deg,#1D1A2E 0 45%,#E9C046 45% 55%,#1D1A2E 55%)"],
+  // Le Dossard 1 (12 novembre, idée du porteur du projet) : le gant jaune du tenant du titre d'un cercle, comme le maillot jaune ;
+  // il passe au vainqueur du tournoi suivant du cercle (voir etape-71-dossard.sql).
+  dossard: ["Dossard 1 (tenant du titre de ton cercle)", "#F4C542", "radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 30%),#F4C542"] };
 export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], bronze: ["Bronze", "#C27A3A"], blanc: ["Blanc", "#F5F7FA"], bleu: ["Bleu", "#2C6FD1"], jaune: ["Jaune", "#F4C542"], noir: ["Noir", "#23262B"], or: ["Or", "#E0B12A"], argent: ["Argent", "#AEB6C2"],
   tricolore: ["Tricolore", "#F5F7FA", "linear-gradient(90deg,#2C5CC5 33%,#F5F7FA 33% 66%,#E1342B 66%)"],
   arcenciel: ["Arc-en-ciel", "#F4C542", "linear-gradient(90deg,#E8574A,#F4C542,#6BD49A,#4DA3FF,#9B6BD6)"],
@@ -113,8 +116,37 @@ const motifUnSigne = (id, signe, gant, c = OR_SIGNE) => `<pattern id="${id}g" wi
 
 let n = 0;
 function dessinerMain(a, fill, ink, nue) {
-  if (nue) return mainNue(a.symbole, (PEAUX[a.peau] || PEAUX.neutre)[1], (ONGLES[a.ongles] || [])[1] || null, (BAGUES[a.bague] || [])[3] || null, a.bague);
-  return main(a.symbole, fill, ink);
+  const tordu = a.degats?.tordu || 0;
+  if (nue) return mainNue(a.symbole, (PEAUX[a.peau] || PEAUX.neutre)[1], (ONGLES[a.ongles] || [])[1] || null, (BAGUES[a.bague] || [])[3] || null, a.bague, tordu);
+  return main(a.symbole, fill, ink, tordu);
+}
+
+// ---------------------------------------------------------------- les marques du smash (degats.js ; 12 novembre)
+// Par-dessus la main : le gant déchiré (ou un pansement sur la main nue) et la fissure du poing. (Les lames tordues, elles,
+// changent le dessin des doigts : voir main et mainNue.) Un trait clair sous chaque trait sombre, pour les gants foncés.
+const trait = (d, w = 1.3) => `<path d="${d}" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="${w + 1.4}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="rgba(30,15,10,.75)" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+const ACCROC = [
+  "M41 57 L44.5 53 L47.5 56.5 L51 51.5 L54 55.5 L58.5 53 L57.5 58 L60 61 L55.5 60.5 L51.5 64 L48 60 L43.5 62.5 Z",
+  "M53 45 L56 42.5 L58.5 45.5 L62 43 L63.5 47 L61 49.5 L57.5 48.5 L54.5 50 Z",
+];
+export function marquesSVG(symbole, degats, nue) {
+  if (!degats) return "";
+  let s = "";
+  const d = Math.min(2, degats.dechire || 0);
+  if (d && nue) {   // la main nue : un pansement (deux en croix au 2e smash)
+    s += [-18, 22].slice(0, d).map(rot => `<g transform="rotate(${rot} 50 60)"><rect x="38" y="56" width="24" height="8" rx="3.5" fill="#F1CF9E" stroke="rgba(90,55,20,.45)" stroke-width=".9"/>
+      <rect x="45.5" y="57.2" width="9" height="5.6" rx="1.4" fill="#FBEBD2"/>${[40.5, 42.5, 57.5, 59.5].map(x => `<circle cx="${x}" cy="60" r=".55" fill="rgba(90,55,20,.4)"/>`).join("")}</g>`).join("");
+  } else if (d) {   // le gant déchiré : un accroc (la peau dessous), ses fils qui dépassent
+    s += ACCROC.slice(0, d).map(p => `<path d="${p}" fill="#E7B48C" stroke="rgba(30,15,10,.7)" stroke-width="1.1" stroke-linejoin="round"/>`).join("");
+    s += trait("M43.5 62.5 l-1.5 3 M51.5 64 l.5 3.2 M58.5 53 l2 -2.5", .9) + (d > 1 ? trait("M62 43 l2.2 -2 M54.5 50 l-1.8 2", .9) : "");
+  }
+  const f = Math.min(2, degats.fissure || 0);
+  if (f && (symbole === "dos" || symbole === "pierre")) {   // la fissure du poing, depuis un petit creux
+    s += `<ellipse cx="55" cy="56" rx="${3 + f}" ry="${2.2 + f * .7}" fill="rgba(30,15,10,.4)" stroke="rgba(255,255,255,.35)" stroke-width=".8"/>`;
+    s += trait("M55 56 L51 53 L48 54 L45 50 M55 56 L59.5 60 L60.5 64 L64.5 67 M55 56 L58 50.5 L62 49.5");
+    if (f > 1) s += trait("M45 50 L41 49 L38.5 45 M60.5 64 L58 70 M62 49.5 L66 45 L68.5 46 M51 53 L50.5 47 L47.5 43.5");
+  }
+  return s;
 }
 
 // ---------------------------------------------------------------- la vraie main (main nue), style « cartoon fin »
@@ -122,7 +154,7 @@ function dessinerMain(a, fill, ink, nue) {
 // le contour est la couleur de la peau, en plus foncé.
 const rvb = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16));
 const melange = (a, b, t) => "#" + rvb(a).map((v, i) => Math.round(v + (rvb(b)[i] - v) * t).toString(16).padStart(2, "0")).join("");
-function mainNue(symbole, peau, vernis, bague, cleBague) {
+function mainNue(symbole, peau, vernis, bague, cleBague, tordu = 0) {
   const tr = melange(peau, "#2a1608", .45), ongle = vernis || melange(melange(peau, "#ffffff", .55), "#F3B7B0", .35), T = 1.4;
   const anneau = (x, y, w) => bague ? bagueSVG(bague, x - .6, y, w + 1.2, 4, cleBague === "symbole" ? (cx, cy) => chaton("symbole", cx, cy) : null) : "";
   // un doigt tendu, de sa base (bx, by) vers le haut, longueur L, tourné de rot degrés ; avecBague : la bague à sa base
@@ -142,6 +174,9 @@ function mainNue(symbole, peau, vernis, bague, cleBague) {
   if (symbole === "feuille") return doigt(33, 70, 27, -52) + paume(46) + doigt(33.5, 52, 30, -6) + doigt(44, 50, 36, -2, { avecBague: true }) + doigt(54.5, 50, 34, 2) + doigt(64.5, 53, 26, 7);
   if (symbole === "feuille-dos") return doigt(33, 52, 30, -14) + doigt(43.5, 50, 35, -5, { avecBague: true }) + doigt(54, 50, 34, 5) + doigt(64, 53, 27, 14) + paume(46, false) + tendons;
   // les ciseaux : toujours vus de dos (choix du porteur du projet), l'annulaire et l'auriculaire repliés restent cachés derrière la main
+  // (les lames tordues : la base du doigt dans l'axe, le bout plié de travers ; degats.js)
+  const plie = (bx, by, L, rot, pli, opts = {}) => `<g transform="rotate(${rot} ${bx} ${by})">${doigt(bx, by, L * .68, 0, { ...opts, sansOngle: true })}<g transform="rotate(${pli} ${bx} ${by - L * .62})">${doigt(bx, by - L * .62 + 3, L * .42 + 3, 0)}</g></g>`;
+  if ((symbole === "ciseaux" || symbole === "ciseaux-dos") && tordu) return doigt(30, 70, 18, -25, { sansOngle: true }) + plie(37, 52, 38, -14, PLI.sens * (18 + 14 * tordu), { avecBague: true }) + plie(50, 50, 40, 9, -PLI.sens * (16 + 14 * tordu)) + paume(46, false) + tendons;
   if (symbole === "ciseaux" || symbole === "ciseaux-dos") return doigt(30, 70, 18, -25, { sansOngle: true }) + doigt(37, 52, 38, -14, { avecBague: true }) + doigt(50, 50, 40, 9) + paume(46, false) + tendons;
   if (symbole === "index") return doigt(41, 50, 40, -4, { avecBague: true }) + paume(46) + replie(46.5, 42, 9.5, 18) + replie(55.5, 43, 9, 17) + replie(64.5, 46, 8, 15) + doigt(33, 66, 26, 74);
   if (symbole === "dos") return doigt(29, 68, 20, -20, { sansOngle: true }) + paume(42, false) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [36, 34, 35, 37][i], 10.5, 14, { pli: false, avecBague: i === 2 })).join("") + tendons;
@@ -167,6 +202,20 @@ function accessoires(a, nue = false) {
   }
   return s;
 }
+// Le dossard du tenant du titre : centré en (x, y), de taille r (comme le médaillon du gant « Club »).
+// Le prestige du Dossard 1 (aperçus du 12 novembre) : coutures d'or, liseré d'or autour du dossard, reflet brillant.
+export const PRESTIGE = { coutures: true, lisere: true, reflet: false };
+export function dossardSVG(x, y, r) {
+  const k = r / 10, w = 19, h = 16;
+  const epingle = (ex, ey) => `<circle cx="${ex}" cy="${ey}" r="1.15" fill="#B9C0CB" stroke="#6C7480" stroke-width=".5"/>`;
+  return `<g transform="translate(${x} ${y}) scale(${k})">
+    <rect x="${-w / 2}" y="${-h / 2}" width="${w}" height="${h}" rx="1.6" fill="#FFFFFF" stroke="${PRESTIGE.lisere ? "#C9971C" : "rgba(0,0,0,.35)"}" stroke-width="${PRESTIGE.lisere ? 1.6 : .9}"/>
+    <rect x="${-w / 2 + 1.4}" y="${-h / 2 + 1.4}" width="${w - 2.8}" height="2" fill="#E8574A" opacity=".85"/>
+    <path d="M-1.4 -4.6 L1.9 -4.6 L1.9 4.6 L-1.4 4.6 Z M-1.4 -4.6 L-4.3 -2.1 L-3.4 -0.8 L-1.4 -2.4 Z M-3.6 4.6 L4.1 4.6 L4.1 6 L-3.6 6 Z" transform="translate(0 -0.4)" fill="#16181D"/>
+    ${epingle(-w / 2 + 1.8, -h / 2 + 1.6)}${epingle(w / 2 - 1.8, -h / 2 + 1.6)}${epingle(-w / 2 + 1.8, h / 2 - 1.6)}${epingle(w / 2 - 1.8, h / 2 - 1.6)}
+  </g>`;
+}
+
 // sansFond : seulement le gant et le poignet (le poing qui se secoue pendant un coup).
 export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
@@ -219,6 +268,10 @@ export function avatarSVG(a) {
   let deco = "";
   if (gm === "coutures") deco = `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#E7C04A")}</g>`;
   if (a.gant === "elite" && gm !== "coutures") deco = `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#E9C046")}</g>`;   // le gant de l'Élite : noir, coutures d'or
+  // Le Dossard 1 : un dossard blanc épinglé (quatre épingles) avec un gros « 1 » noir, sur le dos de la main (ou la paume).
+  if (a.gant === "dossard") deco = (PRESTIGE.coutures && gm !== "coutures" ? `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#B8860B")}</g>` : "")
+    + (PRESTIGE.reflet ? `<g opacity=".38" style="mix-blend-mode:screen">${main(a.symbole, `url(#${id}r)`, "none")}</g>` : "")
+    + dossardSVG(...(PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
   if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
   if (gm === "bandeau") deco = `<rect x="28" y="64" width="44" height="7" rx="2" fill="#E0B12A" stroke="${ink}" stroke-width="1.5"/><rect x="28" y="67" width="44" height="1.4" fill="rgba(255,255,255,.7)"/>`;
@@ -227,13 +280,13 @@ export function avatarSVG(a) {
   if (a.motif === "etoile") motif = `<path d="M50 6 L61 38 L95 38 L67 58 L78 92 L50 71 L22 92 L33 58 L5 38 L39 38 Z" fill="#fff" opacity=".14"/>`;
   if (a.motif === "eclair") motif = `<path d="M60 2 L28 54 L48 54 L36 98 L76 40 L54 40 L68 2 Z" fill="#fff" opacity=".16"/>`;
   return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"${a.fantome ? ' opacity=".55"' : ""}>
-    <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath>${remplissage}${poignetDef}${fondDef}</defs>
+    <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath>${remplissage}${poignetDef}${fondDef}${a.gant === "dossard" ? `<linearGradient id="${id}r" gradientUnits="userSpaceOnUse" x1="25" y1="15" x2="70" y2="75"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".35" stop-color="#fff" stop-opacity=".15"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset=".62" stop-color="#fff" stop-opacity="0"/></linearGradient>` : ""}</defs>
     ${a.sansFond ? "" : `<circle cx="50" cy="50" r="48" fill="${fillFond}"/>${decorFond}${motif}
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
-    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}
+    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}
   </svg>`;
 }
 
@@ -244,7 +297,19 @@ const ongle = (x, y, ink, rot = "") => `<rect x="${x + 2.6}" y="${y}" width="5.3
 const dosDeMain = ink => [0, 1, 2].map(i => `<path d="M${39.5 + i * 10.5} 50 l-${1 + i} 15" fill="none" stroke="${ink}" stroke-width="1.1" stroke-linecap="round" opacity=".28"/>`).join("");
 const pouce = (gant, ink) => `<rect x="25" y="50" width="28" height="12" rx="6" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`;
 
-function main(symbole, gant, ink) {
+// Le sens du pli des lames tordues : -1, les bouts partent vers l'extérieur (version B, choisie par le porteur du projet
+// le 12 novembre) ; 1, ils se croisent.
+export const PLI = { sens: -1 };
+// Un doigt du V plié de travers (les lames tordues) : la base dans l'axe, le bout tourné de « pli » degrés à mi-hauteur.
+// (le pli aux deux tiers de la hauteur, et le bout un peu rallongé : le doigt garde sa longueur ; 12 novembre)
+function lameTordue(x, y, h, gant, ink, rot, pli) {
+  const mi = y + h * .38, y0 = y - 3;
+  return `<g transform="rotate(${rot})"><rect x="${x}" y="${mi}" width="10.5" height="${y + h - mi}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
+    <g transform="rotate(${pli} ${x + 5.25} ${mi + 2})"><rect x="${x}" y="${y0}" width="10.5" height="${mi - y0 + 4}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>${ongle(x, y0 + 1.5, ink)}</g>
+    <path d="M${x + 1.5} ${mi + 3} l7.5 -1.5" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".7"/></g>`;
+}
+
+function main(symbole, gant, ink, tordu = 0) {
   if (symbole === "feuille") return `
     ${doigt(29.5, 20, 34, gant, ink)}${doigt(40, 12, 40, gant, ink)}${doigt(50.5, 14, 38, gant, ink)}${doigt(61, 22, 32, gant, ink)}
     ${paume(44, gant, ink)}
@@ -276,11 +341,12 @@ function main(symbole, gant, ink) {
   // Les ciseaux vus de dos : le V, l'annulaire et l'auriculaire repliés (leurs jointures), le pouce rangé sur le côté.
   if (symbole === "ciseaux-dos") return `
     <rect x="22" y="44" width="13" height="20" rx="6.5" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
-    ${doigt(31, 19, 31, gant, ink, "-12 36 50")}${doigt(44, 18, 32, gant, ink, "10 49 50")}
+    ${tordu ? lameTordue(31, 19, 31, gant, ink, "-12 36 50", PLI.sens * (18 + 14 * tordu)) + lameTordue(44, 18, 32, gant, ink, "10 49 50", -PLI.sens * (16 + 14 * tordu))
+    : doigt(31, 19, 31, gant, ink, "-12 36 50") + doigt(44, 18, 32, gant, ink, "10 49 50")}
     ${doigt(50, 33, 14, gant, ink)}${doigt(60.5, 35, 12, gant, ink)}
     <rect x="29" y="40" width="42" height="36" rx="11" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
     ${[0, 1].map(i => `<path d="M${52.5 + i * 10.5} 42 q2.75 -2.6 5.5 0" fill="none" stroke="${ink}" stroke-width="1.3" stroke-linecap="round" opacity=".6"/>`).join("")}
-    ${ongle(31, 20.5, ink, "-12 36 50")}${ongle(44, 19.5, ink, "10 49 50")}
+    ${tordu ? "" : ongle(31, 20.5, ink, "-12 36 50") + ongle(44, 19.5, ink, "10 49 50")}
     ${dosDeMain(ink)}`;
   // La feuille vue de dos : la main grande ouverte, quatre doigts écartés en éventail (avec leurs ongles, sans pouce), pour qu'on
   // ne la confonde pas avec le poing. (Proportions d'une vraie main : le majeur le plus long, l'auriculaire le plus court.)

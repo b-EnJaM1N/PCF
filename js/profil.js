@@ -63,6 +63,8 @@ export const TITRES = [
   { id: "rassembleur", famille: "cercles", nom: "Rassembleur", desc: "Être responsable d'un cercle de 10 membres.", debloque: "le fond minuit", objet: ["fond", "minuit"] },
   { id: "patron", famille: "cercles", nom: "Patron", desc: "Être 1er du classement d'un cercle d'au moins 5 membres.", debloque: "le brassard de capitaine", objet: ["bracelet", "capitaine"] },
   { id: "champion_cercle", famille: "cercles", nom: "Champion du cercle", desc: "Remporter un championnat de cercle." },
+  // (12 novembre, idée du porteur du projet : la coupe aussi a son trophée ; au moins 3 vrais joueurs, les bots ne comptent pas)
+  { id: "coupe_cercle", famille: "cercles", bientot: "dossard", nom: "Vainqueur de coupe", desc: "Remporter une coupe de cercle (au moins 3 joueurs, sans compter les bots)." },
   { id: "derby", famille: "cercles", nom: "Derby", desc: "Jouer 10 duels contre les membres d'un de tes cercles." },
 
   { id: "imprevisible", famille: "duels", nom: "Imprévisible", desc: "Gagner un match en étant prévisible moins de 30 % du temps.", debloque: "le gant or", objet: ["gant", "or"] },
@@ -101,6 +103,7 @@ export function titresEnLigne({ cercles = [], tournois = [], duelsCercle = 0, cr
   if (duelsCercle >= 10) ids.push("derby");
   if (tournois.some(t => t.createur && t.cercle && t.phase === "termine")) ids.push("organisateur");
   if (tournois.some(t => t.mode === "championnat" && t.gagne)) ids.push("champion_cercle");
+  if (tournois.some(t => t.cercle && t.mode !== "championnat" && t.gagne && (t.inscrits || 0) - (t.bots || 0) >= 3)) ids.push("coupe_cercle");
   return ids;
 }
 
@@ -109,7 +112,9 @@ export const verrouDe = (type, cle) => TITRES.find(t => [t.objet, t.objet2].some
 // Verrouillé : réservé à un trophée pas encore obtenu, ou article de la boutique pas encore acheté.
 // Les gants : après le premier match (avant, la main nue).
 export const gantAttendPremierMatch = (P, type, cle) => type === "gant" && cle !== "nu" && !(P.matchs > 0);
-export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); return (!!t && !P.titres[t.id]) || !possede(P, type, cle) || gantAttendPremierMatch(P, type, cle); };
+// Le Dossard 1 : seulement pour le tenant du titre d'un de ses cercles (P.tenantTitre, donné par le serveur ; étape 71).
+export const reserveAuTenant = (P, type, cle) => type === "gant" && cle === "dossard" && !P.tenantTitre;
+export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); return (!!t && !P.titres[t.id]) || !possede(P, type, cle) || gantAttendPremierMatch(P, type, cle) || reserveAuTenant(P, type, cle); };
 
 export function profilParDefaut() {
   return {
