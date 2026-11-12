@@ -76,3 +76,24 @@ test("le fil : le dernier championnat terminé (champion, 1er de la saison, celu
   const e = evenementsDuFil({ duels: [] }, { champion: r.champion, autres: r.autres, membres: new Set(["B", "C", "D"]) });
   assert.deepEqual(e.map(x => x.type).sort(), ["champion", "gage", "saison"]);
 });
+
+test("le Dossard 1 dans le fil : chaque passage du titre est un événement", async () => {
+  const { evenementsDossard, evenementsDuFil } = await import("../app/js/fil-cercle.js");
+  const d = { tenant: { id: "b" }, passages: [{ quand: "2026-11-12T10:00:00Z", joueur: "b", avant: "a" }, { quand: "2026-11-05T10:00:00Z", joueur: "a", avant: null }] };
+  assert.deepEqual(evenementsDossard(d), [{ type: "dossard", quand: "2026-11-12T10:00:00Z", joueur: "b", avant: "a" }, { type: "dossard", quand: "2026-11-05T10:00:00Z", joueur: "a", avant: null }]);
+  assert.deepEqual(evenementsDossard(null), []);
+  const evts = evenementsDuFil({ duels: [], arrivees: [] }, { autres: evenementsDossard(d), membres: new Set(["a", "b"]) });
+  assert.equal(evts[0].type, "dossard"); assert.equal(evts[0].joueur, "b");
+});
+
+test("le Dossard 1 : verrouillé tant qu'on n'est pas tenant du titre ; le trophée de la coupe sans les bots", async () => {
+  const { estVerrouille, reserveAuTenant, titresEnLigne, profilParDefaut } = await import("../app/js/profil.js");
+  const P = { ...profilParDefaut(), matchs: 3 };
+  assert.ok(reserveAuTenant(P, "gant", "dossard") && estVerrouille(P, "gant", "dossard"));
+  P.tenantTitre = ["Le Club"];
+  assert.ok(!estVerrouille(P, "gant", "dossard"), "tenant du titre : le gant se porte");
+  assert.ok(!reserveAuTenant(P, "gant", "jaune"));
+  const coupe = (inscrits, bots) => titresEnLigne({ tournois: [{ cercle: { id: "c" }, mode: "libre", gagne: true, phase: "termine", inscrits, bots }] });
+  assert.ok(coupe(3, 0).includes("coupe_cercle"));
+  assert.ok(!coupe(4, 2).includes("coupe_cercle"), "2 vrais joueurs seulement : pas de trophée");
+});

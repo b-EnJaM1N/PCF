@@ -503,6 +503,14 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 septuagies semel. Le Dossard 1 (étape 71)
+
+Même manipulation que d'habitude avec [`etape-71-dossard.sql`](etape-71-dossard.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-71-dossard.sql).
+Le tenant du titre de chaque cercle (vainqueur du dernier tournoi terminé, coupe ou championnat, au moins 3 vrais joueurs)
+porte le Dossard 1 ; le fil du cercle annonce les passages. Rien n'est stocké : tout se déduit des tournois terminés.
+**À coller avant la fusion.**
+
 ## 1 septuagies. Le pseudo définitif (étape 70)
 
 Même manipulation que d'habitude avec [`etape-70-pseudo-definitif.sql`](etape-70-pseudo-definitif.sql)

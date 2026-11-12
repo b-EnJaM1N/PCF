@@ -4,7 +4,7 @@ import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
-import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache } from "./social-serveur.js";
+import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache, mesDossards } from "./social-serveur.js";
 import { ficheVisible, htmlFiche } from "./fiche-joueur.js";
 import { nouveauxDegats, noterDegats, degatsDe } from "./degats.js";
 import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier, origineIci } from "./visites.js";
@@ -1972,7 +1972,7 @@ function renderEditeur() {
   $("avApercu").innerHTML = avatarSVG(avMoi());             // l'aperçu reste visible pendant qu'on fait défiler les choix
   const mk = (el, type, table, texte) => {
     // (les objets « bientôt » : seulement sur la version de test, sauf s'il les a déjà)
-    el.innerHTML = Object.keys(table).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot; return !b || ouvert(b) || P.av[type] === k; }).map(k => {
+    el.innerHTML = Object.keys(table).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
       return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
     }).join("");
@@ -2808,7 +2808,7 @@ cerclesUI = installerCercles({
   ouvrirUneFil: (d, membres) => { const u = uneDuFil(d, membres); $("unePublier").hidden = true; return montrerUne(u.h, u.joueurs, u.score); },
   jouerFantome,
   lancerDuel,
-  trophees: donnees => gagnerTrophees(accorderTitres(P, titresEnLigne(donnees))),
+  trophees: donnees => { gagnerTrophees(accorderTitres(P, titresEnLigne(donnees))); majDossard(); },
   surClassement: (points, joues = 0, division = null) => {
     monClassement = points; mesDuelsOfficiels = joues; maDivision = division;
     retenirRang();
@@ -2820,6 +2820,26 @@ cerclesUI = installerCercles({
 
 // Des trophées gagnés hors d'un match (cercles, tournois en ligne) : on le dit dans un bandeau.
 let toastT = 0;
+// Le Dossard 1 (étape 71) : suis-je tenant du titre d'un de mes cercles ? P.tenantTitre : les noms de ces cercles (ou null).
+// Le titre perdu : le gant redevient jaune simple. Le titre gagné : un message (le gant attend dans le Vestiaire).
+function majDossard() {
+  if (!compteUI?.connecte() || !ouvert("dossard")) return;
+  mesDossards().then(liste => {
+    const avant = P.tenantTitre || null, cercles = (liste || []).map(x => x.cercle?.nom).filter(Boolean);
+    P.tenantTitre = cercles.length ? cercles : null;
+    if (!P.tenantTitre && P.av.gant === "dossard") P.av.gant = "jaune";
+    if (JSON.stringify(avant) === JSON.stringify(P.tenantTitre)) return;
+    sauverP(); rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche();
+    const t = $("toast"), nouveau = cercles.find(n => !(avant || []).includes(n));
+    if (!nouveau && P.tenantTitre) return;
+    t.textContent = nouveau ? `🟨 Tu es tenant du titre du cercle « ${nouveau} » : le Dossard 1 t'attend dans le Vestiaire !`
+      : "🟨 Un autre joueur a pris ton Dossard 1. Gagne le prochain tournoi de ton cercle pour le reprendre !";
+    t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 6000);
+  }).catch(() => {});
+}
+compteUI.surConnexion(session => { if (session?.user) majDossard(); });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") majDossard(); });
+
 function gagnerTrophees(nouveaux) {
   if (!nouveaux.length) return;
   sauverP(); if (vueCourante === "viewProfile") renderFiche();

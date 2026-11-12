@@ -61,6 +61,10 @@ export function evenementsChampionnat(tournois) {
   return { champion: { id: fini.vainqueur.id, quand: fini.fini_le }, autres };
 }
 
+// Le Dossard 1 du cercle (étape 71 ; dossard_du_cercle) : les passages du titre deviennent des événements du fil.
+// → [{ type: "dossard", quand, joueur, avant }] (avant : le tenant précédent, ou null pour le tout premier)
+export const evenementsDossard = d => (d?.passages || []).map(p => ({ type: "dossard", quand: p.quand, joueur: p.joueur, avant: p.avant || null }));
+
 // La ligne d'un résultat : « 7–5, 7–4 » (ou le score d'un set unique).
 export const scoreDuDuel = d => (d.scores_sets || []).map(([a, b]) => (d.vainqueur === 0 ? `${a}–${b}` : `${b}–${a}`)).join(", ");
 

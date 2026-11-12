@@ -7,6 +7,7 @@
 //   poules : le championnat du cercle avec poules, playoffs et playouts (11 novembre, étape SQL 66) ;
 //   avis : la carte « Ton avis ? » à la fin d'un match, une seule fois après le 5e match (11 novembre) ;
 //   fiche : la fiche complète d'un joueur en ligne, stats, face-à-face, historique (11 novembre, étape SQL 68).
+//   dossard : le Dossard 1, gant jaune du tenant du titre d'un cercle, son annonce dans le fil, le trophée de la coupe (12 novembre, étape SQL 71).
 export const OUVERTES = new Set(["serie"]);
 
 export function versionDeTest(loc = typeof location !== "undefined" ? location : null) {

@@ -100,6 +100,13 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    Testeurs : les nouveaux sons du smash sont appréciés (retour du 12 novembre).
    Le smash gagnant de la Feuille renforcé (même jour, demande du porteur du projet) : une grosse claque fabriquée (`claqueFeuille`
    dans `sons.js`) par-dessus son coup de raquette, plus doux que ceux de la Pierre et des Ciseaux.
+18. **Le Dossard 1** (12 novembre, idée et décisions du porteur du projet ; étape SQL 71 ; `nouveautes.js` : « dossard », version
+   de test) : le tenant du titre d'un cercle (vainqueur du dernier tournoi terminé du cercle, coupe ou championnat, au moins
+   3 vrais joueurs) peut porter le Dossard 1 : un gant jaune avec un dossard blanc « 1 » droit, coutures et liseré d'or (version B
+   choisie sur aperçu). Il passe au vainqueur du tournoi suivant (comme le maillot jaune) et n'expire pas ; titre perdu : le gant
+   redevient jaune simple. Le fil du cercle affiche le tenant et annonce les passages (« 🟨 X prend le Dossard 1 à Y ! »).
+   Nouveau trophée « Vainqueur de coupe » (coupe de cercle, au moins 3 vrais joueurs), à côté de « Champion du cercle » ;
+   les trophées restent pour toujours, seul le gant change de main.
 
 ## En bref (14 octobre 2026)
 
