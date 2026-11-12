@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { pseudoValide, pseudoComplet, ligneDepuisProfil, profilDepuisLigne, choisirFiche } from "../app/js/synchro.js";
+import { pseudoValide, pseudoComplet, ligneDepuisProfil, profilDepuisLigne, choisirFiche, etatPseudo } from "../app/js/synchro.js";
 import { profilParDefaut } from "../app/js/profil.js";
 
 const profil = extra => Object.assign(profilParDefaut(), extra);
@@ -42,4 +42,15 @@ test("deux fiches remplies : on garde la plus avancée", () => {
   assert.equal(r.source, "locale"); assert.equal(r.envoyer, true);
   assert.equal(r.fiche.pseudo, "Benji", "le pseudo du compte l'emporte"); assert.equal(r.fiche.numero, 4821);
   assert.equal(choisirFiche(profil({ matchs: 12, majLe: 200 }), { ...ligne, fiche: profil({ matchs: 12, majLe: 100 }) }).source, "locale");
+});
+
+test("le pseudo définitif : libre sans compte, fixé avec un compte, une fois après un retrait par la modération", () => {
+  assert.equal(etatPseudo({ pseudo: "Benji" }), "libre");
+  assert.equal(etatPseudo({ pseudo: "Benji", numero: 4821 }), "fixe");
+  assert.equal(etatPseudo({ pseudo: "Joueur", numero: 4821, pseudoLibre: true }), "une-fois");
+  const P = profilDepuisLigne({ pseudo: "Joueur", numero: 12, pseudo_libre: true, fiche: { matchs: 3 } });
+  assert.equal(etatPseudo(P), "une-fois", "lu dans la fiche en ligne");
+  const choix = choisirFiche({ ...P, pseudo: "Autre", matchs: 9, pseudoLibre: false }, { pseudo: "Joueur", numero: 12, pseudo_libre: true, fiche: { matchs: 3 } });
+  assert.equal(choix.fiche.pseudo, "Joueur", "le pseudo en ligne l'emporte");
+  assert.equal(choix.fiche.pseudoLibre, true);
 });

@@ -503,6 +503,14 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 septuagies. Le pseudo définitif (étape 70)
+
+Même manipulation que d'habitude avec [`etape-70-pseudo-definitif.sql`](etape-70-pseudo-definitif.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-70-pseudo-definitif.sql).
+Le pseudo ne se change plus une fois le compte créé (une demande de changement est ignorée, la fiche est quand même
+sauvegardée). Exception : un pseudo retiré par la modération (« Joueur ») ; le joueur en choisit un nouveau, une seule fois.
+**À coller avant la fusion.**
+
 ## 1 sexagies novies. Le smash récupéré (étape 69)
 
 Même manipulation que d'habitude avec [`etape-69-smash-recupere.sql`](etape-69-smash-recupere.sql)

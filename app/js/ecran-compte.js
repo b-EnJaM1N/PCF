@@ -10,7 +10,7 @@ const heure = d => d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-d
 
 // ctx : { lireP(), remplacerP(fiche), sauverLocal(), rafraichir(), ouvrirFiche() }
 export function installerCompte(ctx) {
-  let session = null, email = lire("compteEmail", ""), minuterie = 0, occupe = false;
+  let session = null, email = lire("compteEmail", ""), minuterie = 0, occupe = false, choisi = false;
   // Qui veut savoir quand on est connecté (avec une fiche en ligne) ou déconnecté : l'écran des duels.
   const auditeurs = [];
   const prevenir = () => auditeurs.forEach(f => { try { f(session); } catch { /* rien */ } });
@@ -44,7 +44,7 @@ export function installerCompte(ctx) {
     if (!pseudoValide(P.pseudo)) { $("compteEtat").textContent = "⚠️ Pseudo invalide (2 à 16 caractères, sans « # ») : ta fiche n'est pas sauvegardée en ligne."; return; }
     try {
       const ligne = await compte.enregistrerFiche(P, session.user.id);
-      const Q = ctx.lireP(); Q.pseudo = ligne.pseudo; Q.numero = ligne.numero; ctx.sauverLocal(); ctx.rafraichir();
+      const Q = ctx.lireP(); Q.pseudo = ligne.pseudo; Q.numero = ligne.numero; Q.pseudoLibre = !!ligne.pseudo_libre; ctx.sauverLocal(); ctx.rafraichir();
       ecrire("synchroEnAttente", false);
       $("compteEtat").textContent = `☁️ Fiche sauvegardée en ligne à ${heure(new Date())}.`;
       afficherConnecte();
@@ -59,7 +59,9 @@ export function installerCompte(ctx) {
   async function apresConnexion(s) {
     session = s;
     const ligne = await compte.lireFiche(s.user.id);
-    if (!ligne && !pseudoValide(ctx.lireP().pseudo)) { $("inPseudoCompte").value = ctx.lireP().pseudo || ""; montrer("pseudo"); return; }
+    // Pas encore de fiche en ligne : on choisit (ou on confirme) son pseudo, définitif ensuite (étape 70).
+    if (!ligne && !choisi) { $("inPseudoCompte").value = ctx.lireP().pseudo || ""; montrer("pseudo"); $("inPseudoCompte").focus(); return; }
+    choisi = false;
     const choix = choisirFiche(ctx.lireP(), ligne);
     ctx.remplacerP(choix.fiche);
     afficherConnecte();
@@ -89,7 +91,9 @@ export function installerCompte(ctx) {
   $("btnCreer").addEventListener("click", () => attendre($("btnCreer"), async () => {
     const p = $("inPseudoCompte").value.trim();
     if (!pseudoValide(p)) throw new Error("Choisis un pseudo de 2 à 16 caractères, sans « # ».");
+    if (!confirm(`Ton pseudo sera « ${p} », pour toujours : il ne pourra plus être changé. On continue ?`)) return;
     const P = ctx.lireP(); P.pseudo = p; ctx.sauverLocal(); $("inPseudo").value = p;
+    choisi = true;
     await apresConnexion(session);
   }));
   $("btnDeco").addEventListener("click", () => attendre($("btnDeco"), async () => {
