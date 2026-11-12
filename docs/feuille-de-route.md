@@ -123,6 +123,11 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
   avec cette version sont suivis. Mentions légales mises à jour. Lecture (une ligne) :
   `select to_char(arrivee,'DD/MM') arrivee, sum(nouveaux) n, sum(premier_match) fini_1er_match, sum(retour_1j) revenu_j1, sum(retour_7j) revenu_j7 from parcours group by arrivee order by arrivee desc limit 30;`
   Le chiffre « revenu à 7 jours » d'un jour d'arrivée n'est complet que 13 jours plus tard.
+  **12 novembre : les robots ne comptent plus** (accord du porteur du projet) : du 4 au 11 novembre, 14 « nouveaux » du site et
+  aucun n'avait lancé son premier match (Android : 4 nouveaux, 1 match) ; sans doute des robots (moteurs de recherche, aperçus
+  de liens, outils de mesure) qui ouvrent la page. Le compteur ignore maintenant les robots connus (`estRobot` dans
+  `app/js/visites.js` : leur « carte d'identité » de navigateur, ou un navigateur piloté par un programme). Les chiffres d'avant
+  le 12 novembre en contiennent encore.
   Étape 59 (6 novembre) : le parcours compte aussi les nouveaux qui lancent leur premier match et ceux qui y jouent un coup
   (1 nouveau sur 5 seulement finissait son premier match). Lecture :
   `select to_char(arrivee,'DD/MM') arrivee, sum(nouveaux) n, sum(premier_lance) lance, sum(premier_coup) un_coup, sum(premier_match) fini, sum(retour_1j) j1, sum(retour_7j) j7 from parcours group by arrivee order by arrivee desc limit 30;`
