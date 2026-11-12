@@ -7,6 +7,10 @@ export function pseudoValide(p) {
   return typeof p === "string" && p.length >= 2 && p.length <= 16 && p === p.trim() && !/[#\u0000-\u001f\u007f]/.test(p);
 }
 export const pseudoComplet = P => (P.numero ? `${P.pseudo}#${P.numero}` : P.pseudo);
+// Le pseudo est définitif une fois le compte créé (12 novembre, décision du porteur du projet ; étape SQL 70). Sans compte
+// (personne d'autre ne le voit), il se change ; après un retrait par la modération (« Joueur »), il se choisit une fois.
+// → "libre" (sans compte), "une-fois" (retiré par la modération) ou "fixe".
+export const etatPseudo = P => (!P?.numero ? "libre" : P.pseudoLibre ? "une-fois" : "fixe");
 
 // Ce qu'on envoie en ligne. La fiche complète voyage dans « fiche » ;
 // pseudo, pays et avatar sont aussi à part, pour la recherche et le face-à-face.
@@ -17,7 +21,7 @@ export function ligneDepuisProfil(P, id) {
 
 export function profilDepuisLigne(ligne) {
   const P = normaliserProfil(ligne.fiche);
-  P.pseudo = ligne.pseudo; P.numero = ligne.numero; P.drapeau = ligne.drapeau || P.drapeau;
+  P.pseudo = ligne.pseudo; P.numero = ligne.numero; P.drapeau = ligne.drapeau || P.drapeau; P.pseudoLibre = !!ligne.pseudo_libre;
   if (ligne.avatar && Object.keys(ligne.avatar).length) P.av = { ...P.av, ...ligne.avatar };
   return P;
 }
@@ -36,5 +40,5 @@ export function choisirFiche(locale, ligne) {
   const garderLocale = locale.matchs > distante.matchs ||
     (locale.matchs === distante.matchs && (locale.majLe || 0) > (distante.majLe || 0));
   if (!garderLocale) return { fiche: distante, source: "distante", envoyer: false };
-  return { fiche: { ...locale, pseudo: distante.pseudo, numero: distante.numero }, source: "locale", envoyer: true };
+  return { fiche: { ...locale, pseudo: distante.pseudo, numero: distante.numero, pseudoLibre: distante.pseudoLibre }, source: "locale", envoyer: true };
 }
