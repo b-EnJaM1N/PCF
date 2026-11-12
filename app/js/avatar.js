@@ -320,7 +320,7 @@ function pouceLeve(fill, trait, pli, epaisseur = 1.5) {
   return `<path d="M31 50 Q31 42 39 42 L60 42 Q70 42 70 50 L70 70 Q70 78 61 78 L41 78 Q31 78 31 69 Z" fill="${fill}" ${w}/>
     ${[0, 1, 2, 3].map(i => `<rect x="${47 + (i === 3 ? 2 : 0)}" y="${43.5 + i * 8.4}" width="${[26, 26, 25, 22][i]}" height="8.4" rx="4.2" fill="${fill}" ${w}/>`).join("")}
     <path d="M34 50 C32.5 41 33 30 36 21.5 C38 15.5 46.5 15.5 47.5 21.5 C48.5 29 49 37 50 45 C50.5 49 47.5 51 42 51 Z" fill="${fill}" ${w}/>
-    <path d="M38.2 22.5 q3.8 -2.4 7.2 .4 l.2 5 q-3.6 1.4 -7.4 .2 z" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linejoin="round" opacity=".5"/>
+    <path d="M47.2 27 q-2.6 1.6 -4.2 .6" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".45"/>
     <path d="M35.5 36 q6 1.8 12.5 0" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".5"/>
     <path d="M36 60 q5 2 9 0" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".35"/>`;
 }
