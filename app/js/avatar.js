@@ -172,8 +172,8 @@ function mainNue(symbole, peau, vernis, bague, cleBague, tordu = 0) {
   if (symbole === "feuille-dos") return doigt(33, 52, 30, -14) + doigt(43.5, 50, 35, -5, { avecBague: true }) + doigt(54, 50, 34, 5) + doigt(64, 53, 27, 14) + paume(46, false) + tendons;
   // les ciseaux : toujours vus de dos (choix du porteur du projet), l'annulaire et l'auriculaire repliés restent cachés derrière la main
   // (les lames tordues : la base du doigt dans l'axe, le bout plié de travers ; degats.js)
-  const plie = (bx, by, L, rot, pli, opts = {}) => `<g transform="rotate(${rot} ${bx} ${by})">${doigt(bx, by, L * .56, 0, { ...opts, sansOngle: true })}<g transform="rotate(${pli} ${bx} ${by - L * .5})">${doigt(bx, by - L * .5 + 3, L * .5 + 3, 0)}</g></g>`;
-  if ((symbole === "ciseaux" || symbole === "ciseaux-dos") && tordu) return doigt(30, 70, 18, -25, { sansOngle: true }) + plie(37, 52, 38, -14, 18 + 14 * tordu, { avecBague: true }) + plie(50, 50, 40, 9, -(16 + 14 * tordu)) + paume(46, false) + tendons;
+  const plie = (bx, by, L, rot, pli, opts = {}) => `<g transform="rotate(${rot} ${bx} ${by})">${doigt(bx, by, L * .68, 0, { ...opts, sansOngle: true })}<g transform="rotate(${pli} ${bx} ${by - L * .62})">${doigt(bx, by - L * .62 + 3, L * .42 + 3, 0)}</g></g>`;
+  if ((symbole === "ciseaux" || symbole === "ciseaux-dos") && tordu) return doigt(30, 70, 18, -25, { sansOngle: true }) + plie(37, 52, 38, -14, PLI.sens * (18 + 14 * tordu), { avecBague: true }) + plie(50, 50, 40, 9, -PLI.sens * (16 + 14 * tordu)) + paume(46, false) + tendons;
   if (symbole === "ciseaux" || symbole === "ciseaux-dos") return doigt(30, 70, 18, -25, { sansOngle: true }) + doigt(37, 52, 38, -14, { avecBague: true }) + doigt(50, 50, 40, 9) + paume(46, false) + tendons;
   if (symbole === "index") return doigt(41, 50, 40, -4, { avecBague: true }) + paume(46) + replie(46.5, 42, 9.5, 18) + replie(55.5, 43, 9, 17) + replie(64.5, 46, 8, 15) + doigt(33, 66, 26, 74);
   if (symbole === "dos") return doigt(29, 68, 20, -20, { sansOngle: true }) + paume(42, false) + [29, 39.5, 50, 60.5].map((x, i) => replie(x, [36, 34, 35, 37][i], 10.5, 14, { pli: false, avecBague: i === 2 })).join("") + tendons;
@@ -276,11 +276,14 @@ const ongle = (x, y, ink, rot = "") => `<rect x="${x + 2.6}" y="${y}" width="5.3
 const dosDeMain = ink => [0, 1, 2].map(i => `<path d="M${39.5 + i * 10.5} 50 l-${1 + i} 15" fill="none" stroke="${ink}" stroke-width="1.1" stroke-linecap="round" opacity=".28"/>`).join("");
 const pouce = (gant, ink) => `<rect x="25" y="50" width="28" height="12" rx="6" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`;
 
+// Le sens du pli des lames tordues : 1, les bouts se croisent ; -1, ils partent vers l'extérieur.
+export const PLI = { sens: 1 };
 // Un doigt du V plié de travers (les lames tordues) : la base dans l'axe, le bout tourné de « pli » degrés à mi-hauteur.
+// (le pli aux deux tiers de la hauteur, et le bout un peu rallongé : le doigt garde sa longueur ; 12 novembre)
 function lameTordue(x, y, h, gant, ink, rot, pli) {
-  const mi = y + h * .5;
+  const mi = y + h * .38, y0 = y - 3;
   return `<g transform="rotate(${rot})"><rect x="${x}" y="${mi}" width="10.5" height="${y + h - mi}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
-    <g transform="rotate(${pli} ${x + 5.25} ${mi + 2})"><rect x="${x}" y="${y}" width="10.5" height="${mi - y + 4}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>${ongle(x, y + 1.5, ink)}</g>
+    <g transform="rotate(${pli} ${x + 5.25} ${mi + 2})"><rect x="${x}" y="${y0}" width="10.5" height="${mi - y0 + 4}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>${ongle(x, y0 + 1.5, ink)}</g>
     <path d="M${x + 1.5} ${mi + 3} l7.5 -1.5" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".7"/></g>`;
 }
 
@@ -316,7 +319,7 @@ function main(symbole, gant, ink, tordu = 0) {
   // Les ciseaux vus de dos : le V, l'annulaire et l'auriculaire repliés (leurs jointures), le pouce rangé sur le côté.
   if (symbole === "ciseaux-dos") return `
     <rect x="22" y="44" width="13" height="20" rx="6.5" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
-    ${tordu ? lameTordue(31, 19, 31, gant, ink, "-12 36 50", 18 + 14 * tordu) + lameTordue(44, 18, 32, gant, ink, "10 49 50", -(16 + 14 * tordu))
+    ${tordu ? lameTordue(31, 19, 31, gant, ink, "-12 36 50", PLI.sens * (18 + 14 * tordu)) + lameTordue(44, 18, 32, gant, ink, "10 49 50", -PLI.sens * (16 + 14 * tordu))
     : doigt(31, 19, 31, gant, ink, "-12 36 50") + doigt(44, 18, 32, gant, ink, "10 49 50")}
     ${doigt(50, 33, 14, gant, ink)}${doigt(60.5, 35, 12, gant, ink)}
     <rect x="29" y="40" width="42" height="36" rx="11" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
