@@ -15,7 +15,10 @@ export const FONDS = { court: ["Court", "#1F5FA8"], gazon: ["Gazon", "#2E8B57"],
 const SANS = "linear-gradient(45deg,transparent 43%,#E8574A 43% 57%,transparent 57%),linear-gradient(-45deg,transparent 43%,#E8574A 43% 57%,transparent 57%),rgba(255,255,255,.14)";
 export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc", "#F5F7FA"], jaune: ["Jaune", "#F4C542"], rouge: ["Rouge", "#E8574A"], bleu: ["Bleu", "#4DA3FF"], vert: ["Vert", "#6BD49A"], or: ["Or", "#FFD34D"], argent: ["Argent", "#C9CED6"],
   rose: ["Rose", "#F28DB2"], violet: ["Violet", "#9B6BD6"], noir: ["Noir mat", "#33363D"], turquoise: ["Turquoise", "#2EC4B6"],
-  elite: ["Gant de l'Élite (champion de la carrière)", "#1D1A2E", "linear-gradient(135deg,#1D1A2E 0 45%,#E9C046 45% 55%,#1D1A2E 55%)"] };
+  elite: ["Gant de l'Élite (champion de la carrière)", "#1D1A2E", "linear-gradient(135deg,#1D1A2E 0 45%,#E9C046 45% 55%,#1D1A2E 55%)"],
+  // Le Dossard 1 (12 novembre, idée du porteur du projet) : le gant jaune du tenant du titre d'un cercle, comme le maillot jaune ;
+  // il passe au vainqueur du tournoi suivant du cercle (voir etape-71-dossard.sql).
+  dossard: ["Dossard 1 (tenant du titre de ton cercle)", "#F4C542", "radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 30%),#F4C542"] };
 export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], bronze: ["Bronze", "#C27A3A"], blanc: ["Blanc", "#F5F7FA"], bleu: ["Bleu", "#2C6FD1"], jaune: ["Jaune", "#F4C542"], noir: ["Noir", "#23262B"], or: ["Or", "#E0B12A"], argent: ["Argent", "#AEB6C2"],
   tricolore: ["Tricolore", "#F5F7FA", "linear-gradient(90deg,#2C5CC5 33%,#F5F7FA 33% 66%,#E1342B 66%)"],
   arcenciel: ["Arc-en-ciel", "#F4C542", "linear-gradient(90deg,#E8574A,#F4C542,#6BD49A,#4DA3FF,#9B6BD6)"],
@@ -199,6 +202,18 @@ function accessoires(a, nue = false) {
   }
   return s;
 }
+// Le dossard du tenant du titre : centré en (x, y), de taille r (comme le médaillon du gant « Club »).
+export function dossardSVG(x, y, r) {
+  const k = r / 10, w = 19, h = 16;
+  const epingle = (ex, ey) => `<circle cx="${ex}" cy="${ey}" r="1.15" fill="#B9C0CB" stroke="#6C7480" stroke-width=".5"/>`;
+  return `<g transform="translate(${x} ${y}) rotate(-5) scale(${k})">
+    <rect x="${-w / 2}" y="${-h / 2}" width="${w}" height="${h}" rx="1.6" fill="#FFFFFF" stroke="rgba(0,0,0,.35)" stroke-width=".9"/>
+    <rect x="${-w / 2 + 1.4}" y="${-h / 2 + 1.4}" width="${w - 2.8}" height="2" fill="#E8574A" opacity=".85"/>
+    <path d="M-1.4 -4.6 L1.9 -4.6 L1.9 4.6 L-1.4 4.6 Z M-1.4 -4.6 L-4.3 -2.1 L-3.4 -0.8 L-1.4 -2.4 Z M-3.6 4.6 L4.1 4.6 L4.1 6 L-3.6 6 Z" transform="translate(0 -0.4)" fill="#16181D"/>
+    ${epingle(-w / 2 + 1.8, -h / 2 + 1.6)}${epingle(w / 2 - 1.8, -h / 2 + 1.6)}${epingle(-w / 2 + 1.8, h / 2 - 1.6)}${epingle(w / 2 - 1.8, h / 2 - 1.6)}
+  </g>`;
+}
+
 // sansFond : seulement le gant et le poignet (le poing qui se secoue pendant un coup).
 export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
@@ -251,6 +266,8 @@ export function avatarSVG(a) {
   let deco = "";
   if (gm === "coutures") deco = `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#E7C04A")}</g>`;
   if (a.gant === "elite" && gm !== "coutures") deco = `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#E9C046")}</g>`;   // le gant de l'Élite : noir, coutures d'or
+  // Le Dossard 1 : un dossard blanc épinglé (quatre épingles) avec un gros « 1 » noir, sur le dos de la main (ou la paume).
+  if (a.gant === "dossard") deco = dossardSVG(...(PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
   if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
   if (gm === "bandeau") deco = `<rect x="28" y="64" width="44" height="7" rx="2" fill="#E0B12A" stroke="${ink}" stroke-width="1.5"/><rect x="28" y="67" width="44" height="1.4" fill="rgba(255,255,255,.7)"/>`;
