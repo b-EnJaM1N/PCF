@@ -4,8 +4,9 @@ import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
-import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache } from "./social-serveur.js";
+import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache, mesDossards } from "./social-serveur.js";
 import { ficheVisible, htmlFiche } from "./fiche-joueur.js";
+import { nouveauxDegats, noterDegats, degatsDe } from "./degats.js";
 import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier, origineIci } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { filVisible, matchDuDuel, hasardFixe, etapeDuDuel } from "./fil-cercle.js";
@@ -19,7 +20,7 @@ import { etatNotifications, activerNotifications, desactiverNotifications, ratta
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
-import { TITRES, FAMILLES, accorderTitres, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
+import { TITRES, FAMILLES, accorderTitres, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, reserveAuTenant, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
@@ -432,7 +433,8 @@ const SECOUSSE_MS = 540;
 // Chaque main a les couleurs du gant de son joueur (avatar : gant, poignet, motif) : le poing se secoue,
 // puis s'ouvre en feuille, fait le V des ciseaux ou reste fermé (pierre).
 const SYMBOLE_SIGNE = ["dos", "ciseaux-dos", "feuille-dos"];   // même ordre que regles.js (les mains vues de dos)
-const mainGantee = (g, signe, nom) => `<span class="poing-av" role="img" aria-label="${nom}">${avatarSVG({ ...avDe(g), symbole: SYMBOLE_SIGNE[signe], sansFond: true })}</span>`;
+// Les marques du smash (degats.js) : celles du set en cours (set : celui du coup qu'on révèle) ; pas dans le replay (marques = false).
+const mainGantee = (g, signe, nom, { marques = true, set = S?.match?.scoresSets.length } = {}) => `<span class="poing-av" role="img" aria-label="${nom}">${avatarSVG({ ...avDe(g), symbole: SYMBOLE_SIGNE[signe], sansFond: true, degats: marques ? degatsDe(S?.degats, g, set) : null })}</span>`;
 function secouerLesPoings() {
   [["hMe", 0], ["hBot", 1]].forEach(([id, g]) => { $(id).innerHTML = mainGantee(g, 0, "Poing serré"); $(id).className = "hand secoue"; });
 }
@@ -444,6 +446,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   S.suivi.figer();
   smash.forEach((x, j) => { if (x) noterSmash(m, j); });
   const setDuCoup = m.scoresSets.length, evt = jouerCoup(m, signe, signeAdv, auto);
+  // Les marques du smash gagnant sur la main de celui qui perd le point, jusqu'à la fin du set (12 novembre ; degats.js).
+  const marque = noterDegats(S.degats ||= nouveauxDegats(), { set: setDuCoup, gagnant: evt.gagnant, signes: [signe, signeAdv], smashGagnant: issueSmash(smash, evt.gagnant) === "gagne" });
   // Double smash : le gagnant du point récupère un smash pour la suite du set (pas annoncé s'il vient de finir le set).
   const recup = recupererSmash(m, smash, evt.gagnant, setDuCoup);
   // Le replay (replay.js) : on garde les actions marquantes du match.
@@ -515,7 +519,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
 
   // Révélation immédiate des deux signes : aucun effet pendant l'échange.
   const hMe = $("hMe"), hBot = $("hBot");
-  hMe.innerHTML = mainGantee(0, signe, NOM[signe]); hBot.innerHTML = mainGantee(1, signeAdv, NOM[signeAdv]);
+  hMe.innerHTML = mainGantee(0, signe, NOM[signe], { set: setDuCoup }); hBot.innerHTML = mainGantee(1, signeAdv, NOM[signeAdv], { set: setDuCoup });
   document.querySelectorAll("#moves button.choisi").forEach(b => b.classList.remove("choisi"));
   // Les deux mains s'ouvrent à la même taille ; une demi-seconde plus tard, le gagnant grossit et le perdant s'efface.
   hMe.className = "hand ouvre"; hBot.className = "hand ouvre";
@@ -524,6 +528,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
     if (S?.match !== m || m.coups.length !== coupVu) return;   // un autre coup (ou un autre match) a pris la place
     if (evt.gagnant === 0) { hMe.classList.add("win"); hBot.classList.add("lose"); }
     if (evt.gagnant === 1) { hBot.classList.add("win"); hMe.classList.add("lose"); }
+    if (marque && !silencieux) (marque.joueur === 0 ? hMe : hBot).classList.add("abime");   // (la main touchée tremble)
   }, silencieux || reduitMouvement() ? 0 : 500);
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
@@ -586,13 +591,13 @@ function jouerReplay(liste, apres = () => {}) {
     $("rpCompte").textContent = liste.length > 1 ? `${i} / ${liste.length}` : "";
     $("rpVerdict").textContent = ""; $("rpCom").textContent = ""; $("rpPalette").hidden = true;
     const lp = mo.palette ? lignePalette(mo.palette) : null, pa = lp ? mo.palette : null, roland = pa ? "commentateur" : null;
-    [[moi, 0], [adv, 1]].forEach(([el, g]) => { el.innerHTML = mainGantee(g, 0, "Poing serré"); el.className = "hand secoue"; });
+    [[moi, 0], [adv, 1]].forEach(([el, g]) => { el.innerHTML = mainGantee(g, 0, "Poing serré", { marques: false }); el.className = "hand secoue"; });
     // Roland ou Monique : « Revoyons ça ! » pour la première action, puis un mot sur l'action au dévoilement.
     const genre = genreJoueur(mo.gagnant);
     if (i === 1) { const l = ligneReplay("replay_intro", "m", roland); if (l) voix.dire([l]); }
     t = setTimeout(() => {
       if (fini) return;
-      moi.innerHTML = mainGantee(0, mo.a, NOM[mo.a]); adv.innerHTML = mainGantee(1, mo.b, NOM[mo.b]);
+      moi.innerHTML = mainGantee(0, mo.a, NOM[mo.a], { marques: false }); adv.innerHTML = mainGantee(1, mo.b, NOM[mo.b], { marques: false });
       moi.className = "hand ouvre"; adv.className = "hand ouvre";
       const [w, l] = mo.gagnant === 0 ? [mo.a, mo.b] : [mo.b, mo.a];
       $("rpVerdict").textContent = `${mo.smash[mo.gagnant] ? "💥 Smash ! " : ""}${NOM[w]} bat ${NOM[l]}`;
@@ -1967,7 +1972,7 @@ function renderEditeur() {
   $("avApercu").innerHTML = avatarSVG(avMoi());             // l'aperçu reste visible pendant qu'on fait défiler les choix
   const mk = (el, type, table, texte) => {
     // (les objets « bientôt » : seulement sur la version de test, sauf s'il les a déjà)
-    el.innerHTML = Object.keys(table).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot; return !b || ouvert(b) || P.av[type] === k; }).map(k => {
+    el.innerHTML = Object.keys(table).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
       return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
     }).join("");
@@ -1976,6 +1981,7 @@ function renderEditeur() {
       if (estVerrouille(P, type, k)) {
         const x = articleDe(type, k);
         $("lockNote").innerHTML = gantAttendPremierMatch(P, type, k) ? "🧤 Les gants se débloquent après ton premier match. En attendant : la main nue !"
+          : reserveAuTenant(P, type, k) ? "🟨 Le Dossard 1 se porte seulement quand tu es tenant du titre d'un de tes cercles : gagne le prochain tournoi de ton cercle, il est à toi jusqu'au tournoi suivant !"
           : t ? `Verrouillé. Obtiens le titre « ${esc(t.nom)} » : ${esc(t.desc.charAt(0).toLowerCase() + t.desc.slice(1))}`
           : `🛍️ « ${esc(x.nom)} » est en vente à la boutique : ${x.prix} jetons. <button class="linkbtn" data-aller="viewBoutique">Voir la boutique</button>`;
         return;
@@ -2802,7 +2808,7 @@ cerclesUI = installerCercles({
   ouvrirUneFil: (d, membres) => { const u = uneDuFil(d, membres); $("unePublier").hidden = true; return montrerUne(u.h, u.joueurs, u.score); },
   jouerFantome,
   lancerDuel,
-  trophees: donnees => gagnerTrophees(accorderTitres(P, titresEnLigne(donnees))),
+  trophees: donnees => { gagnerTrophees(accorderTitres(P, titresEnLigne(donnees))); majDossard(); },
   surClassement: (points, joues = 0, division = null) => {
     monClassement = points; mesDuelsOfficiels = joues; maDivision = division;
     retenirRang();
@@ -2814,6 +2820,26 @@ cerclesUI = installerCercles({
 
 // Des trophées gagnés hors d'un match (cercles, tournois en ligne) : on le dit dans un bandeau.
 let toastT = 0;
+// Le Dossard 1 (étape 71) : suis-je tenant du titre d'un de mes cercles ? P.tenantTitre : les noms de ces cercles (ou null).
+// Le titre perdu : le gant redevient jaune simple. Le titre gagné : un message (le gant attend dans le Vestiaire).
+function majDossard() {
+  if (!compteUI?.connecte() || !ouvert("dossard")) return;
+  mesDossards().then(liste => {
+    const avant = P.tenantTitre || null, cercles = (liste || []).map(x => x.cercle?.nom).filter(Boolean);
+    P.tenantTitre = cercles.length ? cercles : null;
+    if (!P.tenantTitre && P.av.gant === "dossard") P.av.gant = "jaune";
+    if (JSON.stringify(avant) === JSON.stringify(P.tenantTitre)) return;
+    sauverP(); rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche();
+    const t = $("toast"), nouveau = cercles.find(n => !(avant || []).includes(n));
+    if (!nouveau && P.tenantTitre) return;
+    t.textContent = nouveau ? `🟨 Tu es tenant du titre du cercle « ${nouveau} » : le Dossard 1 t'attend dans le Vestiaire !`
+      : "🟨 Un autre joueur a pris ton Dossard 1. Gagne le prochain tournoi de ton cercle pour le reprendre !";
+    t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 6000);
+  }).catch(() => {});
+}
+compteUI.surConnexion(session => { if (session?.user) majDossard(); });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") majDossard(); });
+
 function gagnerTrophees(nouveaux) {
   if (!nouveaux.length) return;
   sauverP(); if (vueCourante === "viewProfile") renderFiche();

@@ -162,3 +162,23 @@ export function smashRate(fs, rng = Math.random) {
   }
   return normaliser([s], 0.7)[0];
 }
+
+// Le smash gagnant de la Feuille (12 novembre, demande du porteur du projet : « intensifier ») : une grosse claque, comme un drap
+// qu'on fait claquer, avec un coup sourd dessous et le froissement qui suit.
+export function claqueFeuille(fs, rng = Math.random) {
+  const len = Math.floor(fs * 0.42), s = new Float32Array(len);
+  const claque = passeBande(fs, 1800, 0.55), corps = passeBande(fs, 420, 0.9), froisse = passeBande(fs, 3600, 1.1);
+  for (let i = 0; i < len; i++) {
+    const t = i / fs;
+    const bruit = rng() * 2 - 1;
+    const c = claque(bruit * Math.exp(-t / 0.006)) * 5;                                   // le claquement sec
+    const b = corps(bruit * Math.exp(-t / 0.03)) * 2.2;                                    // la toile qui frappe
+    const sourd = Math.sin(2 * Math.PI * (110 - 50 * Math.min(1, t / 0.08)) * t) * Math.exp(-t / 0.045) * 1.1;   // le coup sourd
+    // le froissement : de petites rafales qui s'éteignent (la feuille qui vibre après le choc)
+    const rafale = t > 0.03 ? Math.max(0, Math.sin(2 * Math.PI * 28 * t)) ** 3 * Math.exp(-(t - 0.03) / 0.09) : 0;
+    s[i] = c + b + sourd + froisse(bruit) * rafale * 1.4;
+  }
+  for (let i = 0; i < 24; i++) s[i] *= i / 24;
+  for (let i = 0; i < fs * 0.03; i++) s[len - 1 - i] *= i / (fs * 0.03);
+  return normaliser([s])[0];
+}

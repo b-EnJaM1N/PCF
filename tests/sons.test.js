@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applaudissements, coupDeRaquette, echoStade, FOULES, debutDuSon, dechirure, smashBloque, smashRate } from "../app/js/sons.js";
+import { applaudissements, coupDeRaquette, echoStade, FOULES, debutDuSon, dechirure, claqueFeuille, smashBloque, smashRate } from "../app/js/sons.js";
 import { FICHIERS_AMBIANCE, FICHIERS_RAQUETTE, FICHIERS_REACTIONS, reactionsPublic, egalitesAvantDernier, series, reactionPoint } from "../app/js/ambiance.js";
 import { rngFixe } from "./outils.js";
 
@@ -29,7 +29,7 @@ test("le coup de raquette est court et commence sans clic", () => {
 });
 
 test("les sons du smash : la déchirure des Ciseaux, le smash bloqué, le smash raté", () => {
-  for (const [nom, f, max] of [["déchirure", dechirure, 0.5], ["bloqué", smashBloque, 0.55], ["raté", smashRate, 0.45]]) {
+  for (const [nom, f, max] of [["déchirure", dechirure, 0.5], ["claque", claqueFeuille, 0.45], ["bloqué", smashBloque, 0.55], ["raté", smashRate, 0.45]]) {
     const s = f(22050, rngFixe(5));
     assert.ok(s.length <= 22050 * max, nom);
     assert.ok(valide(s), nom);

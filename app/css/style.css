@@ -76,6 +76,9 @@ body:not(.en-match) .rule { display: none; }
 .arena { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 96px; }
 .hand { font-size: 3.4rem; text-align: center; }
 .hand.win { transform: scale(1.18); } .hand.lose { opacity: .4; }
+/* Les marques du smash (12 novembre) : la main touchée tremble, et reste visible malgré la défaite du point. */
+.hand.abime { opacity: .85; } .hand.abime .poing-av { animation: main-abimee .5s ease-out; }
+@keyframes main-abimee { 0% { transform: translateX(0) rotate(0); } 15% { transform: translateX(-6px) rotate(-6deg); } 35% { transform: translateX(5px) rotate(5deg); } 55% { transform: translateX(-4px) rotate(-3deg); } 75% { transform: translateX(2px) rotate(2deg); } 100% { transform: none; } }
 /* Au dévoilement, les deux mains restent un instant de la même taille, puis le gagnant grossit et le perdant s'efface (app.js). */
 .hand.ouvre { transition: transform .25s ease-out, opacity .25s ease-out; }
 .hand.attend { animation: attendre-coup .7s ease-in-out infinite alternate; }   /* le coup adverse arrive */
@@ -130,7 +133,7 @@ body:not(.en-match) .rule { display: none; }
 .pal-com { margin: 0; font-style: italic; font-size: .9rem; }
 @keyframes secouer-poing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px) rotate(-8deg); } }
 @keyframes attendre-coup { from { opacity: .35; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .hand.attend { animation: none; opacity: .6; } .hand.secoue, .hand.ouvre .poing-av { animation: none; } .hand.ouvre { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .hand.attend { animation: none; opacity: .6; } .hand.secoue, .hand.ouvre .poing-av, .hand.abime .poing-av { animation: none; } .hand.ouvre { transition: none; } }
 .vs { font-family: "Barlow Condensed", sans-serif; font-weight: 700; color: var(--muted); }
 .verdict { text-align: center; font-weight: 600; min-height: 1.4em; }
 .timer { height: 6px; background: var(--panel); border-radius: 3px; overflow: hidden; }
@@ -1037,3 +1040,5 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .fiche-stats td:last-child { text-align: right; }
 .fiche-bilan { white-space: nowrap; }
 .fiche-bilan.gagne { color: var(--me); } .fiche-bilan.perdu { color: var(--bot); }
+/* Le Dossard 1 du cercle (12 novembre) : le tenant du titre, en tête du fil. */
+.fil-dossard { margin: 0 0 10px; padding: 8px 10px; border-radius: 10px; background: rgba(244, 197, 66, .14); border: 1px solid rgba(244, 197, 66, .45); }
