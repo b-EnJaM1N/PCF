@@ -91,6 +91,13 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    le choisit ou on le confirme (« il ne pourra plus être changé »). Après un retrait par la modération (« Joueur »), on en
    choisit un nouveau, une seule fois (colonne `pseudo_libre`, bouton « Valider mon nouveau pseudo »). Le surnom, le pays et
    l'avatar se changent toujours. Côté serveur, un changement demandé est ignoré sans erreur (anciennes versions de l'appli).
+17. **Les marques du smash** (12 novembre, idée et choix du porteur du projet ; `app/js/degats.js`, dessins dans `avatar.js`) :
+   un smash qui gagne le point abîme la main de celui qui perd le point, jusqu'à la fin du set (décor seulement) :
+   Ciseaux contre Feuille, le gant déchiré (sur la main nue : un pansement) ; Pierre contre Ciseaux, les lames tordues (les
+   deux doigts du V pliés vers l'extérieur, version B choisie sur aperçu) ; Feuille contre Pierre, une fissure qui part d'un
+   petit creux (visible aussi pendant que les poings se secouent). Au 2e smash du set, la marque grandit. La main touchée
+   tremble au moment du smash. Contre les bots et en duel (chaque téléphone la calcule à partir des coups) ; pas dans le replay.
+   Testeurs : les nouveaux sons du smash sont appréciés (retour du 12 novembre).
 
 ## En bref (14 octobre 2026)
 
