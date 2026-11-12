@@ -1,7 +1,7 @@
 // La boutique (Ma fiche › Boutique, ou la pastille 🛍️ des jetons) : de l'apparence, achetée avec des jetons.
 // Un achat est définitif (ni remboursement, ni cadeau) ; la vitrine du jour propose 3 articles à −30 %.
 import * as social from "./social-serveur.js";
-import { ARTICLES, CATEGORIES, RARETES, article, GESTES, CELEBRATIONS, CADRES } from "./catalogue.js";
+import { ARTICLES, CATEGORIES, RARETES, RETIRES, article, GESTES, CELEBRATIONS, CADRES } from "./catalogue.js";
 import { avatarSVG } from "./avatar.js";
 import { texteJetons } from "./jetons-logique.js";
 import { texteCri } from "./celebrations.js";
@@ -53,10 +53,10 @@ export function installerBoutique(ctx) {
   function render() {
     $("boutiqueHors").hidden = !!uid;
     $("boutiqueSolde").textContent = uid && etat ? texteJetons(etat.solde) : "";
-    $("boutiqueVitrine").innerHTML = uid && etat?.vitrine ? etat.vitrine.filter(v => article(v.id)).map(v => carte(article(v.id), v.prix_remise)).join("") : "";
+    $("boutiqueVitrine").innerHTML = uid && etat?.vitrine ? etat.vitrine.filter(v => article(v.id) && !RETIRES.has(v.id)).map(v => carte(article(v.id), v.prix_remise)).join("") : "";
     $("boutiqueVitrineCarte").hidden = !(uid && etat?.vitrine);
     $("boutiqueOnglets").innerHTML = CATEGORIES.map(c => `<button data-cat="${c.id}" aria-pressed="${c.id === categorie}">${c.nom}</button>`).join("");
-    $("boutiqueArticles").innerHTML = ARTICLES.filter(x => x.categorie === categorie && (!x.bientot || ctx.nouveautes?.())).map(x => carte(x)).join("");
+    $("boutiqueArticles").innerHTML = ARTICLES.filter(x => x.categorie === categorie && !RETIRES.has(x.id) && (!x.bientot || ctx.nouveautes?.())).map(x => carte(x)).join("");
   }
 
   $("boutiqueOnglets").addEventListener("click", e => { const b = e.target.closest("[data-cat]"); if (b) { categorie = b.dataset.cat; render(); } });

@@ -503,6 +503,13 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 septuagies ter. Le pouce levé retiré de la vente (étape 73)
+
+Même manipulation que d'habitude avec [`etape-73-pouce-retire.sql`](etape-73-pouce-retire.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-73-pouce-retire.sql).
+Le geste « Le pouce levé » ne passe plus dans la vitrine du jour et ne s'achète plus ; ceux qui l'ont le gardent.
+**À coller avant la fusion.**
+
 ## 1 septuagies bis. Gants vache, girafe et léopard (étape 72)
 
 Même manipulation que d'habitude avec [`etape-72-motifs-animaux.sql`](etape-72-motifs-animaux.sql)

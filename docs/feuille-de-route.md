@@ -118,6 +118,9 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
 21. **Trois répliques retirées** (12 novembre, demande du porteur du projet) : « Allô ? Non mais allô, quoi ! » (Monique),
    « T'es pas venu ici pour souffrir, ok ? » (Roland), « Les calculs sont pas bons, Kevin. » (Monique). « Houston, on a un
    problème ! » l'était déjà depuis le 6 novembre. Les enregistrements restent dans app/audio mais ne sont plus joués.
+22. **Le pouce levé retiré de la vente** (12 novembre, décision du porteur du projet ; étape SQL 73) : le dessin du geste n'était
+   pas assez beau (trois essais, dont un d'après l'emoji 👍). Il sort de la boutique et de la vitrine du jour et ne s'achète plus
+   (`RETIRES` dans `catalogue.js`, `_retires()` côté serveur) ; ceux qui l'ont acheté le gardent, avec le dernier dessin.
 
 ## En bref (14 octobre 2026)
 
