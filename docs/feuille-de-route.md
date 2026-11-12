@@ -109,6 +109,12 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    les trophées restent pour toujours, seul le gant change de main.
 19. **Gants vache, girafe et léopard** (12 novembre, demande du porteur du projet ; étape SQL 72) : trois motifs de gant de plus à
    la boutique (rares, 800 jetons, comme tigré et zébré ; dans la vitrine du jour aussi). Le léopard n'existait qu'en poignet.
+20. **Le bouton « ← Retour » et la touche retour du téléphone** (12 novembre, demande du porteur du projet et plainte de
+   testeurs : la touche retour quittait l'appli) : tous les liens « ← Jouer », « ← Tournois », « ← Ma fiche » deviennent un
+   bouton « ← Retour » bien visible (gras, plus grand, encadré). Chaque changement d'écran est noté dans l'historique du
+   navigateur : la touche retour du téléphone ramène à l'écran d'avant (depuis le premier écran, elle quitte l'appli comme
+   d'habitude) ; pendant un match, elle ne fait rien et un message dit comment quitter le match. Pas encore : fermer une
+   fenêtre par-dessus (Une, fiche d'un joueur…) ou revenir de la page d'un cercle à la liste avec la touche retour.
 
 ## En bref (14 octobre 2026)
 

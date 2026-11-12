@@ -2044,13 +2044,15 @@ $("resetProfile").addEventListener("click", () => {
 // qui mène aux pages Partie rapide, Défier un ami, Tournois (Programmés, Sit & Go, Mes tournois) et Entraînement.
 const VUES = ["viewJouer", "viewCompet", "viewCarriere", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewBoutique", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
 const ONGLET_DE = { viewJouer: "jouer", viewCompet: "jouer", viewCarriere: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewBoutique: "profile", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
-let vueCourante = "viewJouer", avantOptions = "viewJouer";
+let vueCourante = "viewJouer", avantOptions = "viewJouer", parHistorique = false;
 function aller(vue) {
   if (!VUES.includes(vue)) return;
   if (vue === "viewOptions" && vueCourante !== "viewOptions") avantOptions = vueCourante;
   if (vueCourante === "viewRapide" && vue !== "viewRapide") rapideUI?.quitterEcran();   // la recherche demande de rester sur l'écran
   if (vue === "viewRapide") rapideUI?.rafraichir();
   VUES.forEach(v => { $(v).hidden = v !== vue; });
+  // (le bouton retour du téléphone : chaque changement d'écran est noté dans l'historique ; voir plus bas)
+  if (vue !== vueCourante && !parHistorique) { try { history.pushState({ vue }, "", location.href); } catch { /* sans historique */ } }
   vueCourante = vue;
   const onglet = ONGLET_DE[vue];
   if (onglet || vue === "viewOptions") document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === onglet)));
@@ -2067,6 +2069,21 @@ function aller(vue) {
   if (vue === "viewBoutique") boutiqueUI?.rafraichir();
   window.scrollTo(0, 0);
 }
+// Le bouton retour du téléphone (12 novembre : des testeurs se plaignaient qu'il quittait l'appli). Chaque changement d'écran
+// est noté dans l'historique du navigateur : « retour » ramène à l'écran d'avant ; depuis le premier écran, il quitte l'appli
+// comme d'habitude. Pendant un match, il ne fait rien (un message dit comment quitter le match).
+try { history.replaceState({ ...(history.state || {}), vue: vueCourante }, "", location.href); } catch { /* sans historique */ }
+window.addEventListener("popstate", e => {
+  if (document.body.classList.contains("en-match")) {
+    try { history.pushState({ vue: vueCourante }, "", location.href); } catch { /* rien */ }
+    const t = $("toast");
+    t.textContent = S?.duel ? "⏸️ Le match continue ! Pour l'arrêter : « Abandonner le duel », sous le terrain." : "⏸️ Le match continue ! Pour l'arrêter : « Quitter le match », sous le terrain.";
+    t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 4000);
+    return;
+  }
+  parHistorique = true;
+  try { aller(e.state?.vue && VUES.includes(e.state.vue) ? e.state.vue : "viewJouer"); } finally { parHistorique = false; }
+});
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => aller({ jouer: "viewJouer", cercles: "viewCercles", profile: "viewProfile" }[b.dataset.v])));
 document.addEventListener("click", e => { const b = e.target.closest("[data-aller]"); if (b) aller(b.dataset.aller); });
 $("btnOptions").addEventListener("click", () => aller(vueCourante === "viewOptions" ? avantOptions : "viewOptions"));
