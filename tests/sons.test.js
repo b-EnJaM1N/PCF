@@ -118,8 +118,8 @@ test("le public s'agite avec l'enjeu : calme en début de set, plus fort en fin 
 test("les chants personnalisés : seulement pour les joueurs du match, quelle que soit la casse du pseudo", async () => {
   const { chantsPerso, CHANTS_PERSO } = await import("../app/js/chants-perso.js");
   const { existsSync } = await import("node:fs");
-  assert.equal(chantsPerso({ pseudo: "Le Chiromancien", numero: 6047 }).length, 5);
-  assert.equal(chantsPerso({ pseudo: "le chiromancien ", numero: "6047" }).length, 5);
+  assert.equal(chantsPerso({ pseudo: "Le Chiromancien", numero: 6047 }).length, 6);
+  assert.equal(chantsPerso({ pseudo: "le chiromancien ", numero: "6047" }).length, 6);
   assert.equal(chantsPerso({ pseudo: "Le Chiromancien", numero: 1234 }).length, 0, "un autre joueur du même pseudo : rien");
   assert.equal(chantsPerso({ pseudo: "Ben", numero: 1 }, null).length, 0);
   assert.deepEqual(chantsPerso({ pseudo: "Kikou", numero: 1743 }), ["chant_perso_kikou_01"], "le chant de Kikou#1743");
@@ -127,9 +127,9 @@ test("les chants personnalisés : seulement pour les joueurs du match, quelle qu
   assert.deepEqual(chantsPerso({ pseudo: "Shishyo", numero: 2931 }), ["chant_perso_shishyo_01"], "le chant de Shishyo#2931");
   assert.deepEqual(chantsPerso({ pseudo: "Pierre la feuill", numero: 1473 }), ["chant_perso_pierrelafeuille_01"], "le chant de Pierre la feuill#1473");
   const duel = chantsPerso({ pseudo: "Benja-Main", numero: 3528 }, { pseudo: "Le Chiromancien", numero: 6047 });
-  assert.equal(duel.length, 10, "les deux joueurs du match");
-  assert.deepEqual(duel.map(id => id.includes("benjamain")), [true, false, true, false, true, false, true, false, true, false], "un chant de l'un, un chant de l'autre, jusqu'au bout");
-  assert.equal(duel.filter(id => id.includes("benjamain")).length, 5, "autant de chances chacun, même avec 2 chants contre 5");
+  assert.equal(duel.length, 12, "les deux joueurs du match");
+  assert.deepEqual(duel.map(id => id.includes("benjamain")), [true, false, true, false, true, false, true, false, true, false, true, false], "un chant de l'un, un chant de l'autre, jusqu'au bout");
+  assert.equal(duel.filter(id => id.includes("benjamain")).length, 6, "autant de chances chacun, même avec 2 chants contre 6");
   const { COURTS_PERSO } = await import("../app/js/chants-perso.js");
   for (const id of [...Object.values(CHANTS_PERSO).flat(), ...Object.values(COURTS_PERSO).flat()]) assert.ok(existsSync(new URL(`../app/audio/${id}.mp3`, import.meta.url)), id);
 });
@@ -138,7 +138,7 @@ test("en duel, les deux téléphones font le même tirage de chants", async () =
   const { chantsPersoCommuns, hashTexte } = await import("../app/js/chants-perso.js");
   const benja = { pseudo: "Benja-Main", numero: 3528 }, chiro = { pseudo: "Le Chiromancien", numero: 6047 };
   assert.deepEqual(chantsPersoCommuns(benja, chiro), chantsPersoCommuns(chiro, benja), "même liste, dans le même ordre, des deux côtés");
-  assert.equal(chantsPersoCommuns(benja, chiro).length, 10);
+  assert.equal(chantsPersoCommuns(benja, chiro).length, 12);
   assert.equal(hashTexte("duel-42:pause1"), hashTexte("duel-42:pause1"));
   assert.notEqual(hashTexte("duel-42:pause1"), hashTexte("duel-42:pause2"));
 });
