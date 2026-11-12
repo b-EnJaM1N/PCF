@@ -13,9 +13,19 @@ export function origineVisite({ referrer = "", standalone = false, androidVu = f
   return standalone ? "installee" : "site";
 }
 
-// Faut-il compter cette ouverture ? Pas deux fois le même jour, ni sur la version de test ou en local.
-export function aCompter({ dernierJour, jour, chemin = "/", hote = "" }) {
-  if (/\/preview\//.test(chemin) || /^(localhost|127\.|0\.0\.0\.0)/.test(hote)) return false;
+// Les robots connus (12 novembre, accord du porteur du projet) : moteurs de recherche, aperçus de liens, outils de mesure et
+// navigateurs pilotés par un programme. Ils ouvrent le site sans jamais jouer et se comptaient comme de nouveaux visiteurs
+// (14 « nouveaux » du site en une semaine, aucun n'avait lancé son premier match). On les reconnaît à leur « carte
+// d'identité » de navigateur (userAgent) ; « bot » seul doit être un mot entier (pas « Cubot », une marque de téléphones).
+const ROBOTS = /(?:^|[^a-z])(?:bot|crawler|spider)(?:[^a-z]|$)|googlebot|bingbot|adsbot|mediapartners|google-inspectiontool|googleother|apis-google|storebot|applebot|yandex|baiduspider|duckduckbot|slurp|facebookexternalhit|facebot|twitterbot|linkedinbot|whatsapp|telegrambot|discordbot|skypeuripreview|headlesschrome|lighthouse|pagespeed|gtmetrix|ptst|phantomjs|petalbot|semrush|ahrefs|mj12bot|bytespider|gptbot|claudebot|ccbot|amazonbot/i;
+export function estRobot({ ua = "", webdriver = false } = {}) {
+  return !!webdriver || ROBOTS.test(ua);
+}
+const robotIci = () => { try { return estRobot({ ua: navigator.userAgent, webdriver: navigator.webdriver }); } catch { return false; } };
+
+// Faut-il compter cette ouverture ? Pas deux fois le même jour, ni sur la version de test ou en local, ni pour un robot.
+export function aCompter({ dernierJour, jour, chemin = "/", hote = "", robot = false }) {
+  if (robot || /\/preview\//.test(chemin) || /^(localhost|127\.|0\.0\.0\.0)/.test(hote)) return false;
   return dernierJour !== jour;
 }
 
@@ -49,7 +59,7 @@ export function origineIci() {
 export function compterVisite(envoyer, premiereFois, envoyerParcours = null) {
   try {
     const jour = jourParis(), dernierJour = lire("visiteJour", null);
-    if (!aCompter({ dernierJour, jour, chemin: location.pathname, hote: location.hostname })) return;
+    if (!aCompter({ dernierJour, jour, chemin: location.pathname, hote: location.hostname, robot: robotIci() })) return;
     const origine = origineIci(), nouveau = dernierJour === null && premiereFois;
     envoyer(origine, nouveau, dernierJour === veille(jour)).then(() => {
       ecrire("visiteJour", jour);
@@ -69,7 +79,7 @@ const CLES_PREMIER = { premier_lance: "visitePremierLance", premier_coup: "visit
 export function compterEtapePremier(envoyerParcours, etape) {
   try {
     const a = lire("visiteArrivee", null), cle = CLES_PREMIER[etape];
-    if (!a || !cle || lire(cle, false) || !aCompter({ dernierJour: null, jour: "", chemin: location.pathname, hote: location.hostname })) return;
+    if (!a || !cle || lire(cle, false) || !aCompter({ dernierJour: null, jour: "", chemin: location.pathname, hote: location.hostname, robot: robotIci() })) return;
     if (ecartJours(a.jour, jourParis()) > 30) { ecrire(cle, true); return; }
     ecrire(cle, true);   // (marqué tout de suite : un seul envoi, même si on touche deux fois)
     envoyerParcours(a.origine, a.jour, etape).catch(() => ecrire(cle, false));
@@ -80,7 +90,7 @@ export const compterPremierMatch = envoyerParcours => compterEtapePremier(envoye
 // Un match terminé (étape 50 : le nombre de matchs joués chaque jour, anciens joueurs compris). envoyer(origine) : l'appel au serveur.
 export function compterMatchJoue(envoyer) {
   try {
-    if (!aCompter({ dernierJour: null, jour: "", chemin: location.pathname, hote: location.hostname })) return;
+    if (!aCompter({ dernierJour: null, jour: "", chemin: location.pathname, hote: location.hostname, robot: robotIci() })) return;
     envoyer(origineIci()).catch(() => {});
   } catch { /* sans réseau ou sans stockage : tant pis */ }
 }
@@ -88,7 +98,7 @@ export function compterMatchJoue(envoyer) {
 // Le 3e match joué sur ce téléphone : signalé une seule fois (envoyer(origine) : l'appel au serveur).
 export function compterTroisMatchs(envoyer) {
   try {
-    if (lire("visite3Matchs", false) || !aCompter({ dernierJour: null, jour: "", chemin: location.pathname, hote: location.hostname })) return;
+    if (lire("visite3Matchs", false) || !aCompter({ dernierJour: null, jour: "", chemin: location.pathname, hote: location.hostname, robot: robotIci() })) return;
     envoyer(origineIci()).then(() => ecrire("visite3Matchs", true)).catch(() => {});
   } catch { /* sans réseau ou sans stockage : tant pis */ }
 }
