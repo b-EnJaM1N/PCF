@@ -8,6 +8,7 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 |---|---|---|---|
 | 10 nov. | « Quand on a beaucoup d'amis, la liste prend tout l'écran ; et la croix à côté de Défier supprime l'ami : j'ai supprimé des amis par erreur en voulant annuler un défi. » (un testeur) | Les 3 amis avec qui on joue le plus en tête, les autres à déplier ; la croix remplacée par « Annuler » (le défi en attente), aussi dans Jouer › Défier un ami et sur la page de l'ami ; retirer un ami seulement en bas de sa page, avec confirmation | 10 nov. |
 | 11 nov. | Les messages tout faits (avant et après le match) sont mal rangés, et certains ne plaisent pas. (Shishyo) | Cinq messages retirés (« Quelle chatoune ! », « Il y avait un faux rebond ! », « Je suis ton père ! », « Déculottée ! », « Bien joué jeune padawan. »), « Tu vas pleurer. » ajouté, la fenêtre des messages rangée en deux colonnes bien alignées | 11 nov. |
+| 12 nov. | « Le bouton pour revenir au menu d'avant est trop discret, et la touche retour du téléphone fait quitter l'appli. » (plusieurs testeurs) | Un vrai bouton « ← Retour », en gras et encadré, sur tous les écrans ; la touche retour du téléphone ramène à l'écran d'avant (elle ne quitte l'appli que depuis l'accueil) ; pendant un match, elle ne fait rien et explique comment quitter le match | 12 nov. |
 
 ## Les mises à jour pendant le test prolongé
 
