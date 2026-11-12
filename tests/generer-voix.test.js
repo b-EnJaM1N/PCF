@@ -71,8 +71,9 @@ test("la liste à refaire (robot, choix « liste ») ne contient que des répliq
 });
 
 test("un ton peut viser des répliques précises (Roland enflammé pour ses encouragements)", () => {
-  assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_05")), /^\[excited\] \[shouting\] /);   // (la 03, « Allez, petit bonhomme », retirée le 5 novembre)
-  assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_05_f")), /^\[excited\] \[shouting\] /);
+  // (la 03, « Allez, petit bonhomme », retirée le 5 novembre ; la 05, « T'es pas venu ici pour souffrir », le 12 novembre)
+  assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_14")), /^\[excited\] \[shouting\] /);
+  assert.equal(CATALOGUE.get("commentateur_serie_contre_05"), undefined, "réplique retirée : plus au catalogue");
   assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_01")), /^\[sighs\] /, "les autres séries perdues restent déçues");
 });
 
