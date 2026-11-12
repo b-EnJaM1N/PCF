@@ -6,6 +6,7 @@ import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, 
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
 import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache } from "./social-serveur.js";
 import { ficheVisible, htmlFiche } from "./fiche-joueur.js";
+import { nouveauxDegats, noterDegats, degatsDe } from "./degats.js";
 import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier, origineIci } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { filVisible, matchDuDuel, hasardFixe, etapeDuDuel } from "./fil-cercle.js";
@@ -432,7 +433,8 @@ const SECOUSSE_MS = 540;
 // Chaque main a les couleurs du gant de son joueur (avatar : gant, poignet, motif) : le poing se secoue,
 // puis s'ouvre en feuille, fait le V des ciseaux ou reste fermé (pierre).
 const SYMBOLE_SIGNE = ["dos", "ciseaux-dos", "feuille-dos"];   // même ordre que regles.js (les mains vues de dos)
-const mainGantee = (g, signe, nom) => `<span class="poing-av" role="img" aria-label="${nom}">${avatarSVG({ ...avDe(g), symbole: SYMBOLE_SIGNE[signe], sansFond: true })}</span>`;
+// Les marques du smash (degats.js) : celles du set en cours (set : celui du coup qu'on révèle) ; pas dans le replay (marques = false).
+const mainGantee = (g, signe, nom, { marques = true, set = S?.match?.scoresSets.length } = {}) => `<span class="poing-av" role="img" aria-label="${nom}">${avatarSVG({ ...avDe(g), symbole: SYMBOLE_SIGNE[signe], sansFond: true, degats: marques ? degatsDe(S?.degats, g, set) : null })}</span>`;
 function secouerLesPoings() {
   [["hMe", 0], ["hBot", 1]].forEach(([id, g]) => { $(id).innerHTML = mainGantee(g, 0, "Poing serré"); $(id).className = "hand secoue"; });
 }
@@ -444,6 +446,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   S.suivi.figer();
   smash.forEach((x, j) => { if (x) noterSmash(m, j); });
   const setDuCoup = m.scoresSets.length, evt = jouerCoup(m, signe, signeAdv, auto);
+  // Les marques du smash gagnant sur la main de celui qui perd le point, jusqu'à la fin du set (12 novembre ; degats.js).
+  const marque = noterDegats(S.degats ||= nouveauxDegats(), { set: setDuCoup, gagnant: evt.gagnant, signes: [signe, signeAdv], smashGagnant: issueSmash(smash, evt.gagnant) === "gagne" });
   // Double smash : le gagnant du point récupère un smash pour la suite du set (pas annoncé s'il vient de finir le set).
   const recup = recupererSmash(m, smash, evt.gagnant, setDuCoup);
   // Le replay (replay.js) : on garde les actions marquantes du match.
@@ -515,7 +519,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
 
   // Révélation immédiate des deux signes : aucun effet pendant l'échange.
   const hMe = $("hMe"), hBot = $("hBot");
-  hMe.innerHTML = mainGantee(0, signe, NOM[signe]); hBot.innerHTML = mainGantee(1, signeAdv, NOM[signeAdv]);
+  hMe.innerHTML = mainGantee(0, signe, NOM[signe], { set: setDuCoup }); hBot.innerHTML = mainGantee(1, signeAdv, NOM[signeAdv], { set: setDuCoup });
   document.querySelectorAll("#moves button.choisi").forEach(b => b.classList.remove("choisi"));
   // Les deux mains s'ouvrent à la même taille ; une demi-seconde plus tard, le gagnant grossit et le perdant s'efface.
   hMe.className = "hand ouvre"; hBot.className = "hand ouvre";
@@ -524,6 +528,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
     if (S?.match !== m || m.coups.length !== coupVu) return;   // un autre coup (ou un autre match) a pris la place
     if (evt.gagnant === 0) { hMe.classList.add("win"); hBot.classList.add("lose"); }
     if (evt.gagnant === 1) { hBot.classList.add("win"); hMe.classList.add("lose"); }
+    if (marque && !silencieux) (marque.joueur === 0 ? hMe : hBot).classList.add("abime");   // (la main touchée tremble)
   }, silencieux || reduitMouvement() ? 0 : 500);
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
@@ -586,13 +591,13 @@ function jouerReplay(liste, apres = () => {}) {
     $("rpCompte").textContent = liste.length > 1 ? `${i} / ${liste.length}` : "";
     $("rpVerdict").textContent = ""; $("rpCom").textContent = ""; $("rpPalette").hidden = true;
     const lp = mo.palette ? lignePalette(mo.palette) : null, pa = lp ? mo.palette : null, roland = pa ? "commentateur" : null;
-    [[moi, 0], [adv, 1]].forEach(([el, g]) => { el.innerHTML = mainGantee(g, 0, "Poing serré"); el.className = "hand secoue"; });
+    [[moi, 0], [adv, 1]].forEach(([el, g]) => { el.innerHTML = mainGantee(g, 0, "Poing serré", { marques: false }); el.className = "hand secoue"; });
     // Roland ou Monique : « Revoyons ça ! » pour la première action, puis un mot sur l'action au dévoilement.
     const genre = genreJoueur(mo.gagnant);
     if (i === 1) { const l = ligneReplay("replay_intro", "m", roland); if (l) voix.dire([l]); }
     t = setTimeout(() => {
       if (fini) return;
-      moi.innerHTML = mainGantee(0, mo.a, NOM[mo.a]); adv.innerHTML = mainGantee(1, mo.b, NOM[mo.b]);
+      moi.innerHTML = mainGantee(0, mo.a, NOM[mo.a], { marques: false }); adv.innerHTML = mainGantee(1, mo.b, NOM[mo.b], { marques: false });
       moi.className = "hand ouvre"; adv.className = "hand ouvre";
       const [w, l] = mo.gagnant === 0 ? [mo.a, mo.b] : [mo.b, mo.a];
       $("rpVerdict").textContent = `${mo.smash[mo.gagnant] ? "💥 Smash ! " : ""}${NOM[w]} bat ${NOM[l]}`;

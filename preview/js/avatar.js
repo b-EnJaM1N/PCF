@@ -276,8 +276,9 @@ const ongle = (x, y, ink, rot = "") => `<rect x="${x + 2.6}" y="${y}" width="5.3
 const dosDeMain = ink => [0, 1, 2].map(i => `<path d="M${39.5 + i * 10.5} 50 l-${1 + i} 15" fill="none" stroke="${ink}" stroke-width="1.1" stroke-linecap="round" opacity=".28"/>`).join("");
 const pouce = (gant, ink) => `<rect x="25" y="50" width="28" height="12" rx="6" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`;
 
-// Le sens du pli des lames tordues : 1, les bouts se croisent ; -1, ils partent vers l'extérieur.
-export const PLI = { sens: 1 };
+// Le sens du pli des lames tordues : -1, les bouts partent vers l'extérieur (version B, choisie par le porteur du projet
+// le 12 novembre) ; 1, ils se croisent.
+export const PLI = { sens: -1 };
 // Un doigt du V plié de travers (les lames tordues) : la base dans l'axe, le bout tourné de « pli » degrés à mi-hauteur.
 // (le pli aux deux tiers de la hauteur, et le bout un peu rallongé : le doigt garde sa longueur ; 12 novembre)
 function lameTordue(x, y, h, gant, ink, rot, pli) {
