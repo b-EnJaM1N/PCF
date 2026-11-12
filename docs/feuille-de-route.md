@@ -115,6 +115,9 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    navigateur : la touche retour du téléphone ramène à l'écran d'avant (depuis le premier écran, elle quitte l'appli comme
    d'habitude) ; pendant un match, elle ne fait rien et un message dit comment quitter le match. Pas encore : fermer une
    fenêtre par-dessus (Une, fiche d'un joueur…) ou revenir de la page d'un cercle à la liste avec la touche retour.
+21. **Trois répliques retirées** (12 novembre, demande du porteur du projet) : « Allô ? Non mais allô, quoi ! » (Monique),
+   « T'es pas venu ici pour souffrir, ok ? » (Roland), « Les calculs sont pas bons, Kevin. » (Monique). « Houston, on a un
+   problème ! » l'était déjà depuis le 6 novembre. Les enregistrements restent dans app/audio mais ne sont plus joués.
 
 ## En bref (14 octobre 2026)
 

@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (683 répliques)
+## Commentateur — vif, enthousiaste, plein de références (681 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -232,8 +232,6 @@ restent lus par la voix de synthèse.
 | `commentateur_serie_contre_01.mp3` | Quelqu'un peut arrêter ça ?! |
 | `commentateur_serie_contre_02.mp3` | Il est dans les cordes ! Il faut réagir ! |
 | `commentateur_serie_contre_02_f.mp3` | Elle est dans les cordes ! Il faut réagir ! |
-| `commentateur_serie_contre_05.mp3` | T'es pas venu ici pour souffrir, ok ? |
-| `commentateur_serie_contre_05_f.mp3` | T'es pas venue ici pour souffrir, ok ? |
 | `commentateur_serie_contre_07.mp3` | Il est en train de perdre le fil ! |
 | `commentateur_serie_contre_07_f.mp3` | Elle est en train de perdre le fil ! |
 | `commentateur_serie_contre_08.mp3` | Attention, il se fait acculer ! |
@@ -806,7 +804,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (561 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (559 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -856,7 +854,6 @@ restent lus par la voix de synthèse.
 | `commentatrice_serie_contre_09.mp3` | Il faudrait peut-être essayer… autre chose. |
 | `commentatrice_serie_contre_10.mp3` | Fidèle à lui-même : toujours du mauvais côté. |
 | `commentatrice_serie_contre_10_f.mp3` | Fidèle à elle-même : toujours du mauvais côté. |
-| `commentatrice_serie_contre_11.mp3` | Les calculs sont pas bons, Kevin. |
 | `commentatrice_serie_contre_12.mp3` | Il est en PLS. Comme disent les jeunes. |
 | `commentatrice_serie_contre_12_f.mp3` | Elle est en PLS. Comme disent les jeunes. |
 | `commentatrice_serie_contre_13.mp3` | Le doute commence sérieusement à s'installer. |
@@ -888,7 +885,6 @@ restent lus par la voix de synthèse.
 | `commentatrice_obstination_07.mp3` | C'est de la poudre de perlimpinpin. |
 | `commentatrice_obstination_08.mp3` | Quand on veut, on peut. Quand on peut, on choisit Pierre, apparemment. |
 | `commentatrice_obstination_09.mp3` | Mieux vaut une Feuille en main que deux Ciseaux dans le pot. C'est sa philosophie. |
-| `commentatrice_obstination_10.mp3` | Allô ? Non mais allô, quoi ! |
 | `commentatrice_changement_01.mp3` | Il a changé. Il était temps. |
 | `commentatrice_changement_01_f.mp3` | Elle a changé. Il était temps. |
 | `commentatrice_changement_02.mp3` | Une autre idée. Enfin. |
