@@ -37,7 +37,7 @@ import { installerCompte } from "./ecran-compte.js";
 import { installerDuels } from "./ecran-duel.js";
 import { installerCercles, renderFaceAFace } from "./ecran-cercles.js";
 import { duelsAvec, profils as profilsEnLigne } from "./duel-serveur.js";
-import { profilDepuisLigne } from "./synchro.js";
+import { profilDepuisLigne, etatPseudo, pseudoValide } from "./synchro.js";
 import { installerSng } from "./ecran-sng.js";
 import { installerJetons } from "./ecran-jetons.js";
 import { installerFreeroll } from "./ecran-freeroll.js";
@@ -1994,12 +1994,31 @@ $("inFlag").innerHTML = PAYS.map(([f, n]) => `<option value="${f}">${f} ${n}</op
 $("inFlag").value = P.drapeau;
 $("inFlag").addEventListener("change", e => { P.drapeau = e.target.value; sauverP(); renderFiche(); });
 $("inPseudo").value = P.pseudo;
+// Le pseudo est définitif une fois le compte créé (12 novembre ; voir etatPseudo). Sans compte, il se change librement ;
+// après un retrait par la modération, on en choisit un nouveau, une fois, avec le bouton « Valider ».
+function majPseudo() {
+  const etat = etatPseudo(P), info = $("pseudoInfo");
+  $("inPseudo").disabled = etat === "fixe";
+  if (etat === "fixe" || document.activeElement !== $("inPseudo")) $("inPseudo").value = P.pseudo;
+  $("okPseudo").hidden = etat !== "une-fois";
+  info.hidden = etat === "libre";
+  info.textContent = etat === "fixe" ? "Ton pseudo est définitif : il ne se change plus. (Ton surnom, ton pays et ta main, si.)"
+    : "Ton pseudo a été retiré par la modération : choisis-en un nouveau. Attention, il sera ensuite définitif.";
+}
 $("inPseudo").addEventListener("input", e => {
   const propre = e.target.value.replace(/[#\u0000-\u001f]/g, "");
   if (propre !== e.target.value) e.target.value = propre;
+  if (etatPseudo(P) !== "libre") return;   // (retiré par la modération : seulement avec le bouton « Valider »)
   P.pseudo = propre.slice(0, 16).trim(); sauverP();
   afficherNomFiche(); rafraichirAvatars();
 });
+$("okPseudo").addEventListener("click", () => {
+  const nom = $("inPseudo").value.slice(0, 16).trim();
+  if (!pseudoValide(nom) || nom.toLowerCase() === "joueur") { alert("Choisis un pseudo de 2 à 16 caractères, sans « # »."); $("inPseudo").focus(); return; }
+  if (!confirm(`Ton nouveau pseudo sera « ${nom} », pour toujours. On continue ?`)) return;
+  P.pseudo = nom; sauverP(); afficherNomFiche(); rafraichirAvatars(); majPseudo();
+});
+majPseudo();
 // Le pseudo, proposé sur l'écran de fin tant que le joueur n'en a pas.
 $("okNomFin").addEventListener("click", () => {
   const nom = $("inNomFin").value.replace(/[#\u0000-\u001f]/g, "").slice(0, 16).trim();
@@ -2449,13 +2468,13 @@ function afficherNomFiche() {
 compteUI = installerCompte({
   lireP: () => P,
   sauverLocal,
-  rafraichir: () => { afficherNomFiche(); rafraichirAvatars(); },
+  rafraichir: () => { afficherNomFiche(); rafraichirAvatars(); majPseudo(); },
   ouvrirFiche: () => aller("viewProfile"),
   remplacerP: fiche => {
     P = normaliserProfil(fiche); sauverLocal(); C = P.carriere || null;
     if (assurerSurnom()) sauverP();
     if (vueCourante === "viewCarriere") renderCarriere();
-    $("inPseudo").value = P.pseudo; $("inFlag").value = P.drapeau;
+    $("inPseudo").value = P.pseudo; $("inFlag").value = P.drapeau; majPseudo();
     renderFiche(); rafraichirAvatars(); afficherBilan();
   },
 });

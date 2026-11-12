@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="version" content="467e82d du 12/11/2026">
+<meta name="version" content="4070cb1 du 12/11/2026">
 <title>HandSlam</title>
 <meta name="description" content="HandSlam — le Pierre-Feuille-Ciseaux devient un sport. Sets de 11 points, arbitre, commentateur et tournois.">
 <meta name="theme-color" content="#0F2C52">
@@ -704,6 +704,8 @@
       <summary><h2>✏️ Mon pseudo et mon pays</h2></summary>
         <label class="lbl" for="inPseudo">Pseudo</label>
         <input type="text" id="inPseudo" maxlength="16" placeholder="Ex. Benji-Pierre" autocomplete="nickname">
+        <p class="hint" id="pseudoInfo" hidden></p>
+        <button class="btn" id="okPseudo" hidden style="margin-top:8px">Valider mon nouveau pseudo</button>
         <label class="lbl" for="inFlag">Pays</label>
         <select id="inFlag"></select>
     </details>
@@ -723,7 +725,7 @@
         <p class="hint" style="margin-top:10px"><button class="linkbtn" id="btnRenvoyer">Renvoyer l'e-mail</button> · <button class="linkbtn" id="btnAutreEmail">Changer d'adresse</button></p>
       </div>
       <div id="comptePseudo" hidden>
-        <p class="hint">Dernière étape : choisis ton pseudo. Un numéro est ajouté automatiquement (ex. <b>Benji#4821</b>), pour que plusieurs joueurs puissent porter le même pseudo.</p>
+        <p class="hint">Dernière étape : choisis ton pseudo. <b>Choisis-le bien : il ne pourra plus être changé.</b> Un numéro est ajouté automatiquement (ex. <b>Benji#4821</b>), pour que plusieurs joueurs puissent porter le même pseudo.</p>
         <label class="lbl" for="inPseudoCompte">Pseudo</label>
         <input type="text" id="inPseudoCompte" maxlength="16" autocomplete="nickname" placeholder="Ex. Benji">
         <button class="btn" id="btnCreer" style="margin-top:12px">Créer mon compte</button>
