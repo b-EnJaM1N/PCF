@@ -318,13 +318,16 @@ function lameTordue(x, y, h, gant, ink, rot, pli) {
 // L'ongle : à peine visible, sur le bord extérieur du pouce (à l'opposé des doigts ; 12 novembre, remarque du porteur du projet).
 function pouceLeve(fill, trait, pli, epaisseur = 1.5, ongleFill = "none") {
   const w = `stroke="${trait}" stroke-width="${epaisseur}" stroke-linejoin="round"`;
-  return `<path d="M31 50 Q31 42 39 42 L60 42 Q70 42 70 50 L70 70 Q70 78 61 78 L41 78 Q31 78 31 69 Z" fill="${fill}" ${w}/>
-    ${[0, 1, 2, 3].map(i => `<rect x="${47 + (i === 3 ? 2 : 0)}" y="${43.5 + i * 8.4}" width="${[26, 26, 25, 22][i]}" height="8.4" rx="4.2" fill="${fill}" ${w}/>`).join("")}
-    <path d="M34 50 C32.5 41 33 30 36 21.5 C38 15.5 46.5 15.5 47.5 21.5 C48.5 29 49 37 50 45 C50.5 49 47.5 51 42 51 Z" fill="${fill}" ${w}/>
-    <path d="M36.6 20.4 Q34.7 25.2 35.3 30.6 Q36.9 31.1 38.1 30.3 Q37.5 25.3 38.9 20.7 Q37.7 19.9 36.6 20.4 Z" fill="${ongleFill}" stroke="${pli}" stroke-width=".9" stroke-linejoin="round" opacity=".6"/>
-    <path d="M47.2 27 q-2.6 1.6 -4.2 .6" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".45"/>
-    <path d="M35.5 36 q6 1.8 12.5 0" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".5"/>
-    <path d="M36 60 q5 2 9 0" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".35"/>`;
+  // (redessiné le 12 novembre d'après l'emoji 👍 : le dos de la main arrondi, les doigts repliés de plus en plus courts,
+  // le pouce trapu et galbé)
+  const doigts = [[46.5, 41.5, 27, 10], [46, 51, 26.5, 9.6], [46, 60.2, 24.5, 9.2], [46.5, 69, 20, 8.2]];
+  return `<path d="M31 52 C30 44 34 41 41 41 L58 41 C64 41 66 46 66 52 L66 68 C66 75 61 79 53 79 L42 79 C34 79 30 74 30 66 Z" fill="${fill}" ${w}/>
+    ${doigts.slice().reverse().map(([x, y, l, h]) => `<path d="M${x} ${y} L${x + l - h / 2} ${y} A${h / 2} ${h / 2} 0 0 1 ${x + l - h / 2} ${y + h} L${x} ${y + h}" fill="${fill}" ${w}/>`).join("")}
+    ${doigts.slice(1).map(([x, y, l]) => `<path d="M${x + l - 7} ${y + .8} q2.5 -1.2 5.5 0" fill="none" stroke="${pli}" stroke-width="1" stroke-linecap="round" opacity=".35"/>`).join("")}
+    <path d="M32 50 C29.5 40 31 29 35 20 C37.5 14 46 13.5 47.5 19.5 C49 26 49.5 35 51.5 42 C52.5 46 50 49.5 44 49.5 C38 49.5 33 51 32 50 Z" fill="${fill}" ${w}/>
+    <path d="M36.4 20.6 Q34.3 25.6 34.8 31 Q36.4 31.5 37.6 30.7 Q37.1 25.5 38.7 20.9 Q37.5 20.1 36.4 20.6 Z" fill="${ongleFill}" stroke="${pli}" stroke-width=".9" stroke-linejoin="round" opacity=".6"/>
+    <path d="M34.5 36.5 q6.5 2.2 13.8 -.4" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".45"/>
+    <path d="M35 64 q5.5 2.4 10 0" fill="none" stroke="${pli}" stroke-width="1.1" stroke-linecap="round" opacity=".3"/>`;
 }
 
 function main(symbole, gant, ink, tordu = 0) {
