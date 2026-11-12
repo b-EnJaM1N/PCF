@@ -1040,3 +1040,5 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .fiche-stats td:last-child { text-align: right; }
 .fiche-bilan { white-space: nowrap; }
 .fiche-bilan.gagne { color: var(--me); } .fiche-bilan.perdu { color: var(--bot); }
+/* Le Dossard 1 du cercle (12 novembre) : le tenant du titre, en tête du fil. */
+.fil-dossard { margin: 0 0 10px; padding: 8px 10px; border-radius: 10px; background: rgba(244, 197, 66, .14); border: 1px solid rgba(244, 197, 66, .45); }
