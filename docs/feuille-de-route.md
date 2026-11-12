@@ -86,6 +86,11 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    joueurs smashent au même coup, celui qui gagne le point récupère le smash adverse : un smash de plus pour la suite du set
    (perdu à la fin du set, comme le smash normal ; on dépense d'abord le smash du set). Smash bloqué ou smash simple repoussé :
    rien. « 🔄 Smash récupéré ! » s'affiche (`regles.js` : `recupererSmash` ; le serveur : colonne `recups`). Le bot s'en sert aussi.
+16. **Le pseudo définitif** (12 novembre, décision du porteur du projet ; étape SQL 70, à coller avant la fusion) : on ne change
+   plus de pseudo une fois le compte créé. Sans compte, il se change (personne d'autre ne le voit) ; à la création du compte, on
+   le choisit ou on le confirme (« il ne pourra plus être changé »). Après un retrait par la modération (« Joueur »), on en
+   choisit un nouveau, une seule fois (colonne `pseudo_libre`, bouton « Valider mon nouveau pseudo »). Le surnom, le pays et
+   l'avatar se changent toujours. Côté serveur, un changement demandé est ignoré sans erreur (anciennes versions de l'appli).
 
 ## En bref (14 octobre 2026)
 

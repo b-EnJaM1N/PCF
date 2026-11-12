@@ -48,11 +48,16 @@ select pg_temp.en_tant_que('22222222-2222-2222-2222-222222222222');
 create temp table avant as select numero from profils where id = auth.uid();
 update profils set numero = 1234, fiche = '{"matchs":5}' where id = auth.uid();
 select pg_temp.verifier((select p.numero = a.numero from profils p, avant a where p.id = auth.uid()), 'numéro non modifiable');
+-- (depuis l'étape 70, le pseudo est définitif : on le libère d'abord, comme après un retrait par la modération)
+reset role; select set_config('pcf.retrait_pseudo', 'on', false); update profils set pseudo_libre = true where id = '22222222-2222-2222-2222-222222222222'; select set_config('pcf.retrait_pseudo', '', false);
+select pg_temp.en_tant_que('22222222-2222-2222-2222-222222222222');
 update profils set pseudo = 'Benjamin' where id = auth.uid();
 select pg_temp.verifier((select p.numero = a.numero and p.pseudo = 'Benjamin' from profils p, avant a where p.id = auth.uid()), 'nouveau pseudo, même numéro');
 select pg_temp.verifier((select fiche->>'matchs' = '5' from profils where id = auth.uid()), 'fiche mise à jour');
 
 -- 6. Pseudos invalides refusés.
+reset role; select set_config('pcf.retrait_pseudo', 'on', false); update profils set pseudo_libre = true where id = '22222222-2222-2222-2222-222222222222'; select set_config('pcf.retrait_pseudo', '', false);
+select pg_temp.en_tant_que('22222222-2222-2222-2222-222222222222');
 do $$ declare p text; begin
   foreach p in array array['A', 'Nom#1234', 'beaucouptroplongpseudo', ' espace'] loop
     begin
