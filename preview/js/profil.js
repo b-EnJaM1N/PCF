@@ -109,7 +109,9 @@ export const verrouDe = (type, cle) => TITRES.find(t => [t.objet, t.objet2].some
 // Verrouillé : réservé à un trophée pas encore obtenu, ou article de la boutique pas encore acheté.
 // Les gants : après le premier match (avant, la main nue).
 export const gantAttendPremierMatch = (P, type, cle) => type === "gant" && cle !== "nu" && !(P.matchs > 0);
-export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); return (!!t && !P.titres[t.id]) || !possede(P, type, cle) || gantAttendPremierMatch(P, type, cle); };
+// Le Dossard 1 : seulement pour le tenant du titre d'un de ses cercles (P.tenantTitre, donné par le serveur ; étape 71).
+export const reserveAuTenant = (P, type, cle) => type === "gant" && cle === "dossard" && !P.tenantTitre;
+export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); return (!!t && !P.titres[t.id]) || !possede(P, type, cle) || gantAttendPremierMatch(P, type, cle) || reserveAuTenant(P, type, cle); };
 
 export function profilParDefaut() {
   return {

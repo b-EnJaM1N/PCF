@@ -203,11 +203,13 @@ function accessoires(a, nue = false) {
   return s;
 }
 // Le dossard du tenant du titre : centré en (x, y), de taille r (comme le médaillon du gant « Club »).
+// Le prestige du Dossard 1 (aperçus du 12 novembre) : coutures d'or, liseré d'or autour du dossard, reflet brillant.
+export const PRESTIGE = { coutures: true, lisere: true, reflet: false };
 export function dossardSVG(x, y, r) {
   const k = r / 10, w = 19, h = 16;
   const epingle = (ex, ey) => `<circle cx="${ex}" cy="${ey}" r="1.15" fill="#B9C0CB" stroke="#6C7480" stroke-width=".5"/>`;
-  return `<g transform="translate(${x} ${y}) rotate(-5) scale(${k})">
-    <rect x="${-w / 2}" y="${-h / 2}" width="${w}" height="${h}" rx="1.6" fill="#FFFFFF" stroke="rgba(0,0,0,.35)" stroke-width=".9"/>
+  return `<g transform="translate(${x} ${y}) scale(${k})">
+    <rect x="${-w / 2}" y="${-h / 2}" width="${w}" height="${h}" rx="1.6" fill="#FFFFFF" stroke="${PRESTIGE.lisere ? "#C9971C" : "rgba(0,0,0,.35)"}" stroke-width="${PRESTIGE.lisere ? 1.6 : .9}"/>
     <rect x="${-w / 2 + 1.4}" y="${-h / 2 + 1.4}" width="${w - 2.8}" height="2" fill="#E8574A" opacity=".85"/>
     <path d="M-1.4 -4.6 L1.9 -4.6 L1.9 4.6 L-1.4 4.6 Z M-1.4 -4.6 L-4.3 -2.1 L-3.4 -0.8 L-1.4 -2.4 Z M-3.6 4.6 L4.1 4.6 L4.1 6 L-3.6 6 Z" transform="translate(0 -0.4)" fill="#16181D"/>
     ${epingle(-w / 2 + 1.8, -h / 2 + 1.6)}${epingle(w / 2 - 1.8, -h / 2 + 1.6)}${epingle(-w / 2 + 1.8, h / 2 - 1.6)}${epingle(w / 2 - 1.8, h / 2 - 1.6)}
@@ -267,7 +269,9 @@ export function avatarSVG(a) {
   if (gm === "coutures") deco = `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#E7C04A")}</g>`;
   if (a.gant === "elite" && gm !== "coutures") deco = `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#E9C046")}</g>`;   // le gant de l'Élite : noir, coutures d'or
   // Le Dossard 1 : un dossard blanc épinglé (quatre épingles) avec un gros « 1 » noir, sur le dos de la main (ou la paume).
-  if (a.gant === "dossard") deco = dossardSVG(...(PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre));
+  if (a.gant === "dossard") deco = (PRESTIGE.coutures && gm !== "coutures" ? `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#B8860B")}</g>` : "")
+    + (PRESTIGE.reflet ? `<g opacity=".38" style="mix-blend-mode:screen">${main(a.symbole, `url(#${id}r)`, "none")}</g>` : "")
+    + dossardSVG(...(PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
   if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
   if (gm === "bandeau") deco = `<rect x="28" y="64" width="44" height="7" rx="2" fill="#E0B12A" stroke="${ink}" stroke-width="1.5"/><rect x="28" y="67" width="44" height="1.4" fill="rgba(255,255,255,.7)"/>`;
@@ -276,7 +280,7 @@ export function avatarSVG(a) {
   if (a.motif === "etoile") motif = `<path d="M50 6 L61 38 L95 38 L67 58 L78 92 L50 71 L22 92 L33 58 L5 38 L39 38 Z" fill="#fff" opacity=".14"/>`;
   if (a.motif === "eclair") motif = `<path d="M60 2 L28 54 L48 54 L36 98 L76 40 L54 40 L68 2 Z" fill="#fff" opacity=".16"/>`;
   return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"${a.fantome ? ' opacity=".55"' : ""}>
-    <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath>${remplissage}${poignetDef}${fondDef}</defs>
+    <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath>${remplissage}${poignetDef}${fondDef}${a.gant === "dossard" ? `<linearGradient id="${id}r" gradientUnits="userSpaceOnUse" x1="25" y1="15" x2="70" y2="75"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".35" stop-color="#fff" stop-opacity=".15"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset=".62" stop-color="#fff" stop-opacity="0"/></linearGradient>` : ""}</defs>
     ${a.sansFond ? "" : `<circle cx="50" cy="50" r="48" fill="${fillFond}"/>${decorFond}${motif}
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
