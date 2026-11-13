@@ -182,3 +182,81 @@ export function claqueFeuille(fs, rng = Math.random) {
   for (let i = 0; i < fs * 0.03; i++) s[len - 1 - i] *= i / (fs * 0.03);
   return normaliser([s])[0];
 }
+
+// ---------------------------------------------------------------- les effets du match (effets.js ; 13 novembre)
+const finDouce = (s, fs, d = 0.03) => { for (let i = 0; i < 24; i++) s[i] *= i / 24; for (let i = 0; i < fs * d; i++) s[s.length - 1 - i] *= i / (fs * d); return s; };
+
+// Le double smash des Pierres : un séisme, un grondement sourd qui roule.
+export function grondement(fs, rng = Math.random) {
+  const len = Math.floor(fs * 1.1), s = new Float32Array(len);
+  let w1 = 0, w2 = 0;
+  const k = 1 - Math.exp(-2 * Math.PI * 90 / fs);
+  for (let i = 0; i < len; i++) {
+    const t = i / fs, env = Math.min(1, t / 0.05) * Math.exp(-t / 0.4);
+    w1 += k * ((rng() * 2 - 1) - w1); w2 += k * (w1 - w2);
+    const roule = 0.75 + 0.25 * Math.sin(2 * Math.PI * 9 * t);          // ça roule
+    s[i] = (w2 * 6 + Math.sin(2 * Math.PI * (48 - 10 * t) * t) * 0.6) * env * roule;
+  }
+  return normaliser([finDouce(s, fs)], 0.9)[0];
+}
+
+// Le double smash des Feuilles : un coup de vent qui passe (un souffle qui monte, puis s'en va).
+export function coupDeVent(fs, rng = Math.random) {
+  const len = Math.floor(fs * 0.9), s = new Float32Array(len);
+  let w1 = 0, w2 = 0;
+  for (let i = 0; i < len; i++) {
+    const t = i / fs, p = t / 0.9;
+    const f = 500 + 1300 * Math.sin(Math.PI * p);                         // le sifflement monte puis redescend
+    const k = 1 - Math.exp(-2 * Math.PI * f / fs);
+    w1 += k * ((rng() * 2 - 1) - w1); w2 += k * (w1 - w2);
+    s[i] = (w1 - w2 * 0.7) * Math.sin(Math.PI * p) ** 1.5 * (0.8 + 0.2 * Math.sin(2 * Math.PI * 5 * t));
+  }
+  return normaliser([finDouce(s, fs)], 0.7)[0];
+}
+
+// Le double smash des Ciseaux : les lames qui se croisent, « cling ! » (un tintement métallique, deux fois).
+export function cling(fs, rng = Math.random) {
+  const len = Math.floor(fs * 0.7), s = new Float32Array(len);
+  const partiels = [[2350, 1], [3720, 0.6], [5430, 0.4], [7900, 0.25]];
+  for (const [debut, amp] of [[0, 1], [0.07, 0.55]]) {
+    const i0 = Math.floor(debut * fs);
+    for (let i = 0; i + i0 < len; i++) {
+      const t = i / fs;
+      let v = (rng() * 2 - 1) * Math.exp(-t / 0.002) * 0.8;               // le choc
+      for (const [f, a] of partiels) v += a * Math.sin(2 * Math.PI * f * (1 + debut * 0.03) * t) * Math.exp(-t / (0.09 + 300 / f / 100));
+      s[i0 + i] += v * amp;
+    }
+  }
+  return normaliser([finDouce(s, fs)], 0.75)[0];
+}
+
+// La main en feu qui s'éteint (point perdu) : « pschhh ».
+export function pschitt(fs, rng = Math.random) {
+  const len = Math.floor(fs * 0.55), s = new Float32Array(len), aigu = passeBande(fs, 5200, 0.7);
+  for (let i = 0; i < len; i++) {
+    const t = i / fs;
+    s[i] = aigu(rng() * 2 - 1) * Math.min(1, t / 0.015) * Math.exp(-t / 0.22);
+  }
+  return normaliser([finDouce(s, fs)], 0.6)[0];
+}
+
+// Le feu qui prend (un niveau de plus) : un petit « fouff » et quelques crépitements.
+export function crepitement(fs, rng = Math.random) {
+  const len = Math.floor(fs * 0.6), s = new Float32Array(len), grave = passeBande(fs, 350, 0.8), clair = passeBande(fs, 2600, 1.5);
+  for (let i = 0; i < len; i++) { const t = i / fs; s[i] = grave(rng() * 2 - 1) * Math.min(1, t / 0.03) * Math.exp(-t / 0.12) * 1.6; }
+  for (let n = 0; n < 9; n++) {
+    const i0 = Math.floor(fs * (0.05 + rng() * 0.5)), a = 0.4 + rng() * 0.6;
+    for (let i = 0; i < fs * 0.004 && i0 + i < len; i++) s[i0 + i] += clair((rng() * 2 - 1) * a * (1 - i / (fs * 0.004)));
+  }
+  return normaliser([finDouce(s, fs)], 0.6)[0];
+}
+
+// L'étincelle des égalités en chaîne : un petit claquement électrique.
+export function etincelle(fs, rng = Math.random) {
+  const len = Math.floor(fs * 0.18), s = new Float32Array(len), clair = passeBande(fs, 4200, 1);
+  for (let n = 0; n < 4; n++) {
+    const i0 = Math.floor(fs * (n * 0.025 + rng() * 0.01)), a = 1 - n * 0.2;
+    for (let i = 0; i < fs * 0.006 && i0 + i < len; i++) s[i0 + i] += clair((rng() * 2 - 1) * a);
+  }
+  return normaliser([finDouce(s, fs, 0.01)], 0.5)[0];
+}
