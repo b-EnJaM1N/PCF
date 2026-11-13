@@ -9,6 +9,7 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 | 10 nov. | « Quand on a beaucoup d'amis, la liste prend tout l'écran ; et la croix à côté de Défier supprime l'ami : j'ai supprimé des amis par erreur en voulant annuler un défi. » (un testeur) | Les 3 amis avec qui on joue le plus en tête, les autres à déplier ; la croix remplacée par « Annuler » (le défi en attente), aussi dans Jouer › Défier un ami et sur la page de l'ami ; retirer un ami seulement en bas de sa page, avec confirmation | 10 nov. |
 | 11 nov. | Les messages tout faits (avant et après le match) sont mal rangés, et certains ne plaisent pas. (Shishyo) | Cinq messages retirés (« Quelle chatoune ! », « Il y avait un faux rebond ! », « Je suis ton père ! », « Déculottée ! », « Bien joué jeune padawan. »), « Tu vas pleurer. » ajouté, la fenêtre des messages rangée en deux colonnes bien alignées | 11 nov. |
 | 12 nov. | « Le bouton pour revenir au menu d'avant est trop discret, et la touche retour du téléphone fait quitter l'appli. » (plusieurs testeurs) | Un vrai bouton « ← Retour », en gras et encadré, sur tous les écrans ; la touche retour du téléphone ramène à l'écran d'avant (elle ne quitte l'appli que depuis l'accueil) ; pendant un match, elle ne fait rien et explique comment quitter le match | 12 nov. |
+| 12 nov. | ★★★★★ via le Play Store (commentaire privé, version 1.0.0.0) : « Une pépite ! Le principe de base est simple, mais on se prend vite au jeu, avec un œil sur ses stats. Les commentaires sont drôles et c'est trop bien de pouvoir défier ses amis. » (un testeur) | Réponse du développeur dans la Play Console (remerciement, nouveautés, invitation à mettre à jour) | — |
 
 ## Les mises à jour pendant le test prolongé
 
@@ -19,6 +20,9 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 - 11 nov. : questionnaire envoyé aux testeurs (texte plus bas).
 - 11 nov. : nouvelle version Android dans le test fermé, 2 (1.0.0.1), avec une note de version (série de jours, bouton d'avis, Mes amis, chants).
 - 11 nov. : les messages rapides réorganisés (idée de Shishyo, voir le tableau).
+- 12 nov. : sons du smash (déchirure des Ciseaux, claque de la Feuille, smash bloqué et raté), marques du smash sur la main adverse, smash récupéré, pseudo définitif, gants vache, girafe et léopard, bouton « ← Retour » et touche retour du téléphone (suggestion des testeurs, voir le tableau), robots retirés du compteur de visites.
+- 12 nov. : premier commentaire privé d'un testeur sur le Play Store (5 étoiles, voir le tableau), avec la réponse du développeur.
+- 13 nov. : ouverts à tous : le fantôme d'un ami, le fil d'actualité du cercle, le championnat de cercle avec poules et playoffs, la carte « Ton avis ? » après le 5e match, la fiche complète d'un joueur en ligne.
 
 ## Le questionnaire (envoyé aux testeurs le 11 novembre)
 

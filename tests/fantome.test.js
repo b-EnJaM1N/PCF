@@ -44,8 +44,8 @@ test("le fantôme reprend les manies du joueur", () => {
   assert.ok(bat > 300, `joue ce qui bat le signe d'en face après un point perdu (${bat} sur 400)`);
 });
 
-test("le fantôme : visible seulement sur la version de test", () => {
+test("le fantôme : ouvert à tous depuis le 13 novembre (et toujours sur la version de test)", () => {
   assert.equal(fantomeVisible({ pathname: "/preview/", hostname: "handslam.fr" }), true);
-  assert.equal(fantomeVisible({ pathname: "/", hostname: "handslam.fr" }), false);
+  assert.equal(fantomeVisible({ pathname: "/", hostname: "handslam.fr" }), true);
   assert.equal(fantomeVisible({ pathname: "/", hostname: "localhost" }), true);
 });
