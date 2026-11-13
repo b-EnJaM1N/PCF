@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applaudissements, coupDeRaquette, echoStade, FOULES, debutDuSon, dechirure, claqueFeuille, smashBloque, smashRate } from "../app/js/sons.js";
+import { applaudissements, coupDeRaquette, echoStade, FOULES, debutDuSon, dechirure, claqueFeuille, smashBloque, smashRate, grondement, coupDeVent, cling, pschitt, crepitement, etincelle } from "../app/js/sons.js";
 import { FICHIERS_AMBIANCE, FICHIERS_RAQUETTE, FICHIERS_REACTIONS, reactionsPublic, egalitesAvantDernier, series, reactionPoint } from "../app/js/ambiance.js";
 import { rngFixe } from "./outils.js";
 
@@ -143,3 +143,13 @@ test("en duel, les deux téléphones font le même tirage de chants", async () =
   assert.notEqual(hashTexte("duel-42:pause1"), hashTexte("duel-42:pause2"));
 });
 
+
+test("les sons des effets du match : séisme, vent, cling, pschhh, crépitement, étincelle", () => {
+  for (const [nom, f, max] of [["grondement", grondement, 1.1], ["vent", coupDeVent, 0.9], ["cling", cling, 0.7], ["pschitt", pschitt, 0.55], ["crépitement", crepitement, 0.6], ["étincelle", etincelle, 0.18]]) {
+    const s = f(22050, rngFixe(7));
+    assert.ok(s.length <= 22050 * max + 1, nom);
+    assert.ok(valide(s), nom);
+    assert.ok(s.some(v => Math.abs(v) > 0.3), `${nom} n'est pas silencieux`);
+    assert.ok(Math.abs(s[0]) < 0.05 && Math.abs(s.at(-1)) < 0.05, `${nom} commence et finit sans clic`);
+  }
+});
