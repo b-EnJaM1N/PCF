@@ -503,6 +503,13 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 septuagies quater. Les records du cercle (étape 74)
+
+Même manipulation que d'habitude avec [`etape-74-records-cercle.sql`](etape-74-records-cercle.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-74-records-cercle.sql).
+Sur la page d'un cercle, « 📊 Records du cercle » (tous les duels entre membres, ou les tournois du cercle) : le serveur donne qui a
+gagné chaque point, jamais les signes d'un joueur. **À coller avant la fusion.**
+
 ## 1 septuagies ter. Le pouce levé retiré de la vente (étape 73)
 
 Même manipulation que d'habitude avec [`etape-73-pouce-retire.sql`](etape-73-pouce-retire.sql)

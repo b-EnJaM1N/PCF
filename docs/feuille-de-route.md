@@ -131,6 +131,13 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
 22. **Le pouce levé retiré de la vente** (12 novembre, décision du porteur du projet ; étape SQL 73) : le dessin du geste n'était
    pas assez beau (trois essais, dont un d'après l'emoji 👍). Il sort de la boutique et de la vitrine du jour et ne s'achète plus
    (`RETIRES` dans `catalogue.js`, `_retires()` côté serveur) ; ceux qui l'ont acheté le gardent, avec le dernier dessin.
+23. **Les records du cercle** (13 novembre, idée et choix du porteur du projet ; étape SQL 74 ; `app/js/records-cercle.js` ;
+   `nouveautes.js` : « records », version de test) : sur la page d'un cercle, « 📊 Records du cercle », avec « Tous les duels » ou
+   « Tournois du cercle ». Records de match (seulement les matchs allés au bout) : plus longue série de points, plus grosse raclée,
+   plus belle remontée dans un set, plus long match, balles de match sauvées. Records du cercle (abandons et forfaits compris) :
+   séries de victoires et de défaites, roi du smash, grande rivalité (au moins 2 duels), le pilier ; et les signes joués dans le
+   cercle en pourcentage. Le serveur donne qui a gagné chaque point (et les smashs), jamais les signes d'un joueur ; l'appli
+   rejoue les matchs avec les règles du jeu. Jamais les matchs contre un bot ; les 400 duels les plus récents.
 
 ## En bref (14 octobre 2026)
 
