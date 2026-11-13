@@ -479,7 +479,7 @@ test("« mauvais départ » : pas dès le premier point perdu, seulement à 0-3 
   }
 });
 
-test("l'ouverture de Kolodrov : après le 3e coup, quand il a ouvert Pierre, Feuille, Ciseaux et qu'il est mené", () => {
+test("l'ouverture de Kolodrov : après le 3e coup, ouverture Pierre, Feuille, Ciseaux, s'il ne mène pas et que le 3e coup ne lui donne pas le point", () => {
   let vu = 0;
   for (let k = 0; k < 50; k++) {
     const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = rngFixe(k);
@@ -488,9 +488,16 @@ test("l'ouverture de Kolodrov : après le 3e coup, quand il a ouvert Pierre, Feu
     if (/Kolodrov/.test(textes[2])) vu++;
   }
   assert.equal(vu, 50, "à chaque fois");
-  for (let k = 0; k < 50; k++) {   // une autre ouverture, ou en tête : jamais
+  // à égalité (1–1) avec un 3e coup nul : oui
+  for (let k = 0; k < 20; k++) {
     const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = rngFixe(k);
-    const coups = k % 2 ? [[PIERRE, CISEAUX], [FEUILLE, PIERRE], [CISEAUX, FEUILLE]] : [[FEUILLE, CISEAUX], [PIERRE, FEUILLE], [CISEAUX, PIERRE]];
+    const t = [[PIERRE, CISEAUX], [FEUILLE, CISEAUX], [CISEAUX, CISEAUX]].map(([a, b]) => annoncerCoup(m, jouerCoup(m, a, b), etat, {}, rng).lignes.map(l => l.texte).join(" | "));
+    assert.ok(/Kolodrov/.test(t[2]), t.join(" / "));
+  }
+  for (let k = 0; k < 60; k++) {   // une autre ouverture, en tête, ou un 3e coup qui lui donne le point (même s'il reste mené) : jamais
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = rngFixe(k);
+    const coups = [[[PIERRE, CISEAUX], [FEUILLE, PIERRE], [CISEAUX, FEUILLE]], [[FEUILLE, CISEAUX], [PIERRE, FEUILLE], [CISEAUX, PIERRE]],
+      [[PIERRE, FEUILLE], [FEUILLE, CISEAUX], [CISEAUX, FEUILLE]]][k % 3];
     const t = coups.map(([a, b]) => annoncerCoup(m, jouerCoup(m, a, b), etat, {}, rng).lignes.map(l => l.texte).join(" | ")).join(" / ");
     assert.ok(!/Kolodrov/.test(t), t);
   }
