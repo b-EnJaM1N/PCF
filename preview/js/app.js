@@ -442,7 +442,7 @@ const mainGantee = (g, signe, nom, { marques = true, set = S?.match?.scoresSets.
   const main = `<span class="poing-av" role="img" aria-label="${nom}">${avatarSVG({ ...avDe(g), symbole: SYMBOLE_SIGNE[signe], sansFond: true, degats: marques ? degatsDe(S?.degats, g, set) : null })}</span>`;
   const n = marques && effetsActifs() ? feuDe(S?.feu, g) : 0;
   if (!n && !eteint) return main;
-  return `<span class="main-feu${n ? ` feu-${n}` : ""}"><span class="feu">${feuSVG(n || "fin")}</span>${main}</span>`;
+  return `<span class="main-feu${n ? ` feu-${n}` : ""}"><span class="feu">${feuSVG(n || "fin", { id: `feu${g}`, anime: !reduitMouvement() })}</span>${main}</span>`;
 };
 function secouerLesPoings() {
   [["hMe", 0], ["hBot", 1]].forEach(([id, g]) => { $(id).innerHTML = mainGantee(g, 0, "Poing serré"); $(id).className = "hand secoue"; });

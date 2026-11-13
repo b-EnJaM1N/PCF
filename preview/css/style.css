@@ -1053,19 +1053,16 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 /* Les effets du match (effets.js ; 13 novembre). La main en feu : le feu derrière la main, il ne cache jamais le signe. */
 .main-feu { position: relative; display: inline-block; }
 .main-feu .poing-av { position: relative; z-index: 1; }
-.main-feu .feu { position: absolute; left: 0; right: 0; bottom: 18%; height: 150%; z-index: 0; pointer-events: none; }
+.main-feu .feu { position: absolute; left: -22%; right: -22%; top: -55%; bottom: -12%; z-index: 0; pointer-events: none; }
 .main-feu .feu svg { width: 100%; height: 100%; overflow: visible; }
-.main-feu.feu-3 .poing-av { filter: drop-shadow(0 0 6px rgba(255, 120, 30, .8)); }
-.main-feu.feu-2 .poing-av { filter: drop-shadow(0 0 3px rgba(255, 140, 40, .55)); }
-.feu .danse { transform-box: fill-box; transform-origin: 50% 100%; animation: flamme-danse .32s ease-in-out infinite alternate; }
-.feu .danse.lente { animation-duration: .6s; }
-@keyframes flamme-danse { from { transform: scale(1, .9) skewX(-4deg); } to { transform: scale(.94, 1.08) skewX(4deg); } }
+.main-feu.feu-3 .poing-av { filter: drop-shadow(0 0 4px rgba(255, 230, 120, .95)) drop-shadow(0 0 8px rgba(255, 120, 30, .8)); }
+.main-feu.feu-2 .poing-av { filter: drop-shadow(0 0 3px rgba(255, 220, 110, .9)); }
 .feu .braise { animation: braise-monte 1.4s linear infinite both; }
-@keyframes braise-monte { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(6px, -70px); opacity: 0; } }
-.feu .fumee { transform-box: fill-box; transform-origin: center; animation: fumee-monte 1.5s ease-out infinite both; }
-@keyframes fumee-monte { 0% { transform: translate(0, 0) scale(.6); opacity: 0; } 25% { opacity: .9; } 100% { transform: translate(-4px, -60px) scale(1.8); opacity: 0; } }
+@keyframes braise-monte { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(5px, -40px); opacity: 0; } }
+.feu .fumee { animation: fumee-monte 2.2s ease-out infinite both; }
+@keyframes fumee-monte { 0% { transform: translate(0, 10px); opacity: 0; } 30% { opacity: 1; } 100% { transform: translate(-3px, -22px); opacity: 0; } }
 .feu .bouffee { transform-box: fill-box; transform-origin: center; animation: bouffee .9s ease-out both; }
-@keyframes bouffee { 0% { transform: scale(.4); opacity: .9; } 100% { transform: translate(0, -50px) scale(2.2); opacity: 0; } }
+@keyframes bouffee { 0% { transform: scale(.4); opacity: .9; } 100% { transform: translate(0, -40px) scale(2.2); opacity: 0; } }
 /* Les égalités en chaîne : les mains tremblent de plus en plus. */
 .hand.tremble-1 .poing-av { animation: tremble-egalite .45s ease-in-out 1; --amp: 2px; }
 .hand.tremble-2 .poing-av { animation: tremble-egalite .45s ease-in-out 2; --amp: 4px; }
@@ -1088,4 +1085,4 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
   background: linear-gradient(#FFF7C2, #FFB21F); box-shadow: 0 0 6px #FFC93C; transform: rotate(var(--angle)); animation: etincelle-part .55s ease-out forwards; }
 .effet-etincelles.petite span { height: 8px; }
 @keyframes etincelle-part { 0% { transform: rotate(var(--angle)) translateY(0) scaleY(.4); opacity: 1; } 100% { transform: rotate(var(--angle)) translateY(calc(var(--loin) * -1)) scaleY(1); opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .feu .danse, .feu .braise, .feu .fumee, .feu .bouffee, .hand[class*="tremble-"] .poing-av { animation: none !important; } .feu .bouffee { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .feu .braise, .feu .fumee, .feu .bouffee, .hand[class*="tremble-"] .poing-av { animation: none !important; } .feu .bouffee { opacity: 0; } }
