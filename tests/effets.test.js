@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { nouveauFeu, noterFeu, feuDe, niveauFeu, egalitesDeSuite, effetDouble, feuSVG } from "../app/js/effets.js";
+import { nouveauFeu, noterFeu, feuDe, niveauFeu, egalitesDeSuite, effetDouble, feuSVG, trembleDe, EGALITES_ETINCELLE } from "../app/js/effets.js";
 
 test("la main en feu : 3, 5 puis 7 points de suite", () => {
   assert.deepEqual([0, 2, 3, 4, 5, 6, 7, 12].map(niveauFeu), [0, 0, 1, 1, 2, 2, 3, 3]);
@@ -50,4 +50,9 @@ test("le dessin du feu : rien sans feu, fumée, flamme, en feu, bouffée", () =>
   assert.ok(feuSVG(3).length > feuSVG(2).length, "en feu : plus grand que la flamme");
   assert.match(feuSVG("fin"), /bouffee/);
   assert.doesNotMatch(feuSVG(3), /NaN|undefined/);
+});
+
+test("les égalités en chaîne : le tremblement commence à la 2e égalité, l'étincelle à la 4e", () => {
+  assert.deepEqual([0, 1, 2, 3, 4, 6].map(trembleDe), [0, 0, 1, 2, 3, 3]);
+  assert.equal(EGALITES_ETINCELLE, 4);
 });

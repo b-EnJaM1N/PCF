@@ -7,7 +7,7 @@ import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, 
 import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache, mesDossards } from "./social-serveur.js";
 import { ficheVisible, htmlFiche } from "./fiche-joueur.js";
 import { nouveauxDegats, noterDegats, degatsDe } from "./degats.js";
-import { nouveauFeu, noterFeu, feuDe, feuSVG, egalitesDeSuite, MAX_TREMBLE, effetDouble } from "./effets.js";
+import { nouveauFeu, noterFeu, feuDe, feuSVG, egalitesDeSuite, trembleDe, EGALITES_ETINCELLE, effetDouble } from "./effets.js";
 import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier, origineIci } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { filVisible, matchDuDuel, hasardFixe, etapeDuDuel } from "./fil-cercle.js";
@@ -688,9 +688,10 @@ function effetsDuCoup(evt, feuChg, double, mains) {
     return;
   }
   if (!evt.egalite) return;
-  const n = Math.min(MAX_TREMBLE, egalitesDeSuite(S.match.coups));
+  const e = egalitesDeSuite(S.match.coups), n = trembleDe(e);   // (à partir de la 2e égalité de suite ; l'étincelle à la 4e)
+  if (!n) return;
   if (!vite) mains.forEach(h => { h.classList.remove("tremble-1", "tremble-2", "tremble-3"); void h.offsetWidth; h.classList.add(`tremble-${n}`); });
-  if (n >= MAX_TREMBLE) {
+  if (e >= EGALITES_ETINCELLE) {
     ambiance.effet("etincelle");
     if (!vite) couche("effet-etincelles petite", Array.from({ length: 8 }, (_, i) => `<span style="--angle:${i * 45 + 20}deg;--loin:${22 + (i % 2) * 10}px"></span>`).join(""));
   }

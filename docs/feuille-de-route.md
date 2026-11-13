@@ -157,7 +157,8 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    - **La main en feu** : 3 points gagnés de suite, la main fume ; 5, une petite flamme ; 7, la main est en feu (derrière la
      main : le signe reste visible). Une égalité baisse le feu d'un niveau (on repart du seuil d'en dessous : 2 points pour
      retrouver la flamme) ; un point perdu l'éteint (« pschhh » et bouffée de fumée). Le feu reste d'un set à l'autre.
-   - **Les égalités en chaîne** : les mains tremblent un peu plus à chaque égalité de suite ; à la 3e, une étincelle.
+   - **Les égalités en chaîne** : les mains tremblent à partir de la 2e égalité de suite, plus fort à la 3e ; à la 4e, une
+     étincelle (décalé d'une égalité le 13 novembre au soir, demande du porteur du projet).
    - **Le double smash avec le même signe** : 2 Pierres, un séisme (l'arène tremble, le tableau vacille) ; 2 Feuilles, un coup
      de vent (poussière, tableau qui bat) ; 2 Ciseaux, les lames qui se croisent (« cling ! » et étincelles).
    - **La fissure** (smash de la Feuille contre la Pierre) plus grande, et encore plus au 2e smash du set (pour tous).
