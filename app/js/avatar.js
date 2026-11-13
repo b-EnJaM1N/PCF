@@ -324,7 +324,7 @@ function lameTordue(x, y, h, gant, ink, rot, pli, niveau = 1) {
   const mi = y + h * .38, y0 = y - 3;
   const marque = yy => `<path d="M${x + 1.5} ${yy} l7.5 -1.5" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>`;
   const seg = (ya, yb) => `<rect x="${x}" y="${ya}" width="10.5" height="${yb - ya}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`;
-  let haut = seg(y0, mi + 4) + ongle(x, y0 + 1.5, ink);
+  let haut = `<rect x="${x}" y="${y0}" width="10.5" height="${mi - y0 + 4}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>` + ongle(x, y0 + 1.5, ink);   // (le 1er smash : inchangé)
   if (niveau > 1) {
     const k = y0 + (mi - y0) * .45;
     const entaille = (ex, ey, sens) => `<path d="M${ex} ${ey - 2} l${sens * 3.6} 2 l${-sens * 3.6} 2 Z" fill="rgba(25,12,8,.85)"/>`;
