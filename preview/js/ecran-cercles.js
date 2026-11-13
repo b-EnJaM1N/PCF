@@ -12,6 +12,7 @@ import { clePseudo } from "./chants-perso.js";
 import { installerTournois } from "./ecran-tournois.js";
 import { fantomeVisible } from "./fantome.js";
 import { ouvert } from "./nouveautes.js";
+import { calculerRecords } from "./records-cercle.js";
 import { filVisible, evenementsDuFil, evenementsChampionnat, evenementsDossard, scoreDuDuel, ilYA, REACTIONS } from "./fil-cercle.js";
 import { championDuCercle } from "./tournoi-logique.js";
 import { profils } from "./duel-serveur.js";
@@ -371,6 +372,7 @@ export function installerCercles(ctx) {
     montrer("socCercle");
     $("cNom").textContent = "…"; $("cInfo").textContent = ""; $("cClassement").innerHTML = ""; $("cAmis").innerHTML = ""; $("cGestion").hidden = true;
     $("cFilCarte").hidden = true; $("cFil").innerHTML = ""; dire("cFilMsg", ""); fil = null; championFil = null; filDeplie = false;
+    $("cRecordsCarte").hidden = !ouvert("records"); $("cRecordsCarte").open = false; $("cRecordsListe").innerHTML = ""; dire("cRecordsMsg", ""); recordsCharges = null;
     dire("cMsg", message); dire("cInvMsg", "");
     window.scrollTo(0, 0);
     chargerCercle();
@@ -435,6 +437,57 @@ export function installerCercles(ctx) {
         `${m.role === "admin" ? "" : `<button class="petit alt" data-a="responsable" aria-label="Nommer responsable" title="Nommer responsable">👑</button>`}<button class="petit alt danger" data-a="exclure">Retirer</button>`)).join("");
     }
   }
+
+  // ---------------------------------------------------------------- les records du cercle (records-cercle.js ; 13 novembre)
+  // Chargés seulement quand on ouvre le bloc ; « Tous les duels » ou « Tournois du cercle ».
+  let recordsCharges = null, recordsTournois = false;
+  const ICONES_RECORD = { serie_points: "🔥", raclee: "🥊", remontee: "🔄", long: "⏱️", balles: "🛡️", victoires: "🏆", defaites: "😬", smashs: "💥", rivalite: "⚔️", pilier: "🧱" };
+  const TITRES_RECORD = { serie_points: "Plus longue série de points", raclee: "La plus grosse raclée", remontee: "Plus belle remontée",
+    long: "Le plus long match", balles: "Balles de match sauvées", victoires: "Plus longue série de victoires", defaites: "Plus longue série de défaites",
+    smashs: "Le roi du smash", rivalite: "La grande rivalité", pilier: "Le pilier" };
+  async function chargerRecords() {
+    const id = cercleOuvert, cle = `${id}:${recordsTournois}`;
+    if (!id || recordsCharges === cle) return;
+    recordsCharges = cle; dire("cRecordsMsg", "Calcul des records…");
+    try {
+      const r = calculerRecords(await social.recordsCercle(id, recordsTournois));
+      if (cercleOuvert !== id || recordsCharges !== cle) return;
+      renderRecords(r); dire("cRecordsMsg", r.duels ? `D'après ${r.duels} duel${r.duels > 1 ? "s" : ""}${recordsTournois ? " des tournois du cercle" : " entre membres"} (les plus récents).` : "");
+    } catch (err) { if (cercleOuvert === id) { recordsCharges = null; dire("cRecordsMsg", err.message, true); } }
+  }
+  function renderRecords(r) {
+    const membres = new Map((detail?.membres || []).map(m => [m.id, m]));
+    const nom = id => { const m = membres.get(id); return m ? `<b>${esc(m.pseudo)}</b>` : "<b>un ancien membre</b>"; };
+    const date = q => (q ? ` <span class="fil-quand">${new Date(q).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</span>` : "");
+    const texte = x => {
+      if (x.vide) return "<span class=\"hint\">Pas encore de record</span>";
+      const s = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
+      switch (x.cle) {
+        case "serie_points": return `${nom(x.joueur)} : ${s(x.valeur, "point")} d'affilée contre ${nom(x.autre)}`;
+        case "raclee": return `${nom(x.joueur)} bat ${nom(x.autre)} ${esc(x.detail)}`;
+        case "remontee": return `${nom(x.joueur)} revient de ${s(x.valeur, "point")} de retard dans un set, contre ${nom(x.autre)}`;
+        case "long": return `${nom(x.joueur)} contre ${nom(x.autre)} : ${x.valeur} coups`;
+        case "balles": return `${nom(x.joueur)} en sauve ${x.valeur} contre ${nom(x.autre)}`;
+        case "victoires": return `${nom(x.joueur)} : ${s(x.valeur, "victoire")} d'affilée`;
+        case "defaites": return `${nom(x.joueur)} : ${s(x.valeur, "défaite")} d'affilée`;
+        case "smashs": return `${nom(x.joueur)} : ${s(x.valeur, "smash")} réussi${x.valeur > 1 ? "s" : ""}`;
+        case "rivalite": return `${nom(x.joueur)} et ${nom(x.autre)} : ${s(x.valeur, "duel")} (${esc(x.detail)})`;
+        case "pilier": return `${nom(x.joueur)} : ${s(x.valeur, "duel")} joué${x.valeur > 1 ? "s" : ""}`;
+        default: return "";
+      }
+    };
+    const ligne = x => `<div class="fil-item"><span class="fil-ic">${ICONES_RECORD[x.cle]}</span><div class="fil-corps"><div><small class="record-titre">${TITRES_RECORD[x.cle]}</small></div><div>${texte(x)}</div></div>${x.vide ? "" : date(x.quand)}</div>`;
+    const signes = r.signes ? `<p class="hint" style="margin-top:10px">✊ Pierre ${r.signes[0]} % · ✌️ Ciseaux ${r.signes[1]} % · ✋ Feuille ${r.signes[2]} % <span>(les signes joués dans le cercle)</span></p>` : "";
+    $("cRecordsListe").innerHTML = `<h3 class="records-bloc">Records de match</h3><div class="fil">${r.match.map(ligne).join("")}</div>
+      <h3 class="records-bloc">Records du cercle</h3><div class="fil">${r.cercle.map(ligne).join("")}</div>${signes}`;
+  }
+  $("cRecordsCarte").addEventListener("toggle", () => { if ($("cRecordsCarte").open) chargerRecords(); });
+  $("cRecordsFiltre").addEventListener("click", e => {
+    const b = e.target.closest("button[data-v]"); if (!b) return;
+    recordsTournois = b.dataset.v === "tournois";
+    $("cRecordsFiltre").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    chargerRecords();
+  });
 
   // ---------------------------------------------------------------- le fil d'actualité du cercle (fil-cercle.js)
   let fil = null, championFil = null, dossardFil = null, filDeplie = false;   // (plié : les 3 dernières infos ; demande du porteur du projet, 11 novembre)
