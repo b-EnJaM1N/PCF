@@ -7,9 +7,11 @@
 -- joués d'un membre, pour que personne ne puisse étudier les habitudes des autres. Seuls les signes de tout le cercle, en total,
 -- sont donnés. Jamais les matchs contre un bot.
 --
+-- p_tournoi (13 novembre, demande du porteur du projet) : seulement les matchs d'un tournoi du cercle (par exemple celui en cours).
 -- → { duels: [{ id, j0, j1, vainqueur, fin, points_par_set, sets_gagnants, scores_sets, penalites, quand, tournoi,
 --              g: [0 | 1 | null, …], smash: [[bool, bool], …] }], signes: [pierre, ciseaux, feuille] }
-create or replace function public.records_cercle(p_id uuid, p_tournois boolean default false) returns jsonb
+drop function if exists public.records_cercle(uuid, boolean);
+create or replace function public.records_cercle(p_id uuid, p_tournois boolean default false, p_tournoi uuid default null) returns jsonb
 language plpgsql stable security definer set search_path = public as $$
 declare c public.cercles;
 begin
@@ -20,7 +22,9 @@ begin
       select d.* from duels d
       where d.phase = 'termine' and d.vainqueur is not null and d.j0 is not null and d.j1 is not null
         and not exists (select 1 from bots_en_ligne b where b.joueur in (d.j0, d.j1))
-        and (case when p_tournois
+        and (case when p_tournoi is not null
+               then d.tournoi_id = p_tournoi and exists (select 1 from tournois t where t.id = p_tournoi and t.cercle_id = p_id)
+             when p_tournois
                then d.tournoi_id in (select t.id from tournois t where t.cercle_id = p_id)
                else d.cree_le >= c.cree_le
                     and d.j0 in (select joueur from membres_cercle where cercle_id = p_id)
@@ -39,5 +43,5 @@ begin
   );
 end $$;
 
-revoke all on function public.records_cercle(uuid, boolean) from public, anon;
-grant execute on function public.records_cercle(uuid, boolean) to authenticated;
+revoke all on function public.records_cercle(uuid, boolean, uuid) from public, anon;
+grant execute on function public.records_cercle(uuid, boolean, uuid) to authenticated;

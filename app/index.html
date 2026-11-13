@@ -329,7 +329,8 @@
         </section>
         <details class="card pli" id="cRecordsCarte" hidden>
           <summary><h2>📊 Records du cercle</h2></summary>
-          <div class="seg" id="cRecordsFiltre" role="group" aria-label="Quels matchs"><button data-v="tous" aria-pressed="true">Tous les duels</button><button data-v="tournois" aria-pressed="false">Tournois du cercle</button></div>
+          <div class="seg" id="cRecordsFiltre" role="group" aria-label="Quels matchs"><button data-v="tous" aria-pressed="true">Tous les duels</button><button data-v="tournois" aria-pressed="false">Tournois du cercle</button><button data-v="encours" aria-pressed="false" hidden>Tournoi en cours</button></div>
+          <select id="cRecordsTournoi" hidden aria-label="Quel tournoi en cours" style="margin:6px 0"></select>
           <div id="cRecordsListe" class="records"></div>
           <p class="hint" id="cRecordsMsg" role="status"></p>
         </details>
