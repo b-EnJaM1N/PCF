@@ -163,6 +163,8 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    - **Le double smash avec le même signe** : 2 Pierres, un séisme (l'arène tremble, le tableau vacille) ; 2 Feuilles, un coup
      de vent (poussière, tableau qui bat) ; 2 Ciseaux, les lames qui se croisent (« cling ! » et étincelles).
    - **La fissure** (smash de la Feuille contre la Pierre) plus grande, et encore plus au 2e smash du set (pour tous).
+   - **L'usure au 2e smash du set** (13 novembre au soir, demande du porteur du projet) : les lames tordues sont en plus ébréchées
+     et fendues (main nue : un bleu et un pansement au pli du doigt) ; le gant déchiré a un lambeau de tissu qui pend.
    - Idée laissée de côté pour l'instant : la balle de match au ralenti. Les gestes de victoire existent déjà (boutique).
 
 ## En bref (14 octobre 2026)
