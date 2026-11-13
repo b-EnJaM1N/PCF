@@ -503,6 +503,13 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 septuagies quinquies. Le ménage du journal des tâches automatiques (étape 75)
+
+Même manipulation que d'habitude avec [`etape-75-menage-journal.sql`](etape-75-menage-journal.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-75-menage-journal.sql).
+Chaque nuit, les lignes de plus de 7 jours du journal de pg_cron (`cron.job_run_details`, 13 Mo sur 32 le 13 novembre) sont
+effacées ; une première fois au moment où on colle l'étape. Aucune donnée de joueur n'est touchée ; rien ne change dans l'appli.
+
 ## 1 septuagies quater. Les records du cercle (étape 74)
 
 Même manipulation que d'habitude avec [`etape-74-records-cercle.sql`](etape-74-records-cercle.sql)
