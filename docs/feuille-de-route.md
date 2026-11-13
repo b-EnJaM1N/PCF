@@ -22,7 +22,17 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    (code de version 3, puis 4…).
 2. Questionnaire validé et envoyé aux testeurs le 11 novembre (texte dans `docs/play-store/retours-testeurs.md`) ; noter chaque
    réponse dans le journal.
-3. **13 novembre : ouverts à tous** (fait le 13 au matin : `OUVERTES` = série, fantôme, fil, poules, avis, fiche ; le Dossard 1 reste en test). **Ouvrir le fantôme à tous** (accord du porteur du projet le 11 novembre ; ajouter « fantome » à `OUVERTES`
+3. **Note de version du paquet Android 3 (1.0.0.2), validée le 13 novembre** (457 caractères) : `<fr-FR>`
+   « • Nouveau : le fantôme 👻 Sur la page d'un ami, défie son fantôme : un bot qui joue comme lui, d'après ses matchs.
+   • Nouveau : le fil du cercle 📰 Résultats, Une de vos matchs et réactions. • Championnat de cercle avec poules et playoffs 🏆
+   • La fiche d'un joueur : stats, face-à-face, historique • Smash : nouveaux sons, marques sur la main adverse, smash récupéré 💥
+   • Bouton Retour plus visible (merci aux testeurs !) • Le match du jour : ta série continue 🔥 » `</fr-FR>` (une ligne par puce).
+   Le porteur du projet fait le paquet le 13 au soir sur ordinateur (PWABuilder, code 3, « Use mine » avec sa clé d'octobre).
+   (Ancienne note du 11 novembre, remplacée : voir ci-dessous.)
+2 bis. **Décision du 13 novembre : lancement en français uniquement** (pays francophones au choix dans la Play Console). L'anglais
+   plus tard, seulement si le jeu retient bien les joueurs : d'abord les textes de l'appli, puis les voix (réécriture de l'humour
+   et nouvel enregistrement, budget à décider avec le porteur du projet).
+3 bis. **13 novembre : ouverts à tous** (fait le 13 au matin : `OUVERTES` = série, fantôme, fil, poules, avis, fiche ; le Dossard 1 reste en test). **Ouvrir le fantôme à tous** (accord du porteur du projet le 11 novembre ; ajouter « fantome » à `OUVERTES`
    dans `app/js/nouveautes.js`), puis paquet Android 3 (1.0.0.2) avec la note validée :
    `<fr-FR>` « • Nouveau : le fantôme 👻 Sur la page d'un ami, défie son fantôme : un bot qui joue comme lui, d'après ses matchs.
    Pas besoin qu'il soit connecté ! » « • Nouveau : le fil du cercle 📰 Les résultats entre membres, la Une de vos matchs et vos
@@ -121,6 +131,16 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
 22. **Le pouce levé retiré de la vente** (12 novembre, décision du porteur du projet ; étape SQL 73) : le dessin du geste n'était
    pas assez beau (trois essais, dont un d'après l'emoji 👍). Il sort de la boutique et de la vitrine du jour et ne s'achète plus
    (`RETIRES` dans `catalogue.js`, `_retires()` côté serveur) ; ceux qui l'ont acheté le gardent, avec le dernier dessin.
+23. **Les records du cercle** (13 novembre, idée et choix du porteur du projet ; étape SQL 74 ; `app/js/records-cercle.js` ;
+   `nouveautes.js` : « records », version de test) : sur la page d'un cercle, « 📊 Records du cercle », avec « Tous les duels » ou
+   « Tournois du cercle ». Records de match (seulement les matchs allés au bout) : plus longue série de points, plus grosse raclée,
+   plus belle remontée dans un set, plus long match, balles de match sauvées. Records du cercle (abandons et forfaits compris) :
+   séries de victoires et de défaites, roi du smash, smash le plus précis (en %, à partir de 5 smashs tentés), grande rivalité
+   (au moins 2 duels), le pilier ; et les signes joués dans le
+   cercle en pourcentage. Le serveur donne qui a gagné chaque point (et les smashs), jamais les signes d'un joueur ; l'appli
+   rejoue les matchs avec les règles du jeu. Jamais les matchs contre un bot ; les 400 duels les plus récents. Les records d'un
+   seul tournoi (idée du porteur du projet : à côté des résultats et du calendrier) : « 📊 Records du tournoi » sur la page du
+   tournoi, pendant et après (`records_tournoi`, mêmes règles de visibilité que la page ; pas pour les Sit & Go en direct).
 
 ## En bref (14 octobre 2026)
 

@@ -12,6 +12,7 @@ import { clePseudo } from "./chants-perso.js";
 import { installerTournois } from "./ecran-tournois.js";
 import { fantomeVisible } from "./fantome.js";
 import { ouvert } from "./nouveautes.js";
+import { calculerRecords, htmlRecords } from "./records-cercle.js";
 import { filVisible, evenementsDuFil, evenementsChampionnat, evenementsDossard, scoreDuDuel, ilYA, REACTIONS } from "./fil-cercle.js";
 import { championDuCercle } from "./tournoi-logique.js";
 import { profils } from "./duel-serveur.js";
@@ -371,6 +372,8 @@ export function installerCercles(ctx) {
     montrer("socCercle");
     $("cNom").textContent = "…"; $("cInfo").textContent = ""; $("cClassement").innerHTML = ""; $("cAmis").innerHTML = ""; $("cGestion").hidden = true;
     $("cFilCarte").hidden = true; $("cFil").innerHTML = ""; dire("cFilMsg", ""); fil = null; championFil = null; filDeplie = false;
+    $("cRecordsCarte").hidden = !ouvert("records"); $("cRecordsCarte").open = false; $("cRecordsListe").innerHTML = ""; dire("cRecordsMsg", ""); recordsCharges = null;
+    recordsFiltre = "tous"; $("cRecordsFiltre").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === "tous")));
     dire("cMsg", message); dire("cInvMsg", "");
     window.scrollTo(0, 0);
     chargerCercle();
@@ -435,6 +438,32 @@ export function installerCercles(ctx) {
         `${m.role === "admin" ? "" : `<button class="petit alt" data-a="responsable" aria-label="Nommer responsable" title="Nommer responsable">👑</button>`}<button class="petit alt danger" data-a="exclure">Retirer</button>`)).join("");
     }
   }
+
+  // ---------------------------------------------------------------- les records du cercle (records-cercle.js ; 13 novembre)
+  // Chargés seulement quand on ouvre le bloc ; « Tous les duels » ou « Tournois du cercle ».
+  // filtre : "tous" (les duels entre membres) ou "tournois" (les tournois du cercle) ; les records d'un tournoi sont sur sa page.
+  let recordsCharges = null, recordsFiltre = "tous";
+  async function chargerRecords() {
+    const id = cercleOuvert, cle = `${id}:${recordsFiltre}`;
+    if (!id || recordsCharges === cle) return;
+    recordsCharges = cle; dire("cRecordsMsg", "Calcul des records…");
+    try {
+      const r = calculerRecords(await social.recordsCercle(id, recordsFiltre === "tournois"));
+      if (cercleOuvert !== id || recordsCharges !== cle) return;
+      renderRecords(r); dire("cRecordsMsg", r.duels ? `D'après ${r.duels} duel${r.duels > 1 ? "s" : ""}${recordsFiltre === "tournois" ? " des tournois du cercle" : " entre membres"} (les plus récents).` : "");
+    } catch (err) { if (cercleOuvert === id) { recordsCharges = null; dire("cRecordsMsg", err.message, true); } }
+  }
+  function renderRecords(r) {
+    const membres = new Map((detail?.membres || []).map(m => [m.id, m]));
+    $("cRecordsListe").innerHTML = htmlRecords(r, id => (membres.has(id) ? esc(membres.get(id).pseudo) : null), { blocCercle: "Records du cercle" });
+  }
+  $("cRecordsCarte").addEventListener("toggle", () => { if ($("cRecordsCarte").open) chargerRecords(); });
+  $("cRecordsFiltre").addEventListener("click", e => {
+    const b = e.target.closest("button[data-v]"); if (!b) return;
+    recordsFiltre = b.dataset.v;
+    $("cRecordsFiltre").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    chargerRecords();
+  });
 
   // ---------------------------------------------------------------- le fil d'actualité du cercle (fil-cercle.js)
   let fil = null, championFil = null, dossardFil = null, filDeplie = false;   // (plié : les 3 dernières infos ; demande du porteur du projet, 11 novembre)
