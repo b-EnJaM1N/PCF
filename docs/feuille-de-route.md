@@ -29,6 +29,9 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    • Bouton Retour plus visible (merci aux testeurs !) • Le match du jour : ta série continue 🔥 » `</fr-FR>` (une ligne par puce).
    Le porteur du projet fait le paquet le 13 au soir sur ordinateur (PWABuilder, code 3, « Use mine » avec sa clé d'octobre).
    (Ancienne note du 11 novembre, remplacée : voir ci-dessous.)
+2 bis. **Décision du 13 novembre : lancement en français uniquement** (pays francophones au choix dans la Play Console). L'anglais
+   plus tard, seulement si le jeu retient bien les joueurs : d'abord les textes de l'appli, puis les voix (réécriture de l'humour
+   et nouvel enregistrement, budget à décider avec le porteur du projet).
 3 bis. **13 novembre : ouverts à tous** (fait le 13 au matin : `OUVERTES` = série, fantôme, fil, poules, avis, fiche ; le Dossard 1 reste en test). **Ouvrir le fantôme à tous** (accord du porteur du projet le 11 novembre ; ajouter « fantome » à `OUVERTES`
    dans `app/js/nouveautes.js`), puis paquet Android 3 (1.0.0.2) avec la note validée :
    `<fr-FR>` « • Nouveau : le fantôme 👻 Sur la page d'un ami, défie son fantôme : un bot qui joue comme lui, d'après ses matchs.
