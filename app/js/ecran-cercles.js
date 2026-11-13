@@ -441,10 +441,10 @@ export function installerCercles(ctx) {
   // ---------------------------------------------------------------- les records du cercle (records-cercle.js ; 13 novembre)
   // Chargés seulement quand on ouvre le bloc ; « Tous les duels » ou « Tournois du cercle ».
   let recordsCharges = null, recordsTournois = false;
-  const ICONES_RECORD = { serie_points: "🔥", raclee: "🥊", remontee: "🔄", long: "⏱️", balles: "🛡️", victoires: "🏆", defaites: "😬", smashs: "💥", rivalite: "⚔️", pilier: "🧱" };
+  const ICONES_RECORD = { serie_points: "🔥", raclee: "🥊", remontee: "🔄", long: "⏱️", balles: "🛡️", victoires: "🏆", defaites: "😬", smashs: "💥", taux_smash: "🎯", rivalite: "⚔️", pilier: "🧱" };
   const TITRES_RECORD = { serie_points: "Plus longue série de points", raclee: "La plus grosse raclée", remontee: "Plus belle remontée",
     long: "Le plus long match", balles: "Balles de match sauvées", victoires: "Plus longue série de victoires", defaites: "Plus longue série de défaites",
-    smashs: "Le roi du smash", rivalite: "La grande rivalité", pilier: "Le pilier" };
+    smashs: "Le roi du smash", taux_smash: "Le smash le plus précis", rivalite: "La grande rivalité", pilier: "Le pilier" };
   async function chargerRecords() {
     const id = cercleOuvert, cle = `${id}:${recordsTournois}`;
     if (!id || recordsCharges === cle) return;
@@ -471,6 +471,7 @@ export function installerCercles(ctx) {
         case "victoires": return `${nom(x.joueur)} : ${s(x.valeur, "victoire")} d'affilée`;
         case "defaites": return `${nom(x.joueur)} : ${s(x.valeur, "défaite")} d'affilée`;
         case "smashs": return `${nom(x.joueur)} : ${s(x.valeur, "smash")} réussi${x.valeur > 1 ? "s" : ""}`;
+        case "taux_smash": return `${nom(x.joueur)} : ${x.valeur} % de smashs réussis (${esc(x.detail)})`;
         case "rivalite": return `${nom(x.joueur)} et ${nom(x.autre)} : ${s(x.valeur, "duel")} (${esc(x.detail)})`;
         case "pilier": return `${nom(x.joueur)} : ${s(x.valeur, "duel")} joué${x.valeur > 1 ? "s" : ""}`;
         default: return "";

@@ -42,3 +42,14 @@ test("les records du cercle : de match (allés au bout) et du cercle (tous les d
   assert.equal(par("long").valeur, 10, "le match abandonné ne compte pas pour le plus long match");
   assert.ok(calculerRecords({ duels: [] }).match.every(x => x.vide), "pas encore de duel : pas de record");
 });
+
+test("le meilleur taux de smash : à partir de 5 smashs tentés", async () => {
+  const { SMASHS_MIN } = await import("../app/js/records-cercle.js");
+  const g = [0, 0, 1, 0, 1, 0, 0, 0], s = [[true, false], [true, false], [true, false], [true, false], [false, true], [false, false], [false, false], [false, false]];
+  const d = { id: "s", j0: "alice", j1: "bob", vainqueur: 0, fin: "score", points_par_set: 7, sets_gagnants: 1, scores_sets: [[6, 2]], penalites: [], quand: "2026-11-13T10:00:00Z", g, smash: s };
+  const taux = r => r.cercle.find(x => x.cle === "taux_smash");
+  assert.ok(taux(calculerRecords({ duels: [d] })).vide, `moins de ${SMASHS_MIN} smashs tentés : pas de taux`);
+  const d2 = { ...d, id: "s2", quand: "2026-11-13T11:00:00Z" };
+  const t = taux(calculerRecords({ duels: [d, d2] }));
+  assert.equal(t.joueur, "alice"); assert.equal(t.valeur, 75); assert.equal(t.detail, "6 sur 8", "Alice : 3 réussis sur 4, deux fois");
+});

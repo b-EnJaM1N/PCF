@@ -51,6 +51,7 @@ export function rejouerDuel(d) {
 }
 
 const idDe = (d, j) => (j === 0 ? d.j0 : d.j1);
+export const SMASHS_MIN = 5;   // (le taux de smashs réussis : seulement à partir de 5 smashs tentés, sinon 1 sur 1 = 100 %)
 
 // Tous les records. donnees : ce que renvoie records_cercle. → { match: [...], cercle: [...] } ; chaque record :
 // { cle, titre, joueur, autre, valeur, duel (id), quand, detail } ; null quand personne ne l'a encore.
@@ -59,7 +60,7 @@ export function calculerRecords(donnees) {
   const rec = {};
   const garder = (cle, valeur, r, mieux = (x, y) => x > y) => { if (valeur > 0 && (!rec[cle] || mieux(valeur, rec[cle].valeur))) rec[cle] = { ...r, valeur }; };
   // Les séries de victoires et de défaites, les rivalités, le nombre de duels, les smashs : tous les duels.
-  const serieV = new Map(), serieD = new Map(), joues = new Map(), paires = new Map(), smashs = new Map();
+  const serieV = new Map(), serieD = new Map(), joues = new Map(), paires = new Map(), smashs = new Map(), tentes = new Map();
   for (const d of duels) {
     const gagnant = idDe(d, d.vainqueur), perdant = idDe(d, 1 - d.vainqueur);
     for (const id of [d.j0, d.j1]) joues.set(id, (joues.get(id) || 0) + 1);
@@ -69,7 +70,10 @@ export function calculerRecords(donnees) {
     garder("defaites", serieD.get(perdant), { joueur: perdant, quand: d.quand });
     const cle = [d.j0, d.j1].sort().join("|"), p = paires.get(cle) || { a: [d.j0, d.j1].sort()[0], b: [d.j0, d.j1].sort()[1], n: 0, va: 0, dernier: d.quand };
     p.n++; if (gagnant === p.a) p.va++; p.dernier = d.quand; paires.set(cle, p);
-    (d.smash || []).forEach((s, i) => { const w = d.g?.[i]; if ((w === 0 || w === 1) && s?.[w]) { const id = idDe(d, w); smashs.set(id, (smashs.get(id) || 0) + 1); } });
+    (d.smash || []).forEach((s, i) => {
+      const w = d.g?.[i];
+      for (const j of [0, 1]) if (s?.[j]) { const id = idDe(d, j); tentes.set(id, (tentes.get(id) || 0) + 1); if (w === j) smashs.set(id, (smashs.get(id) || 0) + 1); }
+    });
     // Les records de match : seulement les matchs allés au bout.
     if (d.fin !== "score") continue;
     const r = rejouerDuel(d);
@@ -80,6 +84,8 @@ export function calculerRecords(donnees) {
     for (const j of [0, 1]) garder("balles", r.ballesSauvees[j], { joueur: idDe(d, j), autre: idDe(d, 1 - j), duel: d.id, quand: d.quand });
   }
   for (const [id, n] of smashs) garder("smashs", n, { joueur: id });
+  // Le meilleur taux de smashs réussis (13 novembre, demande du porteur du projet) : à partir de SMASHS_MIN smashs tentés.
+  for (const [id, t] of tentes) if (t >= SMASHS_MIN) garder("taux_smash", Math.round(100 * (smashs.get(id) || 0) / t), { joueur: id, detail: `${smashs.get(id) || 0} sur ${t}` });
   for (const [id, n] of joues) garder("pilier", n, { joueur: id });
   for (const p of paires.values()) if (p.n >= 2) garder("rivalite", p.n, { joueur: p.a, autre: p.b, detail: `${p.va}–${p.n - p.va}`, quand: p.dernier });
   if (rec.raclee) rec.raclee.valeur = Math.floor((rec.raclee.valeur + 999) / 1000);   // (l'écart de points, sans le départage)
@@ -87,7 +93,7 @@ export function calculerRecords(donnees) {
   const signes = total ? s.map(n => Math.round(100 * n / total)) : null;
   return {
     match: ["serie_points", "raclee", "remontee", "long", "balles"].map(cle => (rec[cle] ? { cle, ...rec[cle] } : { cle, vide: true })),
-    cercle: ["victoires", "defaites", "smashs", "rivalite", "pilier"].map(cle => (rec[cle] ? { cle, ...rec[cle] } : { cle, vide: true })),
+    cercle: ["victoires", "defaites", "smashs", "taux_smash", "rivalite", "pilier"].map(cle => (rec[cle] ? { cle, ...rec[cle] } : { cle, vide: true })),
     signes, duels: duels.length,
   };
 }

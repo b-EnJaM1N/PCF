@@ -135,7 +135,8 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    `nouveautes.js` : « records », version de test) : sur la page d'un cercle, « 📊 Records du cercle », avec « Tous les duels » ou
    « Tournois du cercle ». Records de match (seulement les matchs allés au bout) : plus longue série de points, plus grosse raclée,
    plus belle remontée dans un set, plus long match, balles de match sauvées. Records du cercle (abandons et forfaits compris) :
-   séries de victoires et de défaites, roi du smash, grande rivalité (au moins 2 duels), le pilier ; et les signes joués dans le
+   séries de victoires et de défaites, roi du smash, smash le plus précis (en %, à partir de 5 smashs tentés), grande rivalité
+   (au moins 2 duels), le pilier ; et les signes joués dans le
    cercle en pourcentage. Le serveur donne qui a gagné chaque point (et les smashs), jamais les signes d'un joueur ; l'appli
    rejoue les matchs avec les règles du jeu. Jamais les matchs contre un bot ; les 400 duels les plus récents.
 
