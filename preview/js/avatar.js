@@ -129,7 +129,7 @@ const ACCROC = [
   "M41 57 L44.5 53 L47.5 56.5 L51 51.5 L54 55.5 L58.5 53 L57.5 58 L60 61 L55.5 60.5 L51.5 64 L48 60 L43.5 62.5 Z",
   "M53 45 L56 42.5 L58.5 45.5 L62 43 L63.5 47 L61 49.5 L57.5 48.5 L54.5 50 Z",
 ];
-export function marquesSVG(symbole, degats, nue) {
+export function marquesSVG(symbole, degats, nue, gant = "#E8574A", ink = "rgba(30,15,10,.8)") {
   if (!degats) return "";
   let s = "";
   const d = Math.min(2, degats.dechire || 0);
@@ -139,6 +139,13 @@ export function marquesSVG(symbole, degats, nue) {
   } else if (d) {   // le gant déchiré : un accroc (la peau dessous), ses fils qui dépassent
     s += ACCROC.slice(0, d).map(p => `<path d="${p}" fill="#E7B48C" stroke="rgba(30,15,10,.7)" stroke-width="1.1" stroke-linejoin="round"/>`).join("");
     s += trait("M43.5 62.5 l-1.5 3 M51.5 64 l.5 3.2 M58.5 53 l2 -2.5", .9) + (d > 1 ? trait("M62 43 l2.2 -2 M54.5 50 l-1.8 2", .9) : "");
+    // Au 2e smash du set (13 novembre au soir, demande du porteur du projet : « faire pendre un tissu ») : un lambeau du gant
+    // arraché pend sous l'accroc, avec ses fils effilochés.
+    if (d > 1) s += `<path d="M42.5 61.5 L57 60 C60 66 59.5 74 57 80 C55.8 83.5 54 86.5 52.5 89 L50.5 85.5 L48.5 89 L46.5 85 C45 80 44.5 75 45 70 C43 67 42 64 42.5 61.5 Z"
+      fill="${gant}" stroke="${ink}" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M46 63.5 C48.5 67 51 67 54.5 63" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M48.5 70 C49.5 75 50.5 79 50 84" fill="none" stroke="${ink}" stroke-width=".8" stroke-linecap="round" opacity=".45"/>`
+      + trait("M52.5 89 l.6 3.4 M50.5 85.5 l-.3 3 M48.5 89 l-1 3 M46.5 85 l-1.6 2.4 M57 80 l2.4 1.8", .8);
   }
   const f = Math.min(2, degats.fissure || 0);
   if (f) {   // la fissure sur le dos de la main, depuis un petit creux : sur tous les signes (12 novembre, remarque du porteur du projet)
@@ -176,7 +183,11 @@ function mainNue(symbole, peau, vernis, bague, cleBague, tordu = 0) {
   if (symbole === "feuille-dos") return doigt(33, 52, 30, -14) + doigt(43.5, 50, 35, -5, { avecBague: true }) + doigt(54, 50, 34, 5) + doigt(64, 53, 27, 14) + paume(46, false) + tendons;
   // les ciseaux : toujours vus de dos (choix du porteur du projet), l'annulaire et l'auriculaire repliés restent cachés derrière la main
   // (les lames tordues : la base du doigt dans l'axe, le bout plié de travers ; degats.js)
-  const plie = (bx, by, L, rot, pli, opts = {}) => `<g transform="rotate(${rot} ${bx} ${by})">${doigt(bx, by, L * .68, 0, { ...opts, sansOngle: true })}<g transform="rotate(${pli} ${bx} ${by - L * .62})">${doigt(bx, by - L * .62 + 3, L * .42 + 3, 0)}</g></g>`;
+  // (au 2e smash du set, 13 novembre au soir : un bleu au pli du doigt, et un pansement enroulé autour)
+  const bout = (bx, by, L) => doigt(bx, by - L * .62 + 3, L * .42 + 3, 0) + (tordu > 1
+    ? `<ellipse cx="${bx}" cy="${by - L * .55}" rx="5.5" ry="4.5" fill="rgba(110,60,150,.45)"/><rect x="${bx - 5.6}" y="${by - L * .66}" width="11.2" height="5.4" rx="1.6" fill="#F1CF9E" stroke="rgba(90,55,20,.5)" stroke-width=".8"/>`
+    : "");
+  const plie = (bx, by, L, rot, pli, opts = {}) => `<g transform="rotate(${rot} ${bx} ${by})">${doigt(bx, by, L * .68, 0, { ...opts, sansOngle: true })}<g transform="rotate(${pli} ${bx} ${by - L * .62})">${bout(bx, by, L)}</g></g>`;
   if ((symbole === "ciseaux" || symbole === "ciseaux-dos") && tordu) return doigt(30, 70, 18, -25, { sansOngle: true }) + plie(37, 52, 38, -14, PLI.sens * (18 + 14 * tordu), { avecBague: true }) + plie(50, 50, 40, 9, -PLI.sens * (16 + 14 * tordu)) + paume(46, false) + tendons;
   if (symbole === "ciseaux" || symbole === "ciseaux-dos") return doigt(30, 70, 18, -25, { sansOngle: true }) + doigt(37, 52, 38, -14, { avecBague: true }) + doigt(50, 50, 40, 9) + paume(46, false) + tendons;
   if (symbole === "index") return doigt(41, 50, 40, -4, { avecBague: true }) + paume(46) + replie(46.5, 42, 9.5, 18) + replie(55.5, 43, 9, 17) + replie(64.5, 46, 8, 15) + doigt(33, 66, 26, 74);
@@ -291,7 +302,7 @@ export function avatarSVG(a) {
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
-    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}
+    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}
   </svg>`;
 }
 
@@ -307,11 +318,23 @@ const pouce = (gant, ink) => `<rect x="25" y="50" width="28" height="12" rx="6" 
 export const PLI = { sens: -1 };
 // Un doigt du V plié de travers (les lames tordues) : la base dans l'axe, le bout tourné de « pli » degrés à mi-hauteur.
 // (le pli aux deux tiers de la hauteur, et le bout un peu rallongé : le doigt garde sa longueur ; 12 novembre)
-function lameTordue(x, y, h, gant, ink, rot, pli) {
+// Au 2e smash du set (niveau 2 ; 13 novembre au soir, demande du porteur du projet : « amplifier l'usure ») : en plus d'être
+// plus pliée, la lame est ébréchée (deux entailles), fendue, et son bout se recourbe un peu.
+function lameTordue(x, y, h, gant, ink, rot, pli, niveau = 1) {
   const mi = y + h * .38, y0 = y - 3;
-  return `<g transform="rotate(${rot})"><rect x="${x}" y="${mi}" width="10.5" height="${y + h - mi}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
-    <g transform="rotate(${pli} ${x + 5.25} ${mi + 2})"><rect x="${x}" y="${y0}" width="10.5" height="${mi - y0 + 4}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>${ongle(x, y0 + 1.5, ink)}</g>
-    <path d="M${x + 1.5} ${mi + 3} l7.5 -1.5" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".7"/></g>`;
+  const marque = yy => `<path d="M${x + 1.5} ${yy} l7.5 -1.5" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>`;
+  const seg = (ya, yb) => `<rect x="${x}" y="${ya}" width="10.5" height="${yb - ya}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`;
+  let haut = seg(y0, mi + 4) + ongle(x, y0 + 1.5, ink);
+  if (niveau > 1) {
+    const k = y0 + (mi - y0) * .45;
+    const entaille = (ex, ey, sens) => `<path d="M${ex} ${ey - 2} l${sens * 3.6} 2 l${-sens * 3.6} 2 Z" fill="rgba(25,12,8,.85)"/>`;
+    haut = seg(k, mi + 4) + `<g transform="rotate(${-pli * .4} ${x + 5.25} ${k + 2})">${seg(y0 - 1, k + 4)}${ongle(x, y0 + .5, ink)}</g>`
+      + entaille(x + .2, k + 7, 1) + entaille(x + 10.3, mi - 1, -1)
+      + `<path d="M${x + 4} ${k + 4} l2 3.2 l-1.6 2.8 l1.8 3" fill="none" stroke="${ink}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`;
+  }
+  return `<g transform="rotate(${rot})">${seg(mi, y + h)}
+    <g transform="rotate(${pli} ${x + 5.25} ${mi + 2})">${haut}</g>
+    ${marque(mi + 3)}</g>`;
 }
 
 // Le pouce levé vu de côté, comme l'emoji 👍 : le poing (dos de la main à gauche), les quatre doigts repliés empilés à droite,
@@ -358,7 +381,7 @@ function main(symbole, gant, ink, tordu = 0) {
   // Les ciseaux vus de dos : le V, l'annulaire et l'auriculaire repliés (leurs jointures), le pouce rangé sur le côté.
   if (symbole === "ciseaux-dos") return `
     <rect x="22" y="44" width="13" height="20" rx="6.5" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
-    ${tordu ? lameTordue(31, 19, 31, gant, ink, "-12 36 50", PLI.sens * (18 + 14 * tordu)) + lameTordue(44, 18, 32, gant, ink, "10 49 50", -PLI.sens * (16 + 14 * tordu))
+    ${tordu ? lameTordue(31, 19, 31, gant, ink, "-12 36 50", PLI.sens * (18 + 14 * tordu), tordu) + lameTordue(44, 18, 32, gant, ink, "10 49 50", -PLI.sens * (16 + 14 * tordu), tordu)
     : doigt(31, 19, 31, gant, ink, "-12 36 50") + doigt(44, 18, 32, gant, ink, "10 49 50")}
     ${doigt(50, 33, 14, gant, ink)}${doigt(60.5, 35, 12, gant, ink)}
     <rect x="29" y="40" width="42" height="36" rx="11" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>

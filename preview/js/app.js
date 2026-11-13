@@ -457,7 +457,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   const setDuCoup = m.scoresSets.length, evt = jouerCoup(m, signe, signeAdv, auto);
   // Les marques du smash gagnant sur la main de celui qui perd le point, jusqu'à la fin du set (12 novembre ; degats.js).
   const marque = noterDegats(S.degats ||= nouveauxDegats(), { set: setDuCoup, gagnant: evt.gagnant, signes: [signe, signeAdv], smashGagnant: issueSmash(smash, evt.gagnant) === "gagne" });
-  // La main en feu (effets.js) : 3, 5, 7 points de suite ; une égalité baisse le feu, un point perdu l'éteint.
+  // La main en feu (effets.js) : 4, 6, 8 points de suite ; une égalité baisse le feu, un point perdu l'éteint.
   const feuChg = noterFeu(S.feu ||= nouveauFeu(), evt.gagnant);
   // Double smash : le gagnant du point récupère un smash pour la suite du set (pas annoncé s'il vient de finir le set).
   const recup = recupererSmash(m, smash, evt.gagnant, setDuCoup);

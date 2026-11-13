@@ -1,13 +1,14 @@
 // Les effets du match (13 novembre, idées choisies par le porteur du projet ; pour le décor seulement : rien ne change au jeu).
-//   La main en feu : 3 points gagnés de suite, elle fume (niveau 1) ; 5 points, une petite flamme (2) ; 7 points, la main est
-//   en feu (3). Une égalité fait baisser le feu d'un niveau (on repart du seuil du niveau d'en dessous : de la flamme à la
+//   La main en feu : 4 points gagnés de suite, elle fume (niveau 1) ; 6 points, une petite flamme (2) ; 8 points, la main est
+//   en feu (3) (au départ 3, 5, 7 ; décalé le 13 novembre au soir pour le rendre plus rare, demande du porteur du projet).
+//   Les égalités ne cassent pas la série : on compte les points gagnés sans en perdre un. Une égalité fait baisser le feu d'un niveau (on repart du seuil du niveau d'en dessous : de la flamme à la
 //   fumée, 2 points gagnés suffisent pour retrouver la flamme). Un point perdu éteint tout. Le feu reste d'un set à l'autre.
 //   Les égalités en chaîne : les mains tremblent à partir de la 2e égalité de suite, plus fort à la 3e ; à la 4e, une étincelle
 //   (13 novembre au soir, demande du porteur du projet : décalé d'une égalité).
 //   Le double smash avec le même signe : 2 Pierres, un séisme ; 2 Feuilles, un coup de vent ; 2 Ciseaux, des étincelles.
 // Ici, seulement la logique (testée) ; les dessins sont dans app.js et style.css, les sons dans sons.js.
 
-export const SEUILS_FEU = [3, 5, 7];
+export const SEUILS_FEU = [4, 6, 8];
 export const niveauFeu = n => SEUILS_FEU.filter(s => n >= s).length;
 export const nouveauFeu = () => ({ series: [0, 0] });
 
