@@ -13,7 +13,8 @@
 //   dossard : le Dossard 1, gant jaune du tenant du titre d'un cercle, son annonce dans le fil, le trophée de la coupe (12 novembre, étape SQL 71).
 // (13 novembre, comme validé par le porteur du projet le 11 : le fantôme, le fil du cercle, le championnat avec poules, la carte
 // « Ton avis ? » et la fiche d'un joueur ouverts à tous ; le Dossard 1 reste en test, décision du 12 novembre.)
-export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche"]);
+// (13 novembre au soir : les effets du match ouverts à tous, testés et validés par le porteur du projet.)
+export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets"]);
 
 export function versionDeTest(loc = typeof location !== "undefined" ? location : null) {
   if (!loc) return false;
