@@ -160,10 +160,15 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
   let moment = null;
 
   const egalitesAvant = etat.egalitesDeSuite;
+  // L'ouverture de Kolodrov (13 novembre, demandes du porteur du projet) : après le 3e coup du match, quand il a ouvert Pierre,
+  // Feuille, Ciseaux, qu'il ne mène pas et que ce 3e coup ne lui a pas donné le point, égalité comprise (« … mais ça ne lui sourit pas »).
+  const kolodrov = n === 3 && !match.scoresSets.length && c[0].a === 0 && c[1].a === 2 && c[2].a === 1
+    && match.points[0] <= match.points[1] && evt.gagnant !== 0;
   if (evt.egalite) {
     etat.egalitesDeSuite++;
+    if (kolodrov) { moment = "premier_point_perdu"; ctx.kolodrov = true; }
     // Le tout premier coup du match est une égalité (de temps en temps).
-    if (n === 1 && rng() < 0.6) {
+    else if (n === 1 && rng() < 0.6) {
       // (une fois sur deux, le dialogue « Premier coup, première égalité ! » / « Et pas la dernière »)
       const d = rng() < 0.5 && dialogue(etat, "premiere_egalite", rng);
       if (d) { dialogueFin = d; etat.dernierCom = n; } else moment = "premiere_egalite";
@@ -217,9 +222,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
         // La remontée (4 novembre : on ne l'entendait presque jamais, il fallait revenir à égalité après 4 points de retard) :
         // mené d'au moins 4 points, je reviens à un point ou moins (ex. de 1-5 à 4-5) ; une fois par remontée.
         moment = "remontee"; etat.ecartMin = a - b;
-      } else if (n === 3 && !match.scoresSets.length && c[0].a === 0 && c[1].a === 2 && c[2].a === 1 && a < b) {
-        // L'ouverture de Kolodrov (13 novembre, demande du porteur du projet) : après le 3e coup du match, quand il a ouvert
-        // Pierre, Feuille, Ciseaux et qu'il est mené (« … mais ça ne lui sourit pas »).
+      } else if (kolodrov) {   // (l'ouverture de Kolodrov : voir plus haut)
         moment = "premier_point_perdu"; ctx.kolodrov = true;
       } else if (g === 1 && !c.slice(0, n - 1).some(x => x.gagnant !== null) && rng() < 0.35) {   // (le tout premier point du match)
         moment = "premier_point_perdu"; ctx.premierPoint = true;
