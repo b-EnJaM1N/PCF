@@ -26,3 +26,14 @@ test("les marques se dessinent sur le gant et sur la main nue", () => {
   assert.match(avatarSVG({ ...base, gant: "nu", symbole: "feuille-dos", degats: { dechire: 1 } }), /F1CF9E/, "main nue : un pansement");
   for (const symbole of ["dos", "ciseaux-dos", "feuille-dos"]) assert.match(avatarSVG({ ...base, symbole, degats: { fissure: 1 } }), /ellipse/, `la fissure aussi en ${symbole}`);
 });
+
+test("au 2e smash du set, l'usure grandit : lames ébréchées (ou bleu et pansement), lambeau de gant qui pend", () => {
+  const base = { gant: "rouge", poignet: "rouge", sansFond: true };
+  const lames = n => avatarSVG({ ...base, symbole: "ciseaux-dos", degats: { tordu: n } });
+  assert.notEqual(lames(2), lames(1));
+  assert.match(lames(2), /rgba\(25,12,8,\.85\)/, "les entailles");
+  assert.match(avatarSVG({ ...base, gant: "nu", symbole: "ciseaux-dos", degats: { tordu: 2 } }), /rgba\(110,60,150/, "main nue : un bleu");
+  const feuille = n => avatarSVG({ ...base, symbole: "feuille-dos", degats: { dechire: n } });
+  assert.ok(feuille(2).length > feuille(1).length + 200, "le lambeau qui pend");
+  assert.doesNotMatch(lames(2) + feuille(2), /NaN|undefined/);
+});
