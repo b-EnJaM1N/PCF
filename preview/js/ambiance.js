@@ -3,7 +3,7 @@
 // La raquette et les applaudissements sont fabriqués par le code (sons.js), sauf si un vrai
 // enregistrement portant leur nom est déposé dans app/audio/ (ex. public_ovation_01.mp3).
 // Le murmure de fond, la tension et le « ooh » n'existent qu'en enregistrement : sans fichier, rien.
-import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe, debutDuSon, dechirure, claqueFeuille, smashBloque, smashRate } from "./sons.js";
+import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe, debutDuSon, dechirure, claqueFeuille, smashBloque, smashRate, grondement, coupDeVent, cling, pschitt, crepitement, etincelle } from "./sons.js";
 import { balle, pointDecisif } from "./regles.js";
 
 const AC = typeof window !== "undefined" ? window.AudioContext || window.webkitAudioContext : null;
@@ -191,6 +191,7 @@ export class Ambiance {
     const etapes = [
       () => { this.raquettes = HAUTEUR.map(h => this.tampon([coupDeRaquette(fs, h)])); },
       () => { this.buf.dechirure = this.tampon([dechirure(fs)]); this.buf.claque = this.tampon([claqueFeuille(fs)]); this.buf.smashBloque = this.tampon([smashBloque(fs)]); this.buf.smashRate = this.tampon([smashRate(fs)]); },
+      () => { for (const [cle, f] of Object.entries({ seisme: grondement, vent: coupDeVent, etincelles: cling, pschitt, crepitement, etincelle })) this.buf[cle] = this.tampon([f(fs)]); },
       ...["set", "clameur", "point"].map(type => () => { this.buf[type] = this.tampon(applaudissements(fs, FOULES[type])); }),
       () => this.chargerFichiers(),
     ];
@@ -303,6 +304,14 @@ export class Ambiance {
   smashManque(issue) {
     const b = issue === "bloque" ? this.buf.smashBloque : this.buf.smashRate;
     if (b) this.jouer(b, issue === "bloque" ? 0.8 : 0.7, true, { delai: 0.05, vitesse: 0.96 + Math.random() * 0.08, salle: false });
+  }
+
+  // Les effets du match (effets.js, 13 novembre) : le double smash avec le même signe (« seisme », « vent », « etincelles »),
+  // la main en feu qui prend (« crepitement ») ou qui s'éteint (« pschitt »), l'étincelle des égalités en chaîne.
+  effet(nom) {
+    const b = this.buf[nom];
+    const vol = { seisme: 0.9, vent: 0.75, etincelles: 0.6, pschitt: 0.45, crepitement: 0.4, etincelle: 0.35 }[nom] ?? 0.5;
+    if (b) this.jouer(b, vol, nom === "seisme" || nom === "etincelles", { delai: nom === "pschitt" ? 0.15 : 0.04, vitesse: 0.96 + Math.random() * 0.08, salle: false });
   }
 
   // Le murmure du public, en boucle pendant le match (seulement avec l'enregistrement).

@@ -7,6 +7,7 @@ import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, 
 import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache, mesDossards } from "./social-serveur.js";
 import { ficheVisible, htmlFiche } from "./fiche-joueur.js";
 import { nouveauxDegats, noterDegats, degatsDe } from "./degats.js";
+import { nouveauFeu, noterFeu, feuDe, feuSVG, egalitesDeSuite, MAX_TREMBLE, effetDouble } from "./effets.js";
 import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier, origineIci } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { filVisible, matchDuDuel, hasardFixe, etapeDuDuel } from "./fil-cercle.js";
@@ -434,7 +435,15 @@ const SECOUSSE_MS = 540;
 // puis s'ouvre en feuille, fait le V des ciseaux ou reste fermé (pierre).
 const SYMBOLE_SIGNE = ["dos", "ciseaux-dos", "feuille-dos"];   // même ordre que regles.js (les mains vues de dos)
 // Les marques du smash (degats.js) : celles du set en cours (set : celui du coup qu'on révèle) ; pas dans le replay (marques = false).
-const mainGantee = (g, signe, nom, { marques = true, set = S?.match?.scoresSets.length } = {}) => `<span class="poing-av" role="img" aria-label="${nom}">${avatarSVG({ ...avDe(g), symbole: SYMBOLE_SIGNE[signe], sansFond: true, degats: marques ? degatsDe(S?.degats, g, set) : null })}</span>`;
+// Les effets du match (effets.js, 13 novembre ; d'abord sur la version de test) : la main en feu derrière la main (eteint : la
+// bouffée de fumée du feu qui vient de s'éteindre).
+const effetsActifs = () => ouvert("effets");
+const mainGantee = (g, signe, nom, { marques = true, set = S?.match?.scoresSets.length, eteint = false } = {}) => {
+  const main = `<span class="poing-av" role="img" aria-label="${nom}">${avatarSVG({ ...avDe(g), symbole: SYMBOLE_SIGNE[signe], sansFond: true, degats: marques ? degatsDe(S?.degats, g, set) : null })}</span>`;
+  const n = marques && effetsActifs() ? feuDe(S?.feu, g) : 0;
+  if (!n && !eteint) return main;
+  return `<span class="main-feu${n ? ` feu-${n}` : ""}"><span class="feu">${feuSVG(n || "fin")}</span>${main}</span>`;
+};
 function secouerLesPoings() {
   [["hMe", 0], ["hBot", 1]].forEach(([id, g]) => { $(id).innerHTML = mainGantee(g, 0, "Poing serré"); $(id).className = "hand secoue"; });
 }
@@ -448,6 +457,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   const setDuCoup = m.scoresSets.length, evt = jouerCoup(m, signe, signeAdv, auto);
   // Les marques du smash gagnant sur la main de celui qui perd le point, jusqu'à la fin du set (12 novembre ; degats.js).
   const marque = noterDegats(S.degats ||= nouveauxDegats(), { set: setDuCoup, gagnant: evt.gagnant, signes: [signe, signeAdv], smashGagnant: issueSmash(smash, evt.gagnant) === "gagne" });
+  // La main en feu (effets.js) : 3, 5, 7 points de suite ; une égalité baisse le feu, un point perdu l'éteint.
+  const feuChg = noterFeu(S.feu ||= nouveauFeu(), evt.gagnant);
   // Double smash : le gagnant du point récupère un smash pour la suite du set (pas annoncé s'il vient de finir le set).
   const recup = recupererSmash(m, smash, evt.gagnant, setDuCoup);
   // Le replay (replay.js) : on garde les actions marquantes du match.
@@ -519,7 +530,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
 
   // Révélation immédiate des deux signes : aucun effet pendant l'échange.
   const hMe = $("hMe"), hBot = $("hBot");
-  hMe.innerHTML = mainGantee(0, signe, NOM[signe], { set: setDuCoup }); hBot.innerHTML = mainGantee(1, signeAdv, NOM[signeAdv], { set: setDuCoup });
+  const eteint = j => effetsActifs() && feuChg.some(c => c.joueur === j && c.de && !c.a);
+  hMe.innerHTML = mainGantee(0, signe, NOM[signe], { set: setDuCoup, eteint: eteint(0) }); hBot.innerHTML = mainGantee(1, signeAdv, NOM[signeAdv], { set: setDuCoup, eteint: eteint(1) });
   document.querySelectorAll("#moves button.choisi").forEach(b => b.classList.remove("choisi"));
   // Les deux mains s'ouvrent à la même taille ; une demi-seconde plus tard, le gagnant grossit et le perdant s'efface.
   hMe.className = "hand ouvre"; hBot.className = "hand ouvre";
@@ -533,6 +545,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   $("verdict").textContent = (auto[0] ? "Temps écoulé, coup joué au hasard. " : "") + (auto[1] ? `${OPP.nom} n'a pas joué à temps : coup au hasard. ` : "") +
     (evt.egalite ? "Égalité, on rejoue" : evt.gagnant === 0 ? `${NOM[signe]} bat ${NOM[signeAdv]}` : `${NOM[signeAdv]} bat ${NOM[signe]}`);
   if (smash[0] || smash[1]) effetSmash(smash, evt.gagnant, evt.finSet ? null : recup);
+  if (effetsActifs()) effetsDuCoup(evt, feuChg, effetDouble(smash, signe, signeAdv), [hMe, hBot]);
   // Mes smashs, pour la fiche ; un smash réussi « sonne » l'adversaire au coup suivant, sauf s'il donne le set (en solo ici ; en duel, le serveur le dit).
   if (smash[0]) { S.stats.smashsTentes++; if (evt.gagnant === 0) S.stats.smashsReussis++; }
   if (!S.duel) S.sonne = issueSmash(smash, evt.gagnant) === "gagne" && evt.gagnant === 1 && !evt.finSet;   // (pas de KO au début du set suivant)
@@ -624,6 +637,8 @@ function sonDuCoup(a, b, smash, m) {
   if (issue === "gagne") { ambiance.smash(g === 0 ? a : b); return; }
   ambiance.raquette(a, grandMoment(m));
   if (issue) ambiance.smashManque(issue);
+  const double = effetsActifs() && effetDouble(smash, a, b);   // (le double smash avec le même signe : effets.js)
+  if (double) ambiance.effet(double);
 }
 
 // Le smash : selon ce qu'il donne (voir issueSmash), un verdict et une vibration (Android ; l'iPhone ne vibre pas depuis une
@@ -646,6 +661,39 @@ function effetSmash(smash, gagnant, recup = null) {
   if (reduitMouvement()) return;
   const arene = document.querySelector(".arena");
   arene?.classList.remove("smash"); void arene?.offsetWidth; arene?.classList.add("smash");
+}
+
+// Les effets du match (effets.js ; 13 novembre) : le feu qui prend ou s'éteint (son), les égalités en chaîne (les mains tremblent
+// de plus en plus ; à la 3e, une étincelle), le double smash avec le même signe (séisme, coup de vent, étincelles).
+function effetsDuCoup(evt, feuChg, double, mains) {
+  if (feuChg.some(c => c.a > c.de)) ambiance.effet("crepitement");
+  if (feuChg.some(c => c.de && !c.a)) ambiance.effet("pschitt");
+  const vite = reduitMouvement(), arene = document.querySelector(".arena");
+  if (!arene) return;
+  arene.querySelectorAll(".effet-couche").forEach(x => x.remove());
+  const couche = (cls, html) => { const d = document.createElement("div"); d.className = `effet-couche ${cls}`; d.setAttribute("aria-hidden", "true"); d.innerHTML = html; arene.append(d); setTimeout(() => d.remove(), 1600); };
+  const relancer = (el, cls) => { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); setTimeout(() => el.classList.remove(cls), 1600); };
+  if (double) {
+    if (vite) return;
+    const tableau = document.querySelector(".board");
+    if (double === "seisme") {
+      relancer(arene, "seisme"); relancer(tableau, "vacille");
+      try { if (document.visibilityState === "visible") navigator.vibrate?.([120, 40, 120, 40, 120]); } catch { /* sans vibration */ }
+    } else if (double === "vent") {
+      relancer(tableau, "bat-au-vent");
+      couche("effet-vent", Array.from({ length: 14 }, (_, i) => `<span class="${i % 4 ? "poussiere" : "trait-vent"}" style="top:${8 + ((i * 29) % 84)}%;animation-delay:${(i * 0.05) % 0.4}s"></span>`).join(""));
+    } else if (double === "etincelles") {
+      couche("effet-etincelles", Array.from({ length: 14 }, (_, i) => `<span style="--angle:${i * (360 / 14) + (i % 2) * 9}deg;--loin:${38 + (i % 3) * 14}px;animation-delay:${(i % 3) * 0.03}s"></span>`).join(""));
+    }
+    return;
+  }
+  if (!evt.egalite) return;
+  const n = Math.min(MAX_TREMBLE, egalitesDeSuite(S.match.coups));
+  if (!vite) mains.forEach(h => { h.classList.remove("tremble-1", "tremble-2", "tremble-3"); void h.offsetWidth; h.classList.add(`tremble-${n}`); });
+  if (n >= MAX_TREMBLE) {
+    ambiance.effet("etincelle");
+    if (!vite) couche("effet-etincelles petite", Array.from({ length: 8 }, (_, i) => `<span style="--angle:${i * 45 + 20}deg;--loin:${22 + (i % 2) * 10}px"></span>`).join(""));
+  }
 }
 
 // Après un coup ou un point de pénalité : le public, les annonces, le score, puis la fin du set, du match ou le coup suivant.
