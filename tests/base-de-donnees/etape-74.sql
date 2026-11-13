@@ -26,8 +26,8 @@ end $$;
 \set K 'cccccccc-0000-0000-0000-000000000074'
 insert into cercles (id, nom, cree_le) values (:'K', 'Les Records', now() - interval '30 days');
 insert into membres_cercle (cercle_id, joueur, role) values (:'K', :'A', 'admin'), (:'K', :'B', 'membre'), (:'K', :'C', 'membre');
-insert into tournois (id, nom, cercle_id, points_par_set, sets_gagnants, duree_tour, phase)
-values ('dddddddd-0000-0000-0000-000000000074', 'Coupe', :'K', 7, 1, '24 hours', 'termine');
+insert into tournois (id, nom, cercle_id, createur, points_par_set, sets_gagnants, duree_tour, phase)
+values ('dddddddd-0000-0000-0000-000000000074', 'Coupe', :'K', :'A', 7, 1, '24 hours', 'termine');
 insert into duels (id, j0, j1, points_par_set, sets_gagnants, phase, vainqueur, fin, sets, scores_sets, coups, tournoi_id) values
   ('11111111-0000-0000-0000-000000000074', :'A', :'B', 3, 1, 'termine', 0, 'score', '{1,0}', '[[3,1]]',
    '[{"a":0,"b":1,"g":0},{"a":2,"b":2,"g":null},{"a":0,"b":2,"g":1},{"a":1,"b":2,"g":0,"smash":[true,false]},{"a":2,"b":0,"g":0}]', null),
@@ -43,11 +43,9 @@ select pg_temp.verifier((select tous->'duels'->0->'g' = '[0, null, 1, 0, 0]'::js
 select pg_temp.verifier((select tous->'duels'->0->'smash'->3 = '[true, false]'::jsonb and tous->'duels'->0->'smash'->0 = '[false, false]'::jsonb from r), 'les smashs, coup par coup');
 select pg_temp.verifier((select not (tous::text like '%"a":%') and not (tous::text like '%"b":%') from r), 'jamais les signes d''un joueur');
 select pg_temp.verifier((select tous->'signes' = '[6, 5, 5]'::jsonb from r), 'les signes de tout le cercle, en total (Pierre, Ciseaux, Feuille)');
-select pg_temp.verifier((select jsonb_array_length(records_cercle(:'K', false, 'dddddddd-0000-0000-0000-000000000074')->'duels') = 1), 'un tournoi précis du cercle');
-reset role; insert into tournois (id, nom, points_par_set, sets_gagnants, duree_tour, phase) values ('eeeeeeee-0000-0000-0000-000000000074', 'Ailleurs', 7, 1, '24 hours', 'termine');
-update duels set tournoi_id = 'eeeeeeee-0000-0000-0000-000000000074' where id = '33333333-0000-0000-0000-000000000074';
-select pg_temp.en_tant_que(:'B');
-select pg_temp.verifier((select jsonb_array_length(records_cercle(:'K', false, 'eeeeeeee-0000-0000-0000-000000000074')->'duels') = 0), 'pas un tournoi d''un autre cercle');
+select pg_temp.verifier((select jsonb_array_length(records_tournoi('dddddddd-0000-0000-0000-000000000074')->'duels') = 1), 'les records d''un tournoi');
 select pg_temp.en_tant_que(:'D');
 select pg_temp.interdit($$ select records_cercle('cccccccc-0000-0000-0000-000000000074') $$, 'un non-membre ne voit pas les records');
+select pg_temp.interdit($$ select records_tournoi('dddddddd-0000-0000-0000-000000000074') $$, 'ni ceux d''un tournoi du cercle');
+select pg_temp.interdit($$ select _records_de(array['11111111-0000-0000-0000-000000000074'::uuid]) $$, 'la fonction interne n''est pas ouverte');
 reset role;

@@ -508,7 +508,7 @@ version de test seulement, hors de la vitrine du jour. Le gant « Trois signes �
 Même manipulation que d'habitude avec [`etape-74-records-cercle.sql`](etape-74-records-cercle.sql)
 (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-74-records-cercle.sql).
 Sur la page d'un cercle, « 📊 Records du cercle » (tous les duels entre membres, ou les tournois du cercle) : le serveur donne qui a
-gagné chaque point, jamais les signes d'un joueur. **À coller avant la fusion.**
+gagné chaque point, jamais les signes d'un joueur. Et « 📊 Records du tournoi » sur la page d'un tournoi. **À coller avant la fusion.**
 
 ## 1 septuagies ter. Le pouce levé retiré de la vente (étape 73)
 

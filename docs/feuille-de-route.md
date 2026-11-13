@@ -138,8 +138,9 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    séries de victoires et de défaites, roi du smash, smash le plus précis (en %, à partir de 5 smashs tentés), grande rivalité
    (au moins 2 duels), le pilier ; et les signes joués dans le
    cercle en pourcentage. Le serveur donne qui a gagné chaque point (et les smashs), jamais les signes d'un joueur ; l'appli
-   rejoue les matchs avec les règles du jeu. Jamais les matchs contre un bot ; les 400 duels les plus récents. Un 3e choix,
-   « Tournoi en cours » (s'il y en a un ; une liste s'il y en a plusieurs), pour les records d'un seul tournoi.
+   rejoue les matchs avec les règles du jeu. Jamais les matchs contre un bot ; les 400 duels les plus récents. Les records d'un
+   seul tournoi (idée du porteur du projet : à côté des résultats et du calendrier) : « 📊 Records du tournoi » sur la page du
+   tournoi, pendant et après (`records_tournoi`, mêmes règles de visibilité que la page ; pas pour les Sit & Go en direct).
 
 ## En bref (14 octobre 2026)
 

@@ -97,3 +97,37 @@ export function calculerRecords(donnees) {
     signes, duels: duels.length,
   };
 }
+
+// ---------------------------------------------------------------- l'affichage (page d'un cercle et page d'un tournoi)
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ICONES_RECORD = { serie_points: "🔥", raclee: "🥊", remontee: "🔄", long: "⏱️", balles: "🛡️", victoires: "🏆", defaites: "😬", smashs: "💥", taux_smash: "🎯", rivalite: "⚔️", pilier: "🧱" };
+const TITRES_RECORD = { serie_points: "Plus longue série de points", raclee: "La plus grosse raclée", remontee: "Plus belle remontée",
+  long: "Le plus long match", balles: "Balles de match sauvées", victoires: "Plus longue série de victoires", defaites: "Plus longue série de défaites",
+  smashs: "Le roi du smash", taux_smash: "Le smash le plus précis", rivalite: "La grande rivalité", pilier: "Le pilier" };
+// r : ce que renvoie calculerRecords ; pseudo(id) : le pseudo (déjà échappé) ou null ; blocCercle : le titre du 2e bloc.
+export function htmlRecords(r, pseudo, { blocCercle = "Records du cercle" } = {}) {
+  const nom = id => `<b>${pseudo(id) ?? "un ancien membre"}</b>`;
+  const date = q => (q ? ` <span class="fil-quand">${new Date(q).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</span>` : "");
+  const s = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
+  const texte = x => {
+    if (x.vide) return '<span class="hint">Pas encore de record</span>';
+    switch (x.cle) {
+      case "serie_points": return `${nom(x.joueur)} : ${s(x.valeur, "point")} d'affilée contre ${nom(x.autre)}`;
+      case "raclee": return `${nom(x.joueur)} bat ${nom(x.autre)} ${esc(x.detail)}`;
+      case "remontee": return `${nom(x.joueur)} revient de ${s(x.valeur, "point")} de retard dans un set, contre ${nom(x.autre)}`;
+      case "long": return `${nom(x.joueur)} contre ${nom(x.autre)} : ${x.valeur} coups`;
+      case "balles": return `${nom(x.joueur)} en sauve ${x.valeur} contre ${nom(x.autre)}`;
+      case "victoires": return `${nom(x.joueur)} : ${s(x.valeur, "victoire")} d'affilée`;
+      case "defaites": return `${nom(x.joueur)} : ${s(x.valeur, "défaite")} d'affilée`;
+      case "smashs": return `${nom(x.joueur)} : ${s(x.valeur, "smash")} réussi${x.valeur > 1 ? "s" : ""}`;
+      case "taux_smash": return `${nom(x.joueur)} : ${x.valeur} % de smashs réussis (${esc(x.detail)})`;
+      case "rivalite": return `${nom(x.joueur)} et ${nom(x.autre)} : ${s(x.valeur, "duel")} (${esc(x.detail)})`;
+      case "pilier": return `${nom(x.joueur)} : ${s(x.valeur, "duel")} joué${x.valeur > 1 ? "s" : ""}`;
+      default: return "";
+    }
+  };
+  const ligne = x => `<div class="fil-item"><span class="fil-ic">${ICONES_RECORD[x.cle]}</span><div class="fil-corps"><div><small class="record-titre">${TITRES_RECORD[x.cle]}</small></div><div>${texte(x)}</div></div>${x.vide ? "" : date(x.quand)}</div>`;
+  const signes = r.signes ? `<p class="hint" style="margin-top:10px">✊ Pierre ${r.signes[0]} % · ✌️ Ciseaux ${r.signes[1]} % · ✋ Feuille ${r.signes[2]} % <span>(les signes joués)</span></p>` : "";
+  return `<h3 class="records-bloc">Records de match</h3><div class="fil">${r.match.map(ligne).join("")}</div>
+    <h3 class="records-bloc">${esc(blocCercle)}</h3><div class="fil">${r.cercle.map(ligne).join("")}</div>${signes}`;
+}

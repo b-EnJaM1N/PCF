@@ -9,6 +9,7 @@ import { nomTour, monTour, DUREES, texteDuree, texteReste, texteFin, monMatch, a
   mesMatchsRestants, DUREES_CHAMPIONNAT, MAX_CHAMPIONNAT, matchsParJoueur, texteDureeChampionnat, dernierDuClassement, texteDepart,
   textePlayoffs, phaseChampionnat, tableauFinal, quiSyColle, LETTRES_POULES } from "./tournoi-logique.js";
 import { ouvert as nouveauteOuverte } from "./nouveautes.js";
+import { calculerRecords, htmlRecords } from "./records-cercle.js";
 import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu, annonceEnjeu } from "./enjeux.js";
 import { texteDepart as texteDepartProgramme } from "./programmes-logique.js";
 import { monResultat, texteJetons } from "./jetons-logique.js";
@@ -172,7 +173,8 @@ export function installerTournois(ctx) {
   async function ouvrir(id, message = "") {
     ouvert = id; detail = null;
     $("tNom").textContent = "…"; $("tInfo").textContent = ""; $("tEtat").textContent = "";
-    ["tMonMatch", "tInscriptions", "tTableauCarte", "tClassementCarte", "tEnjeuCarte", "tSerieCarte"].forEach(x => { $(x).hidden = true; });
+    ["tMonMatch", "tInscriptions", "tTableauCarte", "tClassementCarte", "tEnjeuCarte", "tSerieCarte", "tRecordsCarte"].forEach(x => { $(x).hidden = true; });
+    $("tRecordsCarte").open = false; $("tRecordsListe").innerHTML = ""; $("tRecordsMsg").textContent = ""; recordsDe = null;
     dire(message);
     ctx.montrer("socTournoi"); window.scrollTo(0, 0);
     clearInterval(minuterie);
@@ -181,6 +183,21 @@ export function installerTournois(ctx) {
     if (ouvert === id) { clearInterval(minuterie); minuterie = setInterval(() => { if (!$("socTournoi").hidden && !document.hidden) charger(); }, detail?.mode === "direct" ? 4000 : 10000); }
   }
   function fermer() { ouvert = null; detail = null; clearInterval(minuterie); }
+  // Les records du tournoi (13 novembre, demande du porteur du projet ; records-cercle.js) : pendant et après le tournoi,
+  // chargés quand on ouvre le bloc (et de nouveau à chaque ouverture, le tournoi avançant).
+  let recordsDe = null;
+  async function chargerRecords() {
+    const id = ouvert; if (!id || !detail) return;
+    recordsDe = id; $("tRecordsMsg").textContent = "Calcul des records…";
+    try {
+      const r = calculerRecords(await social.recordsTournoi(id));
+      if (ouvert !== id || recordsDe !== id) return;
+      const joueurs = new Map((detail.joueurs || []).map(j => [j.id, j]));
+      $("tRecordsListe").innerHTML = r.duels ? htmlRecords(r, j => (joueurs.has(j) ? esc(joueurs.get(j).pseudo) : null), { blocCercle: "Records des joueurs" }) : "";
+      $("tRecordsMsg").textContent = r.duels ? `D'après ${r.duels} match${r.duels > 1 ? "s" : ""} joué${r.duels > 1 ? "s" : ""}.` : "Pas encore de match joué dans ce tournoi.";
+    } catch (e) { if (ouvert === id) $("tRecordsMsg").textContent = e.message; }
+  }
+  $("tRecordsCarte").addEventListener("toggle", () => { if ($("tRecordsCarte").open) chargerRecords(); });
   $("tRetour").addEventListener("click", () => { fermer(); ctx.retour(); });
 
   async function charger() {
@@ -342,6 +359,7 @@ export function installerTournois(ctx) {
     // Tableau (ou la liste des matchs d'un championnat)
     const tours = tableau(t);
     $("tTableauCarte").hidden = !tours.length;
+    $("tRecordsCarte").hidden = !nouveauteOuverte("records") || t.mode === "direct" || !["en_cours", "termine"].includes(t.phase);
     $("tTableauTitre").textContent = ch ? "Les matchs" : "Tableau";
     if (ch) {
       // Le tableau final (playoffs et playouts), puis les matchs de la saison.
