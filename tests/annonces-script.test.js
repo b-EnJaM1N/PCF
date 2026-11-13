@@ -478,3 +478,20 @@ test("« mauvais départ » : pas dès le premier point perdu, seulement à 0-3 
     assert.ok(!/Premier point pour l'adversaire|Kolodrov/.test(textes[2]), `plus le premier point : ${textes[2]}`);
   }
 });
+
+test("l'ouverture de Kolodrov : après le 3e coup, quand il a ouvert Pierre, Feuille, Ciseaux et qu'il est mené", () => {
+  let vu = 0;
+  for (let k = 0; k < 50; k++) {
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = rngFixe(k);
+    const textes = [[PIERRE, FEUILLE], [FEUILLE, CISEAUX], [CISEAUX, PIERRE]].map(([a, b]) => annoncerCoup(m, jouerCoup(m, a, b), etat, {}, rng).lignes.map(l => l.texte).join(" | "));
+    assert.ok(!/Kolodrov/.test(textes[0] + textes[1]), "pas avant le 3e coup");
+    if (/Kolodrov/.test(textes[2])) vu++;
+  }
+  assert.equal(vu, 50, "à chaque fois");
+  for (let k = 0; k < 50; k++) {   // une autre ouverture, ou en tête : jamais
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = rngFixe(k);
+    const coups = k % 2 ? [[PIERRE, CISEAUX], [FEUILLE, PIERRE], [CISEAUX, FEUILLE]] : [[FEUILLE, CISEAUX], [PIERRE, FEUILLE], [CISEAUX, PIERRE]];
+    const t = coups.map(([a, b]) => annoncerCoup(m, jouerCoup(m, a, b), etat, {}, rng).lignes.map(l => l.texte).join(" | ")).join(" / ");
+    assert.ok(!/Kolodrov/.test(t), t);
+  }
+});
