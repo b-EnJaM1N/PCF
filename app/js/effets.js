@@ -34,23 +34,59 @@ export function effetDouble(smash, a, b) {
 }
 
 // ---------------------------------------------------------------- le dessin du feu (derrière la main : il ne cache jamais le signe)
-// Une langue de feu : sa base (x, y), sa hauteur h, sa largeur w.
-const langue = (x, y, h, w, fill, cls = "langue") =>
-  `<path class="${cls}" d="M${x} ${y} C${x - w * 0.62} ${y - h * 0.18} ${x - w * 0.5} ${y - h * 0.62} ${x} ${y - h} C${x + w * 0.5} ${y - h * 0.62} ${x + w * 0.62} ${y - h * 0.18} ${x} ${y} Z" fill="${fill}"/>`;
-const braises = n => Array.from({ length: n }, (_, i) =>
-  `<circle class="braise" cx="${30 + ((i * 37) % 40)}" cy="${78 - (i % 3) * 6}" r="${1.6 + (i % 2) * 0.8}" fill="${i % 2 ? "#FFB43A" : "#FF7A1A"}" style="animation-delay:${(i * 0.37) % 1.4}s"/>`).join("");
-const fumees = n => Array.from({ length: n }, (_, i) =>
-  `<circle class="fumee" cx="${38 + i * 12}" cy="62" r="${6 + (i % 2) * 2}" fill="rgba(150,150,150,.55)" style="animation-delay:${i * 0.45}s"/>`).join("");
+// (13 novembre : redessiné d'après le modèle du porteur du projet : des flammes qui entourent la main, rouge, orange et jaune,
+// avec un halo et des braises ; la fumée en volutes.)
+// La boîte du feu déborde de la main : 144 × 167, la main au milieu (x 22 à 122, y 55 à 155 ; pendant le match elle est couchée).
+const r1 = v => Math.round(v * 10) / 10;
+// Une boule de flammes : une ellipse (cx, cy, rx, ry) dont le haut se découpe en langues de feu (hauteurs h, en courbes qui
+// ondulent) ; phase : décale les langues (pour l'animation, d'une forme à l'autre).
+function flammes(cx, cy, rx, ry, h, phase = 0) {
+  const n = h.length, g = cx - rx, d = cx + rx;
+  const yBord = x => cy - ry * Math.sqrt(Math.max(0, 1 - ((x - cx) / rx) ** 2));
+  const vx = k => g + (d - g) * k / n;
+  let p = `M${r1(g)} ${r1(cy)}`;
+  for (let k = 0; k < n; k++) {
+    const x0 = vx(k), x1 = vx(k + 1), w = x1 - x0, y0 = yBord(x0), y1 = yBord(x1);
+    const pente = (k + 0.5) / n - 0.5;                                   // les langues du bord penchent vers l'extérieur
+    const hh = h[k] * (1 + 0.18 * Math.sin(phase + k * 1.7));
+    const tx = (x0 + x1) / 2 + pente * hh * 0.5 + Math.sin(phase * 1.3 + k) * w * 0.25, ty = Math.min(y0, y1) - hh;
+    // (des langues rondes, au bout qui se recourbe, comme sur le modèle)
+    p += ` C${r1(x0 - w * 0.1)} ${r1(y0 - hh * 0.55)} ${r1(tx - w * 0.75)} ${r1(ty + hh * 0.3)} ${r1(tx)} ${r1(ty)}`;
+    p += ` C${r1(tx + w * 0.3)} ${r1(ty + hh * 0.45)} ${r1(x1 + w * 0.1)} ${r1(y1 - hh * 0.45)} ${r1(x1)} ${r1(y1)}`;
+  }
+  return `${p} A${r1(rx)} ${r1(ry * 0.8)} 0 0 1 ${r1(g)} ${r1(cy)} Z`;
+}
+// Une couche de flammes qui bouge : la forme passe d'une phase à l'autre (anime : sinon, immobile).
+const couche = (fill, f, anime, dur) => {
+  const formes = [0, 2.1, 4.2].map(f);
+  return `<path d="${formes[0]}" fill="${fill}">${anime ? `<animate attributeName="d" dur="${dur}s" repeatCount="indefinite" values="${[...formes, formes[0]].join(";")}"/>` : ""}</path>`;
+};
+const braises = (n, zone) => Array.from({ length: n }, (_, i) => {
+  const [x0, y0, w, hh] = zone, x = x0 + ((i * 47) % 100) / 100 * w, y = y0 + ((i * 31) % 100) / 100 * hh;
+  return `<circle class="braise" cx="${r1(x)}" cy="${r1(y)}" r="${i % 3 ? 1.1 : 1.8}" fill="${i % 2 ? "#FFD25A" : "#FF7A1A"}" style="animation-delay:${r1((i * 0.29) % 1.4)}s"/>`;
+}).join("");
+const volute = (x, i) => `<path class="fumee" d="M${x} 84 c-9 -10 9 -16 0 -26 c-9 -10 9 -16 0 -26 c-6 -8 6 -13 1 -20" fill="none" stroke="rgba(205,210,220,.5)" stroke-width="${9 - i * 3}" stroke-linecap="round" style="animation-delay:${i * 0.8}s"/>`;
 
 // niveau : 1 la fumée, 2 la flamme, 3 en feu ; « fin » : la bouffée de fumée quand le feu s'éteint.
-export function feuSVG(niveau) {
-  const svg = c => `<svg viewBox="0 0 100 130" aria-hidden="true">${c}</svg>`;
-  if (niveau === "fin") return svg(Array.from({ length: 4 }, (_, i) => `<circle class="bouffee" cx="${36 + i * 9}" cy="${66 - (i % 2) * 8}" r="9" fill="rgba(170,170,170,.7)" style="animation-delay:${i * 0.06}s"/>`).join(""));
-  if (niveau === 1) return svg(fumees(3) + braises(3));
-  if (niveau === 2) return svg([[34, 22, 18], [50, 34, 22], [66, 24, 18]].map(([x, h, w], i) =>
-    `<g class="danse" style="animation-delay:${i * 0.12}s">${langue(x, 88, h + 18, w, "#FF6A1A")}${langue(x, 88, h + 4, w * 0.55, "#FFD23F", "coeur")}</g>`).join("") + braises(4));
-  if (niveau === 3) return svg(`<g class="danse lente">${langue(50, 124, 112, 112, "rgba(255,90,20,.85)")}</g>`
-    + [[16, 50, 22], [36, 72, 26], [62, 78, 26], [84, 52, 22]].map(([x, h, w], i) =>
-      `<g class="danse" style="animation-delay:${i * 0.09}s">${langue(x, 100, h, w, "#FF8A1F")}${langue(x, 100, h * 0.6, w * 0.5, "#FFE066", "coeur")}</g>`).join("") + braises(7));
+// id : pour les filtres (un par main) ; anime : les flammes bougent (pas si l'appareil demande moins d'animations).
+export function feuSVG(niveau, { id = "f", anime = true } = {}) {
+  const flou = `<filter id="${id}-flou" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.6"/></filter>`
+    + `<filter id="${id}-halo" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>`;
+  const svg = c => `<svg viewBox="0 0 144 167" aria-hidden="true"><defs>${flou}</defs>${c}</svg>`;
+  if (niveau === "fin") return svg(Array.from({ length: 5 }, (_, i) => `<circle class="bouffee" cx="${52 + i * 10}" cy="${84 - (i % 2) * 8}" r="9" fill="rgba(175,180,190,.7)" style="animation-delay:${i * 0.05}s"/>`).join(""));
+  if (niveau === 1) return svg(`<ellipse cx="74" cy="86" rx="26" ry="9" fill="rgba(255,120,30,.7)" filter="url(#${id}-halo)"/>`
+    + `<g filter="url(#${id}-flou)">${volute(68, 0)}${volute(82, 1)}</g>` + braises(16, [36, 28, 76, 66]));
+  if (niveau === 2) {
+    const f = k => ph => flammes(76, 110, 58 * k, 38 * k, [18, 26, 34, 30, 36, 26, 18].map(v => v * k), ph);
+    return svg(`<ellipse cx="76" cy="104" rx="62" ry="44" fill="rgba(255,110,20,.6)" filter="url(#${id}-halo)"/>`
+      + `<g filter="url(#${id}-flou)">${couche("#E8401C", f(1), anime, 0.9)}${couche("#FF8C1A", f(0.86), anime, 0.75)}${couche("#FFD84A", f(0.7), anime, 0.6)}</g>`
+      + braises(14, [10, 30, 124, 90]));
+  }
+  if (niveau === 3) {
+    const f = k => ph => flammes(76, 114, 74 * k, 52 * k, [30, 46, 58, 66, 56, 44, 30].map(v => v * k), ph);
+    return svg(`<ellipse cx="76" cy="100" rx="78" ry="64" fill="rgba(255,90,20,.6)" filter="url(#${id}-halo)"/>`
+      + `<g filter="url(#${id}-flou)">${couche("#D9301A", f(1), anime, 1)}${couche("#FF6F1A", f(0.88), anime, 0.8)}${couche("#FFA82A", f(0.75), anime, 0.7)}${couche("#FFE36A", f(0.6), anime, 0.6)}</g>`
+      + braises(24, [0, 0, 144, 130]));
+  }
   return "";
 }

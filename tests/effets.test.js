@@ -43,8 +43,10 @@ test("les égalités d'affilée, et le double smash avec le même signe", () => 
 
 test("le dessin du feu : rien sans feu, fumée, flamme, en feu, bouffée", () => {
   assert.equal(feuSVG(0), "");
-  assert.match(feuSVG(1), /fumee/); assert.doesNotMatch(feuSVG(1), /langue/);
-  assert.match(feuSVG(2), /langue/); assert.match(feuSVG(3), /lente/);
+  assert.match(feuSVG(1), /fumee/); assert.doesNotMatch(feuSVG(1), /<animate/);
+  assert.match(feuSVG(2), /<animate/); assert.equal((feuSVG(3).match(/<animate/g) || []).length, 4, "en feu : 4 couches de flammes");
+  assert.doesNotMatch(feuSVG(2, { anime: false }), /<animate/, "moins d'animations : les flammes immobiles");
+  assert.match(feuSVG(2, { id: "h1" }), /url\(#h1-flou\)/, "un filtre par main");
   assert.ok(feuSVG(3).length > feuSVG(2).length, "en feu : plus grand que la flamme");
   assert.match(feuSVG("fin"), /bouffee/);
   assert.doesNotMatch(feuSVG(3), /NaN|undefined/);
