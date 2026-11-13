@@ -20,6 +20,9 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 - 11 nov. : questionnaire envoyé aux testeurs (texte plus bas).
 - 11 nov. : nouvelle version Android dans le test fermé, 2 (1.0.0.1), avec une note de version (série de jours, bouton d'avis, Mes amis, chants).
 - 11 nov. : les messages rapides réorganisés (idée de Shishyo, voir le tableau).
+- 12 nov. : sons du smash (déchirure des Ciseaux, claque de la Feuille, smash bloqué et raté), marques du smash sur la main adverse, smash récupéré, pseudo définitif, gants vache, girafe et léopard, bouton « ← Retour » et touche retour du téléphone (suggestion des testeurs, voir le tableau), robots retirés du compteur de visites.
+- 12 nov. : premier commentaire privé d'un testeur sur le Play Store (5 étoiles, voir le tableau), avec la réponse du développeur.
+- 13 nov. : ouverts à tous : le fantôme d'un ami, le fil d'actualité du cercle, le championnat de cercle avec poules et playoffs, la carte « Ton avis ? » après le 5e match, la fiche complète d'un joueur en ligne.
 
 ## Le questionnaire (envoyé aux testeurs le 11 novembre)
 

@@ -7,7 +7,7 @@ test("les nouveautés : toutes sur la version de test, seulement les ouvertes su
   assert.ok(versionDeTest(test_) && !versionDeTest(officielle));
   for (const nom of ["serie", "fantome", "replay", "hymne", "club"]) assert.ok(ouvert(nom, test_), nom);
   assert.ok(ouvert("serie", officielle), "la série de jours est ouverte à tous (10 novembre)");
-  for (const nom of ["fantome", "replay", "hymne", "club"]) assert.equal(ouvert(nom, officielle), OUVERTES.has(nom), nom);
+  for (const nom of ["fantome", "replay", "hymne", "club", "fil", "poules", "avis", "fiche", "dossard"]) assert.equal(ouvert(nom, officielle), OUVERTES.has(nom), nom);
 });
 
 test("la carte « Ton avis ? » : une seule fois, à partir du 5e match, si l'avis n'est pas déjà donné", async () => {
@@ -16,4 +16,10 @@ test("la carte « Ton avis ? » : une seule fois, à partir du 5e match, si l'av
   assert.equal(proposerAvis({ matchs: 5 }), true);
   assert.equal(proposerAvis({ matchs: 9, dejaProposee: true }), false);
   assert.equal(proposerAvis({ matchs: 9, dejaDonne: true }), false);
+});
+
+test("13 novembre : le fantôme, le fil, les poules, la carte « Ton avis ? » et la fiche ouverts à tous ; le Dossard 1 reste en test", () => {
+  const officielle = { pathname: "/", hostname: "handslam.fr" };
+  for (const nom of ["serie", "fantome", "fil", "poules", "avis", "fiche"]) assert.ok(ouvert(nom, officielle), nom);
+  for (const nom of ["dossard", "replay", "hymne", "club"]) assert.ok(!ouvert(nom, officielle), nom);
 });

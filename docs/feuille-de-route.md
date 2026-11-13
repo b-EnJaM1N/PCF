@@ -22,7 +22,7 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    (code de version 3, puis 4…).
 2. Questionnaire validé et envoyé aux testeurs le 11 novembre (texte dans `docs/play-store/retours-testeurs.md`) ; noter chaque
    réponse dans le journal.
-3. **Le 13 novembre : ouvrir le fantôme à tous** (accord du porteur du projet le 11 novembre ; ajouter « fantome » à `OUVERTES`
+3. **13 novembre : ouverts à tous** (fait le 13 au matin : `OUVERTES` = série, fantôme, fil, poules, avis, fiche ; le Dossard 1 reste en test). **Ouvrir le fantôme à tous** (accord du porteur du projet le 11 novembre ; ajouter « fantome » à `OUVERTES`
    dans `app/js/nouveautes.js`), puis paquet Android 3 (1.0.0.2) avec la note validée :
    `<fr-FR>` « • Nouveau : le fantôme 👻 Sur la page d'un ami, défie son fantôme : un bot qui joue comme lui, d'après ses matchs.
    Pas besoin qu'il soit connecté ! » « • Nouveau : le fil du cercle 📰 Les résultats entre membres, la Une de vos matchs et vos
