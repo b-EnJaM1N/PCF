@@ -46,7 +46,7 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
 
 // ---------------------------------------------------------------- choisir une réplique
 const CONDITIONS = {
-  premier_point: c => c.premierPoint, depart_rate: c => c.departRate,
+  premier_point: c => c.premierPoint, depart_rate: c => c.departRate, kolodrov: c => c.kolodrov,
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, pile4: c => c.pile4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
   apres_egalites: c => c.apresEgalites, varie: c => c.varie, mene: c => c.mene,   // (5 novembre)
   balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
@@ -217,6 +217,10 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
         // La remontée (4 novembre : on ne l'entendait presque jamais, il fallait revenir à égalité après 4 points de retard) :
         // mené d'au moins 4 points, je reviens à un point ou moins (ex. de 1-5 à 4-5) ; une fois par remontée.
         moment = "remontee"; etat.ecartMin = a - b;
+      } else if (n === 3 && !match.scoresSets.length && c[0].a === 0 && c[1].a === 2 && c[2].a === 1 && a < b) {
+        // L'ouverture de Kolodrov (13 novembre, demande du porteur du projet) : après le 3e coup du match, quand il a ouvert
+        // Pierre, Feuille, Ciseaux et qu'il est mené (« … mais ça ne lui sourit pas »).
+        moment = "premier_point_perdu"; ctx.kolodrov = true;
       } else if (g === 1 && !c.slice(0, n - 1).some(x => x.gagnant !== null) && rng() < 0.35) {   // (le tout premier point du match)
         moment = "premier_point_perdu"; ctx.premierPoint = true;
       } else if (g === 1 && !match.scoresSets.length && a === 0 && b === 3 && rng() < 0.6) {   // 0-3 d'entrée : là, c'est un mauvais départ

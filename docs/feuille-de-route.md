@@ -141,6 +141,9 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    rejoue les matchs avec les règles du jeu. Jamais les matchs contre un bot ; les 400 duels les plus récents. Les records d'un
    seul tournoi (idée du porteur du projet : à côté des résultats et du calendrier) : « 📊 Records du tournoi » sur la page du
    tournoi, pendant et après (`records_tournoi`, mêmes règles de visibilité que la page ; pas pour les Sit & Go en direct).
+24. **L'ouverture de Kolodrov** (13 novembre, demande du porteur du projet) : la réplique de Monique « L'ouverture de Kolodrov,
+   1956… mais ça ne lui sourit pas » n'est plus dite au premier point perdu, mais après le 3e coup du match, quand le joueur a
+   ouvert Pierre, Feuille, Ciseaux (dans cet ordre) et qu'il est mené (sinon, la fin de la phrase serait fausse).
 
 ## En bref (14 octobre 2026)
 
