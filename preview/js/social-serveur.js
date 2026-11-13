@@ -42,6 +42,7 @@ export const mesDossards = () => rpc("mes_dossards");
 export const dossardDuCercle = id => rpc("dossard_du_cercle", { p_id: id });
 // Les records du cercle (supabase/etape-74-records-cercle.sql) : tous les duels entre membres, ou seulement les tournois.
 export const recordsCercle = (id, tournois = false) => rpc("records_cercle", { p_id: id, p_tournois: !!tournois });
+export const recordsTournoi = id => rpc("records_tournoi", { p_tournoi: id });
 export const publierUne = (duel, graine, citation) => rpc("publier_une", { p_duel: duel, p_graine: graine, p_citation: citation || null });
 export const reagirFil = (cercle, duel, emoji) => rpc("reagir_fil", { p_cercle: cercle, p_duel: duel, p_emoji: emoji });
 export const creerCercle = (nom, blason) => rpc("creer_cercle", { p_nom: nom, p_blason: blason });
