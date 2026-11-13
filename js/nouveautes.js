@@ -8,7 +8,9 @@
 //   avis : la carte « Ton avis ? » à la fin d'un match, une seule fois après le 5e match (11 novembre) ;
 //   fiche : la fiche complète d'un joueur en ligne, stats, face-à-face, historique (11 novembre, étape SQL 68).
 //   dossard : le Dossard 1, gant jaune du tenant du titre d'un cercle, son annonce dans le fil, le trophée de la coupe (12 novembre, étape SQL 71).
-export const OUVERTES = new Set(["serie"]);
+// (13 novembre, comme validé par le porteur du projet le 11 : le fantôme, le fil du cercle, le championnat avec poules, la carte
+// « Ton avis ? » et la fiche d'un joueur ouverts à tous ; le Dossard 1 reste en test, décision du 12 novembre.)
+export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche"]);
 
 export function versionDeTest(loc = typeof location !== "undefined" ? location : null) {
   if (!loc) return false;
