@@ -142,9 +142,10 @@ export function marquesSVG(symbole, degats, nue) {
   }
   const f = Math.min(2, degats.fissure || 0);
   if (f) {   // la fissure sur le dos de la main, depuis un petit creux : sur tous les signes (12 novembre, remarque du porteur du projet)
-    s += `<ellipse cx="55" cy="56" rx="${3 + f}" ry="${2.2 + f * .7}" fill="rgba(30,15,10,.4)" stroke="rgba(255,255,255,.35)" stroke-width=".8"/>`;
-    s += trait("M55 56 L51 53 L48 54 L45 50 M55 56 L59.5 60 L60.5 64 L64.5 67 M55 56 L58 50.5 L62 49.5");
-    if (f > 1) s += trait("M45 50 L41 49 L38.5 45 M60.5 64 L58 70 M62 49.5 L66 45 L68.5 46 M51 53 L50.5 47 L47.5 43.5");
+    // (13 novembre, demande du porteur du projet : plus grande ; encore plus au 2e smash du set)
+    s += `<ellipse cx="55" cy="56" rx="${4 + f * 1.6}" ry="${3 + f * 1.1}" fill="rgba(30,15,10,.45)" stroke="rgba(255,255,255,.35)" stroke-width=".9"/>`;
+    s += trait("M55 56 L50 52 L46 53.5 L41.5 48 L37 47 M55 56 L60 61 L61 66 L66 69.5 L68 74 M55 56 L58.5 49.5 L63.5 48 L67 43.5 M55 56 L52 62 L47.5 64 L44 70", 1.6);
+    if (f > 1) s += trait("M41.5 48 L39.5 42.5 L35.5 39 M61 66 L57.5 73 L58.5 79 M63.5 48 L69 50.5 L72 48 M50 52 L49.5 45 L45.5 40.5 M47.5 64 L41 63 L36 66.5 M66 69.5 L71 66", 1.4);
   }
   return s;
 }
