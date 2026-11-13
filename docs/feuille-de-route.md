@@ -29,6 +29,14 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    • Bouton Retour plus visible (merci aux testeurs !) • Le match du jour : ta série continue 🔥 » `</fr-FR>` (une ligne par puce).
    Le porteur du projet fait le paquet le 13 au soir sur ordinateur (PWABuilder, code 3, « Use mine » avec sa clé d'octobre).
    (Ancienne note du 11 novembre, remplacée : voir ci-dessous.)
+2 ter. **Avant la sortie officielle (vers le 24 novembre), dans un moment calme : alléger les questions des duels au serveur**
+   (décision du 13 novembre). Pendant un duel, chaque téléphone demande l'état du match **toutes les secondes** (`battement` dans
+   `app/js/app.js`, `D.boucle`), en plus de l'écoute en direct (`ecouter` dans `app/js/duel-serveur.js`). Avec 1 000 duels en
+   même temps, ce serait 2 000 questions par seconde : le serveur gratuit de Supabase saturerait bien avant (et le direct de
+   l'offre gratuite ne tient qu'environ 200 connexions ; le battement sert de plan B). À faire : ne demander que toutes les 3 à 5
+   secondes, ou seulement quand on attend vraiment quelque chose (le coup adverse, la fin du délai), le direct faisant le reste.
+   Gratuit, environ 1 heure ; à tester sur la version de test (deux téléphones) avant de l'ouvrir. Repères du 13 novembre : base
+   32 Mo sur 500 (dont 13 Mo de journal pg_cron, ménage chaque nuit depuis l'étape 75) ; au plus quelques duels en même temps.
 2 bis. **Décision du 13 novembre : lancement en français uniquement** (pays francophones au choix dans la Play Console). L'anglais
    plus tard, seulement si le jeu retient bien les joueurs : d'abord les textes de l'appli, puis les voix (réécriture de l'humour
    et nouvel enregistrement, budget à décider avec le porteur du projet).
