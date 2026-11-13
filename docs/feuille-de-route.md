@@ -144,8 +144,8 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
 24. **L'ouverture de Kolodrov** (13 novembre, demande du porteur du projet) : la réplique de Monique « L'ouverture de Kolodrov,
    1956… mais ça ne lui sourit pas » n'est plus dite au premier point perdu, mais après le 3e coup du match, quand le joueur a
    ouvert Pierre, Feuille, Ciseaux (dans cet ordre), qu'il ne mène pas et que ce 3e coup ne lui a pas donné le point (égalité comprise).
-25. **Les effets du match** (13 novembre, idées choisies par le porteur du projet ; `app/js/effets.js` ; en test d'abord, clé
-   « effets » de `nouveautes.js`) : pour le décor seulement, rien ne change au jeu (décision : aucun effet qui change les règles).
+25. **Les effets du match** (13 novembre, idées choisies par le porteur du projet ; `app/js/effets.js` ; clé « effets » de
+   `nouveautes.js`, ouverte à tous le soir même après son test) : pour le décor seulement, rien ne change au jeu (décision : aucun effet qui change les règles).
    - **La main en feu** : 3 points gagnés de suite, la main fume ; 5, une petite flamme ; 7, la main est en feu (derrière la
      main : le signe reste visible). Une égalité baisse le feu d'un niveau (on repart du seuil d'en dessous : 2 points pour
      retrouver la flamme) ; un point perdu l'éteint (« pschhh » et bouffée de fumée). Le feu reste d'un set à l'autre.

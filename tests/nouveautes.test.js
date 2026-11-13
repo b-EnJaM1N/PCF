@@ -7,6 +7,7 @@ test("les nouveautés : toutes sur la version de test, seulement les ouvertes su
   assert.ok(versionDeTest(test_) && !versionDeTest(officielle));
   for (const nom of ["serie", "fantome", "replay", "hymne", "club"]) assert.ok(ouvert(nom, test_), nom);
   assert.ok(ouvert("serie", officielle), "la série de jours est ouverte à tous (10 novembre)");
+  assert.ok(ouvert("effets", officielle), "les effets du match sont ouverts à tous (13 novembre)");
   for (const nom of ["fantome", "replay", "hymne", "club", "fil", "poules", "avis", "fiche", "dossard"]) assert.equal(ouvert(nom, officielle), OUVERTES.has(nom), nom);
 });
 
