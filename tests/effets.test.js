@@ -2,28 +2,28 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { nouveauFeu, noterFeu, feuDe, niveauFeu, egalitesDeSuite, effetDouble, feuSVG, trembleDe, EGALITES_ETINCELLE } from "../app/js/effets.js";
 
-test("la main en feu : 3, 5 puis 7 points de suite", () => {
-  assert.deepEqual([0, 2, 3, 4, 5, 6, 7, 12].map(niveauFeu), [0, 0, 1, 1, 2, 2, 3, 3]);
+test("la main en feu : 4, 6 puis 8 points de suite", () => {
+  assert.deepEqual([0, 3, 4, 5, 6, 7, 8, 12].map(niveauFeu), [0, 0, 1, 1, 2, 2, 3, 3]);
   const e = nouveauFeu();
-  noterFeu(e, 0); noterFeu(e, 0);
-  assert.deepEqual(noterFeu(e, 0), [{ joueur: 0, de: 0, a: 1 }], "3e point : la main fume");
+  noterFeu(e, 0); noterFeu(e, null); noterFeu(e, 0); noterFeu(e, 0);
+  assert.deepEqual(noterFeu(e, 0), [{ joueur: 0, de: 0, a: 1 }], "4e point (une égalité au milieu ne casse pas la série) : la main fume");
   noterFeu(e, 0);
-  assert.deepEqual(noterFeu(e, 0), [{ joueur: 0, de: 1, a: 2 }], "5e point : la flamme");
+  assert.deepEqual(noterFeu(e, 0), [{ joueur: 0, de: 1, a: 2 }], "6e point : la flamme");
   noterFeu(e, 0);
-  assert.deepEqual(noterFeu(e, 0), [{ joueur: 0, de: 2, a: 3 }], "7e point : en feu");
+  assert.deepEqual(noterFeu(e, 0), [{ joueur: 0, de: 2, a: 3 }], "8e point : en feu");
   assert.equal(feuDe(e, 0), 3); assert.equal(feuDe(e, 1), 0);
 });
 
 test("une égalité baisse le feu d'un niveau ; un point perdu l'éteint", () => {
   const e = nouveauFeu();
-  for (let i = 0; i < 5; i++) noterFeu(e, 1);
+  for (let i = 0; i < 6; i++) noterFeu(e, 1);
   assert.deepEqual(noterFeu(e, null), [{ joueur: 1, de: 2, a: 1 }], "de la flamme à la fumée");
   noterFeu(e, 1);
   assert.deepEqual(noterFeu(e, 1), [{ joueur: 1, de: 1, a: 2 }], "2 points suffisent pour retrouver la flamme");
   assert.deepEqual(noterFeu(e, null), [{ joueur: 1, de: 2, a: 1 }]);
   assert.deepEqual(noterFeu(e, null), [{ joueur: 1, de: 1, a: 0 }], "de la fumée à rien");
   assert.deepEqual(noterFeu(e, null), [], "sans feu, une égalité ne change rien");
-  for (let i = 0; i < 4; i++) noterFeu(e, 0);
+  for (let i = 0; i < 5; i++) noterFeu(e, 0);
   assert.equal(feuDe(e, 0), 1);
   assert.deepEqual(noterFeu(e, 1), [{ joueur: 0, de: 1, a: 0 }], "point perdu : éteint");
   assert.equal(feuDe(null, 0), 0);
