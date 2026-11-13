@@ -725,7 +725,8 @@ export const MOMENTS = {
     { r: "d", t: "Le chi-fou-mi, c'est très simple et c'est très compliqué." },
   ],
   premier_point_perdu: [
-    // (13 novembre, demande du porteur du projet : après le 3e coup du match, quand il a ouvert Pierre, Feuille, Ciseaux, et qu'il est mené)
+    // (13 novembre, demande du porteur du projet : après le 3e coup du match, quand il a ouvert Pierre, Feuille, Ciseaux, qu'il ne mène
+    // pas et que le 3e coup ne lui a pas donné le point)
     { r: "d", t: "L'ouverture de Kolodrov, 1956… mais ça ne lui sourit pas.", clin: "sport", si: "kolodrov" },
     { r: "c", t: "Premier point pour l'adversaire ! Rien n'est joué !", si: "premier_point" },
     { r: "d", t: "Un mauvais départ. Il reste du temps. Heureusement.", si: "depart_rate" },
