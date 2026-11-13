@@ -22,7 +22,14 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    (code de version 3, puis 4…).
 2. Questionnaire validé et envoyé aux testeurs le 11 novembre (texte dans `docs/play-store/retours-testeurs.md`) ; noter chaque
    réponse dans le journal.
-3. **13 novembre : ouverts à tous** (fait le 13 au matin : `OUVERTES` = série, fantôme, fil, poules, avis, fiche ; le Dossard 1 reste en test). **Ouvrir le fantôme à tous** (accord du porteur du projet le 11 novembre ; ajouter « fantome » à `OUVERTES`
+3. **Note de version du paquet Android 3 (1.0.0.2), validée le 13 novembre** (457 caractères) : `<fr-FR>`
+   « • Nouveau : le fantôme 👻 Sur la page d'un ami, défie son fantôme : un bot qui joue comme lui, d'après ses matchs.
+   • Nouveau : le fil du cercle 📰 Résultats, Une de vos matchs et réactions. • Championnat de cercle avec poules et playoffs 🏆
+   • La fiche d'un joueur : stats, face-à-face, historique • Smash : nouveaux sons, marques sur la main adverse, smash récupéré 💥
+   • Bouton Retour plus visible (merci aux testeurs !) • Le match du jour : ta série continue 🔥 » `</fr-FR>` (une ligne par puce).
+   Le porteur du projet fait le paquet le 13 au soir sur ordinateur (PWABuilder, code 3, « Use mine » avec sa clé d'octobre).
+   (Ancienne note du 11 novembre, remplacée : voir ci-dessous.)
+3 bis. **13 novembre : ouverts à tous** (fait le 13 au matin : `OUVERTES` = série, fantôme, fil, poules, avis, fiche ; le Dossard 1 reste en test). **Ouvrir le fantôme à tous** (accord du porteur du projet le 11 novembre ; ajouter « fantome » à `OUVERTES`
    dans `app/js/nouveautes.js`), puis paquet Android 3 (1.0.0.2) avec la note validée :
    `<fr-FR>` « • Nouveau : le fantôme 👻 Sur la page d'un ami, défie son fantôme : un bot qui joue comme lui, d'après ses matchs.
    Pas besoin qu'il soit connecté ! » « • Nouveau : le fil du cercle 📰 Les résultats entre membres, la Une de vos matchs et vos
