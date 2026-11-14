@@ -18,7 +18,8 @@
 // (13 novembre, comme validé par le porteur du projet le 11 : le fantôme, le fil du cercle, le championnat avec poules, la carte
 // « Ton avis ? » et la fiche d'un joueur ouverts à tous ; le Dossard 1 reste en test, décision du 12 novembre.)
 // (13 novembre au soir : les effets du match ouverts à tous, testés et validés par le porteur du projet.)
-export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets"]);
+// (14 novembre : le Dossard 1, avec le gant en or du FIAC Club, et les invitations aux tournois de cercle ouverts à tous, accord du porteur du projet.)
+export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets", "dossard", "invitations"]);
 
 export function versionDeTest(loc = typeof location !== "undefined" ? location : null) {
   if (!loc) return false;
