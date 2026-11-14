@@ -38,3 +38,12 @@ test("le classement est le même quel que soit l'ordre reçu (rangé par date), 
   assert.equal(c1.at(-1).rang, null);
   assert.deepEqual(podiumCercle(c1).map(x => x.id), ["a", "b"], "le podium : seulement les classés");
 });
+
+test("le vainqueur comme dans la base : 0 (j0) ou 1 (j1) (14 novembre : tous les duels étaient ignorés)", () => {
+  const membres = [m("a"), m("b"), m("c")];
+  const duels = [{ j0: "a", j1: "b", vainqueur: 0, quand: "2026-11-01" }, { j0: "c", j1: "a", vainqueur: 1, quand: "2026-11-02" }, { j0: "b", j1: "c", vainqueur: 1, quand: "2026-11-03" }];
+  const c = classementCercle(membres, duels), de = id => c.find(x => x.id === id);
+  assert.equal(de("a").v, 2); assert.equal(de("a").d, 0); assert.equal(de("a").rang, 1);
+  assert.equal(de("b").d, 2); assert.equal(de("c").v, 1);
+  assert.ok(c.every(x => x.rang), "tout le monde est classé");
+});
