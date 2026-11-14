@@ -442,8 +442,11 @@ export function installerCercles(ctx) {
       <span class="podium-nom">${esc(p[i].pseudo)}${p[i].id === uid ? " (toi)" : ""}</span><span class="podium-pts">${p[i].points} pts</span>
       <span class="podium-marche">${PLACES[i]}</span></span>` : `<span class="podium-place vide"><span class="podium-marche"></span></span>`).join("");
   }
+  // (le classement interne est ouvert à tous le 14 novembre, demande du porteur du projet, clé « classementCercle » ; la page
+  // rangée et son podium restent en test)
+  const classementOuvert = () => ouvert("classementCercle") || pageRangee();
   function renderClassement(membres) {
-    const interne = pageRangee() && classementInterne;
+    const interne = classementOuvert() && classementInterne;
     const liste = interne ? classementInterne : membres;
     $("cClassement").innerHTML = liste.map((m, i) => `<li class="${m.id === uid ? "moi" : ""}" data-id="${m.id}">
       <span class="cl-rang">${interne ? m.rang ?? "–" : i + 1}</span>
@@ -459,7 +462,7 @@ export function installerCercles(ctx) {
     if (interne) {
       const moi = classementInterne.find(m => m.id === uid);
       $("cTuileClassement").textContent = moi?.rang ? `Tu es ${moi.rang === 1 ? "1er" : `${moi.rang}e`}` : "du cercle";
-      renderPodium();
+      if (pageRangee()) renderPodium();
     }
   }
 
@@ -555,7 +558,7 @@ export function installerCercles(ctx) {
     $("cNom").textContent = c.nom;
     $("cInfo").textContent = `${pluriel(membres.length, "membre")} · ${pluriel(c.matchs, "duel")} entre membres`;
     renderClassement(membres);
-    if (pageRangee()) chargerClassementInterne(id, membres);
+    if (classementOuvert()) chargerClassementInterne(id, membres);
     const dedans = new Set(membres.map(m => m.id));
     const aInviter = amis.filter(a => a.statut === "amis" && !dedans.has(a.id));
     // (les amis déjà invités, retenus sur le téléphone : le rafraîchissement de la page ne remet pas « Inviter »)

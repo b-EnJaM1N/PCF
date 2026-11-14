@@ -191,7 +191,9 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    projet). **Classement interne** (choix A, tournois compris ; `app/js/classement-cercle.js`) : le niveau du cercle, chacun part de
    1000 points, seuls les duels entre membres comptent (amicaux, officiels, matchs de tournoi ; les 400 plus récents depuis la
    création du cercle, lus avec les records), système Elo (K = 32) : battre un membre bien classé rapporte plus. Sous chaque nom :
-   V – D, pourcentage, niveau officiel. Les membres sans duel dans le cercle viennent après, sans rang.
+   V – D, pourcentage, niveau officiel. Les membres sans duel dans le cercle viennent après, sans rang. **Le classement interne est
+   ouvert à tous le 14 novembre** (clé « classementCercle », demande du porteur du projet : l'ancien rangeait Emi 2e avec un seul
+   duel, perdu) ; la page rangée et le podium restent en test.
 
 ## En bref (14 octobre 2026)
 
