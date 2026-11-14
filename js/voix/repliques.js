@@ -135,7 +135,7 @@ export const MOMENTS = {
     { r: "c", t: "Allez, petit bonhomme !", f: "Allez, petite bonne femme !", retiree: true },   // (retirée le 5 novembre)
     { r: "c", t: "Oublie que t'as aucune chance, vas-y, fonce !!", clin: "cine", retiree: true },   // (retirée le 5 novembre)
     { r: "d", t: "Ça commence à ressembler à une correction." },
-    { r: "d", t: "Muscle ton jeu, Robert. Muscle ton jeu.", clin: "sport" },
+    { r: "d", t: "Muscle ton jeu, Robert. Muscle ton jeu.", clin: "sport", rare: 0.08 },   // (très rare : 14 novembre, demande du porteur du projet)
     { r: "d", t: "Jusqu'ici, tout va bien… jusqu'ici.", clin: "cine" },
     { r: "d", t: "Sur un malentendu, ça peut marcher.", clin: "cine" },
     { r: "d", t: "Sa maison brûle, et il regarde ailleurs.", f: "Sa maison brûle, et elle regarde ailleurs.", clin: "cine" },
@@ -619,7 +619,7 @@ export const MOMENTS = {
   ],
   // Trois points d'affilée gagnés avec la Pierre.
   trois_pierres: [
-    { r: "d", t: "Pierre qui roule n'amasse pas mousse." },
+    { r: "d", t: "Pierre qui roule n'amasse pas mousse.", rare: 0.08 },   // (très rare : 14 novembre, demande du porteur du projet)
     // (5 novembre, répliques du porteur du projet)
     { r: "c", t: "Il opte pour une défense en catenaccio !", f: "Elle opte pour une défense en catenaccio !" },
   ],
