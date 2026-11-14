@@ -183,6 +183,13 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    « le chemin pour s'inscrire est trop long ») ouvre directement une fenêtre sur l'invitation la plus récente : « M'inscrire »,
    « Non merci », « Voir le tournoi » ou « Plus tard » (après l'écran titre si l'appli était fermée).
    **Ouvertes à tous le 14 novembre** (accord du porteur du projet), avec le Dossard 1.
+29. **Les routines d'entrée** (14 novembre au soir, idée d'un testeur ; `app/js/routines.js`, en préparation) : pendant la présentation
+   du match, la main de chaque joueur fait sa routine d'avant-match, à choisir comme les célébrations. Premier lot (choix du porteur du
+   projet, aperçu animé envoyé) : salut à la foule, shadow boxing, échauffement du pianiste, « viens par ici », ciseaux qui claquent
+   (idée du porteur du projet), Pierre-Feuille-Ciseaux en rafale (idem). Plus tard : moonwalk des doigts, doigts chassés, ombres
+   chinoises ; autres idées : craquer les doigts, regarder sa montre, « chut » au public, la vague. À faire après validation : le choix
+   dans le Vestiaire (salut gratuit, les autres à la boutique), l'affichage sur l'écran de présentation (chez l'adversaire aussi en
+   duel), peut-être un commentaire de Roland ou Monique.
 28. **Le gant en or du FIAC Club** (14 novembre, idée et validation du porteur du projet ; choix A : il passe au vainqueur de chaque
    nouveau tournoi du cercle, comme le Dossard 1 ; seulement pour le FIAC Club, `CERCLE_FIAC` dans `profil.js`) : gant en or
    métallique, coutures d'or, dossard « 1 », « Fiac Club » brodé en or (police Lobster, comme le pseudo du Chiromancien) sur un poignet

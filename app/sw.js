@@ -63,6 +63,7 @@ const FICHIERS = [
   "js/degats.js",
   "js/effets.js",
   "js/classement-cercle.js",
+  "js/routines.js",
   "js/records-cercle.js",
   "js/nouveautes.js",
   "js/replay.js",

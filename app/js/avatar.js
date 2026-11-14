@@ -377,6 +377,29 @@ function pouceLeve(fill, trait, pli, epaisseur = 1.5, ongleFill = "none") {
 }
 
 function main(symbole, gant, ink, tordu = 0) {
+  // Les routines d'entrée (routines.js, 14 novembre, idée d'un testeur) : la feuille dont un doigt s'abaisse (le pianiste),
+  // les ciseaux fermés (les lames qui claquent), l'index replié (« viens par ici »).
+  const piano = /^feuille-p([0-3])$/.exec(symbole);
+  if (piano) {
+    const k = +piano[1];
+    return `${[[29.5, 20, 34], [40, 12, 40], [50.5, 14, 38], [61, 22, 32]].map(([x, y, h], i) => doigt(x, i === k ? y + 13 : y, i === k ? h - 13 : h, gant, ink)).join("")}
+    ${paume(44, gant, ink)}
+    <path d="M40 60 q10 4 20 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
+  }
+  if (symbole === "ciseaux-ferme") return `
+    ${doigt(33, 10, 40, gant, ink, "-3 38 50")}${doigt(43.5, 10, 40, gant, ink, "3 48 50")}
+    ${paume(40, gant, ink)}
+    ${doigt(50, 30, 16, gant, ink)}${doigt(60.5, 33, 14, gant, ink)}
+    ${pouce(gant, ink)}
+    <path d="M56 58 q6 3 12 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
+  if (symbole === "index-plie") return `
+    ${doigt(40, 36, 18, gant, ink)}${doigt(50.5, 37, 17, gant, ink)}${doigt(61, 40, 15, gant, ink)}
+    ${paume(44, gant, ink)}
+    ${doigt(29.5, 24, 31, gant, ink)}
+    <rect x="29.5" y="15" width="10.5" height="15" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5" transform="rotate(38 35 27)"/>
+    <path d="M31.5 33 h7.5" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>
+    <rect x="24" y="52" width="36" height="12" rx="6" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
+    <path d="M58 68 q5 2.5 10 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
   if (symbole === "feuille") return `
     ${doigt(29.5, 20, 34, gant, ink)}${doigt(40, 12, 40, gant, ink)}${doigt(50.5, 14, 38, gant, ink)}${doigt(61, 22, 32, gant, ink)}
     ${paume(44, gant, ink)}

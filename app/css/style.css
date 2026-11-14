@@ -1133,3 +1133,16 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 /* Un défi vérifié par le serveur, pas encore vu réussi : comme le texte « 50 jetons » des autres défis, mais on peut le toucher. */
 .jetons-texte { font: inherit; font-size: .8rem; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; }
 .jetons-texte:disabled { opacity: .6; }
+
+/* Les routines d'entrée (routines.js ; 14 novembre). */
+.routine { display: inline-block; position: relative; width: 100%; height: 100%; }
+.routine-image { display: block; width: 100%; height: 100%; }
+.routine-image[hidden] { display: none; }
+.routine-image svg { width: 100%; height: 100%; }
+.routine-salut { animation: routine-salut 1.6s ease-in-out infinite; transform-origin: 50% 90%; }
+@keyframes routine-salut { 0%, 60%, 100% { transform: rotate(0); } 10%, 30%, 50% { transform: rotate(-14deg); } 20%, 40% { transform: rotate(14deg); } }
+.routine-shadow { animation: routine-shadow 1.2s ease-in-out infinite; }
+@keyframes routine-shadow { 0%, 100% { transform: none; } 12% { transform: translate(-6%, -4%) scale(1.18); } 24% { transform: none; } 40% { transform: translate(6%, -4%) scale(1.18); } 52% { transform: none; } 62% { transform: translate(-4%, -2%) scale(1.1); } 72% { transform: none; } }
+.routine-rebond { animation: routine-rebond .38s ease-in-out infinite; }
+@keyframes routine-rebond { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6%); } }
+@media (prefers-reduced-motion: reduce) { .routine-salut, .routine-shadow, .routine-rebond { animation: none; } }
