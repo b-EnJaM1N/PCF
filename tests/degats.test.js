@@ -37,3 +37,15 @@ test("au 2e smash du set, l'usure grandit : lames ébréchées (ou bleu et panse
   assert.ok(feuille(2).length > feuille(1).length + 200, "le lambeau qui pend");
   assert.doesNotMatch(lames(2) + feuille(2), /NaN|undefined/);
 });
+
+test("les coutures : une par pièce du gant, à la même distance du bord (14 novembre)", async () => {
+  const { cousu } = await import("../app/js/avatar.js");
+  const piece = '<rect x="29" y="40" width="42" height="36" rx="11" fill="#FFD34D" stroke="rgba(0,0,0,.22)" stroke-width="1.5"/>';
+  const doigt = '<rect x="31" y="19" width="10.5" height="31" rx="5.2" fill="#FFD34D" stroke="rgba(0,0,0,.22)" stroke-width="1.5" transform="rotate(-12 36 50)"/>';
+  const ongle = '<rect x="33.6" y="20" width="5.3" height="5.5" rx="2.4" fill="none" stroke="#000" stroke-width="1.1"/>';
+  const s = cousu(piece + doigt + ongle, "#B8860B");
+  assert.equal((s.match(/stroke-dasharray/g) || []).length, 2, "une couture par pièce, pas sur l'ongle");
+  assert.match(s, /<rect x="31.2" y="42.2" width="37.6" height="31.6" rx="8.8" fill="none" stroke="#B8860B"/, "la paume : 2,2 en retrait");
+  assert.match(s, /stroke-dasharray="2.2 2" transform="rotate\(-12 36 50\)"/, "le doigt penché : sa couture penche avec lui");
+  assert.ok(s.indexOf(doigt) > s.indexOf("y=\"42.2\""), "chaque couture juste après sa pièce : la pièce suivante la recouvre");
+});
