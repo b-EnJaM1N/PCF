@@ -143,6 +143,7 @@ export function installerCercles(ctx) {
     // Mes invitations aux tournois de mes cercles (étape 76) : en haut du menu Jouer, et sur la page du cercle.
     if (ouvert("invitations")) social.mesInvitations().then(liste => {
       invitations = liste || []; ctx.signaler("invitations", invitations); renderInvitationsCercle();
+      if (proposerInvitation && invitations.length) { proposerInvitation = false; montrerInvitation(invitations[0]); }
     }).catch(() => {});
     if (mesTournois) {
       $("socTournoisVide").hidden = mesTournois.length > 0;
@@ -486,6 +487,43 @@ export function installerCercles(ctx) {
     } catch (err) { dire("cInvitationsMsg", err.message, true); b.disabled = false; }
   });
 
+  // ------------------------------------------------ la notification d'invitation touchée (14 novembre, demande du porteur du projet :
+  // « le chemin pour s'inscrire est trop long ») : l'appli s'ouvre sur une fenêtre « M'inscrire / Non merci » pour l'invitation
+  // la plus récente, sans passer par Amis › le cercle › le tournoi.
+  let proposerInvitation = false, invitationMontree = null;
+  function montrerInvitation(i) {
+    invitationMontree = i;
+    $("invitRecueTitre").textContent = i.mode === "championnat" ? "📨 Invitation à un championnat" : "📨 Invitation à un tournoi";
+    $("invitRecueTexte").textContent = texteInvitation(i);
+    $("invitRecueDetail").textContent = `Cercle « ${i.cercle_nom || ""} »${i.enjeu ? ` · Enjeu : ${i.enjeu}` : ""}`;
+    $("invitRecueOui").textContent = i.enjeu ? "M'inscrire et accepter l'enjeu" : "M'inscrire";
+    $("invitRecueOui").disabled = false; $("invitRecueNon").disabled = false; dire("invitRecueMsg", "");
+    $("invitRecueFenetre").hidden = false;
+  }
+  const fermerInvitationRecue = () => { $("invitRecueFenetre").hidden = true; invitationMontree = null; };
+  async function repondreInvitation(oui) {
+    const i = invitationMontree; if (!i) return;
+    $("invitRecueOui").disabled = true; $("invitRecueNon").disabled = true;
+    try {
+      if (oui) await social.inscrireTournoi(i.tournoi); else await social.refuserInvitation(i.tournoi);
+      invitations = invitations.filter(x => x.tournoi !== i.tournoi); ctx.signaler("invitations", invitations); renderInvitationsCercle();
+      dire("invitRecueMsg", oui ? "✅ Tu es inscrit ! Tu seras prévenu quand le tournoi commencera." : "C'est noté : invitation refusée.");
+      $("invitRecueOui").hidden = true; $("invitRecueNon").hidden = true; $("invitRecuePlusTard").textContent = "Fermer";
+      rafraichir(); if (cercleOuvert) chargerCercle();
+    } catch (err) { dire("invitRecueMsg", err.message, true); $("invitRecueOui").disabled = false; $("invitRecueNon").disabled = false; }
+  }
+  $("invitRecueOui").addEventListener("click", () => repondreInvitation(true));
+  $("invitRecueNon").addEventListener("click", () => repondreInvitation(false));
+  $("invitRecueVoir").addEventListener("click", () => { const i = invitationMontree; fermerInvitationRecue(); if (i) { ctx.ouvrirOnglet("cercles"); tournois.ouvrir(i.tournoi); } });
+  $("invitRecuePlusTard").addEventListener("click", fermerInvitationRecue);
+  $("invitRecueFenetre").addEventListener("click", e => { if (e.target.id === "invitRecueFenetre") fermerInvitationRecue(); });
+  // Appelé quand on touche la notification : tout de suite si les invitations sont déjà là, sinon dès qu'elles arrivent.
+  function proposerDerniereInvitation() {
+    $("invitRecueOui").hidden = false; $("invitRecueNon").hidden = false; $("invitRecuePlusTard").textContent = "Plus tard";
+    if (invitations.length) { montrerInvitation(invitations[0]); return; }
+    proposerInvitation = true; if (uid) rafraichir();
+  }
+
   async function chargerCercle() {
     const id = cercleOuvert;
     let c;
@@ -718,6 +756,7 @@ export function installerCercles(ctx) {
   return {
     rafraichir: () => { rafraichir(); if (!$("socTournoi").hidden) tournois.rafraichir(); else if (cercleOuvert) chargerCercle(); },
     ouvrirTournoi: id => tournois.ouvrir(id),
+    proposerInvitation: () => proposerDerniereInvitation(),
     // Notre face-à-face avec un ami (depuis un autre écran, ex. Défier un ami).
     ouvrirAmi: async id => {
       const depuis = ctx.vueCourante();
