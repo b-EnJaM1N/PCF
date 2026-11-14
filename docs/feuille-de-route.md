@@ -193,7 +193,7 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    création du cercle, lus avec les records), système Elo (K = 32) : battre un membre bien classé rapporte plus. Sous chaque nom :
    V – D, pourcentage, niveau officiel. Les membres sans duel dans le cercle viennent après, sans rang. **Le classement interne est
    ouvert à tous le 14 novembre** (clé « classementCercle », demande du porteur du projet : l'ancien rangeait Emi 2e avec un seul
-   duel, perdu) ; la page rangée et le podium restent en test.
+   duel, perdu). La page rangée et le podium ouverts à tous le même jour, après l'essai du porteur du projet.
 
 ## En bref (14 octobre 2026)
 
