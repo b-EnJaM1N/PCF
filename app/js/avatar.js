@@ -234,6 +234,21 @@ export function dossardSVG(x, y, r) {
   </g>`;
 }
 
+// Les coutures en pointillés (14 novembre, remarque du porteur du projet : elles n'étaient pas bien alignées sur les doigts ;
+// avant, une copie réduite de toute la main, décalée sur les doigts éloignés du centre, et visible à travers la paume) :
+// chaque pièce du gant (doigt, paume, pouce) reçoit sa propre couture, à la même distance de son bord, juste après elle : la pièce
+// suivante la recouvre comme le reste (les bases des doigts cachées par la paume restent cachées).
+const RETRAIT_COUTURE = 2.2;
+export function cousu(svg, couleur) {
+  const d = RETRAIT_COUTURE;
+  return svg.replace(/<rect x="([-\d.]+)" y="([-\d.]+)" width="([\d.]+)" height="([\d.]+)" rx="([\d.]+)" fill="(?!none")[^"]*" stroke="[^"]*" stroke-width="[\d.]+"( transform="[^"]*")?\/>/g,
+    (piece, x, y, w, h, rx, tr = "") => {
+      const W = +w - 2 * d, H = +h - 2 * d;
+      if (W < 2 || H < 2) return piece;
+      return piece + `<rect x="${+x + d}" y="${+y + d}" width="${W}" height="${H}" rx="${Math.max(0.5, Math.min(+rx - d, W / 2, H / 2))}" fill="none" stroke="${couleur}" stroke-width="1.1" stroke-dasharray="2.2 2"${tr}/>`;
+    });
+}
+
 // sansFond : seulement le gant et le poignet (le poing qui se secoue pendant un coup).
 export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
@@ -290,11 +305,10 @@ export function avatarSVG(a) {
   if (a.fond === "stade") decorFond = `<g clip-path="url(#${id})" fill="#FFF6C8" opacity=".25"><path d="M10 0 L40 100 L30 100 Z"/><path d="M90 0 L60 100 L70 100 Z"/></g>`;
   const fillGant = remplissage ? `url(#${id}g)` : gant;
   let deco = "";
-  if (gm === "coutures") deco = `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#E7C04A")}</g>`;
-  if (a.gant === "elite" && gm !== "coutures") deco = `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#E9C046")}</g>`;   // le gant de l'Élite : noir, coutures d'or
+  // Les coutures (motif « coutures », gant de l'Élite : noir, coutures d'or ; Dossard 1) : voir cousu, plus bas.
+  const couture = nue ? null : gm === "coutures" ? "#E7C04A" : a.gant === "elite" ? "#E9C046" : A_DOSSARD.has(a.gant) && PRESTIGE.coutures ? "#B8860B" : null;
   // Le Dossard 1 : un dossard blanc épinglé (quatre épingles) avec un gros « 1 » noir, sur le dos de la main (ou la paume).
-  if (A_DOSSARD.has(a.gant)) deco = (PRESTIGE.coutures && gm !== "coutures" ? `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#B8860B")}</g>` : "")
-    + (PRESTIGE.reflet ? `<g opacity=".38" style="mix-blend-mode:screen">${main(a.symbole, `url(#${id}r)`, "none")}</g>` : "")
+  if (A_DOSSARD.has(a.gant)) deco = (PRESTIGE.reflet ? `<g opacity=".38" style="mix-blend-mode:screen">${main(a.symbole, `url(#${id}r)`, "none")}</g>` : "")
     + dossardSVG(...(PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
   if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
@@ -310,7 +324,7 @@ export function avatarSVG(a) {
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
-    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}
+    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}
   </svg>`;
 }
 
