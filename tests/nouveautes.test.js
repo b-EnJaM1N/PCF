@@ -27,5 +27,5 @@ test("13 novembre : le fantôme, le fil, les poules, la carte « Ton avis ? » e
 
 test("14 novembre : le Dossard 1 (et le gant du FIAC Club) et les invitations ouverts à tous, puis la page du cercle rangée", () => {
   const officielle = { pathname: "/", hostname: "handslam.fr" };
-  for (const nom of ["dossard", "invitations", "classementCercle", "pageCercle"]) assert.ok(ouvert(nom, officielle), nom);
+  for (const nom of ["dossard", "invitations", "classementCercle", "pageCercle", "records"]) assert.ok(ouvert(nom, officielle), nom);
 });

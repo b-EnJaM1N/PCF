@@ -193,7 +193,9 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    création du cercle, lus avec les records), système Elo (K = 32) : battre un membre bien classé rapporte plus. Sous chaque nom :
    V – D, pourcentage, niveau officiel. Les membres sans duel dans le cercle viennent après, sans rang. **Le classement interne est
    ouvert à tous le 14 novembre** (clé « classementCercle », demande du porteur du projet : l'ancien rangeait Emi 2e avec un seul
-   duel, perdu). La page rangée et le podium ouverts à tous le même jour, après l'essai du porteur du projet.
+   duel, perdu). La page rangée et le podium ouverts à tous le même jour, après l'essai du porteur du projet, puis les records
+   (« 📊 Stats et records »). Correctif du même jour : le classement interne ignorait tous les duels (la base donne le vainqueur
+   sous la forme 0 ou 1, pas l'identifiant du joueur) ; tout le monde restait « pas encore de duel », et le podium était vide.
 
 ## En bref (14 octobre 2026)
 
