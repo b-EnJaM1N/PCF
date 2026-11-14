@@ -8,6 +8,7 @@
 //   avis : la carte « Ton avis ? » à la fin d'un match, une seule fois après le 5e match (11 novembre) ;
 //   fiche : la fiche complète d'un joueur en ligne, stats, face-à-face, historique (11 novembre, étape SQL 68).
 //   records : les records du cercle, tous les duels ou les tournois seulement (13 novembre, étape SQL 74).
+//   classementCercle : le classement interne du cercle (le niveau du cercle, classement-cercle.js), sans la page rangée.
 //   pageCercle : la page du cercle rangée (le fil, le podium, des boutons vers Tournois, Classement, Stats et records, Inviter,
 //     Gérer) et le classement interne du cercle, le niveau du cercle (14 novembre, classement-cercle.js).
 //   invitations : l'organisateur d'un tournoi de cercle invite des membres (notification, « M'inscrire » ou « Non merci »)
@@ -19,7 +20,8 @@
 // « Ton avis ? » et la fiche d'un joueur ouverts à tous ; le Dossard 1 reste en test, décision du 12 novembre.)
 // (13 novembre au soir : les effets du match ouverts à tous, testés et validés par le porteur du projet.)
 // (14 novembre : le Dossard 1, avec le gant en or du FIAC Club, et les invitations aux tournois de cercle ouverts à tous, accord du porteur du projet.)
-export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets", "dossard", "invitations"]);
+// (14 novembre, après midi : le classement interne du cercle, puis la page du cercle rangée, ouverts à tous, accord du porteur du projet.)
+export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets", "dossard", "invitations", "classementCercle", "pageCercle"]);
 
 export function versionDeTest(loc = typeof location !== "undefined" ? location : null) {
   if (!loc) return false;
