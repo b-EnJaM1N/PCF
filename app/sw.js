@@ -11,6 +11,7 @@ const FICHIERS = [
   "suppression-compte.html",
   "ecoute.html",
   "essais-sons.html",
+  "routines.html",
   "revue.html",
   "revue-modele.html",
   "revue-humain-trop-humain.html",
