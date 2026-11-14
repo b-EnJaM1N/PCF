@@ -175,6 +175,13 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    Les tournois hors cercle restent sur le lien à partager. Toucher la notification (14 novembre, remarque du porteur du projet :
    « le chemin pour s'inscrire est trop long ») ouvre directement une fenêtre sur l'invitation la plus récente : « M'inscrire »,
    « Non merci », « Voir le tournoi » ou « Plus tard » (après l'écran titre si l'appli était fermée).
+   **Ouvertes à tous le 14 novembre** (accord du porteur du projet), avec le Dossard 1.
+28. **Le gant en or du FIAC Club** (14 novembre, idée et validation du porteur du projet ; choix A : il passe au vainqueur de chaque
+   nouveau tournoi du cercle, comme le Dossard 1 ; seulement pour le FIAC Club, `CERCLE_FIAC` dans `profil.js`) : gant en or
+   métallique, coutures d'or, dossard « 1 », « Fiac Club » brodé en or (police Lobster, comme le pseudo du Chiromancien) sur un poignet
+   bleu nuit (gant « fiac » d'`avatar.js`, broderie « @fiac » de `gants-brodes.js`). Sur la page d'un tournoi de cercle (inscriptions
+   et en cours), la carte « 🏆 À gagner » montre le gant en grand (le gant en or pour le FIAC Club, le Dossard 1 jaune ailleurs).
+   Le Dossard 1 est ouvert à tous le même jour.
 27. **La page du cercle rangée et le classement interne** (14 novembre, demande du porteur du projet : « ça fait bazar » ; en test
    d'abord, clé « pageCercle » de `nouveautes.js`). L'accueil du cercle : l'invitation éventuelle, le fil, le podium (les 3 premiers
    du classement interne ; le toucher ouvre le classement), puis une grille de boutons : 🏆 Tournois (pastille s'il y a une

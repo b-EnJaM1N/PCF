@@ -22,5 +22,11 @@ test("la carte « Ton avis ? » : une seule fois, à partir du 5e match, si l'av
 test("13 novembre : le fantôme, le fil, les poules, la carte « Ton avis ? » et la fiche ouverts à tous ; le Dossard 1 reste en test", () => {
   const officielle = { pathname: "/", hostname: "handslam.fr" };
   for (const nom of ["serie", "fantome", "fil", "poules", "avis", "fiche"]) assert.ok(ouvert(nom, officielle), nom);
-  for (const nom of ["dossard", "replay", "hymne", "club"]) assert.ok(!ouvert(nom, officielle), nom);
+  for (const nom of ["replay", "hymne", "club"]) assert.ok(!ouvert(nom, officielle), nom);
+});
+
+test("14 novembre : le Dossard 1 (et le gant du FIAC Club) et les invitations ouverts à tous ; la page du cercle rangée reste en test", () => {
+  const officielle = { pathname: "/", hostname: "handslam.fr" };
+  for (const nom of ["dossard", "invitations"]) assert.ok(ouvert(nom, officielle), nom);
+  assert.ok(!ouvert("pageCercle", officielle));
 });

@@ -21,6 +21,7 @@ import { etatNotifications, activerNotifications, desactiverNotifications, ratta
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
+import { estFiac } from "./profil.js";
 import { TITRES, FAMILLES, accorderTitres, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, reserveAuTenant, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
@@ -2021,7 +2022,7 @@ function renderEditeur() {
   $("avApercu").innerHTML = avatarSVG(avMoi());             // l'aperçu reste visible pendant qu'on fait défiler les choix
   const mk = (el, type, table, texte) => {
     // (les objets « bientôt » : seulement sur la version de test, sauf s'il les a déjà)
-    el.innerHTML = Object.keys(table).filter(k => !(type === "gant" && k === "fiac" && P.av.gant !== "fiac")).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
+    el.innerHTML = Object.keys(table).filter(k => !(type === "gant" && k === "fiac" && !P.tenantFiac && P.av.gant !== "fiac")).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
       return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
     }).join("");
@@ -2030,6 +2031,7 @@ function renderEditeur() {
       if (estVerrouille(P, type, k)) {
         const x = articleDe(type, k);
         $("lockNote").innerHTML = gantAttendPremierMatch(P, type, k) ? "🧤 Les gants se débloquent après ton premier match. En attendant : la main nue !"
+          : reserveAuTenant(P, type, k) && k === "fiac" ? "🏆 Le gant en or du FIAC Club se porte seulement quand tu es tenant du titre du FIAC Club : gagne son prochain tournoi !"
           : reserveAuTenant(P, type, k) ? "🟨 Le Dossard 1 se porte seulement quand tu es tenant du titre d'un de tes cercles : gagne le prochain tournoi de ton cercle, il est à toi jusqu'au tournoi suivant !"
           : t ? `Verrouillé. Obtiens le titre « ${esc(t.nom)} » : ${esc(t.desc.charAt(0).toLowerCase() + t.desc.slice(1))}`
           : `🛍️ « ${esc(x.nom)} » est en vente à la boutique : ${x.prix} jetons. <button class="linkbtn" data-aller="viewBoutique">Voir la boutique</button>`;
@@ -2896,6 +2898,18 @@ function majDossard() {
     const avant = P.tenantTitre || null, cercles = (liste || []).map(x => x.cercle?.nom).filter(Boolean);
     P.tenantTitre = cercles.length ? cercles : null;
     if (!P.tenantTitre && P.av.gant === "dossard") P.av.gant = "jaune";
+    // (le gant en or du FIAC Club : pour le tenant du titre du FIAC Club seulement)
+    const fiacAvant = !!P.tenantFiac;
+    P.tenantFiac = (liste || []).some(x => estFiac(x.cercle?.id));
+    if (!P.tenantFiac && P.av.gant === "fiac") P.av.gant = "jaune";
+    if (P.tenantFiac !== fiacAvant) {
+      sauverP(); rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche();
+      const t = $("toast");
+      t.textContent = P.tenantFiac ? "🏆 Tu es tenant du titre du FIAC Club : le gant en or brodé « Fiac Club » t'attend dans le Vestiaire !"
+        : "🏆 Un autre joueur a pris le gant en or du FIAC Club. Gagne le prochain tournoi pour le reprendre !";
+      t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 6000);
+      return;   // (ce message-là plutôt que celui du Dossard 1 jaune)
+    }
     if (JSON.stringify(avant) === JSON.stringify(P.tenantTitre)) return;
     sauverP(); rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche();
     const t = $("toast"), nouveau = cercles.find(n => !(avant || []).includes(n));
