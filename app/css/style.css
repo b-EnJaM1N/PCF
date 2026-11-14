@@ -1130,3 +1130,6 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .prix-gant svg { width: 100%; height: 100%; }
 .prix b { font-family: "Barlow Condensed", sans-serif; font-size: 1.35rem; line-height: 1.1; }
 .prix .hint { margin: 4px 0 0; }
+/* Un défi vérifié par le serveur, pas encore vu réussi : comme le texte « 50 jetons » des autres défis, mais on peut le toucher. */
+.jetons-texte { font: inherit; font-size: .8rem; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; }
+.jetons-texte:disabled { opacity: .6; }
