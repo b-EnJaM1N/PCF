@@ -4,6 +4,9 @@
 // était mieux classé que lui (le même principe que le niveau officiel, système Elo). Battre le premier rapporte beaucoup,
 // battre le dernier presque rien : on ne peut pas grimper en choisissant ses adversaires.
 // duels : ceux des records du cercle (records_cercle : { j0, j1, vainqueur, quand }, du plus ancien au plus récent).
+// vainqueur : 0 (j0) ou 1 (j1), comme dans la table des duels (14 novembre : le classement ignorait tous les duels, il attendait
+// l'identifiant du joueur ; les deux sont acceptés).
+const gagnantDe = du => (du.vainqueur === 0 ? du.j0 : du.vainqueur === 1 ? du.j1 : du.vainqueur);
 
 export const DEPART_CERCLE = 1000;
 export const K_CERCLE = 32;
@@ -17,9 +20,9 @@ export function classementCercle(membres, duels) {
   const pts = new Map((membres || []).map(m => [m.id, { points: DEPART_CERCLE, v: 0, d: 0 }]));
   const tries = [...(duels || [])].sort((x, y) => String(x.quand || "").localeCompare(String(y.quand || "")));
   for (const du of tries) {
-    const a = pts.get(du.j0), b = pts.get(du.j1);
-    if (!a || !b || (du.vainqueur !== du.j0 && du.vainqueur !== du.j1)) continue;   // (un ancien membre, ou pas de vainqueur)
-    const [g, p] = du.vainqueur === du.j0 ? [a, b] : [b, a];
+    const a = pts.get(du.j0), b = pts.get(du.j1), gagnant = gagnantDe(du);
+    if (!a || !b || (gagnant !== du.j0 && gagnant !== du.j1)) continue;   // (un ancien membre, ou pas de vainqueur)
+    const [g, p] = gagnant === du.j0 ? [a, b] : [b, a];
     const delta = gainCercle(g.points, p.points);
     g.points += delta; p.points -= delta; g.v++; p.d++;
   }
