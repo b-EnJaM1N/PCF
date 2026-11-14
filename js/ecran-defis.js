@@ -28,7 +28,10 @@ export function installerDefis(ctx) {
     if (aEncaisser) $("defisCarte").open = true;   // replié le reste du temps, pour ne pas charger le menu
     $("defisListe").innerHTML = etats.map(x => `<li class="${x.fait ? "fait" : ""}">
       <span>${x.fait ? "✅" : "▫️"} ${esc(x.texte)}${x.progression && !x.fait ? ` <small>${x.progression}</small>` : ""}</span>
-      ${x.fait ? `<small>+${x.d.recompense}</small>` : x.pret ? `<button class="jetons-puce" data-defi="${x.d.id}">+${x.d.recompense}</button>` : `<small>${x.d.recompense} jetons</small>`}</li>`).join("");
+      ${x.fait ? `<small>+${x.d.recompense}</small>` : x.pret ? `<button class="jetons-puce" data-defi="${x.d.id}">+${x.d.recompense}</button>`
+        // (vérifié par le serveur : comme les autres défis pas encore faits, mais on peut toucher pour vérifier)
+        : x.verifiable ? `<button class="jetons-texte" data-defi="${x.d.id}" title="Déjà fait sur un autre appareil ? Touche pour vérifier">${x.d.recompense} jetons</button>`
+        : `<small>${x.d.recompense} jetons</small>`}</li>`).join("");
   }
 
   $("defisListe").addEventListener("click", async ev => {
