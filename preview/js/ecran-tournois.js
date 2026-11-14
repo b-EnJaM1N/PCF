@@ -14,6 +14,7 @@ import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu, annonceEnjeu } from "./enjeux.
 import { texteDepart as texteDepartProgramme } from "./programmes-logique.js";
 import { monResultat, texteJetons } from "./jetons-logique.js";
 import { lire, ecrire } from "./stockage.js";
+import { estFiac } from "./profil.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -219,6 +220,17 @@ export function installerTournois(ctx) {
   function render() {
     const t = detail, uid = ctx.uid(), maintenant = Date.now() + decalage;
     $("tIcone").innerHTML = t.cercle ? blasonSVG(t.cercle.blason) : '<span class="trophee grand">🏆</span>';
+    // Le trophée à gagner (14 novembre) : le gant du tenant du titre du cercle (en or brodé pour le FIAC Club, le Dossard 1 jaune
+    // ailleurs), tant que le tournoi n'est pas fini.
+    const fiac = estFiac(t.cercle?.id);
+    $("tPrix").hidden = !t.cercle || !nouveauteOuverte("dossard") || !["inscriptions", "en_cours"].includes(t.phase);
+    if (!$("tPrix").hidden) {
+      $("tPrixGant").innerHTML = avatarSVG({ gant: fiac ? "fiac" : "dossard", poignet: "rouge", symbole: "pierre", fond: fiac ? "minuit" : "court" });
+      $("tPrixNom").textContent = fiac ? "Le gant en or du FIAC Club" : "Le Dossard 1 du cercle";
+      $("tPrixTexte").textContent = fiac
+        ? "Le vainqueur le porte : gant en or, dossard 1 et « Fiac Club » brodé en or. Il est à lui jusqu'au prochain tournoi du cercle… à défendre !"
+        : `Le vainqueur devient tenant du titre du cercle « ${t.cercle.nom} » et porte le gant au dossard 1 jusqu'au prochain tournoi du cercle.`;
+    }
     $("tNom").textContent = t.nom;
     const direct = t.mode === "direct";   // Sit & Go : matchs lancés automatiquement, sans date limite
     const ch = t.mode === "championnat";   // chacun contre tous, avec un classement

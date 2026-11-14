@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="version" content="2a7301f du 14/11/2026 (test)">
+<meta name="version" content="6139733 du 14/11/2026 (test)">
 <title>HandSlam</title>
 <meta name="description" content="HandSlam — le Pierre-Feuille-Ciseaux devient un sport. Sets de 11 points, arbitre, commentateur et tournois.">
 <meta name="theme-color" content="#0F2C52">
@@ -582,6 +582,14 @@
     <section class="card" id="tEnjeuCarte" hidden>
       <p class="enjeu-fin" id="tEnjeu" style="margin:0"></p>
       <p style="margin:6px 0 0;text-align:center"><button class="linkbtn" id="tEnjeuEffacer" hidden>Effacer l'enjeu</button></p>
+    </section>
+    <!-- Le trophée à gagner (14 novembre, demande du porteur du projet) : le gant du tenant du titre, mis en valeur. -->
+    <section class="card prix-carte" id="tPrix" hidden>
+      <h2>🏆 À gagner</h2>
+      <div class="prix">
+        <span class="prix-gant" id="tPrixGant"></span>
+        <div><b id="tPrixNom"></b><p class="hint" id="tPrixTexte"></p></div>
+      </div>
     </section>
     <section class="card" id="tMonMatch" hidden>
       <h2 id="tMonMatchTitre"></h2>
