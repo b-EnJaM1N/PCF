@@ -12,6 +12,7 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 | 12 nov. | ★★★★★ via le Play Store (commentaire privé, version 1.0.0.0) : « Une pépite ! Le principe de base est simple, mais on se prend vite au jeu, avec un œil sur ses stats. Les commentaires sont drôles et c'est trop bien de pouvoir défier ses amis. » (un testeur) | Réponse du développeur dans la Play Console (remerciement, nouveautés, invitation à mettre à jour) | — |
 | 13 nov. | ★★★★☆ via « Ton avis » dans l'appli (Android) : « J'aime beaucoup le concept d'aborder le chifoumi comme un vrai sport. Les commentaires sont cool ! » (un testeur) | — (avis positif, rien à corriger) | — |
 | 13 nov. | ★★★★★ via « Ton avis » dans l'appli (Android) : « Les commentaires sont tops, et les nouveaux effets (smash, flammes et sons) sont supers ! » (un testeur) ; un 3e avis donne une note sans texte | — (les effets du match, ouverts à tous le 13 novembre, plaisent) | — |
+| 14 nov. | « Pour s'inscrire à un tournoi de cercle, le chemin est trop long : ouvrir l'appli, Amis, le cercle, les tournois du cercle, puis « M'inscrire ». » (un testeur) | L'organisateur invite les membres de son choix (« 📨 Inviter des membres du cercle ») ; l'invité reçoit une notification, et en la touchant l'appli s'ouvre directement sur « M'inscrire / Non merci » : un seul geste. L'invitation apparaît aussi en haut du menu Jouer et sur la page du cercle. Personne n'est inscrit sans l'avoir choisi | 14 nov. |
 
 ## Les mises à jour pendant le test prolongé
 
