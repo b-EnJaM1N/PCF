@@ -1145,4 +1145,13 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 @keyframes routine-shadow { 0%, 100% { transform: none; } 12% { transform: translate(-6%, -4%) scale(1.18); } 24% { transform: none; } 40% { transform: translate(6%, -4%) scale(1.18); } 52% { transform: none; } 62% { transform: translate(-4%, -2%) scale(1.1); } 72% { transform: none; } }
 .routine-rebond { animation: routine-rebond .38s ease-in-out infinite; }
 @keyframes routine-rebond { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6%); } }
-@media (prefers-reduced-motion: reduce) { .routine-salut, .routine-shadow, .routine-rebond { animation: none; } }
+/* « Chut ! » : l'index levé, une bulle ; regarder sa montre : le poignet tourne vers soi, la montre au poignet. */
+.routine-chut { animation: routine-chut 2s ease-in-out infinite; }
+@keyframes routine-chut { 0%, 100% { transform: translateY(4%); } 20%, 80% { transform: translateY(-3%); } }
+.routine-chut::after { content: "Chhhut !"; position: absolute; top: -4%; right: -18%; padding: 2px 7px; border-radius: 10px; background: var(--line); color: #10223D;
+  font: 800 .78rem/1.2 "Barlow Condensed", sans-serif; white-space: nowrap; animation: routine-bulle 2s ease-in-out infinite; }
+@keyframes routine-bulle { 0%, 15%, 90%, 100% { opacity: 0; transform: scale(.6); } 25%, 80% { opacity: 1; transform: scale(1); } }
+.routine-montre { animation: routine-montre 2.2s ease-in-out infinite; transform-origin: 50% 85%; }
+@keyframes routine-montre { 0%, 100% { transform: rotate(0); } 25%, 70% { transform: rotate(-28deg) translateY(-4%); } }
+.routine-montre::after { content: "⌚"; position: absolute; left: 50%; top: 82%; transform: translate(-50%, -50%); font-size: 1.1rem; line-height: 1; }
+@media (prefers-reduced-motion: reduce) { .routine-salut, .routine-shadow, .routine-rebond, .routine-chut, .routine-montre, .routine-chut::after { animation: none; } }
