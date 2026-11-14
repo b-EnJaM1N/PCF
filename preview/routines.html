@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Routines d'entrée · HandSlam</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0F2C52">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .essais { max-width: 680px; margin: 0 auto; padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px calc(env(safe-area-inset-bottom, 0px) + 40px); display: flex; flex-direction: column; gap: 14px; }
+  .essais a { color: var(--me); }
+  .essais h1 { font-family: "Barlow Condensed", sans-serif; font-size: 1.6rem; margin: 0; }
+  .essais .intro { font-size: .92rem; line-height: 1.5; color: var(--muted); margin: 0; }
+  .grille { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .case { text-align: center; font-weight: 700; font-size: .92rem; }
+  .case small { display: block; font-weight: 400; color: var(--muted); margin-top: 2px; }
+  .rond { width: 128px; height: 128px; margin: 0 auto 8px; border-radius: 50%; background: var(--court, #1F5FA8); border: 4px solid rgba(255, 255, 255, .35); display: flex; align-items: center; justify-content: center; }
+  .main-r { width: 98px; height: 98px; }
+</style>
+</head>
+<body>
+<main class="essais">
+  <p><a href="./">← Retour à HandSlam</a></p>
+  <h1>🥊 Les routines d'entrée (essai)</h1>
+  <p class="intro">Avant le match, pendant la présentation, la main de chaque joueur fait sa routine. Ici, avec ton gant.
+    Pour choisir, dis simplement par exemple « je garde tout sauf la montre » ou « le pianiste plus lent ».</p>
+  <div class="grille" id="grille"></div>
+</main>
+<script type="module">
+  // (14 novembre : page d'essai des routines d'entrée, comme essais-sons.html ; voir routines.js)
+  import { avatarSVG } from "./js/avatar.js";
+  import { ROUTINES, jouerRoutine } from "./js/routines.js";
+  import { lire } from "./js/stockage.js";
+  const av = { gant: "jaune", poignet: "rouge", ...((lire("profil") || {}).av || {}) };
+  const grille = document.getElementById("grille");
+  const nouveau = new Set(["claque", "trois", "chut", "craquer", "vague", "montre"]);
+  for (const [cle, r] of Object.entries(ROUTINES)) {
+    const c = document.createElement("div"); c.className = "case";
+    c.innerHTML = `<div class="rond"><div class="main-r"></div></div>${r.nom}${nouveau.has(cle) ? "<small>(idée en plus)</small>" : "<small>(idée du testeur)</small>"}`;
+    grille.append(c);
+    jouerRoutine(c.querySelector(".main-r"), cle, s => avatarSVG({ ...av, symbole: s, sansFond: true }), { reduit: matchMedia("(prefers-reduced-motion: reduce)").matches });
+  }
+</script>
+</body>
+</html>
