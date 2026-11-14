@@ -379,6 +379,14 @@ function pouceLeve(fill, trait, pli, epaisseur = 1.5, ongleFill = "none") {
 function main(symbole, gant, ink, tordu = 0) {
   // Les routines d'entrée (routines.js, 14 novembre, idée d'un testeur) : la feuille dont un doigt s'abaisse (le pianiste),
   // les ciseaux fermés (les lames qui claquent), l'index replié (« viens par ici »).
+  // (les doigts repliés un par un, pour craquer les doigts : feuille-c0 replie l'index, feuille-c3 les quatre)
+  const craque = /^feuille-c([0-3])$/.exec(symbole);
+  if (craque) {
+    const k = +craque[1];
+    return `${[[29.5, 20, 34], [40, 12, 40], [50.5, 14, 38], [61, 22, 32]].map(([x, y, h], i) => doigt(x, i <= k ? y + 22 : y, i <= k ? h - 22 : h, gant, ink)).join("")}
+    ${paume(44, gant, ink)}
+    <path d="M40 60 q10 4 20 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
+  }
   const piano = /^feuille-p([0-3])$/.exec(symbole);
   if (piano) {
     const k = +piano[1];

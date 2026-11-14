@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import { ROUTINES, routineValide, signesDe, dureeDe } from "../app/js/routines.js";
 import { avatarSVG } from "../app/js/avatar.js";
 
-test("les routines d'entrée : 6, chacune avec ses images de la main", () => {
-  assert.deepEqual(Object.keys(ROUTINES), ["salut", "shadow", "pianiste", "viens", "claque", "trois"]);
+test("les routines d'entrée : 10, chacune avec ses images de la main", () => {
+  assert.deepEqual(Object.keys(ROUTINES), ["salut", "shadow", "pianiste", "viens", "claque", "trois", "chut", "craquer", "vague", "montre"]);
   assert.equal(routineValide("pianiste"), "pianiste"); assert.equal(routineValide("moonwalk"), null);
   assert.deepEqual(signesDe("trois"), ["pierre", "feuille", "ciseaux"]);
   assert.ok(dureeDe("pianiste") > 500);

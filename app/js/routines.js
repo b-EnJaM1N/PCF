@@ -10,6 +10,11 @@ export const ROUTINES = {
   viens: { nom: "« Viens par ici ! »", images: [["index", 380], ["index-plie", 260], ["index", 260], ["index-plie", 260], ["index", 700]] },
   claque: { nom: "Les ciseaux qui claquent", images: [["ciseaux", 200], ["ciseaux-ferme", 140], ["ciseaux", 200], ["ciseaux-ferme", 140], ["ciseaux", 600]] },
   trois: { nom: "Pierre, Feuille, Ciseaux !", images: [["pierre", 380], ["feuille", 380], ["ciseaux", 380], ["pierre", 600]], mouvement: "rebond" },
+  // (14 novembre au soir, accord du porteur du projet : « on les fait si c'est facile »)
+  chut: { nom: "« Chut ! » au public", images: [["index", 1000]], mouvement: "chut" },
+  craquer: { nom: "Craquer les doigts", images: [["feuille", 300], ["feuille-c0", 220], ["feuille-c1", 220], ["feuille-c2", 220], ["feuille-c3", 300], ["feuille", 500]] },
+  vague: { nom: "La vague", images: [["feuille-p0", 110], ["feuille-p1", 110], ["feuille-p2", 110], ["feuille-p3", 110], ["feuille-p2", 110], ["feuille-p1", 110], ["feuille-p0", 110], ["feuille", 400]] },
+  montre: { nom: "Regarder sa montre", images: [["pierre", 1000]], mouvement: "montre" },
 };
 export const routineValide = r => (ROUTINES[r] ? r : null);
 
