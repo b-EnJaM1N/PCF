@@ -173,6 +173,16 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    et peut réinviter ces derniers). L'invité reçoit une notification (une seule par tournoi), une carte en haut du menu Jouer et
    un encadré « 📨 Tu es invité » sur la page du cercle, avec « M'inscrire » (ou « … et accepter l'enjeu ») et « Non merci ».
    Les tournois hors cercle restent sur le lien à partager.
+27. **La page du cercle rangée et le classement interne** (14 novembre, demande du porteur du projet : « ça fait bazar » ; en test
+   d'abord, clé « pageCercle » de `nouveautes.js`). L'accueil du cercle : l'invitation éventuelle, le fil, le podium (les 3 premiers
+   du classement interne ; le toucher ouvre le classement), puis une grille de boutons : 🏆 Tournois (pastille s'il y a une
+   invitation), 📋 Classement (« Tu es 3e »), 📊 Stats et records, ➕ Inviter des amis, ⚙️ Gérer (responsable seulement ; « Quitter
+   le cercle » y passe, les autres membres le gardent en petit en bas de l'accueil). Chaque bouton ouvre sa rubrique seule, avec
+   « ← Retour au cercle » (la touche retour du téléphone aussi). « Derniers matchs » : fusionné avec le fil (décision du porteur du
+   projet). **Classement interne** (choix A, tournois compris ; `app/js/classement-cercle.js`) : le niveau du cercle, chacun part de
+   1000 points, seuls les duels entre membres comptent (amicaux, officiels, matchs de tournoi ; les 400 plus récents depuis la
+   création du cercle, lus avec les records), système Elo (K = 32) : battre un membre bien classé rapporte plus. Sous chaque nom :
+   V – D, pourcentage, niveau officiel. Les membres sans duel dans le cercle viennent après, sans rang.
 
 ## En bref (14 octobre 2026)
 
