@@ -37,11 +37,15 @@ export function suivreMatch(e, r) {
 }
 export function suivrePoignee(e, style) { if (style === "franche") e.franches++; return e; }
 
-// Où en est un défi : { texte, fait (déjà encaissé), reussi (réussi, encaissé ou non), pret (on peut tenter d'encaisser),
-// progression : « 2/3 » }. Un défi vérifié par le serveur est toujours « pret » : le serveur dira s'il est réussi.
+// Où en est un défi : { texte, fait (déjà encaissé), reussi (réussi, encaissé ou non), pret (réussi d'après le téléphone : la
+// pastille jaune, à encaisser), verifiable (vérifié par le serveur, pas encore vu réussi ici : on peut quand même demander au
+// serveur, s'il a été fait sur un autre appareil), progression : « 2/3 » }.
+// (14 novembre, remarque du porteur du projet : « Termine un duel en ligne » était toujours en jaune, même pas fait ; le jaune
+// est maintenant réservé aux défis réussis, partout pareil.)
 export function etatDefi(d, e) {
   const def = DEFIS[d.id];
-  if (!def) return { texte: d.id, fait: !!d.fait, reussi: !!d.fait, pret: false, progression: "" };
+  if (!def) return { texte: d.id, fait: !!d.fait, reussi: !!d.fait, pret: false, verifiable: false, progression: "" };
   const n = Math.min(def.but, def.mesure(e) || 0);
-  return { texte: def.texte, fait: !!d.fait, reussi: !!d.fait || n >= def.but, pret: !d.fait && (def.serveur || n >= def.but), progression: def.but > 1 ? `${n}/${def.but}` : "" };
+  return { texte: def.texte, fait: !!d.fait, reussi: !!d.fait || n >= def.but, pret: !d.fait && n >= def.but,
+    verifiable: !d.fait && !!def.serveur && n < def.but, progression: def.but > 1 ? `${n}/${def.but}` : "" };
 }
