@@ -503,6 +503,16 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 septuagies sexies. Inviter des membres à un tournoi de cercle (étape 76)
+
+1. Même manipulation avec [`etape-76-invitations-tournoi.sql`](etape-76-invitations-tournoi.sql), **après** l'étape 75
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-76-invitations-tournoi.sql).
+   L'organisateur d'un tournoi (ou d'un championnat) de cercle encore en inscriptions coche des membres à inviter ; chacun
+   reçoit « 📨 X t'invite au tournoi … » et répond « M'inscrire » ou « Non merci ». Personne n'est inscrit d'office.
+2. **Mettre à jour la fonction « Notifier »** : **Edge Functions** → **Notifier** → onglet **Code** →
+   remplace tout le code par la nouvelle version de [`functions/notifier/index.ts`](functions/notifier/index.ts)
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/functions/notifier/index.ts) → **Deploy**.
+
 ## 1 septuagies quinquies. Le ménage du journal des tâches automatiques (étape 75)
 
 Même manipulation que d'habitude avec [`etape-75-menage-journal.sql`](etape-75-menage-journal.sql)

@@ -27,9 +27,10 @@ export const heureParis = (date: string) => {
   return `${Number(h)} h${m === "00" ? "" : ` ${m}`}`;
 };
 
-// evenement : "defi" | "accepte" | "attend" | "tournoi" | "test" | "freeroll" | "programme" ; duel : la ligne du duel ;
-// adv : { pseudo, numero } de l'adversaire ; tournoi : { nom, depart } (tournoi programmé).
-export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }, tournoi?: { nom: string; depart: string }) {
+// evenement : "defi" | "accepte" | "attend" | "tournoi" | "test" | "freeroll" | "programme" | "invitation" ; duel : la ligne du duel ;
+// adv : { pseudo, numero } de l'adversaire (pour « invitation » : celui qui invite) ; tournoi : { nom, depart, mode } (tournoi programmé,
+// ou tournoi auquel on est invité).
+export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }, tournoi?: { nom: string; depart?: string; mode?: string }) {
   if (evenement === "test") return {
     titre: "🔔 Notification de test", texte: "Si tu lis ceci, les notifications marchent sur ce téléphone !", url: "./", tag: "test",
   };
@@ -40,10 +41,16 @@ export function message(evenement: string, duel: any, adv: { pseudo: string; num
   };
   if (evenement === "programme") return {
     titre: `🗓️ ${tournoi?.nom || "Ton tournoi"} commence dans 10 minutes`,
-    texte: `Ouvre HandSlam et garde l'appli ouverte : le tournoi démarre à ${tournoi ? heureParis(tournoi.depart) : "l'heure"} avec les inscrits présents.`,
+    texte: `Ouvre HandSlam et garde l'appli ouverte : le tournoi démarre à ${tournoi?.depart ? heureParis(tournoi.depart) : "l'heure"} avec les inscrits présents.`,
     url: "./?ouvrir=programmes", tag: "programme",
   };
   const qui = `${adv.pseudo}#${adv.numero}`;
+  // Invitation à un tournoi de cercle (étape 76, 14 novembre).
+  if (evenement === "invitation") return {
+    titre: `📨 ${qui} t'invite ${tournoi?.mode === "championnat" ? "au championnat" : "au tournoi"} ${tournoi?.nom || ""}`.trimEnd(),
+    texte: "Touche pour t'inscrire (ou dire « Non merci »).",
+    url: "./?ouvrir=invitations", tag: `invitation-${tournoi?.nom || ""}`,
+  };
   if (evenement === "defi") return {
     titre: `⚔️ ${qui} te défie !`,
     texte: `${texteFormat(duel.points_par_set, duel.sets_gagnants)} · ${duel.classe ? "duel officiel" : "duel amical"}. Touche pour répondre.`,
@@ -90,7 +97,7 @@ async function servir(req: Request) {
   if (!id) return reponse({ erreur: "notification manquante" }, 400);
   // On « prend » la notification : si elle est déjà partie, on ne la renvoie pas.
   const { data: notif } = await sb.from("notifications").update({ envoye_le: new Date().toISOString() })
-    .eq("id", id).is("envoye_le", null).select("duel_id, joueur, evenement, tournoi_id").maybeSingle();
+    .eq("id", id).is("envoye_le", null).select("duel_id, joueur, evenement, tournoi_id, de").maybeSingle();
   if (!notif) return reponse({ ok: true, deja: true });
   let duel: any = null, adv: any = null;
   if (notif.duel_id) {
@@ -98,8 +105,9 @@ async function servir(req: Request) {
     const advId = duel.j0 === notif.joueur ? duel.j1 : duel.j0;
     ({ data: adv } = await sb.from("profils").select("pseudo, numero").eq("id", advId).single());
   }
+  if (!notif.duel_id && notif.de) ({ data: adv } = await sb.from("profils").select("pseudo, numero").eq("id", notif.de).maybeSingle());   // qui invite
   let tournoi: any = null;
-  if (notif.tournoi_id) ({ data: tournoi } = await sb.from("tournois").select("nom, depart").eq("id", notif.tournoi_id).maybeSingle());
+  if (notif.tournoi_id) ({ data: tournoi } = await sb.from("tournois").select("nom, depart, mode").eq("id", notif.tournoi_id).maybeSingle());
   const m = message(notif.evenement, duel, adv || { pseudo: "Un joueur", numero: 0 }, tournoi || undefined);
 
   webpush.setVapidDetails(ADRESSE_APPLI, cles.publique, cles.privee);
