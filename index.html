@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="version" content="c8182cb du 14/11/2026">
+<meta name="version" content="87ac018 du 14/11/2026">
 <title>HandSlam</title>
 <meta name="description" content="HandSlam — le Pierre-Feuille-Ciseaux devient un sport. Sets de 11 points, arbitre, commentateur et tournois.">
 <meta name="theme-color" content="#0F2C52">
@@ -314,17 +314,17 @@
       </div>
 
       <div id="socCercle" hidden>
-        <p style="margin:0 0 10px"><button class="linkbtn" id="cercleRetour">← Mes cercles</button></p>
+        <p style="margin:0 0 10px"><button class="linkbtn" id="cercleRetour">← Mes cercles</button><button class="linkbtn" id="cRubriqueRetour" hidden>← Retour au cercle</button></p>
         <section class="card cercle-tete">
           <span class="blason-grand" id="cBlason"></span>
           <div><h2 id="cNom"></h2><p class="hint" id="cInfo"></p></div>
         </section>
-        <section class="card invitations-carte" id="cInvitations" hidden>
+        <section class="card invitations-carte" id="cInvitations" data-accueil hidden>
           <h2>📨 Tu es invité</h2>
           <div id="cInvitationsListe"></div>
           <p class="hint" id="cInvitationsMsg" role="status"></p>
         </section>
-        <section class="card" id="cFilCarte" hidden>
+        <section class="card" id="cFilCarte" data-accueil hidden>
           <h2>📰 Le fil du cercle</h2>
           <p class="fil-dossard" id="cDossard" hidden></p>
           <div class="fil" id="cFil"></div>
@@ -332,30 +332,43 @@
           <button class="btn alt" id="cFilPlus" hidden style="margin-top:8px"></button>
           <p class="hint" id="cFilMsg" role="status"></p>
         </section>
-        <details class="card pli" id="cRecordsCarte" hidden>
+        <!-- (14 novembre, demande du porteur du projet : la page du cercle rangée ; l'accueil (fil, podium, boutons), puis une page
+             par rubrique : data-rubrique ; voir ecran-cercles.js, clé « pageCercle » de nouveautes.js) -->
+        <section class="card cercle-podium" id="cPodium" data-accueil hidden>
+          <h2>🏅 Le podium du cercle</h2>
+          <button class="podium" id="cPodiumListe" aria-label="Voir le classement du cercle"></button>
+        </section>
+        <div class="cercle-grille" id="cGrille" data-accueil hidden>
+          <button class="cercle-tuile" data-ouvrir="tournois"><span class="tuile-i">🏆</span><b>Tournois</b><small id="cTuileTournois">du cercle</small><span class="pastille" id="cPastilleTournois" hidden></span></button>
+          <button class="cercle-tuile" data-ouvrir="classement"><span class="tuile-i">📋</span><b>Classement</b><small id="cTuileClassement">du cercle</small></button>
+          <button class="cercle-tuile" data-ouvrir="stats" id="cTuileStats"><span class="tuile-i">📊</span><b>Stats et records</b><small>du cercle</small></button>
+          <button class="cercle-tuile" data-ouvrir="inviter"><span class="tuile-i">➕</span><b>Inviter</b><small>des amis</small></button>
+          <button class="cercle-tuile" data-ouvrir="gerer" id="cTuileGerer"><span class="tuile-i">⚙️</span><b>Gérer</b><small>le cercle</small></button>
+        </div>
+        <details class="card pli" id="cRecordsCarte" data-rubrique="stats" hidden>
           <summary><h2>📊 Records du cercle</h2></summary>
           <div class="seg" id="cRecordsFiltre" role="group" aria-label="Quels matchs"><button data-v="tous" aria-pressed="true">Tous les duels</button><button data-v="tournois" aria-pressed="false">Tournois du cercle</button></div>
           <div id="cRecordsListe" class="records"></div>
           <p class="hint" id="cRecordsMsg" role="status"></p>
         </details>
-        <section class="card">
+        <section class="card" data-rubrique="classement">
           <h2>Classement du cercle</h2>
           <ol class="classement" id="cClassement"></ol>
-          <p class="hint">Rangé par niveau officiel. Victoires et défaites : duels joués entre membres depuis la création du cercle.</p>
+          <p class="hint" id="cClassementNote">Rangé par niveau officiel. Victoires et défaites : duels joués entre membres depuis la création du cercle.</p>
         </section>
-        <section class="card">
+        <section class="card" data-rubrique="tournois">
           <h2>Tournois du cercle</h2>
           <div id="cTournois" class="resultats"></div>
           <p class="hint" id="cTournoisVide">Aucun tournoi pour l'instant. Organise le premier !</p>
           <button class="btn alt" id="cNouveauTournoi" style="margin-top:10px">Organiser un tournoi du cercle</button>
         </section>
-        <section class="card">
+        <section class="card" data-rubrique="inviter">
           <h2>Inviter dans le cercle</h2>
           <button class="btn" id="cPartager">Envoyer le lien d'invitation (WhatsApp, SMS…)</button>
           <div id="cAmis" class="resultats" style="margin-top:12px"></div>
           <p class="locknote" id="cInvMsg" role="status"></p>
         </section>
-        <section class="card edit" id="cGestion" hidden>
+        <section class="card edit" id="cGestion" data-rubrique="gerer" hidden>
           <h2>Gérer le cercle</h2>
           <label class="lbl" for="inCNom">Nom</label>
           <input type="text" id="inCNom" maxlength="30" autocomplete="off">
@@ -368,7 +381,7 @@
           <button class="btn alt danger" id="cSupprimer" style="margin-top:12px">Supprimer le cercle</button>
         </section>
         <p class="locknote" id="cMsg" role="status"></p>
-        <p style="text-align:center;margin:6px 0 0"><button class="linkbtn" id="cQuitter">Quitter le cercle</button></p>
+        <p style="text-align:center;margin:6px 0 0" id="cQuitterZone"><button class="linkbtn" id="cQuitter">Quitter le cercle</button></p>
       </div>
 
       <div id="socAmi" hidden>

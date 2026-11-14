@@ -16,6 +16,7 @@ import { calculerRecords, htmlRecords } from "./records-cercle.js";
 import { filVisible, evenementsDuFil, evenementsChampionnat, evenementsDossard, scoreDuDuel, ilYA, REACTIONS } from "./fil-cercle.js";
 import { championDuCercle, texteInvitation, invitationsDuCercle } from "./tournoi-logique.js";
 import { profils } from "./duel-serveur.js";
+import { classementCercle, podiumCercle } from "./classement-cercle.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -379,6 +380,7 @@ export function installerCercles(ctx) {
     $("cRecordsCarte").hidden = !ouvert("records"); $("cRecordsCarte").open = false; $("cRecordsListe").innerHTML = ""; dire("cRecordsMsg", ""); recordsCharges = null;
     recordsFiltre = "tous"; $("cRecordsFiltre").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === "tous")));
     dire("cMsg", message); dire("cInvMsg", "");
+    rubrique = null; classementInterne = null; $("cPodium").hidden = true; appliquerRubrique();
     window.scrollTo(0, 0);
     chargerCercle();
   }
@@ -388,10 +390,83 @@ export function installerCercles(ctx) {
   }
   $("cercleRetour").addEventListener("click", () => { fermerCercle(); rafraichir(); });
 
+  // ------------------------------------------------ la page du cercle rangée (14 novembre, demande du porteur du projet)
+  // L'accueil : le fil, le podium du cercle et une grille de boutons (Tournois, Classement, Stats et records, Inviter, Gérer) ;
+  // chaque bouton ouvre sa rubrique, seule, avec « ← Retour au cercle » (la touche retour du téléphone aussi).
+  // D'abord sur la version de test (clé « pageCercle ») ; ailleurs, l'ancienne page (tout à la suite).
+  const pageRangee = () => ouvert("pageCercle");
+  let rubrique = null;
+  function appliquerRubrique() {
+    const v2 = pageRangee(), el = $("socCercle"), dedans = v2 && !!rubrique;
+    el.classList.toggle("cercle-v2", v2); el.classList.toggle("en-rubrique", dedans);
+    el.classList.toggle("admin", detail?.role === "admin");
+    [...el.classList].filter(c => c.startsWith("r-")).forEach(c => el.classList.remove(c));
+    if (dedans) el.classList.add(`r-${rubrique}`);
+    el.querySelectorAll("[data-rubrique]").forEach(x => x.classList.toggle("rubrique-active", x.dataset.rubrique === rubrique));
+    $("cGrille").hidden = !v2;
+    $("cRubriqueRetour").hidden = !dedans; $("cercleRetour").hidden = dedans;
+    $("cTuileStats").hidden = !ouvert("records");
+    $("cTuileGerer").hidden = detail?.role !== "admin";
+  }
+  function ouvrirRubrique(r) {
+    rubrique = r;
+    try { history.pushState({ ...(history.state || {}), vue: "viewCercles", rubrique: r }, "", location.href); } catch { /* sans historique */ }
+    appliquerRubrique(); window.scrollTo(0, 0);
+    if (r === "stats") $("cRecordsCarte").open = true;   // (les records se chargent à l'ouverture)
+  }
+  $("cGrille").addEventListener("click", e => { const b = e.target.closest("[data-ouvrir]"); if (b) ouvrirRubrique(b.dataset.ouvrir); });
+  $("cPodiumListe").addEventListener("click", () => ouvrirRubrique("classement"));
+  $("cRubriqueRetour").addEventListener("click", () => {
+    if (history.state?.rubrique) history.back(); else { rubrique = null; appliquerRubrique(); window.scrollTo(0, 0); }
+  });
+  window.addEventListener("popstate", () => { if (rubrique && !history.state?.rubrique) { rubrique = null; appliquerRubrique(); } });
+
+  // Le classement interne (classement-cercle.js, choix A du porteur du projet) : le niveau du cercle, d'après les duels entre
+  // membres (tournois compris), lus avec les records du cercle ; rechargé au plus toutes les 2 minutes.
+  let classementInterne = null, duelsInternes = null;
+  async function chargerClassementInterne(id, membres) {
+    if (!duelsInternes || duelsInternes.id !== id || Date.now() - duelsInternes.t > 120000) {
+      try { duelsInternes = { id, t: Date.now(), duels: (await social.recordsCercle(id, false))?.duels || [] }; } catch { return; }
+    }
+    if (cercleOuvert !== id) return;
+    classementInterne = classementCercle(membres, duelsInternes.duels);
+    renderClassement(membres);
+  }
+  const PLACES = ["🥇", "🥈", "🥉"];
+  function renderPodium() {
+    const p = podiumCercle(classementInterne);
+    $("cPodium").hidden = !pageRangee() || !p.length;
+    // (dans l'ordre du podium : 2e, 1er, 3e)
+    $("cPodiumListe").innerHTML = [1, 0, 2].map(i => p[i] ? `<span class="podium-place p${i + 1}"><span class="mini">${avatarSVG(p[i].avatar || {})}</span>
+      <span class="podium-nom">${esc(p[i].pseudo)}${p[i].id === uid ? " (toi)" : ""}</span><span class="podium-pts">${p[i].points} pts</span>
+      <span class="podium-marche">${PLACES[i]}</span></span>` : `<span class="podium-place vide"><span class="podium-marche"></span></span>`).join("");
+  }
+  function renderClassement(membres) {
+    const interne = pageRangee() && classementInterne;
+    const liste = interne ? classementInterne : membres;
+    $("cClassement").innerHTML = liste.map((m, i) => `<li class="${m.id === uid ? "moi" : ""}" data-id="${m.id}">
+      <span class="cl-rang">${interne ? m.rang ?? "–" : i + 1}</span>
+      <span class="mini">${avatarSVG(m.avatar || {})}</span>
+      <div style="min-width:0"><div class="jn">${nomComplet(m)}${pointPresence(m)}${m.role === "admin" ? ' <span title="Responsable du cercle">👑</span>' : ""}${m.id === uid ? " <small>(toi)</small>" : ""}</div>
+        <div class="jd">${interne ? (m.joues ? `${m.v} V – ${m.d} D · ${m.pct} % · niveau officiel ${m.classement}` : `Pas encore de duel dans le cercle · niveau officiel ${m.classement}`) : `${m.v} V – ${m.d} D dans le cercle`}</div></div>
+      <b class="cl-points">${interne ? (m.joues ? m.points : "") : m.classement}</b>
+      ${m.id === uid ? "<span></span>" : boutonDefier(m)}
+    </li>`).join("");
+    $("cClassementNote").textContent = interne
+      ? "Le niveau du cercle : chacun part de 1000 points, et seuls les duels entre membres comptent (tournois compris). Battre un membre bien classé rapporte plus que battre le dernier."
+      : "Rangé par niveau officiel. Victoires et défaites : duels joués entre membres depuis la création du cercle.";
+    if (interne) {
+      const moi = classementInterne.find(m => m.id === uid);
+      $("cTuileClassement").textContent = moi?.rang ? `Tu es ${moi.rang === 1 ? "1er" : `${moi.rang}e`}` : "du cercle";
+      renderPodium();
+    }
+  }
+
   // ------------------------------------------------ les invitations aux tournois de ce cercle (étape 76, 14 novembre)
   function renderInvitationsCercle() {
     const liste = cercleOuvert ? invitationsDuCercle(invitations, cercleOuvert) : [];
     $("cInvitations").hidden = !liste.length;
+    $("cPastilleTournois").hidden = !liste.length; $("cPastilleTournois").textContent = liste.length;   // (le bouton Tournois de la page rangée)
     $("cInvitationsListe").innerHTML = liste.map(i => `<div class="invitation-ligne" data-tournoi-invit="${esc(i.tournoi)}">
       <div class="jn">${esc(texteInvitation(i))}</div>${i.enjeu ? `<div class="jd">Enjeu : ${esc(i.enjeu)}</div>` : ""}
       <div class="actions"><button class="petit" data-i="inscrire">${i.enjeu ? "M'inscrire et accepter l'enjeu" : "M'inscrire"}</button>
@@ -441,14 +516,8 @@ export function installerCercles(ctx) {
     $("cBlason").innerHTML = blasonSVG(c.blason);
     $("cNom").textContent = c.nom;
     $("cInfo").textContent = `${pluriel(membres.length, "membre")} · ${pluriel(c.matchs, "duel")} entre membres`;
-    $("cClassement").innerHTML = membres.map((m, i) => `<li class="${m.id === uid ? "moi" : ""}" data-id="${m.id}">
-      <span class="cl-rang">${i + 1}</span>
-      <span class="mini">${avatarSVG(m.avatar || {})}</span>
-      <div style="min-width:0"><div class="jn">${nomComplet(m)}${pointPresence(m)}${m.role === "admin" ? ' <span title="Responsable du cercle">👑</span>' : ""}${m.id === uid ? " <small>(toi)</small>" : ""}</div>
-        <div class="jd">${m.v} V – ${m.d} D dans le cercle</div></div>
-      <b class="cl-points">${m.classement}</b>
-      ${m.id === uid ? "<span></span>" : boutonDefier(m)}
-    </li>`).join("");
+    renderClassement(membres);
+    if (pageRangee()) chargerClassementInterne(id, membres);
     const dedans = new Set(membres.map(m => m.id));
     const aInviter = amis.filter(a => a.statut === "amis" && !dedans.has(a.id));
     // (les amis déjà invités, retenus sur le téléphone : le rafraîchissement de la page ne remet pas « Inviter »)
@@ -459,6 +528,7 @@ export function installerCercles(ctx) {
       : "";
     const admin = c.role === "admin";
     $("cGestion").hidden = !admin;
+    appliquerRubrique();
     $("cQuitter").textContent = "Quitter le cercle";
     if (admin) {
       if (premiere) { $("inCNom").value = c.nom; blasonGestion.ecrire(c.blason); }
