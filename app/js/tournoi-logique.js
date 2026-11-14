@@ -154,3 +154,16 @@ export function minutesRestantes(m, t) {
   const restants = sg - Math.max(...sets), fait = Math.min(0.9, Math.max(...pts) / (t.points_par_set || 11));
   return Math.max(1, Math.round((restants - fait) * parSet));
 }
+
+// ---------------------------------------------------------------- les invitations à un tournoi de cercle (étape 76, 14 novembre)
+// Où en est un membre que l'organisateur peut inviter (invitables_tournoi) : inscrit, invité (sans réponse), « Non merci », ou rien.
+export const ETATS_INVITE = { inscrit: "✅ Inscrit", invite: "📨 Invité", refuse: "🙅 « Non merci »" };
+// Un membre déjà inscrit, ou invité sans avoir encore répondu, n'est pas à cocher ; un « Non merci » peut être réinvité.
+export const invitable = m => !m.etat || m.etat === "refuse";
+// Le texte d'une invitation reçue (mes_invitations) : « Benja-Main t'invite au tournoi « Coupe du vendredi » ».
+export function texteInvitation(i) {
+  const quoi = i.mode === "championnat" ? "au championnat" : "au tournoi";
+  return `${i.de?.pseudo || "L'organisateur"} t'invite ${quoi} « ${i.nom} »`;
+}
+// Les invitations reçues pour les tournois d'un cercle.
+export const invitationsDuCercle = (liste, cercle) => (liste || []).filter(i => i.cercle === cercle);

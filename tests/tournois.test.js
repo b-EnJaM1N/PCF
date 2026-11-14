@@ -146,3 +146,16 @@ test("championnat avec playoffs : la phase, le tableau final, celui qui s'y coll
   assert.equal(quiSyColle({ dernier: { id: "f" } }).id, "f");
   assert.equal(quiSyColle({ phase: "termine", classement: [{ joueur: { id: "a" } }, { joueur: { id: "z" } }] }).id, "z");
 });
+
+test("les invitations à un tournoi de cercle : qui cocher, et le texte reçu", async () => {
+  const { invitable, texteInvitation, invitationsDuCercle, ETATS_INVITE } = await import("../app/js/tournoi-logique.js");
+  assert.equal(invitable({ etat: null }), true, "pas encore invité");
+  assert.equal(invitable({ etat: "refuse" }), true, "un « Non merci » peut être réinvité");
+  assert.equal(invitable({ etat: "invite" }), false, "déjà invité, sans réponse");
+  assert.equal(invitable({ etat: "inscrit" }), false);
+  assert.equal(ETATS_INVITE.inscrit, "✅ Inscrit");
+  assert.equal(texteInvitation({ nom: "Coupe du vendredi", mode: "libre", de: { pseudo: "Benja-Main" } }), "Benja-Main t'invite au tournoi « Coupe du vendredi »");
+  assert.equal(texteInvitation({ nom: "Ligue", mode: "championnat", de: null }), "L'organisateur t'invite au championnat « Ligue »");
+  assert.deepEqual(invitationsDuCercle([{ cercle: "a", nom: "x" }, { cercle: "b", nom: "y" }], "a").map(i => i.nom), ["x"]);
+  assert.deepEqual(invitationsDuCercle(null, "a"), []);
+});

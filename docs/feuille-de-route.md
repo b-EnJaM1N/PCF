@@ -166,6 +166,13 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    - **L'usure au 2e smash du set** (13 novembre au soir, demande du porteur du projet) : les lames tordues sont en plus ébréchées
      et fendues (main nue : un bleu et un pansement au pli du doigt) ; le gant déchiré a un lambeau de tissu qui pend.
    - Idée laissée de côté pour l'instant : la balle de match au ralenti. Les gestes de victoire existent déjà (boutique).
+26. **Les invitations à un tournoi de cercle** (14 novembre, demande du porteur du projet : « je préfère inviter plutôt
+   qu'inscrire d'office », choix B ; étape SQL 76 et fonction « Notifier » ; en test d'abord, clé « invitations » de
+   `nouveautes.js`). Sur la page d'un tournoi ou d'un championnat de cercle en inscriptions, l'organisateur touche « 📨 Inviter
+   des membres du cercle », coche qui il veut (« Tout cocher » possible ; il voit qui est inscrit, invité ou a dit « Non merci »,
+   et peut réinviter ces derniers). L'invité reçoit une notification (une seule par tournoi), une carte en haut du menu Jouer et
+   un encadré « 📨 Tu es invité » sur la page du cercle, avec « M'inscrire » (ou « … et accepter l'enjeu ») et « Non merci ».
+   Les tournois hors cercle restent sur le lien à partager.
 
 ## En bref (14 octobre 2026)
 

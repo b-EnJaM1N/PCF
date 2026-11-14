@@ -13,6 +13,12 @@ test("les messages des notifications", () => {
   assert.equal(message("attend", duel, adv).url, "./?ouvrir=duels");
   assert.equal(message("tournoi", { ...duel, phase: "presentation" }, adv).texte, "Contre Bob#4821. Tu as 60 secondes pour arriver !");
   assert.equal(message("tournoi", duel, adv).texte, "Bob#4821 t'attend pour votre match.");
+  // l'invitation à un tournoi de cercle (étape 76) : adv est celui qui invite
+  assert.deepEqual(message("invitation", null, adv, { nom: "Coupe du vendredi", mode: "libre" }), {
+    titre: "📨 Bob#4821 t'invite au tournoi Coupe du vendredi", texte: "Touche pour t'inscrire (ou dire « Non merci »).",
+    url: "./?ouvrir=invitations", tag: "invitation-Coupe du vendredi",
+  });
+  assert.equal(message("invitation", null, adv, { nom: "Ligue", mode: "championnat" }).titre, "📨 Bob#4821 t'invite au championnat Ligue");
   assert.equal(texteFormat(7, 1), "Sets de 7 points · match en 1 set");
   assert.equal(texteFormat(1, 1), "Sets de 1 point · match en 1 set");
 });

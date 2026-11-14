@@ -8,6 +8,8 @@
 //   avis : la carte « Ton avis ? » à la fin d'un match, une seule fois après le 5e match (11 novembre) ;
 //   fiche : la fiche complète d'un joueur en ligne, stats, face-à-face, historique (11 novembre, étape SQL 68).
 //   records : les records du cercle, tous les duels ou les tournois seulement (13 novembre, étape SQL 74).
+//   invitations : l'organisateur d'un tournoi de cercle invite des membres (notification, « M'inscrire » ou « Non merci »)
+//     (14 novembre, étape SQL 76 et fonction « Notifier » à mettre à jour).
 //   effets : la main en feu (4, 6, 8 points de suite), les égalités en chaîne, le double smash avec le même signe (séisme,
 //     coup de vent, étincelles) (13 novembre, effets.js ; la fissure agrandie, elle, est pour tous).
 //   dossard : le Dossard 1, gant jaune du tenant du titre d'un cercle, son annonce dans le fil, le trophée de la coupe (12 novembre, étape SQL 71).
