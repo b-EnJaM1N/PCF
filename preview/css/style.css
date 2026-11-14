@@ -1086,3 +1086,15 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .effet-etincelles.petite span { height: 8px; }
 @keyframes etincelle-part { 0% { transform: rotate(var(--angle)) translateY(0) scaleY(.4); opacity: 1; } 100% { transform: rotate(var(--angle)) translateY(calc(var(--loin) * -1)) scaleY(1); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .feu .braise, .feu .fumee, .feu .bouffee, .hand[class*="tremble-"] .poing-av { animation: none !important; } .feu .bouffee { opacity: 0; } }
+
+/* Les invitations à un tournoi de cercle (étape 76 ; 14 novembre). */
+.invitations-carte { border: 2px solid var(--me); }
+.invitation-ligne { padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+.invitation-ligne:last-child { border-bottom: 0; }
+.invitation-ligne .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.invit-liste { max-height: 50vh; overflow-y: auto; margin-top: 6px; }
+.invit-liste label { display: flex; align-items: center; gap: 10px; padding: 6px 2px; cursor: pointer; }
+.invit-liste label.grise { opacity: .55; cursor: default; }
+.invit-liste input { width: 20px; height: 20px; flex: none; }
+.invit-liste .invit-etat { margin-left: auto; font-size: .8rem; color: var(--muted); white-space: nowrap; }
+.tournoi-invite { margin: 0 0 8px; font-weight: 600; color: var(--me); }

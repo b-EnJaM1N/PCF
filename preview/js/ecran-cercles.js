@@ -14,7 +14,7 @@ import { fantomeVisible } from "./fantome.js";
 import { ouvert } from "./nouveautes.js";
 import { calculerRecords, htmlRecords } from "./records-cercle.js";
 import { filVisible, evenementsDuFil, evenementsChampionnat, evenementsDossard, scoreDuDuel, ilYA, REACTIONS } from "./fil-cercle.js";
-import { championDuCercle } from "./tournoi-logique.js";
+import { championDuCercle, texteInvitation, invitationsDuCercle } from "./tournoi-logique.js";
 import { profils } from "./duel-serveur.js";
 
 const $ = id => document.getElementById(id);
@@ -70,7 +70,7 @@ function corpsFaceAFace(r, nom, officiels = false) {
 }
 
 export function installerCercles(ctx) {
-  let uid = null, minuterie = 0, recherche = 0, amis = [], echanges = new Map(), cercleOuvert = null, detail = null;
+  let uid = null, minuterie = 0, recherche = 0, amis = [], echanges = new Map(), cercleOuvert = null, detail = null, invitations = [];
   const base = () => location.origin + location.pathname;
   const dire = (id, t, erreur = false) => {
     $(id).textContent = t; $(id).classList.toggle("erreur", erreur);
@@ -122,7 +122,7 @@ export function installerCercles(ctx) {
     $("socHors").hidden = !!uid; $("socOn").hidden = !uid;
     clearInterval(minuterie);
     $("tournoisCard").hidden = !uid; $("tournoisHors").hidden = !!uid;
-    if (!uid) { $("pastilleCercles").hidden = true; ctx.signaler("tournois", []); ctx.surClassement(null); fermerCercle(); return; }
+    if (!uid) { $("pastilleCercles").hidden = true; ctx.signaler("tournois", []); ctx.signaler("invitations", []); invitations = []; ctx.surClassement(null); fermerCercle(); return; }
     minuterie = setInterval(() => { rafraichir(); if (cercleOuvert && visible() && !$("socCercle").hidden) chargerCercle(); }, 20000);
     rafraichir();
     rejoindreLienEnAttente();
@@ -139,6 +139,10 @@ export function installerCercles(ctx) {
       social.mesTournois().catch(() => null), mesDuelsRecents().catch(() => null),
     ]);
     if (recents) echanges = compterEchanges(recents, uid);
+    // Mes invitations aux tournois de mes cercles (étape 76) : en haut du menu Jouer, et sur la page du cercle.
+    if (ouvert("invitations")) social.mesInvitations().then(liste => {
+      invitations = liste || []; ctx.signaler("invitations", invitations); renderInvitationsCercle();
+    }).catch(() => {});
     if (mesTournois) {
       $("socTournoisVide").hidden = mesTournois.length > 0;
       tournois.liste($("socTournois"), mesTournois);
@@ -384,6 +388,29 @@ export function installerCercles(ctx) {
   }
   $("cercleRetour").addEventListener("click", () => { fermerCercle(); rafraichir(); });
 
+  // ------------------------------------------------ les invitations aux tournois de ce cercle (étape 76, 14 novembre)
+  function renderInvitationsCercle() {
+    const liste = cercleOuvert ? invitationsDuCercle(invitations, cercleOuvert) : [];
+    $("cInvitations").hidden = !liste.length;
+    $("cInvitationsListe").innerHTML = liste.map(i => `<div class="invitation-ligne" data-tournoi-invit="${esc(i.tournoi)}">
+      <div class="jn">${esc(texteInvitation(i))}</div>${i.enjeu ? `<div class="jd">Enjeu : ${esc(i.enjeu)}</div>` : ""}
+      <div class="actions"><button class="petit" data-i="inscrire">${i.enjeu ? "M'inscrire et accepter l'enjeu" : "M'inscrire"}</button>
+      <button class="petit alt" data-i="refuser">Non merci</button><button class="linkbtn" data-i="voir">Voir le tournoi</button></div></div>`).join("");
+  }
+  $("cInvitationsListe").addEventListener("click", async e => {
+    const b = e.target.closest("button[data-i]"), l = e.target.closest("[data-tournoi-invit]"); if (!b || !l) return;
+    const id = l.dataset.tournoiInvit;
+    if (b.dataset.i === "voir") { tournois.ouvrir(id); return; }
+    b.disabled = true;
+    try {
+      if (b.dataset.i === "inscrire") { await social.inscrireTournoi(id); dire("cInvitationsMsg", "Inscription enregistrée !"); }
+      else { await social.refuserInvitation(id); dire("cInvitationsMsg", "Invitation refusée."); }
+      invitations = invitations.filter(i => i.tournoi !== id); ctx.signaler("invitations", invitations); renderInvitationsCercle();
+      $("cInvitations").hidden = false;   // (le temps de lire le message)
+      rafraichir(); if (cercleOuvert) chargerCercle();
+    } catch (err) { dire("cInvitationsMsg", err.message, true); b.disabled = false; }
+  });
+
   async function chargerCercle() {
     const id = cercleOuvert;
     let c;
@@ -407,6 +434,7 @@ export function installerCercles(ctx) {
       if (ligne && !ligne.querySelector(".champion")) ligne.insertAdjacentHTML("beforeend", ' <span class="champion" title="Champion du cercle">🏆</span>');
     }).catch(() => {});
     const membres = c.membres || [];
+    renderInvitationsCercle();
     chargerFil(id);
     const moi = membres.find(m => m.id === uid);
     if (moi) ctx.trophees?.({ duelsCercle: (moi.v || 0) + (moi.d || 0) });

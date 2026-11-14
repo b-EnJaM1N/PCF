@@ -7,7 +7,7 @@ import { texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { formatCourt } from "./duel-logique.js";
 import { nomTour, monTour, DUREES, texteDuree, texteReste, texteFin, monMatch, attente, tableau, resume, lienTournoi, codeTournoiDepuisAdresse,
   mesMatchsRestants, DUREES_CHAMPIONNAT, MAX_CHAMPIONNAT, matchsParJoueur, texteDureeChampionnat, dernierDuClassement, texteDepart,
-  textePlayoffs, phaseChampionnat, tableauFinal, quiSyColle, LETTRES_POULES } from "./tournoi-logique.js";
+  textePlayoffs, phaseChampionnat, tableauFinal, quiSyColle, LETTRES_POULES, ETATS_INVITE, invitable, texteInvitation } from "./tournoi-logique.js";
 import { ouvert as nouveauteOuverte } from "./nouveautes.js";
 import { calculerRecords, htmlRecords } from "./records-cercle.js";
 import { SUGGESTIONS, erreurEnjeu, nettoyerEnjeu, annonceEnjeu } from "./enjeux.js";
@@ -205,6 +205,12 @@ export function installerTournois(ctx) {
     let t;
     try { t = await social.voirTournoi(id); } catch (e) { if (ouvert === id) dire(e.message, true); return; }
     if (ouvert !== id) return;
+    // Mon invitation à ce tournoi de cercle (étape 76), si je ne suis pas encore inscrit.
+    if (invitationsActives() && t.cercle && !t.inscrit && t.phase === "inscriptions") {
+      const liste = await social.mesInvitations().catch(() => []);
+      if (ouvert !== id) return;
+      t.invitation = (liste || []).find(i => i.tournoi === id) || null;
+    }
     decalage = Date.parse(t.maintenant) - Date.now();
     detail = t;
     render();
@@ -334,7 +340,11 @@ export function installerTournois(ctx) {
       $("tInscrits").innerHTML = t.joueurs.map(j => `<div class="joueur"><span class="mini">${avatarSVG(j.avatar || {})}</span>
         <div style="min-width:0"><div class="jn">${esc(j.drapeau || "")} ${nomComplet(j)}${j.id === uid ? " <small>(toi)</small>" : ""}</div><div class="jd">Niveau ${j.classement}</div></div><span></span></div>`).join("");
       $("tActions").innerHTML = [
+        t.invitation ? `<p class="tournoi-invite">📨 ${esc(texteInvitation(t.invitation))}</p>` : "",
         !t.inscrit ? `<button class="btn" data-a="inscrire">${t.enjeu ? "M'inscrire et accepter l'enjeu" : "M'inscrire"}</button>` : "",
+        t.invitation ? `<button class="btn alt" data-a="refuser">Non merci</button>` : "",
+        // (étape 76 : l'organisateur d'un tournoi de cercle invite des membres, qui choisissent de s'inscrire ou non)
+        t.createur && t.cercle && !direct && invitationsActives() ? `<button class="btn" data-a="inviter">📨 Inviter des membres du cercle</button>` : "",
         ch && t.joueurs.length >= 3 ? `<p class="hint">À ${t.joueurs.length} joueurs : ${matchsParJoueur(t.joueurs.length, t.aller_retour)} matchs chacun.</p>` : "",
         `<button class="btn alt" data-a="partager">Inviter avec le lien (WhatsApp, SMS…)</button>`,
         organise ? `<button class="btn" data-a="lancer" ${t.joueurs.length < 3 ? "disabled" : ""}>Lancer le ${ch ? "championnat" : "tournoi"} (${t.joueurs.length} joueurs)</button>` : "",
@@ -395,6 +405,7 @@ export function installerTournois(ctx) {
     const b = e.target.closest("button"); if (!b || !detail) return;
     const a = b.dataset.a, id = detail.id;
     if (a === "partager") return partager();
+    if (a === "inviter") return ouvrirInvitations();
     const quoi = detail.mode === "championnat" ? "championnat" : "tournoi";
     if (a === "annuler" && !confirm(`Annuler le ${quoi} « ${detail.nom} » ?`)) return;
     if (a === "lancer" && !confirm(`Lancer le ${quoi} avec ${detail.joueurs.length} joueurs ? Les inscriptions seront closes.`)) return;
@@ -402,6 +413,7 @@ export function installerTournois(ctx) {
     try {
       if (a === "inscrire") { await social.inscrireTournoi(id); dire("Inscription enregistrée !"); }
       if (a === "desinscrire") { await social.desinscrireTournoi(id); dire("Inscription annulée."); }
+      if (a === "refuser") { await social.refuserInvitation(id); dire("Invitation refusée : l'organisateur le verra. Tu peux toujours t'inscrire plus tard."); }
       if (a === "lancer") { await social.lancerTournoi(id); dire(quoi === "championnat" ? "C'est parti ! Tous les matchs peuvent se jouer, dans l'ordre que vous voulez." : "C'est parti ! Le premier tour commence."); }
       if (a === "annuler") { await social.annulerTournoi(id); dire(quoi === "championnat" ? "Championnat annulé." : "Tournoi annulé."); }
       ctx.apresChangement();
@@ -419,6 +431,46 @@ export function installerTournois(ctx) {
     if (!detail || !confirm("Effacer l'enjeu de ce championnat ?")) return;
     try { await social.effacerEnjeuTournoi(detail.id); dire("Enjeu effacé."); } catch (err) { dire(err.message, true); }
     charger();
+  });
+
+  // ------------------------------------------------ inviter des membres du cercle (étape 76, 14 novembre ; choix B du porteur du projet)
+  // L'organisateur coche les membres à inviter ; chacun reçoit une notification et choisit de s'inscrire ou non.
+  const invitationsActives = () => nouveauteOuverte("invitations");
+  let invitables = [];
+  const direInvit = (texte, erreur = false) => { $("invitMsg").textContent = texte; $("invitMsg").classList.toggle("erreur", erreur); };
+  function renderInvitables() {
+    $("invitListe").innerHTML = invitables.length ? invitables.map(m => `<label class="${invitable(m) ? "" : "grise"}">
+        <input type="checkbox" value="${esc(m.id)}" ${invitable(m) ? "" : "disabled"}>
+        <span class="mini">${avatarSVG(m.avatar || {})}</span><span class="jn">${nomComplet(m)}</span>
+        <span class="invit-etat">${m.etat ? ETATS_INVITE[m.etat] || "" : ""}</span></label>`).join("")
+      : `<p class="hint">Personne d'autre dans le cercle pour l'instant.</p>`;
+    $("invitTous").hidden = !invitables.some(invitable);
+    $("invitEnvoyer").disabled = !invitables.some(invitable);
+  }
+  async function ouvrirInvitations() {
+    if (!detail) return;
+    invitables = []; direInvit("Chargement…"); $("invitListe").innerHTML = ""; $("invitTitre").textContent = `📨 Inviter au ${detail.mode === "championnat" ? "championnat" : "tournoi"}`;
+    $("invitFenetre").hidden = false;
+    try { invitables = await social.invitablesTournoi(detail.id); direInvit(""); } catch (e) { direInvit(e.message, true); }
+    renderInvitables();
+  }
+  const fermerInvitations = () => { $("invitFenetre").hidden = true; };
+  $("invitFermer").addEventListener("click", fermerInvitations);
+  $("invitFenetre").addEventListener("click", e => { if (e.target.id === "invitFenetre") fermerInvitations(); });
+  $("invitTous").addEventListener("click", () => {
+    const cases = [...$("invitListe").querySelectorAll("input:not(:disabled)")], tout = cases.every(c => c.checked);
+    cases.forEach(c => { c.checked = !tout; });
+  });
+  $("invitEnvoyer").addEventListener("click", async () => {
+    const choisis = [...$("invitListe").querySelectorAll("input:checked")].map(c => c.value);
+    if (!choisis.length) { direInvit("Coche au moins un membre.", true); return; }
+    $("invitEnvoyer").disabled = true;
+    try {
+      const n = await social.inviterTournoi(detail.id, choisis);
+      direInvit(n ? `${n} invitation${n > 1 ? "s" : ""} envoyée${n > 1 ? "s" : ""} !` : "Ces membres étaient déjà invités.");
+      invitables = await social.invitablesTournoi(detail.id).catch(() => invitables);
+      renderInvitables();
+    } catch (e) { direInvit(e.message, true); $("invitEnvoyer").disabled = false; }
   });
 
   async function partager() {
