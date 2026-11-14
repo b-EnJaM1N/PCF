@@ -123,7 +123,7 @@ const motifUnSigne = (id, signe, gant, c = OR_SIGNE) => `<pattern id="${id}g" wi
 let n = 0;
 function dessinerMain(a, fill, ink, nue) {
   const tordu = a.degats?.tordu || 0;
-  if (nue) return mainNue(a.symbole, (PEAUX[a.peau] || PEAUX.neutre)[1], (ONGLES[a.ongles] || [])[1] || null, (BAGUES[a.bague] || [])[3] || null, a.bague, tordu);
+  if (nue) return mainNue(SIGNE_DE_BASE(a.symbole), (PEAUX[a.peau] || PEAUX.neutre)[1], (ONGLES[a.ongles] || [])[1] || null, (BAGUES[a.bague] || [])[3] || null, a.bague, tordu);
   return main(a.symbole, fill, ink, tordu);
 }
 
@@ -208,6 +208,19 @@ function mainNue(symbole, peau, vernis, bague, cleBague, tordu = 0) {
 const PLACE_MEDAILLON = { pierre: [50, 69, 6.6], ciseaux: [50, 69, 6.6], feuille: [50, 62, 10], "feuille-dos": [50, 61, 10], "ciseaux-dos": [52, 60, 10], dos: [50, 60, 10], index: [52, 69.5, 6.2], pouce: [39.5, 64, 6.4] };
 // (10 novembre, demande du porteur du projet : la bague remontée sur le doigt, elle était à la jointure avec la paume)
 const PLACE_BAGUE = { feuille: [50.5, 34], index: [29.5, 33], pouce: [35.6, 33.5, "-5 41 35"], dos: [50, 30.5], "ciseaux-dos": [30.75, 32.5, "-12 36 50"], "feuille-dos": [50.5, 33, "7 55 54"], ciseaux: [30.75, 29.5, "-14 36 50"], pierre: [50, 35.5] };
+// Les mains des routines d'entrée (14 novembre, remarque du porteur du projet : la bague sautait d'un doigt à l'autre) : la bague
+// reste sur le même doigt que dans le signe d'origine, et suit ce doigt quand il s'abaisse ou se replie ; le médaillon et le
+// dossard restent à la place du signe d'origine.
+const SIGNE_DE_BASE = s => (/^feuille-[pc][0-3]$/.test(s) ? "feuille" : s === "ciseaux-ferme" ? "ciseaux" : s === "index-plie" ? "index" : s);
+function placeBague(symbole) {
+  const piano = /^feuille-p([0-3])$/.exec(symbole), craque = /^feuille-c([0-3])$/.exec(symbole);
+  const [x, y] = PLACE_BAGUE.feuille;
+  if (piano) return [x, +piano[1] === 2 ? y + 13 : y];          // (la bague est sur le 3e doigt de la feuille)
+  if (craque) return [x, +craque[1] >= 2 ? 37.5 : y];           // (doigt replié : sur la jointure, juste au-dessus de la paume)
+  if (symbole === "ciseaux-ferme") return [33, 29.5, "-3 38 50"];
+  if (symbole === "index-plie") return [29.5, 36];
+  return PLACE_BAGUE[symbole] || PLACE_BAGUE.pierre;
+}
 function accessoires(a, nue = false) {
   let s = "";
   const yb = nue ? 84 : 67;   // le bracelet : au poignet (plus bas sur la main nue, juste au-dessus du bandeau)
@@ -215,7 +228,7 @@ function accessoires(a, nue = false) {
   if (br) s += braceletSVG(br, nue ? 37.5 : 35.5, yb, nue ? 25 : 29, BRACELETS_COLORABLES.has(a.bracelet) ? (MOTIF_COULEURS[a.braceletCouleur] || [])[1] || null : null);
   const bg = (BAGUES[a.bague] || [])[3];
   if (bg && !nue) {
-    const [x, y, rot] = PLACE_BAGUE[a.symbole] || PLACE_BAGUE.pierre;
+    const [x, y, rot] = placeBague(a.symbole);
     s += `<g${rot ? ` transform="rotate(${rot})"` : ""}>${bagueSVG(bg, x - .5, y, 11.5, 4.2, a.bague === "symbole" ? (cx, cy) => chaton("symbole", cx, cy) : null)}</g>`;
   }
   return s;
@@ -309,9 +322,9 @@ export function avatarSVG(a) {
   const couture = nue ? null : gm === "coutures" ? "#E7C04A" : a.gant === "elite" ? "#E9C046" : A_DOSSARD.has(a.gant) && PRESTIGE.coutures ? "#B8860B" : null;
   // Le Dossard 1 : un dossard blanc épinglé (quatre épingles) avec un gros « 1 » noir, sur le dos de la main (ou la paume).
   if (A_DOSSARD.has(a.gant)) deco = (PRESTIGE.reflet ? `<g opacity=".38" style="mix-blend-mode:screen">${main(a.symbole, `url(#${id}r)`, "none")}</g>` : "")
-    + dossardSVG(...(PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre));
+    + dossardSVG(...(PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
-  if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
+  if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
   if (gm === "bandeau") deco = `<rect x="28" y="64" width="44" height="7" rx="2" fill="#E0B12A" stroke="${ink}" stroke-width="1.5"/><rect x="28" y="67" width="44" height="1.4" fill="rgba(255,255,255,.7)"/>`;
   let motif = "";
   if (a.motif === "rayures") motif = `<g clip-path="url(#${id})" opacity=".16">${[...Array(9)].map((_, i) => `<rect x="${i * 16 - 40}" y="-10" width="7" height="140" fill="#fff" transform="rotate(30 50 50)"/>`).join("")}</g>`;
