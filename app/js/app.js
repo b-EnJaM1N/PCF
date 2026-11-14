@@ -3080,7 +3080,7 @@ $("btnTestNotif").addEventListener("click", async () => {
   finally { b.disabled = false; }
 });
 // Ouvrir l'appli depuis une notification : ?ouvrir=duels ou ?ouvrir=tournois (ou message du service worker si elle est déjà ouverte).
-const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); else if (cible === "invitations") aller("viewJouer"); else if (cible === "freeroll" || cible === "programmes") aller("viewFreeroll"); };
+const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); else if (cible === "invitations") { aller("viewJouer"); cerclesUI?.proposerInvitation(); } else if (cible === "freeroll" || cible === "programmes") aller("viewFreeroll"); };
 {
   const cible = new URLSearchParams(location.search).get("ouvrir");
   if (cible) { ouvrirDepuisNotification(cible); history.replaceState(null, "", location.pathname + location.hash); }
