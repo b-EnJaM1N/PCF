@@ -113,7 +113,8 @@ export const verrouDe = (type, cle) => TITRES.find(t => [t.objet, t.objet2].some
 // Les gants : après le premier match (avant, la main nue).
 export const gantAttendPremierMatch = (P, type, cle) => type === "gant" && cle !== "nu" && !(P.matchs > 0);
 // Le Dossard 1 : seulement pour le tenant du titre d'un de ses cercles (P.tenantTitre, donné par le serveur ; étape 71).
-export const reserveAuTenant = (P, type, cle) => type === "gant" && cle === "dossard" && !P.tenantTitre;
+// Le Dossard 1 du FIAC Club (gant « fiac », 14 novembre) : en préparation, pas encore attribué (en attente de l'accord du porteur du projet).
+export const reserveAuTenant = (P, type, cle) => type === "gant" && ((cle === "dossard" && !P.tenantTitre) || (cle === "fiac" && !P.tenantFiac));
 export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); return (!!t && !P.titres[t.id]) || !possede(P, type, cle) || gantAttendPremierMatch(P, type, cle) || reserveAuTenant(P, type, cle); };
 
 export function profilParDefaut() {

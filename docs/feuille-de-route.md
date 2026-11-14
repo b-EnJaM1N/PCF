@@ -172,7 +172,9 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    des membres du cercle », coche qui il veut (« Tout cocher » possible ; il voit qui est inscrit, invité ou a dit « Non merci »,
    et peut réinviter ces derniers). L'invité reçoit une notification (une seule par tournoi), une carte en haut du menu Jouer et
    un encadré « 📨 Tu es invité » sur la page du cercle, avec « M'inscrire » (ou « … et accepter l'enjeu ») et « Non merci ».
-   Les tournois hors cercle restent sur le lien à partager.
+   Les tournois hors cercle restent sur le lien à partager. Toucher la notification (14 novembre, remarque du porteur du projet :
+   « le chemin pour s'inscrire est trop long ») ouvre directement une fenêtre sur l'invitation la plus récente : « M'inscrire »,
+   « Non merci », « Voir le tournoi » ou « Plus tard » (après l'écran titre si l'appli était fermée).
 27. **La page du cercle rangée et le classement interne** (14 novembre, demande du porteur du projet : « ça fait bazar » ; en test
    d'abord, clé « pageCercle » de `nouveautes.js`). L'accueil du cercle : l'invitation éventuelle, le fil, le podium (les 3 premiers
    du classement interne ; le toucher ouvre le classement), puis une grille de boutons : 🏆 Tournois (pastille s'il y a une

@@ -18,7 +18,13 @@ export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc"
   elite: ["Gant de l'Élite (champion de la carrière)", "#1D1A2E", "linear-gradient(135deg,#1D1A2E 0 45%,#E9C046 45% 55%,#1D1A2E 55%)"],
   // Le Dossard 1 (12 novembre, idée du porteur du projet) : le gant jaune du tenant du titre d'un cercle, comme le maillot jaune ;
   // il passe au vainqueur du tournoi suivant du cercle (voir etape-71-dossard.sql).
-  dossard: ["Dossard 1 (tenant du titre de ton cercle)", "#F4C542", "radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 30%),#F4C542"] };
+  dossard: ["Dossard 1 (tenant du titre de ton cercle)", "#F4C542", "radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 30%),#F4C542"],
+  // Le Dossard 1 du FIAC Club (14 novembre, demande du porteur du projet) : le même, en or, avec « Fiac Club » brodé en or sur un
+  // poignet sombre ; réservé au tenant du titre du FIAC Club (voir CERCLE_FIAC dans profil.js).
+  fiac: ["Dossard 1 du FIAC Club (tenant du titre)", "#FFD34D", "radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 30%),linear-gradient(135deg,#FFE88A,#E0A81E)"] };
+// Les gants à dossard (le dossard épinglé, les coutures d'or) ; le poignet du gant du FIAC Club.
+const A_DOSSARD = new Set(["dossard", "fiac"]);
+export const POIGNET_FIAC = "#1B2140";
 export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], bronze: ["Bronze", "#C27A3A"], blanc: ["Blanc", "#F5F7FA"], bleu: ["Bleu", "#2C6FD1"], jaune: ["Jaune", "#F4C542"], noir: ["Noir", "#23262B"], or: ["Or", "#E0B12A"], argent: ["Argent", "#AEB6C2"],
   tricolore: ["Tricolore", "#F5F7FA", "linear-gradient(90deg,#2C5CC5 33%,#F5F7FA 33% 66%,#E1342B 66%)"],
   arcenciel: ["Arc-en-ciel", "#F4C542", "linear-gradient(90deg,#E8574A,#F4C542,#6BD49A,#4DA3FF,#9B6BD6)"],
@@ -234,7 +240,7 @@ export function avatarSVG(a) {
   const cle = a.poignet in POIGNETS ? a.poignet : "rouge";
   const id = "av" + (++n), ink = "rgba(0,0,0,.22)", gm = nue ? "uni" : a.gantMotif;
   const mc = (MOTIF_COULEURS[a.gantMotifCouleur] || [])[1] || null;   // la couleur du motif choisie (sinon : la couleur habituelle)
-  const brode = !nue && BRODERIES[a.brode];   // (le pseudo brodé sur le poignet : gants-brodes.js ; pas sur la main nue)   // (pas de motif de gant sur la peau)
+  const brode = !nue && BRODERIES[a.gant === "fiac" ? "@fiac" : a.brode];   // (le pseudo brodé sur le poignet : gants-brodes.js ; pas sur la main nue)   // (pas de motif de gant sur la peau)
   // Gant rayé, à pois ou bicolore : on le remplit avec un motif SVG.
   const remplissage = {
     rayures: `<pattern id="${id}g" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="8" height="8" fill="${gant}"/><rect width="3" height="8" fill="${mc || poignet}"/></pattern>`,
@@ -255,7 +261,9 @@ export function avatarSVG(a) {
     carbone: `<pattern id="${id}g" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#26292E"/><rect width="3" height="3" fill="#3A3E45"/><rect x="3" y="3" width="3" height="3" fill="#3A3E45"/></pattern>`,
     signe_pierre: motifUnSigne(id, "pierre", gant, mc || OR_SIGNE), signe_feuille: motifUnSigne(id, "feuille", gant, mc || OR_SIGNE), signe_ciseaux: motifUnSigne(id, "ciseaux", gant, mc || OR_SIGNE),
     club: `<pattern id="${id}g" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#14533A"/></pattern>`,
-  }[gm] || (a.gant === "elite" ? `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3358"/><stop offset="1" stop-color="#14121F"/></linearGradient>` : "");
+  }[gm] || (a.gant === "elite" ? `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3358"/><stop offset="1" stop-color="#14121F"/></linearGradient>`
+    // (le gant du FIAC Club : de l'or métallique, clair en haut, avec un reflet, plus sombre en bas)
+    : a.gant === "fiac" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="25" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#FFF3B0"/><stop offset=".3" stop-color="#F2C744"/><stop offset=".55" stop-color="#FFE27A"/><stop offset=".8" stop-color="#D9A21E"/><stop offset="1" stop-color="#A8770F"/></linearGradient>` : "");
   // Poignets et fonds spéciaux (boutique).
   const poignetDef = {
     tricolore: `<linearGradient id="${id}p" x1="0" x2="1"><stop offset=".33" stop-color="#2C5CC5"/><stop offset=".33" stop-color="#F5F7FA"/><stop offset=".66" stop-color="#F5F7FA"/><stop offset=".66" stop-color="#E1342B"/></linearGradient>`,
@@ -265,7 +273,7 @@ export function avatarSVG(a) {
     leopard: `<pattern id="${id}p" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#E2A74B"/><circle cx="2.5" cy="2.5" r="1.6" fill="#3A2A1A"/><circle cx="6" cy="6" r="1.4" fill="#3A2A1A"/></pattern>`,
     braise: `<linearGradient id="${id}p" x1="0" x2="1"><stop offset="0" stop-color="#7A1F12"/><stop offset=".3" stop-color="#E8572A"/><stop offset=".5" stop-color="#F4A93B"/><stop offset=".7" stop-color="#E8572A"/><stop offset="1" stop-color="#7A1F12"/></linearGradient>`,
   }[cle] || "";
-  const fillPoignet = poignetDef ? `url(#${id}p)` : poignet;
+  const fillPoignet = a.gant === "fiac" ? POIGNET_FIAC : poignetDef ? `url(#${id}p)` : poignet;
   const fondDef = {
     coucher: `<linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB347"/><stop offset=".55" stop-color="#F2784B"/><stop offset="1" stop-color="#8E3B8E"/></linearGradient>`,
     stade: `<radialGradient id="${id}f" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#FFF6C8"/><stop offset=".35" stop-color="#2A4A7A"/><stop offset="1" stop-color="#0B1B33"/></radialGradient>`,
@@ -285,7 +293,7 @@ export function avatarSVG(a) {
   if (gm === "coutures") deco = `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#E7C04A")}</g>`;
   if (a.gant === "elite" && gm !== "coutures") deco = `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#E9C046")}</g>`;   // le gant de l'Élite : noir, coutures d'or
   // Le Dossard 1 : un dossard blanc épinglé (quatre épingles) avec un gros « 1 » noir, sur le dos de la main (ou la paume).
-  if (a.gant === "dossard") deco = (PRESTIGE.coutures && gm !== "coutures" ? `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#B8860B")}</g>` : "")
+  if (A_DOSSARD.has(a.gant)) deco = (PRESTIGE.coutures && gm !== "coutures" ? `<g stroke-dasharray="2.2 2" transform="translate(50 52) scale(.84) translate(-50 -52)">${main(a.symbole, "none", "#B8860B")}</g>` : "")
     + (PRESTIGE.reflet ? `<g opacity=".38" style="mix-blend-mode:screen">${main(a.symbole, `url(#${id}r)`, "none")}</g>` : "")
     + dossardSVG(...(PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
@@ -296,7 +304,7 @@ export function avatarSVG(a) {
   if (a.motif === "etoile") motif = `<path d="M50 6 L61 38 L95 38 L67 58 L78 92 L50 71 L22 92 L33 58 L5 38 L39 38 Z" fill="#fff" opacity=".14"/>`;
   if (a.motif === "eclair") motif = `<path d="M60 2 L28 54 L48 54 L36 98 L76 40 L54 40 L68 2 Z" fill="#fff" opacity=".16"/>`;
   return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"${a.fantome ? ' opacity=".55"' : ""}>
-    <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath>${remplissage}${poignetDef}${fondDef}${a.gant === "dossard" ? `<linearGradient id="${id}r" gradientUnits="userSpaceOnUse" x1="25" y1="15" x2="70" y2="75"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".35" stop-color="#fff" stop-opacity=".15"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset=".62" stop-color="#fff" stop-opacity="0"/></linearGradient>` : ""}</defs>
+    <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath>${remplissage}${poignetDef}${fondDef}${A_DOSSARD.has(a.gant) ? `<linearGradient id="${id}r" gradientUnits="userSpaceOnUse" x1="25" y1="15" x2="70" y2="75"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".35" stop-color="#fff" stop-opacity=".15"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset=".62" stop-color="#fff" stop-opacity="0"/></linearGradient>` : ""}</defs>
     ${a.sansFond ? "" : `<circle cx="50" cy="50" r="48" fill="${fillFond}"/>${decorFond}${motif}
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
