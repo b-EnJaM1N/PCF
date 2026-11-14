@@ -1098,3 +1098,27 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .invit-liste input { width: 20px; height: 20px; flex: none; }
 .invit-liste .invit-etat { margin-left: auto; font-size: .8rem; color: var(--muted); white-space: nowrap; }
 .tournoi-invite { margin: 0 0 8px; font-weight: 600; color: var(--me); }
+
+/* La page du cercle rangée (14 novembre ; clé « pageCercle ») : l'accueil (fil, podium, boutons), puis une page par rubrique. */
+.cercle-v2 [data-rubrique]:not(.rubrique-active) { display: none !important; }
+.cercle-v2.en-rubrique [data-accueil] { display: none !important; }
+.cercle-v2.admin:not(.en-rubrique) #cQuitterZone, .cercle-v2.en-rubrique:not(.r-gerer) #cQuitterZone,
+.cercle-v2:not(.admin).en-rubrique #cQuitterZone { display: none; }
+.cercle-grille { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 14px; }
+.cercle-tuile { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 14px 12px; min-height: 92px;
+  border-radius: 16px; border: 2px solid rgba(255, 255, 255, .14); background: var(--panel); color: var(--line); text-align: left; cursor: pointer; font: inherit; }
+.cercle-tuile:active { transform: scale(.98); }
+.cercle-tuile .tuile-i { font-size: 1.6rem; line-height: 1; margin-bottom: 4px; }
+.cercle-tuile b { font-family: "Barlow Condensed", sans-serif; font-size: 1.25rem; line-height: 1.05; }
+.cercle-tuile small { color: var(--muted); font-size: .82rem; }
+.cercle-tuile .pastille { position: absolute; top: 8px; right: 10px; }
+.cercle-podium .podium { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: end; gap: 6px; width: 100%; background: none; border: 0; padding: 0; color: inherit; font: inherit; cursor: pointer; }
+.podium-place { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; }
+.podium-place .mini { width: 42px; height: 42px; }
+.podium-place .podium-nom { font-weight: 700; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .9rem; }
+.podium-place .podium-pts { color: var(--muted); font-size: .8rem; }
+.podium-marche { width: 100%; border-radius: 10px 10px 0 0; background: rgba(244, 197, 66, .18); display: flex; align-items: flex-start; justify-content: center; font-size: 1.4rem; padding-top: 4px; }
+.podium-place.p1 .podium-marche { height: 54px; background: rgba(244, 197, 66, .32); }
+.podium-place.p2 .podium-marche { height: 38px; }
+.podium-place.p3 .podium-marche { height: 26px; }
+.podium-place.vide { visibility: hidden; }
