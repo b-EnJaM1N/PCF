@@ -2021,7 +2021,7 @@ function renderEditeur() {
   $("avApercu").innerHTML = avatarSVG(avMoi());             // l'aperçu reste visible pendant qu'on fait défiler les choix
   const mk = (el, type, table, texte) => {
     // (les objets « bientôt » : seulement sur la version de test, sauf s'il les a déjà)
-    el.innerHTML = Object.keys(table).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
+    el.innerHTML = Object.keys(table).filter(k => !(type === "gant" && k === "fiac" && P.av.gant !== "fiac")).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
       return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
     }).join("");
@@ -3080,7 +3080,7 @@ $("btnTestNotif").addEventListener("click", async () => {
   finally { b.disabled = false; }
 });
 // Ouvrir l'appli depuis une notification : ?ouvrir=duels ou ?ouvrir=tournois (ou message du service worker si elle est déjà ouverte).
-const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); else if (cible === "invitations") aller("viewJouer"); else if (cible === "freeroll" || cible === "programmes") aller("viewFreeroll"); };
+const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); else if (cible === "invitations") { aller("viewJouer"); cerclesUI?.proposerInvitation(); } else if (cible === "freeroll" || cible === "programmes") aller("viewFreeroll"); };
 {
   const cible = new URLSearchParams(location.search).get("ouvrir");
   if (cible) { ouvrirDepuisNotification(cible); history.replaceState(null, "", location.pathname + location.hash); }
