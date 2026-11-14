@@ -24,6 +24,9 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 - 10 nov. : entre amis qui ont chacun leurs chants, autant de chances pour chacun (remarque du porteur du projet en jouant contre un testeur).
 - 11 nov. : questionnaire envoyé aux testeurs (texte plus bas).
 - 11 nov. : nouvelle version Android dans le test fermé, 2 (1.0.0.1), avec une note de version (série de jours, bouton d'avis, Mes amis, chants).
+- 14 nov. (soir) : nouvelle version Android dans le test fermé, 3 (1.0.0.2), envoyée à l'examen de Google, avec la note : main en feu
+  et effets des doubles smashs, invitations aux tournois de cercle (inscription en un geste depuis la notification), Dossard 1,
+  page du cercle rangée (podium, classement du cercle, records), fantôme, bouton Retour plus visible et défis du jour plus clairs.
 - 11 nov. : les messages rapides réorganisés (idée de Shishyo, voir le tableau).
 - 12 nov. : sons du smash (déchirure des Ciseaux, claque de la Feuille, smash bloqué et raté), marques du smash sur la main adverse, smash récupéré, pseudo définitif, gants vache, girafe et léopard, bouton « ← Retour » et touche retour du téléphone (suggestion des testeurs, voir le tableau), robots retirés du compteur de visites.
 - 12 nov. : premier commentaire privé d'un testeur sur le Play Store (5 étoiles, voir le tableau), avec la réponse du développeur.

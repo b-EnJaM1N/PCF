@@ -28,6 +28,13 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    • La fiche d'un joueur : stats, face-à-face, historique • Smash : nouveaux sons, marques sur la main adverse, smash récupéré 💥
    • Bouton Retour plus visible (merci aux testeurs !) • Le match du jour : ta série continue 🔥 » `</fr-FR>` (une ligne par puce).
    Le porteur du projet fait le paquet le 13 au soir sur ordinateur (PWABuilder, code 3, « Use mine » avec sa clé d'octobre).
+   **Fait le 14 novembre au soir** : paquet 3 (1.0.0.2) envoyé dans le test fermé (Alpha), en cours d'examen, avec une note mise à
+   jour et validée (478 caractères) : `<fr-FR>` « • Nouveau : la main en feu 🔥 quand tu enchaînes les points, et des effets pour
+   les doubles smashs » « • Tournois de cercle : invite tes membres, ils s'inscrivent en un geste depuis la notification 📨 »
+   « • Le Dossard 1 pour le vainqueur du dernier tournoi de ton cercle 🏆 » « • Page du cercle rangée : podium, classement du
+   cercle, records » « • Le fantôme 👻 Défie le fantôme d'un ami, même s'il n'est pas connecté » « • Bouton Retour plus visible
+   et défis du jour plus clairs (merci aux testeurs !) » `</fr-FR>`. (Leçon : extraire le zip de PWABuilder avant d'envoyer le
+   `.aab`, sinon « fichier ZIP archive non valide ».) Prochaine version : code 4 (1.0.0.3).
    (Ancienne note du 11 novembre, remplacée : voir ci-dessous.)
 2 ter. **Avant la sortie officielle (vers le 24 novembre), dans un moment calme : alléger les questions des duels au serveur**
    (décision du 13 novembre). Pendant un duel, chaque téléphone demande l'état du match **toutes les secondes** (`battement` dans
