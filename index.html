@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="version" content="bee7135 du 13/11/2026">
+<meta name="version" content="c8182cb du 14/11/2026">
 <title>HandSlam</title>
 <meta name="description" content="HandSlam — le Pierre-Feuille-Ciseaux devient un sport. Sets de 11 points, arbitre, commentateur et tournois.">
 <meta name="theme-color" content="#0F2C52">
@@ -318,6 +318,11 @@
         <section class="card cercle-tete">
           <span class="blason-grand" id="cBlason"></span>
           <div><h2 id="cNom"></h2><p class="hint" id="cInfo"></p></div>
+        </section>
+        <section class="card invitations-carte" id="cInvitations" hidden>
+          <h2>📨 Tu es invité</h2>
+          <div id="cInvitationsListe"></div>
+          <p class="hint" id="cInvitationsMsg" role="status"></p>
         </section>
         <section class="card" id="cFilCarte" hidden>
           <h2>📰 Le fil du cercle</h2>
@@ -1030,6 +1035,20 @@
       <button class="btn" id="defiRecuAccepter">Accepter</button>
       <button class="btn alt" id="defiRecuRefuser">Refuser</button>
       <button class="linkbtn" id="defiRecuPlusTard">Plus tard</button>
+    </div>
+  </section>
+</div>
+
+<div class="fenetre-fond" id="invitFenetre" hidden>
+  <section class="card fenetre" role="dialog" aria-modal="true" aria-labelledby="invitTitre">
+    <h2 id="invitTitre">📨 Inviter des membres</h2>
+    <p class="hint">Coche les membres du cercle à inviter : chacun reçoit une notification et choisit de s'inscrire ou non.</p>
+    <button class="linkbtn" id="invitTous">Tout cocher</button>
+    <div id="invitListe" class="resultats invit-liste"></div>
+    <p class="hint" id="invitMsg" role="status"></p>
+    <div class="actions-col" style="margin-top:12px">
+      <button class="btn" id="invitEnvoyer">Envoyer les invitations</button>
+      <button class="linkbtn" id="invitFermer">Fermer</button>
     </div>
   </section>
 </div>

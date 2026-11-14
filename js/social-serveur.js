@@ -65,6 +65,11 @@ export const creerTournoi = (nom, cercle, points, sets, duree) =>
 export const inscrireTournoi = id => rpc("inscrire_tournoi", { p_id: id });
 export const rejoindreTournoi = code => rpc("rejoindre_tournoi", { p_code: code });                         // → { id, nom }
 export const desinscrireTournoi = id => rpc("desinscrire_tournoi", { p_id: id });
+// Les invitations à un tournoi de cercle (étape 76) : l'organisateur invite des membres ; l'invité s'inscrit ou dit « Non merci ».
+export const invitablesTournoi = id => rpc("invitables_tournoi", { p_id: id });                          // → [{ id, pseudo, numero, avatar, etat }]
+export const inviterTournoi = (id, joueurs) => rpc("inviter_tournoi", { p_id: id, p_joueurs: joueurs });  // → nombre de nouvelles invitations
+export const mesInvitations = () => rpc("mes_invitations");                                              // → [{ tournoi, nom, mode, cercle, cercle_nom, de, enjeu }]
+export const refuserInvitation = id => rpc("refuser_invitation", { p_id: id });
 export const lancerTournoi = id => rpc("lancer_tournoi", { p_id: id });
 export const annulerTournoi = id => rpc("annuler_tournoi", { p_id: id });
 export const jouerMatchTournoi = id => rpc("jouer_match_tournoi", { p_match: id });                        // → le duel

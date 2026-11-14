@@ -2145,7 +2145,7 @@ $("avisCarteNon").addEventListener("click", () => { $("avisCarte").hidden = true
 $("optionsRetour").addEventListener("click", () => aller(avantOptions));
 
 // Les alertes en haut du menu « Jouer » (et la pastille de l'onglet).
-const alertes = { duels: { recus: 0, enCours: 0, rdv: 0, rdvNouveaux: 0 }, tournois: [], sng: null, freeroll: null, programme: null };
+const alertes = { duels: { recus: 0, enCours: 0, rdv: 0, rdvNouveaux: 0 }, tournois: [], invitations: [], sng: null, freeroll: null, programme: null };
 function signaler(cle, valeur) { alertes[cle] = valeur; renderAlertes(); }
 function renderAlertes() {
   const a = alertes, carte = (attr, icone, titre, texte) => `<button class="hub alerte" ${attr}><span class="hub-i">${icone}</span><span><b>${titre}</b><small>${texte}</small></span></button>`;
@@ -2154,11 +2154,13 @@ function renderAlertes() {
     a.duels.rdv ? carte('data-aller="viewDuel"', "✅", `${a.duels.rdv > 1 ? `${a.duels.rdv} défis acceptés` : "Défi accepté"} : à jouer`, "Touche « Rejoindre » : le match démarre quand vous êtes là tous les deux") : "",
     a.duels.recus ? carte('data-aller="viewDuel"', "📨", `${a.duels.recus} défi${a.duels.recus > 1 ? "s" : ""} reçu${a.duels.recus > 1 ? "s" : ""}`, "Accepte ou refuse") : "",
     ...a.tournois.map(t => carte(`data-tournoi="${t.id}"`, "🏆", "Ton match de tournoi t'attend", esc(t.nom))),
+    // (étape 76 : une invitation à un tournoi de cercle ; la page du tournoi propose « M'inscrire » et « Non merci »)
+    ...a.invitations.map(i => carte(`data-tournoi="${esc(i.tournoi)}"`, "📨", `Invitation : ${esc(i.nom)}`, `${esc(i.de?.pseudo || "L'organisateur")} t'invite · cercle ${esc(i.cercle_nom || "")}`)),
     a.freeroll ? carte('data-aller="viewFreeroll"', "🌙", a.freeroll.phase === "en_cours" ? "Le freeroll est en cours" : "Le freeroll commence à 20 h", "Garde l'appli ouverte : ton match se lance tout seul") : "",
     a.programme ? carte('data-aller="viewFreeroll"', "🗓️", a.programme.phase === "en_cours" ? `${esc(a.programme.nom)} est en cours` : `${esc(a.programme.nom)} commence bientôt`, "Garde l'appli ouverte : ton match se lance tout seul") : "",
     a.sng ? carte('data-aller="viewSng"', "⚡", a.sng.phase === "inscriptions" ? "Tu es en salle de Sit & Go" : "Ton Sit & Go est en cours", "Garde l'appli ouverte") : "",
   ].join("");
-  const n = a.duels.recus + (a.duels.rdvNouveaux || 0) + a.tournois.length;   // la carte « Défi accepté » reste, sans pastille une fois vu
+  const n = a.duels.recus + (a.duels.rdvNouveaux || 0) + a.tournois.length + a.invitations.length;   // la carte « Défi accepté » reste, sans pastille une fois vu
   $("pastilleJouer").hidden = !n; $("pastilleJouer").textContent = n;
 }
 $("hubAlertes").addEventListener("click", e => { const b = e.target.closest("[data-tournoi]"); if (b) cerclesUI.ouvrirTournoi(b.dataset.tournoi); });
@@ -3078,7 +3080,7 @@ $("btnTestNotif").addEventListener("click", async () => {
   finally { b.disabled = false; }
 });
 // Ouvrir l'appli depuis une notification : ?ouvrir=duels ou ?ouvrir=tournois (ou message du service worker si elle est déjà ouverte).
-const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); else if (cible === "freeroll" || cible === "programmes") aller("viewFreeroll"); };
+const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); else if (cible === "invitations") aller("viewJouer"); else if (cible === "freeroll" || cible === "programmes") aller("viewFreeroll"); };
 {
   const cible = new URLSearchParams(location.search).get("ouvrir");
   if (cible) { ouvrirDepuisNotification(cible); history.replaceState(null, "", location.pathname + location.hash); }
