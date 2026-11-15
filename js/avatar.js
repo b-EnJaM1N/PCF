@@ -322,6 +322,9 @@ export function avatarSVG(a) {
     galaxie: `<radialGradient id="${id}f" cx=".3" cy=".3" r=".9"><stop offset="0" stop-color="#5B2A86"/><stop offset=".6" stop-color="#1E1240"/><stop offset="1" stop-color="#0A0618"/></radialGradient>`,
   }[a.fond] || "";
   const fillFond = fondDef ? `url(#${id}f)` : fond;
+  // Le poing (la pierre, le signe par défaut) recentré dans son rond (15 novembre, demande du porteur du projet : il était un peu
+  // bas et à gauche) ; pas sans le rond (le poing d'un coup) ni sur la main nue (découpée au rond).
+  const centrer = !a.sansFond && !nue && (!a.symbole || a.symbole === "pierre");
   let decorFond = "";
   if (a.fond === "galaxie") decorFond = [[22, 30], [70, 20], [80, 55], [30, 70], [55, 82], [15, 52], [62, 40]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? 0.9 : 1.5}" fill="#fff" opacity=".85"/>`).join("");
   if (a.fond === "neon") decorFond = `<circle cx="50" cy="50" r="42" fill="none" stroke="#FF3EA5" stroke-width="2.5" opacity=".9"/><circle cx="50" cy="50" r="38" fill="none" stroke="#22D3EE" stroke-width="1.5" opacity=".8"/>`;
@@ -348,11 +351,11 @@ export function avatarSVG(a) {
     <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath>${remplissage}${poignetDef}${fondDef}${A_DOSSARD.has(a.gant) ? `<linearGradient id="${id}r" gradientUnits="userSpaceOnUse" x1="25" y1="15" x2="70" y2="75"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".35" stop-color="#fff" stop-opacity=".15"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset=".62" stop-color="#fff" stop-opacity="0"/></linearGradient>` : ""}</defs>
     ${a.sansFond ? "" : `<circle cx="50" cy="50" r="48" fill="${fillFond}"/>${decorFond}${motif}
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
-    ${a.sansMain ? "" : `
+    ${a.sansMain ? "" : `${centrer ? '<g transform="translate(2 -8)">' : ""}
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
-    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}`}
+    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}${centrer ? "</g>" : ""}`}
   </svg>`;
 }
 
