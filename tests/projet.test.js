@@ -48,3 +48,12 @@ test("chaque fichier JavaScript de l'application est syntaxiquement correct", as
     assert.equal(r.status, 0, `${relative(APP, f)} : ${r.stderr.split("\n").find(l => /Error/.test(l))}`);
   }
 });
+
+test("le plan du site (sitemap.xml) liste chaque page publique (sans « noindex »)", () => {
+  const plan = readFileSync(join(APP, "sitemap.xml"), "utf8");
+  for (const f of tous(APP).map(p => relative(APP, p)).filter(f => /^[^/]+\.html$/.test(f))) {
+    const s = readFileSync(join(APP, f), "utf8");
+    if (/name="robots" content="noindex"/.test(s) || !/rel="canonical"/.test(s)) continue;
+    assert.ok(plan.includes(`https://handslam.fr/${f === "index.html" ? "" : f}<`), `à ajouter dans sitemap.xml : ${f}`);
+  }
+});
