@@ -44,3 +44,8 @@ test("le commentaire de la poignée de main selon les deux styles (une normale n
   assert.equal(situationPoignee("franche", "normale"), null);
   for (const m of ["poignee_franche", "poignee_contraste", "poignee_froide", "poignee_legere"]) assert.ok(POOLS[m]?.length >= 2, m);
 });
+
+test("5 secondes pour choisir sa poignée de main (15 novembre, suggestion d'un testeur)", async () => {
+  const { DELAI_CHOIX_MS } = await import("../app/js/poignee.js");
+  assert.equal(DELAI_CHOIX_MS, 5000);
+});

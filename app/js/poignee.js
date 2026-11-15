@@ -1,4 +1,4 @@
-// La poignée de main de fin de match : quatre styles, choisis en 3 secondes (sinon, le style habituel).
+// La poignée de main de fin de match : quatre styles, choisis en 5 secondes (sinon, le style habituel).
 // Ici, seulement les règles (testées automatiquement) ; l'écran est dans app.js.
 
 export const STYLES = {
@@ -7,7 +7,8 @@ export const STYLES = {
   legere: { nom: "Légère", icone: "🤏", chaleur: 1 },
   froide: { nom: "Froide", icone: "🧊", chaleur: 0 },
 };
-export const DELAI_CHOIX_MS = 3000;
+// (5 secondes depuis le 15 novembre, suggestion d'un testeur : 3 secondes, c'était trop court)
+export const DELAI_CHOIX_MS = 5000;
 export const styleValide = s => (STYLES[s] ? s : "normale");
 
 // Chaque bot serre la main selon son caractère. Miroir copie ton style ; Chaos, au hasard.

@@ -549,7 +549,7 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 .pm-choix button[aria-pressed=true] { border-color: var(--me); color: var(--me); }
 .pm-temps { height: 5px; background: rgba(255, 255, 255, .12); border-radius: 3px; margin: 10px 0 0; overflow: hidden; }
 .pm-temps div { height: 100%; background: var(--me); transform-origin: left; }
-.pm-temps.court div { animation: pm-temps 3s linear forwards; }
+.pm-temps.court div { animation: pm-temps 5s linear forwards; }   /* (= DELAI_CHOIX_MS, poignee.js) */
 @keyframes pm-temps { to { transform: scaleX(0); } }
 /* Les joueurs se rapprochent, puis la main selon le style (celui du plus froid des deux). */
 .pm-scene.go .pm-j:first-child { animation: pm-vers-d .5s ease-out forwards; }
