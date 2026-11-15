@@ -1167,3 +1167,6 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
   background: var(--court-deep); border-radius: 12px; box-shadow: 0 6px 12px -8px rgba(0, 0, 0, .6); }
 .boutique-collant .boutique-onglets { flex: 1; min-width: 0; margin-bottom: 0; }
 .boutique-solde-fixe { flex: none; font-weight: 700; font-size: .9rem; color: var(--me); white-space: nowrap; padding: 6px 10px; border-radius: 999px; background: rgba(244, 197, 66, .12); border: 1px solid rgba(244, 197, 66, .4); }
+/* La demande d'ami ou l'invitation dans un cercle, ouverte depuis une notification : un petit éclat (15 novembre). */
+#socInvitCard.a-voir { animation: a-voir 1.4s ease-out 2; }
+@keyframes a-voir { 0%, 100% { box-shadow: none; } 30% { box-shadow: 0 0 0 4px var(--me), 0 0 24px rgba(244, 197, 66, .6); } }

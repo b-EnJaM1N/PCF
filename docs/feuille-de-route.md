@@ -195,6 +195,10 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    même, tirée de son nom) ; mes « crac » (craquer les doigts) et « clac » (ciseaux) s'entendent. La bague reste sur l'annulaire
    pour tous les signes (avant, sur l'index pour les Ciseaux et l'index levé). Plus tard peut-être : un commentaire de Roland ou
    Monique sur la routine, le public qui baisse au « chut ».
+31. **Les notifications des amis et des cercles** (15 novembre, accord du porteur du projet ; étape SQL 79 et fonction « Notifier ») :
+   « 🤝 X veut être ton ami », « ✅ X a accepté ta demande d'ami », « 🏰 X t'invite dans le cercle … » ; une seule par demande
+   (pas de rappel, rien de plus si on réinvite). En la touchant : l'onglet Amis, la demande en haut (« Accepter » / « Refuser »,
+   « Rejoindre » / « Non »), avec un petit éclat. Faites par des déclencheurs sur les tables amities et invitations_cercle.
 30. **15 novembre, petites demandes du porteur du projet** : le surnom « L'Hippocampe » (famille des animaux) ; les poignets
    vache (grandes taches, comme son gant), girafe et dalmatien (à points), et le gant dalmatien, à la boutique (rares, 800 jetons,
    étape SQL 78).
