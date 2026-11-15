@@ -183,6 +183,18 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    « le chemin pour s'inscrire est trop long ») ouvre directement une fenêtre sur l'invitation la plus récente : « M'inscrire »,
    « Non merci », « Voir le tournoi » ou « Plus tard » (après l'écran titre si l'appli était fermée).
    **Ouvertes à tous le 14 novembre** (accord du porteur du projet), avec le Dossard 1.
+29. **Les routines d'entrée** (14 novembre au soir, idée d'un testeur ; `app/js/routines.js` ; intégrées le 15 novembre, en test
+   d'abord, clé « routines », étape SQL 77 ; page d'essai `app/routines.html`) : pendant la présentation
+   du match, la main de chaque joueur fait sa routine d'avant-match, à choisir comme les célébrations. Premier lot (choix du porteur du
+   projet, aperçu animé envoyé) : salut à la foule, shadow boxing, échauffement du pianiste, « viens par ici », ciseaux qui claquent
+   (idée du porteur du projet), Pierre-Feuille-Ciseaux en rafale (idem). Plus tard : moonwalk des doigts, doigts chassés, ombres
+   chinoises ; ajoutées aussi : craquer les doigts, regarder sa montre, « chut » au public, la vague (10 routines). Intégration :
+   « Ma routine d'entrée » dans le Vestiaire (Mes célébrations), le salut gratuit, les autres à la boutique (onglet « 🥊 Routines »,
+   rares 800 jetons, « Viens par ici » et « Chut » épiques 2 000), animées dans leur carte ; sur l'écran de présentation, la main
+   de chaque joueur fait sa routine sur le fond immobile (en duel, celle de l'adversaire d'après sa fiche ; un bot : toujours la
+   même, tirée de son nom) ; mes « crac » (craquer les doigts) et « clac » (ciseaux) s'entendent. La bague reste sur l'annulaire
+   pour tous les signes (avant, sur l'index pour les Ciseaux et l'index levé). Plus tard peut-être : un commentaire de Roland ou
+   Monique sur la routine, le public qui baisse au « chut ».
 28. **Le gant en or du FIAC Club** (14 novembre, idée et validation du porteur du projet ; choix A : il passe au vainqueur de chaque
    nouveau tournoi du cercle, comme le Dossard 1 ; seulement pour le FIAC Club, `CERCLE_FIAC` dans `profil.js`) : gant en or
    métallique, coutures d'or, dossard « 1 », « Fiac Club » brodé en or (police Lobster, comme le pseudo du Chiromancien) sur un poignet

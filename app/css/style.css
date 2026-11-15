@@ -1133,3 +1133,32 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 /* Un défi vérifié par le serveur, pas encore vu réussi : comme le texte « 50 jetons » des autres défis, mais on peut le toucher. */
 .jetons-texte { font: inherit; font-size: .8rem; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; }
 .jetons-texte:disabled { opacity: .6; }
+
+/* Les routines d'entrée (routines.js ; 14 novembre). */
+.routine { display: inline-block; position: relative; width: 100%; height: 100%; }
+.routine-image { display: block; width: 100%; height: 100%; }
+.routine-image[hidden] { display: none; }
+.routine-image svg { width: 100%; height: 100%; }
+.routine-salut { animation: routine-salut 1.6s ease-in-out infinite; transform-origin: 50% 90%; }
+@keyframes routine-salut { 0%, 60%, 100% { transform: rotate(0); } 10%, 30%, 50% { transform: rotate(-14deg); } 20%, 40% { transform: rotate(14deg); } }
+.routine-shadow { animation: routine-shadow 1.2s ease-in-out infinite; }
+@keyframes routine-shadow { 0%, 100% { transform: none; } 12% { transform: translate(-6%, -4%) scale(1.18); } 24% { transform: none; } 40% { transform: translate(6%, -4%) scale(1.18); } 52% { transform: none; } 62% { transform: translate(-4%, -2%) scale(1.1); } 72% { transform: none; } }
+.routine-rebond { animation: routine-rebond .38s ease-in-out infinite; }
+@keyframes routine-rebond { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6%); } }
+/* « Chut ! » : l'index levé, une bulle ; regarder sa montre : le poignet tourne vers soi, la montre au poignet. */
+.routine-chut { animation: routine-chut 2s ease-in-out infinite; }
+@keyframes routine-chut { 0%, 100% { transform: translateY(4%); } 20%, 80% { transform: translateY(-3%); } }
+.routine-chut::after { content: "Chhhut !"; position: absolute; top: -4%; right: -18%; padding: 2px 7px; border-radius: 10px; background: var(--line); color: #10223D;
+  font: 800 .78rem/1.2 "Barlow Condensed", sans-serif; white-space: nowrap; animation: routine-bulle 2s ease-in-out infinite; }
+@keyframes routine-bulle { 0%, 15%, 90%, 100% { opacity: 0; transform: scale(.6); } 25%, 80% { opacity: 1; transform: scale(1); } }
+.routine-montre { animation: routine-montre 2.2s ease-in-out infinite; transform-origin: 50% 85%; }
+@keyframes routine-montre { 0%, 100% { transform: rotate(0); } 25%, 70% { transform: rotate(-28deg) translateY(-4%); } }
+.routine-montre::after { content: "⌚"; position: absolute; left: 50%; top: 82%; transform: translate(-50%, -50%); font-size: 1.1rem; line-height: 1; }
+@media (prefers-reduced-motion: reduce) { .routine-salut, .routine-shadow, .routine-rebond, .routine-chut, .routine-montre, .routine-chut::after { animation: none; } }
+/* Sur l'écran de présentation : le fond immobile, la main qui fait sa routine par-dessus (découpée au rond). */
+.fo-routine { position: relative; display: block; width: min(100px, 25vw); height: min(100px, 25vw); margin: 0 auto 8px; }
+.fo-av .fo-routine > svg { margin: 0; }
+.fo-routine-main { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; }
+.fo-av .fo-routine-main svg, .fo-p.left .fo-av .fo-routine-main svg, .fo-p.right .fo-av .fo-routine-main svg { width: 100%; height: 100%; margin: 0; border-radius: 0; box-shadow: none; }
+/* Dans la boutique : la routine dans sa carte. */
+.ap-routine { display: inline-block; width: 100%; height: 100%; }

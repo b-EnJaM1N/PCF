@@ -1,14 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { ARTICLES, RARETES, articleDe, possede, prixRemise, GESTES, CELEBRATIONS, CADRES } from "../app/js/catalogue.js";
+import { ARTICLES, RARETES, articleDe, possede, prixRemise, GESTES, CELEBRATIONS, CADRES, ROUTINES } from "../app/js/catalogue.js";
 import { FONDS, GANTS, POIGNETS, MOTIFS_GANT, BAGUES, BRACELETS, avatarSVG } from "../app/js/avatar.js";
 import { CRIS } from "../app/js/celebrations.js";
 import { profilParDefaut, normaliserProfil, estVerrouille, remettreAZero } from "../app/js/profil.js";
 
 test("les prix de l'appli et du serveur correspondent", () => {
-  // le catalogue le plus récent du serveur (étape 72, qui remplace ceux des étapes 17, 47, 61, 62 et 64)
-  const sql = readFileSync(new URL("../supabase/etape-72-motifs-animaux.sql", import.meta.url), "utf8").split("_vitrine")[0];
+  // le catalogue le plus récent du serveur (étape 77, qui remplace ceux des étapes 17, 47, 61, 62, 64 et 72)
+  const sql = readFileSync(new URL("../supabase/etape-77-routines.sql", import.meta.url), "utf8");
   const serveur = new Map([...sql.matchAll(/\('([a-zA-Z]+:[a-z_]+)', (\d+)\)/g)].map(m => [m[1], +m[2]]));
   assert.equal(serveur.size, ARTICLES.length);
   for (const x of ARTICLES) assert.equal(serveur.get(x.id), x.prix, x.id);
@@ -16,7 +16,7 @@ test("les prix de l'appli et du serveur correspondent", () => {
 });
 
 test("chaque article existe vraiment dans l'appli", () => {
-  const tables = { gant: GANTS, gantMotif: MOTIFS_GANT, fond: FONDS, poignet: POIGNETS, bague: BAGUES, bracelet: BRACELETS, geste: GESTES, celebration: CELEBRATIONS, cadre: CADRES };
+  const tables = { gant: GANTS, gantMotif: MOTIFS_GANT, fond: FONDS, poignet: POIGNETS, bague: BAGUES, bracelet: BRACELETS, geste: GESTES, celebration: CELEBRATIONS, cadre: CADRES, routine: ROUTINES };
   for (const x of ARTICLES) {
     if (x.type === "cri") assert.ok(CRIS.find(c => c.id === x.cle && c.boutique), x.id);
     else assert.ok(tables[x.type][x.cle], x.id);
