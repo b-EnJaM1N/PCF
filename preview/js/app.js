@@ -1064,7 +1064,7 @@ function finir() {
 }
 
 // ---------------------------------------------------------------- la poignée de main
-// 3 secondes pour choisir (sinon, mon style habituel), puis une courte animation, puis l'écran de fin.
+// 5 secondes pour choisir (sinon, mon style habituel ; DELAI_CHOIX_MS), puis une courte animation, puis l'écran de fin.
 // Contre un humain, on envoie son choix et on attend un peu celui de l'adversaire (sinon, son style habituel).
 function poigneeDeMain(apres) {
   const seance = S;
@@ -1078,14 +1078,14 @@ function poigneeDeMain(apres) {
   ov.classList.add("show");
   let fait = false, fini = false;
   const terminer = () => { if (fini) return; fini = true; ov.classList.remove("show"); ov.onclick = null; if (S === seance) apres(); };
-  const minuterie = setTimeout(() => choisir(P.poignee), DELAI_CHOIX_MS);
+  const debut = Date.now(), minuterie = setTimeout(() => choisir(P.poignee), DELAI_CHOIX_MS);
   async function choisir(style) {
     if (fait) return; fait = true; clearTimeout(minuterie);
     style = styleValide(style);
     choix.hidden = true; $("pmTemps").hidden = true;
     compterPoignee(P, style, S.match.vainqueur === 1); sauverP(); defisUI?.poignee(style);
     let adv;
-    if (S.duel && D) adv = await styleAdversaire(style);
+    if (S.duel && D) adv = await styleAdversaire(style, debut);
     else adv = styleDuBot(OPP.id, style);
     montrer(style, adv);
   }
@@ -1108,12 +1108,14 @@ function poigneeDeMain(apres) {
   choix.onclick = e => { const b = e.target.closest("button[data-s]"); if (b) choisir(b.dataset.s); };
 }
 // Duel : j'envoie ma poignée de main, puis je regarde (jusqu'à ~2 s) si l'adversaire a choisi.
-async function styleAdversaire(moi) {
+// (on attend l'adversaire jusqu'à la fin de son temps de choix, et au moins 2 secondes après mon choix)
+async function styleAdversaire(moi, debut = Date.now()) {
   const id = D.id, sa = D.moi === 0 ? "poignee1" : "poignee0";
   const habituel = styleValide(OPP.fiche?.poignee);
   try {
     let d = await serveur.serrerLaMain(id, moi);
-    for (let k = 0; !d?.[sa] && k < 3; k++) { await new Promise(ok => setTimeout(ok, 700)); d = await serveur.lireDuel(id); }
+    const jusqua = Math.max(Date.now() + 2100, debut + DELAI_CHOIX_MS + 700);
+    while (!d?.[sa] && Date.now() < jusqua) { await new Promise(ok => setTimeout(ok, 700)); d = await serveur.lireDuel(id); }
     return d?.[sa] ? styleValide(d[sa]) : habituel;
   } catch { return habituel; }
 }
