@@ -34,6 +34,7 @@ export const ARTICLES = [
   a("fond", "galaxie", "Fond galaxie", "legendaire"),
   a("poignet", "tricolore", "Poignet tricolore", "courant"), a("poignet", "arcenciel", "Poignet arc-en-ciel", "rare"), a("poignet", "leopard", "Poignet léopard", "rare"),
   a("poignet", "vache", "Poignet vache", "rare"), a("poignet", "girafe", "Poignet girafe", "rare"),   // (15 novembre, demande du porteur du projet)
+  a("poignet", "dalmatien", "Poignet dalmatien", "rare"), a("gantMotif", "dalmatien", "Gant dalmatien", "rare"),
   a("cri", "jeu_set_et_main", "« Jeu, set et main ! »", "rare", "cri"), a("cri", "trop_facile", "« Trop facile. »", "rare", "cri"),
   a("cri", "ole", "« Olé ! »", "rare", "cri"), a("cri", "boum", "« Boum ! »", "rare", "cri"), a("cri", "le_metier", "« C'est le métier qui rentre ! »", "rare", "cri"),
   a("cri", "sayonara", "« Sayonara ! »", "rare", "cri"), a("cri", "ca_fait_mal", "« Et ça fait mal ! »", "rare", "cri"),
