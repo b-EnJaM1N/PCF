@@ -503,6 +503,13 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 septuagies octies. Les poignets vache, girafe et dalmatien, et le gant dalmatien (étape 78)
+
+Même manipulation que d'habitude avec [`etape-78-poignets-animaux.sql`](etape-78-poignets-animaux.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-78-poignets-animaux.sql).
+Trois poignets (vache à grandes taches, girafe, dalmatien à points) et le gant dalmatien, rares (800 jetons). **À coller avant
+la fusion** (si une première version a déjà été collée, la recoller : elle remplace le catalogue).
+
 ## 1 septuagies septies. Les routines d'entrée à la boutique (étape 77)
 
 Même manipulation que d'habitude avec [`etape-77-routines.sql`](etape-77-routines.sql)

@@ -195,6 +195,9 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
    même, tirée de son nom) ; mes « crac » (craquer les doigts) et « clac » (ciseaux) s'entendent. La bague reste sur l'annulaire
    pour tous les signes (avant, sur l'index pour les Ciseaux et l'index levé). Plus tard peut-être : un commentaire de Roland ou
    Monique sur la routine, le public qui baisse au « chut ».
+30. **15 novembre, petites demandes du porteur du projet** : le surnom « L'Hippocampe » (famille des animaux) ; les poignets
+   vache (grandes taches, comme son gant), girafe et dalmatien (à points), et le gant dalmatien, à la boutique (rares, 800 jetons,
+   étape SQL 78).
 28. **Le gant en or du FIAC Club** (14 novembre, idée et validation du porteur du projet ; choix A : il passe au vainqueur de chaque
    nouveau tournoi du cercle, comme le Dossard 1 ; seulement pour le FIAC Club, `CERCLE_FIAC` dans `profil.js`) : gant en or
    métallique, coutures d'or, dossard « 1 », « Fiac Club » brodé en or (police Lobster, comme le pseudo du Chiromancien) sur un poignet
