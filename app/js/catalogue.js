@@ -12,12 +12,14 @@ export const RARETES = {
 };
 export const CATEGORIES = [
   { id: "avatar", nom: "🧤 Main" },
+  { id: "routine", nom: "🥊 Entrées", bientot: "routines" },   // (15 novembre : les routines d'entrée, routines.js)
   { id: "cri", nom: "📣 Cris" },
-  { id: "geste", nom: "✊ Gestes" },
+  { id: "geste", nom: "✌️ Victoires" },
   { id: "celebration", nom: "🎉 Célébrations" },
   { id: "cadre", nom: "🪪 Cadres" },
-  { id: "routine", nom: "🥊 Routines", bientot: "routines" },   // (15 novembre : les routines d'entrée, routines.js)
 ];
+// (15 novembre, choix du porteur du projet : les onglets dans l'ordre d'un match, l'entrée d'abord ; « Routines » devient
+// « Entrées » et « Gestes » devient « Victoires ».)
 
 const a = (type, cle, nom, rarete, categorie = "avatar", bientot = false) => ({ id: `${type}:${cle}`, type, cle, nom, rarete, categorie, prix: RARETES[rarete].prix, ...(bientot ? { bientot } : {}) });
 // bientot : le nom de la nouveauté (nouveautes.js) ; en vente sur la version de test, et partout une fois ouverte.
