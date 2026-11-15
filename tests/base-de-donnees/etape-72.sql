@@ -3,5 +3,5 @@
 \echo Tests de la base de données (étape 72 : gants vache, girafe et léopard)
 create or replace function pg_temp.verifier(ok boolean, msg text) returns void language plpgsql as $$
 begin if not coalesce(ok, false) then raise exception 'ÉCHEC : %', msg; end if; raise notice 'ok : %', msg; end $$;
-select pg_temp.verifier((select count(*) from _catalogue()) = 74, '74 articles au catalogue');
+select pg_temp.verifier((select count(*) from _catalogue()) >= 74, 'au moins 74 articles au catalogue (83 depuis l''étape 77)');
 select pg_temp.verifier((select count(*) from _catalogue() where id in ('gantMotif:vache', 'gantMotif:girafe', 'gantMotif:leopard') and prix = 800) = 3, 'vache, girafe et léopard : 800 jetons chacun');
