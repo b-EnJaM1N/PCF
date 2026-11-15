@@ -1166,10 +1166,7 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .boutique-collant { position: sticky; top: 0; z-index: 6; display: flex; align-items: center; gap: 8px; margin: -6px -6px 12px; padding: 8px 6px;
   background: var(--court-deep); border-radius: 12px; box-shadow: 0 6px 12px -8px rgba(0, 0, 0, .6); }
 .boutique-collant .boutique-onglets { flex: 1; min-width: 0; margin-bottom: 0; }
-.boutique-solde-fixe { position: fixed; z-index: 25; top: calc(env(safe-area-inset-top, 0px) + 10px); right: max(12px, calc(50% - 218px)); font-weight: 700; font-size: .95rem;
-  color: var(--me); white-space: nowrap; padding: 7px 12px; border-radius: 999px; background: var(--court-deep); border: 2px solid var(--me);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, .45); opacity: 0; transform: translateY(-8px); pointer-events: none; transition: opacity .2s, transform .2s; }
-.boutique-solde-fixe.epingle { opacity: 1; transform: none; }
+.boutique-solde-fixe { flex: none; font-weight: 700; font-size: .9rem; color: var(--me); white-space: nowrap; padding: 6px 10px; border-radius: 999px; background: rgba(244, 197, 66, .12); border: 1px solid rgba(244, 197, 66, .4); }
 /* La demande d'ami ou l'invitation dans un cercle, ouverte depuis une notification : un petit éclat (15 novembre). */
 #socInvitCard.a-voir { animation: a-voir 1.4s ease-out 2; }
 @keyframes a-voir { 0%, 100% { box-shadow: none; } 30% { box-shadow: 0 0 0 4px var(--me), 0 0 24px rgba(244, 197, 66, .6); } }

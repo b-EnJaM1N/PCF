@@ -63,9 +63,6 @@ export function installerBoutique(ctx) {
     $("boutiqueArticles").innerHTML = ARTICLES.filter(x => x.categorie === categorie && !RETIRES.has(x.id) && (!x.bientot || ctx.nouveautes?.(x.bientot))).map(x => carte(x)).join("");
     animerRoutines();
   }
-  // Le solde épinglé en haut de l'écran, dès qu'on a fait défiler la boutique (le solde du haut de page n'est plus visible).
-  const majSoldeEpingle = () => { $("boutiqueSoldeFixe").classList.toggle("epingle", !$("viewBoutique").hidden && window.scrollY > 70); };
-  window.addEventListener("scroll", majSoldeEpingle, { passive: true });
   // Les routines d'entrée de la boutique s'animent dans leur carte, avec la main du joueur (15 novembre).
   let arrets = [];
   function animerRoutines() {
