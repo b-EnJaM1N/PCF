@@ -208,8 +208,9 @@ function mainNue(symbole, peau, vernis, bague, cleBague, tordu = 0) {
 const PLACE_MEDAILLON = { pierre: [50, 69, 6.6], ciseaux: [50, 69, 6.6], feuille: [50, 62, 10], "feuille-dos": [50, 61, 10], "ciseaux-dos": [52, 60, 10], dos: [50, 60, 10], index: [52, 69.5, 6.2], pouce: [39.5, 64, 6.4] };
 // (10 novembre, demande du porteur du projet : la bague remontée sur le doigt, elle était à la jointure avec la paume)
 // (15 novembre, remarque du porteur du projet : pour les Ciseaux, la bague était sur l'index, et sautait de l'annulaire à l'index
-// dans l'enchaînement Pierre, Feuille, Ciseaux ; elle est maintenant sur l'annulaire replié, comme pour les autres signes.)
-const PLACE_BAGUE = { feuille: [50.5, 34], index: [29.5, 33], pouce: [35.6, 33.5, "-5 41 35"], dos: [50, 30.5], "ciseaux-dos": [50, 36.5], "feuille-dos": [50.5, 33, "7 55 54"], ciseaux: [50, 33], pierre: [50, 35.5] };
+// dans l'enchaînement Pierre, Feuille, Ciseaux ; elle est maintenant sur l'annulaire replié, comme pour les autres signes ;
+// de même pour l'index levé, « Viens par ici » et le geste « doigt levé ».)
+const PLACE_BAGUE = { feuille: [50.5, 34], index: [50.5, 39.5], pouce: [35.6, 33.5, "-5 41 35"], dos: [50, 30.5], "ciseaux-dos": [50, 36.5], "feuille-dos": [50.5, 33, "7 55 54"], ciseaux: [50, 33], pierre: [50, 35.5] };
 // Les mains des routines d'entrée (14 novembre, remarque du porteur du projet : la bague sautait d'un doigt à l'autre) : la bague
 // reste sur le même doigt que dans le signe d'origine, et suit ce doigt quand il s'abaisse ou se replie ; le médaillon et le
 // dossard restent à la place du signe d'origine.
@@ -220,7 +221,7 @@ function placeBague(symbole) {
   if (piano) return [x, +piano[1] === 2 ? y + 13 : y];          // (la bague est sur le 3e doigt de la feuille)
   if (craque) return [x, +craque[1] >= 2 ? 37.5 : y];           // (doigt replié : sur la jointure, juste au-dessus de la paume)
   if (symbole === "ciseaux-ferme") return PLACE_BAGUE.ciseaux;
-  if (symbole === "index-plie") return [29.5, 36];
+  if (symbole === "index-plie") return PLACE_BAGUE.index;
   return PLACE_BAGUE[symbole] || PLACE_BAGUE.pierre;
 }
 function accessoires(a, nue = false) {
