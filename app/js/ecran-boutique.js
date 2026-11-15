@@ -56,6 +56,7 @@ export function installerBoutique(ctx) {
   function render() {
     $("boutiqueHors").hidden = !!uid;
     $("boutiqueSolde").textContent = uid && etat ? texteJetons(etat.solde) : "";
+    $("boutiqueSoldeFixe").textContent = uid && etat ? `🪙 ${texteJetons(etat.solde).replace(/ jetons?$/, "")}` : ""; $("boutiqueSoldeFixe").hidden = !(uid && etat);
     $("boutiqueVitrine").innerHTML = uid && etat?.vitrine ? etat.vitrine.filter(v => article(v.id) && !RETIRES.has(v.id) && (!article(v.id).bientot || ctx.nouveautes?.(article(v.id).bientot))).map(v => carte(article(v.id), v.prix_remise)).join("") : "";
     $("boutiqueVitrineCarte").hidden = !(uid && etat?.vitrine);
     $("boutiqueOnglets").innerHTML = CATEGORIES.filter(c => !c.bientot || ctx.nouveautes?.(c.bientot)).map(c => `<button data-cat="${c.id}" aria-pressed="${c.id === categorie}">${c.nom}</button>`).join("");
