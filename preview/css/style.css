@@ -1155,3 +1155,10 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 @keyframes routine-montre { 0%, 100% { transform: rotate(0); } 25%, 70% { transform: rotate(-28deg) translateY(-4%); } }
 .routine-montre::after { content: "⌚"; position: absolute; left: 50%; top: 82%; transform: translate(-50%, -50%); font-size: 1.1rem; line-height: 1; }
 @media (prefers-reduced-motion: reduce) { .routine-salut, .routine-shadow, .routine-rebond, .routine-chut, .routine-montre, .routine-chut::after { animation: none; } }
+/* Sur l'écran de présentation : le fond immobile, la main qui fait sa routine par-dessus (découpée au rond). */
+.fo-routine { position: relative; display: block; width: min(100px, 25vw); height: min(100px, 25vw); margin: 0 auto 8px; }
+.fo-av .fo-routine > svg { margin: 0; }
+.fo-routine-main { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; }
+.fo-av .fo-routine-main svg, .fo-p.left .fo-av .fo-routine-main svg, .fo-p.right .fo-av .fo-routine-main svg { width: 100%; height: 100%; margin: 0; border-radius: 0; box-shadow: none; }
+/* Dans la boutique : la routine dans sa carte. */
+.ap-routine { display: inline-block; width: 100%; height: 100%; }

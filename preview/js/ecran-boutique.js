@@ -5,6 +5,7 @@ import { ARTICLES, CATEGORIES, RARETES, RETIRES, article, GESTES, CELEBRATIONS, 
 import { avatarSVG } from "./avatar.js";
 import { texteJetons } from "./jetons-logique.js";
 import { texteCri } from "./celebrations.js";
+import { jouerRoutine } from "./routines.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -12,6 +13,8 @@ const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 // L'aperçu d'un article, dessiné avec l'avatar du joueur.
 export function apercu(x, av) {
   if (x.categorie === "avatar") return avatarSVG({ ...av, [x.type]: x.cle });
+  // (une routine d'entrée : sa première image et son mouvement ; elle s'anime une fois la carte affichée, voir animerRoutines)
+  if (x.type === "routine") return `<span class="ap-routine" data-routine="${x.cle}"></span>`;
   if (x.type === "geste") return `<span class="geste-${x.cle}">${avatarSVG({ ...av, symbole: GESTES[x.cle].symbole })}</span>`;
   if (x.type === "cri") return `<span class="ap-cri">${esc(texteCri(x.cle))}</span>`;
   if (x.type === "celebration") { const c = CELEBRATIONS[x.cle]; return `<span class="ap-celeb">${c.formes.map((f, i) => `<i style="color:${c.couleurs[i % c.couleurs.length]}">${f}</i>`).join("")}${c.formes.length < 3 ? `<i style="color:${c.couleurs[1]}">${c.formes[0]}</i>` : ""}</span>`; }
@@ -20,7 +23,7 @@ export function apercu(x, av) {
 }
 
 // ctx : { compte, lireP(), sauverP(), apresChangement(), jetons() }
-// ctx.nouveautes() : vrai si les articles « bientôt » sont en vente (version de test).
+// ctx.nouveautes(cle) : vrai si les articles « bientôt » de cette nouveauté sont en vente (version de test, ou nouveauté ouverte).
 export function installerBoutique(ctx) {
   let uid = null, etat = null, categorie = "avatar";
   const dire = (t, erreur = false) => { $("boutiqueMsg").textContent = t; $("boutiqueMsg").classList.toggle("erreur", erreur); };
@@ -53,10 +56,20 @@ export function installerBoutique(ctx) {
   function render() {
     $("boutiqueHors").hidden = !!uid;
     $("boutiqueSolde").textContent = uid && etat ? texteJetons(etat.solde) : "";
-    $("boutiqueVitrine").innerHTML = uid && etat?.vitrine ? etat.vitrine.filter(v => article(v.id) && !RETIRES.has(v.id)).map(v => carte(article(v.id), v.prix_remise)).join("") : "";
+    $("boutiqueVitrine").innerHTML = uid && etat?.vitrine ? etat.vitrine.filter(v => article(v.id) && !RETIRES.has(v.id) && (!article(v.id).bientot || ctx.nouveautes?.(article(v.id).bientot))).map(v => carte(article(v.id), v.prix_remise)).join("") : "";
     $("boutiqueVitrineCarte").hidden = !(uid && etat?.vitrine);
-    $("boutiqueOnglets").innerHTML = CATEGORIES.map(c => `<button data-cat="${c.id}" aria-pressed="${c.id === categorie}">${c.nom}</button>`).join("");
-    $("boutiqueArticles").innerHTML = ARTICLES.filter(x => x.categorie === categorie && !RETIRES.has(x.id) && (!x.bientot || ctx.nouveautes?.())).map(x => carte(x)).join("");
+    $("boutiqueOnglets").innerHTML = CATEGORIES.filter(c => !c.bientot || ctx.nouveautes?.(c.bientot)).map(c => `<button data-cat="${c.id}" aria-pressed="${c.id === categorie}">${c.nom}</button>`).join("");
+    $("boutiqueArticles").innerHTML = ARTICLES.filter(x => x.categorie === categorie && !RETIRES.has(x.id) && (!x.bientot || ctx.nouveautes?.(x.bientot))).map(x => carte(x)).join("");
+    animerRoutines();
+  }
+  // Les routines d'entrée de la boutique s'animent dans leur carte, avec la main du joueur (15 novembre).
+  let arrets = [];
+  function animerRoutines() {
+    arrets.forEach(f => f()); arrets = [];
+    const av = ctx.lireP().av, reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.querySelectorAll("#viewBoutique .ap-routine[data-routine]").forEach(el => {
+      arrets.push(jouerRoutine(el, el.dataset.routine, s => avatarSVG({ ...av, symbole: s }), { reduit }));
+    });
   }
 
   $("boutiqueOnglets").addEventListener("click", e => { const b = e.target.closest("[data-cat]"); if (b) { categorie = b.dataset.cat; render(); } });

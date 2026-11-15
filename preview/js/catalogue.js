@@ -2,6 +2,8 @@
 // Ici, le catalogue (les prix sont aussi sur le serveur : supabase/etape-17-boutique.sql, un test vérifie qu'ils correspondent).
 // type : le réglage concerné (gant, gantMotif, fond, poignet de l'avatar ; cri ; celebration ; geste ; cadre de la carte).
 
+import { ROUTINES } from "./routines.js";
+
 export const RARETES = {
   courant: { nom: "Courant", prix: 300 },
   rare: { nom: "Rare", prix: 800 },
@@ -14,6 +16,7 @@ export const CATEGORIES = [
   { id: "geste", nom: "✊ Gestes" },
   { id: "celebration", nom: "🎉 Célébrations" },
   { id: "cadre", nom: "🪪 Cadres" },
+  { id: "routine", nom: "🥊 Routines", bientot: "routines" },   // (15 novembre : les routines d'entrée, routines.js)
 ];
 
 const a = (type, cle, nom, rarete, categorie = "avatar", bientot = false) => ({ id: `${type}:${cle}`, type, cle, nom, rarete, categorie, prix: RARETES[rarete].prix, ...(bientot ? { bientot } : {}) });
@@ -55,6 +58,9 @@ export const ARTICLES = [
   a("bracelet", "breloque_pierre", "Breloque Pierre", "rare"), a("bracelet", "breloque_feuille", "Breloque Feuille", "rare"), a("bracelet", "breloque_ciseaux", "Breloque Ciseaux", "rare"),
   a("bague", "saphir", "Bague au saphir", "rare"), a("bague", "emeraude", "Bague à l'émeraude", "rare"), a("bague", "diamant", "Bague au diamant", "epique"),
   a("bague", "signe_pierre", "Chevalière Pierre", "rare"), a("bague", "signe_feuille", "Chevalière Feuille", "rare"), a("bague", "signe_ciseaux", "Chevalière Ciseaux", "rare"),
+  // Les routines d'entrée (15 novembre, idée d'un testeur et du porteur du projet ; routines.js) : le salut à la foule est gratuit.
+  ...[["shadow", "rare"], ["pianiste", "rare"], ["claque", "rare"], ["trois", "rare"], ["craquer", "rare"], ["vague", "rare"], ["montre", "rare"],
+    ["viens", "epique"], ["chut", "epique"]].map(([k, r]) => a("routine", k, ROUTINES[k].nom, r, "routine", "routines")),
 ];
 // Les articles retirés de la vente (ils restent à ceux qui les ont achetés) : le pouce levé (12 novembre, décision du porteur
 // du projet : le dessin n'était pas assez beau). Plus dans la boutique ni dans la vitrine du jour (étape SQL 73).
@@ -106,3 +112,5 @@ export const CADRES = { aucun: { nom: "Selon le rang" }, bronze: { nom: "Bronze"
   elite: { nom: "Élite (or et noir)", couleur: "#E9C046", interieur: "#14121F" },   // (carrière : trophée « Élite »)
   feu_sacre: { nom: "Feu sacré", couleur: "#F4A93B", interieur: "#C2361C", flammes: true } };   // (série de jours : trophée « Le feu sacré »)
 export const cadreValide = c => (CADRES[c] ? c : "aucun");
+export { ROUTINES };
+export const routineChoisie = r => (ROUTINES[r] ? r : "salut");
