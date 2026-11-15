@@ -123,7 +123,7 @@ const motifUnSigne = (id, signe, gant, c = OR_SIGNE) => `<pattern id="${id}g" wi
 let n = 0;
 function dessinerMain(a, fill, ink, nue) {
   const tordu = a.degats?.tordu || 0;
-  if (nue) return mainNue(a.symbole, (PEAUX[a.peau] || PEAUX.neutre)[1], (ONGLES[a.ongles] || [])[1] || null, (BAGUES[a.bague] || [])[3] || null, a.bague, tordu);
+  if (nue) return mainNue(SIGNE_DE_BASE(a.symbole), (PEAUX[a.peau] || PEAUX.neutre)[1], (ONGLES[a.ongles] || [])[1] || null, (BAGUES[a.bague] || [])[3] || null, a.bague, tordu);
   return main(a.symbole, fill, ink, tordu);
 }
 
@@ -207,7 +207,23 @@ function mainNue(symbole, peau, vernis, bague, cleBague, tordu = 0) {
 // (Sur la main nue, elle est dessinée avec la main : voir mainNue.)
 const PLACE_MEDAILLON = { pierre: [50, 69, 6.6], ciseaux: [50, 69, 6.6], feuille: [50, 62, 10], "feuille-dos": [50, 61, 10], "ciseaux-dos": [52, 60, 10], dos: [50, 60, 10], index: [52, 69.5, 6.2], pouce: [39.5, 64, 6.4] };
 // (10 novembre, demande du porteur du projet : la bague remontée sur le doigt, elle était à la jointure avec la paume)
-const PLACE_BAGUE = { feuille: [50.5, 34], index: [29.5, 33], pouce: [35.6, 33.5, "-5 41 35"], dos: [50, 30.5], "ciseaux-dos": [30.75, 32.5, "-12 36 50"], "feuille-dos": [50.5, 33, "7 55 54"], ciseaux: [30.75, 29.5, "-14 36 50"], pierre: [50, 35.5] };
+// (15 novembre, remarque du porteur du projet : pour les Ciseaux, la bague était sur l'index, et sautait de l'annulaire à l'index
+// dans l'enchaînement Pierre, Feuille, Ciseaux ; elle est maintenant sur l'annulaire replié, comme pour les autres signes ;
+// de même pour l'index levé, « Viens par ici » et le geste « doigt levé ».)
+const PLACE_BAGUE = { feuille: [50.5, 34], index: [50.5, 39.5], pouce: [35.6, 33.5, "-5 41 35"], dos: [50, 30.5], "ciseaux-dos": [50, 36.5], "feuille-dos": [50.5, 33, "7 55 54"], ciseaux: [50, 33], pierre: [50, 35.5] };
+// Les mains des routines d'entrée (14 novembre, remarque du porteur du projet : la bague sautait d'un doigt à l'autre) : la bague
+// reste sur le même doigt que dans le signe d'origine, et suit ce doigt quand il s'abaisse ou se replie ; le médaillon et le
+// dossard restent à la place du signe d'origine.
+const SIGNE_DE_BASE = s => (/^feuille-[pc][0-3]$/.test(s) ? "feuille" : s === "ciseaux-ferme" ? "ciseaux" : s === "index-plie" ? "index" : s);
+function placeBague(symbole) {
+  const piano = /^feuille-p([0-3])$/.exec(symbole), craque = /^feuille-c([0-3])$/.exec(symbole);
+  const [x, y] = PLACE_BAGUE.feuille;
+  if (piano) return [x, +piano[1] === 2 ? y + 13 : y];          // (la bague est sur le 3e doigt de la feuille)
+  if (craque) return [x, +craque[1] >= 2 ? 37.5 : y];           // (doigt replié : sur la jointure, juste au-dessus de la paume)
+  if (symbole === "ciseaux-ferme") return PLACE_BAGUE.ciseaux;
+  if (symbole === "index-plie") return PLACE_BAGUE.index;
+  return PLACE_BAGUE[symbole] || PLACE_BAGUE.pierre;
+}
 function accessoires(a, nue = false) {
   let s = "";
   const yb = nue ? 84 : 67;   // le bracelet : au poignet (plus bas sur la main nue, juste au-dessus du bandeau)
@@ -215,7 +231,7 @@ function accessoires(a, nue = false) {
   if (br) s += braceletSVG(br, nue ? 37.5 : 35.5, yb, nue ? 25 : 29, BRACELETS_COLORABLES.has(a.bracelet) ? (MOTIF_COULEURS[a.braceletCouleur] || [])[1] || null : null);
   const bg = (BAGUES[a.bague] || [])[3];
   if (bg && !nue) {
-    const [x, y, rot] = PLACE_BAGUE[a.symbole] || PLACE_BAGUE.pierre;
+    const [x, y, rot] = placeBague(a.symbole);
     s += `<g${rot ? ` transform="rotate(${rot})"` : ""}>${bagueSVG(bg, x - .5, y, 11.5, 4.2, a.bague === "symbole" ? (cx, cy) => chaton("symbole", cx, cy) : null)}</g>`;
   }
   return s;
@@ -250,6 +266,7 @@ export function cousu(svg, couleur) {
 }
 
 // sansFond : seulement le gant et le poignet (le poing qui se secoue pendant un coup).
+// sansMain : seulement le fond (sous la routine d'entrée, qui dessine la main par-dessus ; 15 novembre).
 export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
   const cle = a.poignet in POIGNETS ? a.poignet : "rouge";
@@ -309,9 +326,9 @@ export function avatarSVG(a) {
   const couture = nue ? null : gm === "coutures" ? "#E7C04A" : a.gant === "elite" ? "#E9C046" : A_DOSSARD.has(a.gant) && PRESTIGE.coutures ? "#B8860B" : null;
   // Le Dossard 1 : un dossard blanc épinglé (quatre épingles) avec un gros « 1 » noir, sur le dos de la main (ou la paume).
   if (A_DOSSARD.has(a.gant)) deco = (PRESTIGE.reflet ? `<g opacity=".38" style="mix-blend-mode:screen">${main(a.symbole, `url(#${id}r)`, "none")}</g>` : "")
-    + dossardSVG(...(PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre));
+    + dossardSVG(...(PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
-  if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[a.symbole] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
+  if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
   if (gm === "bandeau") deco = `<rect x="28" y="64" width="44" height="7" rx="2" fill="#E0B12A" stroke="${ink}" stroke-width="1.5"/><rect x="28" y="67" width="44" height="1.4" fill="rgba(255,255,255,.7)"/>`;
   let motif = "";
   if (a.motif === "rayures") motif = `<g clip-path="url(#${id})" opacity=".16">${[...Array(9)].map((_, i) => `<rect x="${i * 16 - 40}" y="-10" width="7" height="140" fill="#fff" transform="rotate(30 50 50)"/>`).join("")}</g>`;
@@ -321,10 +338,11 @@ export function avatarSVG(a) {
     <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath>${remplissage}${poignetDef}${fondDef}${A_DOSSARD.has(a.gant) ? `<linearGradient id="${id}r" gradientUnits="userSpaceOnUse" x1="25" y1="15" x2="70" y2="75"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".35" stop-color="#fff" stop-opacity=".15"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset=".62" stop-color="#fff" stop-opacity="0"/></linearGradient>` : ""}</defs>
     ${a.sansFond ? "" : `<circle cx="50" cy="50" r="48" fill="${fillFond}"/>${decorFond}${motif}
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
+    ${a.sansMain ? "" : `
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
-    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}
+    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}`}
   </svg>`;
 }
 
@@ -377,6 +395,37 @@ function pouceLeve(fill, trait, pli, epaisseur = 1.5, ongleFill = "none") {
 }
 
 function main(symbole, gant, ink, tordu = 0) {
+  // Les routines d'entrée (routines.js, 14 novembre, idée d'un testeur) : la feuille dont un doigt s'abaisse (le pianiste),
+  // les ciseaux fermés (les lames qui claquent), l'index replié (« viens par ici »).
+  // (les doigts repliés un par un, pour craquer les doigts : feuille-c0 replie l'index, feuille-c3 les quatre)
+  const craque = /^feuille-c([0-3])$/.exec(symbole);
+  if (craque) {
+    const k = +craque[1];
+    return `${[[29.5, 20, 34], [40, 12, 40], [50.5, 14, 38], [61, 22, 32]].map(([x, y, h], i) => doigt(x, i <= k ? y + 22 : y, i <= k ? h - 22 : h, gant, ink)).join("")}
+    ${paume(44, gant, ink)}
+    <path d="M40 60 q10 4 20 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
+  }
+  const piano = /^feuille-p([0-3])$/.exec(symbole);
+  if (piano) {
+    const k = +piano[1];
+    return `${[[29.5, 20, 34], [40, 12, 40], [50.5, 14, 38], [61, 22, 32]].map(([x, y, h], i) => doigt(x, i === k ? y + 13 : y, i === k ? h - 13 : h, gant, ink)).join("")}
+    ${paume(44, gant, ink)}
+    <path d="M40 60 q10 4 20 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
+  }
+  if (symbole === "ciseaux-ferme") return `
+    ${doigt(33, 10, 40, gant, ink, "-3 38 50")}${doigt(43.5, 10, 40, gant, ink, "3 48 50")}
+    ${paume(40, gant, ink)}
+    ${doigt(50, 30, 16, gant, ink)}${doigt(60.5, 33, 14, gant, ink)}
+    ${pouce(gant, ink)}
+    <path d="M56 58 q6 3 12 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
+  if (symbole === "index-plie") return `
+    ${doigt(40, 36, 18, gant, ink)}${doigt(50.5, 37, 17, gant, ink)}${doigt(61, 40, 15, gant, ink)}
+    ${paume(44, gant, ink)}
+    ${doigt(29.5, 24, 31, gant, ink)}
+    <rect x="29.5" y="15" width="10.5" height="15" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5" transform="rotate(38 35 27)"/>
+    <path d="M31.5 33 h7.5" fill="none" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>
+    <rect x="24" y="52" width="36" height="12" rx="6" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
+    <path d="M58 68 q5 2.5 10 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
   if (symbole === "feuille") return `
     ${doigt(29.5, 20, 34, gant, ink)}${doigt(40, 12, 40, gant, ink)}${doigt(50.5, 14, 38, gant, ink)}${doigt(61, 22, 32, gant, ink)}
     ${paume(44, gant, ink)}

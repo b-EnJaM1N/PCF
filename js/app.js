@@ -22,6 +22,7 @@ import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { estFiac } from "./profil.js";
+import { jouerRoutine } from "./routines.js";
 import { TITRES, FAMILLES, accorderTitres, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, reserveAuTenant, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
@@ -57,7 +58,7 @@ import { replayVisible, momentDuCoup, tempsForts, momentDuSet, TITRES as TITRES_
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder, titresSerie, prochainPalier } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
-import { GESTES, CELEBRATIONS, CADRES, gesteValide, celebrationValide, articleDe, possede } from "./catalogue.js";
+import { GESTES, CELEBRATIONS, CADRES, ROUTINES, gesteValide, celebrationValide, routineChoisie, articleDe, possede } from "./catalogue.js";
 import { gainDuel, exploitsDuMatch, EXPLOITS } from "./jetons-logique.js";
 import { texteClassementFin, texteNiveau, provisoire, divisionDe, texteDivision } from "./social-logique.js";
 import * as serveur from "./duel-serveur.js";
@@ -1539,6 +1540,20 @@ document.querySelectorAll("#segWin button").forEach(b => b.addEventListener("cli
 
 // ---------------------------------------------------------------- face-à-face
 let minuteriesIntro = [], voixIntro = 0;
+// Les routines d'entrée (routines.js ; 15 novembre, idée d'un testeur) : sur l'écran de présentation, la main de chaque joueur
+// fait sa routine (la mienne : choisie dans le Vestiaire ; en duel, celle de l'adversaire, d'après sa fiche ; un bot : la sienne,
+// toujours la même). Le fond reste immobile, seule la main bouge. Mes « crac » et « clac » s'entendent.
+let arretsRoutines = [];
+function arreterRoutines() { arretsRoutines.forEach(f => f()); arretsRoutines = []; }
+const LISTE_ROUTINES = Object.keys(ROUTINES);
+const routineDe = g => (g === 0 ? routineChoisie(P.routine) : OPP.humain || OPP.fiche?.routine ? routineChoisie(OPP.fiche?.routine)
+  : LISTE_ROUTINES[hashTexte(String(OPP.id || OPP.nom || "")) % LISTE_ROUTINES.length]);
+function entreeJoueur(el, av, g) {
+  if (!ouvert("routines")) { el.innerHTML = avatarSVG(av); return; }
+  el.innerHTML = `<span class="fo-routine">${avatarSVG({ ...av, sansMain: true })}<span class="fo-routine-main"></span></span>`;
+  const sons = g === 0 ? s => { if (/^feuille-c|^ciseaux-ferme$/.test(s)) ambiance.effet("etincelle"); } : null;
+  arretsRoutines.push(jouerRoutine(el.querySelector(".fo-routine-main"), routineDe(g), s => avatarSVG({ ...av, symbole: s, sansFond: true }), { reduit: reduitMouvement(), surImage: sons }));
+}
 function ouvrirFaceAFace() {
   arreterIntroHymne();
   $("startCard").hidden = true; $("tourCard").hidden = true;
@@ -1554,7 +1569,7 @@ function ouvrirFaceAFace() {
   else if (S.contreBotRapide) $("foStage").textContent = "Partie rapide · 🤖 contre un bot";
   else if (S.contreFantome) $("foStage").textContent = "👻 Contre un fantôme";
   else if (D?.duel?.rapide) $("foStage").textContent = /🤖$/.test(OPP.nom || "") ? "Partie rapide · 🤖 contre un bot" : `Partie rapide ${D.duel.points_par_set === 11 ? "classique" : "éclair"}`;
-  $("foAvMe").innerHTML = avatarSVG(avMoi()); $("foAvBot").innerHTML = avatarSVG(avAdv());
+  arreterRoutines(); entreeJoueur($("foAvMe"), avMoi(), 0); entreeJoueur($("foAvBot"), avAdv(), 1);
   $("foNameMe").textContent = pr.joueur.nom; $("foSubMe").textContent = pr.joueur.sous; $("foRecMe").textContent = pr.joueur.bilan;
   $("foNameBot").textContent = pr.adversaire.nom; $("foSubBot").textContent = pr.adversaire.sous; $("foRecBot").textContent = pr.adversaire.bilan;
   const cellule = (texte, n, adv) => `<span class="${adv ? "adv" : ""}${n === undefined && texte.length > 3 ? " txt" : ""}"${n !== null && n !== undefined ? ` data-n="${n}"` : ""}>${esc(texte)}</span>`;
@@ -1736,7 +1751,7 @@ $("faceoff").addEventListener("click", e => {
   minuteriesIntro.splice(1).forEach(clearTimeout);   // on garde les applaudissements
   $("foGo").focus();
 });
-function fermerFaceAFace() { $("faceoff").classList.remove("show"); faceAFaceOuvert = false; minuteriesIntro.forEach(clearTimeout); }
+function fermerFaceAFace() { $("faceoff").classList.remove("show"); faceAFaceOuvert = false; minuteriesIntro.forEach(clearTimeout); arreterRoutines(); }
 $("foGo").addEventListener("click", () => {
   if (S.duel) { try { ambiance.initialiser(); } catch { /* sans son */ } duelPret(); return; }   // on attend que l'adversaire soit prêt
   commencerSolo();
@@ -1744,7 +1759,7 @@ $("foGo").addEventListener("click", () => {
 // Le match commence : les boutons des signes doivent être à l'écran (la page a pu rester descendue sur l'écran de fin).
 function montrerSignes() { window.scrollTo(0, 0); $("moves").scrollIntoView({ block: "nearest" }); }
 function commencerSolo() {
-  $("faceoff").classList.remove("show"); faceAFaceOuvert = false; montrerSignes();
+  $("faceoff").classList.remove("show"); faceAFaceOuvert = false; arreterRoutines(); montrerSignes();
   if (S.matchJour) noterMatchDuJour({ abandon: true });   // un seul essai : quitter en route compte comme un abandon
   S.enJeu = true; majModeMatch();
   $("status").textContent = "Set 1, coup 1";
@@ -1762,7 +1777,7 @@ $("foPasser").addEventListener("click", () => {
 });
 $("foBack").addEventListener("click", () => {
   if (S.duel) { abandonnerDuel(); return; }
-  $("faceoff").classList.remove("show"); faceAFaceOuvert = false; minuteriesIntro.forEach(clearTimeout);
+  $("faceoff").classList.remove("show"); faceAFaceOuvert = false; minuteriesIntro.forEach(clearTimeout); arreterRoutines();
   const carriere = !!S.carriere;
   S.tour = null; nouvelleSeance();
   if (carriere) aller("viewCarriere");
@@ -1930,6 +1945,8 @@ function renderSurnom() {
   $("inCri").innerHTML = CRIS.filter(c => possede(P, "cri", c.id)).map(c => `<option value="${c.id}"${c.id === P.cri ? " selected" : ""}>${esc(libelleCri(c.id))}${c.boutique ? " 🛍️" : ""}</option>`).join("");
   const options = (type, table, actuel) => Object.keys(table).filter(k => !estVerrouille(P, type, k)).map(k => `<option value="${k}"${k === actuel ? " selected" : ""}>${esc(table[k].nom)}</option>`).join("");
   $("inGeste").innerHTML = options("geste", GESTES, P.geste);
+  $("routineZone").hidden = !ouvert("routines");   // (les routines d'entrée : routines.js, 15 novembre)
+  $("inRoutine").innerHTML = options("routine", ROUTINES, P.routine);
   $("inCelebration").innerHTML = options("celebration", CELEBRATIONS, P.celebration);
   $("inCadre").innerHTML = options("cadre", CADRES, P.cadre);
 }
@@ -1941,6 +1958,7 @@ document.querySelectorAll("#segGenre button").forEach(b => b.addEventListener("c
 document.querySelectorAll("#segPoignee button").forEach(b => b.addEventListener("click", () => { P.poignee = b.dataset.v; sauverP(); renderSurnom(); }));
 $("inCri").addEventListener("change", e => { P.cri = criValide(e.target.value); sauverP(); });
 $("inGeste").addEventListener("change", e => { P.geste = gesteValide(e.target.value); sauverP(); });
+$("inRoutine").addEventListener("change", e => { P.routine = routineChoisie(e.target.value); sauverP(); });
 $("inCelebration").addEventListener("change", e => { P.celebration = celebrationValide(e.target.value); sauverP(); });
 $("inCadre").addEventListener("change", e => { P.cadre = e.target.value in CADRES ? e.target.value : "aucun"; sauverP(); renderCarte(); });
 
@@ -2999,7 +3017,7 @@ rapideUI = installerRapide({
 
 jetonsUI = installerJetons({ compte: compteUI });
 defisUI = installerDefis({ compte: compteUI, jetons: () => jetonsUI?.rafraichir() });
-boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, nouveautes: () => ouvert("club"), jetons: () => jetonsUI?.rafraichir(),
+boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, nouveautes: cle => ouvert(cle || "club"), jetons: () => jetonsUI?.rafraichir(),
   apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); } });
 // Au départ d'un Sit & Go, du freeroll ou d'un tournoi programmé, la page du tournoi s'ouvre… sauf si mon premier match
 // est déjà lancé : elle passait sous la présentation du match, et « Passer » faisait alors quitter le match.

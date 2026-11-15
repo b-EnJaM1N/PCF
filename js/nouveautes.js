@@ -8,6 +8,8 @@
 //   avis : la carte « Ton avis ? » à la fin d'un match, une seule fois après le 5e match (11 novembre) ;
 //   fiche : la fiche complète d'un joueur en ligne, stats, face-à-face, historique (11 novembre, étape SQL 68).
 //   records : les records du cercle, tous les duels ou les tournois seulement (13 novembre, étape SQL 74).
+//   routines : les routines d'entrée (routines.js) : le choix dans le Vestiaire, la boutique (étape SQL 77), l'écran de présentation
+//     (15 novembre, idée d'un testeur).
 //   classementCercle : le classement interne du cercle (le niveau du cercle, classement-cercle.js), sans la page rangée.
 //   pageCercle : la page du cercle rangée (le fil, le podium, des boutons vers Tournois, Classement, Stats et records, Inviter,
 //     Gérer) et le classement interne du cercle, le niveau du cercle (14 novembre, classement-cercle.js).

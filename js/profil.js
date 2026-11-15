@@ -1,7 +1,7 @@
 // Fiche joueur : carte d'identité sportive qui se remplit toute seule au fil des matchs.
 // Pour l'instant elle est gardée sur le téléphone (voir stockage.js).
 import { CRI_DEFAUT, criValide } from "./celebrations.js";
-import { possede, gesteValide, celebrationValide, cadreValide } from "./catalogue.js";
+import { possede, gesteValide, celebrationValide, cadreValide, routineChoisie } from "./catalogue.js";
 import { additionner, compterMatch } from "./lecture-adversaire.js";
 
 export const ELO_DEPART = 1200;
@@ -148,6 +148,7 @@ export function profilParDefaut() {
     smashsTentes: 0, smashsReussis: 0,        // les smashs (appui long) joués, et ceux qui ont gagné le point
     // La boutique (voir catalogue.js) : les articles achetés et ceux qu'on utilise.
     achats: [], geste: "poing", celebration: "confettis", cadre: "aucun",
+    routine: "salut",                         // ma routine d'entrée (routines.js ; 15 novembre)
   };
 }
 
@@ -159,7 +160,7 @@ export function normaliserProfil(brut) {
   if (P.genre !== "f") P.genre = "m";
   if (!["franche", "normale", "legere", "froide"].includes(P.poignee)) P.poignee = "normale";
   P.cri = criValide(P.cri);
-  P.geste = gesteValide(P.geste); P.celebration = celebrationValide(P.celebration); P.cadre = cadreValide(P.cadre);
+  P.geste = gesteValide(P.geste); P.celebration = celebrationValide(P.celebration); P.cadre = cadreValide(P.cadre); P.routine = routineChoisie(P.routine);
   for (const k of Object.keys(d)) if (Array.isArray(d[k]) && !Array.isArray(P[k])) P[k] = d[k];
   return P;
 }
@@ -257,6 +258,6 @@ export function remettreAZero(P) {
   // Les achats de la boutique sont gardés (ils sont aussi enregistrés sur le serveur) ; les éléments des trophées repartent.
   N.achats = [...(P.achats || [])];
   for (const k of Object.keys(N.av)) N.av[k] = verrouDe(k, P.av[k]) || !possede(N, k, P.av[k]) ? N.av[k] : P.av[k];
-  for (const k of ["cri", "geste", "celebration", "cadre"]) N[k] = P[k] ?? N[k];
+  for (const k of ["cri", "geste", "celebration", "cadre", "routine"]) N[k] = P[k] ?? N[k];
   return N;
 }
