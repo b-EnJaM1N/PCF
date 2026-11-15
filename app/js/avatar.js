@@ -214,7 +214,9 @@ const PLACE_MEDAILLON = { pierre: [50, 69, 6.6], ciseaux: [50, 69, 6.6], feuille
 // (15 novembre, remarque du porteur du projet : pour les Ciseaux, la bague était sur l'index, et sautait de l'annulaire à l'index
 // dans l'enchaînement Pierre, Feuille, Ciseaux ; elle est maintenant sur l'annulaire replié, comme pour les autres signes ;
 // de même pour l'index levé, « Viens par ici » et le geste « doigt levé ».)
-const PLACE_BAGUE = { feuille: [50.5, 34], index: [50.5, 39.5], pouce: [35.6, 33.5, "-5 41 35"], dos: [50, 30.5], "ciseaux-dos": [50, 36.5], "feuille-dos": [50.5, 33, "7 55 54"], ciseaux: [50, 33], pierre: [50, 35.5] };
+// (15 novembre après-midi, remarque du porteur du projet : l'annulaire replié des Ciseaux cachait le bas du majeur ; il est
+// plus court et décalé à droite, avec l'auriculaire, et la bague le suit.)
+const PLACE_BAGUE = { feuille: [50.5, 34], index: [50.5, 39.5], pouce: [35.6, 33.5, "-5 41 35"], dos: [50, 30.5], "ciseaux-dos": [50, 36.5], "feuille-dos": [50.5, 33, "7 55 54"], ciseaux: [53, 37], pierre: [50, 35.5] };
 // Les mains des routines d'entrée (14 novembre, remarque du porteur du projet : la bague sautait d'un doigt à l'autre) : la bague
 // reste sur le même doigt que dans le signe d'origine, et suit ce doigt quand il s'abaisse ou se replie ; le médaillon et le
 // dossard restent à la place du signe d'origine.
@@ -428,7 +430,7 @@ function main(symbole, gant, ink, tordu = 0) {
   if (symbole === "ciseaux-ferme") return `
     ${doigt(33, 10, 40, gant, ink, "-3 38 50")}${doigt(43.5, 10, 40, gant, ink, "3 48 50")}
     ${paume(40, gant, ink)}
-    ${doigt(50, 30, 16, gant, ink)}${doigt(60.5, 33, 14, gant, ink)}
+    ${doigt(53, 34, 12, gant, ink)}${doigt(61, 36, 11, gant, ink)}
     ${pouce(gant, ink)}
     <path d="M56 58 q6 3 12 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
   if (symbole === "index-plie") return `
@@ -482,7 +484,7 @@ function main(symbole, gant, ink, tordu = 0) {
   if (symbole === "ciseaux") return `
     ${doigt(31, 10, 40, gant, ink, "-14 36 50")}${doigt(44, 10, 40, gant, ink, "12 49 50")}
     ${paume(40, gant, ink)}
-    ${doigt(50, 30, 16, gant, ink)}${doigt(60.5, 33, 14, gant, ink)}
+    ${doigt(53, 34, 12, gant, ink)}${doigt(61, 36, 11, gant, ink)}
     ${pouce(gant, ink)}
     <path d="M56 58 q6 3 12 0" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round"/>`;
   return `
