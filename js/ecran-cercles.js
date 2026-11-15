@@ -760,6 +760,11 @@ export function installerCercles(ctx) {
     rafraichir: () => { rafraichir(); if (!$("socTournoi").hidden) tournois.rafraichir(); else if (cercleOuvert) chargerCercle(); },
     ouvrirTournoi: id => tournois.ouvrir(id),
     proposerInvitation: () => proposerDerniereInvitation(),
+    // (la notification d'une demande d'ami ou d'une invitation dans un cercle : la liste de mes amis et cercles, la demande en haut)
+    montrerDemandes: () => {
+      if (cercleOuvert || !$("socAmi").hidden) fermerCercle();
+      rafraichir().then(() => { const c = $("socInvitCard"); if (!c.hidden) { c.scrollIntoView({ block: "start", behavior: "smooth" }); c.classList.remove("a-voir"); void c.offsetWidth; c.classList.add("a-voir"); } });
+    },
     // Notre face-à-face avec un ami (depuis un autre écran, ex. Défier un ami).
     ouvrirAmi: async id => {
       const depuis = ctx.vueCourante();
