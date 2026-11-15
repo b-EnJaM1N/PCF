@@ -1,8 +1,8 @@
--- HandSlam — Étape 78 : les poignets vache et girafe à la boutique.
+-- HandSlam — Étape 78 : les poignets vache, girafe et dalmatien, et le gant dalmatien, à la boutique.
 -- À coller dans Supabase : « SQL Editor » → « New query » → coller → « Run ». Nécessite l'étape 77. Peut être relancé sans risque.
 --
 -- Demande du porteur du projet (15 novembre), avec les gants vache et girafe de l'étape 72 : rares, 800 jetons chacun, comme le
--- poignet léopard. Le catalogue complet (remplace celui de l'étape 77) ; un test vérifie qu'il correspond à app/js/catalogue.js.
+-- poignet léopard ; puis le dalmatien (le poignet à points et son gant), le poignet vache prenant de grandes taches. Le catalogue complet (remplace celui de l'étape 77) ; un test vérifie qu'il correspond à app/js/catalogue.js.
 
 create or replace function public._catalogue() returns table (id text, prix int) language sql immutable as $$
   values ('gant:rose', 300), ('gant:violet', 300), ('gant:noir', 300), ('gant:turquoise', 300),
@@ -27,7 +27,8 @@ create or replace function public._catalogue() returns table (id text, prix int)
          ('gantMotif:vache', 800), ('gantMotif:girafe', 800), ('gantMotif:leopard', 800),
          ('routine:shadow', 800), ('routine:pianiste', 800), ('routine:claque', 800), ('routine:trois', 800),
          ('routine:craquer', 800), ('routine:vague', 800), ('routine:montre', 800), ('routine:viens', 2000), ('routine:chut', 2000),
-         ('poignet:vache', 800), ('poignet:girafe', 800)
+         ('poignet:vache', 800), ('poignet:girafe', 800),
+         ('poignet:dalmatien', 800), ('gantMotif:dalmatien', 800)
 $$;
 
 revoke all on function public._catalogue() from public, anon, authenticated;
