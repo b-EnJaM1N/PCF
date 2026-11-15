@@ -486,6 +486,8 @@
   </div>
 
   <div class="view" id="viewBoutique" hidden>
+    <!-- (15 novembre, suggestion d'un testeur : le solde reste visible ; épinglé en haut de l'écran dès qu'on a fait défiler) -->
+    <span class="boutique-solde-fixe" id="boutiqueSoldeFixe" hidden></span>
     <p class="retour-hub"><button class="linkbtn" data-aller="viewProfile">← Retour</button></p>
     <section class="card">
       <h2>🛍️ La boutique <span class="boutique-solde" id="boutiqueSolde"></span></h2>
@@ -499,7 +501,7 @@
     </section>
     <section class="card">
       <!-- (15 novembre, demande du porteur du projet : le solde reste visible en faisant défiler, avec les onglets) -->
-      <div class="boutique-collant"><div class="boutique-onglets" id="boutiqueOnglets"></div><span class="boutique-solde-fixe" id="boutiqueSoldeFixe" hidden></span></div>
+      <div class="boutique-collant"><div class="boutique-onglets" id="boutiqueOnglets"></div></div>
       <div class="articles" id="boutiqueArticles"></div>
     </section>
   </div>
