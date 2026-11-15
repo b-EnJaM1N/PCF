@@ -266,6 +266,7 @@ export function cousu(svg, couleur) {
 }
 
 // sansFond : seulement le gant et le poignet (le poing qui se secoue pendant un coup).
+// sansMain : seulement le fond (sous la routine d'entrée, qui dessine la main par-dessus ; 15 novembre).
 export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
   const cle = a.poignet in POIGNETS ? a.poignet : "rouge";
@@ -337,10 +338,11 @@ export function avatarSVG(a) {
     <defs><clipPath id="${id}"><circle cx="50" cy="50" r="48"/></clipPath>${remplissage}${poignetDef}${fondDef}${A_DOSSARD.has(a.gant) ? `<linearGradient id="${id}r" gradientUnits="userSpaceOnUse" x1="25" y1="15" x2="70" y2="75"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".35" stop-color="#fff" stop-opacity=".15"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset=".62" stop-color="#fff" stop-opacity="0"/></linearGradient>` : ""}</defs>
     ${a.sansFond ? "" : `<circle cx="50" cy="50" r="48" fill="${fillFond}"/>${decorFond}${motif}
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
+    ${a.sansMain ? "" : `
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
-    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}
+    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}`}
   </svg>`;
 }
 

@@ -25,7 +25,8 @@ export const dureeDe = r => (ROUTINES[r]?.images || []).reduce((t, [, ms]) => t 
 
 // Joue la routine r dans l'élément el (dessin : signe → SVG de la main). Renvoie une fonction pour l'arrêter.
 // Sans animation (l'appareil le demande) : la première image, immobile.
-export function jouerRoutine(el, r, dessin, { reduit = false } = {}) {
+// surImage(signe) : appelé à chaque nouvelle image (pour un son : le « crac » des doigts, le « clac » des ciseaux).
+export function jouerRoutine(el, r, dessin, { reduit = false, surImage = null } = {}) {
   const def = ROUTINES[r];
   if (!el || !def) return () => {};
   const signes = signesDe(r);
@@ -37,6 +38,7 @@ export function jouerRoutine(el, r, dessin, { reduit = false } = {}) {
     if (fini) return;
     const [s, ms] = def.images[i % def.images.length];
     images.forEach(x => { x.hidden = x.dataset.s !== s; });
+    if (i) surImage?.(s);
     i++; t = setTimeout(montrer, ms);
   };
   montrer();

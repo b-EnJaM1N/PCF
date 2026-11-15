@@ -803,7 +803,7 @@
       <p class="locknote" id="lockNote"></p>
     </details>
     <details class="card edit pli" id="cCelebrations">
-      <summary><h2>🎉 Mes célébrations</h2><span class="pli-resume">Poignée de main, cri, geste, célébration, cadre</span></summary>
+      <summary><h2>🎉 Mes célébrations</h2><span class="pli-resume">Poignée de main, cri, geste, routine, célébration, cadre</span></summary>
       <p class="lbl" id="poigneeLbl">Ma poignée de main habituelle</p>
       <div class="seg seg4" id="segPoignee" role="group" aria-labelledby="poigneeLbl"><button data-v="franche">💪 Franche</button><button data-v="normale">🤝 Normale</button><button data-v="legere">🤏 Légère</button><button data-v="froide">🧊 Froide</button></div>
       <p class="hint" id="poigneeInfo">À la fin de chaque match, tu as 3 secondes pour choisir ta poignée de main. Sinon, c'est celle-ci.</p>
@@ -812,11 +812,16 @@
       <p class="hint">Dans une bulle quand tu gagnes un set, en grand avec des confettis quand tu gagnes le match. En duel, ton adversaire le voit.</p>
       <label class="lbl" for="inGeste">Mon geste de victoire</label>
       <select id="inGeste"></select>
+      <div id="routineZone" hidden>
+        <label class="lbl" for="inRoutine">Ma routine d'entrée</label>
+        <select id="inRoutine"></select>
+        <p class="hint">Pendant la présentation du match, ta main fait sa routine. En duel, ton adversaire la voit.</p>
+      </div>
       <label class="lbl" for="inCelebration">Ma célébration de fin de match</label>
       <select id="inCelebration"></select>
       <label class="lbl" for="inCadre">Le cadre de ma carte de joueur</label>
       <select id="inCadre"></select>
-      <p class="hint">D'autres cris, gestes, célébrations et cadres sont en vente à la <button class="linkbtn" data-aller="viewBoutique">boutique 🛍️</button>.</p>
+      <p class="hint">D'autres cris, gestes, routines, célébrations et cadres sont en vente à la <button class="linkbtn" data-aller="viewBoutique">boutique 🛍️</button>.</p>
     </details>
     <section class="card"><h2>🛍️ La boutique</h2><p class="hint">D'autres gants, motifs, fonds, poignets, cris, gestes, célébrations et cadres, à gagner avec tes jetons.</p><button class="btn alt" data-aller="viewBoutique">Ouvrir la boutique</button></section>
     </div>

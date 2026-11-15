@@ -503,6 +503,13 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 septuagies septies. Les routines d'entrée à la boutique (étape 77)
+
+Même manipulation que d'habitude avec [`etape-77-routines.sql`](etape-77-routines.sql)
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-77-routines.sql).
+Les routines d'entrée (pendant la présentation du match) entrent dans le catalogue de la boutique : rares (800 jetons) ou
+épiques (2 000) ; le salut à la foule reste gratuit. **À coller avant la fusion.**
+
 ## 1 septuagies sexies. Inviter des membres à un tournoi de cercle (étape 76)
 
 1. Même manipulation avec [`etape-76-invitations-tournoi.sql`](etape-76-invitations-tournoi.sql), **après** l'étape 75
