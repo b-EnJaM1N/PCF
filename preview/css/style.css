@@ -1162,3 +1162,8 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .fo-av .fo-routine-main svg, .fo-p.left .fo-av .fo-routine-main svg, .fo-p.right .fo-av .fo-routine-main svg { width: 100%; height: 100%; margin: 0; border-radius: 0; box-shadow: none; }
 /* Dans la boutique : la routine dans sa carte. */
 .ap-routine { display: inline-block; width: 100%; height: 100%; }
+/* La boutique : les onglets et le solde restent en haut de l'écran quand on fait défiler (15 novembre). */
+.boutique-collant { position: sticky; top: 0; z-index: 6; display: flex; align-items: center; gap: 8px; margin: -6px -6px 12px; padding: 8px 6px;
+  background: var(--court-deep); border-radius: 12px; box-shadow: 0 6px 12px -8px rgba(0, 0, 0, .6); }
+.boutique-collant .boutique-onglets { flex: 1; min-width: 0; margin-bottom: 0; }
+.boutique-solde-fixe { flex: none; font-weight: 700; font-size: .9rem; color: var(--me); white-space: nowrap; padding: 6px 10px; border-radius: 999px; background: rgba(244, 197, 66, .12); border: 1px solid rgba(244, 197, 66, .4); }
