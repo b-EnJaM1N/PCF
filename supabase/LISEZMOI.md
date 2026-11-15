@@ -503,6 +503,15 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 septuagies nonies. Les notifications des amis et des cercles (étape 79)
+
+1. Même manipulation avec [`etape-79-notifications-amis-cercles.sql`](etape-79-notifications-amis-cercles.sql), **après** l'étape 78
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-79-notifications-amis-cercles.sql).
+   Une notification pour une demande d'ami reçue, une demande acceptée, une invitation dans un cercle (une seule par demande).
+2. **Mettre à jour la fonction « Notifier »** : **Edge Functions** → **Notifier** → onglet **Code** → remplace tout le code par la
+   nouvelle version de [`functions/notifier/index.ts`](functions/notifier/index.ts)
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/functions/notifier/index.ts) → **Deploy**.
+
 ## 1 septuagies octies. Les poignets vache, girafe et dalmatien, et le gant dalmatien (étape 78)
 
 Même manipulation que d'habitude avec [`etape-78-poignets-animaux.sql`](etape-78-poignets-animaux.sql)

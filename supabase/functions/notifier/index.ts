@@ -27,10 +27,12 @@ export const heureParis = (date: string) => {
   return `${Number(h)} h${m === "00" ? "" : ` ${m}`}`;
 };
 
-// evenement : "defi" | "accepte" | "attend" | "tournoi" | "test" | "freeroll" | "programme" | "invitation" ; duel : la ligne du duel ;
+// evenement : "defi" | "accepte" | "attend" | "tournoi" | "test" | "freeroll" | "programme" | "invitation"
+//   | "ami_demande" | "ami_accepte" | "invitation_cercle" (étape 79) ; duel : la ligne du duel ;
 // adv : { pseudo, numero } de l'adversaire (pour « invitation » : celui qui invite) ; tournoi : { nom, depart, mode } (tournoi programmé,
 // ou tournoi auquel on est invité).
-export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }, tournoi?: { nom: string; depart?: string; mode?: string }) {
+// cercle : { nom } (invitation dans un cercle).
+export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }, tournoi?: { nom: string; depart?: string; mode?: string }, cercle?: { nom: string }) {
   if (evenement === "test") return {
     titre: "🔔 Notification de test", texte: "Si tu lis ceci, les notifications marchent sur ce téléphone !", url: "./", tag: "test",
   };
@@ -45,6 +47,17 @@ export function message(evenement: string, duel: any, adv: { pseudo: string; num
     url: "./?ouvrir=programmes", tag: "programme",
   };
   const qui = `${adv.pseudo}#${adv.numero}`;
+  // Les amis et les cercles (étape 79, 15 novembre) : adv est celui qui demande, accepte ou invite.
+  if (evenement === "ami_demande") return {
+    titre: `🤝 ${qui} veut être ton ami`, texte: "Touche pour accepter ou refuser.", url: "./?ouvrir=amis", tag: `ami-${qui}`,
+  };
+  if (evenement === "ami_accepte") return {
+    titre: `✅ ${qui} a accepté ta demande d'ami`, texte: "Vous êtes amis : défie-le quand tu veux !", url: "./?ouvrir=amis", tag: `ami-${qui}`,
+  };
+  if (evenement === "invitation_cercle") return {
+    titre: `🏰 ${qui} t'invite dans le cercle ${cercle?.nom || ""}`.trimEnd(), texte: "Touche pour rejoindre le cercle (ou refuser).",
+    url: "./?ouvrir=amis", tag: `cercle-${cercle?.nom || ""}`,
+  };
   // Invitation à un tournoi de cercle (étape 76, 14 novembre).
   if (evenement === "invitation") return {
     titre: `📨 ${qui} t'invite ${tournoi?.mode === "championnat" ? "au championnat" : "au tournoi"} ${tournoi?.nom || ""}`.trimEnd(),
@@ -97,7 +110,7 @@ async function servir(req: Request) {
   if (!id) return reponse({ erreur: "notification manquante" }, 400);
   // On « prend » la notification : si elle est déjà partie, on ne la renvoie pas.
   const { data: notif } = await sb.from("notifications").update({ envoye_le: new Date().toISOString() })
-    .eq("id", id).is("envoye_le", null).select("duel_id, joueur, evenement, tournoi_id, de").maybeSingle();
+    .eq("id", id).is("envoye_le", null).select("duel_id, joueur, evenement, tournoi_id, de, cercle_id").maybeSingle();
   if (!notif) return reponse({ ok: true, deja: true });
   let duel: any = null, adv: any = null;
   if (notif.duel_id) {
@@ -108,7 +121,9 @@ async function servir(req: Request) {
   if (!notif.duel_id && notif.de) ({ data: adv } = await sb.from("profils").select("pseudo, numero").eq("id", notif.de).maybeSingle());   // qui invite
   let tournoi: any = null;
   if (notif.tournoi_id) ({ data: tournoi } = await sb.from("tournois").select("nom, depart, mode").eq("id", notif.tournoi_id).maybeSingle());
-  const m = message(notif.evenement, duel, adv || { pseudo: "Un joueur", numero: 0 }, tournoi || undefined);
+  let cercle: any = null;
+  if (notif.cercle_id) ({ data: cercle } = await sb.from("cercles").select("nom").eq("id", notif.cercle_id).maybeSingle());
+  const m = message(notif.evenement, duel, adv || { pseudo: "Un joueur", numero: 0 }, tournoi || undefined, cercle || undefined);
 
   webpush.setVapidDetails(ADRESSE_APPLI, cles.publique, cles.privee);
   const { data: abonnements } = await sb.from("abonnements_push").select("endpoint, p256dh, auth").eq("joueur", notif.joueur);

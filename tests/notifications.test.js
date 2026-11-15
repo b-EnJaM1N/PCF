@@ -19,6 +19,11 @@ test("les messages des notifications", () => {
     url: "./?ouvrir=invitations", tag: "invitation-Coupe du vendredi",
   });
   assert.equal(message("invitation", null, adv, { nom: "Ligue", mode: "championnat" }).titre, "📨 Bob#4821 t'invite au championnat Ligue");
+  // les amis et les cercles (étape 79)
+  assert.equal(message("ami_demande", null, adv).titre, "🤝 Bob#4821 veut être ton ami");
+  assert.equal(message("ami_demande", null, adv).url, "./?ouvrir=amis");
+  assert.equal(message("ami_accepte", null, adv).titre, "✅ Bob#4821 a accepté ta demande d'ami");
+  assert.equal(message("invitation_cercle", null, adv, undefined, { nom: "FIAC CLUB" }).titre, "🏰 Bob#4821 t'invite dans le cercle FIAC CLUB");
   assert.equal(texteFormat(7, 1), "Sets de 7 points · match en 1 set");
   assert.equal(texteFormat(1, 1), "Sets de 1 point · match en 1 set");
 });
