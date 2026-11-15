@@ -29,6 +29,9 @@ export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], bronze: ["Bronze", "#C27A
   tricolore: ["Tricolore", "#F5F7FA", "linear-gradient(90deg,#2C5CC5 33%,#F5F7FA 33% 66%,#E1342B 66%)"],
   arcenciel: ["Arc-en-ciel", "#F4C542", "linear-gradient(90deg,#E8574A,#F4C542,#6BD49A,#4DA3FF,#9B6BD6)"],
   leopard: ["Léopard", "#E2A74B", "radial-gradient(circle at 30% 40%,#3A2A1A 18%,transparent 20%),radial-gradient(circle at 70% 65%,#3A2A1A 18%,transparent 20%),#E2A74B"],
+  // (15 novembre, demande du porteur du projet : avec les gants vache et girafe)
+  vache: ["Vache", "#FAFAF7", "radial-gradient(ellipse at 28% 35%,#1E1E22 20%,transparent 22%),radial-gradient(ellipse at 72% 70%,#1E1E22 16%,transparent 18%),#FAFAF7"],
+  girafe: ["Girafe", "#F3DFAF", "radial-gradient(circle at 25% 30%,#A55A22 17%,transparent 19%),radial-gradient(circle at 70% 35%,#B8692A 15%,transparent 17%),radial-gradient(circle at 48% 78%,#A55A22 16%,transparent 18%),#F3DFAF"],
   // Les objets du club (9 novembre, choix du porteur du projet) : le poignet Club (boutique), le poignet « Fondé en 2026 » (trophée).
   club: ["Club", "#14533A", "linear-gradient(#14533A 28%,#E9C046 28% 38%,#14533A 38% 62%,#E9C046 62% 72%,#14533A 72%)"],
   an2026: ["Fondé en 2026", "#E0B12A", "radial-gradient(circle,#5A3E06 22%,#E0B12A 26%)"],
@@ -303,6 +306,8 @@ export function avatarSVG(a) {
     club: `<pattern id="${id}p" width="100" height="100" patternUnits="userSpaceOnUse"><rect width="100" height="100" fill="#14533A"/><rect y="75" width="100" height="2.2" fill="#E9C046"/><rect y="82.8" width="100" height="2.2" fill="#E9C046"/></pattern>`,
     an2026: `<pattern id="${id}p" width="100" height="100" patternUnits="userSpaceOnUse"><rect width="100" height="100" fill="#E0B12A"/>${[41.5, 50, 58.5].map(x => `<path transform="translate(${x} 80) scale(.85)" d="M0 -5 L1.5 -1.5 L5 -1.5 L2.2 0.8 L3.2 4.5 L0 2.3 L-3.2 4.5 L-2.2 0.8 L-5 -1.5 L-1.5 -1.5 Z" fill="#5A3E06"/>`).join("")}</pattern>`,
     leopard: `<pattern id="${id}p" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#E2A74B"/><circle cx="2.5" cy="2.5" r="1.6" fill="#3A2A1A"/><circle cx="6" cy="6" r="1.4" fill="#3A2A1A"/></pattern>`,
+    vache: `<pattern id="${id}p" width="16" height="12" patternUnits="userSpaceOnUse" patternTransform="scale(1.3)"><rect width="16" height="12" fill="#FAFAF7"/><path d="M1 2 C3 0 7 1 7 3.5 C7 6 4 7 2 6 C0 5 0 3 1 2 Z" fill="#1E1E22"/><path d="M10 6.5 C12 5 15.5 6 15.5 8.5 C15.5 11 12.5 11.5 11 10.5 C9.5 9.5 9 7.5 10 6.5 Z" fill="#1E1E22"/></pattern>`,
+    girafe: `<pattern id="${id}p" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="scale(1.6)"><rect width="12" height="12" fill="#F3DFAF"/><path d="M.8 1 L4.6 .6 L5.8 3 L5 5.4 L1.2 5.6 L.4 3.4 Z" fill="#B8692A"/><path d="M6.8 .8 L11 1.2 L11.6 3.6 L10.4 5.6 L7.2 5.2 L6.4 3 Z" fill="#A55A22"/><path d="M.8 6.8 L4.6 6.6 L5.8 9 L5 11.4 L1.2 11.4 L.4 9.4 Z" fill="#A55A22"/><path d="M6.8 6.8 L11 7 L11.6 9.4 L10.6 11.4 L7.2 11.2 L6.4 9 Z" fill="#B8692A"/></pattern>`,
     braise: `<linearGradient id="${id}p" x1="0" x2="1"><stop offset="0" stop-color="#7A1F12"/><stop offset=".3" stop-color="#E8572A"/><stop offset=".5" stop-color="#F4A93B"/><stop offset=".7" stop-color="#E8572A"/><stop offset="1" stop-color="#7A1F12"/></linearGradient>`,
   }[cle] || "";
   const fillPoignet = a.gant === "fiac" ? POIGNET_FIAC : poignetDef ? `url(#${id}p)` : poignet;
