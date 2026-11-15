@@ -1,0 +1,5 @@
+# HandSlam : tout le site peut être lu par les moteurs de recherche, sauf la version de test.
+User-agent: *
+Disallow: /preview/
+
+Sitemap: https://handslam.fr/sitemap.xml
