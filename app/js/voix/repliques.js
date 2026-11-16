@@ -67,6 +67,9 @@ export const MOMENTS = {
     { r: "c", t: "Vous ne passerez pas !", clin: "cine" },
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
     { r: "c", t: "Une riposte fulgurante, aucune chance pour son adversaire !", clin: "sport" },
+    { r: "c", t: "Il n'est pas mort ! Il n'est pas mort !", f: "Elle n'est pas morte ! Elle n'est pas morte !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Il ressuscite ! Le public n'en revient pas !", f: "Elle ressuscite ! Le public n'en revient pas !" },
+    { r: "d", t: "Il aime vivre dangereusement.", f: "Elle aime vivre dangereusement." },
   ],
   remontee: [
     { r: "c", t: "Quelle remontée extraordinaire !" },
@@ -199,6 +202,8 @@ export const MOMENTS = {
     // (5 novembre, répliques du porteur du projet)
     { r: "c", t: "Il renverse complètement le jeu !", f: "Elle renverse complètement le jeu !" },
     { r: "c", t: ["Belle transition vers la Pierre !", "Belle transition vers les Ciseaux !", "Belle transition vers la Feuille !"] },
+    { r: "c", t: "Il a enfin trouvé les autres boutons !", f: "Elle a enfin trouvé les autres boutons !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "d", t: "Il découvre qu'il existe trois signes. Bonne nouvelle.", f: "Elle découvre qu'il existe trois signes. Bonne nouvelle." },
   ],
   duel_esprits: [
     { r: "c", t: "Ils se lisent dans les pensées !" },
@@ -263,6 +268,8 @@ export const MOMENTS = {
     { r: "d", t: "Bien vu l'aveugle.", clin: "sport" },
     // (4 novembre, réplique du porteur du projet)
     { r: "c", t: "Il l'attendait dans le zig, il lui a mis dans le zag !", f: "Il l'attendait dans le zig, elle lui a mis dans le zag !" },
+    { r: "c", t: "Il a vu le coup venir avant même l'adversaire !", f: "Elle a vu le coup venir avant même l'adversaire !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "d", t: "Il joue aux échecs. L'autre joue aux dames.", f: "Elle joue aux échecs. L'autre joue aux dames." },
   ],
   temps_ecoule: [
     { r: "c", t: "Il a oublié de jouer !", f: "Elle a oublié de jouer !" },
@@ -273,6 +280,8 @@ export const MOMENTS = {
     { r: "d", t: "Jouer au hasard, c'est avouer qu'on n'a plus de plan.", retiree: true },   // (retirée le 28 octobre : plus de coup au hasard)
     { r: "d", t: "L'affaire du chronomètre. On n'en parle pas." },
     { r: "d", t: "Le ridicule ne tue pas. Heureusement pour lui.", f: "Le ridicule ne tue pas. Heureusement pour elle.", si: "balle_match" },
+    { r: "c", t: "Il est resté sur le banc de touche !", f: "Elle est restée sur le banc de touche !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "d", t: "Il réfléchit encore. On lui enverra le résultat par courrier.", f: "Elle réfléchit encore. On lui enverra le résultat par courrier." },
   ],
   // Balle de match (dite à voix basse, avant le point).
   tension: [
@@ -288,11 +297,19 @@ export const MOMENTS = {
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
     { r: "c", t: "C'est irrespirable !" },
     { r: "d", t: "Il a la victoire au bout des doigts. Littéralement.", f: "Elle a la victoire au bout des doigts. Littéralement.", si: "balle_pour" },
+    { r: "c", t: "Il est à un signe du paradis !", f: "Elle est à un signe du paradis !", si: "balle_pour" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "d", t: "Que la force soit avec lui. Il va en avoir besoin.", f: "Que la force soit avec elle. Elle va en avoir besoin.", clin: "cine", si: "balle_pour" },
+    { r: "d", t: "C'est le moment de ne pas jouer Pierre. Ou de jouer Pierre. Je ne sais plus." },
   ],
   point_decisif: [
     { r: "c", t: "Un point. Un seul. Pour tout !" },
     { r: "d", t: "Ici, pas de deuxième chance. Comme dans la vie." },
     { r: "c", t: "Un point pour entrer dans l'Histoire !", si: "enjeu" },
+    { r: "c", t: "Il ne peut en rester qu'un !", clin: "cine" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Quatorze partout ! Le prochain point écrit l'histoire !", si: "quatorze" },
+    { r: "d", t: "Celui qui cligne des yeux a perdu." },
+    { r: "d", t: "Respirez. Moi, j'ai arrêté il y a trois points." },
+    { r: "d", t: "J'entends mon cœur. Ou le sien. Peut-être les deux." },
   ],
   // Temps morts : fin de set, fin de match.
   set_ecrasant: [
@@ -339,6 +356,10 @@ export const MOMENTS = {
     { r: "c", t: "Set décisif, et une place dans l'Histoire en jeu !", si: "enjeu" },
     { r: "d", t: "Un set pour un titre. Je reste calme. Pour deux.", si: "finale_tournoi" },
     { r: "d", t: "Winter is coming.", clin: "cine", retiree: true },   // (retirée le 16 novembre, demande du porteur du projet)
+    { r: "c", t: "Un set ! Un seul ! Tout ce qu'ils ont, c'est maintenant !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Les compteurs sont remis à zéro !" },
+    { r: "d", t: "Rien ne va plus. Faites vos jeux." },
+    { r: "d", t: "Deux sets pour s'échauffer. Le vrai match commence.", si: "troisieme_set" },
   ],
   renversement: [
     { r: "c", t: "Mené un set à zéro, il renverse tout !", f: "Menée un set à zéro, elle renverse tout !" },
@@ -347,6 +368,7 @@ export const MOMENTS = {
     { r: "c", t: "Tête-à-queue complet dans ce match !", clin: "sport" },
     { r: "d", t: "Il a perdu une bataille. Il gagne la guerre. Classique.", f: "Elle a perdu une bataille. Elle gagne la guerre. Classique." },
     { r: "c", t: "C'est la remontada !", clin: "sport" },
+    { r: "c", t: "Personne n'y croyait, sauf lui !", f: "Personne n'y croyait, sauf elle !" },   // (16 novembre, choisie par le porteur du projet)
   ],
   balle_match_convertie: [
     { r: "c", t: ["Pieeeeerre ! Pierre ! Pierre !", "Ciseaaaaux ! Ciseaux ! Ciseaux !", "Feuiiiiille ! Feuille ! Feuille !"], clin: "sport", retiree: true },   // (retirée le 5 novembre)
@@ -423,6 +445,8 @@ export const MOMENTS = {
     { r: "d", t: "Le vainqueur repart avec la gloire. Le vaincu repart avec une remise en question existentielle." },
     // (le 3 novembre : seulement en fin de match, à la demande du porteur du projet ; avant, en fin de set écrasant)
     { r: "d", t: "Vous êtes le maillon faible. Au revoir !", clin: "cine" },
+    { r: "c", t: "Il tombe avec les honneurs !", f: "Elle tombe avec les honneurs !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "d", t: "Le résultat est sévère. Mais juste. Surtout juste." },
   ],
   // (« domination », « Je suis ton père », dit avant le match quand l'adversaire dominait nos face-à-face : retiré le 2 novembre,
   // à la demande du porteur du projet)
@@ -635,6 +659,8 @@ export const MOMENTS = {
     { r: "c", t: "Même idée dès le premier coup ! Ça promet !" },
     { r: "d", t: "Ça commence bien. Enfin, ça ne commence pas." },
     { r: "d", t: "Premier coup, premier match nul." },
+    { r: "c", t: "Ils pensent pareil ! Ça va être long !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "d", t: "Deux esprits, une seule idée. C'est rare. Surtout ici." },
   ],
   // Un point enfin gagné après des égalités (2 ou plus) : par moi, ou par l'adversaire.
   apres_egalites_gagne: [
@@ -803,6 +829,8 @@ export const MOMENTS = {
     { r: "d", t: "Beaucoup d'élan. Peu de résultat." },
     { r: "d", t: "Frapper fort, c'est bien. Frapper juste, c'est mieux." },
     { r: "d", t: "Il a smashé dans le vide. Le vide a gagné.", f: "Elle a smashé dans le vide. Le vide a gagné.", deMoi: true },
+    { r: "c", t: "Le smash s'envole dans les tribunes !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "d", t: "Il a frappé comme un sourd. Et visé comme un aveugle.", f: "Elle a frappé comme une sourde. Et visé comme une aveugle.", deMoi: true },
   ],
   // Un smash sur une égalité.
   smash_bloque: [
@@ -810,11 +838,25 @@ export const MOMENTS = {
     { r: "c", t: "Smash contré ! Quelle lecture !" },
     { r: "d", t: "Il a smashé dans un mur. Le mur ne s'est pas excusé.", f: "Elle a smashé dans un mur. Le mur ne s'est pas excusé.", deMoi: true },
     { r: "d", t: "Tout ce bruit pour une égalité." },
+    { r: "c", t: "Contre monumental !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "d", t: "Il a voulu enfoncer la porte. La porte était blindée.", f: "Elle a voulu enfoncer la porte. La porte était blindée.", deMoi: true },
   ],
   // Les deux joueurs smashent le même coup.
   smash_double: [
     { r: "c", t: "Double smash ! Ça tape de partout !" },
     { r: "d", t: "Deux smashs. Aucune finesse. Beaucoup de bruit." },
+    { r: "c", t: "Les deux smashent en même temps ! C'est la guerre totale !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "d", t: "Deux marteaux, zéro clou." },
+    { r: "c", t: "Choc des titans au milieu du court !" },
+  ],
+  // Les effets du match (16 novembre, répliques choisies par le porteur du projet) : ma main prend feu (8 points de suite),
+  // un feu (la flamme ou plus) qui s'éteint, chez l'un ou l'autre.
+  main_en_feu: [
+    { r: "c", t: "Il est en feu ! Appelez les pompiers !", f: "Elle est en feu ! Appelez les pompiers !" },
+    { r: "d", t: "Quelqu'un a un extincteur ?" },
+  ],
+  feu_eteint: [
+    { r: "d", t: "Et le feu s'éteint. Il restera un peu de fumée." },
   ],
   // La poignée de main (2 novembre, répliques choisies par le porteur du projet ; voir poignee.js : situationPoignee).
   // Une poignée normale n'est pas commentée.

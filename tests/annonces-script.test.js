@@ -502,3 +502,15 @@ test("l'ouverture de Kolodrov : après le 3e coup, ouverture Pierre, Feuille, Ci
     assert.ok(!/Kolodrov/.test(t), t);
   }
 });
+
+test("le feu des mains pour les commentateurs : ma main prend feu à 8 points de suite, une flamme qui s'éteint", async () => {
+  const { feuDuCoup } = await import("../app/js/annonces.js");
+  const g = s => [...s].map(x => ({ gagnant: x === "=" ? null : +x }));
+  assert.deepEqual(feuDuCoup(g("0000000")), { allume: false, eteint: false });
+  assert.deepEqual(feuDuCoup(g("00000000")), { allume: true, eteint: false });     // 8 points de suite
+  assert.deepEqual(feuDuCoup(g("000000000")), { allume: false, eteint: false });   // (seulement au moment où elle prend)
+  assert.deepEqual(feuDuCoup(g("1111111")), { allume: false, eteint: false });     // (l'adversaire : pas « Il est en feu »)
+  assert.deepEqual(feuDuCoup(g("0000001")), { allume: false, eteint: true });      // la flamme (6 points) s'éteint
+  assert.deepEqual(feuDuCoup(g("00001")), { allume: false, eteint: false });       // (la fumée seulement : on ne dit rien)
+  assert.deepEqual(feuDuCoup(g("1111110")), { allume: false, eteint: true });      // chez l'adversaire aussi
+});
