@@ -24,7 +24,8 @@
 // (14 novembre : le Dossard 1, avec le gant en or du FIAC Club, et les invitations aux tournois de cercle ouverts à tous, accord du porteur du projet.)
 // (14 novembre, après midi : le classement interne du cercle, puis la page du cercle rangée, puis les records (Stats et records),
 // ouverts à tous, accord du porteur du projet.)
-export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets", "dossard", "invitations", "classementCercle", "pageCercle", "records"]);
+// (15 novembre au soir : les routines d'entrée ouvertes à tous, accord du porteur du projet.)
+export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets", "dossard", "invitations", "classementCercle", "pageCercle", "records", "routines"]);
 
 export function versionDeTest(loc = typeof location !== "undefined" ? location : null) {
   if (!loc) return false;
