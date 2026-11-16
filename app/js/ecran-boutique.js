@@ -11,6 +11,14 @@ const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 // L'aperçu d'un article, dessiné avec l'avatar du joueur.
+// Équiper un article. Un gant de couleur retire le motif de gant (16 novembre, choix du porteur du projet : sinon, un motif
+// qui recouvre tout le gant, vache par exemple, cachait la nouvelle couleur) ; on remet le motif dans le Vestiaire.
+export function equiper(P, x) {
+  if (x.categorie !== "avatar") { P[x.type] = x.cle; return; }
+  P.av[x.type] = x.cle;
+  if (x.type === "gant") P.av.gantMotif = "uni";
+}
+
 export function apercu(x, av) {
   // (16 novembre, remarque du porteur du projet : un gant de couleur s'affichait avec le motif qu'on porte, vache par exemple,
   // qui le recouvre : on le montre uni, pour qu'on voie sa couleur)
@@ -86,7 +94,7 @@ export function installerBoutique(ctx) {
     const achat = e.target.closest("[data-acheter]"), util = e.target.closest("[data-utiliser]");
     if (util) {
       const x = article(util.dataset.utiliser), P = ctx.lireP();
-      if (x.categorie === "avatar") P.av[x.type] = x.cle; else P[x.type] = x.cle;
+      equiper(P, x);
       ctx.sauverP(); ctx.apresChangement(); dire(`${x.nom} : c'est équipé !`); render(); return;
     }
     if (!achat) return;
@@ -96,7 +104,7 @@ export function installerBoutique(ctx) {
     try {
       retenir(await social.acheter(x.id));
       const P = ctx.lireP();
-      if (x.categorie === "avatar") P.av[x.type] = x.cle; else P[x.type] = x.cle;   // on l'utilise tout de suite
+      equiper(P, x);   // on l'utilise tout de suite
       ctx.sauverP(); ctx.apresChangement(); ctx.jetons?.();
       dire(`Bravo, « ${x.nom} » est à toi, et déjà équipé !`);
     } catch (err) { dire(err.message, true); }
