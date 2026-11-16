@@ -50,7 +50,7 @@ const CONDITIONS = {
   premier_point: c => c.premierPoint, depart_rate: c => c.departRate, kolodrov: c => c.kolodrov,
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, pile4: c => c.pile4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
   apres_egalites: c => c.apresEgalites, varie: c => c.varie, mene: c => c.mene,   // (5 novembre)
-  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, quatorze: c => c.quatorze, troisieme_set: c => c.troisiemeSet, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
+  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, quatorze: c => c.quatorze, sans_set_perdu: c => c.sansSetPerdu, troisieme_set: c => c.troisiemeSet, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
   // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
 };
@@ -449,7 +449,7 @@ function finDeMatch(match, evt, etat, ctx, rng) {
       return titre.length ? titre : un(choisir(etat, "victoire", { ...ctx, finale: true }, rng));
     }
     if (premierPerdu) return un(choisir(etat, "renversement", ctx, rng));
-    if (troisZero || rng() < 0.5) return un(choisir(etat, "balle_match_convertie", { ...ctx, troisZero }, rng));
+    if (troisZero || rng() < 0.5) return un(choisir(etat, "balle_match_convertie", { ...ctx, troisZero, sansSetPerdu: match.sets[1] === 0 && match.format.setsGagnants > 1 }, rng));
     return un(choisir(etat, "victoire", ctx, rng));
   }
   // (un seul dialogue de fin de match : pas s'il a été entendu aux derniers matchs)
