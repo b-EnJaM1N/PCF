@@ -6,7 +6,11 @@
 //   Les égalités en chaîne : les mains tremblent à partir de la 2e égalité de suite, plus fort à la 3e ; à la 4e, une étincelle
 //   (13 novembre au soir, demande du porteur du projet : décalé d'une égalité).
 //   Le double smash avec le même signe : 2 Pierres, un séisme ; 2 Feuilles, un coup de vent ; 2 Ciseaux, des étincelles.
+//   Le cœur qui bat (16 novembre, choix du porteur du projet) : dans le set décisif, à chaque balle de match à partir de 10 partout
+//   (11-10, 12-11…), de plus en plus vite ; le sommet au point décisif (14 partout : le prochain point gagne le match). Le public
+//   baisse le ton, les bords de l'écran battent en rouge, le téléphone vibre ; au point gagnant, le cœur s'arrête net.
 // Ici, seulement la logique (testée) ; les dessins sont dans app.js et style.css, les sons dans sons.js.
+import { ecartRequis, setDecisif, pointDecisif, balle, egaliteFinDeSet } from "./regles.js";
 
 export const SEUILS_FEU = [4, 6, 8];
 export const niveauFeu = n => SEUILS_FEU.filter(s => n >= s).length;
@@ -93,4 +97,22 @@ export function feuSVG(niveau, { id = "f", anime = true } = {}) {
       + braises(24, [0, 0, 144, 130]));
   }
   return "";
+}
+
+// ---------------------------------------------------------------- le cœur qui bat
+// Le niveau du cœur au prochain point : 0 rien ; 1 à 4 les balles de match du set décisif à partir de 10 partout (11-10 : 1,
+// 12-11 : 2, 13-12 : 3, 14-13 : 4) ; 5 le point décisif (14 partout). En sets de 7 : à partir de 6 partout, sommet à 9 partout.
+// Entre deux balles de match, à égalité (11 partout, 12 partout…), il continue de battre au rythme du point d'avant : il ne
+// s'arrête qu'au point gagnant. Seulement pour les sets à 2 points d'écart (11 et 7 points).
+export const BPM_COEUR = [0, 66, 80, 96, 114, 138];
+export const COEUR_MAX = 5;
+export function niveauCoeur(m) {
+  if (!m || m.termine) return 0;
+  const len = m.format.pointsParSet;
+  if (ecartRequis(len) !== 2 || !setDecisif(m)) return 0;
+  if (pointDecisif(m)) return COEUR_MAX;
+  const bas = Math.min(...m.points);
+  if (egaliteFinDeSet(m)) return bas < len ? 0 : Math.min(COEUR_MAX - 1, bas - (len - 1));
+  if (balle(m)?.type !== "match") return 0;
+  return bas < len - 1 ? 0 : Math.min(COEUR_MAX - 1, bas - (len - 1) + 1);
 }

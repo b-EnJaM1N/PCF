@@ -17,6 +17,7 @@
 //     (14 novembre, étape SQL 76 et fonction « Notifier » à mettre à jour).
 //   effets : la main en feu (4, 6, 8 points de suite), les égalités en chaîne, le double smash avec le même signe (séisme,
 //     coup de vent, étincelles) (13 novembre, effets.js ; la fissure agrandie, elle, est pour tous).
+//   coeur : le cœur qui bat aux balles de match du set décisif, à partir de 10 partout (16 novembre, effets.js).
 //   dossard : le Dossard 1, gant jaune du tenant du titre d'un cercle, son annonce dans le fil, le trophée de la coupe (12 novembre, étape SQL 71).
 // (13 novembre, comme validé par le porteur du projet le 11 : le fantôme, le fil du cercle, le championnat avec poules, la carte
 // « Ton avis ? » et la fiche d'un joueur ouverts à tous ; le Dossard 1 reste en test, décision du 12 novembre.)
