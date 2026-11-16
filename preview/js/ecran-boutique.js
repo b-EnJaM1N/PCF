@@ -12,7 +12,9 @@ const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 
 // L'aperçu d'un article, dessiné avec l'avatar du joueur.
 export function apercu(x, av) {
-  if (x.categorie === "avatar") return avatarSVG({ ...av, [x.type]: x.cle });
+  // (16 novembre, remarque du porteur du projet : un gant de couleur s'affichait avec le motif qu'on porte, vache par exemple,
+  // qui le recouvre : on le montre uni, pour qu'on voie sa couleur)
+  if (x.categorie === "avatar") return avatarSVG({ ...av, ...(x.type === "gant" ? { gantMotif: "uni" } : {}), [x.type]: x.cle });
   // (une routine d'entrée : sa première image et son mouvement ; elle s'anime une fois la carte affichée, voir animerRoutines)
   if (x.type === "routine") return `<span class="ap-routine" data-routine="${x.cle}"></span>`;
   if (x.type === "geste") return `<span class="geste-${x.cle}">${avatarSVG({ ...av, symbole: GESTES[x.cle].symbole })}</span>`;
