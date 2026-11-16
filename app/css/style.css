@@ -168,7 +168,8 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .tape th { text-align: left; font-weight: 500; font-size: .8rem; color: var(--muted); padding-right: 8px; white-space: nowrap; position: sticky; left: 0; background: var(--court); z-index: 1; }
 .tape td { width: 34px; min-width: 34px; height: 34px; text-align: center; font-size: 1.2rem; border-left: 1px solid rgba(255, 255, 255, .08); }
 .tape td.newset { border-left: 3px solid var(--line); }
-.tape td.w-me { background: rgba(244, 197, 66, .18); } .tape td.w-bot { background: rgba(232, 87, 74, .18); }
+/* (16 novembre, idée d'un testeur) chaque signe : vert s'il a gagné le point, rouge s'il l'a perdu, blanc pour une égalité */
+.tape td.gagne { background: rgba(40, 200, 90, .55); } .tape td.perd { background: rgba(235, 55, 45, .55); } .tape td.egal { background: rgba(255, 255, 255, .16); }
 .tape td.auto { outline: 1px dashed var(--muted); outline-offset: -4px; }
 .empty { color: var(--muted); font-size: .9rem; margin: 0; }
 .readout { font-size: .92rem; color: var(--muted); line-height: 1.45; margin: 0; }

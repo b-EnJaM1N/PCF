@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { encoderCoups, decoderCoups, ajouterMain, noterMain, mainDossier, htmlMains, MAX_MAINS } from "../app/js/historique-mains.js";
+import { encoderCoups, decoderCoups, ajouterMain, noterMain, mainDossier, htmlMains, MAX_MAINS, classeCoup } from "../app/js/historique-mains.js";
 
 const coups = [{ a: 0, b: 1 }, { a: 2, b: 2 }, { a: 1, b: 0 }, { a: 2, b: 0 }];
 
@@ -97,4 +97,10 @@ test("la série en cours dans nos face-à-face : victoires ou défaites d'affil�
   }
   assert.ok([...textes].some(t => /Quatre/i.test(t)), [...textes].join(" | "));
   assert.ok([...textes].some(t => /^Elle reste sur quatre défaites/.test(t)), "la défaite, au féminin pour moi");
+});
+
+test("le bandeau des coups : vert le signe gagnant, rouge le perdant, blanc l'égalité", () => {
+  assert.deepEqual([classeCoup({ gagnant: 0 }, "a"), classeCoup({ gagnant: 0 }, "b")], ["gagne", "perd"]);
+  assert.deepEqual([classeCoup({ gagnant: 1 }, "a"), classeCoup({ gagnant: 1 }, "b")], ["perd", "gagne"]);
+  assert.deepEqual([classeCoup({ gagnant: null }, "a"), classeCoup({ gagnant: null }, "b")], ["egal", "egal"]);
 });
