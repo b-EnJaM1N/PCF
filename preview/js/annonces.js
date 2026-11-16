@@ -76,8 +76,6 @@ export function niveauEnjeu({ tour = null, grandChelem = false } = {}) {
   return tour === "quarts" || tour === "demis" || grandChelem ? "tableau" : null;
 }
 
-// Choisit une réplique d'un moment : jamais deux fois la même dans un match, les répliques
-// « spéciales » (condition remplie) d'abord, les clins d'œil plus rarement (cinéma : une fois par match).
 // Le feu des mains au dernier coup (effets.js) : ma main vient de prendre feu (niveau 3, 8 points de suite), ou une flamme
 // (niveau 2 ou plus, chez l'un ou l'autre) vient de s'éteindre.
 export function feuDuCoup(coups) {
@@ -87,6 +85,8 @@ export function feuDuCoup(coups) {
   return { allume: chg.some(k => k.joueur === 0 && k.a === 3 && k.de < 3), eteint: chg.some(k => k.de >= 2 && k.a === 0) };
 }
 
+// Choisit une réplique d'un moment : jamais deux fois la même dans un match, les répliques
+// « spéciales » (condition remplie) d'abord, les clins d'œil plus rarement (cinéma : une fois par match).
 function choisir(etat, moment, ctx = {}, rng = Math.random) {
   const pool = POOLS[moment];
   if (!pool) return null;
