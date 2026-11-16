@@ -21,7 +21,7 @@ export const MOMENTS = {
     { r: "c", t: "Chute à l'avant ! Il avait le set en poche !", f: "Chute à l'avant ! Elle avait le set en poche !", clin: "sport", quand: "set" },
     { r: "c", t: "Coiffé sur le poteau !", f: "Coiffée sur le poteau !", clin: "sport" },
     { r: "c", t: "Il enfourche la dernière porte !", f: "Elle enfourche la dernière porte !", clin: "sport" },
-    { r: "c", t: "J'ai glissé, chef !", clin: "cine" },
+    { r: "c", t: "J'ai glissé, chef !", clin: "cine", retiree: true },   // (retirée le 16 novembre, demande du porteur du projet)
     { r: "d", t: "Oh… la main a tremblé." },
     { r: "d", t: "Elle était là, cette balle. Juste là." },
     { r: "d", t: "La tête a dit Pierre. Le cœur a dit Feuille. Le cœur a tort, en général." },
