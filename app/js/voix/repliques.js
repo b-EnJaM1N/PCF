@@ -342,6 +342,48 @@ export const MOMENTS = {
     { r: "d", t: "J'entends mon cœur. Ou le sien. Peut-être les deux." },
     { r: "c", t: "Mort subite !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "c", t: "Celui qui marque gagne !" },
+    { r: "c", t: "Tout le match tient dans cette main !" },   // (16 novembre, le point décisif, choisies par le porteur du projet)
+    { r: "c", t: "On n'a jamais été aussi près… des deux côtés !" },
+    { r: "d", t: "Le prochain qui bouge a perdu. Ou gagné." },
+    { r: "c", t: "Quatorze partout en finale ! Mesdames et mesdames, levez-vous !", si: "quatorze_finale" },
+    { r: "c", t: "Un point pour un titre ! Un point pour l'éternité !", si: "en_finale" },
+    { r: "c", t: "La main du sacre est peut-être dans ce point !", si: "en_finale" },
+    { r: "c", t: "Je n'ai jamais vu ça ! Jamais ! En trente ans de carrière !", si: "en_finale" },
+    { r: "c", t: "Les livres d'histoire attendent ce point !", si: "en_finale" },
+    { r: "d", t: "Respirez. Non, ne respirez pas. C'est irrespirable.", si: "en_finale" },
+  ],
+  // Après le point décisif (15-14 en sets de 11, 10-9 en sets de 7 ; 16 novembre, choisies par le porteur du projet).
+  // « Il » : moi. Un set gagné ou perdu ainsi (le match continue) :
+  set_point_decisif: [
+    { r: "c", t: "Quinze à quatorze ! Ça passe sur le fil !", si: "quinze" },
+    { r: "c", t: "Il arrache le point décisif !", f: "Elle arrache le point décisif !", si: "gagne" },
+  ],
+  // Le match gagné au point décisif :
+  match_point_decisif: [
+    { r: "c", t: "Au bout du bout ! Il l'a fait !", f: "Au bout du bout ! Elle l'a fait !" },
+    { r: "c", t: "Il gagne au point décisif ! Quelle main !", f: "Elle gagne au point décisif ! Quelle main !" },
+    { r: "d", t: "Le genre de match qu'on raconte à ses petits-enfants." },
+  ],
+  // Le match perdu au point décisif :
+  match_perdu_point_decisif: [
+    { r: "c", t: "Il s'incline sur le point décisif ! Cruel !", f: "Elle s'incline sur le point décisif ! Cruel !" },
+    { r: "d", t: "Le sport est cruel. Ce soir, très cruel." },
+  ],
+  // Une finale gagnée au point décisif : Roland enchaîne deux de ces répliques.
+  sacre_point_decisif: [
+    { r: "c", t: "LA MAIN DU SACRE !" },
+    { r: "c", t: "La main de Dieu !", clin: "sport" },
+    { r: "c", t: "Un moment pour l'éternité !" },
+    { r: "c", t: "Il est champion ! Il est champion ! Sur le point décisif !", f: "Elle est championne ! Elle est championne ! Sur le point décisif !" },
+    { r: "c", t: "Gravez son nom ! Gravez-le dans le marbre !" },
+    { r: "c", t: "Le plus beau jour de ma vie de commentateur !" },
+    { r: "c", t: "Que les cloches sonnent ! Nous avons un champion !", f: "Que les cloches sonnent ! Nous avons une championne !" },
+  ],
+  // Une finale perdue au point décisif :
+  finale_perdue_point_decisif: [
+    { r: "c", t: "Si près… si près du sacre !" },
+    { r: "c", t: "Il a tout donné ! Absolument tout !", f: "Elle a tout donné ! Absolument tout !" },
+    { r: "d", t: "Perdre une finale à quinze-quatorze… Il y a des cicatrices qui ne se referment pas.", si: "quinze" },
   ],
   // Temps morts : fin de set, fin de match.
   set_ecrasant: [

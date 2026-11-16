@@ -514,3 +514,35 @@ test("le feu des mains pour les commentateurs : ma main prend feu à 8 points de
   assert.deepEqual(feuDuCoup(g("00001")), { allume: false, eteint: false });       // (la fumée seulement : on ne dit rien)
   assert.deepEqual(feuDuCoup(g("1111110")), { allume: false, eteint: true });      // chez l'adversaire aussi
 });
+
+test("le point décisif : à 14 partout du set décisif, puis après le 15e point (finale : deux répliques de Roland)", () => {
+  // un match au set décisif, 14 partout, après 14-13 (j'étais mené : balle de match sauvée)
+  const a14 = () => {
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 });
+    Object.assign(m, { sets: [1, 1], scoresSets: [[11, 5], [5, 11]], points: [13, 14] });
+    return m;
+  };
+  const ids = l => l.map(x => x.id).join(" ");
+  for (let k = 0; k < 20; k++) {
+    const rng = rngFixe(100 + k);
+    // en finale : le point décisif est toujours commenté, avec ses grandes phrases
+    const m = a14(), etat = nouvelEtatAnnonces({ finale: true });
+    const a = annoncerCoup(m, jouerCoup(m, PIERRE, CISEAUX), etat, {}, rng);   // 14-14
+    assert.ok(a.commentaire && POOLS.point_decisif.some(e => e.base === baseDe(a.commentaire.id)), `14-14 en finale : ${ids(a.lignes)}`);
+    const b = annoncerCoup(m, jouerCoup(m, PIERRE, CISEAUX), etat, {}, rng);   // 15-14 : le titre
+    const sacre = b.lignes.filter(l => POOLS.sacre_point_decisif.some(e => e.base === baseDe(l.id)));
+    assert.equal(sacre.length, 2, `finale gagnée 15-14 : ${ids(b.lignes)}`);
+    assert.notEqual(sacre[0].id, sacre[1].id);
+    // hors finale, perdu 15-14
+    const m2 = a14(), e2 = nouvelEtatAnnonces();
+    annoncerCoup(m2, jouerCoup(m2, PIERRE, CISEAUX), e2, {}, rng);
+    const c = annoncerCoup(m2, jouerCoup(m2, CISEAUX, PIERRE), e2, {}, rng);
+    assert.ok(c.lignes.some(l => POOLS.match_perdu_point_decisif.some(e => e.base === baseDe(l.id))), `perdu 15-14 : ${ids(c.lignes)}`);
+  }
+  // pas de grandes phrases de finale hors finale
+  const finale = POOLS.point_decisif.filter(e => e.si === "en_finale" || e.si === "quatorze_finale").map(e => e.base);
+  for (let k = 0; k < 40; k++) {
+    const m = a14(), etat = nouvelEtatAnnonces(), a = annoncerCoup(m, jouerCoup(m, PIERRE, CISEAUX), etat, {}, rngFixe(300 + k));
+    assert.ok(!a.commentaire || !finale.includes(baseDe(a.commentaire.id)));
+  }
+});

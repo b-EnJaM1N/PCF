@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (768 répliques)
+## Commentateur — vif, enthousiaste, plein de références (796 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -354,6 +354,34 @@ restent lus par la voix de synthèse.
 | `commentateur_point_decisif_04.mp3` | Quatorze partout ! Le prochain point écrit l'histoire ! |
 | `commentateur_point_decisif_05.mp3` | Mort subite ! |
 | `commentateur_point_decisif_06.mp3` | Celui qui marque gagne ! |
+| `commentateur_point_decisif_07.mp3` | Tout le match tient dans cette main ! |
+| `commentateur_point_decisif_08.mp3` | On n'a jamais été aussi près… des deux côtés ! |
+| `commentateur_point_decisif_09.mp3` | Quatorze partout en finale ! Mesdames et mesdames, levez-vous ! |
+| `commentateur_point_decisif_10.mp3` | Un point pour un titre ! Un point pour l'éternité ! |
+| `commentateur_point_decisif_11.mp3` | La main du sacre est peut-être dans ce point ! |
+| `commentateur_point_decisif_12.mp3` | Je n'ai jamais vu ça ! Jamais ! En trente ans de carrière ! |
+| `commentateur_point_decisif_13.mp3` | Les livres d'histoire attendent ce point ! |
+| `commentateur_set_point_decisif_01.mp3` | Quinze à quatorze ! Ça passe sur le fil ! |
+| `commentateur_set_point_decisif_02.mp3` | Il arrache le point décisif ! |
+| `commentateur_set_point_decisif_02_f.mp3` | Elle arrache le point décisif ! |
+| `commentateur_match_point_decisif_01.mp3` | Au bout du bout ! Il l'a fait ! |
+| `commentateur_match_point_decisif_01_f.mp3` | Au bout du bout ! Elle l'a fait ! |
+| `commentateur_match_point_decisif_02.mp3` | Il gagne au point décisif ! Quelle main ! |
+| `commentateur_match_point_decisif_02_f.mp3` | Elle gagne au point décisif ! Quelle main ! |
+| `commentateur_match_perdu_point_decisif_01.mp3` | Il s'incline sur le point décisif ! Cruel ! |
+| `commentateur_match_perdu_point_decisif_01_f.mp3` | Elle s'incline sur le point décisif ! Cruel ! |
+| `commentateur_sacre_point_decisif_01.mp3` | LA MAIN DU SACRE ! |
+| `commentateur_sacre_point_decisif_02.mp3` | La main de Dieu ! |
+| `commentateur_sacre_point_decisif_03.mp3` | Un moment pour l'éternité ! |
+| `commentateur_sacre_point_decisif_04.mp3` | Il est champion ! Il est champion ! Sur le point décisif ! |
+| `commentateur_sacre_point_decisif_04_f.mp3` | Elle est championne ! Elle est championne ! Sur le point décisif ! |
+| `commentateur_sacre_point_decisif_05.mp3` | Gravez son nom ! Gravez-le dans le marbre ! |
+| `commentateur_sacre_point_decisif_06.mp3` | Le plus beau jour de ma vie de commentateur ! |
+| `commentateur_sacre_point_decisif_07.mp3` | Que les cloches sonnent ! Nous avons un champion ! |
+| `commentateur_sacre_point_decisif_07_f.mp3` | Que les cloches sonnent ! Nous avons une championne ! |
+| `commentateur_finale_perdue_point_decisif_01.mp3` | Si près… si près du sacre ! |
+| `commentateur_finale_perdue_point_decisif_02.mp3` | Il a tout donné ! Absolument tout ! |
+| `commentateur_finale_perdue_point_decisif_02_f.mp3` | Elle a tout donné ! Absolument tout ! |
 | `commentateur_set_ecrasant_01.mp3` | Une leçon ! Une démonstration de force ! |
 | `commentateur_set_ecrasant_02.mp3` | Au tapis ! L'arbitre peut compter jusqu'à dix ! |
 | `commentateur_set_ecrasant_03.mp3` | Fanny ! Onze à zéro, il va falloir embrasser Fanny ! |
@@ -891,7 +919,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (612 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (617 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1048,6 +1076,11 @@ restent lus par la voix de synthèse.
 | `commentatrice_point_decisif_02.mp3` | Celui qui cligne des yeux a perdu. |
 | `commentatrice_point_decisif_03.mp3` | Respirez. Moi, j'ai arrêté il y a trois points. |
 | `commentatrice_point_decisif_04.mp3` | J'entends mon cœur. Ou le sien. Peut-être les deux. |
+| `commentatrice_point_decisif_05.mp3` | Le prochain qui bouge a perdu. Ou gagné. |
+| `commentatrice_point_decisif_06.mp3` | Respirez. Non, ne respirez pas. C'est irrespirable. |
+| `commentatrice_match_point_decisif_01.mp3` | Le genre de match qu'on raconte à ses petits-enfants. |
+| `commentatrice_match_perdu_point_decisif_01.mp3` | Le sport est cruel. Ce soir, très cruel. |
+| `commentatrice_finale_perdue_point_decisif_01.mp3` | Perdre une finale à quinze-quatorze… Il y a des cicatrices qui ne se referment pas. |
 | `commentatrice_set_ecrasant_01.mp3` | Sèche correction. |
 | `commentatrice_set_ecrasant_02.mp3` | Il n'y a pas eu de match dans ce set. |
 | `commentatrice_set_ecrasant_03.mp3` | Il aurait dû rester au vestiaire. |
