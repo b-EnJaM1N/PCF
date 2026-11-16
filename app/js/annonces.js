@@ -5,8 +5,9 @@
 // (plus vite quand le match est chaud) et chaque commentaire la vide. Ils se taisent donc la
 // plupart du temps, et leurs dialogues sont réservés aux temps morts (fin de set, fin de match).
 // Ils parlent toujours du joueur côté jaune (celui qui tient le téléphone) : « il » ou « elle ».
-import { COTE, ecartRequis, pointDecisif, issueSmash } from "./regles.js";
+import { COTE, ecartRequis, pointDecisif, issueSmash, plafondSet, setDecisif } from "./regles.js";
 import { lectureReussie, lectureRatee, indiceImprevisibilite } from "./analyse.js";
+import { nouveauFeu, noterFeu } from "./effets.js";
 import {
   replique, repliqueScore, repliquePartout, ORDINAUX, slug,
   POOLS, ligneMoment, DIALOGUES_IDS, ligneDialogue, ligneSpeaker, nbSpeaker, ligneJournaliste, CATALOGUE,
@@ -49,7 +50,7 @@ const CONDITIONS = {
   premier_point: c => c.premierPoint, depart_rate: c => c.departRate, kolodrov: c => c.kolodrov,
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, pile4: c => c.pile4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
   apres_egalites: c => c.apresEgalites, varie: c => c.varie, mene: c => c.mene,   // (5 novembre)
-  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
+  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, quatorze: c => c.quatorze, quinze: c => c.quinze, gagne: c => c.gagne, en_finale: (c, e) => enFinale(e), quatorze_finale: (c, e) => c.quatorze && enFinale(e), sans_set_perdu: c => c.sansSetPerdu, troisieme_set: c => c.troisiemeSet, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
   // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
 };
@@ -69,10 +70,21 @@ export function contexteJeu({ entrainement = false, tournoi = null, tour = null 
   return tournoi === "gros" && phase !== "premiers" ? `majeur_${phase}` : `tournoi_${phase}`;
 }
 
+// Une finale (de tournoi, de la carrière, de la coupe) : les grandes phrases du point décisif.
+const enFinale = e => !!e.finale || e.enjeu === "finale";
 // L'enjeu d'un match : "finale" (finale de tournoi), "tableau" (quart, demi-finale, ou tout match d'un Grand Chelem), sinon null.
 export function niveauEnjeu({ tour = null, grandChelem = false } = {}) {
   if (tour === "finale") return "finale";
   return tour === "quarts" || tour === "demis" || grandChelem ? "tableau" : null;
+}
+
+// Le feu des mains au dernier coup (effets.js) : ma main vient de prendre feu (niveau 3, 8 points de suite), ou une flamme
+// (niveau 2 ou plus, chez l'un ou l'autre) vient de s'éteindre.
+export function feuDuCoup(coups) {
+  const e = nouveauFeu();
+  let chg = [];
+  for (const x of coups) chg = noterFeu(e, x.gagnant);
+  return { allume: chg.some(k => k.joueur === 0 && k.a === 3 && k.de < 3), eteint: chg.some(k => k.de >= 2 && k.a === 0) };
 }
 
 // Choisit une réplique d'un moment : jamais deux fois la même dans un match, les répliques
@@ -155,7 +167,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
 
   // Le match chauffe : balle de set ou de match, fin de set serrée.
   const chaud = !!(evt.balleAvant || evt.balleApres) || (!court && Math.max(...match.points) >= len - 3);
-  etat.reserve = Math.min(RESERVE_MAX, etat.reserve + (chaud ? 1 / 3 : 1 / 4));
+  etat.reserve = Math.min(RESERVE_MAX, etat.reserve + (chaud ? 0.29 : 0.22));   // (16 novembre : un peu moins que 1/3 et 1/4, pour garder le même rythme avec les nouvelles répliques)
   const peutCommenter = (ecart, seuil = 1) => n >= 3 && etat.reserve >= seuil && n - etat.dernierCom >= ecart;
   let moment = null;
 
@@ -214,8 +226,14 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       const quatreMeme = n >= 4 && c.slice(n - 4).every(x => x.a === c[n - 1].a);
       const ggpp = decisifs.length >= 4 && decisifs.slice(-4).map(x => x.gagnant).join() === "0,0,1,1";
       const cadrage = g === 0 && decisifs.length >= 2 && decisifs[decisifs.length - 2].gagnant === 0 && decisifs[decisifs.length - 2].a === 2 && dernier.a === 0;
+      const feu = feuDuCoup(c);
       const obstination = n >= 3 && c[n - 1].a === c[n - 2].a && c[n - 2].a === c[n - 3].a && (n < 4 || c[n - 4].a !== c[n - 1].a);
-      if (evt.balleAvant && evt.balleAvant.joueur !== g && peutCommenter(3, 0.5)) {
+      // (à 14 partout dans le set décisif, on vient toujours de sauver une balle de match : le point décisif passe d'abord,
+      // toujours en finale, une fois sur deux sinon ; 16 novembre)
+      const decisifFinal = !h && pointDecisif(match) && setDecisif(match) && (enFinale(etat) || rng() < 0.5);
+      if (decisifFinal) {
+        moment = "point_decisif"; ctx.quatorze = a === 14;
+      } else if (evt.balleAvant && evt.balleAvant.joueur !== g && peutCommenter(3, 0.5)) {
         moment = evt.balleAvant.joueur === 0 ? "craquage" : "balle_sauvee"; ctx.quand = evt.balleAvant.type;
         if (moment === "balle_sauvee" && evt.balleAvant.type === "match" && rng() < 0.5) moment = "main_legendaire";
       } else if (g === 0 && etat.ecartMin <= -4 && (a - b) - etat.ecartMin >= 3 && a - b >= -1 && peutCommenter(3, 0.5)) {
@@ -228,6 +246,10 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
         moment = "premier_point_perdu"; ctx.premierPoint = true;
       } else if (g === 1 && !match.scoresSets.length && a === 0 && b === 3 && rng() < 0.6) {   // 0-3 d'entrée : là, c'est un mauvais départ
         moment = "premier_point_perdu"; ctx.departRate = true;
+      } else if (feu.allume && peutCommenter(2, 0.5) && rng() < 0.8) {   // ma main prend feu (8 points de suite ; effets.js)
+        moment = "main_en_feu";
+      } else if (feu.eteint && peutCommenter(4) && rng() < 0.35) {        // une flamme qui s'éteint (un point perdu)
+        moment = "feu_eteint";
       } else if (egalitesAvant >= 2 && peutCommenter(2) && rng() < 0.42) {   // un point enfin gagné après des égalités
         moment = g === 0 ? "apres_egalites_gagne" : "apres_egalites_perdu";
       } else if (g === 0 && !etat.troisPierres && troisMemeSigne(c) !== null && rng() < 0.7) {
@@ -249,7 +271,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       } else if (h && h.type === "match" && peutCommenter(3, 0.5) && rng() < 0.5) {
         moment = "tension"; ctx.balleContre = h.joueur === 1;
       } else if (!h && pointDecisif(match) && peutCommenter(3, 0.5) && rng() < 0.5) {
-        moment = "point_decisif";
+        moment = "point_decisif"; ctx.quatorze = a === 14;
       } else if (g === 0 && !match.scoresSets.length && b === 0 && (a === 1 || a === 2) && decisifs.length === a && !etat.cueilliDit && n - etat.dernierCom >= 2 && rng() < 0.25) {
         moment = "cueilli_a_froid"; etat.cueilliDit = true;   // (1 ou 2 points gagnés d'entrée de match)
       } else if (seuilMT && a === b && a === seuilMT && !etat.dejaSet.has("money_time") && peutCommenter(2, 0.5) && rng() < 0.7) {
@@ -397,9 +419,13 @@ function finDeSet(match, evt, etat, ctx, rng) {
     if (d) { etat.buse = true; return d; }
   }
   const out = [], { haut, bas, court } = ctx, len = match.format.pointsParSet;
+  // Un set gagné au point décisif (15-14, 10-9) : sa réplique à lui.
+  const plafond = plafondSet(len), auPointDecisif = plafond !== null && haut === plafond && bas === plafond - 1;
   const decisifEnSuite = match.sets[0] === match.format.setsGagnants - 1 && match.sets[1] === match.format.setsGagnants - 1;
   const ajoute = x => { if (x) Array.isArray(x) ? out.push(...x) : out.push(x); };
-  if (!court) {
+  const surLeFil = auPointDecisif && choisir(etat, "set_point_decisif", { ...ctx, quinze: haut === 15, gagne: evt.gagnant === 0 }, rng);
+  if (surLeFil) ajoute(surLeFil);
+  else if (!court) {
     // (à 5 points d'écart, seulement les répliques « net » : « Pas de chichifoumi », le coup du berger)
     if (haut - bas >= 5) ajoute(choisir(etat, "set_ecrasant", { ...ctx, onzeZero: haut === 11 && bas === 0, net5: haut - bas === 5 }, rng));
     else if (bas >= len - 1) ajoute(choisir(etat, "set_couteau", ctx, rng));
@@ -409,7 +435,7 @@ function finDeSet(match, evt, etat, ctx, rng) {
   if (decisifEnSuite && match.format.setsGagnants > 1) {
     // (un seul dialogue : seulement s'il n'a pas été entendu aux derniers matchs, sinon une réplique)
     const dialogueNeuf = !DIALOGUES_IDS.set_decisif.every(d => etat.anciens?.has(baseDe(d[0])));
-    ajoute((dialogueNeuf && rng() < 0.4 && dialogue(etat, "set_decisif", rng)) || choisir(etat, "set_decisif", ctx, rng));
+    ajoute((dialogueNeuf && rng() < 0.4 && dialogue(etat, "set_decisif", rng)) || choisir(etat, "set_decisif", { ...ctx, troisiemeSet: match.format.setsGagnants === 2 }, rng));
   }
   return out;
 }
@@ -421,6 +447,19 @@ function finDeMatch(match, evt, etat, ctx, rng) {
   // Selon l'enjeu (entraînement, tour d'un tournoi) : un dialogue adapté (toujours en finale). Les petites listes passent
   // moins souvent (2 dialogues après une défaite à l'entraînement : on les entendait à chaque fois), pour laisser venir
   // les répliques de victoire et de défaite habituelles.
+  // Le match gagné ou perdu au point décisif (15-14, 10-9) : ses répliques passent avant tout. Une finale gagnée ainsi :
+  // Roland enchaîne deux répliques (16 novembre, choix du porteur du projet).
+  const len = match.format.pointsParSet, plafond = plafondSet(len), [h1, b1] = [Math.max(...evt.scoreSet), Math.min(...evt.scoreSet)];
+  if (plafond !== null && h1 === plafond && b1 === plafond - 1) {
+    const c2 = { ...ctx, quinze: h1 === 15 }, gagne = evt.gagnant === 0, finale = enFinale(etat);
+    if (finale && gagne) {
+      const r = [choisir(etat, "sacre_point_decisif", c2, rng), choisir(etat, "sacre_point_decisif", c2, rng)].filter(Boolean);
+      if (r.length) return r;
+    } else {
+      const x = choisir(etat, finale ? "finale_perdue_point_decisif" : gagne ? "match_point_decisif" : "match_perdu_point_decisif", c2, rng);
+      if (x) return [x];
+    }
+  }
   const jeu = etat.jeu && `apres_${etat.jeu}_${evt.gagnant === 0 ? "victoire" : "defaite"}`;
   if (jeu && DIALOGUES_IDS[jeu] && (/finale/.test(jeu) || rng() < partDialogue(jeu))) {
     const d = dialogue(etat, jeu, rng);
@@ -434,7 +473,7 @@ function finDeMatch(match, evt, etat, ctx, rng) {
       return titre.length ? titre : un(choisir(etat, "victoire", { ...ctx, finale: true }, rng));
     }
     if (premierPerdu) return un(choisir(etat, "renversement", ctx, rng));
-    if (troisZero || rng() < 0.5) return un(choisir(etat, "balle_match_convertie", { ...ctx, troisZero }, rng));
+    if (troisZero || rng() < 0.5) return un(choisir(etat, "balle_match_convertie", { ...ctx, troisZero, sansSetPerdu: match.sets[1] === 0 && match.format.setsGagnants > 1 }, rng));
     return un(choisir(etat, "victoire", ctx, rng));
   }
   // (un seul dialogue de fin de match : pas s'il a été entendu aux derniers matchs)

@@ -47,6 +47,10 @@ export function mainDossier(coups) {
   return { d: null, g: pts[0] > pts[1], s: `${cs.length} coups`, c: encoderCoups(cs) };
 }
 
+// La couleur d'un signe dans le bandeau des coups (16 novembre, idée d'un testeur) : vert s'il a gagné le point, rouge s'il
+// l'a perdu, blanc pour une égalité. cle : "a" (la première ligne, le joueur 0) ou "b" (la deuxième, le joueur 1).
+export const classeCoup = (x, cle) => (x.gagnant === null || x.gagnant === undefined ? "egal" : (x.gagnant === 0) === (cle === "a") ? "gagne" : "perd");
+
 // L'affichage : un match par ligne (touché, il s'ouvre sur le bandeau des coups, set par set).
 // noms : [la première ligne du bandeau, la deuxième] ; gagneTexte : [victoire, défaite] de la première ligne.
 export function htmlMains(entrees, { noms = ["Toi", "Lui"], gagneTexte = ["✅ Victoire", "❌ Défaite"], vide = "" } = {}) {
@@ -55,7 +59,7 @@ export function htmlMains(entrees, { noms = ["Toi", "Lui"], gagneTexte = ["✅ V
   return `<div class="mains">` + entrees.map((e, i) => {
     const sets = decoderCoups(e.c);
     const ligne = (cle, nom) => `<tr><th>${esc(nom)}</th>` + sets.map((set, k) => set.map((x, j) =>
-      `<td class="${[x.gagnant === 0 ? "w-me" : x.gagnant === 1 ? "w-bot" : "", k > 0 && j === 0 ? "newset" : ""].join(" ").trim()}">${EMOJIS[x[cle]]}</td>`).join("")).join("") + "</tr>";
+      `<td class="${[classeCoup(x, cle), k > 0 && j === 0 ? "newset" : ""].join(" ").trim()}">${EMOJIS[x[cle]]}</td>`).join("")).join("") + "</tr>";
     return `<details class="main-match"${i === 0 ? " open" : ""}><summary>${e.g ? gagneTexte[0] : gagneTexte[1]}${e.s ? ` · ${esc(e.s)}` : ""}${date(e.d)}</summary>`
       + `<div class="tape"><table>${ligne("a", noms[0])}${ligne("b", noms[1])}</table></div></details>`;
   }).join("") + `</div>`;

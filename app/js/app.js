@@ -34,7 +34,7 @@ import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS, POOLS, ligneMomen
 import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint, intensiteMatch, series } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
-import { noterMain, mainDuel, mainDossier, htmlMains, MAX_MAINS, memoireDuDernier } from "./historique-mains.js";
+import { noterMain, mainDuel, mainDossier, htmlMains, MAX_MAINS, memoireDuDernier, classeCoup } from "./historique-mains.js";
 import { messagesPossibles, momentApres, texteMessage, erreurMessageLibre, nettoyerMessage, PREFIXE_LIBRE, MESSAGE_LIBRE_MAX } from "./messages-rapides.js";
 import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
@@ -898,7 +898,7 @@ function render() {
 function renderHistorique() {
   const c = S.match.coups, debuts = new Set(S.match.debutsSet);
   const ligne = (cle, label) => `<tr><th>${esc(label)}</th>` + c.map((x, i) => {
-    const cls = [x.gagnant === 0 ? "w-me" : x.gagnant === 1 ? "w-bot" : "", i > 0 && debuts.has(i) ? "newset" : "", cle === "a" && x.auto[0] ? "auto" : ""].join(" ").trim();
+    const cls = [classeCoup(x, cle), i > 0 && debuts.has(i) ? "newset" : "", cle === "a" && x.auto[0] ? "auto" : ""].join(" ").trim();
     return `<td class="${cls}">${EMOJI[x[cle]]}</td>`;
   }).join("") + "</tr>";
   $("tape").innerHTML = `<table>${ligne("a", "Toi")}${ligne("b", OPP.nom)}</table>`;
