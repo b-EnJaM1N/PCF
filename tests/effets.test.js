@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { nouveauFeu, noterFeu, feuDe, niveauFeu, egalitesDeSuite, effetDouble, feuSVG, trembleDe, EGALITES_ETINCELLE } from "../app/js/effets.js";
+import { nouveauFeu, noterFeu, feuDe, niveauFeu, egalitesDeSuite, effetDouble, feuSVG, trembleDe, EGALITES_ETINCELLE, niveauCoeur, BPM_COEUR, COEUR_MAX } from "../app/js/effets.js";
 
 test("la main en feu : 4, 6 puis 8 points de suite", () => {
   assert.deepEqual([0, 3, 4, 5, 6, 7, 8, 12].map(niveauFeu), [0, 0, 1, 1, 2, 2, 3, 3]);
@@ -55,4 +55,27 @@ test("le dessin du feu : rien sans feu, fumée, flamme, en feu, bouffée", () =>
 test("les égalités en chaîne : le tremblement commence à la 2e égalité, l'étincelle à la 4e", () => {
   assert.deepEqual([0, 1, 2, 3, 4, 6].map(trembleDe), [0, 0, 1, 2, 3, 3]);
   assert.equal(EGALITES_ETINCELLE, 4);
+});
+
+test("le cœur bat aux balles de match du set décisif, à partir de 10 partout, de plus en plus vite ; sommet à 14 partout", async () => {
+  const { nouveauMatch } = await import("../app/js/regles.js");
+  const m = (points, sets = [1, 1], format = {}) => ({ ...nouveauMatch(format), points, sets });
+  assert.equal(niveauCoeur(m([10, 10])), 0);                  // pas encore de balle de match
+  assert.equal(niveauCoeur(m([11, 10])), 1);
+  assert.equal(niveauCoeur(m([10, 11])), 1);                  // pour l'un comme pour l'autre
+  assert.equal(niveauCoeur(m([11, 11])), 1);                  // entre deux balles de match, il continue
+  assert.equal(niveauCoeur(m([12, 11])), 2);
+  assert.equal(niveauCoeur(m([12, 12])), 2);
+  assert.equal(niveauCoeur(m([13, 12])), 3);
+  assert.equal(niveauCoeur(m([14, 13])), 4);
+  assert.equal(niveauCoeur(m([14, 14])), COEUR_MAX);          // le point décisif : le sommet
+  assert.equal(niveauCoeur(m([10, 9])), 0);                   // balle de match, mais avant 10 partout
+  assert.equal(niveauCoeur(m([11, 10], [1, 0])), 0);          // pas le set décisif : balle de set seulement
+  assert.equal(niveauCoeur(m([11, 10], [0, 0], { setsGagnants: 1 })), 1);   // match en un set : c'est le set décisif
+  assert.equal(niveauCoeur(m([7, 6], [1, 1], { pointsParSet: 7 })), 1);     // sets de 7 : à partir de 6 partout
+  assert.equal(niveauCoeur(m([9, 9], [1, 1], { pointsParSet: 7 })), COEUR_MAX);
+  assert.equal(niveauCoeur(m([2, 2], [1, 1], { pointsParSet: 3 })), 0);    // sets de 3 : pas de cœur
+  assert.equal(niveauCoeur({ ...m([11, 10]), termine: true }), 0);
+  assert.equal(niveauCoeur(null), 0);
+  for (let n = 1; n < BPM_COEUR.length; n++) assert.ok(BPM_COEUR[n] > BPM_COEUR[n - 1]);   // de plus en plus vite
 });

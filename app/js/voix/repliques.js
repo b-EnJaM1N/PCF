@@ -21,7 +21,7 @@ export const MOMENTS = {
     { r: "c", t: "Chute à l'avant ! Il avait le set en poche !", f: "Chute à l'avant ! Elle avait le set en poche !", clin: "sport", quand: "set" },
     { r: "c", t: "Coiffé sur le poteau !", f: "Coiffée sur le poteau !", clin: "sport" },
     { r: "c", t: "Il enfourche la dernière porte !", f: "Elle enfourche la dernière porte !", clin: "sport" },
-    { r: "c", t: "J'ai glissé, chef !", clin: "cine" },
+    { r: "c", t: "J'ai glissé, chef !", clin: "cine", retiree: true },   // (retirée le 16 novembre, demande du porteur du projet)
     { r: "d", t: "Oh… la main a tremblé." },
     { r: "d", t: "Elle était là, cette balle. Juste là." },
     { r: "d", t: "La tête a dit Pierre. Le cœur a dit Feuille. Le cœur a tort, en général." },
@@ -98,7 +98,7 @@ export const MOMENTS = {
     { r: "c", t: "Il a mis une mine, ça explose derrière !", f: "Elle a mis une mine, ça explose derrière !", clin: "sport" },
     { r: "c", t: "C'est du Pierre-Feuille-Ciseaux champagne !", clin: "sport" },
     { r: "c", t: "Vers l'infini et au-delà !", clin: "cine", retiree: true },
-    { r: "c", t: "Cours, Forrest, cours !", clin: "cine", si: "serie6" },
+    { r: "c", t: "Cours, Forrest, cours !", clin: "cine", si: "serie6", retiree: true },   // (retirée le 16 novembre, demande du porteur du projet)
     { r: "d", t: "Il a trouvé la faille. Il appuie dessus. Enfin quelqu'un de sérieux.", f: "Elle a trouvé la faille. Elle appuie dessus. Enfin quelqu'un de sérieux." },
     { r: "d", t: "Il gagne dans un fauteuil.", f: "Elle gagne dans un fauteuil.", clin: "sport" },
     { r: "d", t: "Une démonstration. Je note." },
@@ -186,7 +186,7 @@ export const MOMENTS = {
     { r: "c", t: "Tous les chemins mènent à la Pierre !", seul: 0 },
     { r: "d", t: "Quand on veut, on peut. Quand on peut, on choisit Pierre, apparemment.", seul: 0 },
     { r: "d", t: "Mieux vaut une Feuille en main que deux Ciseaux dans le pot. C'est sa philosophie.", seul: 2 },
-    { r: "c", t: ["Des pierres, des pierres, des pierres, des pierres, des pierres !", "Ciseaux, ciseaux, ciseaux, ciseaux, ciseaux !", "Des feuilles, des feuilles, des feuilles, des feuilles, des feuilles !"], clin: "cine" },
+    { r: "c", t: ["Des pierres, des pierres, des pierres, des pierres, des pierres !", "Ciseaux, ciseaux, ciseaux, ciseaux, ciseaux !", "Des feuilles, des feuilles, des feuilles, des feuilles, des feuilles !"], clin: "cine", retiree: true },   // (retirée le 16 novembre, demande du porteur du projet)
     { r: "d", t: "Allô ? Non mais allô, quoi !", clin: "cine", retiree: true },   // (retirée le 12 novembre, demande du porteur du projet)
   ],
   // Il change enfin de signe après une obstination.
@@ -338,7 +338,7 @@ export const MOMENTS = {
     { r: "c", t: "C'est la der des ders !" },
     { r: "c", t: "Set décisif, et une place dans l'Histoire en jeu !", si: "enjeu" },
     { r: "d", t: "Un set pour un titre. Je reste calme. Pour deux.", si: "finale_tournoi" },
-    { r: "d", t: "Winter is coming.", clin: "cine" },
+    { r: "d", t: "Winter is coming.", clin: "cine", retiree: true },   // (retirée le 16 novembre, demande du porteur du projet)
   ],
   renversement: [
     { r: "c", t: "Mené un set à zéro, il renverse tout !", f: "Menée un set à zéro, elle renverse tout !" },
@@ -410,7 +410,7 @@ export const MOMENTS = {
   defaite: [
     { r: "d", t: "Au revoir.", clin: "cine", retiree: true },
     { r: "c", t: "Battu, mais pas abattu !", f: "Battue, mais pas abattue !" },
-    { r: "c", t: "Il reviendra !", f: "Elle reviendra !", clin: "cine" },
+    { r: "c", t: "Il reviendra !", f: "Elle reviendra !", clin: "cine", retiree: true },   // (retirée le 16 novembre, demande du porteur du projet)
     { r: "d", t: "Il faudra revoir ce match. Ou l'oublier. Je conseille l'oubli." },
     { r: "d", t: "On apprend plus d'une défaite. Il a beaucoup appris, ce soir.", f: "On apprend plus d'une défaite. Elle a beaucoup appris, ce soir." },
     { r: "d", t: "Quelqu'un peut lui expliquer les règles ?" },

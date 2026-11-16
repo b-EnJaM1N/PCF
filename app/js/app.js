@@ -7,7 +7,7 @@ import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, 
 import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache, mesDossards } from "./social-serveur.js";
 import { ficheVisible, htmlFiche } from "./fiche-joueur.js";
 import { nouveauxDegats, noterDegats, degatsDe } from "./degats.js";
-import { nouveauFeu, noterFeu, feuDe, feuSVG, egalitesDeSuite, trembleDe, EGALITES_ETINCELLE, effetDouble } from "./effets.js";
+import { nouveauFeu, noterFeu, feuDe, feuSVG, egalitesDeSuite, trembleDe, EGALITES_ETINCELLE, effetDouble, niveauCoeur, BPM_COEUR } from "./effets.js";
 import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier, origineIci } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { filVisible, matchDuDuel, hasardFixe, etapeDuDuel } from "./fil-cercle.js";
@@ -699,10 +699,21 @@ function effetsDuCoup(evt, feuChg, double, mains) {
   }
 }
 
+// Le cœur qui bat (effets.js, niveauCoeur ; 16 novembre) : le son, la vibration et les bords de l'écran qui battent en rouge.
+// Il s'arrête net au point gagnant, ou quand on quitte le match.
+function majCoeur() {
+  const n = S?.match && S.enJeu && effetsActifs() && ouvert("coeur") ? niveauCoeur(S.match) : 0;
+  ambiance.coeur(n, { vibrer: true });
+  const bord = $("coeurBord");
+  bord.className = n ? `coeur-bord bat coeur-${n}` : "coeur-bord";
+  if (n) bord.style.setProperty("--battement", `${(60 / BPM_COEUR[n]).toFixed(3)}s`);
+}
+
 // Après un coup ou un point de pénalité : le public, les annonces, le score, puis la fin du set, du match ou le coup suivant.
 // rp : les réactions du public à ce coup (null après une pénalité : pas de réaction).
 function apresPoint(evt, a, cel, rp) {
   const m = S.match;
+  majCoeur();
   // Applaudissements : série de 4 points, fin de set, fin de match. Jamais pendant l'échange.
   // (fin de match perdue : le public applaudit quand même les deux joueurs, un peu moins fort ; avant, les applaudissements du set)
   if (a.public) {
@@ -2192,6 +2203,7 @@ function majModeMatch() {
   const enMatch = !!(S && S.enJeu && (!S.match.termine || S.pauseFin));
   document.body.classList.toggle("en-match", enMatch);
   ambiance.fond(enMatch);                                  // le murmure du public, pendant tout le match
+  if (!enMatch) majCoeur();                                // (le cœur s'arrête quand on quitte le match)
   $("quitterSoloZone").hidden = !enMatch || !!S.duel;
 }
 $("quitterSolo").addEventListener("click", () => {

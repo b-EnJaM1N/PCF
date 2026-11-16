@@ -260,3 +260,19 @@ export function etincelle(fs, rng = Math.random) {
   }
   return normaliser([finDouce(s, fs, 0.01)], 0.5)[0];
 }
+
+// Le cœur qui bat (effets.js, niveauCoeur) : « boum-boum », deux coups sourds (le second plus faible), avec une harmonique
+// pour qu'on l'entende aussi sur le haut-parleur d'un téléphone.
+export function battementCoeur(fs) {
+  const len = Math.floor(fs * 0.5), s = new Float32Array(len);
+  const coup = (t0, f, a) => {
+    for (let i = Math.floor(t0 * fs); i < len; i++) {
+      const t = i / fs - t0;
+      if (t > 0.22) break;
+      const ph = 2 * Math.PI * (f * t + 0.6 * (1 - Math.exp(-t / 0.02)));   // (un léger glissement vers le grave au début)
+      s[i] += a * (Math.sin(ph) + 0.45 * Math.sin(2 * ph) + 0.15 * Math.sin(3 * ph)) * Math.min(1, t / 0.004) * Math.exp(-t / 0.05);
+    }
+  };
+  coup(0, 55, 1); coup(0.16, 50, 0.7);
+  return normaliser([finDouce(s, fs)], 0.9)[0];
+}

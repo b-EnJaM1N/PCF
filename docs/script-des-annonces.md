@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (681 répliques)
+## Commentateur — vif, enthousiaste, plein de références (674 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -132,7 +132,6 @@ restent lus par la voix de synthèse.
 | `commentateur_craquage_04_f.mp3` | Coiffée sur le poteau ! |
 | `commentateur_craquage_05.mp3` | Il enfourche la dernière porte ! |
 | `commentateur_craquage_05_f.mp3` | Elle enfourche la dernière porte ! |
-| `commentateur_craquage_06.mp3` | J'ai glissé, chef ! |
 | `commentateur_craquage_07.mp3` | Il avait le match au bout des doigts… et il l'a laissé filer ! |
 | `commentateur_craquage_07_f.mp3` | Elle avait le match au bout des doigts… et elle l'a laissé filer ! |
 | `commentateur_craquage_08.mp3` | Chute à l'avant ! Il avait le match en poche ! |
@@ -194,7 +193,6 @@ restent lus par la voix de synthèse.
 | `commentateur_serie_pour_04.mp3` | Il a mis une mine, ça explose derrière ! |
 | `commentateur_serie_pour_04_f.mp3` | Elle a mis une mine, ça explose derrière ! |
 | `commentateur_serie_pour_05.mp3` | C'est du Pierre-Feuille-Ciseaux champagne ! |
-| `commentateur_serie_pour_07.mp3` | Cours, Forrest, cours ! |
 | `commentateur_serie_pour_08.mp3` | Il marche sur son adversaire ! |
 | `commentateur_serie_pour_08_f.mp3` | Elle marche sur son adversaire ! |
 | `commentateur_serie_pour_09.mp3` | Qui va réussir à l'arrêter ? |
@@ -259,9 +257,6 @@ restent lus par la voix de synthèse.
 | `commentateur_obstination_03_ciseaux.mp3` | Ses Ciseaux… son précieux… |
 | `commentateur_obstination_03_feuille.mp3` | Sa Feuille… son précieux… |
 | `commentateur_obstination_04.mp3` | Tous les chemins mènent à la Pierre ! |
-| `commentateur_obstination_05_pierre.mp3` | Des pierres, des pierres, des pierres, des pierres, des pierres ! |
-| `commentateur_obstination_05_ciseaux.mp3` | Ciseaux, ciseaux, ciseaux, ciseaux, ciseaux ! |
-| `commentateur_obstination_05_feuille.mp3` | Des feuilles, des feuilles, des feuilles, des feuilles, des feuilles ! |
 | `commentateur_changement_01.mp3` | Le changement, c'est maintenant ! |
 | `commentateur_changement_02.mp3` | Il change enfin de signe ! |
 | `commentateur_changement_02_f.mp3` | Elle change enfin de signe ! |
@@ -390,8 +385,6 @@ restent lus par la voix de synthèse.
 | `commentateur_victoire_18_f.mp3` | Elle vient peut-être de changer l'histoire du Pierre-Feuille-Ciseaux ! |
 | `commentateur_defaite_01.mp3` | Battu, mais pas abattu ! |
 | `commentateur_defaite_01_f.mp3` | Battue, mais pas abattue ! |
-| `commentateur_defaite_02.mp3` | Il reviendra ! |
-| `commentateur_defaite_02_f.mp3` | Elle reviendra ! |
 | `commentateur_memoire_ouverture_01_pierre.mp3` | La dernière fois, il avait ouvert avec la Pierre ! |
 | `commentateur_memoire_ouverture_01_pierre_f.mp3` | La dernière fois, elle avait ouvert avec la Pierre ! |
 | `commentateur_memoire_ouverture_01_ciseaux.mp3` | La dernière fois, il avait ouvert avec les Ciseaux ! |
@@ -804,7 +797,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (559 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (558 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -953,7 +946,6 @@ restent lus par la voix de synthèse.
 | `commentatrice_resume_set_04_f.mp3` | Elle revient bien depuis la tendinite qui l'a éloignée du central pendant plusieurs mois. |
 | `commentatrice_set_decisif_01.mp3` | Les statistiques ne servent plus à rien. C'est le caractère qui parle. Quand il y en a. |
 | `commentatrice_set_decisif_02.mp3` | Un set pour un titre. Je reste calme. Pour deux. |
-| `commentatrice_set_decisif_03.mp3` | Winter is coming. |
 | `commentatrice_renversement_01.mp3` | Il a perdu une bataille. Il gagne la guerre. Classique. |
 | `commentatrice_renversement_01_f.mp3` | Elle a perdu une bataille. Elle gagne la guerre. Classique. |
 | `commentatrice_balle_match_convertie_01.mp3` | Échec et mat. |

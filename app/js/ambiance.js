@@ -3,7 +3,8 @@
 // La raquette et les applaudissements sont fabriqués par le code (sons.js), sauf si un vrai
 // enregistrement portant leur nom est déposé dans app/audio/ (ex. public_ovation_01.mp3).
 // Le murmure de fond, la tension et le « ooh » n'existent qu'en enregistrement : sans fichier, rien.
-import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe, debutDuSon, dechirure, claqueFeuille, smashBloque, smashRate, grondement, coupDeVent, cling, pschitt, crepitement, etincelle } from "./sons.js";
+import { BPM_COEUR } from "./effets.js";
+import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe, debutDuSon, dechirure, claqueFeuille, smashBloque, smashRate, grondement, coupDeVent, cling, pschitt, crepitement, etincelle, battementCoeur } from "./sons.js";
 import { balle, pointDecisif } from "./regles.js";
 
 const AC = typeof window !== "undefined" ? window.AudioContext || window.webkitAudioContext : null;
@@ -90,6 +91,9 @@ export const FOND = { entrePoints: 0.55, echange: 0.25, monte: 1.1, chant: 1.3 }
 // La couche « tension » : le brouhaha agité, en boucle, qui monte par-dessus le murmure quand le moment devient chaud
 // (à partir de « des » d'intensité, jusqu'au volume « max » ; pendant l'échange, il baisse lui aussi).
 export const TENSION = { des: 0.45, max: 0.45, echange: 0.4 };
+// Le cœur qui bat (16 novembre) : son volume et celui du public (en part du volume habituel), selon son niveau (1 à 5).
+export const VOLUME_COEUR = [0, 0.55, 0.62, 0.7, 0.78, 0.9];
+export const COEUR_PUBLIC = [1, 0.7, 0.6, 0.5, 0.4, 0.25];
 
 // L'intensité du moment, de 0 (début de set, rien en jeu) à 1 (point décisif) : le public s'agite peu à peu en fin de set quand
 // le score est serré, encore plus au set décisif, aux balles de set et de match (demande du porteur du projet, 3 novembre).
@@ -191,7 +195,7 @@ export class Ambiance {
     const etapes = [
       () => { this.raquettes = HAUTEUR.map(h => this.tampon([coupDeRaquette(fs, h)])); },
       () => { this.buf.dechirure = this.tampon([dechirure(fs)]); this.buf.claque = this.tampon([claqueFeuille(fs)]); this.buf.smashBloque = this.tampon([smashBloque(fs)]); this.buf.smashRate = this.tampon([smashRate(fs)]); },
-      () => { for (const [cle, f] of Object.entries({ seisme: grondement, vent: coupDeVent, etincelles: cling, pschitt, crepitement, etincelle })) this.buf[cle] = this.tampon([f(fs)]); },
+      () => { for (const [cle, f] of Object.entries({ seisme: grondement, vent: coupDeVent, etincelles: cling, pschitt, crepitement, etincelle, coeur: battementCoeur })) this.buf[cle] = this.tampon([f(fs)]); },
       ...["set", "clameur", "point"].map(type => () => { this.buf[type] = this.tampon(applaudissements(fs, FOULES[type])); }),
       () => this.chargerFichiers(),
     ];
@@ -346,6 +350,7 @@ export class Ambiance {
           this.tensionSource = null; this.tensionGain = null;
         }
         this.niveau = 0;
+        this.coeur(0);
       }
       if (on && this.fondSource && !this.tensionSource) this.lancerTension();
     } catch { /* sans murmure */ }
@@ -391,10 +396,12 @@ export class Ambiance {
   }
   portee() { return !!this.ctx && this.ctx.currentTime < (this.porteJusqu || 0); }
   enEchangeCalme() { return this.enEchange && !this.portee(); }
-  volumeFond() { return (this.enEchangeCalme() ? FOND.echange : FOND.entrePoints) * (1 + FOND.monte * this.niveau) * (this.portee() ? FOND.chant : 1); }
+  volumeFond() { return (this.enEchangeCalme() ? FOND.echange : FOND.entrePoints) * (1 + FOND.monte * this.niveau) * (this.portee() ? FOND.chant : 1) * this.sousLeCoeur(); }
+  // Pendant que le cœur bat, le public baisse le ton (de plus en plus : au point décisif, presque le silence).
+  sousLeCoeur() { return this.coeurNiveau ? COEUR_PUBLIC[this.coeurNiveau] ?? 1 : 1; }
   volumeTension() {
     const t = Math.max(0, (this.niveau - TENSION.des) / (1 - TENSION.des));
-    return TENSION.max * t * (this.enEchangeCalme() ? TENSION.echange : 1);
+    return TENSION.max * t * (this.enEchangeCalme() ? TENSION.echange : 1) * this.sousLeCoeur();
   }
   appliquer(lissage = 0.6) {
     if (!this.ctx) return;
@@ -402,6 +409,23 @@ export class Ambiance {
       if (this.fondGain) this.fondGain.gain.setTargetAtTime(this.volumeFond(), this.ctx.currentTime, lissage);
       if (this.tensionGain) this.tensionGain.gain.setTargetAtTime(this.volumeTension(), this.ctx.currentTime, lissage);
     } catch { /* rien */ }
+  }
+  // Le cœur qui bat (effets.js, niveauCoeur) : niveau 0 l'arrête net. vibrer : le téléphone vibre aussi, à chaque battement.
+  coeur(niveau, { vibrer = false } = {}) {
+    niveau = Math.max(0, Math.min(BPM_COEUR.length - 1, niveau | 0));
+    if (niveau === this.coeurNiveau && (!niveau || this.coeurMinuterie)) return;
+    clearTimeout(this.coeurMinuterie); this.coeurMinuterie = null;
+    this.coeurNiveau = niveau;
+    this.appliquer(niveau ? 0.5 : 0.2);
+    if (!niveau) return;
+    const battre = () => {
+      const n = this.coeurNiveau;
+      if (!n) return;
+      if (this.buf.coeur) this.jouer(this.buf.coeur, VOLUME_COEUR[n], false, { salle: false });
+      try { if (vibrer && document.visibilityState === "visible") navigator.vibrate?.([30, 130, 18]); } catch { /* sans vibration */ }
+      this.coeurMinuterie = setTimeout(battre, 60000 / BPM_COEUR[n]);
+    };
+    battre();
   }
   // Le brouhaha des balles de set et de match (pas deux fois de suite en quelques secondes).
   tension() {
