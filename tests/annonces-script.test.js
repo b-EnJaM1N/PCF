@@ -546,3 +546,26 @@ test("le point décisif : à 14 partout du set décisif, puis après le 15e poin
     assert.ok(!a.commentaire || !finale.includes(baseDe(a.commentaire.id)));
   }
 });
+
+test("la leçon (6 points d'avance ou plus) et le temps additionnel (11 partout ou plus) : dits parfois, jamais à tort", () => {
+  const de = (moment, l) => l.some(x => POOLS[moment].some(e => e.base === baseDe(x.id)));
+  let lecon = 0, prolong = 0;
+  for (let k = 0; k < 60; k++) {
+    // je mène 6-0 (après des égalités, pour qu'il y ait assez de coups), et je marque : 7-0
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = rngFixe(500 + k);
+    for (let i = 0; i < 4; i++) jouerCoup(m, PIERRE, PIERRE);
+    Object.assign(m, { points: [6, 0] });
+    if (de("lecon", annoncerCoup(m, jouerCoup(m, PIERRE, CISEAUX), etat, {}, rng).lignes)) lecon++;
+    // 10-11, j'égalise : 11 partout
+    const m2 = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), e2 = nouvelEtatAnnonces();
+    for (let i = 0; i < 4; i++) jouerCoup(m2, PIERRE, PIERRE);
+    Object.assign(m2, { points: [10, 11] });
+    if (de("prolongations", annoncerCoup(m2, jouerCoup(m2, PIERRE, CISEAUX), e2, {}, rng).lignes)) prolong++;
+    // 4-0 → 5-0 : pas de leçon ; 9-9 → 10-9 : pas de temps additionnel
+    const m3 = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), e3 = nouvelEtatAnnonces();
+    for (let i = 0; i < 4; i++) jouerCoup(m3, PIERRE, PIERRE);
+    Object.assign(m3, { points: [4, 0] });
+    assert.ok(!de("lecon", annoncerCoup(m3, jouerCoup(m3, PIERRE, CISEAUX), e3, {}, rng).lignes));
+  }
+  assert.ok(lecon > 10 && prolong > 5, `leçon ${lecon}, temps additionnel ${prolong}`);
+});

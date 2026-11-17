@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (796 répliques)
+## Commentateur — vif, enthousiaste, plein de références (839 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -142,6 +142,8 @@ restent lus par la voix de synthèse.
 | `commentateur_craquage_11_f.mp3` | Erreur tactique ! Elle a perdu la main ! |
 | `commentateur_craquage_12.mp3` | Il a tremblé au pire moment ! |
 | `commentateur_craquage_12_f.mp3` | Elle a tremblé au pire moment ! |
+| `commentateur_craquage_13.mp3` | Il se prend les pieds dans le tapis, là ! |
+| `commentateur_craquage_13_f.mp3` | Elle se prend les pieds dans le tapis, là ! |
 | `commentateur_main_legendaire_01.mp3` | La main du siècle ! |
 | `commentateur_main_legendaire_02.mp3` | Une main pour l'histoire ! |
 | `commentateur_main_legendaire_03.mp3` | La main du destin ! |
@@ -177,6 +179,9 @@ restent lus par la voix de synthèse.
 | `commentateur_balle_sauvee_12.mp3` | Il écarte le danger ! |
 | `commentateur_balle_sauvee_12_f.mp3` | Elle écarte le danger ! |
 | `commentateur_balle_sauvee_13.mp3` | Sauvée sur la ligne ! |
+| `commentateur_balle_sauvee_14.mp3` | Et coup de tonnerre avec ce point, qui lui permet de rester dans la course ! |
+| `commentateur_balle_sauvee_15.mp3` | Il ne baisse pas la garde ! |
+| `commentateur_balle_sauvee_15_f.mp3` | Elle ne baisse pas la garde ! |
 | `commentateur_remontee_01.mp3` | Quelle remontée extraordinaire ! |
 | `commentateur_remontee_02.mp3` | On l'avait enterré un peu trop vite ! |
 | `commentateur_remontee_02_f.mp3` | On l'avait enterrée un peu trop vite ! |
@@ -247,6 +252,16 @@ restent lus par la voix de synthèse.
 | `commentateur_serie_pour_31.mp3` | Rien ne lui résiste ce soir ! |
 | `commentateur_serie_pour_32.mp3` | Il garde la main ! |
 | `commentateur_serie_pour_32_f.mp3` | Elle garde la main ! |
+| `commentateur_serie_pour_33.mp3` | Il travaille au corps son adversaire ! |
+| `commentateur_serie_pour_33_f.mp3` | Elle travaille au corps son adversaire ! |
+| `commentateur_serie_pour_34.mp3` | Il est passé à la vitesse supérieure ! |
+| `commentateur_serie_pour_34_f.mp3` | Elle est passée à la vitesse supérieure ! |
+| `commentateur_serie_pour_35.mp3` | Il s'est mis en danseuse et a déposé son adversaire ! |
+| `commentateur_serie_pour_35_f.mp3` | Elle s'est mise en danseuse et a déposé son adversaire ! |
+| `commentateur_serie_pour_36.mp3` | Il fait la course en tête ! |
+| `commentateur_serie_pour_36_f.mp3` | Elle fait la course en tête ! |
+| `commentateur_serie_pour_37.mp3` | Il ne laisse aucun espace à son adversaire ! |
+| `commentateur_serie_pour_37_f.mp3` | Elle ne laisse aucun espace à son adversaire ! |
 | `commentateur_serie_contre_01.mp3` | Quelqu'un peut arrêter ça ?! |
 | `commentateur_serie_contre_02.mp3` | Il est dans les cordes ! Il faut réagir ! |
 | `commentateur_serie_contre_02_f.mp3` | Elle est dans les cordes ! Il faut réagir ! |
@@ -275,6 +290,8 @@ restent lus par la voix de synthèse.
 | `commentateur_serie_contre_21_f.mp3` | Elle subit, elle subit ! |
 | `commentateur_serie_contre_22.mp3` | Il a perdu la main ! |
 | `commentateur_serie_contre_22_f.mp3` | Elle a perdu la main ! |
+| `commentateur_serie_contre_23.mp3` | Il est en train de prendre le bouillon ! |
+| `commentateur_serie_contre_23_f.mp3` | Elle est en train de prendre le bouillon ! |
 | `commentateur_obstination_01_pierre.mp3` | Troisième Pierre d'affilée ! C'est audacieux ! |
 | `commentateur_obstination_01_ciseaux.mp3` | Troisièmes Ciseaux d'affilée ! C'est audacieux ! |
 | `commentateur_obstination_01_feuille.mp3` | Troisième Feuille d'affilée ! C'est audacieux ! |
@@ -294,6 +311,12 @@ restent lus par la voix de synthèse.
 | `commentateur_changement_05_feuille.mp3` | Belle transition vers la Feuille ! |
 | `commentateur_changement_06.mp3` | Il a enfin trouvé les autres boutons ! |
 | `commentateur_changement_06_f.mp3` | Elle a enfin trouvé les autres boutons ! |
+| `commentateur_changement_07_pierre.mp3` | Contre toute attente, il revient Pierre ! |
+| `commentateur_changement_07_pierre_f.mp3` | Contre toute attente, elle revient Pierre ! |
+| `commentateur_changement_07_ciseaux.mp3` | Contre toute attente, il revient Ciseaux ! |
+| `commentateur_changement_07_ciseaux_f.mp3` | Contre toute attente, elle revient Ciseaux ! |
+| `commentateur_changement_07_feuille.mp3` | Contre toute attente, il revient Feuille ! |
+| `commentateur_changement_07_feuille_f.mp3` | Contre toute attente, elle revient Feuille ! |
 | `commentateur_duel_esprits_01.mp3` | Ils se lisent dans les pensées ! |
 | `commentateur_duel_esprits_03.mp3` | Surplace sur la piste ! Personne ne veut lancer le sprint ! |
 | `commentateur_duel_esprits_04.mp3` | Coude à coude ! Impossible de les séparer ! |
@@ -313,6 +336,7 @@ restent lus par la voix de synthèse.
 | `commentateur_duel_esprits_18.mp3` | Personne ne lâche rien ! |
 | `commentateur_duel_esprits_19.mp3` | Ça bataille au milieu du terrain ! |
 | `commentateur_duel_esprits_20.mp3` | Ils avancent main dans la main ! |
+| `commentateur_duel_esprits_21.mp3` | Les deux adversaires sont sur le fil, ils se regardent droit dans les yeux ! |
 | `commentateur_lecture_subie_01.mp3` | Le bluff du siècle ! L'autre n'a pas cillé ! |
 | `commentateur_lecture_reussie_01.mp3` | Il l'attendait ! Il l'attendait ! |
 | `commentateur_lecture_reussie_01_f.mp3` | Elle l'attendait ! Elle l'attendait ! |
@@ -348,6 +372,8 @@ restent lus par la voix de synthèse.
 | `commentateur_tension_09.mp3` | C'est maintenant ou jamais ! |
 | `commentateur_tension_10.mp3` | Il a le match en main ! |
 | `commentateur_tension_10_f.mp3` | Elle a le match en main ! |
+| `commentateur_tension_11.mp3` | Il n'a plus le choix : il lui faut marquer pour rester en vie ! |
+| `commentateur_tension_11_f.mp3` | Elle n'a plus le choix : il lui faut marquer pour rester en vie ! |
 | `commentateur_point_decisif_01.mp3` | Un point. Un seul. Pour tout ! |
 | `commentateur_point_decisif_02.mp3` | Un point pour entrer dans l'Histoire ! |
 | `commentateur_point_decisif_03.mp3` | Il ne peut en rester qu'un ! |
@@ -361,6 +387,7 @@ restent lus par la voix de synthèse.
 | `commentateur_point_decisif_11.mp3` | La main du sacre est peut-être dans ce point ! |
 | `commentateur_point_decisif_12.mp3` | Je n'ai jamais vu ça ! Jamais ! En trente ans de carrière ! |
 | `commentateur_point_decisif_13.mp3` | Les livres d'histoire attendent ce point ! |
+| `commentateur_point_decisif_14.mp3` | Quatorze partout : c'est désormais la mort subite ! |
 | `commentateur_set_point_decisif_01.mp3` | Quinze à quatorze ! Ça passe sur le fil ! |
 | `commentateur_set_point_decisif_02.mp3` | Il arrache le point décisif ! |
 | `commentateur_set_point_decisif_02_f.mp3` | Elle arrache le point décisif ! |
@@ -388,6 +415,8 @@ restent lus par la voix de synthèse.
 | `commentateur_set_ecrasant_04.mp3` | Une démonstration ! |
 | `commentateur_set_ecrasant_05.mp3` | Sans appel ! |
 | `commentateur_set_ecrasant_06.mp3` | Haut la main ! |
+| `commentateur_set_ecrasant_07.mp3` | Oh, il est passé complètement à travers ! |
+| `commentateur_set_ecrasant_07_f.mp3` | Oh, elle est passée complètement à travers ! |
 | `commentateur_set_couteau_01.mp3` | Irrespirable ! |
 | `commentateur_set_couteau_02.mp3` | Quel set, mesdames et messieurs ! |
 | `commentateur_set_couteau_03.mp3` | Photo-finish ! Il faut la photo pour les départager ! |
@@ -579,6 +608,7 @@ restent lus par la voix de synthèse.
 | `commentateur_cueilli_a_froid_01_f.mp3` | Elle a cueilli à froid son adversaire ! |
 | `commentateur_cueilli_a_froid_02.mp3` | Il vient de climatiser l'arène ! |
 | `commentateur_cueilli_a_froid_02_f.mp3` | Elle vient de climatiser l'arène ! |
+| `commentateur_cueilli_a_froid_03.mp3` | Une ouverture magistrale : ça fait trois à zéro ! |
 | `commentateur_ouverture_egalites_01.mp3` | On est en plein round d'observation ! |
 | `commentateur_ouverture_egalites_02.mp3` | Duel à haute intensité ! |
 | `commentateur_ouverture_egalites_03.mp3` | Personne ne recule ! |
@@ -596,9 +626,18 @@ restent lus par la voix de synthèse.
 | `commentateur_chasse_patate_02.mp3` | Il reste dans la roue de son adversaire ! |
 | `commentateur_chasse_patate_02_f.mp3` | Elle reste dans la roue de son adversaire ! |
 | `commentateur_money_time_01.mp3` | On entre dans le money time, chaque main compte ! |
+| `commentateur_money_time_02.mp3` | Ils sont à la lutte, au coude à coude ! |
 | `commentateur_rate_money_time_01.mp3` | Oh non, pas ça, pas maintenant ! |
 | `commentateur_le_break_01.mp3` | Il fait le break ! |
 | `commentateur_le_break_01_f.mp3` | Elle fait le break ! |
+| `commentateur_le_break_02.mp3` | Et un nouveau point : il a désormais deux longueurs d'avance ! |
+| `commentateur_le_break_02_f.mp3` | Et un nouveau point : elle a désormais deux longueurs d'avance ! |
+| `commentateur_lecon_01.mp3` | Il est en train de lui donner une leçon ! |
+| `commentateur_lecon_01_f.mp3` | Elle est en train de lui donner une leçon ! |
+| `commentateur_lecon_02.mp3` | C'est un récital ! |
+| `commentateur_lecon_03.mp3` | Il dicte le tempo, l'autre a du mal à suivre ! |
+| `commentateur_lecon_03_f.mp3` | Elle dicte le tempo, l'autre a du mal à suivre ! |
+| `commentateur_prolongations_01.mp3` | On est dans le temps additionnel ! |
 | `commentateur_tout_a_refaire_01.mp3` | Il avait fait le plus dur, et tout est à refaire ! |
 | `commentateur_tout_a_refaire_01_f.mp3` | Elle avait fait le plus dur, et tout est à refaire ! |
 | `commentateur_divers_01.mp3` | Il alterne bien son jeu ! |
@@ -651,6 +690,9 @@ restent lus par la voix de synthèse.
 | `commentateur_smash_reussi_17.mp3` | Imparable ! |
 | `commentateur_smash_reussi_18.mp3` | Il n'y est pas allé de main morte ! |
 | `commentateur_smash_reussi_18_f.mp3` | Elle n'y est pas allée de main morte ! |
+| `commentateur_smash_reussi_19.mp3` | Il épate la galerie avec un smash spectaculaire ! |
+| `commentateur_smash_reussi_19_f.mp3` | Elle épate la galerie avec un smash spectaculaire ! |
+| `commentateur_smash_reussi_20.mp3` | C'était à quitte ou double : ce sera double ! |
 | `commentateur_smash_sonne_01.mp3` | Il est sonné ! Il cherche ses repères ! |
 | `commentateur_smash_sonne_01_f.mp3` | Elle est sonnée ! Elle cherche ses repères ! |
 | `commentateur_smash_sonne_02.mp3` | Il titube ! Il est groggy ! |
@@ -661,6 +703,7 @@ restent lus par la voix de synthèse.
 | `commentateur_smash_rate_03.mp3` | Le smash s'envole dans les tribunes ! |
 | `commentateur_smash_rate_04.mp3` | Il a voulu forcer le passage ! |
 | `commentateur_smash_rate_04_f.mp3` | Elle a voulu forcer le passage ! |
+| `commentateur_smash_rate_05.mp3` | Et le smash fait pschitt ! |
 | `commentateur_smash_bloque_01.mp3` | Bloqué ! Le mur a tenu ! |
 | `commentateur_smash_bloque_02.mp3` | Smash contré ! Quelle lecture ! |
 | `commentateur_smash_bloque_03.mp3` | Contre monumental ! |
@@ -919,7 +962,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (617 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (646 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -934,6 +977,10 @@ restent lus par la voix de synthèse.
 | `commentatrice_craquage_08.mp3` | L'estocade ? Non : cueilli sur la riposte. |
 | `commentatrice_craquage_08_f.mp3` | L'estocade ? Non : cueillie sur la riposte. |
 | `commentatrice_craquage_09.mp3` | La main a tremblé. |
+| `commentatrice_craquage_10.mp3` | Il est paralysé par l'enjeu. |
+| `commentatrice_craquage_10_f.mp3` | Elle est paralysée par l'enjeu. |
+| `commentatrice_craquage_11.mp3` | Il pèche dans le dernier geste. |
+| `commentatrice_craquage_11_f.mp3` | Elle pèche dans le dernier geste. |
 | `commentatrice_main_legendaire_01.mp3` | Je note l'heure. Pour les archives. |
 | `commentatrice_main_legendaire_02.mp3` | Dinguerie ! Comme disent les jeunes. |
 | `commentatrice_main_legendaire_03.mp3` | C'est un vrai banger. Comme disent les jeunes. |
@@ -993,6 +1040,11 @@ restent lus par la voix de synthèse.
 | `commentatrice_serie_contre_21_f.mp3` | Elle a besoin d'un temps mort. Il n'y en a pas. |
 | `commentatrice_serie_contre_22.mp3` | Il cherche sa main. Elle est partie sans lui. |
 | `commentatrice_serie_contre_22_f.mp3` | Elle cherche sa main. Elle est partie sans elle. |
+| `commentatrice_serie_contre_23.mp3` | C'est le moment d'arrêter les frais. |
+| `commentatrice_serie_contre_24.mp3` | Pour le moment, sa stratégie ne paie pas. |
+| `commentatrice_serie_contre_25.mp3` | La ligne d'arrivée est encore loin, mais attention à ne pas se laisser distancer. |
+| `commentatrice_serie_contre_26.mp3` | Il est en train de déjouer. |
+| `commentatrice_serie_contre_26_f.mp3` | Elle est en train de déjouer. |
 | `commentatrice_obstination_01_pierre.mp3` | Encore Pierre. C'est de la provocation. |
 | `commentatrice_obstination_01_ciseaux.mp3` | Encore Ciseaux. C'est de la provocation. |
 | `commentatrice_obstination_01_feuille.mp3` | Encore Feuille. C'est de la provocation. |
@@ -1013,6 +1065,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_obstination_07.mp3` | C'est de la poudre de perlimpinpin. |
 | `commentatrice_obstination_08.mp3` | Quand on veut, on peut. Quand on peut, on choisit Pierre, apparemment. |
 | `commentatrice_obstination_09.mp3` | Mieux vaut une Feuille en main que deux Ciseaux dans le pot. C'est sa philosophie. |
+| `commentatrice_obstination_11.mp3` | Il est décidé à mourir avec ses idées. |
+| `commentatrice_obstination_11_f.mp3` | Elle est décidée à mourir avec ses idées. |
 | `commentatrice_changement_01.mp3` | Il a changé. Il était temps. |
 | `commentatrice_changement_01_f.mp3` | Elle a changé. Il était temps. |
 | `commentatrice_changement_02.mp3` | Une autre idée. Enfin. |
@@ -1050,6 +1104,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_lecture_subie_08_f.mp3` | C'était téléphoné. Mais elle était en mode avion. |
 | `commentatrice_lecture_subie_09.mp3` | Il veut lire le jeu adverse. Qu'il commence par le sien. |
 | `commentatrice_lecture_subie_09_f.mp3` | Elle veut lire le jeu adverse. Qu'elle commence par le sien. |
+| `commentatrice_lecture_subie_10.mp3` | Les mêmes causes produisent les mêmes effets. |
+| `commentatrice_lecture_subie_11.mp3` | Il est complètement à côté de son sujet. |
+| `commentatrice_lecture_subie_11_f.mp3` | Elle est complètement à côté de son sujet. |
 | `commentatrice_lecture_reussie_01.mp3` | Coup de maître. |
 | `commentatrice_lecture_reussie_02.mp3` | Bien vu l'aveugle. |
 | `commentatrice_lecture_reussie_03.mp3` | Il joue aux échecs. L'autre joue aux dames. |
@@ -1072,6 +1129,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_tension_06_f.mp3` | Que la force soit avec elle. Elle va en avoir besoin. |
 | `commentatrice_tension_07.mp3` | C'est le moment de ne pas jouer Pierre. Ou de jouer Pierre. Je ne sais plus. |
 | `commentatrice_tension_08.mp3` | Les mains sont moites. |
+| `commentatrice_tension_09.mp3` | Il lui faut marquer pour continuer à espérer. |
+| `commentatrice_tension_09_f.mp3` | Elle doit marquer pour continuer à espérer. |
 | `commentatrice_point_decisif_01.mp3` | Ici, pas de deuxième chance. Comme dans la vie. |
 | `commentatrice_point_decisif_02.mp3` | Celui qui cligne des yeux a perdu. |
 | `commentatrice_point_decisif_03.mp3` | Respirez. Moi, j'ai arrêté il y a trois points. |
@@ -1091,6 +1150,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_set_ecrasant_08.mp3` | Un set vite expédié, pas de chichifoumi. |
 | `commentatrice_set_ecrasant_09.mp3` | Le coup du berger. Plié en quelques coups. |
 | `commentatrice_set_ecrasant_10.mp3` | Rien à redire. Ou si peu. |
+| `commentatrice_set_ecrasant_11.mp3` | C'est une parodie de chifoumi à laquelle nous assistons. |
 | `commentatrice_set_couteau_01.mp3` | Arraché. Mérité, on en reparlera. |
 | `commentatrice_set_couteau_02.mp3` | Il fallait des nerfs solides pour conclure celui-là. Il y en avait. Juste assez. |
 | `commentatrice_set_couteau_03.mp3` | Personne ne méritait de le perdre. L'un des deux l'a quand même perdu. |
@@ -1232,6 +1292,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_beau_coup_07_f.mp3` | Elle vient de mettre son adversaire sous pli. |
 | `commentatrice_beau_coup_08.mp3` | Une feuille. Et la pierre n'y peut rien. |
 | `commentatrice_beau_coup_10.mp3` | Propre. Net. Sans bavure. |
+| `commentatrice_beau_coup_11.mp3` | On connaît ses qualités chifoumistiques. |
+| `commentatrice_beau_coup_12.mp3` | Une belle séquence, à enseigner dans les écoles de chifoumi. |
+| `commentatrice_beau_coup_13.mp3` | Un geste peu académique, mais ça passe. |
 | `commentatrice_trois_pierres_01.mp3` | Pierre qui roule n'amasse pas mousse. |
 | `commentatrice_trois_ciseaux_01.mp3` | Trois Ciseaux, trois points. Le coiffeur est en forme. |
 | `commentatrice_trois_feuilles_01.mp3` | Trois Feuilles, trois points. On tourne la page. |
@@ -1245,18 +1308,26 @@ restent lus par la voix de synthèse.
 | `commentatrice_apres_egalites_perdu_02.mp3` | À force d'attendre, il s'est fait prendre. |
 | `commentatrice_apres_egalites_perdu_02_f.mp3` | À force d'attendre, elle s'est fait prendre. |
 | `commentatrice_apres_egalites_perdu_03.mp3` | L'autre a tenu un coup de plus. |
+| `commentatrice_contre_cours_01.mp3` | Les mouches ont changé d'âne. |
 | `commentatrice_quatre_meme_01.mp3` | Il s'enferme dans un jeu stéréotypé. |
 | `commentatrice_quatre_meme_01_f.mp3` | Elle s'enferme dans un jeu stéréotypé. |
 | `commentatrice_quatre_meme_02.mp3` | Il est en panne d'inspiration. |
 | `commentatrice_quatre_meme_02_f.mp3` | Elle est en panne d'inspiration. |
+| `commentatrice_rate_money_time_01_pierre.mp3` | Une Pierre qui fait très mal à ce moment de la partie. |
+| `commentatrice_rate_money_time_01_ciseaux.mp3` | Des Ciseaux qui font très mal à ce moment de la partie. |
+| `commentatrice_rate_money_time_01_feuille.mp3` | Une Feuille qui fait très mal à ce moment de la partie. |
+| `commentatrice_le_break_01.mp3` | Il a pris une option sur la victoire. |
+| `commentatrice_le_break_01_f.mp3` | Elle a pris une option sur la victoire. |
 | `commentatrice_faille_ratee_01.mp3` | Il a vu la faille, mais ça n'a pas souri. |
 | `commentatrice_faille_ratee_01_f.mp3` | Elle a vu la faille, mais ça n'a pas souri. |
+| `commentatrice_faille_ratee_02.mp3` | Son adversaire n'a pas mordu à l'hameçon. |
 | `commentatrice_divers_01.mp3` | Il a faux, et ça lui réussit. |
 | `commentatrice_divers_01_f.mp3` | Elle a faux, et ça lui réussit. |
 | `commentatrice_divers_02.mp3` | Le chi-fou-mi, c'est très simple et c'est très compliqué. |
 | `commentatrice_premier_point_perdu_01.mp3` | L'ouverture de Kolodrov, 1956… mais ça ne lui sourit pas. |
 | `commentatrice_premier_point_perdu_02.mp3` | Un mauvais départ. Il reste du temps. Heureusement. |
 | `commentatrice_premier_point_perdu_03.mp3` | Ça commence mal. On a déjà vu pire. Rarement. |
+| `commentatrice_premier_point_perdu_04.mp3` | Un peu de retard à l'allumage. |
 | `commentatrice_avant_seul_01.mp3` | Ce soir, il n'y aura qu'un vainqueur. Et probablement un mauvais perdant. |
 | `commentatrice_avant_seul_02.mp3` | Deux joueurs, trois signes, un seul objectif : humilier son prochain. |
 | `commentatrice_avant_seul_03.mp3` | Ce soir, on ne règle pas ses comptes. On les découpe. |
@@ -1294,6 +1365,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_smash_rate_04.mp3` | Il a frappé comme un sourd. Et visé comme un aveugle. |
 | `commentatrice_smash_rate_04_f.mp3` | Elle a frappé comme une sourde. Et visé comme une aveugle. |
 | `commentatrice_smash_rate_05.mp3` | Trop appuyé. |
+| `commentatrice_smash_rate_06.mp3` | Ça manque un peu de percussion. |
 | `commentatrice_smash_bloque_01.mp3` | Il a smashé dans un mur. Le mur ne s'est pas excusé. |
 | `commentatrice_smash_bloque_01_f.mp3` | Elle a smashé dans un mur. Le mur ne s'est pas excusé. |
 | `commentatrice_smash_bloque_02.mp3` | Tout ce bruit pour une égalité. |
