@@ -23,7 +23,7 @@ const nomComplet = p => `${esc(p.pseudo)}<small>#${p.numero}</small>`;
 // ctx : { uid(), montrer(vue), retour(), lancerDuel(duel, profilAdversaire), profils(ids), apresChangement() }
 export function installerTournois(ctx) {
   let ouvert = null, detail = null, decalage = 0, minuterie = 0, cercleForm = null;
-  const dire = (t, erreur = false, id = "tMsg") => {
+  const dire = (t, erreur = false, id = "tourMsg") => {
     $(id).textContent = t; $(id).classList.toggle("erreur", erreur);
     if (t) $(id).scrollIntoView({ block: "nearest", behavior: "smooth" });
   };
@@ -325,13 +325,20 @@ export function installerTournois(ctx) {
       const autres = ch ? mesMatchsRestants(t, uid).filter(m => m.id !== mm.match.id) : [];
       if (autres.length) {
         $("tMonMatchCorps").insertAdjacentHTML("beforeend", `<p class="hint" style="margin-top:12px">Mes autres matchs, dans l'ordre que tu veux :</p>`
-          + autres.map(m => { const a = m.j0?.id === uid ? m.j1 : m.j0, attend = m.duel?.phase === "attente" && m.duel.j0 !== uid;
+          + autres.map(m => {
+            // (17 novembre, remarque du porteur du projet : après « Jouer », rien ne montrait l'invitation envoyée ; chaque ligne dit
+            // maintenant où en est le match : il t'attend, invitation envoyée, match en cours)
+            const a = m.j0?.id === uid ? m.j1 : m.j0, ph = m.duel?.phase;
+            const attend = ph === "attente" && m.duel.j0 !== uid, envoye = ph === "attente" && m.duel.j0 === uid;
+            const enJeu = ["presentation", "jeu", "entre_sets"].includes(ph);
+            const etat = attend ? `<b>${esc(a.pseudo)} t'attend !</b>` : envoye ? `✉️ Invitation envoyée : le match démarre dès qu'il touche « Jouer »` : enJeu ? "Votre match est en cours" : `Niveau ${a.classement}`;
+            const bouton = envoye ? `<button class="petit alt" disabled>En attente…</button>` : `<button class="petit ${attend || enJeu ? "" : "alt"}" data-m="${m.id}">${enJeu ? "Reprendre" : "Jouer"}</button>`;
             return `<div class="joueur"><span class="mini">${avatarSVG(a.avatar || {})}</span>
-              <div style="min-width:0"><div class="jn">${nomComplet(a)}</div><div class="jd">${attend ? `${esc(a.pseudo)} t'attend !` : `Niveau ${a.classement}`}</div></div>
-              <div class="actions"><button class="petit ${attend ? "" : "alt"}" data-m="${m.id}">Jouer</button></div></div>`; }).join(""));
+              <div style="min-width:0"><div class="jn">${nomComplet(a)}</div><div class="jd">${etat}</div></div>
+              <div class="actions">${bouton}</div></div>`; }).join(""));
         $("tMonMatchCorps").querySelectorAll("button[data-m]").forEach(b => b.addEventListener("click", () => {
           const m = autres.find(x => x.id === b.dataset.m), moi = m.j0?.id === uid ? 0 : 1;
-          b.disabled = true; jouerMonMatch({ match: m, moi, adversaire: moi === 0 ? m.j1 : m.j0 });
+          b.disabled = true; b.textContent = "…"; jouerMonMatch({ match: m, moi, adversaire: moi === 0 ? m.j1 : m.j0 });
         }));
       }
       }
@@ -402,15 +409,18 @@ export function installerTournois(ctx) {
     const cote = (j, gagne) => j
       ? `<div class="bp ${m.fin ? (gagne ? "win" : "lose") : ""}"><span class="mini">${avatarSVG(j.avatar || {})}</span><span class="bn">${esc(j.pseudo)}${j.id === uid ? " (toi)" : ""}</span></div>`
       : `<div class="bp lose"><span class="bn">${m.fin === "exempt" ? "—" : "?"}</span></div>`;
-    let score = "vs";
+    let score = "vs", plusieurs = false;
     if (m.fin === "score" && m.duel) {
-      const s = m.duel.sets, dans = m.duel.j0 === m.j0?.id ? s : [s[1], s[0]];
-      score = `${dans[0]}–${dans[1]}`;
+      // (17 novembre, demande du porteur du projet : le score des sets, « 11–7 », plutôt que « 1–0 » en sets ;
+      // en plusieurs sets, un set par ligne)
+      const sens = m.duel.j0 === m.j0?.id, ss = (m.duel.scores_sets || []).map(([x, y]) => (sens ? `${x}–${y}` : `${y}–${x}`));
+      if (ss.length) { score = ss.join("\n"); plusieurs = ss.length > 1; }
+      else { const s = m.duel.sets || [0, 0], dans = sens ? s : [s[1], s[0]]; score = `${dans[0]}–${dans[1]}`; }
     } else if (m.fin) score = texteFin(m.fin);
     else if (m.duel && ["presentation", "jeu", "entre_sets"].includes(m.duel.phase)) score = "en cours";
     const g0 = m.vainqueur && m.vainqueur === m.j0?.id, g1 = m.vainqueur && m.vainqueur === m.j1?.id;
     const mien = [m.j0?.id, m.j1?.id].includes(uid) ? " mine" : "";
-    return `<div class="bm${mien}">${cote(m.j0, g0)}<div class="bs">${esc(score)}</div>${cote(m.j1, g1).replace('class="bp', 'class="bp r')}</div>`;
+    return `<div class="bm${mien}">${cote(m.j0, g0)}<div class="bs${plusieurs ? " bs-sets" : ""}">${esc(score).replace(/\n/g, "<br>")}</div>${cote(m.j1, g1).replace('class="bp', 'class="bp r')}</div>`;
   }
 
   $("tActions").addEventListener("click", async e => {
@@ -491,7 +501,7 @@ export function installerTournois(ctx) {
     try { if (navigator.share) { await navigator.share({ title: `Tournoi ${detail.nom}`, text: texte, url }); return; } }
     catch (e) { if (e && e.name === "AbortError") return; }
     try { await navigator.clipboard.writeText(url); dire("Lien copié ! Colle-le dans WhatsApp ou un SMS."); } catch { dire(""); }
-    $("tMsg").insertAdjacentHTML("beforeend", `<span class="lien-partage">${esc(url)}</span>`);
+    $("tourMsg").insertAdjacentHTML("beforeend", `<span class="lien-partage">${esc(url)}</span>`);
   }
 
   async function jouerMonMatch(mm) {
