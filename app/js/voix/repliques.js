@@ -36,11 +36,11 @@ export const MOMENTS = {
     { r: "c", t: "Attaque audacieuse… et riposte de maître !", clin: "sport" },
     { r: "c", t: "Erreur tactique ! Il a perdu la main !", f: "Erreur tactique ! Elle a perdu la main !", clin: "sport" },
     { r: "d", t: "L'estocade ? Non : cueilli sur la riposte.", f: "L'estocade ? Non : cueillie sur la riposte.", clin: "sport" },
-    { r: "c", t: "Il a tremblé au pire moment !", f: "Elle a tremblé au pire moment !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
+    { r: "c", t: "Oh non… Il a tremblé au pire moment !", f: "Oh non… Elle a tremblé au pire moment !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "d", t: "La main a tremblé." },
-    { r: "c", t: "Il se prend les pieds dans le tapis, là !", f: "Elle se prend les pieds dans le tapis, là !" },   // (17 novembre, écrite par le porteur du projet)
-    { r: "d", t: "Il est paralysé par l'enjeu.", f: "Elle est paralysée par l'enjeu." },
-    { r: "d", t: "Il pèche dans le dernier geste.", f: "Elle pèche dans le dernier geste." },
+    { r: "c", t: "Aïe ! Il se prend les pieds dans le tapis, là !", f: "Aïe ! Elle se prend les pieds dans le tapis, là !" },   // (17 novembre, écrite par le porteur du projet)
+    { r: "d", t: "L'enjeu le paralyse. Ça se voit d'ici.", f: "L'enjeu la paralyse. Ça se voit d'ici." },
+    { r: "d", t: "Tout était bien… sauf le dernier geste." },
   ],
   // Une balle de match sauvée, ou le point qui donne le titre : la main entre dans la légende.
   main_legendaire: [
@@ -72,14 +72,14 @@ export const MOMENTS = {
     { r: "c", t: "Vous ne passerez pas !", clin: "cine" },
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
     { r: "c", t: "Une riposte fulgurante, aucune chance pour son adversaire !", clin: "sport" },
-    { r: "c", t: "Il n'est pas mort ! Il n'est pas mort !", f: "Elle n'est pas morte ! Elle n'est pas morte !" },   // (16 novembre, choisie par le porteur du projet)
-    { r: "c", t: "Il ressuscite ! Le public n'en revient pas !", f: "Elle ressuscite ! Le public n'en revient pas !" },
-    { r: "d", t: "Il aime vivre dangereusement.", f: "Elle aime vivre dangereusement." },
-    { r: "c", t: "Il écarte le danger !", f: "Elle écarte le danger !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
+    { r: "c", t: "Oh, il n'est pas mort ! Il n'est pas mort !", f: "Oh, elle n'est pas morte ! Elle n'est pas morte !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Ah ! Il ressuscite ! Le public n'en revient pas !", f: "Ah ! Elle ressuscite ! Le public n'en revient pas !" },
+    { r: "d", t: "Tiens. Il aime vivre dangereusement.", f: "Tiens. Elle aime vivre dangereusement." },
+    { r: "c", t: "Ouf ! Le danger est écarté !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "c", t: "Sauvée sur la ligne !" },
-    { r: "d", t: "Il a fait le dos rond, et c'est passé.", f: "Elle a fait le dos rond, et c'est passé." },
+    { r: "d", t: "Le dos rond… et c'est passé." },
     { r: "c", t: "Et coup de tonnerre avec ce point, qui lui permet de rester dans la course !" },   // (17 novembre, écrite par le porteur du projet)
-    { r: "c", t: "Il ne baisse pas la garde !", f: "Elle ne baisse pas la garde !" },
+    { r: "c", t: "Attention, il ne baisse pas la garde !", f: "Attention, elle ne baisse pas la garde !" },
   ],
   remontee: [
     { r: "c", t: "Quelle remontée extraordinaire !" },
@@ -103,9 +103,9 @@ export const MOMENTS = {
     { r: "c", t: "Il revient de nulle part !", f: "Elle revient de nulle part !" },
     { r: "c", t: "Nous assistons à une véritable remontada !" },
     { r: "c", t: "C'est un retour d'entre les morts !" },
-    { r: "c", t: "Il recolle au score !", f: "Elle recolle au score !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
+    { r: "c", t: "Et voilà, il recolle au score !", f: "Et voilà, elle recolle au score !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "c", t: "Il revient de nulle part !", f: "Elle revient de nulle part !" },
-    { r: "d", t: "Le match est relancé." },
+    { r: "d", t: "Tiens, tiens. Le match est relancé." },
   ],
   serie_pour: [
     { r: "c", t: "Plus rien ne l'arrête !" },
@@ -144,16 +144,16 @@ export const MOMENTS = {
     { r: "c", t: "Il est en train de nous faire un sacré numéro !", f: "Elle est en train de nous faire un sacré numéro !", long: 3 },
     { r: "c", t: "Il creuse l'écart !", f: "Elle creuse l'écart !", long: 3 },
     { r: "c", t: "Il dicte le tempo !", f: "Elle dicte le tempo !", long: 3 },
-    { r: "c", t: "Il déroule !", f: "Elle déroule !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
-    { r: "c", t: "Il est sur un nuage !", f: "Elle est sur un nuage !" },
+    { r: "c", t: "Ça déroule !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
+    { r: "c", t: "Oh, il est sur un nuage !", f: "Oh, elle est sur un nuage !" },
     { r: "c", t: "Rien ne lui résiste ce soir !" },
-    { r: "d", t: "Il est dans sa bulle.", f: "Elle est dans sa bulle." },
+    { r: "d", t: "Dans sa bulle. Personne ne le dérange.", f: "Dans sa bulle. Personne ne la dérange." },
     { r: "c", t: "Il garde la main !", f: "Elle garde la main !" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
-    { r: "c", t: "Il travaille au corps son adversaire !", f: "Elle travaille au corps son adversaire !" },   // (17 novembre, écrite par le porteur du projet)
-    { r: "c", t: "Il est passé à la vitesse supérieure !", f: "Elle est passée à la vitesse supérieure !" },
+    { r: "c", t: "Ah, il travaille au corps son adversaire !", f: "Ah, elle travaille au corps son adversaire !" },   // (17 novembre, écrite par le porteur du projet)
+    { r: "c", t: "Et là, il passe à la vitesse supérieure !", f: "Et là, elle passe à la vitesse supérieure !" },
     { r: "c", t: "Il s'est mis en danseuse et a déposé son adversaire !", f: "Elle s'est mise en danseuse et a déposé son adversaire !", clin: "sport" },
-    { r: "c", t: "Il fait la course en tête !", f: "Elle fait la course en tête !" },
-    { r: "c", t: "Il ne laisse aucun espace à son adversaire !", f: "Elle ne laisse aucun espace à son adversaire !" },
+    { r: "c", t: "Course en tête pour lui !", f: "Course en tête pour elle !" },
+    { r: "c", t: "Pas le moindre espace pour son adversaire !" },
   ],
   serie_contre: [
     { r: "c", t: "Quelqu'un peut arrêter ça ?!" },
@@ -196,17 +196,17 @@ export const MOMENTS = {
     { r: "d", t: "Il tend le bâton pour se faire battre.", f: "Elle tend le bâton pour se faire battre.", long: 3 },
     { r: "c", t: "Et un vieux ciseau rouillé pour finir : attention au tétanos !", long: 3, seul: 1 },
     { r: "d", t: "Ciseaux mal affûtés, échec assuré.", long: 3, seul: 1 },
-    { r: "c", t: "Il prend l'eau !", f: "Elle prend l'eau !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
+    { r: "c", t: "Oula… il prend l'eau !", f: "Oula… elle prend l'eau !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "c", t: "Il subit, il subit !", f: "Elle subit, elle subit !" },
     { r: "d", t: "Il faut arrêter l'hémorragie." },
     { r: "d", t: "Il a besoin d'un temps mort. Il n'y en a pas.", f: "Elle a besoin d'un temps mort. Il n'y en a pas." },
-    { r: "c", t: "Il a perdu la main !", f: "Elle a perdu la main !" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
+    { r: "c", t: "Aïe, il a perdu la main !", f: "Aïe, elle a perdu la main !" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
     { r: "d", t: "Il cherche sa main. Elle est partie sans lui.", f: "Elle cherche sa main. Elle est partie sans elle." },
-    { r: "c", t: "Il est en train de prendre le bouillon !", f: "Elle est en train de prendre le bouillon !" },   // (17 novembre, écrite par le porteur du projet)
+    { r: "c", t: "Oula, il est en train de prendre le bouillon !", f: "Oula, elle est en train de prendre le bouillon !" },   // (17 novembre, écrite par le porteur du projet)
     { r: "d", t: "C'est le moment d'arrêter les frais." },
     { r: "d", t: "Pour le moment, sa stratégie ne paie pas." },
     { r: "d", t: "La ligne d'arrivée est encore loin, mais attention à ne pas se laisser distancer." },
-    { r: "d", t: "Il est en train de déjouer.", f: "Elle est en train de déjouer." },
+    { r: "d", t: "Hmm. Il est en train de déjouer.", f: "Hmm. Elle est en train de déjouer." },
   ],
   obstination: [
     { r: "c", t: ["Troisième Pierre d'affilée ! C'est audacieux !", "Troisièmes Ciseaux d'affilée ! C'est audacieux !", "Troisième Feuille d'affilée ! C'est audacieux !"] },
@@ -225,7 +225,7 @@ export const MOMENTS = {
     { r: "d", t: "Mieux vaut une Feuille en main que deux Ciseaux dans le pot. C'est sa philosophie.", seul: 2 },
     { r: "c", t: ["Des pierres, des pierres, des pierres, des pierres, des pierres !", "Ciseaux, ciseaux, ciseaux, ciseaux, ciseaux !", "Des feuilles, des feuilles, des feuilles, des feuilles, des feuilles !"], clin: "cine", retiree: true },   // (retirée le 16 novembre, demande du porteur du projet)
     { r: "d", t: "Allô ? Non mais allô, quoi !", clin: "cine", retiree: true },   // (retirée le 12 novembre, demande du porteur du projet)
-    { r: "d", t: "Il est décidé à mourir avec ses idées.", f: "Elle est décidée à mourir avec ses idées." },   // (17 novembre, écrite par le porteur du projet)
+    { r: "d", t: "Bon. Il est décidé à mourir avec ses idées.", f: "Bon. Elle est décidée à mourir avec ses idées." },   // (17 novembre, écrite par le porteur du projet)
   ],
   // Il change enfin de signe après une obstination.
   changement: [
@@ -237,8 +237,8 @@ export const MOMENTS = {
     // (5 novembre, répliques du porteur du projet)
     { r: "c", t: "Il renverse complètement le jeu !", f: "Elle renverse complètement le jeu !" },
     { r: "c", t: ["Belle transition vers la Pierre !", "Belle transition vers les Ciseaux !", "Belle transition vers la Feuille !"] },
-    { r: "c", t: "Il a enfin trouvé les autres boutons !", f: "Elle a enfin trouvé les autres boutons !" },   // (16 novembre, choisie par le porteur du projet)
-    { r: "d", t: "Il découvre qu'il existe trois signes. Bonne nouvelle.", f: "Elle découvre qu'il existe trois signes. Bonne nouvelle." },
+    { r: "c", t: "Ah ! Il a enfin trouvé les autres boutons !", f: "Ah ! Elle a enfin trouvé les autres boutons !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "d", t: "Tiens, il découvre qu'il existe trois signes. Bonne nouvelle.", f: "Tiens, elle découvre qu'il existe trois signes. Bonne nouvelle." },
     { r: "c", t: ["Contre toute attente, il revient Pierre !", "Contre toute attente, il revient Ciseaux !", "Contre toute attente, il revient Feuille !"], f: ["Contre toute attente, elle revient Pierre !", "Contre toute attente, elle revient Ciseaux !", "Contre toute attente, elle revient Feuille !"] },   // (17 novembre, écrite par le porteur du projet)
   ],
   duel_esprits: [
@@ -295,7 +295,7 @@ export const MOMENTS = {
     { r: "d", t: "Il veut lire le jeu adverse. Qu'il commence par le sien.", f: "Elle veut lire le jeu adverse. Qu'elle commence par le sien.", clin: "sport" },
     { r: "c", t: "Le bluff du siècle ! L'autre n'a pas cillé !", clin: "sport" },
     { r: "d", t: "Les mêmes causes produisent les mêmes effets." },   // (17 novembre, écrite par le porteur du projet)
-    { r: "d", t: "Il est complètement à côté de son sujet.", f: "Elle est complètement à côté de son sujet." },
+    { r: "d", t: "Complètement à côté de son sujet." },
   ],
   // J'ai lu le réflexe de l'adversaire.
   lecture_reussie: [
@@ -311,7 +311,7 @@ export const MOMENTS = {
     { r: "d", t: "Bien vu l'aveugle.", clin: "sport" },
     // (4 novembre, réplique du porteur du projet)
     { r: "c", t: "Il l'attendait dans le zig, il lui a mis dans le zag !", f: "Il l'attendait dans le zig, elle lui a mis dans le zag !" },
-    { r: "c", t: "Il a vu le coup venir avant même l'adversaire !", f: "Elle a vu le coup venir avant même l'adversaire !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Mais quelle lecture ! Il a vu le coup venir avant même l'adversaire !", f: "Mais quelle lecture ! Elle a vu le coup venir avant même l'adversaire !" },   // (16 novembre, choisie par le porteur du projet)
     { r: "d", t: "Il joue aux échecs. L'autre joue aux dames.", f: "Elle joue aux échecs. L'autre joue aux dames." },
     { r: "c", t: "Pris la main dans le sac !" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
   ],
@@ -324,7 +324,7 @@ export const MOMENTS = {
     { r: "d", t: "Jouer au hasard, c'est avouer qu'on n'a plus de plan.", retiree: true },   // (retirée le 28 octobre : plus de coup au hasard)
     { r: "d", t: "L'affaire du chronomètre. On n'en parle pas." },
     { r: "d", t: "Le ridicule ne tue pas. Heureusement pour lui.", f: "Le ridicule ne tue pas. Heureusement pour elle.", si: "balle_match" },
-    { r: "c", t: "Il est resté sur le banc de touche !", f: "Elle est restée sur le banc de touche !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Oula ! Il est resté sur le banc de touche !", f: "Oula ! Elle est restée sur le banc de touche !" },   // (16 novembre, choisie par le porteur du projet)
     { r: "d", t: "Il réfléchit encore. On lui enverra le résultat par courrier.", f: "Elle réfléchit encore. On lui enverra le résultat par courrier." },
     { r: "c", t: "Carton jaune pour la lenteur !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "d", t: "L'horloge, elle, ne s'arrête jamais." },
@@ -343,15 +343,15 @@ export const MOMENTS = {
     // (banque de commentaires du porteur du projet, branchée le 1er novembre : docs/repliques-banque-brouillon.md)
     { r: "c", t: "C'est irrespirable !" },
     { r: "d", t: "Il a la victoire au bout des doigts. Littéralement.", f: "Elle a la victoire au bout des doigts. Littéralement.", si: "balle_pour" },
-    { r: "c", t: "Il est à un signe du paradis !", f: "Elle est à un signe du paradis !", si: "balle_pour" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Et le voilà à un signe du paradis !", f: "Et la voilà à un signe du paradis !", si: "balle_pour" },   // (16 novembre, choisie par le porteur du projet)
     { r: "d", t: "Que la force soit avec lui. Il va en avoir besoin.", f: "Que la force soit avec elle. Elle va en avoir besoin.", clin: "cine", si: "balle_pour" },
     { r: "d", t: "C'est le moment de ne pas jouer Pierre. Ou de jouer Pierre. Je ne sais plus." },
     { r: "c", t: "Balle de match ! Le stade retient son souffle !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "c", t: "C'est maintenant ou jamais !" },
-    { r: "c", t: "Il a le match en main !", f: "Elle a le match en main !", si: "balle_pour" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
+    { r: "c", t: "Allez ! Il a le match en main !", f: "Allez ! Elle a le match en main !", si: "balle_pour" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
     { r: "d", t: "Les mains sont moites." },
-    { r: "c", t: "Il n'a plus le choix : il lui faut marquer pour rester en vie !", f: "Elle n'a plus le choix : il lui faut marquer pour rester en vie !", si: "balle_contre" },   // (17 novembre, écrite par le porteur du projet)
-    { r: "d", t: "Il lui faut marquer pour continuer à espérer.", f: "Elle doit marquer pour continuer à espérer.", si: "balle_contre" },
+    { r: "c", t: "Attention : plus le choix, il faut marquer pour rester en vie !", si: "balle_contre" },   // (17 novembre, écrite par le porteur du projet)
+    { r: "d", t: "Maintenant, il faut marquer pour continuer à espérer.", si: "balle_contre" },
   ],
   point_decisif: [
     { r: "c", t: "Un point. Un seul. Pour tout !" },
@@ -379,17 +379,17 @@ export const MOMENTS = {
   // « Il » : moi. Un set gagné ou perdu ainsi (le match continue) :
   set_point_decisif: [
     { r: "c", t: "Quinze à quatorze ! Ça passe sur le fil !", si: "quinze" },
-    { r: "c", t: "Il arrache le point décisif !", f: "Elle arrache le point décisif !", si: "gagne" },
+    { r: "c", t: "Oh ! Il arrache le point décisif !", f: "Oh ! Elle arrache le point décisif !", si: "gagne" },
   ],
   // Le match gagné au point décisif :
   match_point_decisif: [
     { r: "c", t: "Au bout du bout ! Il l'a fait !", f: "Au bout du bout ! Elle l'a fait !" },
-    { r: "c", t: "Il gagne au point décisif ! Quelle main !", f: "Elle gagne au point décisif ! Quelle main !" },
+    { r: "c", t: "Au point décisif ! Quelle main !" },
     { r: "d", t: "Le genre de match qu'on raconte à ses petits-enfants." },
   ],
   // Le match perdu au point décisif :
   match_perdu_point_decisif: [
-    { r: "c", t: "Il s'incline sur le point décisif ! Cruel !", f: "Elle s'incline sur le point décisif ! Cruel !" },
+    { r: "c", t: "Oh non… Il s'incline sur le point décisif ! Cruel !", f: "Oh non… Elle s'incline sur le point décisif ! Cruel !" },
     { r: "d", t: "Le sport est cruel. Ce soir, très cruel." },
   ],
   // Une finale gagnée au point décisif : Roland enchaîne deux de ces répliques.
@@ -405,7 +405,7 @@ export const MOMENTS = {
   // Une finale perdue au point décisif :
   finale_perdue_point_decisif: [
     { r: "c", t: "Si près… si près du sacre !" },
-    { r: "c", t: "Il a tout donné ! Absolument tout !", f: "Elle a tout donné ! Absolument tout !" },
+    { r: "c", t: "Pourtant, il a tout donné ! Absolument tout !", f: "Pourtant, elle a tout donné ! Absolument tout !" },
     { r: "d", t: "Perdre une finale à quinze-quatorze… Il y a des cicatrices qui ne se referment pas.", si: "quinze" },
   ],
   // Temps morts : fin de set, fin de match.
@@ -439,7 +439,7 @@ export const MOMENTS = {
     { r: "d", t: "Il fallait des nerfs solides pour conclure celui-là. Il y en avait. Juste assez." },
     { r: "d", t: "Personne ne méritait de le perdre. L'un des deux l'a quand même perdu." },
     { r: "d", t: "La goutte d'eau qui fait déborder la Feuille." },
-    { r: "c", t: "Ça s'est joué à un souffle !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
+    { r: "c", t: "Oula, ça s'est joué à un souffle !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "c", t: "Ça passe… et de justesse !" },
     { r: "d", t: "Les deux méritaient. Un seul l'emporte. C'est le sport." },
   ],
@@ -448,7 +448,7 @@ export const MOMENTS = {
   premier_set_net: [
     { r: "c", t: "Un set bien maîtrisé. Son adversaire doit maintenant réagir.", si: "gagne" },
     { r: "c", t: ["Ce premier set prend fin sur une Pierre bien sentie. La main adverse n'a pas su réellement l'inquiéter.", "Ce premier set prend fin sur des Ciseaux bien sentis. La main adverse n'a pas su réellement l'inquiéter.", "Ce premier set prend fin sur une Feuille bien sentie. La main adverse n'a pas su réellement l'inquiéter."] },   // (le signe du point qui donne le set, quel que soit le vainqueur)
-    { r: "d", t: "Il a assis sa victoire patiemment, sans laisser à son adversaire le temps d'installer sa riposte.", f: "Elle a assis sa victoire patiemment, sans laisser à son adversaire le temps d'installer sa riposte.", si: "gagne" },
+    { r: "d", t: "Patiemment, il a assis sa victoire, sans laisser à son adversaire le temps d'installer sa riposte.", f: "Patiemment, elle a assis sa victoire, sans laisser à son adversaire le temps d'installer sa riposte.", si: "gagne" },
   ],
   premier_set_large: [
     { r: "c", t: "Une victoire sans bavure, et une piètre prestation de la main adverse. Il faut se remobiliser, sans quoi la messe est dite." },
@@ -494,7 +494,7 @@ export const MOMENTS = {
     { r: "d", t: "Il a perdu une bataille. Il gagne la guerre. Classique.", f: "Elle a perdu une bataille. Elle gagne la guerre. Classique." },
     { r: "c", t: "C'est la remontada !", clin: "sport" },
     { r: "c", t: "Personne n'y croyait, sauf lui !", f: "Personne n'y croyait, sauf elle !" },   // (16 novembre, choisie par le porteur du projet)
-    { r: "c", t: "Il était mené, il a tout retourné !", f: "Elle était menée, elle a tout retourné !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
+    { r: "c", t: "Mené, et pourtant il a tout retourné !", f: "Menée, et pourtant elle a tout retourné !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "d", t: "Comme quoi, un match n'est jamais fini." },
   ],
   balle_match_convertie: [
@@ -558,7 +558,7 @@ export const MOMENTS = {
     { r: "c", t: "Il vient peut-être de changer l'histoire du Pierre-Feuille-Ciseaux !", f: "Elle vient peut-être de changer l'histoire du Pierre-Feuille-Ciseaux !", si: "finale" },
     { r: "d", t: "Propre. Net. Sans bavure." },
     { r: "d", t: "On ne reverra peut-être jamais ça. Tant mieux, j'ai eu mon compte." },
-    { r: "c", t: "Il lève les mains au ciel !", f: "Elle lève les mains au ciel !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
+    { r: "c", t: "Et il lève les mains au ciel !", f: "Et elle lève les mains au ciel !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "d", t: "Une victoire construite point par point." },
   ],
   defaite: [
@@ -577,7 +577,7 @@ export const MOMENTS = {
     { r: "d", t: "Le vainqueur repart avec la gloire. Le vaincu repart avec une remise en question existentielle." },
     // (le 3 novembre : seulement en fin de match, à la demande du porteur du projet ; avant, en fin de set écrasant)
     { r: "d", t: "Vous êtes le maillon faible. Au revoir !", clin: "cine" },
-    { r: "c", t: "Il tombe avec les honneurs !", f: "Elle tombe avec les honneurs !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Défaite, oui, mais avec les honneurs !" },   // (16 novembre, choisie par le porteur du projet)
     { r: "d", t: "Le résultat est sévère. Mais juste. Surtout juste." },
     { r: "c", t: "Il s'incline, mais la tête haute !", f: "Elle s'incline, mais la tête haute !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "d", t: "Ce n'était pas son jour." },
@@ -775,13 +775,13 @@ export const MOMENTS = {
     { r: "d", t: "Emballé, c'est pesé.", seul: 2, retiree: true },   // (retirée le 5 novembre, à la demande du porteur du projet)
     // (5 novembre, répliques du porteur du projet)
     { r: "c", t: "Il reste solide sur ses appuis !", f: "Elle reste solide sur ses appuis !", seul: 0 },
-    { r: "c", t: "Quel geste !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
+    { r: "c", t: "Oh, quel geste !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "c", t: "Du grand art !" },
     { r: "c", t: "Somptueux !" },
     { r: "d", t: "Propre. Net. Sans bavure." },
     { r: "c", t: "Une main de fer dans un gant de velours !" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
     { r: "c", t: "De main de maître !" },
-    { r: "c", t: "Il a eu la main heureuse !", f: "Elle a eu la main heureuse !" },
+    { r: "c", t: "Ah, la main heureuse !" },
     { r: "d", t: "On connaît ses qualités chifoumistiques." },   // (17 novembre, écrite par le porteur du projet)
     { r: "d", t: "Une belle séquence, à enseigner dans les écoles de chifoumi." },
     { r: "d", t: "Un geste peu académique, mais ça passe." },
@@ -804,7 +804,7 @@ export const MOMENTS = {
     { r: "c", t: "Même idée dès le premier coup ! Ça promet !" },
     { r: "d", t: "Ça commence bien. Enfin, ça ne commence pas." },
     { r: "d", t: "Premier coup, premier match nul." },
-    { r: "c", t: "Ils pensent pareil ! Ça va être long !" },   // (16 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Ah, ils pensent pareil ! Ça va être long !" },   // (16 novembre, choisie par le porteur du projet)
     { r: "d", t: "Deux esprits, une seule idée. C'est rare. Surtout ici." },
   ],
   // Un point enfin gagné après des égalités (2 ou plus) : par moi, ou par l'adversaire.
@@ -842,7 +842,7 @@ export const MOMENTS = {
   // Un point gagné alors que l'adversaire venait d'en gagner 3 ou plus d'affilée.
   contre_cours: [
     { r: "c", t: "Il marque contre le cours du jeu !", f: "Elle marque contre le cours du jeu !" },
-    { r: "c", t: "Il reprend la main !", f: "Elle reprend la main !" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
+    { r: "c", t: "Ah, il reprend la main !", f: "Ah, elle reprend la main !" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
     { r: "d", t: "Les mouches ont changé d'âne." },   // (17 novembre, écrite par le porteur du projet)
   ],
   // Un point repris juste après en avoir perdu un.
@@ -879,17 +879,17 @@ export const MOMENTS = {
   le_break: [
     { r: "c", t: "Il fait le break !", f: "Elle fait le break !" },
     { r: "c", t: "Et un nouveau point : il a désormais deux longueurs d'avance !", f: "Et un nouveau point : elle a désormais deux longueurs d'avance !" },   // (17 novembre, écrite par le porteur du projet)
-    { r: "d", t: "Il a pris une option sur la victoire.", f: "Elle a pris une option sur la victoire." },
+    { r: "d", t: "Voilà une option sérieuse sur la victoire." },
   ],
   // (17 novembre, écrites par le porteur du projet) Je mène de 6 points ou plus dans le set (une fois par set).
   lecon: [
-    { r: "c", t: "Il est en train de lui donner une leçon !", f: "Elle est en train de lui donner une leçon !" },
+    { r: "c", t: "Ah, c'est une leçon qu'il est en train de lui donner !", f: "Ah, c'est une leçon qu'elle est en train de lui donner !" },
     { r: "c", t: "C'est un récital !" },
     { r: "c", t: "Il dicte le tempo, l'autre a du mal à suivre !", f: "Elle dicte le tempo, l'autre a du mal à suivre !" },
   ],
   // L'égalité après 10 partout (11 partout, 12 partout… ; 7 partout en sets de 7), une fois par set.
   prolongations: [
-    { r: "c", t: "On est dans le temps additionnel !" },
+    { r: "c", t: "Oh, on est dans le temps additionnel !" },
   ],
   // Gagné, gagné, perdu, perdu.
   tout_a_refaire: [
@@ -988,10 +988,10 @@ export const MOMENTS = {
     { r: "c", t: "Il tape du poing sur la table !", f: "Elle tape du poing sur la table !", si: "apres_egalites" },
     { r: "c", t: "Coup de canon !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "c", t: "Imparable !" },
-    { r: "d", t: "Il a tapé comme une mule.", f: "Elle a tapé comme une mule.", deMoi: true },
-    { r: "c", t: "Il n'y est pas allé de main morte !", f: "Elle n'y est pas allée de main morte !", deMoi: true },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
+    { r: "d", t: "Bon. Il a tapé comme une mule.", f: "Bon. Elle a tapé comme une mule.", deMoi: true },
+    { r: "c", t: "Oula ! Il n'y est pas allé de main morte !", f: "Oula ! Elle n'y est pas allée de main morte !", deMoi: true },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
     { r: "d", t: "Il a eu la main lourde. Pour l'autre, surtout.", f: "Elle a eu la main lourde. Pour l'autre, surtout.", deMoi: true },
-    { r: "c", t: "Il épate la galerie avec un smash spectaculaire !", f: "Elle épate la galerie avec un smash spectaculaire !", deMoi: true },   // (17 novembre, écrite par le porteur du projet)
+    { r: "c", t: "Oh, le smash spectaculaire ! Il épate la galerie !", f: "Oh, le smash spectaculaire ! Elle épate la galerie !", deMoi: true },   // (17 novembre, écrite par le porteur du projet)
     { r: "c", t: "C'était à quitte ou double : ce sera double !" },
   ],
   // Le smash de l'adversaire gagne le point : je suis sonné.
@@ -1010,7 +1010,7 @@ export const MOMENTS = {
     { r: "d", t: "Il a smashé dans le vide. Le vide a gagné.", f: "Elle a smashé dans le vide. Le vide a gagné.", deMoi: true },
     { r: "c", t: "Le smash s'envole dans les tribunes !" },   // (16 novembre, choisie par le porteur du projet)
     { r: "d", t: "Il a frappé comme un sourd. Et visé comme un aveugle.", f: "Elle a frappé comme une sourde. Et visé comme une aveugle.", deMoi: true },
-    { r: "c", t: "Il a voulu forcer le passage !", f: "Elle a voulu forcer le passage !", deMoi: true },   // (16 novembre, plus classiques, choisies par le porteur du projet)
+    { r: "c", t: "Raté ! Il a voulu forcer le passage !", f: "Raté ! Elle a voulu forcer le passage !", deMoi: true },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "d", t: "Trop appuyé." },
     { r: "c", t: "Et le smash fait pschitt !" },   // (17 novembre, écrite par le porteur du projet)
     { r: "d", t: "Ça manque un peu de percussion." },
@@ -1022,7 +1022,7 @@ export const MOMENTS = {
     { r: "d", t: "Il a smashé dans un mur. Le mur ne s'est pas excusé.", f: "Elle a smashé dans un mur. Le mur ne s'est pas excusé.", deMoi: true },
     { r: "d", t: "Tout ce bruit pour une égalité." },
     { r: "c", t: "Contre monumental !" },   // (16 novembre, choisie par le porteur du projet)
-    { r: "d", t: "Il a voulu enfoncer la porte. La porte était blindée.", f: "Elle a voulu enfoncer la porte. La porte était blindée.", deMoi: true },
+    { r: "d", t: "Enfoncer la porte, c'était l'idée. La porte était blindée.", deMoi: true },
     { r: "c", t: "La main ferme pour stopper le smash !" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
     { r: "d", t: "Main de fer. Le smash s'est cassé les dents." },
   ],
@@ -1039,9 +1039,9 @@ export const MOMENTS = {
   // Les effets du match (16 novembre, répliques choisies par le porteur du projet) : ma main prend feu (8 points de suite),
   // un feu (la flamme ou plus) qui s'éteint, chez l'un ou l'autre.
   main_en_feu: [
-    { r: "c", t: "Il est en feu ! Appelez les pompiers !", f: "Elle est en feu ! Appelez les pompiers !" },
+    { r: "c", t: "Attention, il est en feu ! Appelez les pompiers !", f: "Attention, elle est en feu ! Appelez les pompiers !" },
     { r: "d", t: "Quelqu'un a un extincteur ?" },
-    { r: "c", t: "Il a la main chaude !", f: "Elle a la main chaude !" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
+    { r: "c", t: "Oh, la main chaude !" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
   ],
   feu_eteint: [
     { r: "d", t: "Et le feu s'éteint. Il restera un peu de fumée." },
