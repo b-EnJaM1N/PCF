@@ -443,6 +443,24 @@ export const MOMENTS = {
     { r: "c", t: "Ça passe… et de justesse !" },
     { r: "d", t: "Les deux méritaient. Un seul l'emporte. C'est le sport." },
   ],
+  // La fin du premier set (17 novembre, écrites par le porteur du projet), selon l'écart de points : 3 ou 4, 5 ou 6, 7 et plus.
+  // « gagne » / « perdu » : quand la phrase parle du vainqueur (ou du vaincu) du set comme de « il » (moi).
+  premier_set_net: [
+    { r: "c", t: "Un set bien maîtrisé. Son adversaire doit maintenant réagir.", si: "gagne" },
+    { r: "c", t: ["Ce premier set prend fin sur une Pierre bien sentie. La main adverse n'a pas su réellement l'inquiéter.", "Ce premier set prend fin sur des Ciseaux bien sentis. La main adverse n'a pas su réellement l'inquiéter.", "Ce premier set prend fin sur une Feuille bien sentie. La main adverse n'a pas su réellement l'inquiéter."] },   // (le signe du point qui donne le set, quel que soit le vainqueur)
+    { r: "d", t: "Il a assis sa victoire patiemment, sans laisser à son adversaire le temps d'installer sa riposte.", f: "Elle a assis sa victoire patiemment, sans laisser à son adversaire le temps d'installer sa riposte.", si: "gagne" },
+  ],
+  premier_set_large: [
+    { r: "c", t: "Une victoire sans bavure, et une piètre prestation de la main adverse. Il faut se remobiliser, sans quoi la messe est dite." },
+    { r: "d", t: "Au terme de ce set, une classe d'écart semble séparer les deux mains. Il doit repenser complètement ses séquences et se montrer plus agressif dans les duels.", f: "Au terme de ce set, une classe d'écart semble séparer les deux mains. Elle doit repenser complètement ses séquences et se montrer plus agressive dans les duels.", si: "perdu" },
+    { r: "c", t: "Entame de match parfaite. S'il reste en rythme pour le second set, la victoire ne lui échappera pas.", f: "Entame de match parfaite. Si elle reste en rythme pour le second set, la victoire ne lui échappera pas.", si: "gagne" },
+    { r: "c", t: "Large sourire d'un côté et soupe à la grimace de l'autre. Il faudra montrer un autre visage pour rester au contact et renverser la vapeur." },
+  ],
+  premier_set_ecrase: [
+    { r: "c", t: "Une victoire en mode rouleau compresseur. Il n'a laissé que des miettes à un adversaire dépassé par l'enjeu.", f: "Une victoire en mode rouleau compresseur. Elle n'a laissé que des miettes à un adversaire dépassé par l'enjeu.", si: "gagne" },
+    { r: "c", t: "Chifoumi champagne ce soir sur le central. Les séquences se sont enchaînées comme à l'entraînement, face à une main fantomatique." },
+    { r: "d", t: "Un premier set dominé de la tête et des épaules. Aucun répit pour son adversaire, qui doit à présent se ressaisir s'il veut exister à nouveau dans cette rencontre.", si: "gagne" },
+  ],
   resume_set: [
     { r: "c", t: "Set bouclé, et quelle bataille !" },
     { r: "c", t: "Un set maîtrisé de bout en bout !" },
@@ -915,12 +933,20 @@ export const MOMENTS = {
     { r: "d", t: "Ce soir, il n'y aura qu'un vainqueur. Et probablement un mauvais perdant." },
     { r: "d", t: "Deux joueurs, trois signes, un seul objectif : humilier son prochain." },
     { r: "d", t: "Ce soir, on ne règle pas ses comptes. On les découpe." },
+    { r: "c", t: "Les supporters adverses, qui ont fait le déplacement, font entendre leur voix. Un dispositif de sécurité renforcé a été déployé, et toutes les mains à l'effigie des Ciseaux ont été retirées." },   // (17 novembre, écrite par le porteur du projet)
+    { r: "c", t: "C'est l'heure de vérité pour les deux compétiteurs qui entrent en lice. On va voir si les séances vidéo, l'analyse des data et les gammes répétées tout au long de la semaine vont porter leurs fruits." },
   ],
-  avant_seul_grand: [{ r: "c", t: "Parfum de Ligue des champions ce soir !", clin: "sport" }],
+  avant_seul_grand: [
+    { r: "c", t: "Parfum de Ligue des champions ce soir !", clin: "sport" },
+    { r: "c", t: "La victoire ou la misère : pas d'autre alternative pour les deux mains qui rejoignent le central." },   // (17 novembre, écrite par le porteur du projet)
+    { r: "c", t: "Bienvenue pour notre match grand format. Le central est à guichet fermé, pour une rencontre au parfum de Ligue des champions.", clin: "sport" },
+    { r: "d", t: "Match sous haute tension. Les deux adversaires ont beaucoup à perdre. On risque d'assister à une entame très crispée, les deux mains ne voulant pas être poussées à la faute." },
+  ],
   avant_seul_revanche: [
     { r: "d", t: "Ils se connaissent par cœur. Malheureusement, ils se connaissent aussi les défauts." },
     { r: "d", t: "Une vieille rivalité, quelques rancœurs, et trois signes pour régler tout ça." },
     { r: "d", t: "Il paraît qu'ils ne s'apprécient guère. Heureusement, le chifoumi ne nécessite aucun dialogue." },
+    { r: "c", t: "Rencontre de gala ce soir sur le central, avec deux adversaires qui se connaissent parfaitement." },   // (17 novembre, écrite par le porteur du projet)
   ],
   avant_seul_amis: [
     { r: "c", t: "Amis dans la vie, ennemis dans l'arène ! Enfin, c'est ce qu'ils racontent avant le premier coup." },
