@@ -431,7 +431,14 @@ function finDeSet(match, evt, etat, ctx, rng) {
   const decisifEnSuite = match.sets[0] === match.format.setsGagnants - 1 && match.sets[1] === match.format.setsGagnants - 1;
   const ajoute = x => { if (x) Array.isArray(x) ? out.push(...x) : out.push(x); };
   const surLeFil = auPointDecisif && choisir(etat, "set_point_decisif", { ...ctx, quinze: haut === 15, gagne: evt.gagnant === 0 }, rng);
+  // La fin du premier set, selon l'écart (17 novembre, répliques du porteur du projet) : 3-4, 5-6, 7 et plus ; une fois sur deux.
+  // (le signe dit : celui du point qui donne le set, quel que soit le vainqueur)
+  const ecartSet = haut - bas, premierSet = match.scoresSets.length === 1 && match.format.setsGagnants > 1 && !court && !auPointDecisif;
+  const poolPremier = ecartSet >= 7 ? "premier_set_ecrase" : ecartSet >= 5 ? "premier_set_large" : ecartSet >= 3 ? "premier_set_net" : null;
+  const finPremier = premierSet && poolPremier && rng() < 0.5
+    && choisir(etat, poolPremier, { ...ctx, gagne: evt.gagnant === 0, signe: evt.gagnant === 0 ? ctx.signe : ctx.signeAdv }, rng);
   if (surLeFil) ajoute(surLeFil);
+  else if (finPremier) ajoute(finPremier);
   else if (!court) {
     // (à 5 points d'écart, seulement les répliques « net » : « Pas de chichifoumi », le coup du berger)
     if (haut - bas >= 5) ajoute(choisir(etat, "set_ecrasant", { ...ctx, onzeZero: haut === 11 && bas === 0, net5: haut - bas === 5, gagne: evt.gagnant === 0 }, rng));
