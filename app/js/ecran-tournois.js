@@ -409,15 +409,18 @@ export function installerTournois(ctx) {
     const cote = (j, gagne) => j
       ? `<div class="bp ${m.fin ? (gagne ? "win" : "lose") : ""}"><span class="mini">${avatarSVG(j.avatar || {})}</span><span class="bn">${esc(j.pseudo)}${j.id === uid ? " (toi)" : ""}</span></div>`
       : `<div class="bp lose"><span class="bn">${m.fin === "exempt" ? "—" : "?"}</span></div>`;
-    let score = "vs";
+    let score = "vs", plusieurs = false;
     if (m.fin === "score" && m.duel) {
-      const s = m.duel.sets, dans = m.duel.j0 === m.j0?.id ? s : [s[1], s[0]];
-      score = `${dans[0]}–${dans[1]}`;
+      // (17 novembre, demande du porteur du projet : le score des sets, « 11–7 », plutôt que « 1–0 » en sets ;
+      // en plusieurs sets, un set par ligne)
+      const sens = m.duel.j0 === m.j0?.id, ss = (m.duel.scores_sets || []).map(([x, y]) => (sens ? `${x}–${y}` : `${y}–${x}`));
+      if (ss.length) { score = ss.join("\n"); plusieurs = ss.length > 1; }
+      else { const s = m.duel.sets || [0, 0], dans = sens ? s : [s[1], s[0]]; score = `${dans[0]}–${dans[1]}`; }
     } else if (m.fin) score = texteFin(m.fin);
     else if (m.duel && ["presentation", "jeu", "entre_sets"].includes(m.duel.phase)) score = "en cours";
     const g0 = m.vainqueur && m.vainqueur === m.j0?.id, g1 = m.vainqueur && m.vainqueur === m.j1?.id;
     const mien = [m.j0?.id, m.j1?.id].includes(uid) ? " mine" : "";
-    return `<div class="bm${mien}">${cote(m.j0, g0)}<div class="bs">${esc(score)}</div>${cote(m.j1, g1).replace('class="bp', 'class="bp r')}</div>`;
+    return `<div class="bm${mien}">${cote(m.j0, g0)}<div class="bs${plusieurs ? " bs-sets" : ""}">${esc(score).replace(/\n/g, "<br>")}</div>${cote(m.j1, g1).replace('class="bp', 'class="bp r')}</div>`;
   }
 
   $("tActions").addEventListener("click", async e => {
