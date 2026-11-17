@@ -22,6 +22,8 @@ export function rejouerDuel(d) {
   // réussis ; les égalités du match et leur plus longue série.
   const points = [0, 0], serieJ = [0, 0], remonteeJ = [0, 0], smashsReussis = [0, 0], smashs = Array.isArray(d.smash) ? d.smash : [];
   let egalites = 0, egalitesDeSuite = 0, serieEgalites = 0;
+  // (18 novembre) la plus longue série de points gagnés d'affilée sans aucune égalité entre eux
+  const serieNetteJ = [0, 0]; let nette = { joueur: null, n: 0 };
   let pire = [0, 0];   // le plus gros retard de chacun dans le set en cours
   const finDuSet = (evt) => {
     if (!evt.finSet) return;
@@ -46,15 +48,17 @@ export function rejouerDuel(d) {
         courant = courant.joueur === e.gagnant ? { joueur: e.gagnant, n: courant.n + 1 } : { joueur: e.gagnant, n: 1 };
         if (courant.n > serie.n) serie = { ...courant };
         points[e.gagnant]++; serieJ[e.gagnant] = Math.max(serieJ[e.gagnant], courant.n); egalitesDeSuite = 0;
+        nette = nette.joueur === e.gagnant ? { joueur: e.gagnant, n: nette.n + 1 } : { joueur: e.gagnant, n: 1 };
+        serieNetteJ[e.gagnant] = Math.max(serieNetteJ[e.gagnant], nette.n);
         if (smashs[i]?.[e.gagnant]) smashsReussis[e.gagnant]++;
         if (avant?.type === "match" && e.gagnant !== avant.joueur) ballesSauvees[1 - avant.joueur]++;
-      } else { egalites++; egalitesDeSuite++; serieEgalites = Math.max(serieEgalites, egalitesDeSuite); }
+      } else { nette = { joueur: null, n: 0 }; egalites++; egalitesDeSuite++; serieEgalites = Math.max(serieEgalites, egalitesDeSuite); }
       apresPoint(); finDuSet(e);
     }
   } catch { /* un duel incohérent : on garde ce qu'on a pu rejouer */ }
   const v = d.vainqueur, tot = [0, 0];
   for (const [x, y] of d.scores_sets || []) { tot[0] += x; tot[1] += y; }
-  return { coups: g.length, serie, remontee, ballesSauvees, points, serieJ, remonteeJ, smashsReussis, egalites, serieEgalites, ecart: v === 0 || v === 1 ? tot[v] - tot[1 - v] : 0, perdus: v === 0 || v === 1 ? tot[1 - v] : 0 };
+  return { coups: g.length, serie, remontee, ballesSauvees, points, serieJ, serieNetteJ, remonteeJ, smashsReussis, egalites, serieEgalites, ecart: v === 0 || v === 1 ? tot[v] - tot[1 - v] : 0, perdus: v === 0 || v === 1 ? tot[1 - v] : 0 };
 }
 
 const idDe = (d, j) => (j === 0 ? d.j0 : d.j1);

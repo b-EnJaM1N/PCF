@@ -569,3 +569,25 @@ test("la leçon (6 points d'avance ou plus) et le temps additionnel (11 partout 
   }
   assert.ok(lecon > 10 && prolong > 5, `leçon ${lecon}, temps additionnel ${prolong}`);
 });
+
+test("la fin du premier set selon l'écart (3-4, 5-6, 7 et plus), dite parfois ; jamais à 2 points d'écart ni au 2e set", () => {
+  const de = (moment, l) => l.some(x => POOLS[moment].some(e => e.base === baseDe(x.id)));
+  const finSet = (moi, lui, sets = [0, 0], scoresSets = []) => {
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 });
+    for (let i = 0; i < 4; i++) jouerCoup(m, PIERRE, PIERRE);
+    Object.assign(m, { points: [10, lui], sets, scoresSets });
+    return m;
+  };
+  let vus = { premier_set_net: 0, premier_set_large: 0, premier_set_ecrase: 0 };
+  for (let k = 0; k < 60; k++) {
+    for (const [lui, pool] of [[7, "premier_set_net"], [5, "premier_set_large"], [2, "premier_set_ecrase"]]) {
+      const m = finSet(10, lui), a = annoncerCoup(m, jouerCoup(m, PIERRE, CISEAUX), nouvelEtatAnnonces(), {}, rngFixe(700 + k));
+      if (de(pool, a.lignes)) vus[pool]++;
+    }
+    const m2 = finSet(10, 9), a2 = annoncerCoup(m2, jouerCoup(m2, PIERRE, CISEAUX), nouvelEtatAnnonces(), {}, rngFixe(800 + k));
+    assert.ok(!["premier_set_net", "premier_set_large", "premier_set_ecrase"].some(p => de(p, a2.lignes)));
+    const m3 = finSet(10, 2, [1, 0], [[11, 5]]), a3 = annoncerCoup(m3, jouerCoup(m3, PIERRE, CISEAUX), nouvelEtatAnnonces(), {}, rngFixe(900 + k));
+    assert.ok(!["premier_set_net", "premier_set_large", "premier_set_ecrase"].some(p => de(p, a3.lignes)));
+  }
+  for (const n of Object.values(vus)) assert.ok(n > 10, JSON.stringify(vus));
+});
