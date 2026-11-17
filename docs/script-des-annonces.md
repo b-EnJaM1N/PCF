@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (839 répliques)
+## Commentateur — vif, enthousiaste, plein de références (855 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -423,6 +423,17 @@ restent lus par la voix de synthèse.
 | `commentateur_set_couteau_04.mp3` | Arrivée au sprint, et ça passe d'un boyau ! |
 | `commentateur_set_couteau_05.mp3` | Ça s'est joué à un souffle ! |
 | `commentateur_set_couteau_06.mp3` | Ça passe… et de justesse ! |
+| `commentateur_premier_set_net_01.mp3` | Un set bien maîtrisé. Son adversaire doit maintenant réagir. |
+| `commentateur_premier_set_net_02_pierre.mp3` | Ce premier set prend fin sur une Pierre bien sentie. La main adverse n'a pas su réellement l'inquiéter. |
+| `commentateur_premier_set_net_02_ciseaux.mp3` | Ce premier set prend fin sur des Ciseaux bien sentis. La main adverse n'a pas su réellement l'inquiéter. |
+| `commentateur_premier_set_net_02_feuille.mp3` | Ce premier set prend fin sur une Feuille bien sentie. La main adverse n'a pas su réellement l'inquiéter. |
+| `commentateur_premier_set_large_01.mp3` | Une victoire sans bavure, et une piètre prestation de la main adverse. Il faut se remobiliser, sans quoi la messe est dite. |
+| `commentateur_premier_set_large_02.mp3` | Entame de match parfaite. S'il reste en rythme pour le second set, la victoire ne lui échappera pas. |
+| `commentateur_premier_set_large_02_f.mp3` | Entame de match parfaite. Si elle reste en rythme pour le second set, la victoire ne lui échappera pas. |
+| `commentateur_premier_set_large_03.mp3` | Large sourire d'un côté et soupe à la grimace de l'autre. Il faudra montrer un autre visage pour rester au contact et renverser la vapeur. |
+| `commentateur_premier_set_ecrase_01.mp3` | Une victoire en mode rouleau compresseur. Il n'a laissé que des miettes à un adversaire dépassé par l'enjeu. |
+| `commentateur_premier_set_ecrase_01_f.mp3` | Une victoire en mode rouleau compresseur. Elle n'a laissé que des miettes à un adversaire dépassé par l'enjeu. |
+| `commentateur_premier_set_ecrase_02.mp3` | Chifoumi champagne ce soir sur le central. Les séquences se sont enchaînées comme à l'entraînement, face à une main fantomatique. |
 | `commentateur_resume_set_01.mp3` | Set bouclé, et quelle bataille ! |
 | `commentateur_resume_set_02.mp3` | Un set maîtrisé de bout en bout ! |
 | `commentateur_resume_set_03.mp3` | Un set partout, tout se jouera maintenant ! |
@@ -661,7 +672,12 @@ restent lus par la voix de synthèse.
 | `commentateur_avant_seul_02.mp3` | Les deux joueurs entrent dans l'arène. Pas un sourire. Pas un regard de trop. |
 | `commentateur_avant_seul_03.mp3` | Les mains sont prêtes, les esprits sont affûtés. Le spectacle peut commencer ! |
 | `commentateur_avant_seul_04.mp3` | La pression monte, les poignets sont chauds ! |
+| `commentateur_avant_seul_05.mp3` | Les supporters adverses, qui ont fait le déplacement, font entendre leur voix. Un dispositif de sécurité renforcé a été déployé, et toutes les mains à l'effigie des Ciseaux ont été retirées. |
+| `commentateur_avant_seul_06.mp3` | C'est l'heure de vérité pour les deux compétiteurs qui entrent en lice. On va voir si les séances vidéo, l'analyse des data et les gammes répétées tout au long de la semaine vont porter leurs fruits. |
 | `commentateur_avant_seul_grand_01.mp3` | Parfum de Ligue des champions ce soir ! |
+| `commentateur_avant_seul_grand_02.mp3` | La victoire ou la misère : pas d'autre alternative pour les deux mains qui rejoignent le central. |
+| `commentateur_avant_seul_grand_03.mp3` | Bienvenue pour notre match grand format. Le central est à guichet fermé, pour une rencontre au parfum de Ligue des champions. |
+| `commentateur_avant_seul_revanche_01.mp3` | Rencontre de gala ce soir sur le central, avec deux adversaires qui se connaissent parfaitement. |
 | `commentateur_avant_seul_amis_01.mp3` | Amis dans la vie, ennemis dans l'arène ! Enfin, c'est ce qu'ils racontent avant le premier coup. |
 | `commentateur_smash_reussi_01.mp3` | QUEL SMASH ! |
 | `commentateur_smash_reussi_02.mp3` | Il a tout mis dans ce coup ! |
@@ -962,7 +978,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (646 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (652 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1156,6 +1172,11 @@ restent lus par la voix de synthèse.
 | `commentatrice_set_couteau_03.mp3` | Personne ne méritait de le perdre. L'un des deux l'a quand même perdu. |
 | `commentatrice_set_couteau_04.mp3` | La goutte d'eau qui fait déborder la Feuille. |
 | `commentatrice_set_couteau_05.mp3` | Les deux méritaient. Un seul l'emporte. C'est le sport. |
+| `commentatrice_premier_set_net_01.mp3` | Il a assis sa victoire patiemment, sans laisser à son adversaire le temps d'installer sa riposte. |
+| `commentatrice_premier_set_net_01_f.mp3` | Elle a assis sa victoire patiemment, sans laisser à son adversaire le temps d'installer sa riposte. |
+| `commentatrice_premier_set_large_01.mp3` | Au terme de ce set, une classe d'écart semble séparer les deux mains. Il doit repenser complètement ses séquences et se montrer plus agressif dans les duels. |
+| `commentatrice_premier_set_large_01_f.mp3` | Au terme de ce set, une classe d'écart semble séparer les deux mains. Elle doit repenser complètement ses séquences et se montrer plus agressive dans les duels. |
+| `commentatrice_premier_set_ecrase_01.mp3` | Un premier set dominé de la tête et des épaules. Aucun répit pour son adversaire, qui doit à présent se ressaisir s'il veut exister à nouveau dans cette rencontre. |
 | `commentatrice_resume_set_01.mp3` | L'un a pris les commandes. À l'autre de réagir. S'il sait comment. |
 | `commentatrice_resume_set_02.mp3` | Il faudra changer de plan. Ou en avoir un. |
 | `commentatrice_resume_set_03.mp3` | Le rapport de force est clair. Pour l'instant. |
@@ -1331,6 +1352,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_avant_seul_01.mp3` | Ce soir, il n'y aura qu'un vainqueur. Et probablement un mauvais perdant. |
 | `commentatrice_avant_seul_02.mp3` | Deux joueurs, trois signes, un seul objectif : humilier son prochain. |
 | `commentatrice_avant_seul_03.mp3` | Ce soir, on ne règle pas ses comptes. On les découpe. |
+| `commentatrice_avant_seul_grand_01.mp3` | Match sous haute tension. Les deux adversaires ont beaucoup à perdre. On risque d'assister à une entame très crispée, les deux mains ne voulant pas être poussées à la faute. |
 | `commentatrice_avant_seul_revanche_01.mp3` | Ils se connaissent par cœur. Malheureusement, ils se connaissent aussi les défauts. |
 | `commentatrice_avant_seul_revanche_02.mp3` | Une vieille rivalité, quelques rancœurs, et trois signes pour régler tout ça. |
 | `commentatrice_avant_seul_revanche_03.mp3` | Il paraît qu'ils ne s'apprécient guère. Heureusement, le chifoumi ne nécessite aucun dialogue. |
