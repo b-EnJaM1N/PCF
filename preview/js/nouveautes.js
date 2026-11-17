@@ -27,7 +27,8 @@
 // (14 novembre, après midi : le classement interne du cercle, puis la page du cercle rangée, puis les records (Stats et records),
 // ouverts à tous, accord du porteur du projet.)
 // (15 novembre au soir : les routines d'entrée ouvertes à tous, accord du porteur du projet.)
-export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets", "dossard", "invitations", "classementCercle", "pageCercle", "records", "routines"]);
+// (17 novembre au soir : les records des face-à-face ouverts à tous, accord du porteur du projet.)
+export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets", "dossard", "invitations", "classementCercle", "pageCercle", "records", "routines", "recordsFaceAFace"]);
 
 export function versionDeTest(loc = typeof location !== "undefined" ? location : null) {
   if (!loc) return false;
