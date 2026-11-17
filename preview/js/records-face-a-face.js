@@ -41,6 +41,7 @@ export function recordsFaceAFace(duels, uid) {
       const jd = moi === 0 ? j : 1 - j;   // (j vu de moi → j du duel)
       garder(j, "points", tot[j]);
       garder(j, "serie", r.serieJ[jd]);
+      garder(j, "serie_nette", r.serieNetteJ[jd]);
       garder(j, "remontee", r.remonteeJ[jd]);
       garder(j, "balles", r.ballesSauvees[jd]);
       garder(j, "smashs", r.smashsReussis[jd]);
@@ -65,7 +66,7 @@ export function recordsFaceAFace(duels, uid) {
     if (r.serieEgalites && (!egalSerie || r.serieEgalites > egalSerie.n)) egalSerie = { n: r.serieEgalites, d };
   }
   for (const j of [0, 1]) if (tentes[j] >= SMASHS_MIN) max[j].taux = { v: Math.round(100 * reussis[j] / tentes[j]), t: `${Math.round(100 * reussis[j] / tentes[j])} % (${reussis[j]}/${tentes[j]})` };
-  const TITRES = [["points", "Le plus de points dans un match"], ["serie", "La plus longue série de points"], ["seche", "La victoire la plus sèche"],
+  const TITRES = [["points", "Le plus de points dans un match"], ["serie", "La plus longue série de points (égalités comprises)"], ["serie_nette", "La plus longue série de points sans égalité"], ["seche", "La victoire la plus sèche"],
     ["remontee", "La plus grosse remontée dans un set"], ["balles", "Le plus de balles de match sauvées"], ["smashs", "Le plus de smashs réussis dans un match"],
     ["taux", `Smashs réussis contre l'autre (dès ${SMASHS_MIN} tentés)`], ["victoires", "La plus longue série de victoires"],
     ["bulle", "Sets gagnés sans concéder un point"], ["decisifs", "Sets gagnés au point décisif"], ["renversements", "Matchs gagnés après avoir perdu le 1er set"]];
