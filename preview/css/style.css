@@ -314,7 +314,9 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .intro.show :is(.fo-key, #foMsg) { animation: fade .45s var(--fin, 3.2s) both; }
 /* Le bouton « Commencer » arrive juste après le VS (pas à la fin des statistiques) : il ne paraît pas grisé si longtemps. */
 .intro.show .fo-end { animation: fade .35s 1.2s both; }
-.intro.vite *, .intro.vite *::after { animation: none !important; }
+/* (17 novembre, remarque du porteur du projet : la fin de la présentation coupait aussi les routines d'entrée « salut », « shadow
+   boxing », « chut »… ; elles tournent maintenant en boucle jusqu'au début du match) */
+.intro.vite *:not([class*="routine-"]), .intro.vite *:not([class*="routine-"])::after { animation: none !important; }
 .intro.vite .fo-vs::after { display: none; }
 @keyframes tomber { from { transform: translateY(-30px); opacity: 0 } to { transform: none; opacity: 1 } }
 @keyframes entreeG { from { transform: translateX(-70px); opacity: 0 } to { transform: none; opacity: 1 } }
