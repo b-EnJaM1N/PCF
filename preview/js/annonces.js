@@ -5,7 +5,7 @@
 // (plus vite quand le match est chaud) et chaque commentaire la vide. Ils se taisent donc la
 // plupart du temps, et leurs dialogues sont réservés aux temps morts (fin de set, fin de match).
 // Ils parlent toujours du joueur côté jaune (celui qui tient le téléphone) : « il » ou « elle ».
-import { COTE, ecartRequis, pointDecisif, issueSmash, plafondSet, setDecisif } from "./regles.js";
+import { COTE, ecartRequis, pointDecisif, issueSmash, plafondSet, setDecisif, egaliteFinDeSet } from "./regles.js";
 import { lectureReussie, lectureRatee, indiceImprevisibilite } from "./analyse.js";
 import { nouveauFeu, noterFeu } from "./effets.js";
 import {
@@ -50,7 +50,7 @@ const CONDITIONS = {
   premier_point: c => c.premierPoint, depart_rate: c => c.departRate, kolodrov: c => c.kolodrov,
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, pile4: c => c.pile4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
   apres_egalites: c => c.apresEgalites, varie: c => c.varie, mene: c => c.mene,   // (5 novembre)
-  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, quatorze: c => c.quatorze, quinze: c => c.quinze, gagne: c => c.gagne, en_finale: (c, e) => enFinale(e), quatorze_finale: (c, e) => c.quatorze && enFinale(e), sans_set_perdu: c => c.sansSetPerdu, troisieme_set: c => c.troisiemeSet, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
+  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, quatorze: c => c.quatorze, quinze: c => c.quinze, gagne: c => c.gagne, perdu: c => c.gagne === false, trois_zero_debut: c => c.troisZeroDebut, en_finale: (c, e) => enFinale(e), quatorze_finale: (c, e) => c.quatorze && enFinale(e), sans_set_perdu: c => c.sansSetPerdu, troisieme_set: c => c.troisiemeSet, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
   // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
 };
@@ -231,8 +231,13 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       // (à 14 partout dans le set décisif, on vient toujours de sauver une balle de match : le point décisif passe d'abord,
       // toujours en finale, une fois sur deux sinon ; 16 novembre)
       const decisifFinal = !h && pointDecisif(match) && setDecisif(match) && (enFinale(etat) || rng() < 0.5);
+      // (11 partout ou plus, la première fois du set : on vient aussi de sauver ou de perdre une balle de set ; une fois sur deux,
+      // le temps additionnel passe d'abord ; 17 novembre)
+      const prolongations = !decisifFinal && egaliteFinDeSet(match) && a >= len && !etat.dejaSet.has("prolongations") && rng() < 0.5;
       if (decisifFinal) {
         moment = "point_decisif"; ctx.quatorze = a === 14;
+      } else if (prolongations) {
+        moment = "prolongations"; etat.dejaSet.add("prolongations");
       } else if (evt.balleAvant && evt.balleAvant.joueur !== g && peutCommenter(3, 0.5)) {
         moment = evt.balleAvant.joueur === 0 ? "craquage" : "balle_sauvee"; ctx.quand = evt.balleAvant.type;
         if (moment === "balle_sauvee" && evt.balleAvant.type === "match" && rng() < 0.5) moment = "main_legendaire";
@@ -272,8 +277,10 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
         moment = "tension"; ctx.balleContre = h.joueur === 1;
       } else if (!h && pointDecisif(match) && peutCommenter(3, 0.5) && rng() < 0.5) {
         moment = "point_decisif"; ctx.quatorze = a === 14;
-      } else if (g === 0 && !match.scoresSets.length && b === 0 && (a === 1 || a === 2) && decisifs.length === a && !etat.cueilliDit && n - etat.dernierCom >= 2 && rng() < 0.25) {
-        moment = "cueilli_a_froid"; etat.cueilliDit = true;   // (1 ou 2 points gagnés d'entrée de match)
+      } else if (g === 0 && !match.scoresSets.length && b === 0 && a >= 1 && a <= 3 && decisifs.length === a && !etat.cueilliDit && n - etat.dernierCom >= 2 && rng() < (a === 3 ? 0.5 : 0.25)) {
+        moment = "cueilli_a_froid"; etat.cueilliDit = true; ctx.troisZeroDebut = a === 3;   // (1, 2 ou 3 points gagnés d'entrée de match)
+      } else if (g === 0 && a - b >= 6 && !etat.dejaSet.has("lecon") && peutCommenter(3) && rng() < 0.6) {
+        moment = "lecon"; etat.dejaSet.add("lecon");   // (6 points d'avance ou plus dans le set : 17 novembre)
       } else if (seuilMT && a === b && a === seuilMT && !etat.dejaSet.has("money_time") && peutCommenter(2, 0.5) && rng() < 0.7) {
         moment = "money_time"; etat.dejaSet.add("money_time");
       } else if (seuilMT && g === 1 && a === seuilMT && b === seuilMT + 1 && peutCommenter(2, 0.5) && rng() < 0.6) {
@@ -427,7 +434,7 @@ function finDeSet(match, evt, etat, ctx, rng) {
   if (surLeFil) ajoute(surLeFil);
   else if (!court) {
     // (à 5 points d'écart, seulement les répliques « net » : « Pas de chichifoumi », le coup du berger)
-    if (haut - bas >= 5) ajoute(choisir(etat, "set_ecrasant", { ...ctx, onzeZero: haut === 11 && bas === 0, net5: haut - bas === 5 }, rng));
+    if (haut - bas >= 5) ajoute(choisir(etat, "set_ecrasant", { ...ctx, onzeZero: haut === 11 && bas === 0, net5: haut - bas === 5, gagne: evt.gagnant === 0 }, rng));
     else if (bas >= len - 1) ajoute(choisir(etat, "set_couteau", ctx, rng));
     else if (rng() < 0.5) ajoute(dialogue(etat, "fin_set", rng) || choisir(etat, "resume_set", ctx, rng));
     else ajoute(choisir(etat, "resume_set", { ...ctx, unPartout: match.sets[0] === 1 && match.sets[1] === 1 }, rng));
