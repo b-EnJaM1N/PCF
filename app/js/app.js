@@ -457,6 +457,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   S.suivi.figer();
   smash.forEach((x, j) => { if (x) noterSmash(m, j); });
   const setDuCoup = m.scoresSets.length, evt = jouerCoup(m, signe, signeAdv, auto);
+  if (smash[0] || smash[1]) m.coups[m.coups.length - 1].smash = [!!smash[0], !!smash[1]];   // (pour l'historique : le coup smashé entouré)
   // Les marques du smash gagnant sur la main de celui qui perd le point, jusqu'à la fin du set (12 novembre ; degats.js).
   const marque = noterDegats(S.degats ||= nouveauxDegats(), { set: setDuCoup, gagnant: evt.gagnant, signes: [signe, signeAdv], smashGagnant: issueSmash(smash, evt.gagnant) === "gagne" });
   // La main en feu (effets.js) : 4, 6, 8 points de suite ; une égalité baisse le feu, un point perdu l'éteint.
@@ -899,7 +900,9 @@ function renderHistorique() {
   const c = S.match.coups, debuts = new Set(S.match.debutsSet);
   const ligne = (cle, label) => `<tr><th>${esc(label)}</th>` + c.map((x, i) => {
     const cls = [classeCoup(x, cle), i > 0 && debuts.has(i) ? "newset" : "", cle === "a" && x.auto[0] ? "auto" : ""].join(" ").trim();
-    return `<td class="${cls}">${EMOJI[x[cle]]}</td>`;
+    // (18 novembre, demande du porteur du projet : un coup joué en smash est entouré)
+    const smash = x.smash?.[cle === "a" ? 0 : 1];
+    return `<td class="${cls}">${smash ? `<span class="coup-smash" title="Smash">${EMOJI[x[cle]]}</span>` : EMOJI[x[cle]]}</td>`;
   }).join("") + "</tr>";
   $("tape").innerHTML = `<table>${ligne("a", "Toi")}${ligne("b", OPP.nom)}</table>`;
   renderLectureAdversaire();

@@ -55,3 +55,10 @@ test("les records d'un face-à-face : les abandons comptent pour les séries de 
   assert.equal(r(rec, "points").valeurs[0], null);
   assert.equal(recordsFaceAFace([], MOI), null);
 });
+
+test("la série de points sans égalité : une égalité la coupe, pas la série habituelle", () => {
+  const d = duel(["00000=000000", "1" + "00000=000000"]);   // deux sets 11-0 et 11-1, une égalité au milieu de chacun
+  const rec = recordsFaceAFace([d], MOI);
+  assert.equal(r(rec, "serie").valeurs[0], 11);          // (5 + 6 : l'égalité ne coupe pas la série habituelle)
+  assert.equal(r(rec, "serie_nette").valeurs[0], 6);     // (elle coupe celle-ci)
+});
