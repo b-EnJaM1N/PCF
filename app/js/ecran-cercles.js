@@ -13,6 +13,7 @@ import { installerTournois } from "./ecran-tournois.js";
 import { fantomeVisible } from "./fantome.js";
 import { ouvert } from "./nouveautes.js";
 import { calculerRecords, htmlRecords } from "./records-cercle.js";
+import { recordsFaceAFace, recordsFaceAFaceVisibles } from "./records-face-a-face.js";
 import { filVisible, evenementsDuFil, evenementsChampionnat, evenementsDossard, scoreDuDuel, ilYA, REACTIONS } from "./fil-cercle.js";
 import { championDuCercle, texteInvitation, invitationsDuCercle } from "./tournoi-logique.js";
 import { profils } from "./duel-serveur.js";
@@ -28,14 +29,25 @@ const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 // Le bilan de nos duels avec un joueur (ami, ou adversaire en ligne touché dans « Derniers matchs »).
 // Avec des duels officiels et d'autres : deux onglets, « Tous les duels » et « Duels officiels » (sans script : deux boutons radio).
 let nFaceAFace = 0;
-export function renderFaceAFace(r, nom) {
+// duels, uid : nos duels, pour « 🏅 Nos records » (records-face-a-face.js ; version de test d'abord).
+export function renderFaceAFace(r, nom, { duels = null, uid = null } = {}) {
   if (!r.matchs) return `<p class="hint">Vous ne vous êtes encore jamais affrontés. Lance-lui un défi !</p>`;
+  const recs = duels && uid && recordsFaceAFaceVisibles() ? htmlRecordsFaceAFace(recordsFaceAFace(duels, uid), nom) : "";
   const o = r.officiel;
-  if (!o || !o.matchs || o.matchs === r.matchs) return corpsFaceAFace(r, nom);
+  if (!o || !o.matchs || o.matchs === r.matchs) return corpsFaceAFace(r, nom) + recs;
   const k = ++nFaceAFace;
   return `<div class="ff-choix"><input type="radio" name="ffc${k}" id="ffTous${k}" checked><label for="ffTous${k}">Tous les duels (${r.matchs})</label>`
     + `<input type="radio" name="ffc${k}" id="ffOff${k}"><label for="ffOff${k}">Duels officiels (${o.matchs})</label>`
-    + `<div class="ff-vue-tous">${corpsFaceAFace(r, nom)}</div><div class="ff-vue-off">${corpsFaceAFace(o, nom, true)}</div></div>`;
+    + `<div class="ff-vue-tous">${corpsFaceAFace(r, nom)}</div><div class="ff-vue-off">${corpsFaceAFace(o, nom, true)}</div></div>` + recs;
+}
+// « 🏅 Nos records » (17 novembre, idée du porteur du projet) : plié sous le bilan ; chaque record, ma valeur contre la sienne
+// (la meilleure en couleur), puis les records du face-à-face lui-même (le match le plus long, le plus serré…).
+export function htmlRecordsFaceAFace(rec, nom) {
+  if (!rec) return "";
+  const n = esc(nom);
+  const lignes = rec.lignes.map(l => `<div class="ff-ligne ff-rec"><b class="${l.mieux === 0 ? "ff-mieux" : ""}">${esc(l.textes[0])}</b><span>${esc(l.titre)}</span><b class="${l.mieux === 1 ? "ff-mieux" : ""}">${esc(l.textes[1])}</b></div>`).join("");
+  const partages = rec.partages.map(p => `<p class="ff-partage"><span>${esc(p.titre)}</span><b>${esc(p.texte).replace("{adv}", n)}</b></p>`).join("");
+  return `<details class="ff-records"><summary>🏅 Nos records</summary><div class="ff-ligne ff-rec ff-entete"><b>Toi</b><span></span><b>${n}</b></div>${lignes}${partages}</details>`;
 }
 // La forme : les 5 derniers duels (du plus ancien au plus récent), 🟩 gagné, 🟥 perdu, et la part de victoires (24 octobre).
 export function forme(derniers) {
@@ -247,7 +259,7 @@ export function installerCercles(ctx) {
     let duels = null;
     try {
       duels = await duelsAvec(id); const r = statsFaceAFace(duels, uid);
-      if (amiOuvert === id) $("aStats").innerHTML = renderFaceAFace(r, a.pseudo);
+      if (amiOuvert === id) $("aStats").innerHTML = renderFaceAFace(r, a.pseudo, { duels, uid });
     } catch { if (amiOuvert === id) $("aStats").innerHTML = `<p class="hint">Impossible de charger vos duels. Vérifie ta connexion.</p>`; }
     // Son dossier et l'historique des mains (contre toi, et tous ses matchs).
     const suite = await ctx.dossierEtMains?.(id, a.pseudo, duels);
