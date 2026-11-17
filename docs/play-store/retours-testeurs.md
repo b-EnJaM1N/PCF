@@ -19,6 +19,7 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 | 15 nov. | « Dans la boutique, quand on fait défiler, on ne voit plus son nombre de jetons. » (un testeur) | Les onglets de la boutique et le solde « 🪙 » restent collés en haut de l'écran pendant qu'on fait défiler | 15 nov. |
 | 15 nov. | « Laisser 1 ou 2 secondes de plus pour serrer la main. » (un testeur) | 5 secondes pour choisir sa poignée de main au lieu de 3 ; en duel, l'appli attend le choix de l'adversaire jusqu'à la fin de ses 5 secondes | 15 nov. |
 | 16 nov. | « Dans l'historique des coups, surligner en vert les coups gagnés et en rouge les coups perdus, pour voir tout de suite comment le match s'est passé. » (un testeur) | Chaque signe de l'historique (pendant le match, et dans les derniers matchs d'une fiche) : vert s'il a gagné le point, rouge s'il l'a perdu, gris clair pour une égalité | 16 nov. (version de test) |
+| 17 nov. | « Certaines routines d'entrée s'arrêtent au bout de quelques secondes, le shadow boxing par exemple, alors qu'elles devraient tourner jusqu'au début du match. » (un testeur) | La fin de la présentation coupait aussi les routines qui bougent d'un seul mouvement (salut, shadow boxing, « chut », la montre, Pierre-Feuille-Ciseaux en rafale) : toutes tournent maintenant en boucle jusqu'au début du match | 17 nov. (version de test) |
 
 ## Les mises à jour pendant le test prolongé
 
