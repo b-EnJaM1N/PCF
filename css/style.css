@@ -1185,3 +1185,11 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .coeur-bord.coeur-1 { --n: 1; } .coeur-bord.coeur-2 { --n: 2; } .coeur-bord.coeur-3 { --n: 3; } .coeur-bord.coeur-4 { --n: 4; } .coeur-bord.coeur-5 { --n: 4.5; }
 @keyframes coeur-bat { 0% { opacity: .35; } 8% { opacity: 1; } 22% { opacity: .55; } 30% { opacity: .9; } 100% { opacity: .35; } }
 @media (prefers-reduced-motion: reduce) { .coeur-bord.bat { animation: none; opacity: .6; } }
+/* « 🏅 Nos records » sous le bilan d'un face-à-face (17 novembre) : la meilleure valeur en couleur. */
+.ff-records { margin-top: 12px; }
+.ff-records > summary { cursor: pointer; font-weight: 700; padding: 8px 0; }
+.ff-ligne.ff-rec b { color: var(--line); font-weight: 600; }
+.ff-ligne.ff-rec b.ff-mieux { color: var(--me); font-weight: 800; }
+.ff-ligne.ff-rec.ff-entete b { color: var(--muted); font-size: .85rem; font-weight: 600; }
+.ff-partage { margin: 0; padding: 7px 0; border-top: 1px solid rgba(255, 255, 255, .1); font-size: .9rem; }
+.ff-partage span { display: block; color: var(--muted); font-size: .8rem; } .ff-partage b { display: block; }
