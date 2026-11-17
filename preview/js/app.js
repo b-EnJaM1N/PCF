@@ -1380,7 +1380,7 @@ async function ouvrirFicheAdv(id, nom, { jouer = true } = {}) {
     $("faCorps").innerHTML = moi ? `<p class="hint">Chargement…</p>` : local;
     if (moi) {
       let duels = null;
-      try { duels = await duelsAvec(uid); const r = statsFaceAFace(duels, moi); if (demande === ficheDemande) $("faCorps").innerHTML = r.matchs ? renderFaceAFace(r, court) : local; }
+      try { duels = await duelsAvec(uid); const r = statsFaceAFace(duels, moi); if (demande === ficheDemande) $("faCorps").innerHTML = r.matchs ? renderFaceAFace(r, court, { duels, uid: moi }) : local; }
       catch { if (demande === ficheDemande) $("faCorps").innerHTML = local + `<p class="hint">Le détail de vos duels n'a pas pu être chargé. Vérifie ta connexion.</p>`; }
       const suite = await dossierEtMains(uid, court, duels, /🤖/.test(nom) ? null : undefined);
       if (demande === ficheDemande) $("faCorps").insertAdjacentHTML("beforeend", suite);

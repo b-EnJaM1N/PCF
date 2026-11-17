@@ -40,7 +40,7 @@ export const mesDuels = () => essayer(async () => verifier(await client().from("
 
 // Tous mes duels terminés contre un joueur (la base ne renvoie que ceux qui me concernent).
 export const duelsAvec = adv => essayer(async () => verifier(await client().from("duels")
-  .select("j0, j1, vainqueur, fin, scores_sets, coups, classe, rapide, tournoi_id, maj_le")
+  .select("j0, j1, vainqueur, fin, scores_sets, coups, classe, rapide, tournoi_id, maj_le, points_par_set, sets_gagnants, penalites")
   .eq("phase", "termine").or(`j0.eq.${adv},j1.eq.${adv}`).order("maj_le", { ascending: false }).limit(300)));
 
 // Mes duels terminés des 30 derniers jours (seulement les deux joueurs) : pour mettre en tête de « Mes amis » ceux avec qui je joue le plus.
