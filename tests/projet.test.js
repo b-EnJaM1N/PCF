@@ -57,3 +57,10 @@ test("le plan du site (sitemap.xml) liste chaque page publique (sans « noindex 
     assert.ok(plan.includes(`https://handslam.fr/${f === "index.html" ? "" : f}<`), `à ajouter dans sitemap.xml : ${f}`);
   }
 });
+
+// (17 novembre : deux « tMsg » dans la page ; les messages de la page d'un tournoi allaient dans l'écran du HandSlam Open, caché)
+test("chaque identifiant n'apparaît qu'une fois dans index.html", () => {
+  const html = readFileSync(join(APP, "index.html"), "utf8"), vus = new Map();
+  for (const [, id] of html.matchAll(/\sid="([^"]+)"/g)) vus.set(id, (vus.get(id) || 0) + 1);
+  assert.deepEqual([...vus].filter(([, n]) => n > 1).map(([id]) => id), []);
+});
