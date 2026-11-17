@@ -75,12 +75,18 @@ export function recordsFaceAFace(duels, uid) {
     return { cle, titre, valeurs, textes, mieux: a === b ? null : a > b ? 0 : 1 };
   });
   const premier = tries[0], qui = j => (j === 0 ? "toi" : "{adv}");   // ({adv} : son pseudo, mis à l'affichage)
+  // (17 novembre, demande du porteur du projet : avec le score, vu du vainqueur)
+  function premierTexte() {
+    const v = premier.vainqueur, sc = (premier.scores_sets || []).map(([x, y]) => (v === 0 ? `${x}–${y}` : `${y}–${x}`)).join(", ");
+    const fin = premier.fin === "abandon" ? " (abandon)" : premier.fin === "forfait" ? " (forfait)" : "";
+    return `${sc ? `${sc}${fin} · ` : ""}gagné par ${qui(maPlace(premier, uid) === v ? 0 : 1)} · ${date(premier)}`;
+  }
   const partages = [
     long && { cle: "long", titre: "Le match le plus long", texte: `${long.n} coups · ${date(long.d)}` },
     serre && { cle: "serre", titre: "Le match le plus serré", texte: `${serre.score} · gagné par ${qui(serre.g)} · ${date(serre.d)}` },
     egal && { cle: "egalites", titre: "Le plus d'égalités dans un match", texte: `${egal.n} · ${date(egal.d)}` },
     egalSerie && { cle: "egalites_serie", titre: "La plus longue série d'égalités", texte: `${egalSerie.n} d'affilée · ${date(egalSerie.d)}` },
-    { cle: "premier", titre: "Votre premier match", texte: `${date(premier)} · gagné par ${qui(maPlace(premier, uid) === premier.vainqueur ? 0 : 1)}` },
+    { cle: "premier", titre: "Votre premier match", texte: premierTexte() },
   ].filter(Boolean);
   return { lignes, partages };
 }

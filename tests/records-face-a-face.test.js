@@ -41,7 +41,7 @@ test("les records d'un face-à-face, vus de mon côté (que je sois j0 ou j1)", 
   assert.equal(p(rec, "egalites").texte.split(" ")[0], "7");   // (2 + 5 dans le même match)
   assert.equal(p(rec, "egalites_serie").texte.split(" ")[0], "5");
   assert.match(p(rec, "serre").texte, /^0–11, 11–8, 15–14 · gagné par toi/);
-  assert.match(p(rec, "premier").texte, /gagné par toi/);
+  assert.match(p(rec, "premier").texte, /^11–0, 11–0 · gagné par toi · /);
   assert.match(htmlRecordsFaceAFace(rec, "Emi"), /Nos records/);
   assert.match(p(rec, "egalites").texte, /^7/);
   assert.match(htmlRecordsFaceAFace({ lignes: [], partages: [{ cle: "x", titre: "t", texte: "gagné par {adv}" }] }, "Emi"), /gagné par Emi/);
