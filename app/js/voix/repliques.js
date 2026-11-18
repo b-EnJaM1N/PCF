@@ -812,6 +812,25 @@ export const MOMENTS = {
     { r: "c", t: "Attention, on revoit l'action !" },
     { r: "d", t: "Revoyons les images. Calmement." },
     { r: "d", t: "Au ralenti, c'est encore plus clair." },
+    { r: "c", t: "Attention, ça va repasser au ralenti !" },   // (18 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Revivons ce moment ensemble !" },
+    { r: "c", t: "On rembobine ! Regardez bien !" },
+  ],
+  // Les temps forts de fin de match : Roland annonce chaque action (18 novembre, répliques choisies par le porteur du projet).
+  replay_debut: [
+    { r: "c", t: "On revoit les moments forts de ce match ! D'abord, celui-ci !" },
+    { r: "c", t: "Les temps forts de ce match ! On commence par ce coup-là !" },
+    { r: "c", t: "Revivons les grands moments de ce match ! Le premier…" },
+  ],
+  replay_ensuite: [
+    { r: "c", t: "Ensuite, il y a eu ce coup !" },
+    { r: "c", t: "Et puis, il y a eu ce moment-là !" },
+    { r: "c", t: "Un peu plus tard, regardez bien !" },
+  ],
+  replay_enfin: [
+    { r: "c", t: "Et enfin, on revoit ce coup !" },
+    { r: "c", t: "Et pour finir, le moment que tout le monde attendait !" },
+    { r: "c", t: "Enfin, le dernier temps fort de ce match !" },
   ],
   replay_sauvee: [
     { r: "c", t: "Regardez ce sang-froid ! Il était au bord du gouffre !", f: "Regardez ce sang-froid ! Elle était au bord du gouffre !" },
@@ -848,6 +867,8 @@ export const MOMENTS = {
   replay_palette_propre: [
     { r: "d", t: "Il casse sa propre habitude au bon moment. Très propre.", f: "Elle casse sa propre habitude au bon moment. Très propre." },
     { r: "d", t: "Il casse son propre rythme juste quand il fallait. Rien à redire.", f: "Elle casse son propre rythme juste quand il fallait. Rien à redire." },   // (18 novembre)
+    { r: "d", t: "Il a changé au bon moment. C'est tout un art.", f: "Elle a changé au bon moment. C'est tout un art." },   // (18 novembre, choisie par le porteur du projet)
+    { r: "d", t: "L'habitude, il l'a créée exprès. Pour mieux la casser.", f: "L'habitude, elle l'a créée exprès. Pour mieux la casser." },
   ],
   replay_palette_mauvais: [
     { r: "d", t: "Il rejoue la même chose. On ne peut pas faire ça à ce niveau.", f: "Elle rejoue la même chose. On ne peut pas faire ça à ce niveau." },
@@ -855,10 +876,20 @@ export const MOMENTS = {
     { r: "d", t: "Il a joué ce que tout le monde attendait. Son adversaire le premier.", f: "Elle a joué ce que tout le monde attendait. Son adversaire le premier." },
     { r: "d", t: "Une fois, c'est une idée. Trois fois, c'est une habitude. Et l'adversaire l'a vue." },
   ],
+  // « Le jeu n'était pas là » : le perdant du point a pris la mauvaise décision (18 novembre, précision du porteur du projet : pas
+  // un pari réussi). « Il » : celui qui a perdu le point ; le signe : celui qu'il a joué. (Les répliques « pari » d'avant sont
+  // retirées : trois sont reprises pendant le match, dans apres_egalites_gagne ; les deux autres sont mises de côté.)
   replay_palette_pas_la: [
-    { r: "d", t: "Honnêtement ? Il n'y avait rien à lire. Il a eu raison d'oser.", f: "Honnêtement ? Il n'y avait rien à lire. Elle a eu raison d'oser." },
-    { r: "d", t: "Pas de lecture possible ici. Il a tenté sa chance, et ça a souri.", f: "Pas de lecture possible ici. Elle a tenté sa chance, et ça a souri." },   // (18 novembre)
-    { r: "d", t: "Rien sur la palette. Il fallait de l'instinct, il en avait.", f: "Rien sur la palette. Il fallait de l'instinct, elle en avait." },
+    { r: "d", t: "Honnêtement ? Il n'y avait rien à lire. Il a eu raison d'oser.", f: "Honnêtement ? Il n'y avait rien à lire. Elle a eu raison d'oser.", retiree: true },
+    { r: "d", t: "Pas de lecture possible ici. Il a tenté sa chance, et ça a souri.", f: "Pas de lecture possible ici. Elle a tenté sa chance, et ça a souri.", retiree: true },
+    { r: "d", t: "Rien sur la palette. Il fallait de l'instinct, il en avait.", f: "Rien sur la palette. Il fallait de l'instinct, elle en avait.", retiree: true },
+    { r: "d", t: "Un pari. Réussi, mais un pari.", retiree: true },
+    { r: "d", t: "Il n'y avait rien à voir. Il a joué quand même.", f: "Il n'y avait rien à voir. Elle a joué quand même.", retiree: true },
+    { r: "d", t: "Le jeu n'était pas là. Tout indiquait un autre signe." },   // (18 novembre, choisies par le porteur du projet)
+    { r: "d", t: "Il a joué ce qu'il avait envie de jouer. Pas ce que le match demandait.", f: "Elle a joué ce qu'elle avait envie de jouer. Pas ce que le match demandait." },
+    { r: "d", t: ["La Pierre, ici ? Non. Le jeu n'était clairement pas là.", "Les Ciseaux, ici ? Non. Le jeu n'était clairement pas là.", "La Feuille, ici ? Non. Le jeu n'était clairement pas là."] },
+    { r: "d", t: "Il s'est entêté. Le bon coup était sous ses yeux.", f: "Elle s'est entêtée. Le bon coup était sous ses yeux." },
+    { r: "d", t: "Une décision difficile à défendre. Même pour moi." },
   ],
   // La palette du replay (18 novembre, répliques choisies par le porteur du projet). Roland décrit l'action au dévoilement
   // (replay_r_…, à la place de la réplique habituelle du replay), Monique donne le verdict (replay_palette_…).
@@ -880,18 +911,46 @@ export const MOMENTS = {
   ],
   replay_r_pertinent: [
     { r: "c", t: "Oh, regardez : il avait repéré l'habitude, et il a frappé au bon moment !", f: "Oh, regardez : elle avait repéré l'habitude, et elle a frappé au bon moment !" },
+    { r: "c", t: "Il l'avait vu venir de loin ! Lecture parfaite !", f: "Elle l'avait vu venir de loin ! Lecture parfaite !" },   // (18 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Ah, regardez-moi ça ! Il a lu dans son jeu comme dans un livre ouvert !", f: "Ah, regardez-moi ça ! Elle a lu dans son jeu comme dans un livre ouvert !" },
+    { r: "c", t: "Et voilà le travail ! Il attendait ce moment depuis trois coups !", f: "Et voilà le travail ! Elle attendait ce moment depuis trois coups !" },
+    { r: "c", t: "Oh, la patience ! Il a attendu, attendu… et paf !", f: "Oh, la patience ! Elle a attendu, attendu… et paf !" },
   ],
   replay_r_propre: [
     { r: "c", t: "Et là, il change tout ! L'adversaire attendait encore la même chose !", f: "Et là, elle change tout ! L'adversaire attendait encore la même chose !" },
+    { r: "c", t: "Et là, surprise ! Personne ne s'y attendait !" },   // (18 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Oh, le changement de rythme ! L'adversaire est pris à contre-pied !" },
+    { r: "c", t: "Ah, il a senti le moment ! Il change, et ça paie !", f: "Ah, elle a senti le moment ! Elle change, et ça paie !" },
+    { r: "c", t: "Il casse la routine au moment parfait ! Superbe !", f: "Elle casse la routine au moment parfait ! Superbe !" },
   ],
   replay_r_mauvais: [
     { r: "c", t: "Oula… Il retombe dans ses travers, et ça se paie cash !", f: "Oula… Elle retombe dans ses travers, et ça se paie cash !" },
+    { r: "c", t: "Aïe… Encore le même signe ! L'adversaire n'attendait que ça !" },   // (18 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Oula, il s'est fait cueillir ! Trop prévisible !", f: "Oula, elle s'est fait cueillir ! Trop prévisible !" },
+    { r: "c", t: "Oh non… Il a répété une fois de trop !", f: "Oh non… Elle a répété une fois de trop !" },
+    { r: "c", t: "Et voilà le prix de l'habitude ! Ça ne pardonne pas !" },
   ],
   replay_r_smash: [
     { r: "c", t: "Ce smash, c'est un message : le patron, c'est moi !" },
+    { r: "c", t: "Revoyez-moi cette frappe ! Ça fait mal rien qu'à regarder !" },   // (18 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Oh, le smash ! Au ralenti, c'est encore plus violent !" },
+    { r: "c", t: "Quel coup de massue ! L'adversaire n'a rien vu venir !" },
   ],
   replay_r_smash_subi: [
     { r: "c", t: "Oula, il l'a pris en pleine figure, ce smash !", f: "Oula, elle l'a pris en pleine figure, ce smash !" },
+    { r: "c", t: "Aïe, aïe, aïe ! Regardez ses doigts, il ne s'en remettra pas !", f: "Aïe, aïe, aïe ! Regardez ses doigts, elle ne s'en remettra pas !" },   // (18 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Oula, ce smash, il va le sentir encore demain !", f: "Oula, ce smash, elle va le sentir encore demain !" },
+    { r: "c", t: "Il a encaissé… et il n'a jamais vraiment récupéré !", f: "Elle a encaissé… et elle n'a jamais vraiment récupéré !" },
+  ],
+  replay_r_pas_la: [   // le mauvais choix (voir replay_palette_pas_la ; les trois « pari » sont reprises dans apres_egalites_gagne)
+    { r: "c", t: "Un pari ! Un pur pari ! Et ça passe !", retiree: true },
+    { r: "c", t: "Rien à lire, tout à risquer ! Et il ose !", f: "Rien à lire, tout à risquer ! Et elle ose !", retiree: true },
+    { r: "c", t: "Ah, à pile ou face, et il tombe du bon côté !", f: "Ah, à pile ou face, et elle tombe du bon côté !", retiree: true },
+    { r: "c", t: "Oh là là, mauvais choix ! Il ne fallait pas faire ça !" },   // (18 novembre, choisies par le porteur du projet)
+    { r: "c", t: "Oula, c'était évident ! Il ne fallait surtout pas jouer ce coup-là !" },
+    { r: "c", t: "Aïe, aïe, aïe… La mauvaise décision au pire moment !" },
+    { r: "c", t: "Mais qu'est-ce qu'il a fait ? Tout le monde l'avait vu venir, sauf lui !", f: "Mais qu'est-ce qu'elle a fait ? Tout le monde l'avait vu venir, sauf elle !" },
+    { r: "c", t: ["Oh non, pas la Pierre ! Pas là !", "Oh non, pas les Ciseaux ! Pas là !", "Oh non, pas la Feuille ! Pas là !"] },
   ],
   replay_palette_piege: [
     { r: "d", t: "Il l'a amené exactement où il voulait.", f: "Elle l'a amené exactement où elle voulait." },
@@ -910,6 +969,7 @@ export const MOMENTS = {
   replay_palette_smash_subi: [
     { r: "d", t: "Il a été marqué par ce smash. Il ne s'en est jamais vraiment remis.", f: "Elle a été marquée par ce smash. Elle ne s'en est jamais vraiment remise." },
     { r: "d", t: "Après ça, il a joué avec la peur au ventre. Et ça s'est vu.", f: "Après ça, elle a joué avec la peur au ventre. Et ça s'est vu." },
+    { r: "d", t: "Ce smash-là, ses doigts s'en souviendront." },   // (18 novembre, choisie par le porteur du projet)
   ],
   // La série en cours dans leurs face-à-face (3 novembre, répliques validées par le porteur du projet) : victoires d'affilée
   // (« il » : le joueur qui enchaîne) et défaites d'affilée (« il » : le joueur qui les subit), à 3, 4, 5 et plus.
@@ -1021,6 +1081,13 @@ export const MOMENTS = {
     { r: "d", t: "Il fallait bien que quelqu'un change d'avis. Ce fut lui.", f: "Il fallait bien que quelqu'un change d'avis. Ce fut elle." },
     { r: "c", t: "Après la guerre des nerfs, la délivrance !" },
     { r: "d", t: "La patience paie. Parfois. Là, oui." },
+    // (18 novembre : les répliques « pari » du replay, reprises ici, enregistrements compris ; demande du porteur du projet)
+    { r: "c", t: "Un pari ! Un pur pari ! Et ça passe !" },
+    { r: "c", t: "Rien à lire, tout à risquer ! Et il ose !", f: "Rien à lire, tout à risquer ! Et elle ose !" },
+    { r: "c", t: "Ah, à pile ou face, et il tombe du bon côté !", f: "Ah, à pile ou face, et elle tombe du bon côté !" },
+    { r: "d", t: "Un pari. Réussi, mais un pari." },
+    { r: "d", t: "Il n'y avait rien à voir. Il a joué quand même.", f: "Il n'y avait rien à voir. Elle a joué quand même." },
+    { r: "d", t: "Honnêtement ? Il n'y avait rien à lire. Il a eu raison d'oser.", f: "Honnêtement ? Il n'y avait rien à lire. Elle a eu raison d'oser." },
   ],
   apres_egalites_perdu: [
     { r: "c", t: "Oh, la feinte de la feinte de la feinte… ça a failli passer !" },

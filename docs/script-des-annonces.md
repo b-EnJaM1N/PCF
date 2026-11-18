@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1122 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1176 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -617,6 +617,18 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_intro_01.mp3` | Revoyons ça ! |
 | `commentateur_replay_intro_02.mp3` | On le revoit au ralenti… Regardez-moi ça ! |
 | `commentateur_replay_intro_03.mp3` | Attention, on revoit l'action ! |
+| `commentateur_replay_intro_04.mp3` | Attention, ça va repasser au ralenti ! |
+| `commentateur_replay_intro_05.mp3` | Revivons ce moment ensemble ! |
+| `commentateur_replay_intro_06.mp3` | On rembobine ! Regardez bien ! |
+| `commentateur_replay_debut_01.mp3` | On revoit les moments forts de ce match ! D'abord, celui-ci ! |
+| `commentateur_replay_debut_02.mp3` | Les temps forts de ce match ! On commence par ce coup-là ! |
+| `commentateur_replay_debut_03.mp3` | Revivons les grands moments de ce match ! Le premier… |
+| `commentateur_replay_ensuite_01.mp3` | Ensuite, il y a eu ce coup ! |
+| `commentateur_replay_ensuite_02.mp3` | Et puis, il y a eu ce moment-là ! |
+| `commentateur_replay_ensuite_03.mp3` | Un peu plus tard, regardez bien ! |
+| `commentateur_replay_enfin_01.mp3` | Et enfin, on revoit ce coup ! |
+| `commentateur_replay_enfin_02.mp3` | Et pour finir, le moment que tout le monde attendait ! |
+| `commentateur_replay_enfin_03.mp3` | Enfin, le dernier temps fort de ce match ! |
 | `commentateur_replay_sauvee_01.mp3` | Regardez ce sang-froid ! Il était au bord du gouffre ! |
 | `commentateur_replay_sauvee_01_f.mp3` | Regardez ce sang-froid ! Elle était au bord du gouffre ! |
 | `commentateur_replay_sauvee_02.mp3` | On revoit la balle sauvée ! Quel sang-froid ! |
@@ -648,13 +660,50 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_r_piege_12.mp3` | Regardez bien : Feuille, Feuille, Feuille… et là, les Ciseaux ! L'adversaire n'a rien vu venir ! |
 | `commentateur_replay_r_pertinent_01.mp3` | Oh, regardez : il avait repéré l'habitude, et il a frappé au bon moment ! |
 | `commentateur_replay_r_pertinent_01_f.mp3` | Oh, regardez : elle avait repéré l'habitude, et elle a frappé au bon moment ! |
+| `commentateur_replay_r_pertinent_02.mp3` | Il l'avait vu venir de loin ! Lecture parfaite ! |
+| `commentateur_replay_r_pertinent_02_f.mp3` | Elle l'avait vu venir de loin ! Lecture parfaite ! |
+| `commentateur_replay_r_pertinent_03.mp3` | Ah, regardez-moi ça ! Il a lu dans son jeu comme dans un livre ouvert ! |
+| `commentateur_replay_r_pertinent_03_f.mp3` | Ah, regardez-moi ça ! Elle a lu dans son jeu comme dans un livre ouvert ! |
+| `commentateur_replay_r_pertinent_04.mp3` | Et voilà le travail ! Il attendait ce moment depuis trois coups ! |
+| `commentateur_replay_r_pertinent_04_f.mp3` | Et voilà le travail ! Elle attendait ce moment depuis trois coups ! |
+| `commentateur_replay_r_pertinent_05.mp3` | Oh, la patience ! Il a attendu, attendu… et paf ! |
+| `commentateur_replay_r_pertinent_05_f.mp3` | Oh, la patience ! Elle a attendu, attendu… et paf ! |
 | `commentateur_replay_r_propre_01.mp3` | Et là, il change tout ! L'adversaire attendait encore la même chose ! |
 | `commentateur_replay_r_propre_01_f.mp3` | Et là, elle change tout ! L'adversaire attendait encore la même chose ! |
+| `commentateur_replay_r_propre_02.mp3` | Et là, surprise ! Personne ne s'y attendait ! |
+| `commentateur_replay_r_propre_03.mp3` | Oh, le changement de rythme ! L'adversaire est pris à contre-pied ! |
+| `commentateur_replay_r_propre_04.mp3` | Ah, il a senti le moment ! Il change, et ça paie ! |
+| `commentateur_replay_r_propre_04_f.mp3` | Ah, elle a senti le moment ! Elle change, et ça paie ! |
+| `commentateur_replay_r_propre_05.mp3` | Il casse la routine au moment parfait ! Superbe ! |
+| `commentateur_replay_r_propre_05_f.mp3` | Elle casse la routine au moment parfait ! Superbe ! |
 | `commentateur_replay_r_mauvais_01.mp3` | Oula… Il retombe dans ses travers, et ça se paie cash ! |
 | `commentateur_replay_r_mauvais_01_f.mp3` | Oula… Elle retombe dans ses travers, et ça se paie cash ! |
+| `commentateur_replay_r_mauvais_02.mp3` | Aïe… Encore le même signe ! L'adversaire n'attendait que ça ! |
+| `commentateur_replay_r_mauvais_03.mp3` | Oula, il s'est fait cueillir ! Trop prévisible ! |
+| `commentateur_replay_r_mauvais_03_f.mp3` | Oula, elle s'est fait cueillir ! Trop prévisible ! |
+| `commentateur_replay_r_mauvais_04.mp3` | Oh non… Il a répété une fois de trop ! |
+| `commentateur_replay_r_mauvais_04_f.mp3` | Oh non… Elle a répété une fois de trop ! |
+| `commentateur_replay_r_mauvais_05.mp3` | Et voilà le prix de l'habitude ! Ça ne pardonne pas ! |
 | `commentateur_replay_r_smash_01.mp3` | Ce smash, c'est un message : le patron, c'est moi ! |
+| `commentateur_replay_r_smash_02.mp3` | Revoyez-moi cette frappe ! Ça fait mal rien qu'à regarder ! |
+| `commentateur_replay_r_smash_03.mp3` | Oh, le smash ! Au ralenti, c'est encore plus violent ! |
+| `commentateur_replay_r_smash_04.mp3` | Quel coup de massue ! L'adversaire n'a rien vu venir ! |
 | `commentateur_replay_r_smash_subi_01.mp3` | Oula, il l'a pris en pleine figure, ce smash ! |
 | `commentateur_replay_r_smash_subi_01_f.mp3` | Oula, elle l'a pris en pleine figure, ce smash ! |
+| `commentateur_replay_r_smash_subi_02.mp3` | Aïe, aïe, aïe ! Regardez ses doigts, il ne s'en remettra pas ! |
+| `commentateur_replay_r_smash_subi_02_f.mp3` | Aïe, aïe, aïe ! Regardez ses doigts, elle ne s'en remettra pas ! |
+| `commentateur_replay_r_smash_subi_03.mp3` | Oula, ce smash, il va le sentir encore demain ! |
+| `commentateur_replay_r_smash_subi_03_f.mp3` | Oula, ce smash, elle va le sentir encore demain ! |
+| `commentateur_replay_r_smash_subi_04.mp3` | Il a encaissé… et il n'a jamais vraiment récupéré ! |
+| `commentateur_replay_r_smash_subi_04_f.mp3` | Elle a encaissé… et elle n'a jamais vraiment récupéré ! |
+| `commentateur_replay_r_pas_la_04.mp3` | Oh là là, mauvais choix ! Il ne fallait pas faire ça ! |
+| `commentateur_replay_r_pas_la_05.mp3` | Oula, c'était évident ! Il ne fallait surtout pas jouer ce coup-là ! |
+| `commentateur_replay_r_pas_la_06.mp3` | Aïe, aïe, aïe… La mauvaise décision au pire moment ! |
+| `commentateur_replay_r_pas_la_07.mp3` | Mais qu'est-ce qu'il a fait ? Tout le monde l'avait vu venir, sauf lui ! |
+| `commentateur_replay_r_pas_la_07_f.mp3` | Mais qu'est-ce qu'elle a fait ? Tout le monde l'avait vu venir, sauf elle ! |
+| `commentateur_replay_r_pas_la_08_pierre.mp3` | Oh non, pas la Pierre ! Pas là ! |
+| `commentateur_replay_r_pas_la_08_ciseaux.mp3` | Oh non, pas les Ciseaux ! Pas là ! |
+| `commentateur_replay_r_pas_la_08_feuille.mp3` | Oh non, pas la Feuille ! Pas là ! |
 | `commentateur_memoire_serie_3_01.mp3` | Trois victoires de suite ! Il arrive en confiance ! |
 | `commentateur_memoire_serie_3_01_f.mp3` | Trois victoires de suite ! Elle arrive en confiance ! |
 | `commentateur_memoire_serie_4_01.mp3` | Quatre victoires d'affilée ! Qui va enfin l'arrêter ? |
@@ -710,6 +759,11 @@ restent lus par la voix de synthèse.
 | `commentateur_apres_egalites_gagne_04_f.mp3` | Elle a lu dans ses pensées ! |
 | `commentateur_apres_egalites_gagne_05.mp3` | Ah, enfin ! Le verrou saute ! |
 | `commentateur_apres_egalites_gagne_06.mp3` | Après la guerre des nerfs, la délivrance ! |
+| `commentateur_apres_egalites_gagne_07.mp3` | Un pari ! Un pur pari ! Et ça passe ! |
+| `commentateur_apres_egalites_gagne_08.mp3` | Rien à lire, tout à risquer ! Et il ose ! |
+| `commentateur_apres_egalites_gagne_08_f.mp3` | Rien à lire, tout à risquer ! Et elle ose ! |
+| `commentateur_apres_egalites_gagne_09.mp3` | Ah, à pile ou face, et il tombe du bon côté ! |
+| `commentateur_apres_egalites_gagne_09_f.mp3` | Ah, à pile ou face, et elle tombe du bon côté ! |
 | `commentateur_apres_egalites_perdu_01.mp3` | Oh, la feinte de la feinte de la feinte… ça a failli passer ! |
 | `commentateur_apres_egalites_perdu_02.mp3` | Le duel d'esprits a tourné court ! |
 | `commentateur_apres_egalites_perdu_03.mp3` | Oula, il a craqué le premier ! |
@@ -1245,7 +1299,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_06.mp3` | Il exulte ! |
 | `commentateur_dialogue_cri_06_f.mp3` | Elle exulte ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (869 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (882 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1601,6 +1655,10 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_palette_propre_01_f.mp3` | Elle casse sa propre habitude au bon moment. Très propre. |
 | `commentatrice_replay_palette_propre_02.mp3` | Il casse son propre rythme juste quand il fallait. Rien à redire. |
 | `commentatrice_replay_palette_propre_02_f.mp3` | Elle casse son propre rythme juste quand il fallait. Rien à redire. |
+| `commentatrice_replay_palette_propre_03.mp3` | Il a changé au bon moment. C'est tout un art. |
+| `commentatrice_replay_palette_propre_03_f.mp3` | Elle a changé au bon moment. C'est tout un art. |
+| `commentatrice_replay_palette_propre_04.mp3` | L'habitude, il l'a créée exprès. Pour mieux la casser. |
+| `commentatrice_replay_palette_propre_04_f.mp3` | L'habitude, elle l'a créée exprès. Pour mieux la casser. |
 | `commentatrice_replay_palette_mauvais_01.mp3` | Il rejoue la même chose. On ne peut pas faire ça à ce niveau. |
 | `commentatrice_replay_palette_mauvais_01_f.mp3` | Elle rejoue la même chose. On ne peut pas faire ça à ce niveau. |
 | `commentatrice_replay_palette_mauvais_02_pierre.mp3` | Il n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Pierre n'était pas la bonne option dans cette situation. |
@@ -1612,12 +1670,15 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_palette_mauvais_03.mp3` | Il a joué ce que tout le monde attendait. Son adversaire le premier. |
 | `commentatrice_replay_palette_mauvais_03_f.mp3` | Elle a joué ce que tout le monde attendait. Son adversaire le premier. |
 | `commentatrice_replay_palette_mauvais_04.mp3` | Une fois, c'est une idée. Trois fois, c'est une habitude. Et l'adversaire l'a vue. |
-| `commentatrice_replay_palette_pas_la_01.mp3` | Honnêtement ? Il n'y avait rien à lire. Il a eu raison d'oser. |
-| `commentatrice_replay_palette_pas_la_01_f.mp3` | Honnêtement ? Il n'y avait rien à lire. Elle a eu raison d'oser. |
-| `commentatrice_replay_palette_pas_la_02.mp3` | Pas de lecture possible ici. Il a tenté sa chance, et ça a souri. |
-| `commentatrice_replay_palette_pas_la_02_f.mp3` | Pas de lecture possible ici. Elle a tenté sa chance, et ça a souri. |
-| `commentatrice_replay_palette_pas_la_03.mp3` | Rien sur la palette. Il fallait de l'instinct, il en avait. |
-| `commentatrice_replay_palette_pas_la_03_f.mp3` | Rien sur la palette. Il fallait de l'instinct, elle en avait. |
+| `commentatrice_replay_palette_pas_la_06.mp3` | Le jeu n'était pas là. Tout indiquait un autre signe. |
+| `commentatrice_replay_palette_pas_la_07.mp3` | Il a joué ce qu'il avait envie de jouer. Pas ce que le match demandait. |
+| `commentatrice_replay_palette_pas_la_07_f.mp3` | Elle a joué ce qu'elle avait envie de jouer. Pas ce que le match demandait. |
+| `commentatrice_replay_palette_pas_la_08_pierre.mp3` | La Pierre, ici ? Non. Le jeu n'était clairement pas là. |
+| `commentatrice_replay_palette_pas_la_08_ciseaux.mp3` | Les Ciseaux, ici ? Non. Le jeu n'était clairement pas là. |
+| `commentatrice_replay_palette_pas_la_08_feuille.mp3` | La Feuille, ici ? Non. Le jeu n'était clairement pas là. |
+| `commentatrice_replay_palette_pas_la_09.mp3` | Il s'est entêté. Le bon coup était sous ses yeux. |
+| `commentatrice_replay_palette_pas_la_09_f.mp3` | Elle s'est entêtée. Le bon coup était sous ses yeux. |
+| `commentatrice_replay_palette_pas_la_10.mp3` | Une décision difficile à défendre. Même pour moi. |
 | `commentatrice_replay_palette_piege_01.mp3` | Il l'a amené exactement où il voulait. |
 | `commentatrice_replay_palette_piege_01_f.mp3` | Elle l'a amené exactement où elle voulait. |
 | `commentatrice_replay_palette_piege_02.mp3` | Magnifique changement de rythme, qui a laissé son adversaire sur place. |
@@ -1636,6 +1697,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_palette_smash_subi_01_f.mp3` | Elle a été marquée par ce smash. Elle ne s'en est jamais vraiment remise. |
 | `commentatrice_replay_palette_smash_subi_02.mp3` | Après ça, il a joué avec la peur au ventre. Et ça s'est vu. |
 | `commentatrice_replay_palette_smash_subi_02_f.mp3` | Après ça, elle a joué avec la peur au ventre. Et ça s'est vu. |
+| `commentatrice_replay_palette_smash_subi_03.mp3` | Ce smash-là, ses doigts s'en souviendront. |
 | `commentatrice_memoire_serie_3_01.mp3` | Il reste sur trois victoires d'affilée contre lui. |
 | `commentatrice_memoire_serie_3_01_f.mp3` | Elle reste sur trois victoires d'affilée contre lui. |
 | `commentatrice_memoire_serie_4_01.mp3` | Quatre de suite. L'autre commence à le prendre personnellement. |
@@ -1686,6 +1748,11 @@ restent lus par la voix de synthèse.
 | `commentatrice_apres_egalites_gagne_03.mp3` | Il fallait bien que quelqu'un change d'avis. Ce fut lui. |
 | `commentatrice_apres_egalites_gagne_03_f.mp3` | Il fallait bien que quelqu'un change d'avis. Ce fut elle. |
 | `commentatrice_apres_egalites_gagne_04.mp3` | La patience paie. Parfois. Là, oui. |
+| `commentatrice_apres_egalites_gagne_05.mp3` | Un pari. Réussi, mais un pari. |
+| `commentatrice_apres_egalites_gagne_06.mp3` | Il n'y avait rien à voir. Il a joué quand même. |
+| `commentatrice_apres_egalites_gagne_06_f.mp3` | Il n'y avait rien à voir. Elle a joué quand même. |
+| `commentatrice_apres_egalites_gagne_07.mp3` | Honnêtement ? Il n'y avait rien à lire. Il a eu raison d'oser. |
+| `commentatrice_apres_egalites_gagne_07_f.mp3` | Honnêtement ? Il n'y avait rien à lire. Elle a eu raison d'oser. |
 | `commentatrice_apres_egalites_perdu_01.mp3` | Il a cligné le premier. |
 | `commentatrice_apres_egalites_perdu_01_f.mp3` | Elle a cligné la première. |
 | `commentatrice_apres_egalites_perdu_02.mp3` | À force d'attendre, il s'est fait prendre. |

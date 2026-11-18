@@ -75,6 +75,8 @@ test("la palette : mauvais choix (le perdant suit son habitude) et techniquement
 
 test("la palette : rien à lire en début de match, rien pour une égalité", () => {
   assert.equal(palette([[0, 1], [2, 0]]).verdict, "pas_la");
+  // (18 novembre) « Le jeu n'était pas là » : on parle du perdant du point, qui a fait le mauvais choix (ici, l'adversaire)
+  assert.equal(palette([[0, 1], [2, 0]]).joueur, 1);
   assert.equal(palette([[0, 1], [0, 0]]), null);
 });
 
