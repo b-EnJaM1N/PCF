@@ -269,7 +269,8 @@ function annoncer(lignes, silencieux = false, { enJeu = false, coup = 0 } = {}) 
   if (!lignes.length || silencieux) return;
   if (!enJeu) { retenirCommentaires(lignes); voix.dire(lignes); return; }
   const recent = S && coup - (S.commentaireAuCoup ?? -9) < 2;
-  const dites = lignes.filter(l => l.role === "arbitre" || (!recent && l.texte.length <= REPLIQUE_COURTE));
+  // (les répliques personnalisées passent même juste après un commentaire : en duel, les deux joueurs doivent les entendre)
+  const dites = lignes.filter(l => l.role === "arbitre" || ((!recent || l.id.includes("_perso_")) && l.texte.length <= REPLIQUE_COURTE));
   retenirCommentaires(dites);
   if (S && dites.some(l => l.role !== "arbitre")) S.commentaireAuCoup = coup;
   voix.dire(dites);
@@ -1791,7 +1792,9 @@ function presenterSpeaker() {
   // (18 novembre) le joueur du match qui a ses répliques personnalisées (« Le Chiromancien ») ; en duel, l'adversaire compte
   // une fois qu'on sait que c'est un ami (voir plus bas, attendreAmi)
   const persoCom = persoCommente(...joueursDuMatch());
-  if (S.annonces) S.annonces.perso = persoCom;
+  // (en duel, le tirage commun aux deux téléphones pour ces répliques : le numéro du duel et le moment ; 18 novembre)
+  const tirageCommun = S.duel && D?.duel?.id ? cle => tirageDuel(`com:${cle}`) / 4294967296 : null;
+  if (S.annonces) { S.annonces.perso = persoCom; S.annonces.tirage = tirageCommun; }
   const monId = `h:${compteUI.session()?.user?.id}`;
   let recents = []; try { recents = lire("speakerRecents", []) || []; } catch { /* rien */ }
   // La mémoire du dernier match contre le même adversaire (gardée pour le premier coup : la même ouverture ?).
@@ -1807,7 +1810,7 @@ function presenterSpeaker() {
       humain, dejaJoues: !!(f && f.v + f.d > 0), niveauMoi, niveauAdv, memePays: humain && OPP.drapeau === P.drapeau,
       rapide: !!(D?.duel?.rapide || S.contreBotRapide), officiel: !!(S.duel && D?.duel?.classe), setsGagnants: S.match.format.setsGagnants,
     }),
-    recents, perso: persoCom,
+    recents, perso: persoCom, tirage: tirageCommun,
   });
   // On retient les phrases dites, pour ne pas les répéter aux prochains matchs.
   ecrire("speakerRecents", av.commentaires.map(l => l.id).concat(recents).slice(0, 80));

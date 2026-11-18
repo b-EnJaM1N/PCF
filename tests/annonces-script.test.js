@@ -757,3 +757,23 @@ test("victoire en deux sets à zéro (match en 2 sets gagnants) : parfois l'anal
   }
   assert.ok(dit >= 10 && dit <= 35, `${dit} fois sur 40`);
 });
+
+test("le Chiromancien en duel : ses répliques aux mêmes moments sur les deux téléphones (tirage commun)", async () => {
+  const { hashTexte } = await import("../app/js/chants-perso.js");
+  let total = 0;
+  for (let k = 0; k < 40; k++) {
+    const tirage = cle => hashTexte(`duel${k}:com:${cle}`) / 4294967296;
+    const m1 = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), m2 = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 });
+    const e1 = Object.assign(nouvelEtatAnnonces(), { perso: { nom: "chiromancien", joueur: 0 }, tirage });
+    const e2 = Object.assign(nouvelEtatAnnonces(), { perso: { nom: "chiromancien", joueur: 1 }, tirage });
+    const r1 = rngFixe(100 + k), r2 = rngFixe(900 + k), jeu = rngFixe(k);   // (chaque téléphone a son propre hasard)
+    while (!m1.termine) {
+      const a = Math.floor(jeu() * 3), b = Math.floor(jeu() * 3);
+      const x1 = annoncerCoup(m1, jouerCoup(m1, a, b), e1, {}, r1), x2 = annoncerCoup(m2, jouerCoup(m2, b, a), e2, {}, r2);
+      const p = x => x.lignes.filter(l => /_perso_/.test(l.id)).map(l => /_perso_chiromancien_(\w+?)_\d\d/.exec(l.id)[1]).join();
+      assert.equal(p(x1), p(x2), `duel ${k}, coup ${m1.coups.length}`);
+      if (p(x1)) total++;
+    }
+  }
+  assert.ok(total >= 20, `${total} répliques personnalisées`);
+});
