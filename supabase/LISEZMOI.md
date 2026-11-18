@@ -503,6 +503,13 @@ Même manipulation que d'habitude avec [`etape-62-gants-un-signe.sql`](etape-62-
 Trois articles de plus (800 chacun) : le gant « Pierre », le gant « Feuille » et le gant « Ciseaux ». Comme ceux de l'étape 61 :
 version de test seulement, hors de la vitrine du jour. Le gant « Trois signes » (étape 61) sort du catalogue.
 
+## 1 octogies. Les smileys dans les messages du duel (étape 80)
+
+Même manipulation que d'habitude avec [`etape-80-smileys.sql`](etape-80-smileys.sql), **après** l'étape 79
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-80-smileys.sql).
+Neuf smileys tout faits (👏 🔥 😂 😱 😎 😤 💪 🙏 🤝), avec n'importe quel joueur, à tous les moments du duel ; entre amis, un
+message écrit fait d'un seul smiley est accepté. **À coller avant la fusion** : sinon les smileys envoyés sont refusés.
+
 ## 1 septuagies nonies. Les notifications des amis et des cercles (étape 79)
 
 1. Même manipulation avec [`etape-79-notifications-amis-cercles.sql`](etape-79-notifications-amis-cercles.sql), **après** l'étape 78

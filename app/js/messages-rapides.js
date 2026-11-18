@@ -15,6 +15,10 @@ const ANNONCES = [
   ["joue_p", "Joue Pierre !"], ["joue_f", "Joue Feuille !"], ["joue_c", "Joue Ciseaux !"],
 ];
 
+// Les smileys (18 novembre, demande du porteur du projet) : à tous les moments, avec n'importe quel joueur (tout public).
+export const SMILEYS = [["s_bravo", "👏"], ["s_feu", "🔥"], ["s_rire", "😂"], ["s_choc", "😱"], ["s_cool", "😎"], ["s_rage", "😤"],
+  ["s_force", "💪"], ["s_merci", "🙏"], ["s_main", "🤝"]];
+
 export const MESSAGES = {
   avant: {
     annonces: ANNONCES,
@@ -61,13 +65,14 @@ export const MESSAGES = {
 
 export const LONGUEUR_MAX = 35;
 
-// Les messages proposés à ce moment-là ({ id, texte, amis, annonce }) : les annonces, les messages tout public, puis le chambrage
-// entre amis. (Pour le serveur, les annonces font partie des messages tout public.)
+// Les messages proposés à ce moment-là ({ id, texte, amis, annonce, smiley }) : les annonces, les messages tout public, les
+// smileys, puis le chambrage entre amis. (Pour le serveur, les annonces et les smileys font partie des messages tout public.)
 export function messagesPossibles(moment, ami = false) {
   const m = MESSAGES[moment];
   if (!m) return [];
   return [...(m.annonces || []).map(([id, texte]) => ({ id, texte, amis: false, annonce: true })),
-    ...m.tous.map(([id, texte]) => ({ id, texte, amis: false })), ...(ami ? m.amis.map(([id, texte]) => ({ id, texte, amis: true })) : [])];
+    ...m.tous.map(([id, texte]) => ({ id, texte, amis: false })), ...SMILEYS.map(([id, texte]) => ({ id, texte, amis: false, smiley: true })),
+    ...(ami ? m.amis.map(([id, texte]) => ({ id, texte, amis: true })) : [])];
 }
 
 // Le moment d'un message après le match, selon le résultat.
@@ -78,9 +83,10 @@ export const PREFIXE_LIBRE = "libre:", MESSAGE_LIBRE_MAX = 60;
 export const nettoyerMessage = t => String(t ?? "").replace(/\s+/g, " ").trim();
 // null si le message écrit est accepté, sinon la raison du refus (mêmes règles que le serveur, étape 48).
 export function erreurMessageLibre(brut) {
-  const t = nettoyerMessage(brut);
-  if (t.length < 2) return "Le message est trop court.";
-  if (t.length > MESSAGE_LIBRE_MAX) return `Le message est trop long (${MESSAGE_LIBRE_MAX} caractères au plus).`;
+  const t = nettoyerMessage(brut), n = [...t].length;
+  // (un smiley seul est accepté : 18 novembre ; les lettres se comptent comme le serveur, un smiley pour un)
+  if (!n || (n === 1 && t.codePointAt(0) < 128)) return "Le message est trop court.";
+  if (n > MESSAGE_LIBRE_MAX) return `Le message est trop long (${MESSAGE_LIBRE_MAX} caractères au plus).`;
   if (ARGENT.test(sansAccents(t))) return "Pas d'argent dans un message.";
   if (LIEN.test(t)) return "Pas de lien dans un message.";
   if (sansAccents(t).toLowerCase().split(/[^a-z0-9]+/).some(m => MOTS_INTERDITS.includes(m))) return "Ce message contient un mot interdit.";
@@ -91,6 +97,6 @@ export function erreurMessageLibre(brut) {
 export function texteMessage(moment, id) {
   if (typeof id === "string" && id.startsWith(PREFIXE_LIBRE)) return id.slice(PREFIXE_LIBRE.length);
   const m = MESSAGES[moment];
-  const x = m && [...(m.annonces || []), ...m.tous, ...m.amis, ...(m.retires || [])].find(([i]) => i === id);
+  const x = m && [...(m.annonces || []), ...m.tous, ...SMILEYS, ...m.amis, ...(m.retires || [])].find(([i]) => i === id);
   return x ? x[1] : null;
 }

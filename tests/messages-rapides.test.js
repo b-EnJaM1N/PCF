@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { MESSAGES, LONGUEUR_MAX, messagesPossibles, momentApres, texteMessage, erreurMessageLibre, PREFIXE_LIBRE } from "../app/js/messages-rapides.js";
+import { MESSAGES, SMILEYS, LONGUEUR_MAX, messagesPossibles, momentApres, texteMessage, erreurMessageLibre, PREFIXE_LIBRE } from "../app/js/messages-rapides.js";
 import { MOTS_INTERDITS } from "../app/js/enjeux.js";
 
 test("chaque message tient dans une bulle et chaque identifiant est unique à son moment", () => {
@@ -13,15 +13,15 @@ test("chaque message tient dans une bulle et chaque identifiant est unique à so
 });
 
 test("les mêmes messages dans l'appli et sur le serveur", () => {
-  // (la liste la plus récente : étape 67, « Tu vas pleurer. » ; l'étape 53 avait ajouté les annonces et la pause entre les sets ;
-  // les annonces comptent parmi « tous »)
-  const sql = readFileSync(new URL("../supabase/etape-67-message-pleurer.sql", import.meta.url), "utf8");
+  // (la liste la plus récente : étape 80, les smileys ; l'étape 67, « Tu vas pleurer. » ; l'étape 53 avait ajouté les annonces et la
+  // pause entre les sets ; les annonces et les smileys comptent parmi « tous »)
+  const sql = readFileSync(new URL("../supabase/etape-80-smileys.sql", import.meta.url), "utf8");
   for (const [moment, m] of Object.entries(MESSAGES)) {
     for (const [registre, amis] of [["tous", false], ["amis", true]]) {
       const ligne = sql.match(new RegExp(`p_moment = '${moment}' and ${amis ? "" : "not "}p_amis then array\\[([^\\]]*)\\]`));
       assert.ok(ligne, `${moment} ${registre}`);
       // (les messages retirés de l'appli le 11 novembre restent acceptés par le serveur : on compare sans l'ordre)
-      const attendus = (registre === "tous" ? [...(m.annonces || []), ...m.tous] : [...m.amis, ...(m.retires || [])]).map(([id]) => id);
+      const attendus = (registre === "tous" ? [...(m.annonces || []), ...m.tous, ...SMILEYS] : [...m.amis, ...(m.retires || [])]).map(([id]) => id);
       assert.deepEqual([...ligne[1].matchAll(/'([a-z_]+)'/g)].map(x => x[1]).sort(), attendus.sort(), `${moment} ${registre}`);
     }
   }
@@ -54,4 +54,16 @@ test("le message écrit entre amis : les garde-fous de l'enjeu, et le même pré
   const sql = readFileSync(new URL("../supabase/etape-48-message-ecrit.sql", import.meta.url), "utf8");
   assert.ok(sql.includes(`p_message like '${PREFIXE_LIBRE}%'`) && sql.includes("> 60") && sql.includes("_mots_interdits_enjeu()"));
   assert.ok(MOTS_INTERDITS.length > 10);
+});
+
+test("les smileys : à tous les moments, avec n'importe qui ; un smiley seul est accepté dans un message écrit", () => {
+  for (const moment of Object.keys(MESSAGES)) {
+    const l = messagesPossibles(moment).filter(m => m.smiley);
+    assert.equal(l.length, SMILEYS.length, moment);
+    assert.equal(texteMessage(moment, "s_rire"), "😂");
+  }
+  assert.equal(erreurMessageLibre("😂"), null);
+  assert.equal(erreurMessageLibre("Bravo 👏"), null);
+  assert.equal(erreurMessageLibre("a"), "Le message est trop court.");
+  assert.equal(erreurMessageLibre("  "), "Le message est trop court.");
 });
