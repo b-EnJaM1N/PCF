@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1159 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1168 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -620,6 +620,15 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_intro_04.mp3` | Attention, ça va repasser au ralenti ! |
 | `commentateur_replay_intro_05.mp3` | Revivons ce moment ensemble ! |
 | `commentateur_replay_intro_06.mp3` | On rembobine ! Regardez bien ! |
+| `commentateur_replay_debut_01.mp3` | On revoit les moments forts de ce match ! D'abord, celui-ci ! |
+| `commentateur_replay_debut_02.mp3` | Les temps forts de ce match ! On commence par ce coup-là ! |
+| `commentateur_replay_debut_03.mp3` | Revivons les grands moments de ce match ! Le premier… |
+| `commentateur_replay_ensuite_01.mp3` | Ensuite, il y a eu ce coup ! |
+| `commentateur_replay_ensuite_02.mp3` | Et puis, il y a eu ce moment-là ! |
+| `commentateur_replay_ensuite_03.mp3` | Un peu plus tard, regardez bien ! |
+| `commentateur_replay_enfin_01.mp3` | Et enfin, on revoit ce coup ! |
+| `commentateur_replay_enfin_02.mp3` | Et pour finir, le moment que tout le monde attendait ! |
+| `commentateur_replay_enfin_03.mp3` | Enfin, le dernier temps fort de ce match ! |
 | `commentateur_replay_sauvee_01.mp3` | Regardez ce sang-froid ! Il était au bord du gouffre ! |
 | `commentateur_replay_sauvee_01_f.mp3` | Regardez ce sang-froid ! Elle était au bord du gouffre ! |
 | `commentateur_replay_sauvee_02.mp3` | On revoit la balle sauvée ! Quel sang-froid ! |

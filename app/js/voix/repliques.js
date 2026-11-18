@@ -816,6 +816,22 @@ export const MOMENTS = {
     { r: "c", t: "Revivons ce moment ensemble !" },
     { r: "c", t: "On rembobine ! Regardez bien !" },
   ],
+  // Les temps forts de fin de match : Roland annonce chaque action (18 novembre, répliques choisies par le porteur du projet).
+  replay_debut: [
+    { r: "c", t: "On revoit les moments forts de ce match ! D'abord, celui-ci !" },
+    { r: "c", t: "Les temps forts de ce match ! On commence par ce coup-là !" },
+    { r: "c", t: "Revivons les grands moments de ce match ! Le premier…" },
+  ],
+  replay_ensuite: [
+    { r: "c", t: "Ensuite, il y a eu ce coup !" },
+    { r: "c", t: "Et puis, il y a eu ce moment-là !" },
+    { r: "c", t: "Un peu plus tard, regardez bien !" },
+  ],
+  replay_enfin: [
+    { r: "c", t: "Et enfin, on revoit ce coup !" },
+    { r: "c", t: "Et pour finir, le moment que tout le monde attendait !" },
+    { r: "c", t: "Enfin, le dernier temps fort de ce match !" },
+  ],
   replay_sauvee: [
     { r: "c", t: "Regardez ce sang-froid ! Il était au bord du gouffre !", f: "Regardez ce sang-froid ! Elle était au bord du gouffre !" },
     { r: "d", t: "Au ralenti, on voit la peur. Et puis non." },
