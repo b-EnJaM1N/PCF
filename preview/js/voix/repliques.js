@@ -984,6 +984,12 @@ export const MOMENTS = {
     { r: "d", t: "Un peu de retard à l'allumage.", si: "depart_rate" },   // (17 novembre, écrite par le porteur du projet)
   ],
   // Avant le match, parfois une seule phrase au lieu d'un dialogue : tous les matchs, les grands matchs, une revanche, entre amis.
+  // Le signe porte-bonheur de Monique (18 novembre, idée du porteur du projet : elle brouille les pistes) : à la question du
+  // dialogue avant_monique n° 3, sa réponse est la Feuille (dans le dialogue), la Pierre ou les Ciseaux, une fois sur trois chacune.
+  monique_porte_bonheur: [
+    { r: "d", t: "La Pierre. Elle ne bouge jamais. Comme mes convictions." },
+    { r: "d", t: "Les Ciseaux. Parce qu'ils découpent les ambitions de l'adversaire." },
+  ],
   // La formule d'ouverture avant le dialogue avec Monique (18 novembre, demande du porteur du projet) : bonjour ou bonsoir.
   presentation_direct: [
     { r: "c", t: "Bienvenue ! Nous sommes en direct du court central. Mesdames et messieurs, bonsoir !", si: "soir" },
@@ -1121,6 +1127,19 @@ export const MOMENTS = {
   ],
   // Les effets du match (16 novembre, répliques choisies par le porteur du projet) : ma main prend feu (8 points de suite),
   // un feu (la flamme ou plus) qui s'éteint, chez l'un ou l'autre.
+  // Le signe abîmé par un smash (18 novembre, répliques choisies par le porteur du projet) : plus tard dans le même set, le joueur
+  // rejoue ce signe et perd le point. seul : le signe abîmé ; deMoi : seulement quand c'est moi (pour « il » ou « elle »).
+  signe_abime: [
+    { r: "c", t: "Il n'impressionne plus vraiment avec ses Ciseaux tout pétés !", f: "Elle n'impressionne plus vraiment avec ses Ciseaux tout pétés !", seul: 1, deMoi: true },
+    { r: "d", t: "Des Ciseaux ébréchés, ça ne coupe plus grand-chose.", seul: 1 },
+    { r: "c", t: "Oula, ces Ciseaux tout cabossés ne font plus peur à personne !", seul: 1 },
+    { r: "c", t: "Il n'impressionne plus vraiment avec sa Pierre fissurée !", f: "Elle n'impressionne plus vraiment avec sa Pierre fissurée !", seul: 0, deMoi: true },
+    { r: "d", t: "Une Pierre fêlée, c'est déjà presque du gravier.", seul: 0 },
+    { r: "c", t: "Oh, cette Pierre en morceaux ne fait plus trembler personne !", seul: 0 },
+    { r: "c", t: "Il n'impressionne plus vraiment avec sa Feuille déchirée !", f: "Elle n'impressionne plus vraiment avec sa Feuille déchirée !", seul: 2, deMoi: true },
+    { r: "d", t: "Une Feuille en lambeaux, ça n'enveloppe plus rien.", seul: 2 },
+    { r: "c", t: "Ah, cette Feuille toute froissée ne fait plus illusion !", seul: 2 },
+  ],
   main_en_feu: [
     { r: "c", t: "Attention, il est en feu ! Appelez les pompiers !", f: "Attention, elle est en feu ! Appelez les pompiers !" },
     { r: "d", t: "Quelqu'un a un extincteur ?" },
