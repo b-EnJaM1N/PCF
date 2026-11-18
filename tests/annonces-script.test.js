@@ -600,7 +600,10 @@ test("avant le match, Roland interroge Monique, après « Bienvenue… » (bonso
       const i = a.commentaires.findIndex(l => /^commentateur_dialogue_avant_monique_/.test(l.id));
       if (i < 0) continue;
       vu++;
-      assert.match(a.commentaires[i - 1].texte, new RegExp(`direct du court central. Mesdames et messieurs, ${mot} !`));
+      const intro = a.commentaires[i - 1];
+      assert.ok(POOLS.presentation_direct.some(e => e.base === baseDe(intro.id)), intro.id);
+      assert.match(intro.texte, /court central/);
+      assert.ok(!new RegExp(mot === "bonsoir" ? "bonjour" : "bonsoir", "i").test(intro.texte), intro.texte);   // (jamais la mauvaise salutation)
       assert.match(a.commentaires[i + 1].id, /^commentatrice_dialogue_avant_monique_/);
     }
   }

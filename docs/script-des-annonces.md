@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (888 répliques)
+## Commentateur — vif, enthousiaste, plein de références (906 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -690,6 +690,24 @@ restent lus par la voix de synthèse.
 | `commentateur_premier_point_perdu_02_f.mp3` | Elle se fait surprendre ! |
 | `commentateur_presentation_direct_01.mp3` | Bienvenue ! Nous sommes en direct du court central. Mesdames et messieurs, bonsoir ! |
 | `commentateur_presentation_direct_02.mp3` | Bienvenue ! Nous sommes en direct du court central. Mesdames et messieurs, bonjour ! |
+| `commentateur_presentation_direct_03.mp3` | Nous sommes en direct du court central. Bonsoir ! |
+| `commentateur_presentation_direct_04.mp3` | Nous sommes en direct du court central. Bonjour ! |
+| `commentateur_presentation_direct_05.mp3` | Bienvenue pour ce match de gala, en direct du court central. Mesdames et messieurs, bonsoir ! |
+| `commentateur_presentation_direct_06.mp3` | Bienvenue pour ce match de gala, en direct du court central. Mesdames et messieurs, bonjour ! |
+| `commentateur_presentation_direct_07.mp3` | Mesdames et messieurs, bonsoir, et bienvenue sur le court central ! |
+| `commentateur_presentation_direct_08.mp3` | Mesdames et messieurs, bonjour, et bienvenue sur le court central ! |
+| `commentateur_presentation_direct_09.mp3` | Bonsoir à toutes et à tous ! Nous voici en direct du court central. |
+| `commentateur_presentation_direct_10.mp3` | Bonjour à toutes et à tous ! Nous voici en direct du court central. |
+| `commentateur_presentation_direct_11.mp3` | Le court central est plein à craquer. Bonsoir, et bienvenue ! |
+| `commentateur_presentation_direct_12.mp3` | Le court central est plein à craquer. Bonjour, et bienvenue ! |
+| `commentateur_presentation_direct_13.mp3` | En direct du court central, bonsoir et bienvenue dans ce rendez-vous du HandSlam ! |
+| `commentateur_presentation_direct_14.mp3` | En direct du court central, bonjour et bienvenue dans ce rendez-vous du HandSlam ! |
+| `commentateur_presentation_direct_15.mp3` | Bonsoir et bienvenue ! Les lumières sont allumées sur le court central. |
+| `commentateur_presentation_direct_16.mp3` | Bonjour et bienvenue ! Les lumières sont allumées sur le court central. |
+| `commentateur_presentation_direct_17.mp3` | Bienvenue sur le court central ! |
+| `commentateur_presentation_direct_18.mp3` | Bienvenue à vous qui nous rejoignez en direct du court central ! |
+| `commentateur_presentation_direct_19.mp3` | Bienvenue au cœur du court central, où tout est prêt pour le spectacle ! |
+| `commentateur_presentation_direct_20.mp3` | Mesdames et messieurs, installez-vous : nous sommes en direct du court central ! |
 | `commentateur_avant_seul_01.mp3` | Affrontement sous haute tension ! |
 | `commentateur_avant_seul_02.mp3` | Les deux joueurs entrent dans l'arène. Pas un sourire. Pas un regard de trop. |
 | `commentateur_avant_seul_03.mp3` | Les mains sont prêtes, les esprits sont affûtés. Le spectacle peut commencer ! |
