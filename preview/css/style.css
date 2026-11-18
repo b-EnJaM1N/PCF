@@ -138,8 +138,15 @@ body:not(.en-match) .rule { display: none; }
   box-shadow: 0 0 30px rgba(0, 0, 0, .45); }
 /* (le logo du club au milieu de la bande, droit ; 18 novembre, demande du porteur du projet) */
 .volet-bande img { width: min(46vw, 190px); height: auto; transform: skewX(14deg); filter: drop-shadow(0 0 2px #C9A24A) drop-shadow(0 4px 12px rgba(0, 0, 0, .5)); }
-.volet.passe .volet-bande { animation: volet-passe .62s cubic-bezier(.7, 0, .3, 1) both; }
-@keyframes volet-passe { 0% { transform: translateX(-130%) skewX(-14deg); } 42%, 58% { transform: translateX(0) skewX(-14deg); } 100% { transform: translateX(130%) skewX(-14deg); } }
+/* (18 novembre au soir, remarque du porteur du projet : trop rapide, on ne voyait pas le logo) 1,4 s : la bande entre en 0,4 s,
+   reste un peu plus d'une demi-seconde, le logo grossit doucement, puis elle repart en 0,4 s */
+.volet.passe .volet-bande { animation: volet-passe 1.4s both; }
+@keyframes volet-passe {
+  0% { transform: translateX(-130%) skewX(-14deg); animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+  29%, 71% { transform: translateX(0) skewX(-14deg); animation-timing-function: cubic-bezier(.7, 0, .8, .3); }
+  100% { transform: translateX(130%) skewX(-14deg); } }
+.volet.passe .volet-bande img { animation: volet-logo 1.4s ease-out both; }
+@keyframes volet-logo { 0%, 22% { transform: skewX(14deg) scale(.85); } 71%, 100% { transform: skewX(14deg) scale(1.05); } }
 /* (18 novembre) le coup rejoué (la dernière colonne) entouré au feutre rouge, comme à la main : deux traits un peu de travers,
    qui se dessinent */
 .pal-coups { position: relative; }
