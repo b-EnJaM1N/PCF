@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (847 répliques)
+## Commentateur — vif, enthousiaste, plein de références (874 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -562,6 +562,33 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_set_01.mp3` | Le coup qui fait basculer le set ! |
 | `commentateur_replay_serie_01.mp3` | Il ne lâche rien ! |
 | `commentateur_replay_serie_01_f.mp3` | Elle ne lâche rien ! |
+| `commentateur_replay_r_piege_01.mp3` | On voit le coup : il enchaîne les Pierres, et il vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_01_f.mp3` | On voit le coup : elle enchaîne les Pierres, et elle vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_02.mp3` | On voit le coup : il enchaîne les Pierres, et il vient cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_02_f.mp3` | On voit le coup : elle enchaîne les Pierres, et elle vient cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_03.mp3` | On voit le coup : il enchaîne les Ciseaux, et il vient cueillir son adversaire avec la Pierre. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_03_f.mp3` | On voit le coup : elle enchaîne les Ciseaux, et elle vient cueillir son adversaire avec la Pierre. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_04.mp3` | On voit le coup : il enchaîne les Ciseaux, et il vient cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_04_f.mp3` | On voit le coup : elle enchaîne les Ciseaux, et elle vient cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_05.mp3` | On voit le coup : il enchaîne les Feuilles, et il vient cueillir son adversaire avec la Pierre. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_05_f.mp3` | On voit le coup : elle enchaîne les Feuilles, et elle vient cueillir son adversaire avec la Pierre. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_06.mp3` | On voit le coup : il enchaîne les Feuilles, et il vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_06_f.mp3` | On voit le coup : elle enchaîne les Feuilles, et elle vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_07.mp3` | Regardez bien : Pierre, Pierre, Pierre… et là, les Ciseaux ! L'adversaire n'a rien vu venir ! |
+| `commentateur_replay_r_piege_08.mp3` | Regardez bien : Pierre, Pierre, Pierre… et là, la Feuille ! L'adversaire n'a rien vu venir ! |
+| `commentateur_replay_r_piege_09.mp3` | Regardez bien : Ciseaux, Ciseaux, Ciseaux… et là, la Pierre ! L'adversaire n'a rien vu venir ! |
+| `commentateur_replay_r_piege_10.mp3` | Regardez bien : Ciseaux, Ciseaux, Ciseaux… et là, la Feuille ! L'adversaire n'a rien vu venir ! |
+| `commentateur_replay_r_piege_11.mp3` | Regardez bien : Feuille, Feuille, Feuille… et là, la Pierre ! L'adversaire n'a rien vu venir ! |
+| `commentateur_replay_r_piege_12.mp3` | Regardez bien : Feuille, Feuille, Feuille… et là, les Ciseaux ! L'adversaire n'a rien vu venir ! |
+| `commentateur_replay_r_pertinent_01.mp3` | Oh, regardez : il avait repéré l'habitude, et il a frappé au bon moment ! |
+| `commentateur_replay_r_pertinent_01_f.mp3` | Oh, regardez : elle avait repéré l'habitude, et elle a frappé au bon moment ! |
+| `commentateur_replay_r_propre_01.mp3` | Et là, il change tout ! L'adversaire attendait encore la même chose ! |
+| `commentateur_replay_r_propre_01_f.mp3` | Et là, elle change tout ! L'adversaire attendait encore la même chose ! |
+| `commentateur_replay_r_mauvais_01.mp3` | Oula… Il retombe dans ses travers, et ça se paie cash ! |
+| `commentateur_replay_r_mauvais_01_f.mp3` | Oula… Elle retombe dans ses travers, et ça se paie cash ! |
+| `commentateur_replay_r_smash_01.mp3` | Ce smash, c'est un message : le patron, c'est moi ! |
+| `commentateur_replay_r_smash_subi_01.mp3` | Oula, il l'a pris en pleine figure, ce smash ! |
+| `commentateur_replay_r_smash_subi_01_f.mp3` | Oula, elle l'a pris en pleine figure, ce smash ! |
 | `commentateur_memoire_serie_3_01.mp3` | Trois victoires de suite ! Il arrive en confiance ! |
 | `commentateur_memoire_serie_3_01_f.mp3` | Trois victoires de suite ! Elle arrive en confiance ! |
 | `commentateur_memoire_serie_4_01.mp3` | Quatre victoires d'affilée ! Qui va enfin l'arrêter ? |
@@ -970,7 +997,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (646 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (683 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1266,12 +1293,49 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_palette_pertinent_01_f.mp3` | Elle l'avait lu. Après une défaite, l'autre change toujours. |
 | `commentatrice_replay_palette_pertinent_02.mp3` | Tout était sur la palette. Il n'a eu qu'à se servir. |
 | `commentatrice_replay_palette_pertinent_02_f.mp3` | Tout était sur la palette. Elle n'a eu qu'à se servir. |
+| `commentatrice_replay_palette_pertinent_03.mp3` | Tout était écrit dans les coups d'avant. Il a su lire entre les lignes. |
+| `commentatrice_replay_palette_pertinent_03_f.mp3` | Tout était écrit dans les coups d'avant. Elle a su lire entre les lignes. |
+| `commentatrice_replay_palette_pertinent_04.mp3` | Il connaissait la réponse avant que la question soit posée. |
+| `commentatrice_replay_palette_pertinent_04_f.mp3` | Elle connaissait la réponse avant que la question soit posée. |
 | `commentatrice_replay_palette_propre_01.mp3` | Il casse sa propre habitude au bon moment. Très propre. |
 | `commentatrice_replay_palette_propre_01_f.mp3` | Elle casse sa propre habitude au bon moment. Très propre. |
+| `commentatrice_replay_palette_propre_02.mp3` | Il casse son propre rythme juste quand il fallait. Rien à redire. |
+| `commentatrice_replay_palette_propre_02_f.mp3` | Elle casse son propre rythme juste quand il fallait. Rien à redire. |
 | `commentatrice_replay_palette_mauvais_01.mp3` | Il rejoue la même chose. On ne peut pas faire ça à ce niveau. |
 | `commentatrice_replay_palette_mauvais_01_f.mp3` | Elle rejoue la même chose. On ne peut pas faire ça à ce niveau. |
+| `commentatrice_replay_palette_mauvais_02_pierre.mp3` | Il n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Pierre n'était pas la bonne option dans cette situation. |
+| `commentatrice_replay_palette_mauvais_02_pierre_f.mp3` | Elle n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Pierre n'était pas la bonne option dans cette situation. |
+| `commentatrice_replay_palette_mauvais_02_ciseaux.mp3` | Il n'a pas senti le coup. Le jeu n'était clairement pas là : choisir les Ciseaux n'était pas la bonne option dans cette situation. |
+| `commentatrice_replay_palette_mauvais_02_ciseaux_f.mp3` | Elle n'a pas senti le coup. Le jeu n'était clairement pas là : choisir les Ciseaux n'était pas la bonne option dans cette situation. |
+| `commentatrice_replay_palette_mauvais_02_feuille.mp3` | Il n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Feuille n'était pas la bonne option dans cette situation. |
+| `commentatrice_replay_palette_mauvais_02_feuille_f.mp3` | Elle n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Feuille n'était pas la bonne option dans cette situation. |
+| `commentatrice_replay_palette_mauvais_03.mp3` | Il a joué ce que tout le monde attendait. Son adversaire le premier. |
+| `commentatrice_replay_palette_mauvais_03_f.mp3` | Elle a joué ce que tout le monde attendait. Son adversaire le premier. |
+| `commentatrice_replay_palette_mauvais_04.mp3` | Une fois, c'est une idée. Trois fois, c'est une habitude. Et l'adversaire l'a vue. |
 | `commentatrice_replay_palette_pas_la_01.mp3` | Honnêtement ? Il n'y avait rien à lire. Il a eu raison d'oser. |
 | `commentatrice_replay_palette_pas_la_01_f.mp3` | Honnêtement ? Il n'y avait rien à lire. Elle a eu raison d'oser. |
+| `commentatrice_replay_palette_pas_la_02.mp3` | Pas de lecture possible ici. Il a tenté sa chance, et ça a souri. |
+| `commentatrice_replay_palette_pas_la_02_f.mp3` | Pas de lecture possible ici. Elle a tenté sa chance, et ça a souri. |
+| `commentatrice_replay_palette_pas_la_03.mp3` | Rien sur la palette. Il fallait de l'instinct, il en avait. |
+| `commentatrice_replay_palette_pas_la_03_f.mp3` | Rien sur la palette. Il fallait de l'instinct, elle en avait. |
+| `commentatrice_replay_palette_piege_01.mp3` | Il l'a amené exactement où il voulait. |
+| `commentatrice_replay_palette_piege_01_f.mp3` | Elle l'a amené exactement où elle voulait. |
+| `commentatrice_replay_palette_piege_02.mp3` | Magnifique changement de rythme, qui a laissé son adversaire sur place. |
+| `commentatrice_replay_palette_piege_03.mp3` | Trois coups pour endormir, un pour frapper. C'est du travail d'orfèvre. |
+| `commentatrice_replay_palette_piege_04.mp3` | Quatre coups pour endormir, un pour frapper. C'est du travail d'orfèvre. |
+| `commentatrice_replay_palette_piege_05.mp3` | Cinq coups pour endormir, un pour frapper. C'est du travail d'orfèvre. |
+| `commentatrice_replay_palette_piege_06.mp3` | Six coups pour endormir, un pour frapper. C'est du travail d'orfèvre. |
+| `commentatrice_replay_palette_piege_07.mp3` | Il a fait semblant d'être prévisible. C'est tout un art. |
+| `commentatrice_replay_palette_piege_07_f.mp3` | Elle a fait semblant d'être prévisible. C'est tout un art. |
+| `commentatrice_replay_palette_smash_01.mp3` | Il a marqué son territoire, et il a fait mal psychologiquement à son adversaire. |
+| `commentatrice_replay_palette_smash_01_f.mp3` | Elle a marqué son territoire, et elle a fait mal psychologiquement à son adversaire. |
+| `commentatrice_replay_palette_smash_02.mp3` | Il a pris le dessus mentalement après ce point. |
+| `commentatrice_replay_palette_smash_02_f.mp3` | Elle a pris le dessus mentalement après ce point. |
+| `commentatrice_replay_palette_smash_03.mp3` | Un smash au bon moment, ça vaut plus qu'un point. Ça laisse des traces. |
+| `commentatrice_replay_palette_smash_subi_01.mp3` | Il a été marqué par ce smash. Il ne s'en est jamais vraiment remis. |
+| `commentatrice_replay_palette_smash_subi_01_f.mp3` | Elle a été marquée par ce smash. Elle ne s'en est jamais vraiment remise. |
+| `commentatrice_replay_palette_smash_subi_02.mp3` | Après ça, il a joué avec la peur au ventre. Et ça s'est vu. |
+| `commentatrice_replay_palette_smash_subi_02_f.mp3` | Après ça, elle a joué avec la peur au ventre. Et ça s'est vu. |
 | `commentatrice_memoire_serie_3_01.mp3` | Il reste sur trois victoires d'affilée contre lui. |
 | `commentatrice_memoire_serie_3_01_f.mp3` | Elle reste sur trois victoires d'affilée contre lui. |
 | `commentatrice_memoire_serie_4_01.mp3` | Quatre de suite. L'autre commence à le prendre personnellement. |
