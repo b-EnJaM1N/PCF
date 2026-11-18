@@ -127,6 +127,20 @@ body:not(.en-match) .rule { display: none; }
 .pal-case.pal-g0 { border-color: var(--me); }
 .pal-case.pal-g1 { border-color: var(--bot); }
 .pal-case.pal-point { margin-left: 6px; box-shadow: 0 0 0 2px #fff; }
+/* (18 novembre) le coup rejoué (la dernière colonne) entouré au feutre rouge, comme à la main : deux traits un peu de travers,
+   qui se dessinent */
+.pal-coups { position: relative; }
+.pal-cercle { position: absolute; right: -8px; top: -9px; bottom: -9px; width: 50px; pointer-events: none; }
+.pal-cercle::before, .pal-cercle::after { content: ""; position: absolute; inset: 0; border: 2.5px solid #e3262f;
+  border-radius: 55% 45% 52% 48% / 62% 40% 60% 38%; transform: rotate(-7deg); opacity: .92; animation: feutre .5s ease-out both; }
+.pal-cercle::after { inset: 3px -3px -2px 2px; transform: rotate(5deg); border-width: 2px; opacity: .7; border-radius: 48% 52% 44% 56% / 55% 47% 53% 45%; animation-delay: .15s; }
+@keyframes feutre { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+/* (18 novembre) entre deux temps forts : l'action s'efface tout à fait (un peu floue, qui recule), puis la suivante apparaît */
+.replay-boite { transition: opacity .8s ease-in, transform .8s ease-in, filter .8s ease-in; }
+.replay-boite.rp-sortie { opacity: 0; transform: scale(.92); filter: blur(4px); }
+.replay-boite.rp-entree { animation: rp-entree .9s ease-out both; }
+@keyframes rp-entree { from { opacity: 0; transform: scale(1.05); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+@media (prefers-reduced-motion: reduce) { .pal-cercle::before, .pal-cercle::after, .replay-boite.rp-entree { animation: none; } .replay-boite { transition: none; } }
 .pal-habitude { margin: 0; font-size: .85rem; }
 .pal-etiquette { margin: 0 auto; padding: 2px 10px; border-radius: 999px; font-weight: 700; font-size: .85rem; color: #0b1a2e; }
 .pal-pertinent { background: #4CC38A; } .pal-propre { background: #6CB4FF; } .pal-mauvais { background: #FF7A6B; } .pal-pas_la { background: #D8DEE6; }
@@ -1201,3 +1215,6 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 /* Un coup joué en smash, entouré dans l'historique du match (18 novembre). */
 .tape td .coup-smash { display: inline-flex; align-items: center; justify-content: center; width: 1.6em; height: 1.6em; border-radius: 50%;
   box-shadow: 0 0 0 2px #fff, 0 0 8px rgba(255, 255, 255, .6); line-height: 1; }
+/* Un point de pénalité (18 novembre) : une croix dans la case du fautif, la case de l'autre reste vide. */
+.tape td.penalite:not(.perd) { background: transparent; }
+.tape td .coup-penalite { font-size: .9em; }
