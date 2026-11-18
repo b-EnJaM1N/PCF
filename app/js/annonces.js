@@ -87,6 +87,19 @@ export function feuDuCoup(coups) {
   return { allume: chg.some(k => k.joueur === 0 && k.a === 3 && k.de < 3), eteint: chg.some(k => k.de >= 2 && k.a === 0) };
 }
 
+// Le signe abîmé (18 novembre) : le perdant du dernier coup a joué un signe abîmé plus tôt dans le set par un smash gagnant
+// (le signe qu'il avait joué ce coup-là). → { joueur, signe } ou null.
+export function signeAbime(match) {
+  const c = match.coups, n = c.length, dernier = c[n - 1];
+  if (!dernier || (dernier.gagnant !== 0 && dernier.gagnant !== 1)) return null;
+  const perdant = 1 - dernier.gagnant, sien = x => (perdant === 0 ? x.a : x.b);
+  for (let i = match.debutsSet?.at(-1) ?? 0; i < n - 1; i++) {
+    const x = c[i];
+    if ((x.gagnant === 0 || x.gagnant === 1) && 1 - x.gagnant === perdant && x.smash?.[x.gagnant] && sien(x) === sien(dernier)) return { joueur: perdant, signe: sien(dernier) };
+  }
+  return null;
+}
+
 // Choisit une réplique d'un moment : jamais deux fois la même dans un match, les répliques
 // « spéciales » (condition remplie) d'abord, les clins d'œil plus rarement (cinéma : une fois par match).
 function choisir(etat, moment, ctx = {}, rng = Math.random) {
@@ -227,6 +240,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       const ggpp = decisifs.length >= 4 && decisifs.slice(-4).map(x => x.gagnant).join() === "0,0,1,1";
       const cadrage = g === 0 && decisifs.length >= 2 && decisifs[decisifs.length - 2].gagnant === 0 && decisifs[decisifs.length - 2].a === 2 && dernier.a === 0;
       const feu = feuDuCoup(c);
+      let ab = null;
       const obstination = n >= 3 && c[n - 1].a === c[n - 2].a && c[n - 2].a === c[n - 3].a && (n < 4 || c[n - 4].a !== c[n - 1].a);
       // (à 14 partout dans le set décisif, on vient toujours de sauver une balle de match : le point décisif passe d'abord,
       // toujours en finale, une fois sur deux sinon ; 16 novembre)
@@ -251,6 +265,8 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
         moment = "premier_point_perdu"; ctx.premierPoint = true;
       } else if (g === 1 && !match.scoresSets.length && a === 0 && b === 3 && rng() < 0.6) {   // 0-3 d'entrée : là, c'est un mauvais départ
         moment = "premier_point_perdu"; ctx.departRate = true;
+      } else if ((ab = signeAbime(match)) && peutCommenter(2, 0.5) && rng() < 0.6) {   // le signe abîmé par un smash, rejoué et perdu
+        moment = "signe_abime"; ctx.signe = ab.signe; ctx.smashAdv = ab.joueur === 1;
       } else if (feu.allume && peutCommenter(2, 0.5) && rng() < 0.8) {   // ma main prend feu (8 points de suite ; effets.js)
         moment = "main_en_feu";
       } else if (feu.eteint && peutCommenter(4) && rng() < 0.35) {        // une flamme qui s'éteint (un point perdu)

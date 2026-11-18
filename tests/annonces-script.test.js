@@ -624,3 +624,18 @@ test("le signe porte-bonheur de Monique : Feuille, Pierre ou Ciseaux, à peu pr�
   assert.ok(n > 30, JSON.stringify(vus));
   for (const v of Object.values(vus)) assert.ok(v > n / 6, JSON.stringify(vus));
 });
+
+test("le signe abîmé : rejoué plus tard dans le set et perdu ; pas après un autre signe, pas au set suivant", async () => {
+  const { signeAbime } = await import("../app/js/annonces.js");
+  const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 });
+  jouerCoup(m, CISEAUX, PIERRE); m.coups.at(-1).smash = [false, true];   // son smash Pierre abîme mes Ciseaux
+  jouerCoup(m, FEUILLE, PIERRE);
+  assert.equal(signeAbime(m), null);                                       // (il a perdu, mais pas avec ses Ciseaux)
+  jouerCoup(m, CISEAUX, PIERRE);
+  assert.deepEqual(signeAbime(m), { joueur: 0, signe: CISEAUX });
+  jouerCoup(m, PIERRE, CISEAUX);
+  assert.equal(signeAbime(m), null);                                       // (l'adversaire n'a rien d'abîmé)
+  m.debutsSet.push(m.coups.length);                                        // set suivant : les mains sont réparées
+  jouerCoup(m, CISEAUX, PIERRE);
+  assert.equal(signeAbime(m), null);
+});

@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (906 répliques)
+## Commentateur — vif, enthousiaste, plein de références (915 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -768,6 +768,15 @@ restent lus par la voix de synthèse.
 | `commentateur_smash_double_02.mp3` | Les deux smashent en même temps ! C'est la guerre totale ! |
 | `commentateur_smash_double_03.mp3` | Choc des titans au milieu du court ! |
 | `commentateur_smash_double_04.mp3` | Ils en viennent aux mains ! |
+| `commentateur_signe_abime_01.mp3` | Il n'impressionne plus vraiment avec ses Ciseaux tout pétés ! |
+| `commentateur_signe_abime_01_f.mp3` | Elle n'impressionne plus vraiment avec ses Ciseaux tout pétés ! |
+| `commentateur_signe_abime_02.mp3` | Oula, ces Ciseaux tout cabossés ne font plus peur à personne ! |
+| `commentateur_signe_abime_03.mp3` | Il n'impressionne plus vraiment avec sa Pierre fissurée ! |
+| `commentateur_signe_abime_03_f.mp3` | Elle n'impressionne plus vraiment avec sa Pierre fissurée ! |
+| `commentateur_signe_abime_04.mp3` | Oh, cette Pierre en morceaux ne fait plus trembler personne ! |
+| `commentateur_signe_abime_05.mp3` | Il n'impressionne plus vraiment avec sa Feuille déchirée ! |
+| `commentateur_signe_abime_05_f.mp3` | Elle n'impressionne plus vraiment avec sa Feuille déchirée ! |
+| `commentateur_signe_abime_06.mp3` | Ah, cette Feuille toute froissée ne fait plus illusion ! |
 | `commentateur_main_en_feu_01.mp3` | Attention, il est en feu ! Appelez les pompiers ! |
 | `commentateur_main_en_feu_01_f.mp3` | Attention, elle est en feu ! Appelez les pompiers ! |
 | `commentateur_main_en_feu_02.mp3` | Oh, la main chaude ! |
@@ -1029,7 +1038,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (697 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (700 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1481,6 +1490,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_smash_double_01.mp3` | Deux smashs. Aucune finesse. Beaucoup de bruit. |
 | `commentatrice_smash_double_02.mp3` | Deux marteaux, zéro clou. |
 | `commentatrice_smash_double_03.mp3` | Tout en délicatesse. |
+| `commentatrice_signe_abime_01.mp3` | Des Ciseaux ébréchés, ça ne coupe plus grand-chose. |
+| `commentatrice_signe_abime_02.mp3` | Une Pierre fêlée, c'est déjà presque du gravier. |
+| `commentatrice_signe_abime_03.mp3` | Une Feuille en lambeaux, ça n'enveloppe plus rien. |
 | `commentatrice_main_en_feu_01.mp3` | Quelqu'un a un extincteur ? |
 | `commentatrice_feu_eteint_01.mp3` | Et le feu s'éteint. Il restera un peu de fumée. |
 | `commentatrice_poignee_franche_01.mp3` | Une belle poignée de main, on sent un grand respect mutuel. |

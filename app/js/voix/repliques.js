@@ -1127,6 +1127,19 @@ export const MOMENTS = {
   ],
   // Les effets du match (16 novembre, répliques choisies par le porteur du projet) : ma main prend feu (8 points de suite),
   // un feu (la flamme ou plus) qui s'éteint, chez l'un ou l'autre.
+  // Le signe abîmé par un smash (18 novembre, répliques choisies par le porteur du projet) : plus tard dans le même set, le joueur
+  // rejoue ce signe et perd le point. seul : le signe abîmé ; deMoi : seulement quand c'est moi (pour « il » ou « elle »).
+  signe_abime: [
+    { r: "c", t: "Il n'impressionne plus vraiment avec ses Ciseaux tout pétés !", f: "Elle n'impressionne plus vraiment avec ses Ciseaux tout pétés !", seul: 1, deMoi: true },
+    { r: "d", t: "Des Ciseaux ébréchés, ça ne coupe plus grand-chose.", seul: 1 },
+    { r: "c", t: "Oula, ces Ciseaux tout cabossés ne font plus peur à personne !", seul: 1 },
+    { r: "c", t: "Il n'impressionne plus vraiment avec sa Pierre fissurée !", f: "Elle n'impressionne plus vraiment avec sa Pierre fissurée !", seul: 0, deMoi: true },
+    { r: "d", t: "Une Pierre fêlée, c'est déjà presque du gravier.", seul: 0 },
+    { r: "c", t: "Oh, cette Pierre en morceaux ne fait plus trembler personne !", seul: 0 },
+    { r: "c", t: "Il n'impressionne plus vraiment avec sa Feuille déchirée !", f: "Elle n'impressionne plus vraiment avec sa Feuille déchirée !", seul: 2, deMoi: true },
+    { r: "d", t: "Une Feuille en lambeaux, ça n'enveloppe plus rien.", seul: 2 },
+    { r: "c", t: "Ah, cette Feuille toute froissée ne fait plus illusion !", seul: 2 },
+  ],
   main_en_feu: [
     { r: "c", t: "Attention, il est en feu ! Appelez les pompiers !", f: "Attention, elle est en feu ! Appelez les pompiers !" },
     { r: "d", t: "Quelqu'un a un extincteur ?" },
