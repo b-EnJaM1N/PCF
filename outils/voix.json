@@ -39,7 +39,11 @@
             "poignee_froide",
             "poignee_contraste",
             "duel_esprits",
-            "dialogue_cri"
+            "dialogue_cri",
+            "signe_abime",
+            "faille_ratee",
+            "quatre_meme",
+            "replay_palette_mauvais"
           ],
           "ids": [
             "commentatrice_dialogue_figure_triple_loop_01",
@@ -69,7 +73,18 @@
         {
           "nom": "sérieuse",
           "indication": "[calm] [serious] [matter-of-fact, like an expert]",
-          "situations": [],
+          "situations": [
+            "replay_palette_pertinent",
+            "replay_palette_propre",
+            "replay_palette_piege",
+            "replay_palette_pas_la",
+            "replay_palette_smash",
+            "replay_palette_smash_subi",
+            "premier_set_net",
+            "premier_set_large",
+            "premier_set_ecrase",
+            "un_set_partout"
+          ],
           "ids": [
             "commentatrice_dialogue_figure_triple_loop_02",
             "commentatrice_dialogue_figure_double_boucle_02",
@@ -105,10 +120,22 @@
           "situations": [
             "main_legendaire",
             "dialogue_apres_tournoi_finale_victoire",
-            "dialogue_apres_majeur_finale_victoire"
+            "dialogue_apres_majeur_finale_victoire",
+            "sacre_point_decisif"
           ],
           "ids": [
-            "commentateur_serie_contre_04"
+            "commentateur_perso_chiromancien_presentation",
+            "commentateur_perso_chiromancien_lecture",
+            "commentateur_perso_chiromancien_victoire_01",
+            "commentateur_dialogue_perso_chiromancien_avant",
+            "commentateur_serie_contre_04",
+            "commentateur_point_decisif_04",
+            "commentateur_point_decisif_09",
+            "commentateur_point_decisif_10",
+            "commentateur_point_decisif_11",
+            "commentateur_point_decisif_12",
+            "commentateur_point_decisif_13",
+            "commentateur_point_decisif_14"
           ]
         },
         {
@@ -122,7 +149,14 @@
             "renversement",
             "serie_pour",
             "lecture_reussie",
-            "dialogue_titre"
+            "dialogue_titre",
+            "match_point_decisif",
+            "david_gagne",
+            "lecon",
+            "main_en_feu",
+            "signe_fetiche",
+            "prolongations",
+            "un_set_partout"
           ],
           "ids": [
             "commentateur_serie_contre_03",
@@ -151,7 +185,6 @@
           "indication": "[sighs] [disappointed]",
           "situations": [
             "defaite",
-            "serie_contre",
             "dialogue_apres_entrainement_defaite",
             "dialogue_apres_tournoi_premiers_defaite",
             "dialogue_apres_tournoi_quarts_defaite",
@@ -159,7 +192,10 @@
             "dialogue_apres_tournoi_finale_defaite",
             "dialogue_apres_majeur_quarts_defaite",
             "dialogue_apres_majeur_demis_defaite",
-            "dialogue_apres_majeur_finale_defaite"
+            "dialogue_apres_majeur_finale_defaite",
+            "match_perdu_point_decisif",
+            "finale_perdue_point_decisif",
+            "dialogue_fin_match"
           ]
         }
       ]
@@ -178,7 +214,13 @@
       "tons": []
     }
   },
+  "prononciation": {
+    "_explication": "Les mots écrits d'une façon et dits d'une autre, remplacés dans le texte envoyé à la voix (18 novembre : « Chiromancien » se dit « Kiromancien »).",
+    "Chiromancien": "Kiromancien"
+  },
   "textes": {
+    "commentateur_perso_chiromancien_feu_01": "[frantic] [screaming at the top of his lungs, completely losing control, ecstatic] MESDAMES ET MESDAMES !!! LE KIROMANCIEN EST EN FEU !!!",
+    "commentateur_perso_chiromancien_victoire_02": "[frantic] [screaming at the top of his lungs, completely losing control, ecstatic] LE KIROMANCIEN EST UN VRAI MAGICIEN !!!",
     "_explication": "Texte pour la voix d'une réplique, quand il doit être différent du texte affiché (prononciation, autre indication de jeu). Clé : l'identifiant de la réplique.",
     "commentateur_lecture_reussie_03_pierre": "[frantic] [screaming at the top of his lungs like a South American football commentator, completely losing control] SECOND POTEAU !!! LA PIÈÈÈÈÈÈÈRRE !!! LA PIERRE !!!",
     "commentateur_lecture_reussie_03_ciseaux": "[frantic] [screaming at the top of his lungs like a South American football commentator, completely losing control] SECOND POTEAU !!! LES CISÔÔÔÔÔÔÔ !!! LES CISEAUX !!!",

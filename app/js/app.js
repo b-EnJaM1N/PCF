@@ -48,7 +48,7 @@ import { installerFreeroll } from "./ecran-freeroll.js";
 import { installerProgrammes } from "./ecran-programmes.js";
 import { palier, nouveautes, conseil, PREMIER_MATCH } from "./decouverte.js";
 import { installerTutos } from "./tutos.js";
-import { chantsPerso, courtsPerso, soutenu, clePseudo, hashTexte, chantsPersoCommuns } from "./chants-perso.js";
+import { chantsPerso, courtsPerso, soutenu, clePseudo, hashTexte, chantsPersoCommuns, persoCommente } from "./chants-perso.js";
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
@@ -1702,6 +1702,10 @@ function presenterSpeaker() {
   const niveauMoi = humain ? monClassement ?? 1200 : P.elo, niveauAdv = humain ? OPP.classement ?? 1200 : OPP.elo;
   // (18 novembre) David contre Goliath : le joueur bien moins classé (200 points d'écart ou plus), pour les commentateurs
   if (S.annonces) S.annonces.outsider = Math.abs(niveauMoi - niveauAdv) >= 200 ? (niveauMoi < niveauAdv ? 0 : 1) : null;
+  // (18 novembre) le joueur du match qui a ses répliques personnalisées (« Le Chiromancien ») ; en duel, l'adversaire compte
+  // une fois qu'on sait que c'est un ami (voir plus bas, attendreAmi)
+  const persoCom = persoCommente(...joueursDuMatch());
+  if (S.annonces) S.annonces.perso = persoCom;
   const monId = `h:${compteUI.session()?.user?.id}`;
   let recents = []; try { recents = lire("speakerRecents", []) || []; } catch { /* rien */ }
   // La mémoire du dernier match contre le même adversaire (gardée pour le premier coup : la même ouverture ?).
@@ -1717,7 +1721,7 @@ function presenterSpeaker() {
       humain, dejaJoues: !!(f && f.v + f.d > 0), niveauMoi, niveauAdv, memePays: humain && OPP.drapeau === P.drapeau,
       rapide: !!(D?.duel?.rapide || S.contreBotRapide), officiel: !!(S.duel && D?.duel?.classe), setsGagnants: S.match.format.setsGagnants,
     }),
-    recents,
+    recents, perso: persoCom,
   });
   // On retient les phrases dites, pour ne pas les répéter aux prochains matchs.
   ecrire("speakerRecents", av.commentaires.map(l => l.id).concat(recents).slice(0, 80));
@@ -1741,6 +1745,7 @@ function presenterSpeaker() {
     // le stade du début de match (ou un chant entier avant un grand match).
     const encore = () => faceAFaceOuvert && !S.passe;
     attendreAmi().then(() => {
+      if (S.annonces) S.annonces.perso = persoCommente(...joueursDuMatch());
       if (!encore()) return;
       const perso = persoDuelCommun(), f = soutenu(...joueursDuMatch());
       let id = null, ligne = null, vol = 0.5, fondu = 1.5;

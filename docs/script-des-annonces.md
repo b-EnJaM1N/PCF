@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1104 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1122 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -439,6 +439,13 @@ restent lus par la voix de synthèse.
 | `commentateur_set_couteau_04.mp3` | Arrivée au sprint, et ça passe d'un boyau ! |
 | `commentateur_set_couteau_05.mp3` | Oula, ça s'est joué à un souffle ! |
 | `commentateur_set_couteau_06.mp3` | Ça passe… et de justesse ! |
+| `commentateur_un_set_partout_01.mp3` | Nous sommes désormais à un set partout. Il a su rectifier le tir pour rester dans la course. |
+| `commentateur_un_set_partout_01_f.mp3` | Nous sommes désormais à un set partout. Elle a su rectifier le tir pour rester dans la course. |
+| `commentateur_un_set_partout_02.mp3` | Ce second set s'achève sur un score de parité. C'est le moment d'inventer la séquence qui surprendra l'adversaire, pour prendre une option sur la victoire. |
+| `commentateur_un_set_partout_03.mp3` | Les deux mains rentrent aux vestiaires sans un regard. Il faut rester concentré, et ne rien montrer que l'adversaire puisse exploiter pour sa prochaine ouverture. |
+| `commentateur_un_set_partout_04.mp3` | Un retour qui fait du bien au moral, et un troisième set qui s'annonce très disputé. On se retrouve dans un instant sur HandSlam TV pour le dénouement de ce duel. |
+| `commentateur_un_set_partout_05.mp3` | Il a su produire son effort pour revenir à hauteur de la main adverse. Il faut à présent supporter la pression, et donner son meilleur chifoumi, sans oublier les fondamentaux. |
+| `commentateur_un_set_partout_05_f.mp3` | Elle a su produire son effort pour revenir à hauteur de la main adverse. Il faut à présent supporter la pression, et donner son meilleur chifoumi, sans oublier les fondamentaux. |
 | `commentateur_premier_set_net_01.mp3` | Un set bien maîtrisé. Son adversaire doit maintenant réagir. |
 | `commentateur_premier_set_net_02_pierre.mp3` | Ce premier set prend fin sur une Pierre bien sentie. La main adverse n'a pas su réellement l'inquiéter. |
 | `commentateur_premier_set_net_02_ciseaux.mp3` | Ce premier set prend fin sur des Ciseaux bien sentis. La main adverse n'a pas su réellement l'inquiéter. |
@@ -598,6 +605,15 @@ restent lus par la voix de synthèse.
 | `commentateur_perso_supporters_02_f.mp3` | Ils sont venus nombreux pour la soutenir ce soir ! Quelle ferveur ! |
 | `commentateur_perso_supporters_03.mp3` | Tout le public scande son nom ! Il joue à domicile ce soir ! |
 | `commentateur_perso_supporters_03_f.mp3` | Tout le public scande son nom ! Elle joue à domicile ce soir ! |
+| `commentateur_perso_chiromancien_presentation_01.mp3` | Mesdames et mesdames… celui qui lit dans les mains de ses adversaires… le Chiromancien ! |
+| `commentateur_perso_chiromancien_presentation_02.mp3` | Il a vu votre défaite dans les lignes de votre main… Accueillez le Chiromancien ! |
+| `commentateur_perso_chiromancien_lecture_01.mp3` | Le Chiromancien l'avait lu dans sa main ! |
+| `commentateur_perso_chiromancien_lecture_02.mp3` | Encore une prédiction réussie pour le Chiromancien ! |
+| `commentateur_perso_chiromancien_lecture_03.mp3` | Le Chiromancien voit tout venir ! |
+| `commentateur_perso_chiromancien_perd_01.mp3` | Oula, le Chiromancien n'avait pas vu celle-là venir ! |
+| `commentateur_perso_chiromancien_victoire_01.mp3` | Le Chiromancien l'avait prédit ! Victoire ! |
+| `commentateur_perso_chiromancien_victoire_02.mp3` | Le Chiromancien est un vrai magicien ! |
+| `commentateur_perso_chiromancien_feu_01.mp3` | Mesdames et mesdames, le Chiromancien est en feu ! |
 | `commentateur_replay_intro_01.mp3` | Revoyons ça ! |
 | `commentateur_replay_intro_02.mp3` | On le revoit au ralenti… Regardez-moi ça ! |
 | `commentateur_replay_intro_03.mp3` | Attention, on revoit l'action ! |
@@ -934,6 +950,8 @@ restent lus par la voix de synthèse.
 | `commentateur_poignee_legere_01.mp3` | Une poignée de main… minimaliste ! |
 | `commentateur_poignee_legere_02.mp3` | Une poignée de main du bout des doigts ! |
 | `commentateur_humain_01.mp3` | C'est un duel ! Un vrai ! Les yeux dans les yeux ! |
+| `commentateur_dialogue_perso_chiromancien_avant_01.mp3` | Le Chiromancien est sur le central, Madame ! |
+| `commentateur_dialogue_perso_chiromancien_avant_02.mp3` | Madame, croyez-vous aux pouvoirs du Chiromancien ? |
 | `commentateur_dialogue_avant_debutant_01.mp3` | Un nouveau venu sur le central ! Bienvenue ! |
 | `commentateur_dialogue_avant_debutant_02.mp3` | Son tout premier match officiel, Madame ! |
 | `commentateur_dialogue_avant_debutant_03.mp3` | Un baptême du feu pour ce joueur ! |
@@ -1227,7 +1245,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_06.mp3` | Il exulte ! |
 | `commentateur_dialogue_cri_06_f.mp3` | Elle exulte ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (859 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (869 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1435,6 +1453,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_set_couteau_03.mp3` | Personne ne méritait de le perdre. L'un des deux l'a quand même perdu. |
 | `commentatrice_set_couteau_04.mp3` | La goutte d'eau qui fait déborder la Feuille. |
 | `commentatrice_set_couteau_05.mp3` | Les deux méritaient. Un seul l'emporte. C'est le sport. |
+| `commentatrice_un_set_partout_01.mp3` | Bien malin qui pourra prédire maintenant l'issue de cette rencontre. |
+| `commentatrice_un_set_partout_02.mp3` | Le début de la troisième manche sera crucial. |
+| `commentatrice_un_set_partout_03.mp3` | Un deuxième set très bien négocié pour continuer d'y croire. À l'aube de ce troisième set, c'est l'heure d'ajuster ses séquences et d'affirmer son caractère, en évitant tout péché d'orgueil. |
 | `commentatrice_premier_set_net_01.mp3` | Patiemment, il a assis sa victoire, sans laisser à son adversaire le temps d'installer sa riposte. |
 | `commentatrice_premier_set_net_01_f.mp3` | Patiemment, elle a assis sa victoire, sans laisser à son adversaire le temps d'installer sa riposte. |
 | `commentatrice_premier_set_large_01.mp3` | Au terme de ce set, une classe d'écart semble séparer les deux mains. Il doit repenser complètement ses séquences et se montrer plus agressif dans les duels. |
@@ -1553,6 +1574,11 @@ restent lus par la voix de synthèse.
 | `commentatrice_perso_supporters_02.mp3` | Des supporters rien que pour lui. Il ne faudra pas les décevoir. |
 | `commentatrice_perso_supporters_02_f.mp3` | Des supporters rien que pour elle. Il ne faudra pas les décevoir. |
 | `commentatrice_perso_supporters_03.mp3` | Un chant à son nom. Moi, à mes débuts, j'avais juste un thermos. |
+| `commentatrice_perso_chiromancien_presentation_01.mp3` | Le Chiromancien. Il prétend connaître l'avenir. Moi, je connais déjà son ouverture. |
+| `commentatrice_perso_chiromancien_lecture_01.mp3` | Les lignes de la main ne mentent pas. Celles de son adversaire, en tout cas. |
+| `commentatrice_perso_chiromancien_perd_01.mp3` | Même les voyants ont des jours sans. |
+| `commentatrice_perso_chiromancien_victoire_01.mp3` | Il savait comment ça finirait. Nous, on a dû attendre. |
+| `commentatrice_perso_chiromancien_defaite_01.mp3` | Sa boule de cristal était embuée ce soir. |
 | `commentatrice_replay_intro_01.mp3` | Revoyons les images. Calmement. |
 | `commentatrice_replay_intro_02.mp3` | Au ralenti, c'est encore plus clair. |
 | `commentatrice_replay_sauvee_01.mp3` | Au ralenti, on voit la peur. Et puis non. |
@@ -1812,6 +1838,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_humain_02.mp3` | Entre amis, il n'y a pas de pitié. |
 | `commentatrice_humain_03.mp3` | Ils se connaissent. Les surprises seront rares. Ou nombreuses. |
 | `commentatrice_humain_04.mp3` | Un duel entre amis. Les plus cruels. |
+| `commentatrice_dialogue_perso_chiromancien_avant_01.mp3` | J'ai caché mes mains. On ne sait jamais. |
+| `commentatrice_dialogue_perso_chiromancien_avant_02.mp3` | Je crois surtout à ses statistiques. |
 | `commentatrice_dialogue_avant_debutant_01.mp3` | On sera indulgents. Pendant trois coups. |
 | `commentatrice_dialogue_avant_debutant_02.mp3` | Il y a toujours une première fois. Espérons qu'elle ne soit pas la dernière. |
 | `commentatrice_dialogue_avant_debutant_03.mp3` | Les mains tremblent un peu. C'est normal. Les miennes aussi, en 1981. |

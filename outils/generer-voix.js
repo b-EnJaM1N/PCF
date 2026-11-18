@@ -34,11 +34,13 @@ export function tonDe(r, cfg = config) {
   return ton ? ton.nom : TON_HABITUEL[r.role] || "";
 }
 // Le texte envoyé à la voix : l'indication de jeu, puis la réplique (ou son texte spécial).
+// (les mots qui se disent autrement qu'ils s'écrivent : « prononciation », dans voix.json)
 export function texteVoix(r, cfg = config) {
+  const dire = t => Object.entries(cfg.prononciation || {}).filter(([k]) => !k.startsWith("_")).reduce((x, [k, v]) => x.split(k).join(v), t);
   const special = cfg.textes?.[r.id];
-  if (special) return special;
+  if (special) return dire(special);
   const ind = indicationDe(r, cfg);
-  return ind ? `${ind} ${r.texte}` : r.texte;
+  return dire(ind ? `${ind} ${r.texte}` : r.texte);
 }
 
 // Les répliques à générer, dans l'ordre du catalogue.

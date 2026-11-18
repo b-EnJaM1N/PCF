@@ -16,6 +16,10 @@ export const ditAVoixHaute = r => r.role !== "arbitre" || ARBITRE_PARLE.test(r.i
 
 // La vitesse de lecture (1 = normale) : les commentaires doivent tenir entre deux coups. La hauteur de la voix ne change pas.
 export const VITESSES = { arbitre: 1, commentateur: 1.4, commentatrice: 1.65, speaker: 1.25, journaliste: 1 };
+// Quelques répliques jouées plus vite que leur rôle (18 novembre, demande du porteur du projet : Roland qui hurle « le Chiromancien
+// est en feu » parlait trop lentement ; « un vrai magicien » aussi).
+export const VITESSES_REPLIQUE = { commentateur_perso_chiromancien_feu_01: 1.8, commentateur_perso_chiromancien_victoire_02: 1.8 };
+export const vitesseDe = r => VITESSES_REPLIQUE[r.id] ?? VITESSES[r.role] ?? 1;
 
 const synth = typeof window !== "undefined" && "speechSynthesis" in window ? window.speechSynthesis : null;
 
@@ -98,7 +102,7 @@ export class LecteurVoix {
       if (audio) {
         audio.volume = VOLUMES[r.role] ?? 0.8;
         audio.preservesPitch = audio.mozPreservesPitch = audio.webkitPreservesPitch = true;
-        audio.defaultPlaybackRate = audio.playbackRate = VITESSES[r.role] ?? 1;
+        audio.defaultPlaybackRate = audio.playbackRate = vitesseDe(r);
       }
       if (audio) this.jouerFichier(audio, debut, fin, () => { if (jeton === this.jeton) this.parler(r, debut, fin); });
       else if (!this.synthese) fin();

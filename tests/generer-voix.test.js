@@ -74,7 +74,9 @@ test("un ton peut viser des répliques précises (Roland enflammé pour ses enco
   // (la 03, « Allez, petit bonhomme », retirée le 5 novembre ; la 05, « T'es pas venu ici pour souffrir », le 12 novembre)
   assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_14")), /^\[excited\] \[shouting\] /);
   assert.equal(CATALOGUE.get("commentateur_serie_contre_05"), undefined, "réplique retirée : plus au catalogue");
-  assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_01")), /^\[sighs\] /, "les autres séries perdues restent déçues");
+  // (18 novembre, demande du porteur du projet : Roland n'est plus « déçu » pendant le jeu, seulement après le match)
+  assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_01")), /^\[excited\] /, "pendant le jeu, Roland reste enjoué");
+  assert.match(texteVoix(CATALOGUE.get("commentateur_defaite_01")), /^\[sighs\] /, "après une défaite, il peut être déçu");
 });
 
 test("page d'écoute : chaque réplique a un numéro fixe, unique", () => {
@@ -83,4 +85,18 @@ test("page d'écoute : chaque réplique a un numéro fixe, unique", () => {
   for (const r of ecoute) assert.equal(r.n, numeros[r.id], r.id);
   assert.equal(new Set(Object.values(numeros)).size, Object.keys(numeros).length, "pas deux répliques avec le même numéro");
   assert.equal(numeros.commentateur_dialogue_avant_match_01, 15, "les numéros donnés au porteur du projet ne bougent pas");
+});
+
+test("« Chiromancien » se dit « Kiromancien » (le texte affiché garde son orthographe)", () => {
+  const r = CATALOGUE.get("commentateur_perso_chiromancien_lecture_01");
+  assert.match(r.texte, /Chiromancien/);
+  assert.match(texteVoix(r), /Le Kiromancien l'avait lu/);
+  assert.doesNotMatch(texteVoix(r), /Chiro/);
+});
+
+test("« Le Chiromancien est en feu » et « un vrai magicien » sont joués plus vite que les autres répliques de Roland", async () => {
+  const { vitesseDe, VITESSES } = await import("../app/js/voix/lecteur.js");
+  assert.ok(vitesseDe(CATALOGUE.get("commentateur_perso_chiromancien_feu_01")) > VITESSES.commentateur);
+  assert.ok(vitesseDe(CATALOGUE.get("commentateur_perso_chiromancien_victoire_02")) > VITESSES.commentateur);
+  assert.equal(vitesseDe(CATALOGUE.get("commentateur_perso_chiromancien_victoire_01")), VITESSES.commentateur);
 });

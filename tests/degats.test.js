@@ -49,3 +49,11 @@ test("les coutures : une par pièce du gant, à la même distance du bord (14 no
   assert.match(s, /stroke-dasharray="2.2 2" transform="rotate\(-12 36 50\)"/, "le doigt penché : sa couture penche avec lui");
   assert.ok(s.indexOf(doigt) > s.indexOf("y=\"42.2\""), "chaque couture juste après sa pièce : la pièce suivante la recouvre");
 });
+
+// (18 novembre, demande du porteur du projet : au 2e smash, le bout de l'index est enflé et bleui ; le 1er smash ne change pas)
+test("les Ciseaux au 2e smash : le bout de l'index enflé ; pas au 1er", async () => {
+  const { avatarSVG } = await import("../app/js/avatar.js");
+  const svg = t => avatarSVG({ gant: "rouge", symbole: "ciseaux-dos", degats: { tordu: t } }), bleu = "rgba(120,40,140,.38)";
+  assert.ok(svg(2).includes(bleu));
+  assert.ok(!svg(1).includes(bleu));
+});
