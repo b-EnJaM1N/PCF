@@ -124,8 +124,10 @@
             "sacre_point_decisif"
           ],
           "ids": [
-            "commentateur_perso_chiromancien_feu",
-            "commentateur_perso_chiromancien_victoire_02",
+            "commentateur_perso_chiromancien_presentation",
+            "commentateur_perso_chiromancien_lecture",
+            "commentateur_perso_chiromancien_victoire_01",
+            "commentateur_dialogue_perso_chiromancien_avant",
             "commentateur_serie_contre_04",
             "commentateur_point_decisif_04",
             "commentateur_point_decisif_09",
@@ -217,6 +219,8 @@
     "Chiromancien": "Kiromancien"
   },
   "textes": {
+    "commentateur_perso_chiromancien_feu_01": "[frantic] [screaming at the top of his lungs, completely losing control, ecstatic] MESDAMES ET MESDAMES !!! LE KIROMANCIEN EST EN FEU !!!",
+    "commentateur_perso_chiromancien_victoire_02": "[frantic] [screaming at the top of his lungs, completely losing control, ecstatic] LE KIROMANCIEN EST UN VRAI MAGICIEN !!!",
     "_explication": "Texte pour la voix d'une réplique, quand il doit être différent du texte affiché (prononciation, autre indication de jeu). Clé : l'identifiant de la réplique.",
     "commentateur_lecture_reussie_03_pierre": "[frantic] [screaming at the top of his lungs like a South American football commentator, completely losing control] SECOND POTEAU !!! LA PIÈÈÈÈÈÈÈRRE !!! LA PIERRE !!!",
     "commentateur_lecture_reussie_03_ciseaux": "[frantic] [screaming at the top of his lungs like a South American football commentator, completely losing control] SECOND POTEAU !!! LES CISÔÔÔÔÔÔÔ !!! LES CISEAUX !!!",

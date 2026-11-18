@@ -799,7 +799,7 @@ export const MOMENTS = {
   ],
   perso_chiromancien_feu: [   // sa main s'enflamme (6 points de suite : la petite flamme), Roland s'emballe (18 novembre, écrites par le porteur du projet)
     { r: "c", t: "Mesdames et mesdames, le Chiromancien est en feu !" },
-    { r: "c", t: "Le Chiromancien est en feu, mesdames et messieurs !" },
+    { r: "c", t: "Le Chiromancien est en feu, mesdames et messieurs !", retiree: true },   // (retirée le 18 novembre, demande du porteur du projet)
   ],
   perso_chiromancien_defaite: [
     { r: "d", t: "Sa boule de cristal était embuée ce soir." },
