@@ -86,7 +86,8 @@ export function feuDuCoup(coups) {
   const e = nouveauFeu();
   let chg = [];
   for (const x of coups) chg = noterFeu(e, x.gagnant);
-  return { allume: chg.some(k => k.joueur === 0 && k.a === 3 && k.de < 3), eteint: chg.some(k => k.de >= 2 && k.a === 0) };
+  const prend = j => chg.some(k => k.joueur === j && k.a === 3 && k.de < 3);
+  return { allume: prend(0), allumeAdv: prend(1), eteint: chg.some(k => k.de >= 2 && k.a === 0) };
 }
 
 // Le signe abîmé (18 novembre) : le perdant du dernier coup a joué un signe abîmé plus tôt dans le set par un smash gagnant
@@ -283,6 +284,8 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
         moment = david; etat.davidDit = true;
       } else if ((ab = signeAbime(match)) && peutCommenter(2, 0.5) && rng() < 0.6) {   // le signe abîmé par un smash, rejoué et perdu
         moment = "signe_abime"; ctx.signe = ab.signe; ctx.smashAdv = ab.joueur === 1;
+      } else if (persoFeu(etat, feu) && peutCommenter(2, 0.5) && rng() < 0.8) {   // (18 novembre) la main du Chiromancien prend feu
+        moment = `perso_${etat.perso.nom}_feu`;
       } else if (feu.allume && peutCommenter(2, 0.5) && rng() < 0.8) {   // ma main prend feu (8 points de suite ; effets.js)
         moment = "main_en_feu";
       } else if (feu.eteint && peutCommenter(4) && rng() < 0.35) {        // une flamme qui s'éteint (un point perdu)
@@ -382,7 +385,8 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
   const perso = persoPool && choisir(etat, persoPool, ctx, rng);
   if (perso) { moment = persoPool; etat.dejaSet.add("perso"); }
   if (moment) {
-    commentaire = perso || choisir(etat, moment, ctx, rng);
+    commentaire = perso || choisir(etat, moment, ctx, rng)
+      || (moment.startsWith("perso_") && moment.endsWith("_feu") && etat.perso.joueur === 0 ? choisir(etat, "main_en_feu", ctx, rng) : null);
     if (commentaire) { lignes.push(commentaire); etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
   }
   etat.dernierMoment = commentaire ? moment : null;
@@ -391,6 +395,12 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
   const ambiance = match.termine ? "fin" : evt.balleApres && evt.balleApres.type === "match" ? "silence" : "murmure";
   return { lignes, commentaire, dialogue: dialogueFin, public: pub, ambiance };
 }
+
+// La main du joueur qui a ses répliques personnalisées vient de prendre feu, et il lui reste une réplique « feu » à dire.
+const persoFeu = (etat, feu) => {
+  const pe = etat.perso, pool = pe && POOLS[`perso_${pe.nom}_feu`];
+  return !!pool && (pe.joueur === 0 ? feu.allume : feu.allumeAdv) && pool.some(e => !etat.dits.has(e.base));
+};
 
 // Les moments ordinaires, qu'une réplique personnalisée peut remplacer (voir annoncerCoup).
 const MOMENTS_ORDINAIRES = new Set(["serie_pour", "serie_contre", "lecture_reussie", "lecture_subie", "divers", "beau_coup", "quatre_meme",
