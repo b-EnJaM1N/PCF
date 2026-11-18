@@ -849,8 +849,12 @@ function apresPoint(evt, a, cel, rp) {
     };
     // En duel, le set suivant démarre quand les deux joueurs sont prêts (le serveur décide).
     if (S.duel) D.apresPanneau = nouveauSet;
-    setTimeout(() => {
-      if (S.duel && (!D || D.duel.phase !== "entre_sets")) { if (D) { D.apresPanneau = null; nouveauSet(); duelReprendre(); } return; }
+    // Le moment du set, au ralenti (replay.js ; en solo : en duel, la pause est chronométrée) : il passe d'abord, une fois les
+    // commentaires de fin de set terminés, et l'écran « Lancer le set suivant » n'apparaît qu'à la fin du replay (18 novembre,
+    // demande du porteur du projet : on le voyait passer furtivement avant le replay).
+    const moSet = !S.duel && replayVisible() ? momentDuSet(S.moments || [], n - 1) : null, seanceSet = S;
+    const ouvrirPause = () => {
+      if (S !== seanceSet) return;
       ouvrirPanneau({
       kick: `Fin du ${ORD[n - 1].toLowerCase()} set`,
       big: g === 0 ? "Set pour toi" : `Set pour ${OPP.nom}`, bigCls: g === 0 ? "me" : "bot",
@@ -862,8 +866,11 @@ function apresPoint(evt, a, cel, rp) {
       onGo: S.duel ? duelPret : () => { nouveauSet(); decompteSolo(); },
     });
       if (S.duel) { majBoutonsPret(); afficherMessages(D.duel); }   // (le bouton des messages de la pause, étape 53)
-      // Le moment du set, au ralenti (replay.js ; en solo : en duel, la pause est chronométrée).
-      if (!S.duel && replayVisible()) { const mo = momentDuSet(S.moments || [], n - 1), seance = S; if (mo) setTimeout(() => { if (S === seance && panneauOuvert) jouerReplay([mo]); }, 900); }
+    };
+    setTimeout(() => {
+      if (S.duel && (!D || D.duel.phase !== "entre_sets")) { if (D) { D.apresPanneau = null; nouveauSet(); duelReprendre(); } return; }
+      if (moSet) voix.finiDeParler(() => { if (S === seanceSet) jouerReplay([moSet], ouvrirPause); }, 10000);
+      else ouvrirPause();
     }, cel ? 2400 : 1200);                                  // on laisse le temps de voir le cri
     return evt;
   }
