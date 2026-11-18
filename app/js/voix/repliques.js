@@ -797,7 +797,7 @@ export const MOMENTS = {
     { r: "d", t: "Il savait comment ça finirait. Nous, on a dû attendre." },
     { r: "c", t: "Le Chiromancien est un vrai magicien !" },   // (18 novembre, écrite par le porteur du projet)
   ],
-  perso_chiromancien_feu: [   // sa main prend feu (8 points de suite), Roland s'emballe (18 novembre, écrites par le porteur du projet)
+  perso_chiromancien_feu: [   // sa main s'enflamme (6 points de suite : la petite flamme), Roland s'emballe (18 novembre, écrites par le porteur du projet)
     { r: "c", t: "Mesdames et mesdames, le Chiromancien est en feu !" },
     { r: "c", t: "Le Chiromancien est en feu, mesdames et messieurs !" },
   ],
