@@ -876,12 +876,20 @@ export const MOMENTS = {
     { r: "d", t: "Il a joué ce que tout le monde attendait. Son adversaire le premier.", f: "Elle a joué ce que tout le monde attendait. Son adversaire le premier." },
     { r: "d", t: "Une fois, c'est une idée. Trois fois, c'est une habitude. Et l'adversaire l'a vue." },
   ],
+  // « Le jeu n'était pas là » : le perdant du point a pris la mauvaise décision (18 novembre, précision du porteur du projet : pas
+  // un pari réussi). « Il » : celui qui a perdu le point ; le signe : celui qu'il a joué. (Les répliques « pari » d'avant sont
+  // retirées : trois sont reprises pendant le match, dans apres_egalites_gagne ; les deux autres sont mises de côté.)
   replay_palette_pas_la: [
-    { r: "d", t: "Honnêtement ? Il n'y avait rien à lire. Il a eu raison d'oser.", f: "Honnêtement ? Il n'y avait rien à lire. Elle a eu raison d'oser." },
-    { r: "d", t: "Pas de lecture possible ici. Il a tenté sa chance, et ça a souri.", f: "Pas de lecture possible ici. Elle a tenté sa chance, et ça a souri." },   // (18 novembre)
-    { r: "d", t: "Rien sur la palette. Il fallait de l'instinct, il en avait.", f: "Rien sur la palette. Il fallait de l'instinct, elle en avait." },
-    { r: "d", t: "Un pari. Réussi, mais un pari." },   // (18 novembre, choisie par le porteur du projet)
-    { r: "d", t: "Il n'y avait rien à voir. Il a joué quand même.", f: "Il n'y avait rien à voir. Elle a joué quand même." },
+    { r: "d", t: "Honnêtement ? Il n'y avait rien à lire. Il a eu raison d'oser.", f: "Honnêtement ? Il n'y avait rien à lire. Elle a eu raison d'oser.", retiree: true },
+    { r: "d", t: "Pas de lecture possible ici. Il a tenté sa chance, et ça a souri.", f: "Pas de lecture possible ici. Elle a tenté sa chance, et ça a souri.", retiree: true },
+    { r: "d", t: "Rien sur la palette. Il fallait de l'instinct, il en avait.", f: "Rien sur la palette. Il fallait de l'instinct, elle en avait.", retiree: true },
+    { r: "d", t: "Un pari. Réussi, mais un pari.", retiree: true },
+    { r: "d", t: "Il n'y avait rien à voir. Il a joué quand même.", f: "Il n'y avait rien à voir. Elle a joué quand même.", retiree: true },
+    { r: "d", t: "Le jeu n'était pas là. Tout indiquait un autre signe." },   // (18 novembre, choisies par le porteur du projet)
+    { r: "d", t: "Il a joué ce qu'il avait envie de jouer. Pas ce que le match demandait.", f: "Elle a joué ce qu'elle avait envie de jouer. Pas ce que le match demandait." },
+    { r: "d", t: ["La Pierre, ici ? Non. Le jeu n'était clairement pas là.", "Les Ciseaux, ici ? Non. Le jeu n'était clairement pas là.", "La Feuille, ici ? Non. Le jeu n'était clairement pas là."] },
+    { r: "d", t: "Il s'est entêté. Le bon coup était sous ses yeux.", f: "Elle s'est entêtée. Le bon coup était sous ses yeux." },
+    { r: "d", t: "Une décision difficile à défendre. Même pour moi." },
   ],
   // La palette du replay (18 novembre, répliques choisies par le porteur du projet). Roland décrit l'action au dévoilement
   // (replay_r_…, à la place de la réplique habituelle du replay), Monique donne le verdict (replay_palette_…).
@@ -934,10 +942,15 @@ export const MOMENTS = {
     { r: "c", t: "Oula, ce smash, il va le sentir encore demain !", f: "Oula, ce smash, elle va le sentir encore demain !" },
     { r: "c", t: "Il a encaissé… et il n'a jamais vraiment récupéré !", f: "Elle a encaissé… et elle n'a jamais vraiment récupéré !" },
   ],
-  replay_r_pas_la: [   // (18 novembre, choisies par le porteur du projet : rien à lire, c'était un pari)
-    { r: "c", t: "Un pari ! Un pur pari ! Et ça passe !" },
-    { r: "c", t: "Rien à lire, tout à risquer ! Et il ose !", f: "Rien à lire, tout à risquer ! Et elle ose !" },
-    { r: "c", t: "Ah, à pile ou face, et il tombe du bon côté !", f: "Ah, à pile ou face, et elle tombe du bon côté !" },
+  replay_r_pas_la: [   // le mauvais choix (voir replay_palette_pas_la ; les trois « pari » sont reprises dans apres_egalites_gagne)
+    { r: "c", t: "Un pari ! Un pur pari ! Et ça passe !", retiree: true },
+    { r: "c", t: "Rien à lire, tout à risquer ! Et il ose !", f: "Rien à lire, tout à risquer ! Et elle ose !", retiree: true },
+    { r: "c", t: "Ah, à pile ou face, et il tombe du bon côté !", f: "Ah, à pile ou face, et elle tombe du bon côté !", retiree: true },
+    { r: "c", t: "Oh là là, mauvais choix ! Il ne fallait pas faire ça !" },   // (18 novembre, choisies par le porteur du projet)
+    { r: "c", t: "Oula, c'était évident ! Il ne fallait surtout pas jouer ce coup-là !" },
+    { r: "c", t: "Aïe, aïe, aïe… La mauvaise décision au pire moment !" },
+    { r: "c", t: "Mais qu'est-ce qu'il a fait ? Tout le monde l'avait vu venir, sauf lui !", f: "Mais qu'est-ce qu'elle a fait ? Tout le monde l'avait vu venir, sauf elle !" },
+    { r: "c", t: ["Oh non, pas la Pierre ! Pas là !", "Oh non, pas les Ciseaux ! Pas là !", "Oh non, pas la Feuille ! Pas là !"] },
   ],
   replay_palette_piege: [
     { r: "d", t: "Il l'a amené exactement où il voulait.", f: "Elle l'a amené exactement où elle voulait." },
@@ -1068,6 +1081,13 @@ export const MOMENTS = {
     { r: "d", t: "Il fallait bien que quelqu'un change d'avis. Ce fut lui.", f: "Il fallait bien que quelqu'un change d'avis. Ce fut elle." },
     { r: "c", t: "Après la guerre des nerfs, la délivrance !" },
     { r: "d", t: "La patience paie. Parfois. Là, oui." },
+    // (18 novembre : les répliques « pari » du replay, reprises ici, enregistrements compris ; demande du porteur du projet)
+    { r: "c", t: "Un pari ! Un pur pari ! Et ça passe !" },
+    { r: "c", t: "Rien à lire, tout à risquer ! Et il ose !", f: "Rien à lire, tout à risquer ! Et elle ose !" },
+    { r: "c", t: "Ah, à pile ou face, et il tombe du bon côté !", f: "Ah, à pile ou face, et elle tombe du bon côté !" },
+    { r: "d", t: "Un pari. Réussi, mais un pari." },
+    { r: "d", t: "Il n'y avait rien à voir. Il a joué quand même.", f: "Il n'y avait rien à voir. Elle a joué quand même." },
+    { r: "d", t: "Honnêtement ? Il n'y avait rien à lire. Il a eu raison d'oser.", f: "Honnêtement ? Il n'y avait rien à lire. Elle a eu raison d'oser." },
   ],
   apres_egalites_perdu: [
     { r: "c", t: "Oh, la feinte de la feinte de la feinte… ça a failli passer !" },
