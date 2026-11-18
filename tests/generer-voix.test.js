@@ -86,3 +86,10 @@ test("page d'écoute : chaque réplique a un numéro fixe, unique", () => {
   assert.equal(new Set(Object.values(numeros)).size, Object.keys(numeros).length, "pas deux répliques avec le même numéro");
   assert.equal(numeros.commentateur_dialogue_avant_match_01, 15, "les numéros donnés au porteur du projet ne bougent pas");
 });
+
+test("« Chiromancien » se dit « Kiromancien » (le texte affiché garde son orthographe)", () => {
+  const r = CATALOGUE.get("commentateur_perso_chiromancien_lecture_01");
+  assert.match(r.texte, /Chiromancien/);
+  assert.match(texteVoix(r), /Le Kiromancien l'avait lu/);
+  assert.doesNotMatch(texteVoix(r), /Chiro/);
+});

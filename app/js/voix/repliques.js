@@ -774,6 +774,31 @@ export const MOMENTS = {
     { r: "d", t: "Des supporters rien que pour lui. Il ne faudra pas les décevoir.", f: "Des supporters rien que pour elle. Il ne faudra pas les décevoir." },
     { r: "d", t: "Un chant à son nom. Moi, à mes débuts, j'avais juste un thermos." },
   ],
+  // Les répliques personnalisées d'un joueur (chants-perso.js, COMMENTAIRES_PERSO ; 18 novembre, répliques choisies par le porteur
+  // du projet pour son testeur « Le Chiromancien », d'accord pour être cité) : dites seulement dans ses matchs, de temps en temps.
+  // (prononcé « Kiromancien » : voir « prononciation » dans outils/voix.json)
+  perso_chiromancien_presentation: [   // avant le match
+    { r: "c", t: "Mesdames et messieurs… celui qui lit dans les mains de ses adversaires… le Chiromancien !" },
+    { r: "c", t: "Il a vu votre défaite dans les lignes de votre main… Accueillez le Chiromancien !" },
+    { r: "d", t: "Le Chiromancien. Il prétend connaître l'avenir. Moi, je connais déjà son ouverture." },
+  ],
+  perso_chiromancien_lecture: [   // il enchaîne les points (pendant l'échange : seulement les courtes) ou gagne un set
+    { r: "c", t: "Le Chiromancien l'avait lu dans sa main !" },
+    { r: "c", t: "Encore une prédiction réussie pour le Chiromancien !" },
+    { r: "d", t: "Les lignes de la main ne mentent pas. Celles de son adversaire, en tout cas." },
+    { r: "c", t: "Le Chiromancien voit tout venir !" },
+  ],
+  perso_chiromancien_perd: [   // il perd plusieurs points de suite
+    { r: "d", t: "Même les voyants ont des jours sans." },
+    { r: "c", t: "Oula, le Chiromancien n'avait pas vu celle-là venir !" },
+  ],
+  perso_chiromancien_victoire: [
+    { r: "c", t: "Le Chiromancien l'avait prédit ! Victoire !" },
+    { r: "d", t: "Il savait comment ça finirait. Nous, on a dû attendre." },
+  ],
+  perso_chiromancien_defaite: [
+    { r: "d", t: "Sa boule de cristal était embuée ce soir." },
+  ],
   // Le replay (replay.js ; 6 novembre, répliques validées par le porteur du projet) : pour lancer le replay, puis selon l'action
   // (« il » : le joueur qui a fait l'action).
   replay_intro: [
@@ -1427,6 +1452,11 @@ export const MOMENTS = {
 // Chaque dialogue : une réplique du commentateur, puis la réponse de la commentatrice
 // (texte, ou { t, f } quand la version au féminin diffère).
 export const DIALOGUES = {
+  // Avant un match du Chiromancien (voir perso_chiromancien_presentation, plus haut)
+  perso_chiromancien_avant: [
+    ["Le Chiromancien est sur le central, Madame !", "J'ai caché mes mains. On ne sait jamais."],
+    ["Madame, croyez-vous aux pouvoirs du Chiromancien ?", "Je crois surtout à ses statistiques."],
+  ],
   // Le tout premier match d'un joueur, en duel (18 novembre, gros lot 3, choisis par le porteur du projet).
   avant_debutant: [
     ["Un nouveau venu sur le central ! Bienvenue !", "On sera indulgents. Pendant trois coups."],

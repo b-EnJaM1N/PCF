@@ -687,3 +687,44 @@ test("un set partout : à la fin du 2e set d'un match en 2 sets gagnants, souven
   }
   assert.ok(vu > 25, `vu ${vu}`);
 });
+
+// (18 novembre) les répliques personnalisées du Chiromancien : seulement dans ses matchs, des deux côtés (moi ou l'adversaire)
+test("le Chiromancien : ses répliques seulement dans ses matchs, sur ses séries, ses sets et sa fin de match", async () => {
+  const { persoCommente } = await import("../app/js/chants-perso.js");
+  assert.deepEqual(persoCommente({ pseudo: "Le Chiromancien", numero: 6047 }, null), { nom: "chiromancien", joueur: 0 });
+  assert.deepEqual(persoCommente({ pseudo: "Kikou", numero: 1743 }, { pseudo: "le chiromancien", numero: 6047 }), { nom: "chiromancien", joueur: 1 });
+  assert.equal(persoCommente({ pseudo: "Le Chiromancien", numero: 1 }, null), null, "le numéro compte");
+  const perso = id => /_perso_chiromancien_/.test(id);
+  for (const joueur of [0, 1, null]) {
+    const rng = rngFixe(joueur === null ? 3 : joueur + 1), vus = new Set();
+    for (let k = 0; k < 60; k++) {
+      const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces();
+      if (joueur !== null) etat.perso = { nom: "chiromancien", joueur };
+      while (!m.termine) {
+        const e = jouerCoup(m, Math.floor(rng() * 3), Math.floor(rng() * 3));
+        const a = annoncerCoup(m, e, etat, {}, rng);
+        for (const l of a.lignes.filter(x => perso(x.id))) {
+          assert.ok(CATALOGUE.has(l.id), l.id);
+          const pool = /_perso_chiromancien_(\w+?)_\d\d/.exec(l.id)[1];
+          if (pool === "lecture") assert.ok(e.finSet ? e.gagnant === joueur : etat.serie.joueur === joueur && etat.serie.n >= 3, `${l.id} : c'est lui qui gagne`);
+          if (pool === "perd") assert.ok(etat.serie.joueur !== joueur && etat.serie.n >= 3 && !e.finSet, `${l.id} : c'est lui qui perd`);
+          if (pool === "victoire") assert.ok(e.finMatch && e.gagnant === joueur, l.id);
+          if (pool === "defaite") assert.ok(e.finMatch && e.gagnant !== joueur, l.id);
+          if (!e.finSet) assert.ok(l.texte.length <= 62, `${l.id} : assez courte pour l'échange`);
+          vus.add(pool);
+        }
+      }
+    }
+    if (joueur === null) assert.equal(vus.size, 0, "pas dans les matchs des autres");
+    else assert.deepEqual([...vus].sort(), ["defaite", "lecture", "perd", "victoire"], `joueur ${joueur} : ${[...vus]}`);
+  }
+  // avant le match : sa présentation ou un dialogue sur lui, de temps en temps
+  const dits = new Set();
+  for (let k = 0; k < 200; k++) {
+    const av = annoncesAvantMatch({ perso: { nom: "chiromancien", joueur: 0 } }, rngFixe(k));
+    av.commentaires.filter(l => perso(l.id)).forEach(l => dits.add(baseDe(l.id)));
+    if (av.commentaires.some(l => perso(l.id))) assert.ok(av.commentaires.every(l => perso(l.id)));
+  }
+  assert.ok(dits.size >= 4 && [...dits].some(id => id.includes("_dialogue_")), [...dits].join());
+  for (let k = 0; k < 100; k++) assert.ok(!annoncesAvantMatch({}, rngFixe(k)).commentaires.some(l => perso(l.id)));
+});

@@ -210,6 +210,10 @@
       "tons": []
     }
   },
+  "prononciation": {
+    "_explication": "Les mots écrits d'une façon et dits d'une autre, remplacés dans le texte envoyé à la voix (18 novembre : « Chiromancien » se dit « Kiromancien »).",
+    "Chiromancien": "Kiromancien"
+  },
   "textes": {
     "_explication": "Texte pour la voix d'une réplique, quand il doit être différent du texte affiché (prononciation, autre indication de jeu). Clé : l'identifiant de la réplique.",
     "commentateur_lecture_reussie_03_pierre": "[frantic] [screaming at the top of his lungs like a South American football commentator, completely losing control] SECOND POTEAU !!! LA PIÈÈÈÈÈÈÈRRE !!! LA PIERRE !!!",

@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1111 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1120 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -605,6 +605,13 @@ restent lus par la voix de synthèse.
 | `commentateur_perso_supporters_02_f.mp3` | Ils sont venus nombreux pour la soutenir ce soir ! Quelle ferveur ! |
 | `commentateur_perso_supporters_03.mp3` | Tout le public scande son nom ! Il joue à domicile ce soir ! |
 | `commentateur_perso_supporters_03_f.mp3` | Tout le public scande son nom ! Elle joue à domicile ce soir ! |
+| `commentateur_perso_chiromancien_presentation_01.mp3` | Mesdames et messieurs… celui qui lit dans les mains de ses adversaires… le Chiromancien ! |
+| `commentateur_perso_chiromancien_presentation_02.mp3` | Il a vu votre défaite dans les lignes de votre main… Accueillez le Chiromancien ! |
+| `commentateur_perso_chiromancien_lecture_01.mp3` | Le Chiromancien l'avait lu dans sa main ! |
+| `commentateur_perso_chiromancien_lecture_02.mp3` | Encore une prédiction réussie pour le Chiromancien ! |
+| `commentateur_perso_chiromancien_lecture_03.mp3` | Le Chiromancien voit tout venir ! |
+| `commentateur_perso_chiromancien_perd_01.mp3` | Oula, le Chiromancien n'avait pas vu celle-là venir ! |
+| `commentateur_perso_chiromancien_victoire_01.mp3` | Le Chiromancien l'avait prédit ! Victoire ! |
 | `commentateur_replay_intro_01.mp3` | Revoyons ça ! |
 | `commentateur_replay_intro_02.mp3` | On le revoit au ralenti… Regardez-moi ça ! |
 | `commentateur_replay_intro_03.mp3` | Attention, on revoit l'action ! |
@@ -941,6 +948,8 @@ restent lus par la voix de synthèse.
 | `commentateur_poignee_legere_01.mp3` | Une poignée de main… minimaliste ! |
 | `commentateur_poignee_legere_02.mp3` | Une poignée de main du bout des doigts ! |
 | `commentateur_humain_01.mp3` | C'est un duel ! Un vrai ! Les yeux dans les yeux ! |
+| `commentateur_dialogue_perso_chiromancien_avant_01.mp3` | Le Chiromancien est sur le central, Madame ! |
+| `commentateur_dialogue_perso_chiromancien_avant_02.mp3` | Madame, croyez-vous aux pouvoirs du Chiromancien ? |
 | `commentateur_dialogue_avant_debutant_01.mp3` | Un nouveau venu sur le central ! Bienvenue ! |
 | `commentateur_dialogue_avant_debutant_02.mp3` | Son tout premier match officiel, Madame ! |
 | `commentateur_dialogue_avant_debutant_03.mp3` | Un baptême du feu pour ce joueur ! |
@@ -1234,7 +1243,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_06.mp3` | Il exulte ! |
 | `commentateur_dialogue_cri_06_f.mp3` | Elle exulte ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (862 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (869 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1563,6 +1572,11 @@ restent lus par la voix de synthèse.
 | `commentatrice_perso_supporters_02.mp3` | Des supporters rien que pour lui. Il ne faudra pas les décevoir. |
 | `commentatrice_perso_supporters_02_f.mp3` | Des supporters rien que pour elle. Il ne faudra pas les décevoir. |
 | `commentatrice_perso_supporters_03.mp3` | Un chant à son nom. Moi, à mes débuts, j'avais juste un thermos. |
+| `commentatrice_perso_chiromancien_presentation_01.mp3` | Le Chiromancien. Il prétend connaître l'avenir. Moi, je connais déjà son ouverture. |
+| `commentatrice_perso_chiromancien_lecture_01.mp3` | Les lignes de la main ne mentent pas. Celles de son adversaire, en tout cas. |
+| `commentatrice_perso_chiromancien_perd_01.mp3` | Même les voyants ont des jours sans. |
+| `commentatrice_perso_chiromancien_victoire_01.mp3` | Il savait comment ça finirait. Nous, on a dû attendre. |
+| `commentatrice_perso_chiromancien_defaite_01.mp3` | Sa boule de cristal était embuée ce soir. |
 | `commentatrice_replay_intro_01.mp3` | Revoyons les images. Calmement. |
 | `commentatrice_replay_intro_02.mp3` | Au ralenti, c'est encore plus clair. |
 | `commentatrice_replay_sauvee_01.mp3` | Au ralenti, on voit la peur. Et puis non. |
@@ -1822,6 +1836,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_humain_02.mp3` | Entre amis, il n'y a pas de pitié. |
 | `commentatrice_humain_03.mp3` | Ils se connaissent. Les surprises seront rares. Ou nombreuses. |
 | `commentatrice_humain_04.mp3` | Un duel entre amis. Les plus cruels. |
+| `commentatrice_dialogue_perso_chiromancien_avant_01.mp3` | J'ai caché mes mains. On ne sait jamais. |
+| `commentatrice_dialogue_perso_chiromancien_avant_02.mp3` | Je crois surtout à ses statistiques. |
 | `commentatrice_dialogue_avant_debutant_01.mp3` | On sera indulgents. Pendant trois coups. |
 | `commentatrice_dialogue_avant_debutant_02.mp3` | Il y a toujours une première fois. Espérons qu'elle ne soit pas la dernière. |
 | `commentatrice_dialogue_avant_debutant_03.mp3` | Les mains tremblent un peu. C'est normal. Les miennes aussi, en 1981. |
