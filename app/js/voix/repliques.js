@@ -984,6 +984,36 @@ export const MOMENTS = {
     { r: "d", t: "Un peu de retard à l'allumage.", si: "depart_rate" },   // (17 novembre, écrite par le porteur du projet)
   ],
   // Avant le match, parfois une seule phrase au lieu d'un dialogue : tous les matchs, les grands matchs, une revanche, entre amis.
+  // Le signe porte-bonheur de Monique (18 novembre, idée du porteur du projet : elle brouille les pistes) : à la question du
+  // dialogue avant_monique n° 3, sa réponse est la Feuille (dans le dialogue), la Pierre ou les Ciseaux, une fois sur trois chacune.
+  monique_porte_bonheur: [
+    { r: "d", t: "La Pierre. Elle ne bouge jamais. Comme mes convictions." },
+    { r: "d", t: "Les Ciseaux. Parce qu'ils découpent les ambitions de l'adversaire." },
+  ],
+  // La formule d'ouverture avant le dialogue avec Monique (18 novembre, demande du porteur du projet) : bonjour ou bonsoir.
+  presentation_direct: [
+    { r: "c", t: "Bienvenue ! Nous sommes en direct du court central. Mesdames et messieurs, bonsoir !", si: "soir" },
+    { r: "c", t: "Bienvenue ! Nous sommes en direct du court central. Mesdames et messieurs, bonjour !", si: "jour" },
+    // (18 novembre, d'autres formules choisies par le porteur du projet ; « bonjour » avant 18 h)
+    { r: "c", t: "Nous sommes en direct du court central. Bonsoir !", si: "soir" },
+    { r: "c", t: "Nous sommes en direct du court central. Bonjour !", si: "jour" },
+    { r: "c", t: "Bienvenue pour ce match de gala, en direct du court central. Mesdames et messieurs, bonsoir !", si: "soir" },
+    { r: "c", t: "Bienvenue pour ce match de gala, en direct du court central. Mesdames et messieurs, bonjour !", si: "jour" },
+    { r: "c", t: "Mesdames et messieurs, bonsoir, et bienvenue sur le court central !", si: "soir" },
+    { r: "c", t: "Mesdames et messieurs, bonjour, et bienvenue sur le court central !", si: "jour" },
+    { r: "c", t: "Bonsoir à toutes et à tous ! Nous voici en direct du court central.", si: "soir" },
+    { r: "c", t: "Bonjour à toutes et à tous ! Nous voici en direct du court central.", si: "jour" },
+    { r: "c", t: "Le court central est plein à craquer. Bonsoir, et bienvenue !", si: "soir" },
+    { r: "c", t: "Le court central est plein à craquer. Bonjour, et bienvenue !", si: "jour" },
+    { r: "c", t: "En direct du court central, bonsoir et bienvenue dans ce rendez-vous du HandSlam !", si: "soir" },
+    { r: "c", t: "En direct du court central, bonjour et bienvenue dans ce rendez-vous du HandSlam !", si: "jour" },
+    { r: "c", t: "Bonsoir et bienvenue ! Les lumières sont allumées sur le court central.", si: "soir" },
+    { r: "c", t: "Bonjour et bienvenue ! Les lumières sont allumées sur le court central.", si: "jour" },
+    { r: "c", t: "Bienvenue sur le court central !" },
+    { r: "c", t: "Bienvenue à vous qui nous rejoignez en direct du court central !" },
+    { r: "c", t: "Bienvenue au cœur du court central, où tout est prêt pour le spectacle !" },
+    { r: "c", t: "Mesdames et messieurs, installez-vous : nous sommes en direct du court central !" },
+  ],
   avant_seul: [
     { r: "c", t: "Affrontement sous haute tension !" },
     { r: "c", t: "Les deux joueurs entrent dans l'arène. Pas un sourire. Pas un regard de trop." },
@@ -1097,6 +1127,19 @@ export const MOMENTS = {
   ],
   // Les effets du match (16 novembre, répliques choisies par le porteur du projet) : ma main prend feu (8 points de suite),
   // un feu (la flamme ou plus) qui s'éteint, chez l'un ou l'autre.
+  // Le signe abîmé par un smash (18 novembre, répliques choisies par le porteur du projet) : plus tard dans le même set, le joueur
+  // rejoue ce signe et perd le point. seul : le signe abîmé ; deMoi : seulement quand c'est moi (pour « il » ou « elle »).
+  signe_abime: [
+    { r: "c", t: "Il n'impressionne plus vraiment avec ses Ciseaux tout pétés !", f: "Elle n'impressionne plus vraiment avec ses Ciseaux tout pétés !", seul: 1, deMoi: true },
+    { r: "d", t: "Des Ciseaux ébréchés, ça ne coupe plus grand-chose.", seul: 1 },
+    { r: "c", t: "Oula, ces Ciseaux tout cabossés ne font plus peur à personne !", seul: 1 },
+    { r: "c", t: "Il n'impressionne plus vraiment avec sa Pierre fissurée !", f: "Elle n'impressionne plus vraiment avec sa Pierre fissurée !", seul: 0, deMoi: true },
+    { r: "d", t: "Une Pierre fêlée, c'est déjà presque du gravier.", seul: 0 },
+    { r: "c", t: "Oh, cette Pierre en morceaux ne fait plus trembler personne !", seul: 0 },
+    { r: "c", t: "Il n'impressionne plus vraiment avec sa Feuille déchirée !", f: "Elle n'impressionne plus vraiment avec sa Feuille déchirée !", seul: 2, deMoi: true },
+    { r: "d", t: "Une Feuille en lambeaux, ça n'enveloppe plus rien.", seul: 2 },
+    { r: "c", t: "Ah, cette Feuille toute froissée ne fait plus illusion !", seul: 2 },
+  ],
   main_en_feu: [
     { r: "c", t: "Attention, il est en feu ! Appelez les pompiers !", f: "Attention, elle est en feu ! Appelez les pompiers !" },
     { r: "d", t: "Quelqu'un a un extincteur ?" },
@@ -1135,6 +1178,22 @@ export const MOMENTS = {
 // Chaque dialogue : une réplique du commentateur, puis la réponse de la commentatrice
 // (texte, ou { t, f } quand la version au féminin diffère).
 export const DIALOGUES = {
+  // Avant le match, Roland interroge Monique (18 novembre, dialogues choisis par le porteur du projet ; jamais un mot de sa finale
+  // de 1997 : elle n'en parle pas). Précédés de « Bienvenue… en direct du court central » (presentation_direct).
+  avant_monique: [
+    ["Monique, aviez-vous un rituel d'avant-match ?", "Je ne mettais mon gant qu'à la dernière seconde. Pour que l'adversaire ne sache pas de quelle main je jouais."],
+    ["Monique, que mangiez-vous avant une finale ?", "Rien. Un champion joue le ventre vide et l'esprit plein. Enfin, c'est ce qu'on disait à mon époque."],
+    ["Monique, vous aviez un signe porte-bonheur ?", "La Feuille. Elle couvre tout. Même mes erreurs de jeunesse."],
+    ["Monique, vous étiez nerveuse avant vos grands matchs ?", "Jamais. Sauf avant les petits. Les grands, on sait pourquoi on les perd."],
+    ["Monique, vous échauffiez vos doigts comment ?", "Au piano. Trois gammes, deux arpèges, et une Pierre pour finir."],
+    ["Monique, un conseil pour nos deux joueurs ce soir ?", "Respirer. Et ne pas commencer par la Pierre. Tout le monde commence par la Pierre."],
+    ["Monique, qu'est-ce qui fait un grand joueur, selon vous ?", "La patience. Et une bonne mémoire. Surtout celle des erreurs des autres."],
+    ["Monique, faut-il regarder son adversaire dans les yeux ?", "Dans les yeux, non. Dans les mains, oui. Les yeux mentent, les poignets jamais."],
+    ["Monique, le hasard existe-t-il au chifoumi ?", "Le hasard, c'est le nom qu'on donne à ce qu'on n'a pas su lire."],
+    ["Monique, vous sentez la tension monter ?", "Je sens surtout le courant d'air, Roland. Quelqu'un a laissé la porte ouverte."],
+    ["Monique, vous avez vu l'ambiance ce soir ?", "J'ai vu. J'ai entendu, surtout. Votre micro est trop fort, Roland."],
+    ["Monique, un pronostic ?", "L'un des deux va gagner. Je prends peu de risques, c'est ce qui a fait ma carrière."],
+  ],
   avant_match: [
     ["Madame, la tension est palpable.", "On sent surtout deux personnes devant leur téléphone. Mais oui."],
     ["Deux styles, deux écoles !", "Trois signes. Il n'y en a jamais eu que trois."],

@@ -591,3 +591,51 @@ test("la fin du premier set selon l'écart (3-4, 5-6, 7 et plus), dite parfois ;
   }
   for (const n of Object.values(vus)) assert.ok(n > 10, JSON.stringify(vus));
 });
+
+test("avant le match, Roland interroge Monique, après « Bienvenue… » (bonsoir le soir, bonjour le jour)", () => {
+  let vu = 0;
+  for (let k = 0; k < 80; k++) {
+    for (const [heure, mot] of [[21, "bonsoir"], [10, "bonjour"]]) {
+      const a = annoncesAvantMatch({ moi: {}, adv: {}, heure }, rngFixe(1000 + k));
+      const i = a.commentaires.findIndex(l => /^commentateur_dialogue_avant_monique_/.test(l.id));
+      if (i < 0) continue;
+      vu++;
+      const intro = a.commentaires[i - 1];
+      assert.ok(POOLS.presentation_direct.some(e => e.base === baseDe(intro.id)), intro.id);
+      assert.match(intro.texte, /court central/);
+      assert.ok(!new RegExp(mot === "bonsoir" ? "bonjour" : "bonsoir", "i").test(intro.texte), intro.texte);   // (jamais la mauvaise salutation)
+      assert.match(a.commentaires[i + 1].id, /^commentatrice_dialogue_avant_monique_/);
+    }
+  }
+  assert.ok(vu > 10, `vu ${vu} fois`);
+  assert.ok(DIALOGUES_IDS.avant_monique.flat().every(id => !/1997/.test(CATALOGUE.get(id).texte)));   // (jamais un mot de 1997)
+});
+
+test("le signe porte-bonheur de Monique : Feuille, Pierre ou Ciseaux, à peu près une fois sur trois chacun", () => {
+  const vus = { Feuille: 0, Pierre: 0, Ciseaux: 0 };
+  for (let k = 0; k < 3000; k++) {
+    const a = annoncesAvantMatch({ moi: {}, adv: {}, heure: 21 }, rngFixe(5000 + k));
+    const i = a.commentaires.findIndex(l => l.id === "commentateur_dialogue_avant_monique_03");
+    if (i < 0) continue;
+    const r = a.commentaires[i + 1].texte;
+    for (const s of Object.keys(vus)) if (r.startsWith(`L${s === "Ciseaux" ? "es" : "a"} ${s}`)) vus[s]++;
+  }
+  const n = vus.Feuille + vus.Pierre + vus.Ciseaux;
+  assert.ok(n > 30, JSON.stringify(vus));
+  for (const v of Object.values(vus)) assert.ok(v > n / 6, JSON.stringify(vus));
+});
+
+test("le signe abîmé : rejoué plus tard dans le set et perdu ; pas après un autre signe, pas au set suivant", async () => {
+  const { signeAbime } = await import("../app/js/annonces.js");
+  const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 });
+  jouerCoup(m, CISEAUX, PIERRE); m.coups.at(-1).smash = [false, true];   // son smash Pierre abîme mes Ciseaux
+  jouerCoup(m, FEUILLE, PIERRE);
+  assert.equal(signeAbime(m), null);                                       // (il a perdu, mais pas avec ses Ciseaux)
+  jouerCoup(m, CISEAUX, PIERRE);
+  assert.deepEqual(signeAbime(m), { joueur: 0, signe: CISEAUX });
+  jouerCoup(m, PIERRE, CISEAUX);
+  assert.equal(signeAbime(m), null);                                       // (l'adversaire n'a rien d'abîmé)
+  m.debutsSet.push(m.coups.length);                                        // set suivant : les mains sont réparées
+  jouerCoup(m, CISEAUX, PIERRE);
+  assert.equal(signeAbime(m), null);
+});
