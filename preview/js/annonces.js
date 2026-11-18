@@ -561,6 +561,8 @@ function finDeMatch(match, evt, etat, ctx, rng) {
       return titre.length ? titre : un(choisir(etat, "victoire", { ...ctx, finale: true }, rng));
     }
     if (premierPerdu) return un(choisir(etat, "renversement", ctx, rng));
+    // (18 novembre) deux sets à zéro, dans un match en 2 sets gagnants : l'analyse de Monique (répliques d'un testeur), 6 fois sur 10
+    if (match.format.setsGagnants === 2 && match.sets[1] === 0 && rng() < 0.6) { const x = choisir(etat, "victoire_deux_zero", ctx, rng); if (x) return [x]; }
     if (troisZero || rng() < 0.5) return un(choisir(etat, "balle_match_convertie", { ...ctx, troisZero, sansSetPerdu: match.sets[1] === 0 && match.format.setsGagnants > 1 }, rng));
     return un(choisir(etat, "victoire", ctx, rng));
   }

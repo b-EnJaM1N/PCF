@@ -587,6 +587,17 @@ export const MOMENTS = {
     { r: "d", t: "Une balle de match, une seule. Efficace." },
     { r: "c", t: "Oh, la balle de match est transformée !" },
   ],
+  // Une victoire en deux sets à zéro, dans un match en 2 sets gagnants (18 novembre, répliques d'un testeur, ajoutées à la
+  // demande du porteur du projet ; Monique, en experte). « Il » : le vainqueur (moi).
+  victoire_deux_zero: [
+    { r: "d", t: "Une victoire sans trembler. Il n'a jamais réellement été mis en difficulté et a su maintenir son avance tout au long de la rencontre. Pour son adversaire, il faudra un sursaut lors du prochain rendez-vous.",
+      f: "Une victoire sans trembler. Elle n'a jamais réellement été mise en difficulté et a su maintenir son avance tout au long de la rencontre. Pour son adversaire, il faudra un sursaut lors du prochain rendez-vous." },
+    { r: "d", t: "Victoire logique, contre une main qui n'a pas su contrarier ses offensives. Il a pris le contrôle du match et joué une partition bien rodée.",
+      f: "Victoire logique, contre une main qui n'a pas su contrarier ses offensives. Elle a pris le contrôle du match et joué une partition bien rodée." },
+    { r: "d", t: "Un set qui conclut une rencontre à sens unique. Il a su prendre l'initiative dès le premier set, sans laisser son opposant revenir dans le rythme de la rencontre.",
+      f: "Un set qui conclut une rencontre à sens unique. Elle a su prendre l'initiative dès le premier set, sans laisser son opposant revenir dans le rythme de la rencontre." },
+    { r: "d", t: "Une victoire et beaucoup de confiance après une prestation impeccable. Pour son adversaire, le manque d'engagement et l'attentisme ont rendu l'issue prévisible." },
+  ],
   victoire: [
     { r: "c", t: "C'est fini ! Quel combat !" },
     { r: "c", t: "Il l'a fait !", f: "Elle l'a fait !" },
