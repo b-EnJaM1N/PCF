@@ -13,8 +13,11 @@ on:
 permissions:
   contents: write
 
+# Une seule mise en ligne à la fois (file d'attente commune). Les vérifications d'une demande de fusion (pull_request), qui ne
+# mettent rien en ligne, ont leur propre file : avant le 18 novembre, elles prenaient la place de la mise en ligne de la version
+# de test qui attendait, et l'annulaient (le volet vert n'arrivait pas sur la version de test).
 concurrency:
-  group: mise-en-ligne
+  group: ${{ github.event_name == 'pull_request' && format('verifications-{0}', github.ref) || 'mise-en-ligne' }}
   cancel-in-progress: false
 
 jobs:
