@@ -778,7 +778,7 @@ export const MOMENTS = {
   // du projet pour son testeur « Le Chiromancien », d'accord pour être cité) : dites seulement dans ses matchs, de temps en temps.
   // (prononcé « Kiromancien » : voir « prononciation » dans outils/voix.json)
   perso_chiromancien_presentation: [   // avant le match
-    { r: "c", t: "Mesdames et messieurs… celui qui lit dans les mains de ses adversaires… le Chiromancien !" },
+    { r: "c", t: "Mesdames et mesdames… celui qui lit dans les mains de ses adversaires… le Chiromancien !" },
     { r: "c", t: "Il a vu votre défaite dans les lignes de votre main… Accueillez le Chiromancien !" },
     { r: "d", t: "Le Chiromancien. Il prétend connaître l'avenir. Moi, je connais déjà son ouverture." },
   ],
