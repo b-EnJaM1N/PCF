@@ -440,8 +440,9 @@ const SYMBOLE_SIGNE = ["dos", "ciseaux-dos", "feuille-dos"];   // même ordre qu
 // Les effets du match (effets.js, 13 novembre ; d'abord sur la version de test) : la main en feu derrière la main (eteint : la
 // bouffée de fumée du feu qui vient de s'éteindre).
 const effetsActifs = () => ouvert("effets");
-const mainGantee = (g, signe, nom, { marques = true, set = S?.match?.scoresSets.length, eteint = false } = {}) => {
-  const main = `<span class="poing-av" role="img" aria-label="${nom}">${avatarSVG({ ...avDe(g), symbole: SYMBOLE_SIGNE[signe], sansFond: true, degats: marques ? degatsDe(S?.degats, g, set) : null })}</span>`;
+// (degats : les marques à dessiner, quand ce ne sont pas celles du moment : le replay ; 18 novembre)
+const mainGantee = (g, signe, nom, { marques = true, set = S?.match?.scoresSets.length, eteint = false, degats } = {}) => {
+  const main = `<span class="poing-av" role="img" aria-label="${nom}">${avatarSVG({ ...avDe(g), symbole: SYMBOLE_SIGNE[signe], sansFond: true, degats: degats !== undefined ? degats : marques ? degatsDe(S?.degats, g, set) : null })}</span>`;
   const n = marques && effetsActifs() ? feuDe(S?.feu, g) : 0;
   if (!n && !eteint) return main;
   return `<span class="main-feu${n ? ` feu-${n}` : ""}"><span class="feu">${feuSVG(n || "fin", { id: `feu${g}`, anime: !reduitMouvement() })}</span>${main}</span>`;
@@ -459,6 +460,9 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   const setDuCoup = m.scoresSets.length, evt = jouerCoup(m, signe, signeAdv, auto);
   if (smash[0] || smash[1]) m.coups[m.coups.length - 1].smash = [!!smash[0], !!smash[1]];   // (pour l'historique : le coup smashé entouré)
   // Les marques du smash gagnant sur la main de celui qui perd le point, jusqu'à la fin du set (12 novembre ; degats.js).
+  // (celles d'avant le coup, gardées pour le replay : on y revoit la main s'abîmer ; 18 novembre)
+  const copieDegats = () => [0, 1].map(j => { const d = degatsDe(S.degats, j, setDuCoup); return d ? { ...d } : null; });
+  const degatsAvant = copieDegats();
   const marque = noterDegats(S.degats ||= nouveauxDegats(), { set: setDuCoup, gagnant: evt.gagnant, signes: [signe, signeAdv], smashGagnant: issueSmash(smash, evt.gagnant) === "gagne" });
   // La main en feu (effets.js) : 4, 6, 8 points de suite ; une égalité baisse le feu, un point perdu l'éteint.
   const feuChg = noterFeu(S.feu ||= nouveauFeu(), evt.gagnant);
@@ -468,7 +472,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   if (replayVisible()) {
     const mo = momentDuCoup(evt, m.coups, { smash, smashGagne: issueSmash(smash, evt.gagnant) === "gagne", serie: series(m.coups).serie,
       set: m.scoresSets.length - (evt.finSet ? 1 : 0), score: m.points });
-    if (mo) (S.moments ||= []).push(mo);
+    if (mo) (S.moments ||= []).push({ ...mo, degatsAvant, degatsApres: copieDegats(), marque });
   }
   S.suivi.enregistrer(signe, evt.gagnant === null ? "e" : evt.gagnant === 0 ? "g" : "p");
   suivreCoup(S.stats, m, evt);
@@ -598,7 +602,7 @@ function montrerPalette(pa, mo, devoile = false) {
   const ligne = (j, cle) => `<div class="pal-ligne${hab?.joueur === j ? " pal-lue" : ""}"><span class="pal-nom">${esc(nom(j))}</span>`
     + pa.coups.map(c => `<span class="pal-case${c.gagnant === j ? " pal-g" + j : ""}">${EMOJIS[c[cle]]}</span>`).join("")
     + (devoile ? `<span class="pal-case pal-point${mo.gagnant === j ? " pal-g" + j : ""}">${EMOJIS[j === 0 ? mo.a : mo.b]}</span>` : `<span class="pal-case pal-point">❔</span>`) + "</div>";
-  $("rpPalCoups").innerHTML = ligne(0, "a") + ligne(1, "b");
+  $("rpPalCoups").innerHTML = ligne(0, "a") + ligne(1, "b") + (devoile ? `<span class="pal-cercle" aria-hidden="true"></span>` : "");
   const pg = pa.piege;
   $("rpPalHab").textContent = pg ? `${nom(pg.joueur)} : ${pg.n} fois ${NOM[pg.repete]}, puis ${NOM[pg.signe]}`
     : pa.verdict === "smash" || pa.verdict === "smash_subi" ? `💥 Le smash de ${nom(pa.smasheur ?? 1 - pa.joueur)}`
@@ -630,7 +634,8 @@ function jouerReplay(liste, apres = () => {}) {
     $("rpVerdict").textContent = ""; $("rpCom").textContent = ""; $("rpPalette").hidden = true;
     const pa0 = mo.palette ? paletteDuReplay(mo.palette, mo) : null, lp = pa0 ? lignePalette(pa0, mo) : null, pa = lp ? pa0 : null, roland = pa ? "commentateur" : null;
     if (pa) montrerPalette(pa, mo);   // (la palette arrive avec le replay)
-    [[moi, 0], [adv, 1]].forEach(([el, g]) => { el.innerHTML = mainGantee(g, 0, "Poing serré", { marques: false }); el.className = "hand secoue"; });
+    const dAvant = mo.degatsAvant || [null, null], dApres = mo.degatsApres || [null, null];
+    [[moi, 0], [adv, 1]].forEach(([el, g]) => { el.innerHTML = mainGantee(g, 0, "Poing serré", { degats: dAvant[g] }); el.className = "hand secoue"; });
     // Roland ou Monique : « Revoyons ça ! » pour la première action, puis un mot sur l'action au dévoilement ; avec la palette,
     // Monique donne ensuite son verdict. Chacun finit sa phrase avant que l'autre parle, et l'action suivante attend la fin
     // des commentaires (18 novembre, demande du porteur du projet : Roland était coupé par Monique) ; « Passer » pour jouer.
@@ -641,11 +646,18 @@ function jouerReplay(liste, apres = () => {}) {
       if (l) voix.dire([l]);
       voix.finiDeParler(() => { if (encore()) ensuite(); }, 20000);
     }, 20000);
-    if (i === 1) { const l = ligneReplay("replay_intro", "m", roland); if (l) voix.dire([l]); }
+    // Les temps forts de fin de match (plusieurs actions) : Roland les annonce l'une après l'autre (« D'abord… », « Ensuite… »,
+    // « Et enfin… » : replay_debut, replay_ensuite, replay_enfin ; 18 novembre), avec un fondu entre deux actions.
+    const plusieurs = liste.length > 1, dernier = i === liste.length;
+    if (i > 1) { const b = ov.querySelector(".replay-boite"); b.classList.remove("rp-change"); void b.offsetWidth; b.classList.add("rp-change"); }
+    const annonce = !plusieurs ? (i === 1 ? "replay_intro" : null) : i === 1 ? "replay_debut" : dernier ? "replay_enfin" : "replay_ensuite";
+    const la = annonce && (ligneReplay(annonce, "m", "commentateur") || (i === 1 ? ligneReplay("replay_intro", "m", roland) : null));
+    if (la) voix.dire([la]);
     t = setTimeout(() => {
       if (!encore()) return;
       const devoile = Date.now();
-      moi.innerHTML = mainGantee(0, mo.a, NOM[mo.a], { marques: false }); adv.innerHTML = mainGantee(1, mo.b, NOM[mo.b], { marques: false });
+      // (la main ouverte garde les marques d'avant ; celles du smash gagnant apparaissent quand le point est marqué)
+      moi.innerHTML = mainGantee(0, mo.a, NOM[mo.a], { degats: dAvant[0] }); adv.innerHTML = mainGantee(1, mo.b, NOM[mo.b], { degats: dAvant[1] });
       moi.className = "hand ouvre"; adv.className = "hand ouvre";
       const [w, l] = mo.gagnant === 0 ? [mo.a, mo.b] : [mo.b, mo.a];
       $("rpVerdict").textContent = `${mo.smash[mo.gagnant] ? "💥 Smash ! " : ""}${NOM[w]} bat ${NOM[l]}`;
@@ -655,6 +667,12 @@ function jouerReplay(liste, apres = () => {}) {
         (mo.gagnant === 0 ? moi : adv).classList.add("win"); (mo.gagnant === 0 ? adv : moi).classList.add("lose");
         $("rpScoreMoi").textContent = apresPt[0]; $("rpScoreAdv").textContent = apresPt[1];
         try { ambiance.public("clameur", 0.4); } catch { /* sans son */ }
+        // Le smash gagnant : la main touchée s'abîme sous nos yeux (degats.js), et tremble.
+        if (mo.marque) {
+          const el = mo.marque.joueur === 0 ? moi : adv, sg = mo.marque.joueur === 0 ? mo.a : mo.b;
+          el.innerHTML = mainGantee(mo.marque.joueur, sg, NOM[sg], { degats: dApres[mo.marque.joueur] });
+          el.classList.add("abime");
+        }
       }, vite ? 0 : 700);
       // (avec la palette : Roland décrit d'abord l'action à sa façon, replay_r_… ; sinon, la réplique habituelle du replay)
       const c = (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
