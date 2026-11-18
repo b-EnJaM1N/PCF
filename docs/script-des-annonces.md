@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1104 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1111 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -439,6 +439,13 @@ restent lus par la voix de synthèse.
 | `commentateur_set_couteau_04.mp3` | Arrivée au sprint, et ça passe d'un boyau ! |
 | `commentateur_set_couteau_05.mp3` | Oula, ça s'est joué à un souffle ! |
 | `commentateur_set_couteau_06.mp3` | Ça passe… et de justesse ! |
+| `commentateur_un_set_partout_01.mp3` | Nous sommes désormais à un set partout. Il a su rectifier le tir pour rester dans la course. |
+| `commentateur_un_set_partout_01_f.mp3` | Nous sommes désormais à un set partout. Elle a su rectifier le tir pour rester dans la course. |
+| `commentateur_un_set_partout_02.mp3` | Ce second set s'achève sur un score de parité. C'est le moment d'inventer la séquence qui surprendra l'adversaire, pour prendre une option sur la victoire. |
+| `commentateur_un_set_partout_03.mp3` | Les deux mains rentrent aux vestiaires sans un regard. Il faut rester concentré, et ne rien montrer que l'adversaire puisse exploiter pour sa prochaine ouverture. |
+| `commentateur_un_set_partout_04.mp3` | Un retour qui fait du bien au moral, et un troisième set qui s'annonce très disputé. On se retrouve dans un instant sur HandSlam TV pour le dénouement de ce duel. |
+| `commentateur_un_set_partout_05.mp3` | Il a su produire son effort pour revenir à hauteur de la main adverse. Il faut à présent supporter la pression, et donner son meilleur chifoumi, sans oublier les fondamentaux. |
+| `commentateur_un_set_partout_05_f.mp3` | Elle a su produire son effort pour revenir à hauteur de la main adverse. Il faut à présent supporter la pression, et donner son meilleur chifoumi, sans oublier les fondamentaux. |
 | `commentateur_premier_set_net_01.mp3` | Un set bien maîtrisé. Son adversaire doit maintenant réagir. |
 | `commentateur_premier_set_net_02_pierre.mp3` | Ce premier set prend fin sur une Pierre bien sentie. La main adverse n'a pas su réellement l'inquiéter. |
 | `commentateur_premier_set_net_02_ciseaux.mp3` | Ce premier set prend fin sur des Ciseaux bien sentis. La main adverse n'a pas su réellement l'inquiéter. |
@@ -1227,7 +1234,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_06.mp3` | Il exulte ! |
 | `commentateur_dialogue_cri_06_f.mp3` | Elle exulte ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (859 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (862 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1435,6 +1442,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_set_couteau_03.mp3` | Personne ne méritait de le perdre. L'un des deux l'a quand même perdu. |
 | `commentatrice_set_couteau_04.mp3` | La goutte d'eau qui fait déborder la Feuille. |
 | `commentatrice_set_couteau_05.mp3` | Les deux méritaient. Un seul l'emporte. C'est le sport. |
+| `commentatrice_un_set_partout_01.mp3` | Bien malin qui pourra prédire maintenant l'issue de cette rencontre. |
+| `commentatrice_un_set_partout_02.mp3` | Le début de la troisième manche sera crucial. |
+| `commentatrice_un_set_partout_03.mp3` | Un deuxième set très bien négocié pour continuer d'y croire. À l'aube de ce troisième set, c'est l'heure d'ajuster ses séquences et d'affirmer son caractère, en évitant tout péché d'orgueil. |
 | `commentatrice_premier_set_net_01.mp3` | Patiemment, il a assis sa victoire, sans laisser à son adversaire le temps d'installer sa riposte. |
 | `commentatrice_premier_set_net_01_f.mp3` | Patiemment, elle a assis sa victoire, sans laisser à son adversaire le temps d'installer sa riposte. |
 | `commentatrice_premier_set_large_01.mp3` | Au terme de ce set, une classe d'écart semble séparer les deux mains. Il doit repenser complètement ses séquences et se montrer plus agressif dans les duels. |

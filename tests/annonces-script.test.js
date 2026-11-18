@@ -673,3 +673,17 @@ test("gros lot 3 : signe fétiche, match qui n'en finit pas, David contre Goliat
   assert.ok(fet > 2, `fétiche : ${fet}`);   // (rare exprès : 35 % des fois, si les commentateurs ont de la réserve)
   for (const [nom, n] of Object.entries({ long, david, favori, exploit, debut })) assert.ok(n > 10, `${nom} : ${n}`);   // (le match long : une fois sur deux)
 });
+
+test("un set partout : à la fin du 2e set d'un match en 2 sets gagnants, souvent ; jamais en 3 sets gagnants", () => {
+  const de = l => l.some(x => POOLS.un_set_partout.some(e => e.base === baseDe(x.id)));
+  let vu = 0;
+  for (let k = 0; k < 60; k++) {
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 });
+    Object.assign(m, { sets: [0, 1], scoresSets: [[5, 11]], points: [10, 4] });
+    if (de(annoncerCoup(m, jouerCoup(m, PIERRE, CISEAUX), nouvelEtatAnnonces(), {}, rngFixe(3000 + k)).lignes)) vu++;
+    const m3 = nouveauMatch({ pointsParSet: 11, setsGagnants: 3 });
+    Object.assign(m3, { sets: [0, 1], scoresSets: [[5, 11]], points: [10, 4] });
+    assert.ok(!de(annoncerCoup(m3, jouerCoup(m3, PIERRE, CISEAUX), nouvelEtatAnnonces(), {}, rngFixe(3000 + k)).lignes));
+  }
+  assert.ok(vu > 25, `vu ${vu}`);
+});
