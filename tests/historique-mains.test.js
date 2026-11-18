@@ -104,3 +104,22 @@ test("le bandeau des coups : vert le signe gagnant, rouge le perdant, blanc l'é
   assert.deepEqual([classeCoup({ gagnant: 1 }, "a"), classeCoup({ gagnant: 1 }, "b")], ["perd", "gagne"]);
   assert.deepEqual([classeCoup({ gagnant: null }, "a"), classeCoup({ gagnant: null }, "b")], ["egal", "egal"]);
 });
+
+test("l'historique garde les smashs (entourés) et les points de pénalité (une croix chez le fautif) ; les anciens matchs se lisent toujours", async () => {
+  const { decoderHistorique, contenuCoup } = await import("../app/js/historique-mains.js");
+  const coups = [{ a: 0, b: 1 }, { a: 2, b: 0, smash: [true, false] }, { a: 1, b: 1, smash: [true, true] }, { a: 0, b: 2, smash: [false, true] }];
+  const t = encoderCoups(coups, [0, 2], [{ apres: 1, fautif: 1 }, { apres: 4, fautif: 0 }]);
+  assert.equal(t, "1y6*|4#2+x");
+  const sets = decoderHistorique(t);
+  assert.deepEqual(sets[0].map(x => ("penalite" in x ? `P${x.penalite}` : x.smash ? `${x.a}${x.b}s${x.smash}` : `${x.a}${x.b}`)), ["01", "P1", "20strue,false"]);
+  assert.deepEqual(sets[1].map(x => ("penalite" in x ? `P${x.penalite}` : x.smash ? `${x.a}${x.b}s${x.smash}` : `${x.a}${x.b}`)), ["11strue,true", "02sfalse,true", "P0"]);
+  assert.deepEqual(decoderCoups(t).map(s => s.length), [2, 2], "les coups seuls, sans les pénalités");
+  assert.deepEqual(decoderCoups("012|34"), decoderHistorique("012|34"), "un ancien match");
+  assert.match(contenuCoup(sets[0][2], "a"), /coup-smash/);
+  assert.doesNotMatch(contenuCoup(sets[0][2], "b"), /coup-smash/);
+  assert.match(contenuCoup(sets[0][1], "b"), /❌/);
+  assert.equal(contenuCoup(sets[0][1], "a"), "");
+  assert.equal(classeCoup(sets[0][1], "b"), "perd penalite");
+  const html = htmlMains([ajouterMain([], { gagne: true, coups, debutsSet: [0, 2], penalites: [{ apres: 1, fautif: 1 }] })[0]]);
+  assert.match(html, /coup-smash/); assert.match(html, /❌/);
+});

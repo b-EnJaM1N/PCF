@@ -34,7 +34,7 @@ import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS, POOLS, ligneMomen
 import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint, intensiteMatch, series } from "./ambiance.js";
 import { CRIS, libelleCri, criValide, criDuBot, celebration, commenterCri, couleursConfettis } from "./celebrations.js";
 import { lire, ecrire } from "./stockage.js";
-import { noterMain, mainDuel, mainDossier, htmlMains, MAX_MAINS, memoireDuDernier, classeCoup } from "./historique-mains.js";
+import { noterMain, mainDuel, mainDossier, htmlMains, MAX_MAINS, memoireDuDernier, classeCoup, contenuCoup } from "./historique-mains.js";
 import { messagesPossibles, momentApres, texteMessage, erreurMessageLibre, nettoyerMessage, PREFIXE_LIBRE, MESSAGE_LIBRE_MAX } from "./messages-rapides.js";
 import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
@@ -956,13 +956,17 @@ function render() {
 }
 
 function renderHistorique() {
-  const c = S.match.coups, debuts = new Set(S.match.debutsSet);
-  const ligne = (cle, label) => `<tr><th>${esc(label)}</th>` + c.map((x, i) => {
-    const cls = [classeCoup(x, cle), i > 0 && debuts.has(i) ? "newset" : "", cle === "a" && x.auto[0] ? "auto" : ""].join(" ").trim();
-    // (18 novembre, demande du porteur du projet : un coup joué en smash est entouré)
-    const smash = x.smash?.[cle === "a" ? 0 : 1];
-    return `<td class="${cls}">${smash ? `<span class="coup-smash" title="Smash">${EMOJI[x[cle]]}</span>` : EMOJI[x[cle]]}</td>`;
-  }).join("") + "</tr>";
+  const m = S.match, c = m.coups, debuts = new Set(m.debutsSet), pens = m.penalites || [];
+  // (18 novembre, demandes du porteur du projet : un coup joué en smash est entouré ; un point de pénalité, une croix à sa place)
+  const elements = [];
+  c.forEach((x, i) => { pens.filter(p => p.apres === i).forEach(p => elements.push({ penalite: p.fautif, i })); elements.push({ ...x, i }); });
+  pens.filter(p => p.apres === c.length).forEach(p => elements.push({ penalite: p.fautif, i: c.length }));
+  const vus = new Set();
+  const ligne = (cle, label) => { vus.clear(); return `<tr><th>${esc(label)}</th>` + elements.map(x => {
+    const debut = x.i > 0 && debuts.has(x.i) && !vus.has(x.i); vus.add(x.i);
+    const cls = [classeCoup(x, cle), debut ? "newset" : "", cle === "a" && x.auto?.[0] ? "auto" : ""].join(" ").trim();
+    return `<td class="${cls}">${contenuCoup(x, cle)}</td>`;
+  }).join("") + "</tr>"; };
   $("tape").innerHTML = `<table>${ligne("a", "Toi")}${ligne("b", OPP.nom)}</table>`;
   renderLectureAdversaire();
   const t = $("tape"); t.scrollLeft = t.scrollWidth;
@@ -1043,7 +1047,7 @@ function finir() {
   }) : [];
   // L'historique des mains contre cet adversaire (bot ou joueur en ligne), gardé sur le téléphone : la fiche de l'adversaire
   // et la mémoire des commentateurs (balles de match sauvées comprises).
-  if (n) ecrire("mains", noterMain(lire("mains"), OPP.id, { gagne, detail: m.scoresSets.map(([a, b]) => `${a}–${b}`).join(", "), coups: c, debutsSet: m.debutsSet, balles: S.stats.ballesDeMatchSauvees || 0 }));
+  if (n) ecrire("mains", noterMain(lire("mains"), OPP.id, { gagne, detail: m.scoresSets.map(([a, b]) => `${a}–${b}`).join(", "), coups: c, debutsSet: m.debutsSet, penalites: m.penalites, balles: S.stats.ballesDeMatchSauvees || 0 }));
   // Le premier gant : offert après le premier match (avant, la main nue).
   const premierGant = matchsAvant === 0 && P.matchs > 0 && P.av.gant === "nu" && !P.premierGant;
   if (premierGant) { P.av.gant = "blanc"; P.premierGant = true; }
