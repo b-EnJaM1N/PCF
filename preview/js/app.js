@@ -618,18 +618,28 @@ function montrerPalette(pa, mo, devoile = false) {
   $("rpPalCom").textContent = ""; $("rpPalCom").hidden = true;
   $("rpPalette").hidden = false;
 }
+// Le volet (18 novembre, version de test : « volet », nouveautes.js) : la bande balaie l'écran ; change() est appelé quand elle
+// le couvre (on change d'écran derrière). Sans le volet, ou mouvements réduits : change() tout de suite.
+let voletT = 0;
+function volet(change) {
+  const el = $("volet");
+  if (!ouvert("volet") || reduitMouvement() || !el) { change(); return; }
+  clearTimeout(voletT); el.hidden = false; el.classList.remove("passe"); void el.offsetWidth; el.classList.add("passe");
+  setTimeout(change, 300);
+  voletT = setTimeout(() => { el.hidden = true; el.classList.remove("passe"); }, 700);
+}
 function jouerReplay(liste, apres = () => {}) {
   if (!liste.length) { apres(); return () => {}; }
   voix.arreter();
   const ov = $("replay"), vite = reduitMouvement();
   let i = 0, t = null, fini = false;
-  const fermer = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); apres(); };
+  const fermer = () => { if (fini) return; fini = true; clearTimeout(t); voix.arreter(); volet(() => { ov.hidden = true; apres(); }); };
   // (couper : arrêter net, sans la suite ; en duel, quand le set repart pendant le replay de la pause)
   const couper = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); };
   $("rpPasser").onclick = fermer;
   $("rpNomMoi").textContent = nomAffiche(P); $("rpNomAdv").textContent = OPP.nom;
   $("rpMiniMoi").innerHTML = avatarSVG(avMoi()); $("rpMiniAdv").innerHTML = avatarSVG(avAdv());
-  ov.hidden = false;
+  volet(() => { if (!fini) ov.hidden = false; });
   // Entre deux temps forts (18 novembre, demande du porteur du projet : un fondu plus marqué) : l'action s'efface tout à fait,
   // un temps au noir, puis la suivante apparaît.
   const boite = ov.querySelector(".replay-boite");
@@ -753,19 +763,19 @@ function effetsDuCoup(evt, feuChg, double, mains) {
   const vite = reduitMouvement(), arene = document.querySelector(".arena");
   if (!arene) return;
   arene.querySelectorAll(".effet-couche").forEach(x => x.remove());
-  const couche = (cls, html) => { const d = document.createElement("div"); d.className = `effet-couche ${cls}`; d.setAttribute("aria-hidden", "true"); d.innerHTML = html; arene.append(d); setTimeout(() => d.remove(), 1600); };
-  const relancer = (el, cls) => { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); setTimeout(() => el.classList.remove(cls), 1600); };
+  const couche = (cls, html) => { const d = document.createElement("div"); d.className = `effet-couche ${cls}`; d.setAttribute("aria-hidden", "true"); d.innerHTML = html; arene.append(d); setTimeout(() => d.remove(), 2600); };
+  const relancer = (el, cls) => { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); setTimeout(() => el.classList.remove(cls), 2600); };
   if (double) {
     if (vite) return;
     const tableau = document.querySelector(".board");
     if (double === "seisme") {
       relancer(arene, "seisme"); relancer(tableau, "vacille");
-      try { if (document.visibilityState === "visible") navigator.vibrate?.([120, 40, 120, 40, 120]); } catch { /* sans vibration */ }
+      try { if (document.visibilityState === "visible") navigator.vibrate?.([140, 50, 140, 50, 120, 60, 90, 70, 60]); } catch { /* sans vibration */ }
     } else if (double === "vent") {
       relancer(tableau, "bat-au-vent");
-      couche("effet-vent", Array.from({ length: 14 }, (_, i) => `<span class="${i % 4 ? "poussiere" : "trait-vent"}" style="top:${8 + ((i * 29) % 84)}%;animation-delay:${(i * 0.05) % 0.4}s"></span>`).join(""));
+      couche("effet-vent", Array.from({ length: 20 }, (_, i) => `<span class="${i % 4 ? "poussiere" : "trait-vent"}" style="top:${8 + ((i * 29) % 84)}%;animation-delay:${(i * 0.07) % 0.9}s"></span>`).join(""));
     } else if (double === "etincelles") {
-      couche("effet-etincelles", Array.from({ length: 14 }, (_, i) => `<span style="--angle:${i * (360 / 14) + (i % 2) * 9}deg;--loin:${38 + (i % 3) * 14}px;animation-delay:${(i % 3) * 0.03}s"></span>`).join(""));
+      couche("effet-etincelles", Array.from({ length: 24 }, (_, i) => `<span style="--angle:${i * 15 + (i % 2) * 9}deg;--loin:${38 + (i % 3) * 16}px;animation-delay:${(i % 4) * 0.18}s"></span>`).join(""));
     }
     return;
   }
@@ -1885,7 +1895,12 @@ $("foGo").addEventListener("click", () => {
 });
 // Le match commence : les boutons des signes doivent être à l'écran (la page a pu rester descendue sur l'écran de fin).
 function montrerSignes() { window.scrollTo(0, 0); $("moves").scrollIntoView({ block: "nearest" }); }
+// (le volet passe entre la présentation et le match)
 function commencerSolo() {
+  if (!faceAFaceOuvert || S.depart) return;   // (un seul départ, même en touchant deux fois)
+  S.depart = true; volet(commencerSoloMaintenant);
+}
+function commencerSoloMaintenant() {
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false; arreterRoutines(); montrerSignes();
   if (S.matchJour) noterMatchDuJour({ abandon: true });   // un seul essai : quitter en route compte comme un abandon
   S.enJeu = true; majModeMatch();
@@ -2809,7 +2824,7 @@ function majDuel(duel) {
   if (duel.phase === "presentation") {
     if (!D.presente) { D.presente = true; ouvrirFaceAFace(); }
   } else if (duel.phase === "jeu") {
-    if (faceAFaceOuvert) { fermerFaceAFace(); montrerSignes(); annoncer([annonceDebutSet(S.match)]); bullesDepart(duel); }
+    if (faceAFaceOuvert) { faceAFaceOuvert = false; volet(() => { fermerFaceAFace(); montrerSignes(); annoncer([annonceDebutSet(S.match)]); bullesDepart(duel); }); }
     if (!$("msgFenetre").hidden && $("msgFenetre").dataset.moment === "avant") fermerMessages();   // le match commence : trop tard pour le mot d'avant-match
     // Set suivant lancé par le serveur : on ferme le panneau et on reprend la main tout de suite
     // (sinon le premier coup du set pouvait partir au hasard).
