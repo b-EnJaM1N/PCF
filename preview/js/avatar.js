@@ -375,7 +375,8 @@ export const PLI = { sens: -1 };
 // (le pli aux deux tiers de la hauteur, et le bout un peu rallongé : le doigt garde sa longueur ; 12 novembre)
 // Au 2e smash du set (niveau 2 ; 13 novembre au soir, demande du porteur du projet : « amplifier l'usure ») : en plus d'être
 // plus pliée, la lame est ébréchée (deux entailles), fendue, et son bout se recourbe un peu.
-function lameTordue(x, y, h, gant, ink, rot, pli, niveau = 1) {
+// enfle : au 2e smash, le bout de ce doigt est enflé (18 novembre, demande du porteur du projet : « pas assez impressionnant »).
+function lameTordue(x, y, h, gant, ink, rot, pli, niveau = 1, enfle = false) {
   const mi = y + h * .38, y0 = y - 3;
   const marque = yy => `<path d="M${x + 1.5} ${yy} l7.5 -1.5" stroke="${ink}" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>`;
   const seg = (ya, yb) => `<rect x="${x}" y="${ya}" width="10.5" height="${yb - ya}" rx="5.2" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`;
@@ -383,7 +384,14 @@ function lameTordue(x, y, h, gant, ink, rot, pli, niveau = 1) {
   if (niveau > 1) {
     const k = y0 + (mi - y0) * .45;
     const entaille = (ex, ey, sens) => `<path d="M${ex} ${ey - 2} l${sens * 3.6} 2 l${-sens * 3.6} 2 Z" fill="rgba(25,12,8,.85)"/>`;
-    haut = seg(k, mi + 4) + `<g transform="rotate(${-pli * .4} ${x + 5.25} ${k + 2})">${seg(y0 - 1, k + 4)}${ongle(x, y0 + .5, ink)}</g>`
+    // (enfle : au 2e smash, le bout de l'index est enflé, bleui, et il élance)
+    const bout = enfle
+      ? `<rect x="${x - 2.4}" y="${y0 - 2.5}" width="15.3" height="${k + 4 - y0 + 2.5}" rx="7.6" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`
+        + `<ellipse cx="${x + 5.25}" cy="${(y0 + k) / 2 + 1}" rx="5.6" ry="${(k - y0) / 2 + 2}" fill="rgba(120,40,140,.38)"/>`
+        + ongle(x, y0 - 1, ink)
+        + `<path d="M${x - 5} ${y0 + 1} q-1.6 2.4 0 4.8 M${x + 15.5} ${y0 + 1} q1.6 2.4 0 4.8" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".8"/>`
+      : seg(y0 - 1, k + 4) + ongle(x, y0 + .5, ink);
+    haut = seg(k, mi + 4) + `<g transform="rotate(${-pli * .4} ${x + 5.25} ${k + 2})">${bout}</g>`
       + entaille(x + .2, k + 7, 1) + entaille(x + 10.3, mi - 1, -1)
       + `<path d="M${x + 4} ${k + 4} l2 3.2 l-1.6 2.8 l1.8 3" fill="none" stroke="${ink}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`;
   }
@@ -467,7 +475,7 @@ function main(symbole, gant, ink, tordu = 0) {
   // Les ciseaux vus de dos : le V, l'annulaire et l'auriculaire repliés (leurs jointures), le pouce rangé sur le côté.
   if (symbole === "ciseaux-dos") return `
     <rect x="22" y="44" width="13" height="20" rx="6.5" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
-    ${tordu ? lameTordue(31, 19, 31, gant, ink, "-12 36 50", PLI.sens * (18 + 14 * tordu), tordu) + lameTordue(44, 18, 32, gant, ink, "10 49 50", -PLI.sens * (16 + 14 * tordu), tordu)
+    ${tordu ? lameTordue(31, 19, 31, gant, ink, "-12 36 50", PLI.sens * (18 + 14 * tordu), tordu, tordu > 1) + lameTordue(44, 18, 32, gant, ink, "10 49 50", -PLI.sens * (16 + 14 * tordu), tordu)
     : doigt(31, 19, 31, gant, ink, "-12 36 50") + doigt(44, 18, 32, gant, ink, "10 49 50")}
     ${doigt(50, 33, 14, gant, ink)}${doigt(60.5, 35, 12, gant, ink)}
     <rect x="29" y="40" width="42" height="36" rx="11" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>
