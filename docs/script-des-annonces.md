@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (874 répliques)
+## Commentateur — vif, enthousiaste, plein de références (888 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -688,6 +688,8 @@ restent lus par la voix de synthèse.
 | `commentateur_premier_point_perdu_01.mp3` | Premier point pour l'adversaire ! Rien n'est joué ! |
 | `commentateur_premier_point_perdu_02.mp3` | Il se fait surprendre ! |
 | `commentateur_premier_point_perdu_02_f.mp3` | Elle se fait surprendre ! |
+| `commentateur_presentation_direct_01.mp3` | Bienvenue ! Nous sommes en direct du court central. Mesdames et messieurs, bonsoir ! |
+| `commentateur_presentation_direct_02.mp3` | Bienvenue ! Nous sommes en direct du court central. Mesdames et messieurs, bonjour ! |
 | `commentateur_avant_seul_01.mp3` | Affrontement sous haute tension ! |
 | `commentateur_avant_seul_02.mp3` | Les deux joueurs entrent dans l'arène. Pas un sourire. Pas un regard de trop. |
 | `commentateur_avant_seul_03.mp3` | Les mains sont prêtes, les esprits sont affûtés. Le spectacle peut commencer ! |
@@ -756,6 +758,18 @@ restent lus par la voix de synthèse.
 | `commentateur_poignee_froide_01.mp3` | Brrr… un vent de fraîcheur sur le court, Madame ! |
 | `commentateur_poignee_legere_01.mp3` | Une poignée de main… minimaliste ! |
 | `commentateur_humain_01.mp3` | C'est un duel ! Un vrai ! Les yeux dans les yeux ! |
+| `commentateur_dialogue_avant_monique_01.mp3` | Monique, aviez-vous un rituel d'avant-match ? |
+| `commentateur_dialogue_avant_monique_02.mp3` | Monique, que mangiez-vous avant une finale ? |
+| `commentateur_dialogue_avant_monique_03.mp3` | Monique, vous aviez un signe porte-bonheur ? |
+| `commentateur_dialogue_avant_monique_04.mp3` | Monique, vous étiez nerveuse avant vos grands matchs ? |
+| `commentateur_dialogue_avant_monique_05.mp3` | Monique, vous échauffiez vos doigts comment ? |
+| `commentateur_dialogue_avant_monique_06.mp3` | Monique, un conseil pour nos deux joueurs ce soir ? |
+| `commentateur_dialogue_avant_monique_07.mp3` | Monique, qu'est-ce qui fait un grand joueur, selon vous ? |
+| `commentateur_dialogue_avant_monique_08.mp3` | Monique, faut-il regarder son adversaire dans les yeux ? |
+| `commentateur_dialogue_avant_monique_09.mp3` | Monique, le hasard existe-t-il au chifoumi ? |
+| `commentateur_dialogue_avant_monique_10.mp3` | Monique, vous sentez la tension monter ? |
+| `commentateur_dialogue_avant_monique_11.mp3` | Monique, vous avez vu l'ambiance ce soir ? |
+| `commentateur_dialogue_avant_monique_12.mp3` | Monique, un pronostic ? |
 | `commentateur_dialogue_avant_match_01.mp3` | Madame, la tension est palpable. |
 | `commentateur_dialogue_avant_match_02.mp3` | Deux styles, deux écoles ! |
 | `commentateur_dialogue_avant_match_03.mp3` | Un pronostic, Madame ? |
@@ -997,7 +1011,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (683 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (695 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1456,6 +1470,18 @@ restent lus par la voix de synthèse.
 | `commentatrice_poignee_legere_01.mp3` | Du bout des doigts. Le strict minimum. |
 | `commentatrice_humain_01.mp3` | Ils se connaissent. Et ça se voit. |
 | `commentatrice_humain_02.mp3` | Entre amis, il n'y a pas de pitié. |
+| `commentatrice_dialogue_avant_monique_01.mp3` | Je ne mettais mon gant qu'à la dernière seconde. Pour que l'adversaire ne sache pas de quelle main je jouais. |
+| `commentatrice_dialogue_avant_monique_02.mp3` | Rien. Un champion joue le ventre vide et l'esprit plein. Enfin, c'est ce qu'on disait à mon époque. |
+| `commentatrice_dialogue_avant_monique_03.mp3` | La Feuille. Elle couvre tout. Même mes erreurs de jeunesse. |
+| `commentatrice_dialogue_avant_monique_04.mp3` | Jamais. Sauf avant les petits. Les grands, on sait pourquoi on les perd. |
+| `commentatrice_dialogue_avant_monique_05.mp3` | Au piano. Trois gammes, deux arpèges, et une Pierre pour finir. |
+| `commentatrice_dialogue_avant_monique_06.mp3` | Respirer. Et ne pas commencer par la Pierre. Tout le monde commence par la Pierre. |
+| `commentatrice_dialogue_avant_monique_07.mp3` | La patience. Et une bonne mémoire. Surtout celle des erreurs des autres. |
+| `commentatrice_dialogue_avant_monique_08.mp3` | Dans les yeux, non. Dans les mains, oui. Les yeux mentent, les poignets jamais. |
+| `commentatrice_dialogue_avant_monique_09.mp3` | Le hasard, c'est le nom qu'on donne à ce qu'on n'a pas su lire. |
+| `commentatrice_dialogue_avant_monique_10.mp3` | Je sens surtout le courant d'air, Roland. Quelqu'un a laissé la porte ouverte. |
+| `commentatrice_dialogue_avant_monique_11.mp3` | J'ai vu. J'ai entendu, surtout. Votre micro est trop fort, Roland. |
+| `commentatrice_dialogue_avant_monique_12.mp3` | L'un des deux va gagner. Je prends peu de risques, c'est ce qui a fait ma carrière. |
 | `commentatrice_dialogue_avant_match_01.mp3` | On sent surtout deux personnes devant leur téléphone. Mais oui. |
 | `commentatrice_dialogue_avant_match_02.mp3` | Trois signes. Il n'y en a jamais eu que trois. |
 | `commentatrice_dialogue_avant_match_03.mp3` | Je ne fais pas de pronostic. Je constate… après. |

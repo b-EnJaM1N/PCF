@@ -591,3 +591,19 @@ test("la fin du premier set selon l'écart (3-4, 5-6, 7 et plus), dite parfois ;
   }
   for (const n of Object.values(vus)) assert.ok(n > 10, JSON.stringify(vus));
 });
+
+test("avant le match, Roland interroge Monique, après « Bienvenue… » (bonsoir le soir, bonjour le jour)", () => {
+  let vu = 0;
+  for (let k = 0; k < 80; k++) {
+    for (const [heure, mot] of [[21, "bonsoir"], [10, "bonjour"]]) {
+      const a = annoncesAvantMatch({ moi: {}, adv: {}, heure }, rngFixe(1000 + k));
+      const i = a.commentaires.findIndex(l => /^commentateur_dialogue_avant_monique_/.test(l.id));
+      if (i < 0) continue;
+      vu++;
+      assert.match(a.commentaires[i - 1].texte, new RegExp(`direct du court central. Mesdames et messieurs, ${mot} !`));
+      assert.match(a.commentaires[i + 1].id, /^commentatrice_dialogue_avant_monique_/);
+    }
+  }
+  assert.ok(vu > 10, `vu ${vu} fois`);
+  assert.ok(DIALOGUES_IDS.avant_monique.flat().every(id => !/1997/.test(CATALOGUE.get(id).texte)));   // (jamais un mot de 1997)
+});
