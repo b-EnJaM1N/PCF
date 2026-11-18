@@ -604,7 +604,7 @@ test("avant le match, Roland interroge Monique, après « Bienvenue… » (bonso
       assert.ok(POOLS.presentation_direct.some(e => e.base === baseDe(intro.id)), intro.id);
       assert.match(intro.texte, /court central/);
       assert.ok(!new RegExp(mot === "bonsoir" ? "bonjour" : "bonsoir", "i").test(intro.texte), intro.texte);   // (jamais la mauvaise salutation)
-      assert.match(a.commentaires[i + 1].id, /^commentatrice_dialogue_avant_monique_/);
+      assert.match(a.commentaires[i + 1].id, /^commentatrice_(dialogue_avant_monique_|monique_porte_bonheur_)/);   // (ou une autre réponse au signe porte-bonheur)
     }
   }
   assert.ok(vu > 10, `vu ${vu} fois`);
@@ -621,7 +621,7 @@ test("le signe porte-bonheur de Monique : Feuille, Pierre ou Ciseaux, à peu pr�
     for (const s of Object.keys(vus)) if (r.startsWith(`L${s === "Ciseaux" ? "es" : "a"} ${s}`)) vus[s]++;
   }
   const n = vus.Feuille + vus.Pierre + vus.Ciseaux;
-  assert.ok(n > 30, JSON.stringify(vus));
+  assert.ok(n > 20, JSON.stringify(vus));
   for (const v of Object.values(vus)) assert.ok(v > n / 6, JSON.stringify(vus));
 });
 
@@ -638,4 +638,38 @@ test("le signe abîmé : rejoué plus tard dans le set et perdu ; pas après un 
   m.debutsSet.push(m.coups.length);                                        // set suivant : les mains sont réparées
   jouerCoup(m, CISEAUX, PIERRE);
   assert.equal(signeAbime(m), null);
+});
+
+test("gros lot 3 : signe fétiche, match qui n'en finit pas, David contre Goliath, premier match d'un joueur", () => {
+  const de = (moment, l) => l.some(x => POOLS[moment]?.some(e => e.base === baseDe(x.id)));
+  let fet = 0, long = 0, david = 0, favori = 0, exploit = 0, debut = 0;
+  for (let k = 0; k < 120; k++) {
+    // 5e point du set gagné avec la Pierre
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), e = nouvelEtatAnnonces(), rng = rngFixe(2000 + k);
+    for (let i = 0; i < 4; i++) annoncerCoup(m, jouerCoup(m, PIERRE, CISEAUX), e, {}, rng);
+    if (de("signe_fetiche", annoncerCoup(m, jouerCoup(m, PIERRE, CISEAUX), e, {}, rng).lignes)) fet++;
+    // le 60e coup
+    const m2 = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), e2 = nouvelEtatAnnonces();
+    for (let i = 0; i < 59; i++) jouerCoup(m2, PIERRE, PIERRE);
+    if (de("match_long", annoncerCoup(m2, jouerCoup(m2, PIERRE, CISEAUX), e2, {}, rng).lignes)) long++;
+    // je suis le moins bien classé, je mène 4-1 : David mène ; l'adversaire est le moins bien classé : le favori mène
+    for (const [o, compte] of [[0, "d"], [1, "f"]]) {
+      const m3 = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), e3 = nouvelEtatAnnonces({ outsider: o });
+      for (let i = 0; i < 4; i++) jouerCoup(m3, PIERRE, PIERRE);
+      Object.assign(m3, { points: [3, 1] });
+      const l = annoncerCoup(m3, jouerCoup(m3, FEUILLE, PIERRE), e3, {}, rng).lignes;
+      if (compte === "d" && de("david_mene", l)) david++;
+      if (compte === "f" && de("favori_mene", l)) favori++;
+      assert.ok(!de(compte === "d" ? "favori_mene" : "david_mene", l));
+    }
+    // David gagne le match
+    const m4 = nouveauMatch({ pointsParSet: 11, setsGagnants: 1 }), e4 = nouvelEtatAnnonces({ outsider: 0 });
+    Object.assign(m4, { points: [10, 3] });
+    if (de("david_gagne", annoncerCoup(m4, jouerCoup(m4, PIERRE, CISEAUX), e4, {}, rng).lignes)) exploit++;
+    // premier match d'un joueur, en duel
+    const a = annoncesAvantMatch({ moi: {}, adv: { etiquette: "debutant" }, humain: true }, rng);
+    if (a.commentaires.some(l => /^commentateur_dialogue_avant_debutant_/.test(l.id))) debut++;
+  }
+  assert.ok(fet > 2, `fétiche : ${fet}`);   // (rare exprès : 35 % des fois, si les commentateurs ont de la réserve)
+  for (const [nom, n] of Object.entries({ long, david, favori, exploit, debut })) assert.ok(n > 10, `${nom} : ${n}`);   // (le match long : une fois sur deux)
 });

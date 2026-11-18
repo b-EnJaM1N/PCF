@@ -1700,6 +1700,8 @@ function chantPauseDuel(p) {
 function presenterSpeaker() {
   const f = P.faceAFace[OPP.id], humain = !!OPP.humain;
   const niveauMoi = humain ? monClassement ?? 1200 : P.elo, niveauAdv = humain ? OPP.classement ?? 1200 : OPP.elo;
+  // (18 novembre) David contre Goliath : le joueur bien moins classé (200 points d'écart ou plus), pour les commentateurs
+  if (S.annonces) S.annonces.outsider = Math.abs(niveauMoi - niveauAdv) >= 200 ? (niveauMoi < niveauAdv ? 0 : 1) : null;
   const monId = `h:${compteUI.session()?.user?.id}`;
   let recents = []; try { recents = lire("speakerRecents", []) || []; } catch { /* rien */ }
   // La mémoire du dernier match contre le même adversaire (gardée pour le premier coup : la même ouverture ?).
