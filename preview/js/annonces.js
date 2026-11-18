@@ -22,9 +22,10 @@ export const REPLIQUE_COURTE = 62;   // (55 jusqu'au 1er novembre ; 62 : environ
 export const baseDe = id => /^(.*?_\d\d)(?:_|$)/.exec(id)?.[1] ?? id;
 
 // anciens : les répliques entendues aux derniers matchs (gardées sur le téléphone), évitées tant qu'il en reste d'autres.
-export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false, enjeu = null, anciens = [] } = {}) {
+export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false, enjeu = null, anciens = [], outsider = null } = {}) {
   return {
     humain, genre, finale, enjeu,
+    outsider,                     // (18 novembre) le joueur bien moins classé (0 moi, 1 l'adversaire ; 200 points d'écart), ou null
     anciens: new Set(anciens.map(baseDe)),
     reserve: 1,                   // un premier commentaire est possible
     dernierCom: -99,              // numéro du coup du dernier commentaire
@@ -180,7 +181,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
 
   // Le match chauffe : balle de set ou de match, fin de set serrée.
   const chaud = !!(evt.balleAvant || evt.balleApres) || (!court && Math.max(...match.points) >= len - 3);
-  etat.reserve = Math.min(RESERVE_MAX, etat.reserve + (chaud ? 0.29 : 0.22));   // (16 novembre : un peu moins que 1/3 et 1/4, pour garder le même rythme avec les nouvelles répliques)
+  etat.reserve = Math.min(RESERVE_MAX, etat.reserve + (chaud ? 0.28 : 0.21));   // (16 novembre : un peu moins que 1/3 et 1/4, pour garder le même rythme avec les nouvelles répliques)
   const peutCommenter = (ecart, seuil = 1) => n >= 3 && etat.reserve >= seuil && n - etat.dernierCom >= ecart;
   let moment = null;
 
@@ -241,6 +242,14 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       const cadrage = g === 0 && decisifs.length >= 2 && decisifs[decisifs.length - 2].gagnant === 0 && decisifs[decisifs.length - 2].a === 2 && dernier.a === 0;
       const feu = feuDuCoup(c);
       let ab = null;
+      const longTente = n >= 60 && !etat.longDit;
+      if (longTente) etat.longDit = true;
+      // (18 novembre) le signe fétiche : le gagnant vient de marquer son 5e point du set avec ce signe
+      const debutSet = match.debutsSet?.at(-1) ?? 0, sienG = x => (g === 0 ? x.a : x.b);
+      const fetiche = c.slice(debutSet).filter(x => x.gagnant === g && sienG(x) === sienG(dernier)).length === 5 ? { joueur: g, signe: sienG(dernier) } : null;
+      // David contre Goliath : 3 points d'avance dans le set, pour le moins bien classé ou pour le favori (une fois par match)
+      const o = etat.outsider, avanceOut = o === 0 ? a - b : o === 1 ? b - a : 0;
+      const david = o === null || etat.davidDit ? null : avanceOut >= 3 ? "david_mene" : avanceOut <= -3 ? "favori_mene" : null;
       const obstination = n >= 3 && c[n - 1].a === c[n - 2].a && c[n - 2].a === c[n - 3].a && (n < 4 || c[n - 4].a !== c[n - 1].a);
       // (à 14 partout dans le set décisif, on vient toujours de sauver une balle de match : le point décisif passe d'abord,
       // toujours en finale, une fois sur deux sinon ; 16 novembre)
@@ -265,6 +274,12 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
         moment = "premier_point_perdu"; ctx.premierPoint = true;
       } else if (g === 1 && !match.scoresSets.length && a === 0 && b === 3 && rng() < 0.6) {   // 0-3 d'entrée : là, c'est un mauvais départ
         moment = "premier_point_perdu"; ctx.departRate = true;
+      } else if (longTente && rng() < 0.5 && peutCommenter(2, 0.5)) {   // le match qui n'en finit pas (18 novembre ; une chance, au 1er point après le 60e coup)
+        moment = "match_long";
+      } else if (fetiche && !etat.dejaSet.has("fetiche") && peutCommenter(3) && rng() < 0.35) {   // 5 points avec le même signe
+        moment = "signe_fetiche"; etat.dejaSet.add("fetiche"); ctx.signe = fetiche.signe; ctx.smashAdv = fetiche.joueur === 1;
+      } else if (david && peutCommenter(3, 0.5) && rng() < (david === "david_mene" ? 0.7 : 0.4)) {   // David contre Goliath
+        moment = david; etat.davidDit = true;
       } else if ((ab = signeAbime(match)) && peutCommenter(2, 0.5) && rng() < 0.6) {   // le signe abîmé par un smash, rejoué et perdu
         moment = "signe_abime"; ctx.signe = ab.signe; ctx.smashAdv = ab.joueur === 1;
       } else if (feu.allume && peutCommenter(2, 0.5) && rng() < 0.8) {   // ma main prend feu (8 points de suite ; effets.js)
@@ -490,6 +505,11 @@ function finDeMatch(match, evt, etat, ctx, rng) {
       if (x) return [x];
     }
   }
+  // (18 novembre) David a battu Goliath : le moins bien classé gagne le match (7 fois sur 10)
+  if (etat.outsider !== null && etat.outsider !== undefined && evt.gagnant === etat.outsider && rng() < 0.7) {
+    const x = choisir(etat, "david_gagne", ctx, rng);
+    if (x) return [x];
+  }
   const jeu = etat.jeu && `apres_${etat.jeu}_${evt.gagnant === 0 ? "victoire" : "defaite"}`;
   if (jeu && DIALOGUES_IDS[jeu] && (/finale/.test(jeu) || rng() < partDialogue(jeu))) {
     const d = dialogue(etat, jeu, rng);
@@ -638,6 +658,11 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
     const recentsJeu = recents.filter(id => id.startsWith(`commentateur_dialogue_avant_${jeu}_`)).slice(0, 4);
     recentsJeu.forEach(id => { const m = /_(\d\d)(_f)?$/.exec(id); if (m) etat.dialoguesDits.add(`avant_${jeu}_${+m[1] - 1}`); });
     const d = dialogue(etat, `avant_${jeu}`, rng);
+    if (d) return { speaker: sp.filter(Boolean), commentaires: d };
+  }
+  // (18 novembre) le tout premier match d'un des deux joueurs, en duel : un dialogue de bienvenue, 7 fois sur 10.
+  if (humain && (moi.etiquette === "debutant" || adv.etiquette === "debutant") && rng() < 0.7) {
+    const d = dialogue(etat, "avant_debutant", rng);
     if (d) return { speaker: sp.filter(Boolean), commentaires: d };
   }
   // Le souvenir du dernier match contre le même adversaire (commentaireMemoire), 6 fois sur 10.
