@@ -1029,7 +1029,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (695 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (697 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1432,6 +1432,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_premier_point_perdu_02.mp3` | Un mauvais départ. Il reste du temps. Heureusement. |
 | `commentatrice_premier_point_perdu_03.mp3` | Ça commence mal. On a déjà vu pire. Rarement. |
 | `commentatrice_premier_point_perdu_04.mp3` | Un peu de retard à l'allumage. |
+| `commentatrice_monique_porte_bonheur_01.mp3` | La Pierre. Elle ne bouge jamais. Comme mes convictions. |
+| `commentatrice_monique_porte_bonheur_02.mp3` | Les Ciseaux. Parce qu'ils découpent les ambitions de l'adversaire. |
 | `commentatrice_avant_seul_01.mp3` | Ce soir, il n'y aura qu'un vainqueur. Et probablement un mauvais perdant. |
 | `commentatrice_avant_seul_02.mp3` | Deux joueurs, trois signes, un seul objectif : humilier son prochain. |
 | `commentatrice_avant_seul_03.mp3` | Ce soir, on ne règle pas ses comptes. On les découpe. |

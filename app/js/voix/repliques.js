@@ -984,6 +984,12 @@ export const MOMENTS = {
     { r: "d", t: "Un peu de retard à l'allumage.", si: "depart_rate" },   // (17 novembre, écrite par le porteur du projet)
   ],
   // Avant le match, parfois une seule phrase au lieu d'un dialogue : tous les matchs, les grands matchs, une revanche, entre amis.
+  // Le signe porte-bonheur de Monique (18 novembre, idée du porteur du projet : elle brouille les pistes) : à la question du
+  // dialogue avant_monique n° 3, sa réponse est la Feuille (dans le dialogue), la Pierre ou les Ciseaux, une fois sur trois chacune.
+  monique_porte_bonheur: [
+    { r: "d", t: "La Pierre. Elle ne bouge jamais. Comme mes convictions." },
+    { r: "d", t: "Les Ciseaux. Parce qu'ils découpent les ambitions de l'adversaire." },
+  ],
   // La formule d'ouverture avant le dialogue avec Monique (18 novembre, demande du porteur du projet) : bonjour ou bonsoir.
   presentation_direct: [
     { r: "c", t: "Bienvenue ! Nous sommes en direct du court central. Mesdames et messieurs, bonsoir !", si: "soir" },

@@ -610,3 +610,17 @@ test("avant le match, Roland interroge Monique, après « Bienvenue… » (bonso
   assert.ok(vu > 10, `vu ${vu} fois`);
   assert.ok(DIALOGUES_IDS.avant_monique.flat().every(id => !/1997/.test(CATALOGUE.get(id).texte)));   // (jamais un mot de 1997)
 });
+
+test("le signe porte-bonheur de Monique : Feuille, Pierre ou Ciseaux, à peu près une fois sur trois chacun", () => {
+  const vus = { Feuille: 0, Pierre: 0, Ciseaux: 0 };
+  for (let k = 0; k < 3000; k++) {
+    const a = annoncesAvantMatch({ moi: {}, adv: {}, heure: 21 }, rngFixe(5000 + k));
+    const i = a.commentaires.findIndex(l => l.id === "commentateur_dialogue_avant_monique_03");
+    if (i < 0) continue;
+    const r = a.commentaires[i + 1].texte;
+    for (const s of Object.keys(vus)) if (r.startsWith(`L${s === "Ciseaux" ? "es" : "a"} ${s}`)) vus[s]++;
+  }
+  const n = vus.Feuille + vus.Pierre + vus.Ciseaux;
+  assert.ok(n > 30, JSON.stringify(vus));
+  for (const v of Object.values(vus)) assert.ok(v > n / 6, JSON.stringify(vus));
+});

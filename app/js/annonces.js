@@ -643,7 +643,13 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
   if (!com && rng() < 0.25) {
     recents.filter(id => /^commentateur_dialogue_avant_monique_/.test(id)).slice(0, 6)
       .forEach(id => { const m = /_avant_monique_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_monique_${+m[1] - 1}`); });
-    const d = dialogue(etat, "avant_monique", rng);
+    let d = dialogue(etat, "avant_monique", rng);
+    // (le signe porte-bonheur : Feuille, Pierre ou Ciseaux, une fois sur trois chacun ; seulement une réponse enregistrée)
+    if (d?.length === 2 && /_avant_monique_03$/.test(baseDe(d[0].id))) {
+      const autres = POOLS.monique_porte_bonheur.map(e => ligneMoment(e, { genre })).filter(l => l && (!audible || audible(l.id)));
+      const k = Math.floor(rng() * 3);
+      if (k < 2 && autres[k]) d = [d[0], autres[k]];
+    }
     if (d) {
       // (la formule d'ouverture : une au hasard, en évitant celles entendues récemment)
       const h = heure ?? new Date().getHours();
