@@ -506,19 +506,23 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   // il parle à la fin des sifflets (une de ses façons de demander le calme ; « Je vous demande de vous arrêter » retiré le
   // 4 novembre), et c'est le seul commentaire de ce point.
   const chaud = intensiteMatch(m);
-  if (rp.ooh && hueesPermises() && Math.random() < 0.25 && voix.fichiers.has("arbitre_silence_01")) {
+  // (18 novembre, demande du porteur du projet : l'arbitre demande le silence une fois par set au plus, tous les cas confondus
+  // (sifflets, trompette ou « Olé » avant une balle, balle de match), et le jeu repart plus vite)
+  const silenceDispo = !(S.silenceSet ||= new Set()).has(m.scoresSets.length);
+  if (rp.ooh && silenceDispo && hueesPermises() && Math.random() < 0.25 && voix.fichiers.has("arbitre_silence_01")) {
     const duree = ambiance.sifflets(0.9);
     if (duree) {
+      S.silenceSet.add(m.scoresSets.length);
       try { ecrire("hueesLe", Date.now()); } catch { /* rien */ }
       // Contre un bot, le coup suivant attend la fin des sifflets et de l'arbitre ; en duel, le serveur tient le temps : le jeu continue.
-      if (!S.duel) S.silenceJusqu = Date.now() + (0.9 + duree * 0.8 + 3) * 1000;
-      if (!S.duel) S.arretAfficheA = Date.now() + (0.9 + duree * 0.8) * 1000;   // « Jeu arrêté » quand l'arbitre intervient
+      if (!S.duel) S.silenceJusqu = Date.now() + (0.9 + duree * 0.6 + 2) * 1000;
+      if (!S.duel) S.arretAfficheA = Date.now() + (0.9 + duree * 0.6) * 1000;   // « Jeu arrêté » quand l'arbitre intervient
       // La bronca (sifflets et huées de tout le stade) avec les sifflets, qui se tait quand l'arbitre a parlé (4 novembre : plus forte
       // que les anciennes huées, demande du porteur du projet).
-      ambiance.bronca({ delai: 0.6, vol: 0.45, coupe: duree * 0.8 + 2.2 });
+      ambiance.bronca({ delai: 0.6, vol: 0.45, coupe: duree * 0.6 + 1.8 });
       for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].role !== "arbitre") a.lignes.splice(k, 1);
       const seance = S, calme = silenceArbitre();
-      setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([calme]); }, (0.9 + duree * 0.8) * 1000);
+      setTimeout(() => { if (S === seance && !S.match.termine) voix.dire([calme]); }, (0.9 + duree * 0.6) * 1000);
     }
   } else if ((rp.ooh || evt.balleAvant) && chaud >= 0.5 && !(S.siffletsSet ||= new Set()).has(m.scoresSets.length) && Math.random() < 0.6) {
     // Aux moments chauds (point disputé, balle sauvée), le public s'agite : quelques sifflets courts, sans l'arbitre
@@ -614,11 +618,13 @@ function montrerPalette(pa, mo, devoile = false) {
   $("rpPalette").hidden = false;
 }
 function jouerReplay(liste, apres = () => {}) {
-  if (!liste.length) { apres(); return; }
+  if (!liste.length) { apres(); return () => {}; }
   voix.arreter();
   const ov = $("replay"), vite = reduitMouvement();
   let i = 0, t = null, fini = false;
   const fermer = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); apres(); };
+  // (couper : arrêter net, sans la suite ; en duel, quand le set repart pendant le replay de la pause)
+  const couper = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); };
   $("rpPasser").onclick = fermer;
   $("rpNomMoi").textContent = nomAffiche(P); $("rpNomAdv").textContent = OPP.nom;
   $("rpMiniMoi").innerHTML = avatarSVG(avMoi()); $("rpMiniAdv").innerHTML = avatarSVG(avAdv());
@@ -701,6 +707,7 @@ function jouerReplay(liste, apres = () => {}) {
     }, vite ? 300 : 2000);
   };
   montrer();
+  return couper;
 }
 $("btnTempsForts").addEventListener("click", () => { if (S?.moments?.length) jouerReplay(tempsForts(S.moments)); });
 
@@ -797,24 +804,25 @@ function apresPoint(evt, a, cel, rp) {
   else if (rp && !rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups, Math.random, intensiteMatch(m)); if (r) setTimeout(() => ambiance.reagir(r), 300); }
   // Avant une balle de set ou de match, de temps en temps (une fois par set au plus) : la trompette ou « Olé, olé », puis l'arbitre
   // demande le silence et le public se tait (demande du porteur du projet, 3 novembre). Contre un bot, le coup suivant attend.
-  const nSet = m.scoresSets.length, chant = evt.balleApres && !m.termine && !evt.finSet && !(S.chantSet ||= new Set()).has(nSet) && Math.random() < 0.35
+  const nSet = m.scoresSets.length, chant = evt.balleApres && !m.termine && !evt.finSet && !(S.chantSet ||= new Set()).has(nSet) && !(S.silenceSet ||= new Set()).has(nSet) && Math.random() < 0.35
     ? (evt.balleApres.type === "match" && Math.random() < 0.5 ? "ole" : "charge") : null;
-  const coupe = chant === "ole" ? (S.duel ? 2.5 : 4) : 3.2;
+  const coupe = chant === "ole" ? (S.duel ? 2.5 : 3) : 2.4;   // (18 novembre : 4 et 3,2 secondes avant, trop long)
   if (chant && ambiance.stade(chant, { vol: chant === "ole" ? 0.85 : 0.6, delai: 0.4, coupe, salle: false })) {   // (plus fort le 3 novembre : on l'entendait à peine)
-    S.chantSet.add(nSet);
+    S.chantSet.add(nSet); S.silenceSet.add(nSet);
     for (let k = a.lignes.length - 1; k >= 0; k--) if (a.lignes[k].id.startsWith("arbitre_silence_")) a.lignes.splice(k, 1);
     const seance = S, silence = silenceArbitre();
     // (si Roland ou Monique parlent encore, l'arbitre attend un peu qu'ils aient fini)
     setTimeout(() => voix.finiDeParler(() => { if (S === seance && !S.match.termine) voix.dire([silence]); }, 1500), (0.4 + coupe) * 1000);
-    if (!S.duel) S.silenceJusqu = Date.now() + (0.4 + coupe + 3.5) * 1000;
+    if (!S.duel) S.silenceJusqu = Date.now() + (0.4 + coupe + 2.2) * 1000;
     if (!S.duel) S.arretAfficheA = Date.now() + (0.4 + coupe) * 1000;   // « Jeu arrêté » quand l'arbitre intervient
   } else if (evt.balleApres && evt.balleApres.joueur === 1 && !m.termine && !evt.finSet && !(S.defenseSet ||= new Set()).has(nSet)
     && ambiance.buf?.defense && Math.random() < 0.5) {
     // « Défense ! » : je dois sauver une balle de set ou de match, le public me pousse (une fois par set au plus ; 3 novembre).
     S.defenseSet.add(nSet);
     ambiance.stade("defense", { vol: 0.7, delai: 0.4, coupe: 6, salle: false });
-  } else if (evt.balleApres?.type === "match" && !m.termine && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length)) {
+  } else if (evt.balleApres?.type === "match" && !m.termine && !S.silenceSet.has(nSet) && silenceAvantBalle(S.silence ||= { total: 0, parSet: {}, suite: 0, pause: 0 }, m.scoresSets.length)) {
     // Sinon, parfois, avant une balle de match, l'arbitre demande le silence (sans le répéter à chaque balle).
+    S.silenceSet.add(nSet);
     a.lignes.unshift(silenceArbitre());
   } else if (!evt.finSet && !m.termine && evt.gagnant !== null && series(m.coups).serie === 5 && !(S.oleSet ||= new Set()).has(nSet) && Math.random() < 0.6) {
     // « Olé ! » : le public salue une série de 5 points d'affilée (une fois par set au plus).
@@ -871,7 +879,9 @@ function apresPoint(evt, a, cel, rp) {
     // Le moment du set, au ralenti (replay.js ; en solo : en duel, la pause est chronométrée) : il passe d'abord, une fois les
     // commentaires de fin de set terminés, et l'écran « Lancer le set suivant » n'apparaît qu'à la fin du replay (18 novembre,
     // demande du porteur du projet : on le voyait passer furtivement avant le replay).
-    const moSet = !S.duel && replayVisible() ? momentDuSet(S.moments || [], n - 1) : null, seanceSet = S;
+    // (18 novembre, demande du porteur du projet) En duel aussi : la pause dure 15 secondes de plus pour le replay (étape SQL 81),
+    // qui passe s'il reste au moins 20 secondes ; si le set repart pendant le replay, il s'arrête net.
+    const moSet = replayVisible() ? momentDuSet(S.moments || [], n - 1) : null, seanceSet = S;
     const ouvrirPause = () => {
       if (S !== seanceSet) return;
       ouvrirPanneau({
@@ -888,7 +898,14 @@ function apresPoint(evt, a, cel, rp) {
     };
     setTimeout(() => {
       if (S.duel && (!D || D.duel.phase !== "entre_sets")) { if (D) { D.apresPanneau = null; nouveauSet(); duelReprendre(); } return; }
-      if (moSet) voix.finiDeParler(() => { if (S === seanceSet) jouerReplay([moSet], ouvrirPause); }, 10000);
+      if (moSet && S.duel) {
+        voix.finiDeParler(() => {
+          if (S !== seanceSet || !D || D.duel.phase !== "entre_sets") return;
+          if (tempsRestant(D.duel.echeance, D.decalage) < 20000) { ouvrirPause(); return; }
+          const d = D;
+          d.replayEnCours = jouerReplay([moSet], () => { d.replayEnCours = null; if (S === seanceSet && D === d && D.duel.phase === "entre_sets") ouvrirPause(); });
+        }, 4000);
+      } else if (moSet) voix.finiDeParler(() => { if (S === seanceSet) jouerReplay([moSet], ouvrirPause); }, 10000);
       else ouvrirPause();
     }, cel ? 2400 : 1200);                                  // on laisse le temps de voir le cri
     return evt;
@@ -2793,7 +2810,9 @@ function majDuel(duel) {
     if (!$("msgFenetre").hidden && $("msgFenetre").dataset.moment === "avant") fermerMessages();   // le match commence : trop tard pour le mot d'avant-match
     // Set suivant lancé par le serveur : on ferme le panneau et on reprend la main tout de suite
     // (sinon le premier coup du set pouvait partir au hasard).
-    const reprise = !!panneauOuvert;
+    const reprise = !!panneauOuvert || !!D.replayEnCours;
+    // (le set repart pendant le replay de la pause : on l'arrête net ; 18 novembre)
+    if (D.replayEnCours) { D.replayEnCours(); D.replayEnCours = null; D.apresPanneau?.(); D.apresPanneau = null; bullesSet(duel); }
     if (panneauOuvert) { fermerPanneau(); D.apresPanneau?.(); D.apresPanneau = null; bullesSet(duel); }
     S.enJeu = true; majModeMatch();
     if (!S.occupe || reprise) duelReprendre();
