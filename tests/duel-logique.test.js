@@ -150,3 +150,13 @@ test("en ligne, les points de pénalité sont rejoués à leur place, vus de mon
   // Un ancien duel (avant l'étape 49) : pas de pénalités.
   assert.equal(evenementsDuel(duel([{ a: 0, b: 1, g: 0 }]), 0).length, 1);
 });
+
+// (18 novembre : en duel, le coup joué en smash doit rester entouré dans l'historique, même une fois le match rejoué)
+test("rejouer un duel garde le smash de chaque coup, vu de mon côté", () => {
+  const duel = { j0: "a", j1: "b", points_par_set: 11, sets_gagnants: 2, penalites: [],
+    coups: [{ a: PIERRE, b: CISEAUX, g: 0, smash: [false, true] }, { a: FEUILLE, b: FEUILLE, g: null }] };
+  const vuDeB = rejouer(duel, 1).match.coups;   // je suis j1 : mon smash est à gauche
+  assert.deepEqual(vuDeB[0].smash, [true, false]);
+  assert.equal(vuDeB[1].smash, undefined);
+  assert.deepEqual(rejouer(duel, 0).match.coups[0].smash, [false, true]);
+});
