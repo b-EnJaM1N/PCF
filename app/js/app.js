@@ -1259,7 +1259,9 @@ function ouvrirMessages(moment) {
   const annonces = liste.filter(m => m.annonce);
   $("msgFenetreCorps").innerHTML = (ami ? `<p class="msg-rubrique">✍️ Écrire mon message</p><div class="msg-libre"><input type="text" id="msgLibre" maxlength="${MESSAGE_LIBRE_MAX}" placeholder="Ton message (${MESSAGE_LIBRE_MAX} max.)" autocomplete="off"><button class="btn" id="msgLibreEnvoyer">Envoyer</button></div>` : "")
     + (annonces.length ? `<p class="msg-rubrique">🧠 Annonces (vraies ou fausses…)</p>` + grilleAnnonces(annonces) : "")
-    + rubrique("😊 Fair-play", liste.filter(m => !m.amis && !m.annonce))
+    + rubrique("😊 Fair-play", liste.filter(m => !m.amis && !m.annonce && !m.smiley))
+    // (les smileys, avec n'importe quel joueur : 18 novembre)
+    + `<p class="msg-rubrique">😀 Smileys</p><div class="msg-smileys">` + liste.filter(m => m.smiley).map(m => `<button data-msg="${m.id}">${m.texte}</button>`).join("") + `</div>`
     + (ami ? rubrique("😈 Chambrage, entre amis", liste.filter(m => m.amis))
       : `<p class="hint">Le chambrage et les messages écrits, c'est entre amis : ajoute ${esc(OPP.nom)} à tes amis pour en profiter.</p>`);
   $("msgFenetre").dataset.moment = moment;
