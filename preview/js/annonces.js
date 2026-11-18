@@ -645,7 +645,9 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
       .forEach(id => { const m = /_avant_monique_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_monique_${+m[1] - 1}`); });
     const d = dialogue(etat, "avant_monique", rng);
     if (d) {
-      const h = heure ?? new Date().getHours(), intro = choisir(etat, "presentation_direct", { soir: h >= 18 || h < 5 }, rng);
+      // (la formule d'ouverture : une au hasard, en évitant celles entendues récemment)
+      const h = heure ?? new Date().getHours();
+      const intro = choisir({ ...etat, anciens: new Set(recents.map(baseDe)) }, "presentation_direct", { soir: h >= 18 || h < 5 }, rng);
       return { speaker: sp.filter(Boolean), commentaires: intro ? [intro, ...d] : d };
     }
   }
