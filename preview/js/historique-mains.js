@@ -9,20 +9,35 @@ const gagnant = (a, b) => (a === b ? null : (a + 1) % 3 === b ? 0 : 1);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
 // Un match en peu de place : un chiffre par coup (3 × mon signe + le sien), « | » entre les sets.
-export function encoderCoups(coups, debutsSet = [0]) {
-  const debuts = new Set(debutsSet.filter(i => i > 0));
-  return coups.map((c, i) => (debuts.has(i) ? "|" : "") + (3 * c.a + c.b)).join("");
+// (18 novembre, demande du porteur du projet) Après le chiffre, le smash : « * » le mien, « + » le sien, « # » les deux ;
+// les points de pénalité, à leur place : « x » contre moi, « y » contre lui (penalites : [{ apres, fautif }], regles.js).
+// (les anciens matchs, sans ces marques, se lisent toujours)
+const MARQUE_SMASH = { "1,0": "*", "0,1": "+", "1,1": "#" };
+export function encoderCoups(coups, debutsSet = [0], penalites = []) {
+  const debuts = new Set(debutsSet.filter(i => i > 0)), pens = Array.isArray(penalites) ? penalites : [];
+  const pen = i => pens.filter(p => (p.apres ?? 0) === i).map(p => (p.fautif === 0 ? "x" : "y")).join("");
+  return coups.map((c, i) => (debuts.has(i) ? "|" : "") + pen(i) + (3 * c.a + c.b) + (c.smash ? MARQUE_SMASH[`${+!!c.smash[0]},${+!!c.smash[1]}`] || "" : "")).join("")
+    + pen(coups.length);
 }
-// → les sets, chacun une liste de coups { a, b, gagnant }.
-export function decoderCoups(texte) {
-  return String(texte || "").split("|").map(set => [...set].filter(x => x >= "0" && x <= "8")
-    .map(x => { const k = +x, a = Math.floor(k / 3), b = k % 3; return { a, b, gagnant: gagnant(a, b) }; })).filter(s => s.length);
+// → les sets, chacun une liste d'éléments : un coup { a, b, gagnant, smash? } ou un point de pénalité { penalite: 0 ou 1 }.
+export function decoderHistorique(texte) {
+  return String(texte || "").split("|").map(set => {
+    const l = [];
+    for (const x of set) {
+      if (x >= "0" && x <= "8") { const k = +x, a = Math.floor(k / 3), b = k % 3; l.push({ a, b, gagnant: gagnant(a, b) }); }
+      else if (x === "x" || x === "y") l.push({ penalite: x === "x" ? 0 : 1 });
+      else if ("*+#".includes(x) && l.at(-1) && !("penalite" in l.at(-1))) l.at(-1).smash = [x !== "+", x !== "*"];
+    }
+    return l;
+  }).filter(s => s.length);
 }
+// → les sets, chacun une liste de coups { a, b, gagnant } (sans les pénalités).
+export const decoderCoups = texte => decoderHistorique(texte).map(set => set.filter(x => !("penalite" in x))).filter(s => s.length);
 
 // Ajoute un match en tête de la liste (la plus récente d'abord), 10 au plus.
 // m : { date, gagne, detail (« 11–7, 9–11 »), coups, debutsSet, balles (balles de match que j'ai sauvées) }.
 export function ajouterMain(liste, m) {
-  const entree = { d: m.date ?? Date.now(), g: !!m.gagne, s: m.detail || "", c: encoderCoups(m.coups, m.debutsSet), ...(m.balles ? { b: m.balles } : {}) };
+  const entree = { d: m.date ?? Date.now(), g: !!m.gagne, s: m.detail || "", c: encoderCoups(m.coups, m.debutsSet, m.penalites), ...(m.balles ? { b: m.balles } : {}) };
   return [entree, ...(Array.isArray(liste) ? liste : [])].slice(0, MAX_MAINS);
 }
 
@@ -38,7 +53,7 @@ export function noterMain(toutes, id, m) {
 // Un duel en ligne (déjà rejoué de mon côté : match.coups, match.debutsSet) → une entrée.
 export function mainDuel(duel, match, moi) {
   return { d: Date.parse(duel.maj_le) || 0, g: duel.vainqueur === moi, s: match.scoresSets.map(([a, b]) => `${a}–${b}`).join(", "),
-    c: encoderCoups(match.coups, match.debutsSet) };
+    c: encoderCoups(match.coups, match.debutsSet, match.penalites) };
 }
 // Un match du dossier (vu de son côté par le serveur : b = son signe, a = celui d'en face) → une entrée, lui en premier.
 export function mainDossier(coups) {
@@ -49,7 +64,16 @@ export function mainDossier(coups) {
 
 // La couleur d'un signe dans le bandeau des coups (16 novembre, idée d'un testeur) : vert s'il a gagné le point, rouge s'il
 // l'a perdu, blanc pour une égalité. cle : "a" (la première ligne, le joueur 0) ou "b" (la deuxième, le joueur 1).
-export const classeCoup = (x, cle) => (x.gagnant === null || x.gagnant === undefined ? "egal" : (x.gagnant === 0) === (cle === "a") ? "gagne" : "perd");
+export const classeCoup = (x, cle) => ("penalite" in x ? ((x.penalite === 0) === (cle === "a") ? "perd penalite" : "penalite")
+  : x.gagnant === null || x.gagnant === undefined ? "egal" : (x.gagnant === 0) === (cle === "a") ? "gagne" : "perd");
+
+// Ce qu'on voit dans la case d'un coup (18 novembre) : le signe, entouré s'il a été joué en smash ; un point de pénalité : une
+// croix chez le fautif (la case de l'autre reste vide).
+export function contenuCoup(x, cle) {
+  if ("penalite" in x) return (x.penalite === 0) === (cle === "a") ? `<span class="coup-penalite" title="Point de pénalité">❌</span>` : "";
+  const e = EMOJIS[x[cle]];
+  return x.smash?.[cle === "a" ? 0 : 1] ? `<span class="coup-smash" title="Smash">${e}</span>` : e;
+}
 
 // L'affichage : un match par ligne (touché, il s'ouvre sur le bandeau des coups, set par set).
 // noms : [la première ligne du bandeau, la deuxième] ; gagneTexte : [victoire, défaite] de la première ligne.
@@ -57,9 +81,9 @@ export function htmlMains(entrees, { noms = ["Toi", "Lui"], gagneTexte = ["✅ V
   if (!entrees?.length) return `<p class="hint">${esc(vide)}</p>`;
   const date = d => (d ? ` · ${new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}` : "");
   return `<div class="mains">` + entrees.map((e, i) => {
-    const sets = decoderCoups(e.c);
+    const sets = decoderHistorique(e.c);
     const ligne = (cle, nom) => `<tr><th>${esc(nom)}</th>` + sets.map((set, k) => set.map((x, j) =>
-      `<td class="${[classeCoup(x, cle), k > 0 && j === 0 ? "newset" : ""].join(" ").trim()}">${EMOJIS[x[cle]]}</td>`).join("")).join("") + "</tr>";
+      `<td class="${[classeCoup(x, cle), k > 0 && j === 0 ? "newset" : ""].join(" ").trim()}">${contenuCoup(x, cle)}</td>`).join("")).join("") + "</tr>";
     return `<details class="main-match"${i === 0 ? " open" : ""}><summary>${e.g ? gagneTexte[0] : gagneTexte[1]}${e.s ? ` · ${esc(e.s)}` : ""}${date(e.d)}</summary>`
       + `<div class="tape"><table>${ligne("a", noms[0])}${ligne("b", noms[1])}</table></div></details>`;
   }).join("") + `</div>`;
