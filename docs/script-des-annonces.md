@@ -605,7 +605,7 @@ restent lus par la voix de synthèse.
 | `commentateur_perso_supporters_02_f.mp3` | Ils sont venus nombreux pour la soutenir ce soir ! Quelle ferveur ! |
 | `commentateur_perso_supporters_03.mp3` | Tout le public scande son nom ! Il joue à domicile ce soir ! |
 | `commentateur_perso_supporters_03_f.mp3` | Tout le public scande son nom ! Elle joue à domicile ce soir ! |
-| `commentateur_perso_chiromancien_presentation_01.mp3` | Mesdames et messieurs… celui qui lit dans les mains de ses adversaires… le Chiromancien ! |
+| `commentateur_perso_chiromancien_presentation_01.mp3` | Mesdames et mesdames… celui qui lit dans les mains de ses adversaires… le Chiromancien ! |
 | `commentateur_perso_chiromancien_presentation_02.mp3` | Il a vu votre défaite dans les lignes de votre main… Accueillez le Chiromancien ! |
 | `commentateur_perso_chiromancien_lecture_01.mp3` | Le Chiromancien l'avait lu dans sa main ! |
 | `commentateur_perso_chiromancien_lecture_02.mp3` | Encore une prédiction réussie pour le Chiromancien ! |
