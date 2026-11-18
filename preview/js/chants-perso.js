@@ -39,3 +39,15 @@ export const soutenu = (...joueurs) => joueurs.find(j => j && CHANTS_PERSO[clePs
 // et les deux joueurs rangés dans le même ordre (par pseudo) des deux côtés.
 export const hashTexte = t => { let h = 2166136261; for (const c of String(t)) { h ^= c.codePointAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 export const chantsPersoCommuns = (...joueurs) => chantsPerso(...joueurs.filter(Boolean).sort((x, y) => (clePseudo(x.pseudo, x.numero) < clePseudo(y.pseudo, y.numero) ? -1 : 1)));
+
+// Les répliques personnalisées des commentateurs (18 novembre, testeur « Le Chiromancien ») : « pseudo#numero » → le nom de ses
+// répliques (perso_<nom>_presentation, _lecture, _perd, _victoire, _defaite et le dialogue perso_<nom>_avant, dans repliques.js).
+// Comme les chants : seulement dans ses matchs (contre un bot, et en duel entre amis, où son adversaire les entend aussi).
+export const COMMENTAIRES_PERSO = {
+  "le chiromancien#6047": "chiromancien",
+};
+// Le joueur du match qui a ses répliques : { nom, joueur } (joueur : 0 moi, 1 l'adversaire), ou null.
+export const persoCommente = (...joueurs) => {
+  const k = joueurs.findIndex(j => j && COMMENTAIRES_PERSO[clePseudo(j.pseudo, j.numero)]);
+  return k < 0 ? null : { nom: COMMENTAIRES_PERSO[clePseudo(joueurs[k].pseudo, joueurs[k].numero)], joueur: k };
+};
