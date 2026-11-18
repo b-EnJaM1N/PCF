@@ -753,19 +753,19 @@ function effetsDuCoup(evt, feuChg, double, mains) {
   const vite = reduitMouvement(), arene = document.querySelector(".arena");
   if (!arene) return;
   arene.querySelectorAll(".effet-couche").forEach(x => x.remove());
-  const couche = (cls, html) => { const d = document.createElement("div"); d.className = `effet-couche ${cls}`; d.setAttribute("aria-hidden", "true"); d.innerHTML = html; arene.append(d); setTimeout(() => d.remove(), 1600); };
-  const relancer = (el, cls) => { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); setTimeout(() => el.classList.remove(cls), 1600); };
+  const couche = (cls, html) => { const d = document.createElement("div"); d.className = `effet-couche ${cls}`; d.setAttribute("aria-hidden", "true"); d.innerHTML = html; arene.append(d); setTimeout(() => d.remove(), 2600); };
+  const relancer = (el, cls) => { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); setTimeout(() => el.classList.remove(cls), 2600); };
   if (double) {
     if (vite) return;
     const tableau = document.querySelector(".board");
     if (double === "seisme") {
       relancer(arene, "seisme"); relancer(tableau, "vacille");
-      try { if (document.visibilityState === "visible") navigator.vibrate?.([120, 40, 120, 40, 120]); } catch { /* sans vibration */ }
+      try { if (document.visibilityState === "visible") navigator.vibrate?.([140, 50, 140, 50, 120, 60, 90, 70, 60]); } catch { /* sans vibration */ }
     } else if (double === "vent") {
       relancer(tableau, "bat-au-vent");
-      couche("effet-vent", Array.from({ length: 14 }, (_, i) => `<span class="${i % 4 ? "poussiere" : "trait-vent"}" style="top:${8 + ((i * 29) % 84)}%;animation-delay:${(i * 0.05) % 0.4}s"></span>`).join(""));
+      couche("effet-vent", Array.from({ length: 20 }, (_, i) => `<span class="${i % 4 ? "poussiere" : "trait-vent"}" style="top:${8 + ((i * 29) % 84)}%;animation-delay:${(i * 0.07) % 0.9}s"></span>`).join(""));
     } else if (double === "etincelles") {
-      couche("effet-etincelles", Array.from({ length: 14 }, (_, i) => `<span style="--angle:${i * (360 / 14) + (i % 2) * 9}deg;--loin:${38 + (i % 3) * 14}px;animation-delay:${(i % 3) * 0.03}s"></span>`).join(""));
+      couche("effet-etincelles", Array.from({ length: 24 }, (_, i) => `<span style="--angle:${i * 15 + (i % 2) * 9}deg;--loin:${38 + (i % 3) * 16}px;animation-delay:${(i % 4) * 0.18}s"></span>`).join(""));
     }
     return;
   }

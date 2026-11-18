@@ -1092,19 +1092,20 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 @keyframes tremble-egalite { 0%, 100% { transform: none; } 25% { transform: translateX(calc(var(--amp) * -1)) rotate(-2deg); } 75% { transform: translateX(var(--amp)) rotate(2deg); } }
 /* Le double smash avec le même signe : séisme (Pierres), coup de vent (Feuilles), étincelles (Ciseaux). */
 .effet-couche { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
-.arena.seisme { animation: seisme .8s ease-out; }
-@keyframes seisme { 0%, 100% { transform: none; } 10% { transform: translate(-6px, 5px); } 20% { transform: translate(7px, -6px); } 30% { transform: translate(-8px, 4px); } 40% { transform: translate(6px, 6px); } 55% { transform: translate(-5px, -3px); } 70% { transform: translate(3px, 3px); } 85% { transform: translate(-2px, -1px); } }
-.board.vacille { animation: vacille .9s ease-out; transform-origin: 50% 0; }
-@keyframes vacille { 0%, 100% { transform: none; } 15% { transform: rotate(-2.5deg); } 35% { transform: rotate(2deg); } 55% { transform: rotate(-1.2deg); } 75% { transform: rotate(.6deg); } }
-.board.bat-au-vent { animation: bat-au-vent .9s ease-out; transform-origin: 0 50%; }
+/* (18 novembre, demande du porteur du projet : plus longs ; le séisme : 0,8 s → 1,8 s, avec des répliques) */
+.arena.seisme { animation: seisme 1.8s ease-out; }
+@keyframes seisme { 0%, 100% { transform: none; } 5% { transform: translate(-7px, 6px); } 10% { transform: translate(8px, -6px); } 15% { transform: translate(-9px, 4px); } 20% { transform: translate(7px, 7px); } 26% { transform: translate(-6px, -5px); } 32% { transform: translate(6px, 3px); } 38% { transform: translate(-5px, 4px); } 45% { transform: translate(4px, -4px); } 52% { transform: translate(-6px, 3px); } 58% { transform: translate(5px, 4px); } 65% { transform: translate(-3px, -3px); } 73% { transform: translate(3px, 2px); } 82% { transform: translate(-2px, -1px); } 91% { transform: translate(1px, 1px); } }
+.board.vacille { animation: vacille 1.9s ease-out; transform-origin: 50% 0; }
+@keyframes vacille { 0%, 100% { transform: none; } 8% { transform: rotate(-2.8deg); } 18% { transform: rotate(2.4deg); } 30% { transform: rotate(-1.8deg); } 44% { transform: rotate(1.3deg); } 58% { transform: rotate(-.8deg); } 74% { transform: rotate(.4deg); } }
+.board.bat-au-vent { animation: bat-au-vent 1.6s ease-out; transform-origin: 0 50%; }
 @keyframes bat-au-vent { 0%, 100% { transform: none; } 20% { transform: perspective(500px) rotateY(-14deg) skewY(1deg); } 45% { transform: perspective(500px) rotateY(8deg); } 70% { transform: perspective(500px) rotateY(-4deg); } }
-.effet-vent span { position: absolute; left: -12%; animation: vent-passe .9s ease-in forwards; opacity: 0; }
+.effet-vent span { position: absolute; left: -12%; animation: vent-passe 1.5s ease-in forwards; opacity: 0; }
 .effet-vent .poussiere { width: 6px; height: 6px; border-radius: 50%; background: rgba(205, 170, 120, .85); box-shadow: 0 0 4px rgba(205, 170, 120, .6); }
 .effet-vent .trait-vent { width: 60px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .75), transparent); }
 @keyframes vent-passe { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(130vw, -14px); opacity: 0; } }
 @media (min-width: 560px) { @keyframes vent-passe { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(560px, -14px); opacity: 0; } } }
 .effet-etincelles span { position: absolute; left: 50%; top: 50%; width: 3px; height: 12px; margin: -6px 0 0 -1.5px; border-radius: 2px;
-  background: linear-gradient(#FFF7C2, #FFB21F); box-shadow: 0 0 6px #FFC93C; transform: rotate(var(--angle)); animation: etincelle-part .55s ease-out forwards; }
+  background: linear-gradient(#FFF7C2, #FFB21F); box-shadow: 0 0 6px #FFC93C; transform: rotate(var(--angle)); animation: etincelle-part 1s ease-out forwards; }
 .effet-etincelles.petite span { height: 8px; }
 @keyframes etincelle-part { 0% { transform: rotate(var(--angle)) translateY(0) scaleY(.4); opacity: 1; } 100% { transform: rotate(var(--angle)) translateY(calc(var(--loin) * -1)) scaleY(1); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .feu .braise, .feu .fumee, .feu .bouffee, .hand[class*="tremble-"] .poing-av { animation: none !important; } .feu .bouffee { opacity: 0; } }
