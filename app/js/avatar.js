@@ -384,12 +384,19 @@ function lameTordue(x, y, h, gant, ink, rot, pli, niveau = 1, enfle = false) {
   if (niveau > 1) {
     const k = y0 + (mi - y0) * .45;
     const entaille = (ex, ey, sens) => `<path d="M${ex} ${ey - 2} l${sens * 3.6} 2 l${-sens * 3.6} 2 Z" fill="rgba(25,12,8,.85)"/>`;
-    // (enfle : au 2e smash, le bout de l'index est enflé, bleui, et il élance)
+    // (enfle : au 2e smash, le bout de l'index est enflé, bleui, et il élance ; 18 novembre, demande du porteur du projet :
+    // bien plus gros, violacé et rouge au milieu, luisant, avec des élancements qui battent)
+    const cx = x + 5.25, cy = (y0 + k) / 2, rx = 11, ry = (k - y0) / 2 + 8;
     const bout = enfle
-      ? `<rect x="${x - 2.4}" y="${y0 - 2.5}" width="15.3" height="${k + 4 - y0 + 2.5}" rx="7.6" fill="${gant}" stroke="${ink}" stroke-width="1.5"/>`
-        + `<ellipse cx="${x + 5.25}" cy="${(y0 + k) / 2 + 1}" rx="5.6" ry="${(k - y0) / 2 + 2}" fill="rgba(120,40,140,.38)"/>`
-        + ongle(x, y0 - 1, ink)
-        + `<path d="M${x - 5} ${y0 + 1} q-1.6 2.4 0 4.8 M${x + 15.5} ${y0 + 1} q1.6 2.4 0 4.8" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".8"/>`
+      ? `<g transform="translate(${cx} ${cy})"><g><animateTransform attributeName="transform" type="scale" values="1;1.08;1" keyTimes="0;.35;1" dur=".9s" repeatCount="indefinite"/>`
+        + `<g transform="translate(${-cx} ${-cy})">`
+        + `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${gant}" stroke="${ink}" stroke-width="1.6"/>`
+        + `<ellipse cx="${cx}" cy="${cy + 1}" rx="${rx - 1.8}" ry="${ry - 1.8}" fill="rgba(125,35,135,.55)"/>`
+        + `<ellipse cx="${cx + .5}" cy="${cy + 2}" rx="${rx * .5}" ry="${ry * .45}" fill="rgba(200,30,60,.55)"/>`
+        + `<ellipse cx="${cx - rx * .42}" cy="${cy - ry * .45}" rx="2.6" ry="1.6" fill="#fff" opacity=".75" transform="rotate(-30 ${cx - rx * .42} ${cy - ry * .45})"/>`
+        + `</g></g></g>`
+        + `<path d="M${cx - rx - 3} ${cy - 4} q-2.4 4 0 8 M${cx - rx - 7} ${cy - 6.5} q-3.4 6.5 0 13 M${cx + rx + 3} ${cy - 4} q2.4 4 0 8 M${cx + rx + 7} ${cy - 6.5} q3.4 6.5 0 13 M${cx - 4} ${cy - ry - 3} l-1.5 -3.5 M${cx + 4} ${cy - ry - 3} l1.5 -3.5 M${cx} ${cy - ry - 3.5} l0 -4" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".85">`
+        + `<animate attributeName="opacity" values=".9;.25;.9" dur=".9s" repeatCount="indefinite"/></path>`
       : seg(y0 - 1, k + 4) + ongle(x, y0 + .5, ink);
     haut = seg(k, mi + 4) + `<g transform="rotate(${-pli * .4} ${x + 5.25} ${k + 2})">${bout}</g>`
       + entaille(x + .2, k + 7, 1) + entaille(x + 10.3, mi - 1, -1)

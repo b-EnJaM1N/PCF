@@ -746,3 +746,14 @@ test("le Chiromancien : Roland s'emballe quand sa main s'enflamme (6 points de s
     assert.ok(entendu, `joueur ${joueur}`);
   }
 });
+
+test("victoire en deux sets à zéro (match en 2 sets gagnants) : parfois l'analyse de Monique", () => {
+  let dit = 0;
+  for (let k = 0; k < 40; k++) {
+    const m = nouveauMatch({ pointsParSet: 3, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = rngFixe(k);
+    let a = null;
+    while (!m.termine) a = annoncerCoup(m, jouerCoup(m, 0, 1), etat, {}, rng);
+    if (a.lignes.some(l => /victoire_deux_zero/.test(l.id))) dit++;
+  }
+  assert.ok(dit >= 10 && dit <= 35, `${dit} fois sur 40`);
+});
