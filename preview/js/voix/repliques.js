@@ -984,6 +984,11 @@ export const MOMENTS = {
     { r: "d", t: "Un peu de retard à l'allumage.", si: "depart_rate" },   // (17 novembre, écrite par le porteur du projet)
   ],
   // Avant le match, parfois une seule phrase au lieu d'un dialogue : tous les matchs, les grands matchs, une revanche, entre amis.
+  // La formule d'ouverture avant le dialogue avec Monique (18 novembre, demande du porteur du projet) : bonjour ou bonsoir.
+  presentation_direct: [
+    { r: "c", t: "Bienvenue ! Nous sommes en direct du court central. Mesdames et messieurs, bonsoir !", si: "soir" },
+    { r: "c", t: "Bienvenue ! Nous sommes en direct du court central. Mesdames et messieurs, bonjour !", si: "jour" },
+  ],
   avant_seul: [
     { r: "c", t: "Affrontement sous haute tension !" },
     { r: "c", t: "Les deux joueurs entrent dans l'arène. Pas un sourire. Pas un regard de trop." },
@@ -1135,6 +1140,22 @@ export const MOMENTS = {
 // Chaque dialogue : une réplique du commentateur, puis la réponse de la commentatrice
 // (texte, ou { t, f } quand la version au féminin diffère).
 export const DIALOGUES = {
+  // Avant le match, Roland interroge Monique (18 novembre, dialogues choisis par le porteur du projet ; jamais un mot de sa finale
+  // de 1997 : elle n'en parle pas). Précédés de « Bienvenue… en direct du court central » (presentation_direct).
+  avant_monique: [
+    ["Monique, aviez-vous un rituel d'avant-match ?", "Je ne mettais mon gant qu'à la dernière seconde. Pour que l'adversaire ne sache pas de quelle main je jouais."],
+    ["Monique, que mangiez-vous avant une finale ?", "Rien. Un champion joue le ventre vide et l'esprit plein. Enfin, c'est ce qu'on disait à mon époque."],
+    ["Monique, vous aviez un signe porte-bonheur ?", "La Feuille. Elle couvre tout. Même mes erreurs de jeunesse."],
+    ["Monique, vous étiez nerveuse avant vos grands matchs ?", "Jamais. Sauf avant les petits. Les grands, on sait pourquoi on les perd."],
+    ["Monique, vous échauffiez vos doigts comment ?", "Au piano. Trois gammes, deux arpèges, et une Pierre pour finir."],
+    ["Monique, un conseil pour nos deux joueurs ce soir ?", "Respirer. Et ne pas commencer par la Pierre. Tout le monde commence par la Pierre."],
+    ["Monique, qu'est-ce qui fait un grand joueur, selon vous ?", "La patience. Et une bonne mémoire. Surtout celle des erreurs des autres."],
+    ["Monique, faut-il regarder son adversaire dans les yeux ?", "Dans les yeux, non. Dans les mains, oui. Les yeux mentent, les poignets jamais."],
+    ["Monique, le hasard existe-t-il au chifoumi ?", "Le hasard, c'est le nom qu'on donne à ce qu'on n'a pas su lire."],
+    ["Monique, vous sentez la tension monter ?", "Je sens surtout le courant d'air, Roland. Quelqu'un a laissé la porte ouverte."],
+    ["Monique, vous avez vu l'ambiance ce soir ?", "J'ai vu. J'ai entendu, surtout. Votre micro est trop fort, Roland."],
+    ["Monique, un pronostic ?", "L'un des deux va gagner. Je prends peu de risques, c'est ce qui a fait ma carrière."],
+  ],
   avant_match: [
     ["Madame, la tension est palpable.", "On sent surtout deux personnes devant leur téléphone. Mais oui."],
     ["Deux styles, deux écoles !", "Trois signes. Il n'y en a jamais eu que trois."],

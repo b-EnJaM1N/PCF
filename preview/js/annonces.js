@@ -50,7 +50,7 @@ const CONDITIONS = {
   premier_point: c => c.premierPoint, depart_rate: c => c.departRate, kolodrov: c => c.kolodrov,
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, pile4: c => c.pile4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
   apres_egalites: c => c.apresEgalites, varie: c => c.varie, mene: c => c.mene,   // (5 novembre)
-  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, quatorze: c => c.quatorze, quinze: c => c.quinze, gagne: c => c.gagne, perdu: c => c.gagne === false, trois_zero_debut: c => c.troisZeroDebut, en_finale: (c, e) => enFinale(e), quatorze_finale: (c, e) => c.quatorze && enFinale(e), sans_set_perdu: c => c.sansSetPerdu, troisieme_set: c => c.troisiemeSet, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
+  balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, quatorze: c => c.quatorze, quinze: c => c.quinze, gagne: c => c.gagne, perdu: c => c.gagne === false, trois_zero_debut: c => c.troisZeroDebut, soir: c => !!c.soir, jour: c => c.soir === false, en_finale: (c, e) => enFinale(e), quatorze_finale: (c, e) => c.quatorze && enFinale(e), sans_set_perdu: c => c.sansSetPerdu, troisieme_set: c => c.troisiemeSet, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
   // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
 };
@@ -582,7 +582,7 @@ const TOURS = ["huitiemes", "quarts", "demis", "finale"];
 // Renvoie { speaker, commentaires } : les deux listes de répliques, dans l'ordre. (Les surnoms dits par Roland : abandonnés le
 // 3 novembre, décision du porteur du projet ; les surnoms restent écrits.)
 export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = false, humain = false, genre = "m",
-  situations = [], recents = [], jeu = null, audible = null, memoire = null } = {}, rng = Math.random) {
+  situations = [], recents = [], jeu = null, audible = null, memoire = null, heure = null } = {}, rng = Math.random) {
   const deja = new Set(recents);
   // Une version de la phrase, en évitant celles déjà entendues récemment.
   const dire = (cle, g = "m") => {
@@ -637,6 +637,17 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
     const seul = humain && !situations.includes("partie_rapide") && rng() < 0.6 ? "avant_seul_amis"
       : situations.includes("revanche") && rng() < 0.6 ? "avant_seul_revanche" : (tour || jeu) && rng() < 0.5 ? "avant_seul_grand" : "avant_seul";
     com = choisir(etat, seul, {}, rng) || choisir(etat, "avant_seul", {}, rng);
+  }
+  // Roland interroge Monique (18 novembre, idée du porteur du projet), une fois sur quatre : « Bienvenue… en direct du court
+  // central », puis la question et la réponse (seulement les 6 derniers entendus sont évités).
+  if (!com && rng() < 0.25) {
+    recents.filter(id => /^commentateur_dialogue_avant_monique_/.test(id)).slice(0, 6)
+      .forEach(id => { const m = /_avant_monique_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_monique_${+m[1] - 1}`); });
+    const d = dialogue(etat, "avant_monique", rng);
+    if (d) {
+      const h = heure ?? new Date().getHours(), intro = choisir(etat, "presentation_direct", { soir: h >= 18 || h < 5 }, rng);
+      return { speaker: sp.filter(Boolean), commentaires: intro ? [intro, ...d] : d };
+    }
   }
   const commentaires = com ? [com] : rng() < 0.85 ? dialogue(etat, "avant_match", rng) || [] : [];
   return { speaker: sp.filter(Boolean), commentaires };
