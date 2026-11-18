@@ -562,8 +562,7 @@ const POOL_REPLAY = { match: "replay_set", set: "replay_set", sauvee_match: "rep
 // role : seulement Roland (« commentateur ») quand la palette suit : c'est Monique qui donne le verdict.
 // type : le temps fort rejoué (une réplique marquée « type » n'est dite que pour lui : « Cinq points d'affilée », pas pour des égalités)
 function ligneReplay(pool, genre = "m", role = null, type = null) {
-  const l = (POOLS[pool] || []).filter(it => !it.type || it.type === type).map(it => ligneMoment(it, { genre })).filter(x => x && voix.fichiers.has(x.id) && (!role || x.role === role));
-  return l.length ? l[Math.floor(Math.random() * l.length)] : null;
+  return auHasard((POOLS[pool] || []).filter(it => !it.type || it.type === type).map(it => ligneMoment(it, { genre })).filter(x => x && voix.fichiers.has(x.id) && (!role || x.role === role)));
 }
 const genreJoueur = j => (j === 0 ? P.genre : OPP.humain ? OPP.genre : botAuFeminin(OPP) ? "f" : "m");
 // La palette (replay.js) : les 5 coups d'avant, l'habitude surlignée, le verdict de Monique.
@@ -576,7 +575,15 @@ const pourPalette = pa => it => (!it.cle || it.cle === pa.habitude?.cle)
 const lignesPalette = (pool, pa, mo, role = null) => (POOLS[pool] || []).filter(pourPalette(pa))
   .map(it => ligneMoment(it, { genre: genreJoueur(pa.joueur), signe: pa.joueur === 0 ? mo.a : mo.b }))
   .filter(x => x && voix.fichiers.has(x.id) && (!role || x.role === role));
-const auHasard = l => (l.length ? l[Math.floor(Math.random() * l.length)] : null);
+// Une réplique au hasard, en évitant celles déjà dites dans les replays de ce match (18 novembre, demande du porteur du projet :
+// aux temps forts, Roland disait trois fois la même phrase) ; s'il n'y en a plus de neuve, une déjà dite plutôt qu'un silence.
+function auHasard(l) {
+  if (!l.length) return null;
+  const dits = S ? (S.replayDits ||= new Set()) : new Set(), neuves = l.filter(x => !dits.has(baseDe(x.id))), g = neuves.length ? neuves : l;
+  const x = g[Math.floor(Math.random() * g.length)];
+  dits.add(baseDe(x.id));
+  return x;
+}
 // Le smash : une fois sur deux, si le smasheur a gagné ce set, Monique parle de celui qui l'a subi (« il ne s'en est jamais remis »).
 function paletteDuReplay(pa, mo) {
   if (pa?.verdict !== "smash") return pa;
@@ -584,20 +591,21 @@ function paletteDuReplay(pa, mo) {
   return gagnantSet === pa.joueur && Math.random() < 0.5 ? { ...pa, verdict: "smash_subi", joueur: 1 - pa.joueur } : pa;
 }
 function lignePalette(pa, mo) { return auHasard(lignesPalette(`replay_palette_${pa.verdict}`, pa, mo)); }
-function montrerPalette(pa, mo, l) {
+// La palette s'affiche avec le replay, dès le début de l'action (18 novembre) : le point rejoué reste caché (❔) jusqu'au dévoilement.
+// Pas de texte des commentaires : seulement les titres (18 novembre, demande du porteur du projet).
+function montrerPalette(pa, mo, devoile = false) {
   const nom = j => (j === 0 ? nomAffiche(P) : OPP.nom), hab = pa.habitude;
   const ligne = (j, cle) => `<div class="pal-ligne${hab?.joueur === j ? " pal-lue" : ""}"><span class="pal-nom">${esc(nom(j))}</span>`
     + pa.coups.map(c => `<span class="pal-case${c.gagnant === j ? " pal-g" + j : ""}">${EMOJIS[c[cle]]}</span>`).join("")
-    + `<span class="pal-case pal-point${mo.gagnant === j ? " pal-g" + j : ""}">${EMOJIS[j === 0 ? mo.a : mo.b]}</span></div>`;
+    + (devoile ? `<span class="pal-case pal-point${mo.gagnant === j ? " pal-g" + j : ""}">${EMOJIS[j === 0 ? mo.a : mo.b]}</span>` : `<span class="pal-case pal-point">❔</span>`) + "</div>";
   $("rpPalCoups").innerHTML = ligne(0, "a") + ligne(1, "b");
   const pg = pa.piege;
   $("rpPalHab").textContent = pg ? `${nom(pg.joueur)} : ${pg.n} fois ${NOM[pg.repete]}, puis ${NOM[pg.signe]}`
     : pa.verdict === "smash" || pa.verdict === "smash_subi" ? `💥 Le smash de ${nom(pa.smasheur ?? 1 - pa.joueur)}`
     : hab ? texteHabitude(hab, nom(hab.joueur)) : "Aucune habitude à lire.";
   $("rpPalEtiquette").textContent = VERDICTS[pa.verdict]; $("rpPalEtiquette").className = `pal-etiquette pal-${pa.verdict}`;
-  $("rpPalCom").textContent = `« ${l.texte} » — Monique`;
+  $("rpPalCom").textContent = ""; $("rpPalCom").hidden = true;
   $("rpPalette").hidden = false;
-  voix.finiDeParler(() => voix.dire([l]), 600);
 }
 function jouerReplay(liste, apres = () => {}) {
   if (!liste.length) { apres(); return; }
@@ -621,27 +629,38 @@ function jouerReplay(liste, apres = () => {}) {
     $("rpCompte").textContent = liste.length > 1 ? `${i} / ${liste.length}` : "";
     $("rpVerdict").textContent = ""; $("rpCom").textContent = ""; $("rpPalette").hidden = true;
     const pa0 = mo.palette ? paletteDuReplay(mo.palette, mo) : null, lp = pa0 ? lignePalette(pa0, mo) : null, pa = lp ? pa0 : null, roland = pa ? "commentateur" : null;
+    if (pa) montrerPalette(pa, mo);   // (la palette arrive avec le replay)
     [[moi, 0], [adv, 1]].forEach(([el, g]) => { el.innerHTML = mainGantee(g, 0, "Poing serré", { marques: false }); el.className = "hand secoue"; });
-    // Roland ou Monique : « Revoyons ça ! » pour la première action, puis un mot sur l'action au dévoilement.
-    const genre = genreJoueur(mo.gagnant);
+    // Roland ou Monique : « Revoyons ça ! » pour la première action, puis un mot sur l'action au dévoilement ; avec la palette,
+    // Monique donne ensuite son verdict. Chacun finit sa phrase avant que l'autre parle, et l'action suivante attend la fin
+    // des commentaires (18 novembre, demande du porteur du projet : Roland était coupé par Monique) ; « Passer » pour jouer.
+    const genre = genreJoueur(mo.gagnant), action = i;
+    const encore = () => !fini && action === i;
+    const parler = (l, ensuite) => voix.finiDeParler(() => {
+      if (!encore()) return;
+      if (l) voix.dire([l]);
+      voix.finiDeParler(() => { if (encore()) ensuite(); }, 20000);
+    }, 20000);
     if (i === 1) { const l = ligneReplay("replay_intro", "m", roland); if (l) voix.dire([l]); }
     t = setTimeout(() => {
-      if (fini) return;
+      if (!encore()) return;
+      const devoile = Date.now();
       moi.innerHTML = mainGantee(0, mo.a, NOM[mo.a], { marques: false }); adv.innerHTML = mainGantee(1, mo.b, NOM[mo.b], { marques: false });
       moi.className = "hand ouvre"; adv.className = "hand ouvre";
       const [w, l] = mo.gagnant === 0 ? [mo.a, mo.b] : [mo.b, mo.a];
       $("rpVerdict").textContent = `${mo.smash[mo.gagnant] ? "💥 Smash ! " : ""}${NOM[w]} bat ${NOM[l]}`;
-      // (avec la palette : Roland décrit d'abord l'action à sa façon, replay_r_… ; sinon, la réplique habituelle du replay)
-      const c = (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
-      if (c) voix.finiDeParler(() => { if (!fini) voix.dire([c]); }, 1200);
-      t = setTimeout(() => {
-        if (fini) return;
+      if (pa) montrerPalette(pa, mo, true);
+      setTimeout(() => {
+        if (!encore()) return;
         (mo.gagnant === 0 ? moi : adv).classList.add("win"); (mo.gagnant === 0 ? adv : moi).classList.add("lose");
         $("rpScoreMoi").textContent = apresPt[0]; $("rpScoreAdv").textContent = apresPt[1];
         try { ambiance.public("clameur", 0.4); } catch { /* sans son */ }
-        if (pa) t = setTimeout(() => { if (fini) return; montrerPalette(pa, mo, lp); t = setTimeout(montrer, 6500); }, vite ? 300 : 900);
-        else t = setTimeout(montrer, vite ? 2600 : 3200);
       }, vite ? 0 : 700);
+      // (avec la palette : Roland décrit d'abord l'action à sa façon, replay_r_… ; sinon, la réplique habituelle du replay)
+      const c = (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
+      // (le temps de regarder, même sans le son : 3 secondes au moins, 6 avec la palette)
+      const suite = () => { t = setTimeout(montrer, Math.max(vite ? 800 : 1500, (pa ? 6500 : 3200) - (Date.now() - devoile))); };
+      parler(c, () => (pa ? parler(lp, suite) : suite()));
     }, vite ? 300 : 2000);
   };
   montrer();
