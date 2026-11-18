@@ -74,7 +74,9 @@ test("un ton peut viser des répliques précises (Roland enflammé pour ses enco
   // (la 03, « Allez, petit bonhomme », retirée le 5 novembre ; la 05, « T'es pas venu ici pour souffrir », le 12 novembre)
   assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_14")), /^\[excited\] \[shouting\] /);
   assert.equal(CATALOGUE.get("commentateur_serie_contre_05"), undefined, "réplique retirée : plus au catalogue");
-  assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_01")), /^\[sighs\] /, "les autres séries perdues restent déçues");
+  // (18 novembre, demande du porteur du projet : Roland n'est plus « déçu » pendant le jeu, seulement après le match)
+  assert.match(texteVoix(CATALOGUE.get("commentateur_serie_contre_01")), /^\[excited\] /, "pendant le jeu, Roland reste enjoué");
+  assert.match(texteVoix(CATALOGUE.get("commentateur_defaite_01")), /^\[sighs\] /, "après une défaite, il peut être déçu");
 });
 
 test("page d'écoute : chaque réplique a un numéro fixe, unique", () => {
