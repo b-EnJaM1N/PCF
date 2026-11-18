@@ -74,6 +74,7 @@
           "nom": "sérieuse",
           "indication": "[calm] [serious] [matter-of-fact, like an expert]",
           "situations": [
+            "victoire_deux_zero",
             "replay_palette_pertinent",
             "replay_palette_propre",
             "replay_palette_piege",
@@ -95,7 +96,8 @@
             "commentatrice_dialogue_figure_boomerang_02",
             "commentatrice_dialogue_figure_miroir_02",
             "commentatrice_dialogue_figure_marteau_02",
-            "commentatrice_dialogue_figure_parapluie_02"
+            "commentatrice_dialogue_figure_parapluie_02",
+            "commentatrice_victoire_deux_zero"
           ]
         },
         {

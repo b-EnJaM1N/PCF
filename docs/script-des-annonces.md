@@ -1299,7 +1299,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_cri_06.mp3` | Il exulte ! |
 | `commentateur_dialogue_cri_06_f.mp3` | Elle exulte ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (882 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (889 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1550,6 +1550,13 @@ restent lus par la voix de synthèse.
 | `commentatrice_balle_match_convertie_12.mp3` | Un tour de plus. Ne nous emballons pas. |
 | `commentatrice_balle_match_convertie_13.mp3` | Un titre. Enfin quelque chose à accrocher au frigo. |
 | `commentatrice_balle_match_convertie_14.mp3` | Une balle de match, une seule. Efficace. |
+| `commentatrice_victoire_deux_zero_01.mp3` | Une victoire sans trembler. Il n'a jamais réellement été mis en difficulté et a su maintenir son avance tout au long de la rencontre. Pour son adversaire, il faudra un sursaut lors du prochain rendez-vous. |
+| `commentatrice_victoire_deux_zero_01_f.mp3` | Une victoire sans trembler. Elle n'a jamais réellement été mise en difficulté et a su maintenir son avance tout au long de la rencontre. Pour son adversaire, il faudra un sursaut lors du prochain rendez-vous. |
+| `commentatrice_victoire_deux_zero_02.mp3` | Victoire logique, contre une main qui n'a pas su contrarier ses offensives. Il a pris le contrôle du match et joué une partition bien rodée. |
+| `commentatrice_victoire_deux_zero_02_f.mp3` | Victoire logique, contre une main qui n'a pas su contrarier ses offensives. Elle a pris le contrôle du match et joué une partition bien rodée. |
+| `commentatrice_victoire_deux_zero_03.mp3` | Un set qui conclut une rencontre à sens unique. Il a su prendre l'initiative dès le premier set, sans laisser son opposant revenir dans le rythme de la rencontre. |
+| `commentatrice_victoire_deux_zero_03_f.mp3` | Un set qui conclut une rencontre à sens unique. Elle a su prendre l'initiative dès le premier set, sans laisser son opposant revenir dans le rythme de la rencontre. |
+| `commentatrice_victoire_deux_zero_04.mp3` | Une victoire et beaucoup de confiance après une prestation impeccable. Pour son adversaire, le manque d'engagement et l'attentisme ont rendu l'issue prévisible. |
 | `commentatrice_victoire_01.mp3` | Rideau. |
 | `commentatrice_victoire_02.mp3` | Mission accomplie. Sans éclat, mais accomplie. |
 | `commentatrice_victoire_03.mp3` | Rien à dire. Et je trouve toujours quelque chose à dire. |
