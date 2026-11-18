@@ -127,6 +127,17 @@ body:not(.en-match) .rule { display: none; }
 .pal-case.pal-g0 { border-color: var(--me); }
 .pal-case.pal-g1 { border-color: var(--bot); }
 .pal-case.pal-point { margin-left: 6px; box-shadow: 0 0 0 2px #fff; }
+/* Le volet (18 novembre, version de test) : comme les jingles des retransmissions, une bande jaune et rouge, penchée, balaie
+   l'écran de gauche à droite en un peu plus d'une demi-seconde ; on change d'écran pendant qu'elle le couvre. */
+.volet { position: fixed; inset: 0; z-index: 60; pointer-events: none; overflow: hidden; }
+.volet[hidden] { display: none; }
+.volet-bande { position: absolute; top: -20%; bottom: -20%; left: -35%; width: 170%; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(90deg, var(--bot) 0 12%, var(--me) 12% 88%, var(--bot) 88%); transform: translateX(-130%) skewX(-14deg);
+  box-shadow: 0 0 30px rgba(0, 0, 0, .45); }
+.volet-bande span { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 2.6rem; letter-spacing: 10px; color: var(--court-deep);
+  transform: skewX(14deg); }
+.volet.passe .volet-bande { animation: volet-passe .62s cubic-bezier(.7, 0, .3, 1) both; }
+@keyframes volet-passe { 0% { transform: translateX(-130%) skewX(-14deg); } 42%, 58% { transform: translateX(0) skewX(-14deg); } 100% { transform: translateX(130%) skewX(-14deg); } }
 /* (18 novembre) le coup rejoué (la dernière colonne) entouré au feutre rouge, comme à la main : deux traits un peu de travers,
    qui se dessinent */
 .pal-coups { position: relative; }

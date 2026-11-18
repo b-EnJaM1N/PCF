@@ -618,18 +618,28 @@ function montrerPalette(pa, mo, devoile = false) {
   $("rpPalCom").textContent = ""; $("rpPalCom").hidden = true;
   $("rpPalette").hidden = false;
 }
+// Le volet (18 novembre, version de test : « volet », nouveautes.js) : la bande balaie l'écran ; change() est appelé quand elle
+// le couvre (on change d'écran derrière). Sans le volet, ou mouvements réduits : change() tout de suite.
+let voletT = 0;
+function volet(change) {
+  const el = $("volet");
+  if (!ouvert("volet") || reduitMouvement() || !el) { change(); return; }
+  clearTimeout(voletT); el.hidden = false; el.classList.remove("passe"); void el.offsetWidth; el.classList.add("passe");
+  setTimeout(change, 300);
+  voletT = setTimeout(() => { el.hidden = true; el.classList.remove("passe"); }, 700);
+}
 function jouerReplay(liste, apres = () => {}) {
   if (!liste.length) { apres(); return () => {}; }
   voix.arreter();
   const ov = $("replay"), vite = reduitMouvement();
   let i = 0, t = null, fini = false;
-  const fermer = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); apres(); };
+  const fermer = () => { if (fini) return; fini = true; clearTimeout(t); voix.arreter(); volet(() => { ov.hidden = true; apres(); }); };
   // (couper : arrêter net, sans la suite ; en duel, quand le set repart pendant le replay de la pause)
   const couper = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); };
   $("rpPasser").onclick = fermer;
   $("rpNomMoi").textContent = nomAffiche(P); $("rpNomAdv").textContent = OPP.nom;
   $("rpMiniMoi").innerHTML = avatarSVG(avMoi()); $("rpMiniAdv").innerHTML = avatarSVG(avAdv());
-  ov.hidden = false;
+  volet(() => { if (!fini) ov.hidden = false; });
   // Entre deux temps forts (18 novembre, demande du porteur du projet : un fondu plus marqué) : l'action s'efface tout à fait,
   // un temps au noir, puis la suivante apparaît.
   const boite = ov.querySelector(".replay-boite");
@@ -1885,7 +1895,12 @@ $("foGo").addEventListener("click", () => {
 });
 // Le match commence : les boutons des signes doivent être à l'écran (la page a pu rester descendue sur l'écran de fin).
 function montrerSignes() { window.scrollTo(0, 0); $("moves").scrollIntoView({ block: "nearest" }); }
+// (le volet passe entre la présentation et le match)
 function commencerSolo() {
+  if (!faceAFaceOuvert || S.depart) return;   // (un seul départ, même en touchant deux fois)
+  S.depart = true; volet(commencerSoloMaintenant);
+}
+function commencerSoloMaintenant() {
   $("faceoff").classList.remove("show"); faceAFaceOuvert = false; arreterRoutines(); montrerSignes();
   if (S.matchJour) noterMatchDuJour({ abandon: true });   // un seul essai : quitter en route compte comme un abandon
   S.enJeu = true; majModeMatch();
@@ -2809,7 +2824,7 @@ function majDuel(duel) {
   if (duel.phase === "presentation") {
     if (!D.presente) { D.presente = true; ouvrirFaceAFace(); }
   } else if (duel.phase === "jeu") {
-    if (faceAFaceOuvert) { fermerFaceAFace(); montrerSignes(); annoncer([annonceDebutSet(S.match)]); bullesDepart(duel); }
+    if (faceAFaceOuvert) { faceAFaceOuvert = false; volet(() => { fermerFaceAFace(); montrerSignes(); annoncer([annonceDebutSet(S.match)]); bullesDepart(duel); }); }
     if (!$("msgFenetre").hidden && $("msgFenetre").dataset.moment === "avant") fermerMessages();   // le match commence : trop tard pour le mot d'avant-match
     // Set suivant lancé par le serveur : on ferme le panneau et on reprend la main tout de suite
     // (sinon le premier coup du set pouvait partir au hasard).

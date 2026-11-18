@@ -15,6 +15,8 @@
 //     Gérer) et le classement interne du cercle, le niveau du cercle (14 novembre, classement-cercle.js).
 //   invitations : l'organisateur d'un tournoi de cercle invite des membres (notification, « M'inscrire » ou « Non merci »)
 //     (14 novembre, étape SQL 76 et fonction « Notifier » à mettre à jour).
+//   volet : la bande aux couleurs de HandSlam qui balaie l'écran entre la présentation et le match, avant et après le replay
+//     (18 novembre).
 //   effets : la main en feu (4, 6, 8 points de suite), les égalités en chaîne, le double smash avec le même signe (séisme,
 //     coup de vent, étincelles) (13 novembre, effets.js ; la fissure agrandie, elle, est pour tous).
 //   recordsFaceAFace : « 🏅 Nos records » sous le bilan d'un face-à-face entre joueurs (17 novembre, records-face-a-face.js).
