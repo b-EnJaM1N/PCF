@@ -625,8 +625,8 @@ function volet(change) {
   const el = $("volet");
   if (!ouvert("volet") || reduitMouvement() || !el) { change(); return; }
   clearTimeout(voletT); el.hidden = false; el.classList.remove("passe"); void el.offsetWidth; el.classList.add("passe");
-  setTimeout(change, 300);
-  voletT = setTimeout(() => { el.hidden = true; el.classList.remove("passe"); }, 700);
+  setTimeout(change, 500);   // (la bande couvre l'écran de 0,4 s à 1 s : on change d'écran derrière)
+  voletT = setTimeout(() => { el.hidden = true; el.classList.remove("passe"); }, 1500);
 }
 function jouerReplay(liste, apres = () => {}) {
   if (!liste.length) { apres(); return () => {}; }
