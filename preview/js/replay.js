@@ -44,7 +44,7 @@ export const momentDuSet = (moments, set) => tempsForts(moments.filter(m => m.se
 //   pertinent : le gagnant a joué le signe que conseillait la lecture de l'adversaire (« Lire l'adversaire ») ;
 //   propre    : le gagnant avait une habitude et l'a cassée au bon moment ;
 //   mauvais   : le perdant a suivi son habitude, et l'a payé ;
-//   pas_la    : rien à lire (trop peu de coups, ou pas d'habitude), c'était un pari.
+//   pas_la    : le perdant a pris la mauvaise décision (rien d'autre ne l'explique : « Le jeu n'était pas là »).
 export const TAILLE_PALETTE = 5;
 export const VERDICTS = {
   pertinent: "Tactiquement pertinent", propre: "Techniquement très propre", mauvais: "Mauvais choix", pas_la: "Le jeu n'était pas là",
@@ -113,5 +113,6 @@ export function paletteDuPoint(coups, { smashGagne = false } = {}) {
   if (pg) return { ...res("piege", w, null, null), piege: pg };
   if (hw && !suit(hw.prevu, signe(w))) return res("propre", w, hw, w);
   if (hl && suit(hl.prevu, signe(l))) return res("mauvais", l, hl, l);
-  return res("pas_la", w, null, null);
+  // (18 novembre, précision du porteur du projet) « Le jeu n'était pas là » : le perdant a pris la mauvaise décision.
+  return res("pas_la", l, null, null);
 }
