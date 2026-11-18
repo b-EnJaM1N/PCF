@@ -471,6 +471,18 @@ export const MOMENTS = {
   ],
   // La fin du premier set (17 novembre, écrites par le porteur du projet), selon l'écart de points : 3 ou 4, 5 ou 6, 7 et plus.
   // « gagne » / « perdu » : quand la phrase parle du vainqueur (ou du vaincu) du set comme de « il » (moi).
+  // Un set partout, à la fin du 2e set d'un match en 2 sets gagnants (18 novembre, écrites par un testeur, choisies par le porteur
+  // du projet). « gagne » : la phrase parle de celui qui vient d'égaliser comme de « il » (moi).
+  un_set_partout: [
+    { r: "c", t: "Nous sommes désormais à un set partout. Il a su rectifier le tir pour rester dans la course.", f: "Nous sommes désormais à un set partout. Elle a su rectifier le tir pour rester dans la course.", si: "gagne" },
+    { r: "d", t: "Bien malin qui pourra prédire maintenant l'issue de cette rencontre." },
+    { r: "c", t: "Ce second set s'achève sur un score de parité. C'est le moment d'inventer la séquence qui surprendra l'adversaire, pour prendre une option sur la victoire." },
+    { r: "d", t: "Le début de la troisième manche sera crucial." },
+    { r: "c", t: "Les deux mains rentrent aux vestiaires sans un regard. Il faut rester concentré, et ne rien montrer que l'adversaire puisse exploiter pour sa prochaine ouverture." },
+    { r: "c", t: "Un retour qui fait du bien au moral, et un troisième set qui s'annonce très disputé. On se retrouve dans un instant sur HandSlam TV pour le dénouement de ce duel." },
+    { r: "d", t: "Un deuxième set très bien négocié pour continuer d'y croire. À l'aube de ce troisième set, c'est l'heure d'ajuster ses séquences et d'affirmer son caractère, en évitant tout péché d'orgueil." },
+    { r: "c", t: "Il a su produire son effort pour revenir à hauteur de la main adverse. Il faut à présent supporter la pression, et donner son meilleur chifoumi, sans oublier les fondamentaux.", f: "Elle a su produire son effort pour revenir à hauteur de la main adverse. Il faut à présent supporter la pression, et donner son meilleur chifoumi, sans oublier les fondamentaux.", si: "gagne" },
+  ],
   premier_set_net: [
     { r: "c", t: "Un set bien maîtrisé. Son adversaire doit maintenant réagir.", si: "gagne" },
     { r: "c", t: ["Ce premier set prend fin sur une Pierre bien sentie. La main adverse n'a pas su réellement l'inquiéter.", "Ce premier set prend fin sur des Ciseaux bien sentis. La main adverse n'a pas su réellement l'inquiéter.", "Ce premier set prend fin sur une Feuille bien sentie. La main adverse n'a pas su réellement l'inquiéter."] },   // (le signe du point qui donne le set, quel que soit le vainqueur)
@@ -761,6 +773,36 @@ export const MOMENTS = {
     { r: "d", t: "Il a son fan-club. Je me demande combien il les paie.", f: "Elle a son fan-club. Je me demande combien elle les paie." },
     { r: "d", t: "Des supporters rien que pour lui. Il ne faudra pas les décevoir.", f: "Des supporters rien que pour elle. Il ne faudra pas les décevoir." },
     { r: "d", t: "Un chant à son nom. Moi, à mes débuts, j'avais juste un thermos." },
+  ],
+  // Les répliques personnalisées d'un joueur (chants-perso.js, COMMENTAIRES_PERSO ; 18 novembre, répliques choisies par le porteur
+  // du projet pour son testeur « Le Chiromancien », d'accord pour être cité) : dites seulement dans ses matchs, de temps en temps.
+  // (prononcé « Kiromancien » : voir « prononciation » dans outils/voix.json)
+  perso_chiromancien_presentation: [   // avant le match
+    { r: "c", t: "Mesdames et mesdames… celui qui lit dans les mains de ses adversaires… le Chiromancien !" },
+    { r: "c", t: "Il a vu votre défaite dans les lignes de votre main… Accueillez le Chiromancien !" },
+    { r: "d", t: "Le Chiromancien. Il prétend connaître l'avenir. Moi, je connais déjà son ouverture." },
+  ],
+  perso_chiromancien_lecture: [   // il enchaîne les points (pendant l'échange : seulement les courtes) ou gagne un set
+    { r: "c", t: "Le Chiromancien l'avait lu dans sa main !" },
+    { r: "c", t: "Encore une prédiction réussie pour le Chiromancien !" },
+    { r: "d", t: "Les lignes de la main ne mentent pas. Celles de son adversaire, en tout cas." },
+    { r: "c", t: "Le Chiromancien voit tout venir !" },
+  ],
+  perso_chiromancien_perd: [   // il perd plusieurs points de suite
+    { r: "d", t: "Même les voyants ont des jours sans." },
+    { r: "c", t: "Oula, le Chiromancien n'avait pas vu celle-là venir !" },
+  ],
+  perso_chiromancien_victoire: [
+    { r: "c", t: "Le Chiromancien l'avait prédit ! Victoire !" },
+    { r: "d", t: "Il savait comment ça finirait. Nous, on a dû attendre." },
+    { r: "c", t: "Le Chiromancien est un vrai magicien !" },   // (18 novembre, écrite par le porteur du projet)
+  ],
+  perso_chiromancien_feu: [   // sa main s'enflamme (6 points de suite : la petite flamme), Roland s'emballe (18 novembre, écrites par le porteur du projet)
+    { r: "c", t: "Mesdames et mesdames, le Chiromancien est en feu !" },
+    { r: "c", t: "Le Chiromancien est en feu, mesdames et messieurs !", retiree: true },   // (retirée le 18 novembre, demande du porteur du projet)
+  ],
+  perso_chiromancien_defaite: [
+    { r: "d", t: "Sa boule de cristal était embuée ce soir." },
   ],
   // Le replay (replay.js ; 6 novembre, répliques validées par le porteur du projet) : pour lancer le replay, puis selon l'action
   // (« il » : le joueur qui a fait l'action).
@@ -1415,6 +1457,11 @@ export const MOMENTS = {
 // Chaque dialogue : une réplique du commentateur, puis la réponse de la commentatrice
 // (texte, ou { t, f } quand la version au féminin diffère).
 export const DIALOGUES = {
+  // Avant un match du Chiromancien (voir perso_chiromancien_presentation, plus haut)
+  perso_chiromancien_avant: [
+    ["Le Chiromancien est sur le central, Madame !", "J'ai caché mes mains. On ne sait jamais."],
+    ["Madame, croyez-vous aux pouvoirs du Chiromancien ?", "Je crois surtout à ses statistiques."],
+  ],
   // Le tout premier match d'un joueur, en duel (18 novembre, gros lot 3, choisis par le porteur du projet).
   avant_debutant: [
     ["Un nouveau venu sur le central ! Bienvenue !", "On sera indulgents. Pendant trois coups."],
