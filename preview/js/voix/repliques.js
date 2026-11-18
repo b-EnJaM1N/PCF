@@ -471,6 +471,18 @@ export const MOMENTS = {
   ],
   // La fin du premier set (17 novembre, écrites par le porteur du projet), selon l'écart de points : 3 ou 4, 5 ou 6, 7 et plus.
   // « gagne » / « perdu » : quand la phrase parle du vainqueur (ou du vaincu) du set comme de « il » (moi).
+  // Un set partout, à la fin du 2e set d'un match en 2 sets gagnants (18 novembre, écrites par un testeur, choisies par le porteur
+  // du projet). « gagne » : la phrase parle de celui qui vient d'égaliser comme de « il » (moi).
+  un_set_partout: [
+    { r: "c", t: "Nous sommes désormais à un set partout. Il a su rectifier le tir pour rester dans la course.", f: "Nous sommes désormais à un set partout. Elle a su rectifier le tir pour rester dans la course.", si: "gagne" },
+    { r: "d", t: "Bien malin qui pourra prédire maintenant l'issue de cette rencontre." },
+    { r: "c", t: "Ce second set s'achève sur un score de parité. C'est le moment d'inventer la séquence qui surprendra l'adversaire, pour prendre une option sur la victoire." },
+    { r: "d", t: "Le début de la troisième manche sera crucial." },
+    { r: "c", t: "Les deux mains rentrent aux vestiaires sans un regard. Il faut rester concentré, et ne rien montrer que l'adversaire puisse exploiter pour sa prochaine ouverture." },
+    { r: "c", t: "Un retour qui fait du bien au moral, et un troisième set qui s'annonce très disputé. On se retrouve dans un instant sur HandSlam TV pour le dénouement de ce duel." },
+    { r: "d", t: "Un deuxième set très bien négocié pour continuer d'y croire. À l'aube de ce troisième set, c'est l'heure d'ajuster ses séquences et d'affirmer son caractère, en évitant tout péché d'orgueil." },
+    { r: "c", t: "Il a su produire son effort pour revenir à hauteur de la main adverse. Il faut à présent supporter la pression, et donner son meilleur chifoumi, sans oublier les fondamentaux.", f: "Elle a su produire son effort pour revenir à hauteur de la main adverse. Il faut à présent supporter la pression, et donner son meilleur chifoumi, sans oublier les fondamentaux.", si: "gagne" },
+  ],
   premier_set_net: [
     { r: "c", t: "Un set bien maîtrisé. Son adversaire doit maintenant réagir.", si: "gagne" },
     { r: "c", t: ["Ce premier set prend fin sur une Pierre bien sentie. La main adverse n'a pas su réellement l'inquiéter.", "Ce premier set prend fin sur des Ciseaux bien sentis. La main adverse n'a pas su réellement l'inquiéter.", "Ce premier set prend fin sur une Feuille bien sentie. La main adverse n'a pas su réellement l'inquiéter."] },   // (le signe du point qui donne le set, quel que soit le vainqueur)

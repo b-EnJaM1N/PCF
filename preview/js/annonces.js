@@ -468,8 +468,12 @@ function finDeSet(match, evt, etat, ctx, rng) {
   const poolPremier = ecartSet >= 7 ? "premier_set_ecrase" : ecartSet >= 5 ? "premier_set_large" : ecartSet >= 3 ? "premier_set_net" : null;
   const finPremier = premierSet && poolPremier && rng() < 0.5
     && choisir(etat, poolPremier, { ...ctx, gagne: evt.gagnant === 0, signe: evt.gagnant === 0 ? ctx.signe : ctx.signeAdv }, rng);
+  // Un set partout, à la fin du 2e set d'un match en 2 sets gagnants (18 novembre, répliques d'un testeur) : 7 fois sur 10.
+  const partout = !surLeFil && !finPremier && !court && match.format.setsGagnants === 2 && match.sets[0] === 1 && match.sets[1] === 1 && rng() < 0.7
+    && choisir(etat, "un_set_partout", { ...ctx, gagne: evt.gagnant === 0 }, rng);
   if (surLeFil) ajoute(surLeFil);
   else if (finPremier) ajoute(finPremier);
+  else if (partout) ajoute(partout);
   else if (!court) {
     // (à 5 points d'écart, seulement les répliques « net » : « Pas de chichifoumi », le coup du berger)
     if (haut - bas >= 5) ajoute(choisir(etat, "set_ecrasant", { ...ctx, onzeZero: haut === 11 && bas === 0, net5: haut - bas === 5, gagne: evt.gagnant === 0 }, rng));
