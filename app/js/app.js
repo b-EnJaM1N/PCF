@@ -618,11 +618,13 @@ function montrerPalette(pa, mo, devoile = false) {
   $("rpPalette").hidden = false;
 }
 function jouerReplay(liste, apres = () => {}) {
-  if (!liste.length) { apres(); return; }
+  if (!liste.length) { apres(); return () => {}; }
   voix.arreter();
   const ov = $("replay"), vite = reduitMouvement();
   let i = 0, t = null, fini = false;
   const fermer = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); apres(); };
+  // (couper : arrêter net, sans la suite ; en duel, quand le set repart pendant le replay de la pause)
+  const couper = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); };
   $("rpPasser").onclick = fermer;
   $("rpNomMoi").textContent = nomAffiche(P); $("rpNomAdv").textContent = OPP.nom;
   $("rpMiniMoi").innerHTML = avatarSVG(avMoi()); $("rpMiniAdv").innerHTML = avatarSVG(avAdv());
@@ -705,6 +707,7 @@ function jouerReplay(liste, apres = () => {}) {
     }, vite ? 300 : 2000);
   };
   montrer();
+  return couper;
 }
 $("btnTempsForts").addEventListener("click", () => { if (S?.moments?.length) jouerReplay(tempsForts(S.moments)); });
 
@@ -876,7 +879,9 @@ function apresPoint(evt, a, cel, rp) {
     // Le moment du set, au ralenti (replay.js ; en solo : en duel, la pause est chronométrée) : il passe d'abord, une fois les
     // commentaires de fin de set terminés, et l'écran « Lancer le set suivant » n'apparaît qu'à la fin du replay (18 novembre,
     // demande du porteur du projet : on le voyait passer furtivement avant le replay).
-    const moSet = !S.duel && replayVisible() ? momentDuSet(S.moments || [], n - 1) : null, seanceSet = S;
+    // (18 novembre, demande du porteur du projet) En duel aussi : la pause dure 15 secondes de plus pour le replay (étape SQL 81),
+    // qui passe s'il reste au moins 20 secondes ; si le set repart pendant le replay, il s'arrête net.
+    const moSet = replayVisible() ? momentDuSet(S.moments || [], n - 1) : null, seanceSet = S;
     const ouvrirPause = () => {
       if (S !== seanceSet) return;
       ouvrirPanneau({
@@ -893,7 +898,14 @@ function apresPoint(evt, a, cel, rp) {
     };
     setTimeout(() => {
       if (S.duel && (!D || D.duel.phase !== "entre_sets")) { if (D) { D.apresPanneau = null; nouveauSet(); duelReprendre(); } return; }
-      if (moSet) voix.finiDeParler(() => { if (S === seanceSet) jouerReplay([moSet], ouvrirPause); }, 10000);
+      if (moSet && S.duel) {
+        voix.finiDeParler(() => {
+          if (S !== seanceSet || !D || D.duel.phase !== "entre_sets") return;
+          if (tempsRestant(D.duel.echeance, D.decalage) < 20000) { ouvrirPause(); return; }
+          const d = D;
+          d.replayEnCours = jouerReplay([moSet], () => { d.replayEnCours = null; if (S === seanceSet && D === d && D.duel.phase === "entre_sets") ouvrirPause(); });
+        }, 4000);
+      } else if (moSet) voix.finiDeParler(() => { if (S === seanceSet) jouerReplay([moSet], ouvrirPause); }, 10000);
       else ouvrirPause();
     }, cel ? 2400 : 1200);                                  // on laisse le temps de voir le cri
     return evt;
@@ -2798,7 +2810,9 @@ function majDuel(duel) {
     if (!$("msgFenetre").hidden && $("msgFenetre").dataset.moment === "avant") fermerMessages();   // le match commence : trop tard pour le mot d'avant-match
     // Set suivant lancé par le serveur : on ferme le panneau et on reprend la main tout de suite
     // (sinon le premier coup du set pouvait partir au hasard).
-    const reprise = !!panneauOuvert;
+    const reprise = !!panneauOuvert || !!D.replayEnCours;
+    // (le set repart pendant le replay de la pause : on l'arrête net ; 18 novembre)
+    if (D.replayEnCours) { D.replayEnCours(); D.replayEnCours = null; D.apresPanneau?.(); D.apresPanneau = null; bullesSet(duel); }
     if (panneauOuvert) { fermerPanneau(); D.apresPanneau?.(); D.apresPanneau = null; bullesSet(duel); }
     S.enJeu = true; majModeMatch();
     if (!S.occupe || reprise) duelReprendre();
