@@ -181,7 +181,6 @@
           "indication": "[sighs] [disappointed]",
           "situations": [
             "defaite",
-            "serie_contre",
             "dialogue_apres_entrainement_defaite",
             "dialogue_apres_tournoi_premiers_defaite",
             "dialogue_apres_tournoi_quarts_defaite",
@@ -192,8 +191,6 @@
             "dialogue_apres_majeur_finale_defaite",
             "match_perdu_point_decisif",
             "finale_perdue_point_decisif",
-            "craquage",
-            "rate_money_time",
             "dialogue_fin_match"
           ]
         }
