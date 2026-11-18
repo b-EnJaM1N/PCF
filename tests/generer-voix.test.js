@@ -93,3 +93,9 @@ test("« Chiromancien » se dit « Kiromancien » (le texte affiché garde son o
   assert.match(texteVoix(r), /Le Kiromancien l'avait lu/);
   assert.doesNotMatch(texteVoix(r), /Chiro/);
 });
+
+test("« Le Chiromancien est en feu » est joué plus vite que les autres répliques de Roland", async () => {
+  const { vitesseDe, VITESSES } = await import("../app/js/voix/lecteur.js");
+  assert.ok(vitesseDe(CATALOGUE.get("commentateur_perso_chiromancien_feu_01")) > VITESSES.commentateur);
+  assert.equal(vitesseDe(CATALOGUE.get("commentateur_perso_chiromancien_victoire_02")), VITESSES.commentateur);
+});
