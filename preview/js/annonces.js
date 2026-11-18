@@ -44,6 +44,7 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
     dernierMoment: null,          // le dernier moment commenté (un « beau coup » jamais deux fois de suite)
     troisPierres: false,          // « Pierre qui roule… » : une fois par match
     perso: null,                  // (18 novembre) le joueur du match qui a ses répliques : { nom, joueur } (persoCommente, chants-perso.js)
+    tirage: null,                 // en duel : cle → nombre entre 0 et 1, le même sur les deux téléphones (répliques personnalisées)
   };
 }
 
@@ -146,6 +147,12 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
   return ligneMoment(item, { genre: etat.genre, signe: ctx.signe ?? 0, signeAdv: ctx.signeAdv ?? 0 });
 }
 
+// Une réplique personnalisée : si elles ont toutes été dites dans ce match, on en redit une plutôt que de se taire (en duel,
+// l'autre téléphone, qui a pu en garder une, la dirait : les deux joueurs doivent entendre la même chose au même moment).
+function choisirPerso(etat, pool, ctx, rng) {
+  return choisir(etat, pool, ctx, rng) || choisir({ ...etat, dits: new Set() }, pool, ctx, rng);
+}
+
 // Les « écoles » que Monique cite régulièrement (lyonnaise, hongroise, soviétique) ; les autres restent rares.
 const ECOLES_REGULIERES = ["figure_triple_loop", "figure_double_boucle", "figure_marteau"];
 
@@ -244,6 +251,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       const ggpp = decisifs.length >= 4 && decisifs.slice(-4).map(x => x.gagnant).join() === "0,0,1,1";
       const cadrage = g === 0 && decisifs.length >= 2 && decisifs[decisifs.length - 2].gagnant === 0 && decisifs[decisifs.length - 2].a === 2 && dernier.a === 0;
       const feu = feuDuCoup(c);
+      etat.persoFeuIci = persoFeu(etat, feu);   // (la main du joueur aux répliques personnalisées s'enflamme : voir plus bas)
       let ab = null;
       const longTente = n >= 60 && !etat.longDit;
       if (longTente) etat.longDit = true;
@@ -285,8 +293,6 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
         moment = david; etat.davidDit = true;
       } else if ((ab = signeAbime(match)) && peutCommenter(2, 0.5) && rng() < 0.6) {   // le signe abîmé par un smash, rejoué et perdu
         moment = "signe_abime"; ctx.signe = ab.signe; ctx.smashAdv = ab.joueur === 1;
-      } else if (persoFeu(etat, feu) && peutCommenter(2, 0.5) && rng() < 0.8) {   // (18 novembre) la main du Chiromancien s'enflamme
-        moment = `perso_${etat.perso.nom}_feu`;
       } else if (feu.allume && peutCommenter(2, 0.5) && rng() < 0.8) {   // ma main prend feu (8 points de suite ; effets.js)
         moment = "main_en_feu";
       } else if (feu.eteint && peutCommenter(4) && rng() < 0.35) {        // une flamme qui s'éteint (un point perdu)
@@ -377,14 +383,18 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
     ctx.smashAdv = smasheur === 1 && !(smash[0] && smash[1]);
     if (!evt.finSet) dialogueFin = [];
   }
-  // Les répliques personnalisées d'un joueur du match (18 novembre, « Le Chiromancien ») : quand il enchaîne 3 points ou plus, ou
-  // qu'il en perd 3 ou plus de suite, 3 fois sur 10, une fois par set au plus, à la place d'un commentaire ordinaire (jamais
-  // sur un grand moment ni sur un smash). Pendant l'échange, seulement les courtes (comme les autres).
-  const pe = etat.perso, persoPool = pe && !evt.egalite && !evt.finSet && !evt.finMatch && !dialogueFin.length && etat.serie.n >= 3
-    && (!moment || MOMENTS_ORDINAIRES.has(moment)) && !etat.dejaSet.has("perso") && peutCommenter(3, 0.5) && rng() < 0.3
-    ? `perso_${pe.nom}_${etat.serie.joueur === pe.joueur ? "lecture" : "perd"}` : null;
-  const perso = persoPool && choisir(etat, persoPool, ctx, rng);
-  if (perso) { moment = persoPool; etat.dejaSet.add("perso"); }
+  // Les répliques personnalisées d'un joueur du match (18 novembre, « Le Chiromancien ») : quand sa main s'enflamme (8 fois sur 10),
+  // quand il enchaîne 3 points ou plus, ou qu'il en perd 3 ou plus de suite (3 fois sur 10, une fois par set au plus), à la place
+  // du commentaire (jamais sur une balle de set ou de match, un point décisif ni un smash). Pendant l'échange, seulement les courtes.
+  // En duel, la décision ne dépend que du jeu et d'un tirage commun (etat.tirage) : les deux joueurs l'entendent (18 novembre au
+  // soir : le Chiromancien entendait ses répliques, son adversaire non ; chaque téléphone tirait de son côté).
+  const pe = etat.perso, tire = cle => (etat.tirage ? etat.tirage(cle) : rng());
+  const calme = pe && !evt.egalite && !evt.finSet && !evt.finMatch && !issue && !evt.balleAvant && !evt.balleApres && !pointDecisif(match);
+  const persoPool = !calme ? null : etat.persoFeuIci && tire(`perso_feu:${n}`) < 0.8 ? `perso_${pe.nom}_feu`
+    : etat.serie.n >= 3 && !etat.dejaSet.has("perso") && tire(`perso:${n}`) < 0.3 ? `perso_${pe.nom}_${etat.serie.joueur === pe.joueur ? "lecture" : "perd"}` : null;
+  if (persoPool && !persoPool.endsWith("_feu")) etat.dejaSet.add("perso");
+  const perso = persoPool && choisirPerso(etat, persoPool, ctx, rng);
+  if (perso) { moment = persoPool; dialogueFin = []; }
   if (moment) {
     commentaire = perso || choisir(etat, moment, ctx, rng);
     if (commentaire) { lignes.push(commentaire); etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
@@ -402,10 +412,6 @@ const persoFeu = (etat, feu) => {
   const pe = etat.perso, pool = pe && POOLS[`perso_${pe.nom}_feu`];
   return !!pool && feu.flamme[pe.joueur] && pool.some(e => !etat.dits.has(e.base));
 };
-
-// Les moments ordinaires, qu'une réplique personnalisée peut remplacer (voir annoncerCoup).
-const MOMENTS_ORDINAIRES = new Set(["serie_pour", "serie_contre", "lecture_reussie", "lecture_subie", "divers", "beau_coup", "quatre_meme",
-  "obstination", "changement", "cadrage", "riposte", "le_break", "tout_a_refaire", "faille_ratee", "contre_cours", "temps_ecoule"]);
 
 // Un point de pénalité (evt : ce que renvoie penaliser) : l'arbitre l'annonce, puis le score comme après un coup ;
 // parfois (6 fois sur 10), si c'est moi le fautif, un commentaire sur le temps. Renvoie la même chose qu'annoncerCoup.
@@ -475,6 +481,13 @@ export function figureDe(c) {
 
 // Temps mort de fin de set : une réplique ou un dialogue, et un mot si le set suivant est décisif.
 function finDeSet(match, evt, etat, ctx, rng) {
+  // Le joueur qui a ses répliques personnalisées gagne le set (18 novembre) : 3 fois sur 10, une de ses répliques (les longues
+  // aussi), avant tout le reste (sauf un set gagné au point décisif) : en duel, le même tirage sur les deux téléphones.
+  const pe = etat.perso, plaf = plafondSet(match.format.pointsParSet), pd = plaf !== null && ctx.haut === plaf && ctx.bas === plaf - 1;
+  if (!pd && pe && evt.gagnant === pe.joueur && (etat.tirage ? etat.tirage(`perso_set:${match.scoresSets.length}`) : rng()) < 0.3) {
+    const x = choisirPerso(etat, `perso_${pe.nom}_lecture`, { ...ctx, court: false }, rng);
+    if (x) return [x];
+  }
   // La triple buse inversée : n'importe quand en fin de set, rarement, sans explication.
   if (!etat.buse && rng() < 0.12) {
     const d = dialogue(etat, "buse", rng);
@@ -495,11 +508,7 @@ function finDeSet(match, evt, etat, ctx, rng) {
   // Un set partout, à la fin du 2e set d'un match en 2 sets gagnants (18 novembre, répliques d'un testeur) : 7 fois sur 10.
   const partout = !surLeFil && !finPremier && !court && match.format.setsGagnants === 2 && match.sets[0] === 1 && match.sets[1] === 1 && rng() < 0.7
     && choisir(etat, "un_set_partout", { ...ctx, gagne: evt.gagnant === 0 }, rng);
-  // Le joueur qui a ses répliques personnalisées gagne le set (18 novembre) : 3 fois sur 10, une de ses répliques (les longues aussi).
-  const pe = etat.perso, persoSet = !surLeFil && pe && evt.gagnant === pe.joueur && rng() < 0.3
-    && choisir(etat, `perso_${pe.nom}_lecture`, { ...ctx, court: false }, rng);
   if (surLeFil) ajoute(surLeFil);
-  else if (persoSet) ajoute(persoSet);
   else if (finPremier) ajoute(finPremier);
   else if (partout) ajoute(partout);
   else if (!court) {
@@ -539,8 +548,8 @@ function finDeMatch(match, evt, etat, ctx, rng) {
   }
   // Le joueur qui a ses répliques personnalisées (18 novembre) : sa victoire ou sa défaite, 4 fois sur 10.
   const pe = etat.perso;
-  if (pe && rng() < 0.4) {
-    const x = choisir(etat, `perso_${pe.nom}_${evt.gagnant === pe.joueur ? "victoire" : "defaite"}`, ctx, rng);
+  if (pe && (etat.tirage ? etat.tirage("perso_fin") : rng()) < 0.4) {
+    const x = choisirPerso(etat, `perso_${pe.nom}_${evt.gagnant === pe.joueur ? "victoire" : "defaite"}`, ctx, rng);
     if (x) return [x];
   }
   // (18 novembre) David a battu Goliath : le moins bien classé gagne le match (7 fois sur 10)
@@ -658,7 +667,7 @@ const TOURS = ["huitiemes", "quarts", "demis", "finale"];
 // Renvoie { speaker, commentaires } : les deux listes de répliques, dans l'ordre. (Les surnoms dits par Roland : abandonnés le
 // 3 novembre, décision du porteur du projet ; les surnoms restent écrits.)
 export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = false, humain = false, genre = "m",
-  situations = [], recents = [], jeu = null, audible = null, memoire = null, heure = null, perso = null } = {}, rng = Math.random) {
+  situations = [], recents = [], jeu = null, audible = null, memoire = null, heure = null, perso = null, tirage = null } = {}, rng = Math.random) {
   const deja = new Set(recents);
   // Une version de la phrase, en évitant celles déjà entendues récemment.
   const dire = (cle, g = "m") => {
@@ -694,7 +703,7 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
   dialoguesRecents.forEach(id => { const m = /_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
   // Le joueur qui a ses répliques personnalisées (perso : { nom, joueur } ; 18 novembre) : 4 fois sur 10, sa présentation (une
   // réplique) ou, une fois sur trois, un dialogue sur lui ; en évitant ce qui a été entendu aux derniers matchs.
-  if (perso && rng() < 0.4) {
+  if (perso && (tirage ? tirage("perso_avant") : rng()) < 0.4) {   // (tirage : en duel, le même sur les deux téléphones)
     const e2 = { ...etat, anciens: new Set(recents.map(baseDe)), dialoguesDits: new Set(etat.dialoguesDits) };
     const d = DIALOGUES_IDS[`perso_${perso.nom}_avant`] && rng() < 0.35 && dialogue(e2, `perso_${perso.nom}_avant`, rng);
     const l = !d && choisir(e2, `perso_${perso.nom}_presentation`, {}, rng);
