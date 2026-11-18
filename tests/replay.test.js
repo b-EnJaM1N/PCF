@@ -63,10 +63,11 @@ test("la palette : tactiquement pertinent (le gagnant a lu l'habitude de l'autre
 test("la palette : mauvais choix (le perdant suit son habitude) et techniquement propre (le gagnant casse la sienne)", () => {
   // Je joue toujours Pierre et je perds contre Feuille : il me lit… il gagne avec Feuille → pertinent pour lui.
   assert.equal(palette([[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 2]]).verdict, "pertinent");
-  // Je joue toujours Pierre, puis je casse l'habitude avec Ciseaux et je gagne contre Feuille.
-  const propre = palette([[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [1, 2]]);
-  assert.equal(propre.verdict, "propre");
-  assert.equal(propre.habitude.joueur, 0);
+  // Je joue toujours Pierre, puis je casse l'habitude avec Ciseaux et je gagne contre Feuille : depuis le 18 novembre, c'est le
+  // piège (3 fois le même signe ou plus, puis le changement qui marque).
+  const piege = palette([[0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [1, 2]]);
+  assert.equal(piege.verdict, "piege");
+  assert.deepEqual(piege.piege, { joueur: 0, n: 6, repete: 0, signe: 1 });
   // Il tourne en boucle (Pierre, Feuille, Ciseaux…) et continue ; je gagne avec un autre signe que celui conseillé : mauvais choix.
   const v = palette([[2, 0], [1, 2], [0, 1], [2, 0], [1, 2], [0, 1], [2, 0]]).verdict;
   assert.ok(["pertinent", "mauvais"].includes(v), v);
@@ -75,4 +76,16 @@ test("la palette : mauvais choix (le perdant suit son habitude) et techniquement
 test("la palette : rien à lire en début de match, rien pour une égalité", () => {
   assert.equal(palette([[0, 1], [2, 0]]).verdict, "pas_la");
   assert.equal(palette([[0, 1], [0, 0]]), null);
+});
+
+test("la palette : le piège (3 fois le même signe ou plus, puis le changement qui marque), le smash", async () => {
+  const { paletteDuPoint, piegeDuPoint } = await import("../app/js/replay.js");
+  const { gagnantCoup } = await import("../app/js/regles.js");
+  const cs = l => l.map(([a, b]) => ({ a, b, gagnant: gagnantCoup(a, b) }));
+  // 3 Pierres (deux égalités et un point perdu), puis Ciseaux qui battent Feuille
+  assert.deepEqual(piegeDuPoint(cs([[0, 0], [0, 2], [0, 0], [1, 2]])), { joueur: 0, n: 3, repete: 0, signe: 1 });
+  assert.equal(piegeDuPoint(cs([[0, 2], [0, 2], [1, 2]])), null);            // seulement 2 fois
+  assert.equal(piegeDuPoint(cs([[0, 0], [0, 2], [0, 0], [0, 1]])), null);    // pas de changement
+  assert.equal(piegeDuPoint(cs([[0, 0], [0, 2], [0, 0], [1, 0]])), null);    // le changement ne marque pas
+  assert.equal(paletteDuPoint(cs([[0, 1], [2, 0]]), { smashGagne: true }).verdict, "smash");
 });
