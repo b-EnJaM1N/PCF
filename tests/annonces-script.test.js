@@ -506,13 +506,14 @@ test("l'ouverture de Kolodrov : après le 3e coup, ouverture Pierre, Feuille, Ci
 test("le feu des mains pour les commentateurs : ma main prend feu à 8 points de suite, une flamme qui s'éteint", async () => {
   const { feuDuCoup } = await import("../app/js/annonces.js");
   const g = s => [...s].map(x => ({ gagnant: x === "=" ? null : +x }));
-  assert.deepEqual(feuDuCoup(g("0000000")), { allume: false, eteint: false });
-  assert.deepEqual(feuDuCoup(g("00000000")), { allume: true, eteint: false });     // 8 points de suite
-  assert.deepEqual(feuDuCoup(g("000000000")), { allume: false, eteint: false });   // (seulement au moment où elle prend)
-  assert.deepEqual(feuDuCoup(g("1111111")), { allume: false, eteint: false });     // (l'adversaire : pas « Il est en feu »)
-  assert.deepEqual(feuDuCoup(g("0000001")), { allume: false, eteint: true });      // la flamme (6 points) s'éteint
-  assert.deepEqual(feuDuCoup(g("00001")), { allume: false, eteint: false });       // (la fumée seulement : on ne dit rien)
-  assert.deepEqual(feuDuCoup(g("1111110")), { allume: false, eteint: true });      // chez l'adversaire aussi
+  assert.deepEqual(feuDuCoup(g("0000000")), { allume: false, allumeAdv: false, eteint: false });
+  assert.deepEqual(feuDuCoup(g("00000000")), { allume: true, allumeAdv: false, eteint: false });     // 8 points de suite
+  assert.deepEqual(feuDuCoup(g("000000000")), { allume: false, allumeAdv: false, eteint: false });   // (seulement au moment où elle prend)
+  assert.deepEqual(feuDuCoup(g("1111111")), { allume: false, allumeAdv: false, eteint: false });     // (l'adversaire : pas « Il est en feu »)
+  assert.deepEqual(feuDuCoup(g("11111111")), { allume: false, allumeAdv: true, eteint: false });     // (sauf pour le Chiromancien, 18 novembre)
+  assert.deepEqual(feuDuCoup(g("0000001")), { allume: false, allumeAdv: false, eteint: true });      // la flamme (6 points) s'éteint
+  assert.deepEqual(feuDuCoup(g("00001")), { allume: false, allumeAdv: false, eteint: false });       // (la fumée seulement : on ne dit rien)
+  assert.deepEqual(feuDuCoup(g("1111110")), { allume: false, allumeAdv: false, eteint: true });      // chez l'adversaire aussi
 });
 
 test("le point décisif : à 14 partout du set décisif, puis après le 15e point (finale : deux répliques de Roland)", () => {
@@ -727,4 +728,20 @@ test("le Chiromancien : ses répliques seulement dans ses matchs, sur ses série
   }
   assert.ok(dits.size >= 4 && [...dits].some(id => id.includes("_dialogue_")), [...dits].join());
   for (let k = 0; k < 100; k++) assert.ok(!annoncesAvantMatch({}, rngFixe(k)).commentaires.some(l => perso(l.id)));
+});
+
+test("le Chiromancien : Roland s'emballe quand sa main prend feu (8 points de suite), qu'il soit moi ou l'adversaire", () => {
+  for (const joueur of [0, 1]) {
+    let entendu = null;
+    for (let k = 0; k < 30 && !entendu; k++) {
+      const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces(), rng = rngFixe(k);
+      etat.perso = { nom: "chiromancien", joueur };
+      for (let p = 0; p < 8; p++) {
+        const e = joueur === 0 ? jouerCoup(m, 0, 1) : jouerCoup(m, 1, 0);
+        const l = annoncerCoup(m, e, etat, {}, rng).lignes.find(x => /perso_chiromancien_feu/.test(x.id));
+        if (l) { assert.equal(p, 7, "au 8e point"); entendu = l; }
+      }
+    }
+    assert.ok(entendu, `joueur ${joueur}`);
+  }
 });

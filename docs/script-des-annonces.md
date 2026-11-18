@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1120 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1123 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -612,6 +612,9 @@ restent lus par la voix de synthèse.
 | `commentateur_perso_chiromancien_lecture_03.mp3` | Le Chiromancien voit tout venir ! |
 | `commentateur_perso_chiromancien_perd_01.mp3` | Oula, le Chiromancien n'avait pas vu celle-là venir ! |
 | `commentateur_perso_chiromancien_victoire_01.mp3` | Le Chiromancien l'avait prédit ! Victoire ! |
+| `commentateur_perso_chiromancien_victoire_02.mp3` | Le Chiromancien est un vrai magicien ! |
+| `commentateur_perso_chiromancien_feu_01.mp3` | Mesdames et mesdames, le Chiromancien est en feu ! |
+| `commentateur_perso_chiromancien_feu_02.mp3` | Le Chiromancien est en feu, mesdames et messieurs ! |
 | `commentateur_replay_intro_01.mp3` | Revoyons ça ! |
 | `commentateur_replay_intro_02.mp3` | On le revoit au ralenti… Regardez-moi ça ! |
 | `commentateur_replay_intro_03.mp3` | Attention, on revoit l'action ! |
