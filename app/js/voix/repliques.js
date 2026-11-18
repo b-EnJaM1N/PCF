@@ -41,6 +41,8 @@ export const MOMENTS = {
     { r: "c", t: "Aïe ! Il se prend les pieds dans le tapis, là !", f: "Aïe ! Elle se prend les pieds dans le tapis, là !" },   // (17 novembre, écrite par le porteur du projet)
     { r: "d", t: "L'enjeu le paralyse. Ça se voit d'ici.", f: "L'enjeu la paralyse. Ça se voit d'ici." },
     { r: "d", t: "Tout était bien… sauf le dernier geste." },
+    { r: "d", t: "Le bras a tremblé au moment de conclure." },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "c", t: "Oula, il avait le set dans les mains !", f: "Oula, elle avait le set dans les mains !", quand: "set" },
   ],
   // Une balle de match sauvée, ou le point qui donne le titre : la main entre dans la légende.
   main_legendaire: [
@@ -55,6 +57,8 @@ export const MOMENTS = {
     { r: "d", t: "Je note l'heure. Pour les archives." },
     { r: "d", t: "Dinguerie ! Comme disent les jeunes." },
     { r: "d", t: "C'est un vrai banger. Comme disent les jeunes." },
+    { r: "c", t: "On a assisté à quelque chose d'unique !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "c", t: "Oh, la main du siècle, peut-être même du millénaire !" },
   ],
   balle_sauvee: [
     { r: "c", t: "Sauvée ! Quel sang-froid !" },
@@ -80,6 +84,8 @@ export const MOMENTS = {
     { r: "d", t: "Le dos rond… et c'est passé." },
     { r: "c", t: "Et coup de tonnerre avec ce point, qui lui permet de rester dans la course !" },   // (17 novembre, écrite par le porteur du projet)
     { r: "c", t: "Attention, il ne baisse pas la garde !", f: "Attention, elle ne baisse pas la garde !" },
+    { r: "c", t: "Sauvée ! Le public est debout !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "d", t: "Il refuse de partir. Têtu, en plus d'être doué.", f: "Elle refuse de partir. Têtue, en plus d'être douée." },
   ],
   remontee: [
     { r: "c", t: "Quelle remontée extraordinaire !" },
@@ -207,6 +213,7 @@ export const MOMENTS = {
     { r: "d", t: "Pour le moment, sa stratégie ne paie pas." },
     { r: "d", t: "La ligne d'arrivée est encore loin, mais attention à ne pas se laisser distancer." },
     { r: "d", t: "Hmm. Il est en train de déjouer.", f: "Hmm. Elle est en train de déjouer." },
+    { r: "d", t: "Il est en difficulté, son jeu est trop stéréotypé.", f: "Elle est en difficulté, son jeu est trop stéréotypé." },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
   ],
   obstination: [
     { r: "c", t: ["Troisième Pierre d'affilée ! C'est audacieux !", "Troisièmes Ciseaux d'affilée ! C'est audacieux !", "Troisième Feuille d'affilée ! C'est audacieux !"] },
@@ -296,6 +303,7 @@ export const MOMENTS = {
     { r: "c", t: "Le bluff du siècle ! L'autre n'a pas cillé !", clin: "sport" },
     { r: "d", t: "Les mêmes causes produisent les mêmes effets." },   // (17 novembre, écrite par le porteur du projet)
     { r: "d", t: "Complètement à côté de son sujet." },
+    { r: "d", t: "Son jeu manque de variation, il est encore sur les vieux schémas de la veille.", f: "Son jeu manque de variation, elle est encore sur les vieux schémas de la veille." },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
   ],
   // J'ai lu le réflexe de l'adversaire.
   lecture_reussie: [
@@ -355,6 +363,7 @@ export const MOMENTS = {
     { r: "d", t: "Les mains sont moites." },
     { r: "c", t: "Attention : plus le choix, il faut marquer pour rester en vie !", si: "balle_contre" },   // (17 novembre, écrite par le porteur du projet)
     { r: "d", t: "Maintenant, il faut marquer pour continuer à espérer.", si: "balle_contre" },
+    { r: "c", t: "Le moment de vérité !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
   ],
   point_decisif: [
     { r: "c", t: "Un point. Un seul. Pour tout !" },
@@ -475,6 +484,11 @@ export const MOMENTS = {
     // (5 novembre, répliques du porteur du projet)
     { r: "c", t: "Attention, je crois qu'il s'est foulé le poignet… non, rien de grave a priori.", f: "Attention, je crois qu'elle s'est foulé le poignet… non, rien de grave a priori.", rare: "true" },
     { r: "d", t: "Il revient bien depuis la tendinite qui l'a éloigné du central pendant plusieurs mois.", f: "Elle revient bien depuis la tendinite qui l'a éloignée du central pendant plusieurs mois.", rare: "true" },
+    { r: "c", t: "Un set plein, bien construit, de bout en bout !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "d", t: "Un set propre. Pas spectaculaire, mais propre." },
+    { r: "c", t: "Ah, quel set ! On a vu de tout !" },
+    { r: "c", t: "Il a su accélérer au bon moment !", f: "Elle a su accélérer au bon moment !", si: "gagne" },
+    { r: "d", t: "Le vainqueur a fait moins d'erreurs. C'est souvent comme ça que ça marche." },
   ],
   set_decisif: [
     { r: "c", t: "Set décisif ! Tout se joue maintenant !" },
@@ -488,6 +502,10 @@ export const MOMENTS = {
     { r: "d", t: "Rien ne va plus. Faites vos jeux." },
     { r: "d", t: "Deux sets pour s'échauffer. Le vrai match commence.", si: "troisieme_set" },
     { r: "d", t: "La fatigue va parler. Et la tête aussi." },   // (16 novembre, plus classiques, choisies par le porteur du projet)
+    { r: "c", t: "Tout se jouera dans ce dernier set !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "d", t: "On efface tout. Il ne reste que l'essentiel." },
+    { r: "c", t: "Oh, le parfum des grands soirs ! Un set pour tout décider !" },
+    { r: "d", t: "Maintenant, on va voir qui a le plus envie." },
   ],
   renversement: [
     { r: "c", t: "Mené un set à zéro, il renverse tout !", f: "Menée un set à zéro, elle renverse tout !" },
@@ -499,6 +517,9 @@ export const MOMENTS = {
     { r: "c", t: "Personne n'y croyait, sauf lui !", f: "Personne n'y croyait, sauf elle !" },   // (16 novembre, choisie par le porteur du projet)
     { r: "c", t: "Mené, et pourtant il a tout retourné !", f: "Menée, et pourtant elle a tout retourné !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "d", t: "Comme quoi, un match n'est jamais fini." },
+    { r: "c", t: "Quel retournement de situation !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "d", t: "Il était parti pour perdre. Il a changé d'avis.", f: "Elle était partie pour perdre. Elle a changé d'avis." },
+    { r: "c", t: "Oh, la remontée fantastique !" },
   ],
   balle_match_convertie: [
     { r: "c", t: ["Pieeeeerre ! Pierre ! Pierre !", "Ciseaaaaux ! Ciseaux ! Ciseaux !", "Feuiiiiille ! Feuille ! Feuille !"], clin: "sport", retiree: true },   // (retirée le 5 novembre)
@@ -563,6 +584,11 @@ export const MOMENTS = {
     { r: "d", t: "On ne reverra peut-être jamais ça. Tant mieux, j'ai eu mon compte." },
     { r: "c", t: "Et il lève les mains au ciel !", f: "Et elle lève les mains au ciel !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "d", t: "Une victoire construite point par point." },
+    { r: "c", t: "Victoire ! Et quelle victoire !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "d", t: "Il l'a voulue, il l'a eue.", f: "Elle l'a voulue, elle l'a eue." },
+    { r: "c", t: "Le travail paie ! Bravo !" },
+    { r: "d", t: "Une victoire méritée. Je le dis rarement, profitez-en." },
+    { r: "c", t: "Oh, la joie du vainqueur !" },
   ],
   defaite: [
     { r: "d", t: "Au revoir.", clin: "cine", retiree: true },
@@ -585,6 +611,11 @@ export const MOMENTS = {
     { r: "c", t: "Il s'incline, mais la tête haute !", f: "Elle s'incline, mais la tête haute !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "d", t: "Ce n'était pas son jour." },
     { r: "d", t: "Il y a eu match. Mais pas assez longtemps." },
+    { r: "d", t: "Une défaite, ce n'est pas une fin. C'est une leçon. Coûteuse." },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "c", t: "Il n'a pas à rougir ! Il s'est battu jusqu'au bout !", f: "Elle n'a pas à rougir ! Elle s'est battue jusqu'au bout !" },
+    { r: "d", t: "Il rentrera chez lui en refaisant le match. Plusieurs fois.", f: "Elle rentrera chez elle en refaisant le match. Plusieurs fois." },
+    { r: "c", t: "Oula, la soirée a été difficile…" },
+    { r: "d", t: "Il y a des jours où rien ne veut sortir. C'était celui-là." },
   ],
   // (« domination », « Je suis ton père », dit avant le match quand l'adversaire dominait nos face-à-face : retiré le 2 novembre,
   // à la demande du porteur du projet)
@@ -726,18 +757,26 @@ export const MOMENTS = {
   replay_sauvee: [
     { r: "c", t: "Regardez ce sang-froid ! Il était au bord du gouffre !", f: "Regardez ce sang-froid ! Elle était au bord du gouffre !" },
     { r: "d", t: "Au ralenti, on voit la peur. Et puis non." },
+    { r: "c", t: "On revoit la balle sauvée ! Quel sang-froid !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "d", t: "Au ralenti, on voit tout. Même ce qu'il ne fallait pas faire." },
   ],
   replay_smash: [
     { r: "c", t: "Regardez cette belle technique ! Le geste est parfait !" },
     { r: "d", t: "Toute la puissance est dans le poignet." },
+    { r: "c", t: "Revoyons ce smash ! Quelle frappe !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "d", t: "Même au ralenti, ça va vite." },
   ],
   replay_set: [
     { r: "c", t: "Le coup qui fait basculer le set !" },
     { r: "d", t: "Tout s'est joué là." },
+    { r: "c", t: "Le point du set, au ralenti !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "d", t: "Tout s'est joué là. À une main près." },
   ],
   replay_serie: [
     { r: "c", t: "Il ne lâche rien !", f: "Elle ne lâche rien !" },
     { r: "d", t: "La patience a payé." },
+    { r: "c", t: "Regardez cette série ! Il ne lâche rien !", f: "Regardez cette série ! Elle ne lâche rien !", type: "serie" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "d", t: "Cinq points d'affilée. Ça ne s'improvise pas.", type: "serie" },
   ],
   // La palette du replay (11 novembre, répliques validées par le porteur du projet) : le verdict de Monique sur le point
   // (« il » : le gagnant ; pour « mauvais », le perdant). cle : seulement quand l'habitude lue est celle-là.
@@ -1356,19 +1395,40 @@ export const DIALOGUES = {
   // Avant le match, selon la situation (contre un bot, en finale, une revanche, tard le soir).
   // Sur une balle de match, de temps en temps (banque du 1er novembre) : Roland s'enflamme, Monique le calme. « Le » : moi.
   // La première égalité du match (de temps en temps à la place d'une réplique) ; il change enfin de signe : le dégagement.
-  premiere_egalite: [["Premier coup, première égalité !", "Et pas la dernière, à mon avis."]],
-  changement: [[{ t: "Il casse enfin la série !", f: "Elle casse enfin la série !" }, "Oui. Dégagement très propre."]],
-  balle_de_match: [[{ t: "Une victoire le sépare de l'immortalité !", f: "Une victoire la sépare de l'immortalité !" }, "Enfin… de la victoire du jour. Restons mesurés."]],
-  avant_bot: [["Un humain contre une machine, Madame !", "La machine a l'air plus détendue."]],
+  premiere_egalite: [
+    ["Premier coup, première égalité !", "Et pas la dernière, à mon avis."],
+    ["Même signe dès le départ !", "Ils ont dû réviser ensemble."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+  ],
+  changement: [
+    [{ t: "Il casse enfin la série !", f: "Elle casse enfin la série !" }, "Oui. Dégagement très propre."],
+    [{ t: "Il change enfin de signe, Madame !", f: "Elle change enfin de signe, Madame !" }, "L'audace, à petites doses."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+  ],
+  balle_de_match: [
+    [{ t: "Une victoire le sépare de l'immortalité !", f: "Une victoire la sépare de l'immortalité !" }, "Enfin… de la victoire du jour. Restons mesurés."],
+    ["Balle de match, Madame !", "Je retiens mon souffle. Ça ne se voit pas, mais je le retiens."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+  ],
+  avant_bot: [
+    ["Un humain contre une machine, Madame !", "La machine a l'air plus détendue."],
+    ["Un humain contre un bot, Madame !", "Le bot ne transpire pas. C'est déjà un avantage."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+  ],
   // La mémoire du dernier match (28 octobre) : il rejoue la même ouverture ; une revanche (j'avais perdu) ; des habitués ;
   // un dernier match marquant (serré ou long).
   memoire_meme_ouverture: [[{ t: "Il rouvre comme au dernier match ! Quelle audace !", f: "Elle rouvre comme au dernier match ! Quelle audace !" }, "Ou quel manque d'imagination. On saura à la fin du match."]],
   memoire_revanche: [["Une revanche, Madame ! Une vraie !", "Ils ont dû la préparer toute la semaine."]],
   memoire_habitues: [["Ils se connaissent, ils se jaugent, ils se respectent !", "Ils se méfient, surtout."]],
   memoire_marquant: [["La dernière fois, quel match, Madame !", "On en reparle à la fin de celui-ci."]],
-  avant_finale: [["Une finale, Madame ! Une FINALE !", "J'avais entendu la première fois."]],
-  avant_revanche: [["Ils se connaissent, ces deux-là !", "Oui. Et ils ne s'aiment pas beaucoup."]],
-  avant_nuit: [["Il est tard, Madame, mais le HandSlam ne dort jamais !", "Moi si. Normalement."]],
+  avant_finale: [
+    ["Une finale, Madame ! Une FINALE !", "J'avais entendu la première fois."],
+    ["Une finale, Madame ! La plus belle des scènes !", "Et la plus cruelle. Il n'y a qu'un gagnant."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+  ],
+  avant_revanche: [
+    ["Ils se connaissent, ces deux-là !", "Oui. Et ils ne s'aiment pas beaucoup."],
+    ["Une revanche, Madame ! Ça sent la poudre !", "Et la rancune. Un peu."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+  ],
+  avant_nuit: [
+    ["Il est tard, Madame, mais le HandSlam ne dort jamais !", "Moi si. Normalement."],
+    ["Il est tard, Madame, mais ils jouent encore !", "Le chifoumi n'a pas d'heure."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+  ],
   // Les figures techniques (inventées) : Roland les nomme, Monique répond, une fois cassante (1er dialogue),
   // une fois sérieuse comme une experte (2e dialogue, une « école » imaginaire). Voir figureDe dans annonces.js.
   figure_triple_loop: [
@@ -1512,6 +1572,9 @@ export const DIALOGUES = {
   apres_entrainement_defaite: [
     ["Et quelle défaite !", "Justement. C'est à ça que servent les entraînements."],
     ["Il va falloir travailler après cette contre-performance !", "Voilà enfin quelque chose de sensé."],
+    ["Ce n'était qu'un entraînement, Madame !", "Justement. C'est là qu'on apprend à perdre sans témoins."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    ["Une défaite à l'entraînement, ça compte ?", "Non. Mais ça se voit."],
+    ["Le bot a été plus fort aujourd'hui !", "Le bot ne dort pas, ne mange pas et ne doute jamais. C'est injuste, mais c'est comme ça."],
   ],
   apres_tournoi_premiers_victoire: [
     ["ET C'EST UNE VICTOIRE !", "Premier tour validé."],
@@ -1526,6 +1589,7 @@ export const DIALOGUES = {
     ["C'est déjà terminé !", { t: "Pour lui, oui. Pour le tournoi, non.", f: "Pour elle, oui. Pour le tournoi, non." }],
     ["Quel dommage !", "Il faudra faire mieux au prochain tournoi."],
     ["Une élimination terrible !", "Terrible, non. Décevante, oui."],
+    [{ t: "Éliminé dès le premier tour, Madame…", f: "Éliminée dès le premier tour, Madame…" }, { t: "Au moins, il aura sa soirée de libre.", f: "Au moins, elle aura sa soirée de libre." }],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
   ],
   apres_tournoi_quarts_victoire: [
     [{ t: "IL EST EN DEMI-FINALE !", f: "ELLE EST EN DEMI-FINALE !" }, { t: "Oui. Il a gagné son quart.", f: "Oui. Elle a gagné son quart." }],
@@ -1540,6 +1604,7 @@ export const DIALOGUES = {
     ["Le rêve s'arrête ici !", "Pour aujourd'hui, oui."],
     [{ t: "Il était si proche !", f: "Elle était si proche !" }, "Pas assez proche pour gagner."],
     ["Une énorme désillusion !", "Une défaite en quart. Ça fait partie du sport."],
+    ["Le parcours s'arrête en quart de finale !", "Un quart, c'est déjà un quart de gloire."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
   ],
   apres_tournoi_demis_victoire: [
     [{ t: "IL EST EN FINALE !", f: "ELLE EST EN FINALE !" }, "Et maintenant, il va falloir la gagner."],
@@ -1554,6 +1619,7 @@ export const DIALOGUES = {
     ["Le rêve s'effondre !", "Il faudra se relever."],
     ["Si près du but !", "Et pourtant si loin."],
     ["Une élimination cruelle !", "Les demi-finales ne pardonnent pas."],
+    ["La demi-finale lui échappe !", { t: "Si près de la finale. On s'en souviendra. Lui surtout.", f: "Si près de la finale. On s'en souviendra. Elle surtout." }],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
   ],
   apres_tournoi_finale_victoire: [
     [{ t: "IL EST CHAMPION !", f: "ELLE EST CHAMPIONNE !" }, "Oui. Cette fois, vous pouvez vous emballer."],
@@ -1568,6 +1634,7 @@ export const DIALOGUES = {
     [{ t: "Il était si proche de la gloire !", f: "Elle était si proche de la gloire !" }, "Et son adversaire était plus proche encore."],
     ["Le rêve s'écroule au dernier moment !", "C'est précisément pour ça qu'on joue les finales."],
     ["Quelle désillusion !", "Oui. Mais deuxième d'un tournoi, ce n'est pas exactement une catastrophe."],
+    ["Finale perdue, Madame…", "On ne perd pas une finale. On la laisse à l'autre. C'est plus élégant."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
   ],
   apres_majeur_quarts_victoire: [
     [{ t: "IL VIENT DE RÉALISER UN EXPLOIT MAJEUR !", f: "ELLE VIENT DE RÉALISER UN EXPLOIT MAJEUR !" }, "Une victoire en quart. C'est important, oui."],
@@ -1616,18 +1683,27 @@ export const DIALOGUES = {
     ["Un set parfait ! Comme vous en 1997, Madame !", "N'en parlons pas."],
     [{ t: "Qu'est-ce qu'il doit changer ?", f: "Qu'est-ce qu'elle doit changer ?" }, "Tout. Ou rien. C'est ça, le HandSlam."],
     [{ t: "Il doit tout changer, Madame !", f: "Elle doit tout changer, Madame !" }, "Vaste programme."],
+    ["Madame, que retenez-vous de ce set ?", "Qu'il est fini. C'est déjà beaucoup."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    ["Un set d'une rare intensité, Madame !", "Rare, je ne sais pas. Intense, sûrement."],
+    ["Le perdant peut-il encore revenir ?", "Tant que le match n'est pas fini, tout le monde peut revenir. Même vous."],
+    ["Ce set a-t-il changé quelque chose, Madame ?", "Le score. C'est déjà pas mal."],
   ],
   set_decisif: [
     ["Un set pour l'éternité, Madame !", "Un set pour ce soir. Ce sera déjà bien."],
   ],
   titre: [
     ["Madame, c'est historique !", "Pas d'enflammade. Pas d'enflammade."],
+    [{ t: "Il est champion, Madame ! Champion !", f: "Elle est championne, Madame ! Championne !" }, "Je sais, Roland. J'étais là."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    ["Un titre, Madame ! Un vrai titre !", "Oui. Et maintenant, le plus dur commence : le garder."],
   ],
   // après une défaite
   fin_match: [
     [{ t: "Il n'a pas démérité !", f: "Elle n'a pas démérité !" }, "Si. Un peu quand même."],
     ["Quel combat, Madame !", "Un combat. Perdu. Mais un combat."],
     [{ t: "Il peut sortir la tête haute !", f: "Elle peut sortir la tête haute !" }, { t: "Il peut sortir. C'est déjà ça.", f: "Elle peut sortir. C'est déjà ça." }],
+    ["Une défaite qui fait mal, Madame ?", "Toutes les défaites font mal. Certaines font aussi réfléchir."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    [{ t: "Il reviendra plus fort, j'en suis sûr !", f: "Elle reviendra plus forte, j'en suis sûr !" }, "Ou pareil. Mais avec de l'expérience."],
+    ["Madame, un mot pour le vaincu ?", "Courage. Et du repos."],
   ],
   // Un joueur vient de pousser son cri de victoire (voir celebrations.js).
   cri: [
@@ -1635,6 +1711,8 @@ export const DIALOGUES = {
     [{ t: "Il a craqué son slip !", f: "Elle a craqué son slip !" }, "Attention que ça ne vous arrive pas."],
     [{ t: "Il éructe de joie !", f: "Elle éructe de joie !" }, "La prochaine fois, prévoyez les boules Quies."],
     ["Siuuuu !", "C'est Ronaldo sans les abdos."],
+    ["Quel cri, Madame !", "On l'a entendu jusqu'au parking."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    [{ t: "Il exulte !", f: "Elle exulte !" }, { t: "Qu'il en profite, ça ne durera pas.", f: "Qu'elle en profite, ça ne durera pas." }],
   ],
 };
 

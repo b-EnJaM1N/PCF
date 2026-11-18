@@ -560,8 +560,9 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
 // Les répliques du replay (replay_intro, replay_sauvee…) : une au hasard parmi celles qui sont enregistrées.
 const POOL_REPLAY = { match: "replay_set", set: "replay_set", sauvee_match: "replay_sauvee", sauvee_set: "replay_sauvee", smash: "replay_smash", piege: "replay_serie", serie: "replay_serie", egalites: "replay_serie" };
 // role : seulement Roland (« commentateur ») quand la palette suit : c'est Monique qui donne le verdict.
-function ligneReplay(pool, genre = "m", role = null) {
-  const l = (POOLS[pool] || []).map(it => ligneMoment(it, { genre })).filter(x => x && voix.fichiers.has(x.id) && (!role || x.role === role));
+// type : le temps fort rejoué (une réplique marquée « type » n'est dite que pour lui : « Cinq points d'affilée », pas pour des égalités)
+function ligneReplay(pool, genre = "m", role = null, type = null) {
+  const l = (POOLS[pool] || []).filter(it => !it.type || it.type === type).map(it => ligneMoment(it, { genre })).filter(x => x && voix.fichiers.has(x.id) && (!role || x.role === role));
   return l.length ? l[Math.floor(Math.random() * l.length)] : null;
 }
 const genreJoueur = j => (j === 0 ? P.genre : OPP.humain ? OPP.genre : botAuFeminin(OPP) ? "f" : "m");
@@ -631,7 +632,7 @@ function jouerReplay(liste, apres = () => {}) {
       const [w, l] = mo.gagnant === 0 ? [mo.a, mo.b] : [mo.b, mo.a];
       $("rpVerdict").textContent = `${mo.smash[mo.gagnant] ? "💥 Smash ! " : ""}${NOM[w]} bat ${NOM[l]}`;
       // (avec la palette : Roland décrit d'abord l'action à sa façon, replay_r_… ; sinon, la réplique habituelle du replay)
-      const c = (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || ligneReplay(POOL_REPLAY[mo.type], genre, roland);
+      const c = (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
       if (c) voix.finiDeParler(() => { if (!fini) voix.dire([c]); }, 1200);
       t = setTimeout(() => {
         if (fini) return;

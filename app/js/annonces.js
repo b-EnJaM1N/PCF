@@ -459,8 +459,8 @@ function finDeSet(match, evt, etat, ctx, rng) {
     // (à 5 points d'écart, seulement les répliques « net » : « Pas de chichifoumi », le coup du berger)
     if (haut - bas >= 5) ajoute(choisir(etat, "set_ecrasant", { ...ctx, onzeZero: haut === 11 && bas === 0, net5: haut - bas === 5, gagne: evt.gagnant === 0 }, rng));
     else if (bas >= len - 1) ajoute(choisir(etat, "set_couteau", ctx, rng));
-    else if (rng() < 0.5) ajoute(dialogue(etat, "fin_set", rng) || choisir(etat, "resume_set", ctx, rng));
-    else ajoute(choisir(etat, "resume_set", { ...ctx, unPartout: match.sets[0] === 1 && match.sets[1] === 1 }, rng));
+    else if (rng() < 0.5) ajoute(dialogue(etat, "fin_set", rng) || choisir(etat, "resume_set", { ...ctx, gagne: evt.gagnant === 0 }, rng));
+    else ajoute(choisir(etat, "resume_set", { ...ctx, gagne: evt.gagnant === 0, unPartout: match.sets[0] === 1 && match.sets[1] === 1 }, rng));
   }
   if (decisifEnSuite && match.format.setsGagnants > 1) {
     // (un seul dialogue : seulement s'il n'a pas été entendu aux derniers matchs, sinon une réplique)

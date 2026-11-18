@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1005 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1060 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -144,6 +144,8 @@ restent lus par la voix de synthèse.
 | `commentateur_craquage_12_f.mp3` | Oh non… Elle a tremblé au pire moment ! |
 | `commentateur_craquage_13.mp3` | Aïe ! Il se prend les pieds dans le tapis, là ! |
 | `commentateur_craquage_13_f.mp3` | Aïe ! Elle se prend les pieds dans le tapis, là ! |
+| `commentateur_craquage_14.mp3` | Oula, il avait le set dans les mains ! |
+| `commentateur_craquage_14_f.mp3` | Oula, elle avait le set dans les mains ! |
 | `commentateur_main_legendaire_01.mp3` | La main du siècle ! |
 | `commentateur_main_legendaire_02.mp3` | Une main pour l'histoire ! |
 | `commentateur_main_legendaire_03.mp3` | La main du destin ! |
@@ -152,6 +154,8 @@ restent lus par la voix de synthèse.
 | `commentateur_main_legendaire_06.mp3` | On pourra parler de cette main pendant des années ! |
 | `commentateur_main_legendaire_07.mp3` | Mesdames et mesdames… quelle main ! |
 | `commentateur_main_legendaire_08.mp3` | Dans cinquante ans, on racontera encore cette main ! |
+| `commentateur_main_legendaire_09.mp3` | On a assisté à quelque chose d'unique ! |
+| `commentateur_main_legendaire_10.mp3` | Oh, la main du siècle, peut-être même du millénaire ! |
 | `commentateur_balle_sauvee_01.mp3` | Sauvée ! Quel sang-froid ! |
 | `commentateur_balle_sauvee_03.mp3` | Il refuse de mourir ! Encore en vie ! Toujours en vie ! |
 | `commentateur_balle_sauvee_03_f.mp3` | Elle refuse de mourir ! Encore en vie ! Toujours en vie ! |
@@ -181,6 +185,7 @@ restent lus par la voix de synthèse.
 | `commentateur_balle_sauvee_14.mp3` | Et coup de tonnerre avec ce point, qui lui permet de rester dans la course ! |
 | `commentateur_balle_sauvee_15.mp3` | Attention, il ne baisse pas la garde ! |
 | `commentateur_balle_sauvee_15_f.mp3` | Attention, elle ne baisse pas la garde ! |
+| `commentateur_balle_sauvee_16.mp3` | Sauvée ! Le public est debout ! |
 | `commentateur_remontee_01.mp3` | Quelle remontée extraordinaire ! |
 | `commentateur_remontee_02.mp3` | On l'avait enterré un peu trop vite ! |
 | `commentateur_remontee_02_f.mp3` | On l'avait enterrée un peu trop vite ! |
@@ -372,6 +377,7 @@ restent lus par la voix de synthèse.
 | `commentateur_tension_10.mp3` | Allez ! Il a le match en main ! |
 | `commentateur_tension_10_f.mp3` | Allez ! Elle a le match en main ! |
 | `commentateur_tension_11.mp3` | Attention : plus le choix, il faut marquer pour rester en vie ! |
+| `commentateur_tension_12.mp3` | Le moment de vérité ! |
 | `commentateur_point_decisif_01.mp3` | Un point. Un seul. Pour tout ! |
 | `commentateur_point_decisif_02.mp3` | Un point pour entrer dans l'Histoire ! |
 | `commentateur_point_decisif_03.mp3` | Il ne peut en rester qu'un ! |
@@ -437,11 +443,17 @@ restent lus par la voix de synthèse.
 | `commentateur_resume_set_04.mp3` | Le public retient son souffle avant la suite ! |
 | `commentateur_resume_set_05.mp3` | Attention, je crois qu'il s'est foulé le poignet… non, rien de grave a priori. |
 | `commentateur_resume_set_05_f.mp3` | Attention, je crois qu'elle s'est foulé le poignet… non, rien de grave a priori. |
+| `commentateur_resume_set_06.mp3` | Un set plein, bien construit, de bout en bout ! |
+| `commentateur_resume_set_07.mp3` | Ah, quel set ! On a vu de tout ! |
+| `commentateur_resume_set_08.mp3` | Il a su accélérer au bon moment ! |
+| `commentateur_resume_set_08_f.mp3` | Elle a su accélérer au bon moment ! |
 | `commentateur_set_decisif_01.mp3` | Set décisif ! Tout se joue maintenant ! |
 | `commentateur_set_decisif_02.mp3` | C'est la der des ders ! |
 | `commentateur_set_decisif_03.mp3` | Set décisif, et une place dans l'Histoire en jeu ! |
 | `commentateur_set_decisif_04.mp3` | Un set ! Un seul ! Tout ce qu'ils ont, c'est maintenant ! |
 | `commentateur_set_decisif_05.mp3` | Les compteurs sont remis à zéro ! |
+| `commentateur_set_decisif_06.mp3` | Tout se jouera dans ce dernier set ! |
+| `commentateur_set_decisif_07.mp3` | Oh, le parfum des grands soirs ! Un set pour tout décider ! |
 | `commentateur_renversement_01.mp3` | Mené un set à zéro, il renverse tout ! |
 | `commentateur_renversement_01_f.mp3` | Menée un set à zéro, elle renverse tout ! |
 | `commentateur_renversement_02.mp3` | Le retour du siècle ! |
@@ -453,6 +465,8 @@ restent lus par la voix de synthèse.
 | `commentateur_renversement_06_f.mp3` | Personne n'y croyait, sauf elle ! |
 | `commentateur_renversement_07.mp3` | Mené, et pourtant il a tout retourné ! |
 | `commentateur_renversement_07_f.mp3` | Menée, et pourtant elle a tout retourné ! |
+| `commentateur_renversement_08.mp3` | Quel retournement de situation ! |
+| `commentateur_renversement_09.mp3` | Oh, la remontée fantastique ! |
 | `commentateur_balle_match_convertie_02.mp3` | Il franchit la ligne les bras levés ! |
 | `commentateur_balle_match_convertie_02_f.mp3` | Elle franchit la ligne les bras levés ! |
 | `commentateur_balle_match_convertie_03.mp3` | Après avoir vu ça, on peut dormir tranquille ! |
@@ -512,11 +526,17 @@ restent lus par la voix de synthèse.
 | `commentateur_victoire_18_f.mp3` | Elle vient peut-être de changer l'histoire du Pierre-Feuille-Ciseaux ! |
 | `commentateur_victoire_19.mp3` | Et il lève les mains au ciel ! |
 | `commentateur_victoire_19_f.mp3` | Et elle lève les mains au ciel ! |
+| `commentateur_victoire_20.mp3` | Victoire ! Et quelle victoire ! |
+| `commentateur_victoire_21.mp3` | Le travail paie ! Bravo ! |
+| `commentateur_victoire_22.mp3` | Oh, la joie du vainqueur ! |
 | `commentateur_defaite_01.mp3` | Battu, mais pas abattu ! |
 | `commentateur_defaite_01_f.mp3` | Battue, mais pas abattue ! |
 | `commentateur_defaite_04.mp3` | Défaite, oui, mais avec les honneurs ! |
 | `commentateur_defaite_05.mp3` | Il s'incline, mais la tête haute ! |
 | `commentateur_defaite_05_f.mp3` | Elle s'incline, mais la tête haute ! |
+| `commentateur_defaite_06.mp3` | Il n'a pas à rougir ! Il s'est battu jusqu'au bout ! |
+| `commentateur_defaite_06_f.mp3` | Elle n'a pas à rougir ! Elle s'est battue jusqu'au bout ! |
+| `commentateur_defaite_07.mp3` | Oula, la soirée a été difficile… |
 | `commentateur_memoire_ouverture_01_pierre.mp3` | La dernière fois, il avait ouvert avec la Pierre ! |
 | `commentateur_memoire_ouverture_01_pierre_f.mp3` | La dernière fois, elle avait ouvert avec la Pierre ! |
 | `commentateur_memoire_ouverture_01_ciseaux.mp3` | La dernière fois, il avait ouvert avec les Ciseaux ! |
@@ -567,10 +587,15 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_intro_03.mp3` | Attention, on revoit l'action ! |
 | `commentateur_replay_sauvee_01.mp3` | Regardez ce sang-froid ! Il était au bord du gouffre ! |
 | `commentateur_replay_sauvee_01_f.mp3` | Regardez ce sang-froid ! Elle était au bord du gouffre ! |
+| `commentateur_replay_sauvee_02.mp3` | On revoit la balle sauvée ! Quel sang-froid ! |
 | `commentateur_replay_smash_01.mp3` | Regardez cette belle technique ! Le geste est parfait ! |
+| `commentateur_replay_smash_02.mp3` | Revoyons ce smash ! Quelle frappe ! |
 | `commentateur_replay_set_01.mp3` | Le coup qui fait basculer le set ! |
+| `commentateur_replay_set_02.mp3` | Le point du set, au ralenti ! |
 | `commentateur_replay_serie_01.mp3` | Il ne lâche rien ! |
 | `commentateur_replay_serie_01_f.mp3` | Elle ne lâche rien ! |
+| `commentateur_replay_serie_02.mp3` | Regardez cette série ! Il ne lâche rien ! |
+| `commentateur_replay_serie_02_f.mp3` | Regardez cette série ! Elle ne lâche rien ! |
 | `commentateur_replay_r_piege_01.mp3` | On voit le coup : il enchaîne les Pierres, et il vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
 | `commentateur_replay_r_piege_01_f.mp3` | On voit le coup : elle enchaîne les Pierres, et elle vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
 | `commentateur_replay_r_piege_02.mp3` | On voit le coup : il enchaîne les Pierres, et il vient cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
@@ -903,19 +928,27 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_avant_match_14.mp3` | Échauffement terminé, les mains sont prêtes ! |
 | `commentateur_dialogue_avant_match_15.mp3` | Un conseil pour nos joueurs, Madame ? |
 | `commentateur_dialogue_premiere_egalite_01.mp3` | Premier coup, première égalité ! |
+| `commentateur_dialogue_premiere_egalite_02.mp3` | Même signe dès le départ ! |
 | `commentateur_dialogue_changement_01.mp3` | Il casse enfin la série ! |
 | `commentateur_dialogue_changement_01_f.mp3` | Elle casse enfin la série ! |
+| `commentateur_dialogue_changement_02.mp3` | Il change enfin de signe, Madame ! |
+| `commentateur_dialogue_changement_02_f.mp3` | Elle change enfin de signe, Madame ! |
 | `commentateur_dialogue_balle_de_match_01.mp3` | Une victoire le sépare de l'immortalité ! |
 | `commentateur_dialogue_balle_de_match_01_f.mp3` | Une victoire la sépare de l'immortalité ! |
+| `commentateur_dialogue_balle_de_match_02.mp3` | Balle de match, Madame ! |
 | `commentateur_dialogue_avant_bot_01.mp3` | Un humain contre une machine, Madame ! |
+| `commentateur_dialogue_avant_bot_02.mp3` | Un humain contre un bot, Madame ! |
 | `commentateur_dialogue_memoire_meme_ouverture_01.mp3` | Il rouvre comme au dernier match ! Quelle audace ! |
 | `commentateur_dialogue_memoire_meme_ouverture_01_f.mp3` | Elle rouvre comme au dernier match ! Quelle audace ! |
 | `commentateur_dialogue_memoire_revanche_01.mp3` | Une revanche, Madame ! Une vraie ! |
 | `commentateur_dialogue_memoire_habitues_01.mp3` | Ils se connaissent, ils se jaugent, ils se respectent ! |
 | `commentateur_dialogue_memoire_marquant_01.mp3` | La dernière fois, quel match, Madame ! |
 | `commentateur_dialogue_avant_finale_01.mp3` | Une finale, Madame ! Une FINALE ! |
+| `commentateur_dialogue_avant_finale_02.mp3` | Une finale, Madame ! La plus belle des scènes ! |
 | `commentateur_dialogue_avant_revanche_01.mp3` | Ils se connaissent, ces deux-là ! |
+| `commentateur_dialogue_avant_revanche_02.mp3` | Une revanche, Madame ! Ça sent la poudre ! |
 | `commentateur_dialogue_avant_nuit_01.mp3` | Il est tard, Madame, mais le HandSlam ne dort jamais ! |
+| `commentateur_dialogue_avant_nuit_02.mp3` | Il est tard, Madame, mais ils jouent encore ! |
 | `commentateur_dialogue_figure_triple_loop_01.mp3` | UN TRIPLE LOOP ! Trois fois le même signe ! |
 | `commentateur_dialogue_figure_triple_loop_02.mp3` | Le triple loop, Madame ! Et réceptionné ! |
 | `commentateur_dialogue_figure_double_boucle_01.mp3` | DOUBLE BOUCLE PIQUÉ ! |
@@ -1012,6 +1045,9 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_apres_entrainement_victoire_08.mp3` | Quelle entrée en matière ! |
 | `commentateur_dialogue_apres_entrainement_defaite_01.mp3` | Et quelle défaite ! |
 | `commentateur_dialogue_apres_entrainement_defaite_02.mp3` | Il va falloir travailler après cette contre-performance ! |
+| `commentateur_dialogue_apres_entrainement_defaite_03.mp3` | Ce n'était qu'un entraînement, Madame ! |
+| `commentateur_dialogue_apres_entrainement_defaite_04.mp3` | Une défaite à l'entraînement, ça compte ? |
+| `commentateur_dialogue_apres_entrainement_defaite_05.mp3` | Le bot a été plus fort aujourd'hui ! |
 | `commentateur_dialogue_apres_tournoi_premiers_victoire_01.mp3` | ET C'EST UNE VICTOIRE ! |
 | `commentateur_dialogue_apres_tournoi_premiers_victoire_02.mp3` | Quelle entrée fracassante dans ce tournoi ! |
 | `commentateur_dialogue_apres_tournoi_premiers_victoire_03.mp3` | Le message est envoyé à toute la concurrence ! |
@@ -1023,6 +1059,8 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_apres_tournoi_premiers_defaite_02.mp3` | C'est déjà terminé ! |
 | `commentateur_dialogue_apres_tournoi_premiers_defaite_03.mp3` | Quel dommage ! |
 | `commentateur_dialogue_apres_tournoi_premiers_defaite_04.mp3` | Une élimination terrible ! |
+| `commentateur_dialogue_apres_tournoi_premiers_defaite_05.mp3` | Éliminé dès le premier tour, Madame… |
+| `commentateur_dialogue_apres_tournoi_premiers_defaite_05_f.mp3` | Éliminée dès le premier tour, Madame… |
 | `commentateur_dialogue_apres_tournoi_quarts_victoire_01.mp3` | IL EST EN DEMI-FINALE ! |
 | `commentateur_dialogue_apres_tournoi_quarts_victoire_01_f.mp3` | ELLE EST EN DEMI-FINALE ! |
 | `commentateur_dialogue_apres_tournoi_quarts_victoire_02.mp3` | Quelle bataille incroyable ! |
@@ -1037,6 +1075,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_apres_tournoi_quarts_defaite_03.mp3` | Il était si proche ! |
 | `commentateur_dialogue_apres_tournoi_quarts_defaite_03_f.mp3` | Elle était si proche ! |
 | `commentateur_dialogue_apres_tournoi_quarts_defaite_04.mp3` | Une énorme désillusion ! |
+| `commentateur_dialogue_apres_tournoi_quarts_defaite_05.mp3` | Le parcours s'arrête en quart de finale ! |
 | `commentateur_dialogue_apres_tournoi_demis_victoire_01.mp3` | IL EST EN FINALE ! |
 | `commentateur_dialogue_apres_tournoi_demis_victoire_01_f.mp3` | ELLE EST EN FINALE ! |
 | `commentateur_dialogue_apres_tournoi_demis_victoire_02.mp3` | QUEL EXPLOIT ! |
@@ -1050,6 +1089,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_apres_tournoi_demis_defaite_02.mp3` | Le rêve s'effondre ! |
 | `commentateur_dialogue_apres_tournoi_demis_defaite_03.mp3` | Si près du but ! |
 | `commentateur_dialogue_apres_tournoi_demis_defaite_04.mp3` | Une élimination cruelle ! |
+| `commentateur_dialogue_apres_tournoi_demis_defaite_05.mp3` | La demi-finale lui échappe ! |
 | `commentateur_dialogue_apres_tournoi_finale_victoire_01.mp3` | IL EST CHAMPION ! |
 | `commentateur_dialogue_apres_tournoi_finale_victoire_01_f.mp3` | ELLE EST CHAMPIONNE ! |
 | `commentateur_dialogue_apres_tournoi_finale_victoire_02.mp3` | QUEL TRIOMPHE ! |
@@ -1065,6 +1105,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_apres_tournoi_finale_defaite_02_f.mp3` | Elle était si proche de la gloire ! |
 | `commentateur_dialogue_apres_tournoi_finale_defaite_03.mp3` | Le rêve s'écroule au dernier moment ! |
 | `commentateur_dialogue_apres_tournoi_finale_defaite_04.mp3` | Quelle désillusion ! |
+| `commentateur_dialogue_apres_tournoi_finale_defaite_05.mp3` | Finale perdue, Madame… |
 | `commentateur_dialogue_apres_majeur_quarts_victoire_01.mp3` | IL VIENT DE RÉALISER UN EXPLOIT MAJEUR ! |
 | `commentateur_dialogue_apres_majeur_quarts_victoire_01_f.mp3` | ELLE VIENT DE RÉALISER UN EXPLOIT MAJEUR ! |
 | `commentateur_dialogue_apres_majeur_quarts_victoire_02.mp3` | QUELLE PERFORMANCE EXCEPTIONNELLE ! |
@@ -1114,21 +1155,35 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_fin_set_03_f.mp3` | Qu'est-ce qu'elle doit changer ? |
 | `commentateur_dialogue_fin_set_04.mp3` | Il doit tout changer, Madame ! |
 | `commentateur_dialogue_fin_set_04_f.mp3` | Elle doit tout changer, Madame ! |
+| `commentateur_dialogue_fin_set_05.mp3` | Madame, que retenez-vous de ce set ? |
+| `commentateur_dialogue_fin_set_06.mp3` | Un set d'une rare intensité, Madame ! |
+| `commentateur_dialogue_fin_set_07.mp3` | Le perdant peut-il encore revenir ? |
+| `commentateur_dialogue_fin_set_08.mp3` | Ce set a-t-il changé quelque chose, Madame ? |
 | `commentateur_dialogue_set_decisif_01.mp3` | Un set pour l'éternité, Madame ! |
 | `commentateur_dialogue_titre_01.mp3` | Madame, c'est historique ! |
+| `commentateur_dialogue_titre_02.mp3` | Il est champion, Madame ! Champion ! |
+| `commentateur_dialogue_titre_02_f.mp3` | Elle est championne, Madame ! Championne ! |
+| `commentateur_dialogue_titre_03.mp3` | Un titre, Madame ! Un vrai titre ! |
 | `commentateur_dialogue_fin_match_01.mp3` | Il n'a pas démérité ! |
 | `commentateur_dialogue_fin_match_01_f.mp3` | Elle n'a pas démérité ! |
 | `commentateur_dialogue_fin_match_02.mp3` | Quel combat, Madame ! |
 | `commentateur_dialogue_fin_match_03.mp3` | Il peut sortir la tête haute ! |
 | `commentateur_dialogue_fin_match_03_f.mp3` | Elle peut sortir la tête haute ! |
+| `commentateur_dialogue_fin_match_04.mp3` | Une défaite qui fait mal, Madame ? |
+| `commentateur_dialogue_fin_match_05.mp3` | Il reviendra plus fort, j'en suis sûr ! |
+| `commentateur_dialogue_fin_match_05_f.mp3` | Elle reviendra plus forte, j'en suis sûr ! |
+| `commentateur_dialogue_fin_match_06.mp3` | Madame, un mot pour le vaincu ? |
 | `commentateur_dialogue_cri_01.mp3` | Ah, il y a de la voix ! |
 | `commentateur_dialogue_cri_02.mp3` | Il a craqué son slip ! |
 | `commentateur_dialogue_cri_02_f.mp3` | Elle a craqué son slip ! |
 | `commentateur_dialogue_cri_03.mp3` | Il éructe de joie ! |
 | `commentateur_dialogue_cri_03_f.mp3` | Elle éructe de joie ! |
 | `commentateur_dialogue_cri_04.mp3` | Siuuuu ! |
+| `commentateur_dialogue_cri_05.mp3` | Quel cri, Madame ! |
+| `commentateur_dialogue_cri_06.mp3` | Il exulte ! |
+| `commentateur_dialogue_cri_06_f.mp3` | Elle exulte ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (769 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (821 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1146,6 +1201,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_craquage_10.mp3` | L'enjeu le paralyse. Ça se voit d'ici. |
 | `commentatrice_craquage_10_f.mp3` | L'enjeu la paralyse. Ça se voit d'ici. |
 | `commentatrice_craquage_11.mp3` | Tout était bien… sauf le dernier geste. |
+| `commentatrice_craquage_12.mp3` | Le bras a tremblé au moment de conclure. |
 | `commentatrice_main_legendaire_01.mp3` | Je note l'heure. Pour les archives. |
 | `commentatrice_main_legendaire_02.mp3` | Dinguerie ! Comme disent les jeunes. |
 | `commentatrice_main_legendaire_03.mp3` | C'est un vrai banger. Comme disent les jeunes. |
@@ -1156,6 +1212,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_balle_sauvee_04.mp3` | Tiens. Il aime vivre dangereusement. |
 | `commentatrice_balle_sauvee_04_f.mp3` | Tiens. Elle aime vivre dangereusement. |
 | `commentatrice_balle_sauvee_05.mp3` | Le dos rond… et c'est passé. |
+| `commentatrice_balle_sauvee_06.mp3` | Il refuse de partir. Têtu, en plus d'être doué. |
+| `commentatrice_balle_sauvee_06_f.mp3` | Elle refuse de partir. Têtue, en plus d'être douée. |
 | `commentatrice_remontee_01.mp3` | Personne n'y croyait. Lui, si. C'est bien le seul. |
 | `commentatrice_remontee_01_f.mp3` | Personne n'y croyait. Elle, si. C'est bien la seule. |
 | `commentatrice_remontee_02.mp3` | Ne jamais enterrer un joueur de Pierre. Jamais. |
@@ -1209,6 +1267,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_serie_contre_25.mp3` | La ligne d'arrivée est encore loin, mais attention à ne pas se laisser distancer. |
 | `commentatrice_serie_contre_26.mp3` | Hmm. Il est en train de déjouer. |
 | `commentatrice_serie_contre_26_f.mp3` | Hmm. Elle est en train de déjouer. |
+| `commentatrice_serie_contre_27.mp3` | Il est en difficulté, son jeu est trop stéréotypé. |
+| `commentatrice_serie_contre_27_f.mp3` | Elle est en difficulté, son jeu est trop stéréotypé. |
 | `commentatrice_obstination_01_pierre.mp3` | Encore Pierre. C'est de la provocation. |
 | `commentatrice_obstination_01_ciseaux.mp3` | Encore Ciseaux. C'est de la provocation. |
 | `commentatrice_obstination_01_feuille.mp3` | Encore Feuille. C'est de la provocation. |
@@ -1270,6 +1330,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_lecture_subie_09_f.mp3` | Elle veut lire le jeu adverse. Qu'elle commence par le sien. |
 | `commentatrice_lecture_subie_10.mp3` | Les mêmes causes produisent les mêmes effets. |
 | `commentatrice_lecture_subie_11.mp3` | Complètement à côté de son sujet. |
+| `commentatrice_lecture_subie_12.mp3` | Son jeu manque de variation, il est encore sur les vieux schémas de la veille. |
+| `commentatrice_lecture_subie_12_f.mp3` | Son jeu manque de variation, elle est encore sur les vieux schémas de la veille. |
 | `commentatrice_lecture_reussie_01.mp3` | Coup de maître. |
 | `commentatrice_lecture_reussie_02.mp3` | Bien vu l'aveugle. |
 | `commentatrice_lecture_reussie_03.mp3` | Il joue aux échecs. L'autre joue aux dames. |
@@ -1332,14 +1394,20 @@ restent lus par la voix de synthèse.
 | `commentatrice_resume_set_03.mp3` | Le rapport de force est clair. Pour l'instant. |
 | `commentatrice_resume_set_04.mp3` | Il revient bien depuis la tendinite qui l'a éloigné du central pendant plusieurs mois. |
 | `commentatrice_resume_set_04_f.mp3` | Elle revient bien depuis la tendinite qui l'a éloignée du central pendant plusieurs mois. |
+| `commentatrice_resume_set_05.mp3` | Un set propre. Pas spectaculaire, mais propre. |
+| `commentatrice_resume_set_06.mp3` | Le vainqueur a fait moins d'erreurs. C'est souvent comme ça que ça marche. |
 | `commentatrice_set_decisif_01.mp3` | Les statistiques ne servent plus à rien. C'est le caractère qui parle. Quand il y en a. |
 | `commentatrice_set_decisif_02.mp3` | Un set pour un titre. Je reste calme. Pour deux. |
 | `commentatrice_set_decisif_04.mp3` | Rien ne va plus. Faites vos jeux. |
 | `commentatrice_set_decisif_05.mp3` | Deux sets pour s'échauffer. Le vrai match commence. |
 | `commentatrice_set_decisif_06.mp3` | La fatigue va parler. Et la tête aussi. |
+| `commentatrice_set_decisif_07.mp3` | On efface tout. Il ne reste que l'essentiel. |
+| `commentatrice_set_decisif_08.mp3` | Maintenant, on va voir qui a le plus envie. |
 | `commentatrice_renversement_01.mp3` | Il a perdu une bataille. Il gagne la guerre. Classique. |
 | `commentatrice_renversement_01_f.mp3` | Elle a perdu une bataille. Elle gagne la guerre. Classique. |
 | `commentatrice_renversement_02.mp3` | Comme quoi, un match n'est jamais fini. |
+| `commentatrice_renversement_03.mp3` | Il était parti pour perdre. Il a changé d'avis. |
+| `commentatrice_renversement_03_f.mp3` | Elle était partie pour perdre. Elle a changé d'avis. |
 | `commentatrice_balle_match_convertie_01.mp3` | Échec et mat. |
 | `commentatrice_balle_match_convertie_02.mp3` | Hasta la vista, baby. |
 | `commentatrice_balle_match_convertie_03.mp3` | C'est tout. |
@@ -1361,6 +1429,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_victoire_04.mp3` | Propre. Net. Sans bavure. |
 | `commentatrice_victoire_05.mp3` | On ne reverra peut-être jamais ça. Tant mieux, j'ai eu mon compte. |
 | `commentatrice_victoire_06.mp3` | Une victoire construite point par point. |
+| `commentatrice_victoire_07.mp3` | Il l'a voulue, il l'a eue. |
+| `commentatrice_victoire_07_f.mp3` | Elle l'a voulue, elle l'a eue. |
+| `commentatrice_victoire_08.mp3` | Une victoire méritée. Je le dis rarement, profitez-en. |
 | `commentatrice_defaite_02.mp3` | Il faudra revoir ce match. Ou l'oublier. Je conseille l'oubli. |
 | `commentatrice_defaite_03.mp3` | On apprend plus d'une défaite. Il a beaucoup appris, ce soir. |
 | `commentatrice_defaite_03_f.mp3` | On apprend plus d'une défaite. Elle a beaucoup appris, ce soir. |
@@ -1374,6 +1445,10 @@ restent lus par la voix de synthèse.
 | `commentatrice_defaite_11.mp3` | Le résultat est sévère. Mais juste. Surtout juste. |
 | `commentatrice_defaite_12.mp3` | Ce n'était pas son jour. |
 | `commentatrice_defaite_13.mp3` | Il y a eu match. Mais pas assez longtemps. |
+| `commentatrice_defaite_14.mp3` | Une défaite, ce n'est pas une fin. C'est une leçon. Coûteuse. |
+| `commentatrice_defaite_15.mp3` | Il rentrera chez lui en refaisant le match. Plusieurs fois. |
+| `commentatrice_defaite_15_f.mp3` | Elle rentrera chez elle en refaisant le match. Plusieurs fois. |
+| `commentatrice_defaite_16.mp3` | Il y a des jours où rien ne veut sortir. C'était celui-là. |
 | `commentatrice_memoire_ouverture_01_pierre.mp3` | Il avait ouvert avec la Pierre la dernière fois. Il a peut-être appris. Peut-être. |
 | `commentatrice_memoire_ouverture_01_pierre_f.mp3` | Elle avait ouvert avec la Pierre la dernière fois. Elle a peut-être appris. Peut-être. |
 | `commentatrice_memoire_ouverture_01_ciseaux.mp3` | Il avait ouvert avec les Ciseaux la dernière fois. Il a peut-être appris. Peut-être. |
@@ -1429,9 +1504,13 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_intro_01.mp3` | Revoyons les images. Calmement. |
 | `commentatrice_replay_intro_02.mp3` | Au ralenti, c'est encore plus clair. |
 | `commentatrice_replay_sauvee_01.mp3` | Au ralenti, on voit la peur. Et puis non. |
+| `commentatrice_replay_sauvee_02.mp3` | Au ralenti, on voit tout. Même ce qu'il ne fallait pas faire. |
 | `commentatrice_replay_smash_01.mp3` | Toute la puissance est dans le poignet. |
+| `commentatrice_replay_smash_02.mp3` | Même au ralenti, ça va vite. |
 | `commentatrice_replay_set_01.mp3` | Tout s'est joué là. |
+| `commentatrice_replay_set_02.mp3` | Tout s'est joué là. À une main près. |
 | `commentatrice_replay_serie_01.mp3` | La patience a payé. |
+| `commentatrice_replay_serie_02.mp3` | Cinq points d'affilée. Ça ne s'improvise pas. |
 | `commentatrice_replay_palette_pertinent_01.mp3` | Il l'avait lu. Après une défaite, l'autre change toujours. |
 | `commentatrice_replay_palette_pertinent_01_f.mp3` | Elle l'avait lu. Après une défaite, l'autre change toujours. |
 | `commentatrice_replay_palette_pertinent_02.mp3` | Tout était sur la palette. Il n'a eu qu'à se servir. |
@@ -1689,16 +1768,23 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_avant_match_14.mp3` | On s'échauffe les mains, maintenant. On aura tout vu. |
 | `commentatrice_dialogue_avant_match_15.mp3` | Ne jouez pas Pierre. Ou jouez Pierre. Je ne sais plus. |
 | `commentatrice_dialogue_premiere_egalite_01.mp3` | Et pas la dernière, à mon avis. |
+| `commentatrice_dialogue_premiere_egalite_02.mp3` | Ils ont dû réviser ensemble. |
 | `commentatrice_dialogue_changement_01.mp3` | Oui. Dégagement très propre. |
+| `commentatrice_dialogue_changement_02.mp3` | L'audace, à petites doses. |
 | `commentatrice_dialogue_balle_de_match_01.mp3` | Enfin… de la victoire du jour. Restons mesurés. |
+| `commentatrice_dialogue_balle_de_match_02.mp3` | Je retiens mon souffle. Ça ne se voit pas, mais je le retiens. |
 | `commentatrice_dialogue_avant_bot_01.mp3` | La machine a l'air plus détendue. |
+| `commentatrice_dialogue_avant_bot_02.mp3` | Le bot ne transpire pas. C'est déjà un avantage. |
 | `commentatrice_dialogue_memoire_meme_ouverture_01.mp3` | Ou quel manque d'imagination. On saura à la fin du match. |
 | `commentatrice_dialogue_memoire_revanche_01.mp3` | Ils ont dû la préparer toute la semaine. |
 | `commentatrice_dialogue_memoire_habitues_01.mp3` | Ils se méfient, surtout. |
 | `commentatrice_dialogue_memoire_marquant_01.mp3` | On en reparle à la fin de celui-ci. |
 | `commentatrice_dialogue_avant_finale_01.mp3` | J'avais entendu la première fois. |
+| `commentatrice_dialogue_avant_finale_02.mp3` | Et la plus cruelle. Il n'y a qu'un gagnant. |
 | `commentatrice_dialogue_avant_revanche_01.mp3` | Oui. Et ils ne s'aiment pas beaucoup. |
+| `commentatrice_dialogue_avant_revanche_02.mp3` | Et la rancune. Un peu. |
 | `commentatrice_dialogue_avant_nuit_01.mp3` | Moi si. Normalement. |
+| `commentatrice_dialogue_avant_nuit_02.mp3` | Le chifoumi n'a pas d'heure. |
 | `commentatrice_dialogue_figure_triple_loop_01.mp3` | Trois fois la même idée. On appelle ça de l'entêtement. |
 | `commentatrice_dialogue_figure_triple_loop_02.mp3` | Oui. Un geste typique de l'école lyonnaise. |
 | `commentatrice_dialogue_figure_double_boucle_01.mp3` | Un changement d'avis. Rien de plus. |
@@ -1795,6 +1881,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_apres_entrainement_victoire_08.mp3` | C'était une sortie d'entraînement, surtout. |
 | `commentatrice_dialogue_apres_entrainement_defaite_01.mp3` | Justement. C'est à ça que servent les entraînements. |
 | `commentatrice_dialogue_apres_entrainement_defaite_02.mp3` | Voilà enfin quelque chose de sensé. |
+| `commentatrice_dialogue_apres_entrainement_defaite_03.mp3` | Justement. C'est là qu'on apprend à perdre sans témoins. |
+| `commentatrice_dialogue_apres_entrainement_defaite_04.mp3` | Non. Mais ça se voit. |
+| `commentatrice_dialogue_apres_entrainement_defaite_05.mp3` | Le bot ne dort pas, ne mange pas et ne doute jamais. C'est injuste, mais c'est comme ça. |
 | `commentatrice_dialogue_apres_tournoi_premiers_victoire_01.mp3` | Premier tour validé. |
 | `commentatrice_dialogue_apres_tournoi_premiers_victoire_02.mp3` | Il a gagné son premier match. |
 | `commentatrice_dialogue_apres_tournoi_premiers_victoire_02_f.mp3` | Elle a gagné son premier match. |
@@ -1808,6 +1897,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_apres_tournoi_premiers_defaite_02_f.mp3` | Pour elle, oui. Pour le tournoi, non. |
 | `commentatrice_dialogue_apres_tournoi_premiers_defaite_03.mp3` | Il faudra faire mieux au prochain tournoi. |
 | `commentatrice_dialogue_apres_tournoi_premiers_defaite_04.mp3` | Terrible, non. Décevante, oui. |
+| `commentatrice_dialogue_apres_tournoi_premiers_defaite_05.mp3` | Au moins, il aura sa soirée de libre. |
+| `commentatrice_dialogue_apres_tournoi_premiers_defaite_05_f.mp3` | Au moins, elle aura sa soirée de libre. |
 | `commentatrice_dialogue_apres_tournoi_quarts_victoire_01.mp3` | Oui. Il a gagné son quart. |
 | `commentatrice_dialogue_apres_tournoi_quarts_victoire_01_f.mp3` | Oui. Elle a gagné son quart. |
 | `commentatrice_dialogue_apres_tournoi_quarts_victoire_02.mp3` | Serrée, surtout. |
@@ -1822,6 +1913,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_apres_tournoi_quarts_defaite_02.mp3` | Pour aujourd'hui, oui. |
 | `commentatrice_dialogue_apres_tournoi_quarts_defaite_03.mp3` | Pas assez proche pour gagner. |
 | `commentatrice_dialogue_apres_tournoi_quarts_defaite_04.mp3` | Une défaite en quart. Ça fait partie du sport. |
+| `commentatrice_dialogue_apres_tournoi_quarts_defaite_05.mp3` | Un quart, c'est déjà un quart de gloire. |
 | `commentatrice_dialogue_apres_tournoi_demis_victoire_01.mp3` | Et maintenant, il va falloir la gagner. |
 | `commentatrice_dialogue_apres_tournoi_demis_victoire_02.mp3` | Une très bonne victoire, oui. |
 | `commentatrice_dialogue_apres_tournoi_demis_victoire_03.mp3` | Attention à ne pas le toucher trop tôt. |
@@ -1834,6 +1926,8 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_apres_tournoi_demis_defaite_02.mp3` | Il faudra se relever. |
 | `commentatrice_dialogue_apres_tournoi_demis_defaite_03.mp3` | Et pourtant si loin. |
 | `commentatrice_dialogue_apres_tournoi_demis_defaite_04.mp3` | Les demi-finales ne pardonnent pas. |
+| `commentatrice_dialogue_apres_tournoi_demis_defaite_05.mp3` | Si près de la finale. On s'en souviendra. Lui surtout. |
+| `commentatrice_dialogue_apres_tournoi_demis_defaite_05_f.mp3` | Si près de la finale. On s'en souviendra. Elle surtout. |
 | `commentatrice_dialogue_apres_tournoi_finale_victoire_01.mp3` | Oui. Cette fois, vous pouvez vous emballer. |
 | `commentatrice_dialogue_apres_tournoi_finale_victoire_02.mp3` | Une victoire méritée. |
 | `commentatrice_dialogue_apres_tournoi_finale_victoire_03.mp3` | Il vient surtout de gagner le tournoi. |
@@ -1846,6 +1940,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_apres_tournoi_finale_defaite_02.mp3` | Et son adversaire était plus proche encore. |
 | `commentatrice_dialogue_apres_tournoi_finale_defaite_03.mp3` | C'est précisément pour ça qu'on joue les finales. |
 | `commentatrice_dialogue_apres_tournoi_finale_defaite_04.mp3` | Oui. Mais deuxième d'un tournoi, ce n'est pas exactement une catastrophe. |
+| `commentatrice_dialogue_apres_tournoi_finale_defaite_05.mp3` | On ne perd pas une finale. On la laisse à l'autre. C'est plus élégant. |
 | `commentatrice_dialogue_apres_majeur_quarts_victoire_01.mp3` | Une victoire en quart. C'est important, oui. |
 | `commentatrice_dialogue_apres_majeur_quarts_victoire_02.mp3` | Il a été solide. |
 | `commentatrice_dialogue_apres_majeur_quarts_victoire_02_f.mp3` | Elle a été solide. |
@@ -1891,16 +1986,28 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_fin_set_02.mp3` | N'en parlons pas. |
 | `commentatrice_dialogue_fin_set_03.mp3` | Tout. Ou rien. C'est ça, le HandSlam. |
 | `commentatrice_dialogue_fin_set_04.mp3` | Vaste programme. |
+| `commentatrice_dialogue_fin_set_05.mp3` | Qu'il est fini. C'est déjà beaucoup. |
+| `commentatrice_dialogue_fin_set_06.mp3` | Rare, je ne sais pas. Intense, sûrement. |
+| `commentatrice_dialogue_fin_set_07.mp3` | Tant que le match n'est pas fini, tout le monde peut revenir. Même vous. |
+| `commentatrice_dialogue_fin_set_08.mp3` | Le score. C'est déjà pas mal. |
 | `commentatrice_dialogue_set_decisif_01.mp3` | Un set pour ce soir. Ce sera déjà bien. |
 | `commentatrice_dialogue_titre_01.mp3` | Pas d'enflammade. Pas d'enflammade. |
+| `commentatrice_dialogue_titre_02.mp3` | Je sais, Roland. J'étais là. |
+| `commentatrice_dialogue_titre_03.mp3` | Oui. Et maintenant, le plus dur commence : le garder. |
 | `commentatrice_dialogue_fin_match_01.mp3` | Si. Un peu quand même. |
 | `commentatrice_dialogue_fin_match_02.mp3` | Un combat. Perdu. Mais un combat. |
 | `commentatrice_dialogue_fin_match_03.mp3` | Il peut sortir. C'est déjà ça. |
 | `commentatrice_dialogue_fin_match_03_f.mp3` | Elle peut sortir. C'est déjà ça. |
+| `commentatrice_dialogue_fin_match_04.mp3` | Toutes les défaites font mal. Certaines font aussi réfléchir. |
+| `commentatrice_dialogue_fin_match_05.mp3` | Ou pareil. Mais avec de l'expérience. |
+| `commentatrice_dialogue_fin_match_06.mp3` | Courage. Et du repos. |
 | `commentatrice_dialogue_cri_01.mp3` | On l'avait entendu. |
 | `commentatrice_dialogue_cri_02.mp3` | Attention que ça ne vous arrive pas. |
 | `commentatrice_dialogue_cri_03.mp3` | La prochaine fois, prévoyez les boules Quies. |
 | `commentatrice_dialogue_cri_04.mp3` | C'est Ronaldo sans les abdos. |
+| `commentatrice_dialogue_cri_05.mp3` | On l'a entendu jusqu'au parking. |
+| `commentatrice_dialogue_cri_06.mp3` | Qu'il en profite, ça ne durera pas. |
+| `commentatrice_dialogue_cri_06_f.mp3` | Qu'elle en profite, ça ne durera pas. |
 
 ## Speaker — voix de salle, voyelles étirées (79 répliques)
 
