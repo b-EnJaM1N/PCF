@@ -36,6 +36,8 @@ export function appliquerEvenement(match, e) {
   if (!e.coup) return penaliser(match, e.penalite);
   (e.coup.smash || []).forEach((s, j) => { if (s) noterSmash(match, j); });
   const set = match.scoresSets.length, evt = jouerCoup(match, e.coup.a, e.coup.b, e.coup.auto);
+  // (18 novembre : le smash gardé dans le coup, pour l'entourer dans l'historique ; en duel, le match est rejoué d'après le serveur)
+  if (e.coup.smash?.[0] || e.coup.smash?.[1]) match.coups[match.coups.length - 1].smash = [!!e.coup.smash[0], !!e.coup.smash[1]];
   recupererSmash(match, e.coup.smash, evt.gagnant, set);
   return evt;
 }
