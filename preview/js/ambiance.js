@@ -124,9 +124,17 @@ export function intensiteMatch(m) {
   const [a, b] = m.points, n = m.format.pointsParSet, sg = m.format.setsGagnants;
   const avance = Math.min(1, Math.max(a, b) / n), ecart = Math.abs(a - b);
   const serre = ecart <= 1 ? 1 : ecart === 2 ? 0.7 : ecart === 3 ? 0.45 : 0.25;
-  let i = Math.pow(avance, 1.6) * serre * 0.7;
-  if (sg > 1 && m.sets[0] === sg - 1 && m.sets[1] === sg - 1) i += 0.25;   // le set décisif
-  else if (sg > 1 && Math.max(m.sets[0], m.sets[1]) === sg - 1) i += 0.1;   // un joueur n'est plus qu'à un set de la victoire
+  // (19 novembre, remarque du porteur du projet : au set décisif, à 7-7 puis 7-8, « on ne sentait pas monter la tension » :
+  // la montée est plus franche (avant : avance^1,6 × 0,7, et +0,25 au set décisif))
+  let i = Math.pow(avance, 1.3) * serre * 0.8;
+  const decisif = sg > 1 && m.sets[0] === sg - 1 && m.sets[1] === sg - 1;
+  if (decisif) {
+    i += 0.3;   // le set décisif
+    // le money time du set décisif (à 4 points de la fin ou plus près, un point d'écart au plus) : le stade bouillonne, de plus en plus
+    const reste = n - Math.max(a, b);
+    if (reste <= 4 && ecart <= 1) i = Math.max(i, 0.75 + 0.05 * Math.min(3, 4 - reste));
+  }
+  if (!decisif && sg > 1 && Math.max(m.sets[0], m.sets[1]) === sg - 1) i += 0.1;   // un joueur n'est plus qu'à un set de la victoire
   const h = balle(m);
   if (h) i = Math.max(i, h.type === "match" ? 0.95 : 0.8);
   if (pointDecisif(m)) i = 1;
