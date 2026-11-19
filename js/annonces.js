@@ -44,6 +44,8 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
     dernierMoment: null,          // le dernier moment commenté (un « beau coup » jamais deux fois de suite)
     troisPierres: false,          // « Pierre qui roule… » : une fois par match
     perso: null,                  // (18 novembre) le joueur du match qui a ses répliques : { nom, joueur } (persoCommente, chants-perso.js)
+    accueil: 0,                   // (19 novembre) les 3 premiers matchs d'un nouveau joueur : 1, 2 ou 3 (0 ensuite)
+    accueilDit: new Set(),        // ce que Roland et Monique lui ont déjà expliqué pendant ce match
     tirage: null,                 // en duel : cle → nombre entre 0 et 1, le même sur les deux téléphones (répliques personnalisées)
   };
 }
@@ -292,8 +294,9 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
         moment = "signe_fetiche"; etat.dejaSet.add("fetiche"); ctx.signe = fetiche.signe; ctx.smashAdv = fetiche.joueur === 1;
       } else if (david && peutCommenter(3, 0.5) && rng() < (david === "david_mene" ? 0.7 : 0.4)) {   // David contre Goliath
         moment = david; etat.davidDit = true;
-      } else if ((ab = signeAbime(match)) && peutCommenter(2, 0.5) && rng() < 0.6) {   // le signe abîmé par un smash, rejoué et perdu
-        moment = "signe_abime"; ctx.signe = ab.signe; ctx.smashAdv = ab.joueur === 1;
+      } else if (!etat.abimeDit && (ab = signeAbime(match)) && peutCommenter(2, 0.5) && rng() < 0.6) {   // le signe abîmé par un smash, rejoué et perdu
+        // (une seule fois par match : 19 novembre, remarque du porteur du projet, elle revenait chaque fois que le signe ressortait)
+        moment = "signe_abime"; ctx.signe = ab.signe; ctx.smashAdv = ab.joueur === 1; etat.abimeDit = true;
       } else if (feu.allume && peutCommenter(2, 0.5) && rng() < 0.8) {   // ma main prend feu (8 points de suite ; effets.js)
         moment = "main_en_feu";
       } else if (feu.eteint && peutCommenter(4) && rng() < 0.35) {        // une flamme qui s'éteint (un point perdu)
@@ -409,8 +412,19 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
   if (persoPool && !persoPool.endsWith("_feu")) etat.dejaSet.add("perso");
   const perso = persoPool && choisirPerso(etat, persoPool, ctx, rng);
   if (perso) { moment = persoPool; dialogueFin = []; }
+  // L'accueil du nouveau joueur (19 novembre), pendant son premier match : son premier point gagné, perdu, sa première égalité,
+  // vers le 5e coup « lire l'adversaire », vers le 8e le smash ; avant tout le reste (pas en fin de set). Les phrases longues
+  // passent aussi pendant l'échange (l'appli les laisse dire, voir annoncer dans app.js).
+  let accueilL = null;
+  if (etat.accueil === 1 && !evt.finSet && !evt.finMatch) {
+    const fait = k => etat.accueilDit.has(k);
+    const k = evt.egalite ? (!fait("egalite") ? "egalite" : null) : evt.gagnant === 0 && !fait("point_gagne") ? "point_gagne"
+      : evt.gagnant === 1 && !fait("point_perdu") ? "point_perdu" : n >= 5 && !fait("lecture") ? "lecture" : n >= 8 && !fait("smash") ? "smash" : null;
+    if (k) { etat.accueilDit.add(k); accueilL = choisir(etat, `accueil_${k}`, { ...ctx, court: false }, rng); }
+    if (accueilL) { moment = `accueil_${k}`; dialogueFin = []; }
+  }
   if (moment) {
-    commentaire = perso || choisir(etat, moment, ctx, rng);
+    commentaire = accueilL || perso || choisir(etat, moment, ctx, rng);
     if (commentaire) { lignes.push(commentaire); etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
   }
   etat.dernierMoment = commentaire ? moment : null;
@@ -544,6 +558,9 @@ function finDeSet(match, evt, etat, ctx, rng) {
 // les phrases pendant qu'on regarde l'écran de fin (décision du porteur du projet).
 function finDeMatch(match, evt, etat, ctx, rng) {
   const un = x => (x ? (Array.isArray(x) ? x : [x]) : []);
+  // L'accueil du nouveau joueur (19 novembre) : à la fin de son premier match, et de son troisième.
+  if (etat.accueil === 1) { const d = dialogue(etat, evt.gagnant === 0 ? "accueil_victoire" : "accueil_defaite", rng); if (d) return d; }
+  if (etat.accueil === 3) { const d = dialogue(etat, "accueil_fin_troisieme", rng); if (d) return d; }
   // Selon l'enjeu (entraînement, tour d'un tournoi) : un dialogue adapté (toujours en finale). Les petites listes passent
   // moins souvent (2 dialogues après une défaite à l'entraînement : on les entendait à chaque fois), pour laisser venir
   // les répliques de victoire et de défaite habituelles.
@@ -698,7 +715,7 @@ const TOURS = ["huitiemes", "quarts", "demis", "finale"];
 // Renvoie { speaker, commentaires } : les deux listes de répliques, dans l'ordre. (Les surnoms dits par Roland : abandonnés le
 // 3 novembre, décision du porteur du projet ; les surnoms restent écrits.)
 export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = false, humain = false, genre = "m",
-  situations = [], recents = [], jeu = null, audible = null, memoire = null, heure = null, perso = null, tirage = null } = {}, rng = Math.random) {
+  situations = [], recents = [], jeu = null, audible = null, memoire = null, heure = null, perso = null, tirage = null, accueil = 0 } = {}, rng = Math.random) {
   const deja = new Set(recents);
   // Une version de la phrase, en évitant celles déjà entendues récemment.
   const dire = (cle, g = "m") => {
@@ -748,6 +765,13 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
   // (seulement les 6 derniers dialogues : sinon, au bout de quelques matchs, ils seraient tous écartés et plus rien ne serait dit)
   const dialoguesRecents = recents.filter(id => /^commentateur_dialogue_avant_match_/.test(id)).slice(0, 6);
   dialoguesRecents.forEach(id => { const m = /_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
+  // L'accueil du nouveau joueur (accueil : 1, 2 ou 3 ; 19 novembre) : avant son premier match, les trois dialogues de bienvenue
+  // (les règles, Bambi) ; avant le 2e et le 3e, un dialogue, puis l'ouverture et le lancement habituels.
+  if (accueil === 1) {
+    const l = DIALOGUES_IDS.accueil_bienvenue.flatMap((_, k) => ligneDialogue("accueil_bienvenue", k, genre)).filter(x => x && (!audible || audible(x.id)));
+    if (l.length) return { speaker: sp.filter(Boolean), commentaires: l };
+  }
+  if (accueil === 2 || accueil === 3) { const d = dialogue(etat, accueil === 2 ? "accueil_deuxieme" : "accueil_troisieme", rng); if (d) return finAvant(d); }
   // Le joueur qui a ses répliques personnalisées (perso : { nom, joueur } ; 18 novembre) : 4 fois sur 10, sa présentation (une
   // réplique) ou, une fois sur trois, un dialogue sur lui ; en évitant ce qui a été entendu aux derniers matchs.
   if (perso && (tirage ? tirage("perso_avant") : rng()) < 0.4) {   // (tirage : en duel, le même sur les deux téléphones)
@@ -884,4 +908,88 @@ export function interview(gagne, rng = Math.random) {
   while (reponses.length < 3 && reste.length) reponses.push(reste.splice(Math.floor(rng() * reste.length), 1)[0]);
   const conclusion = ligneJournaliste("conclusion", Math.floor(rng() * JOURNALISTE.conclusion.length));
   return { champion: gagne ? ligneSpeaker("champion", 0) : null, question, reponses, conclusion };
+}
+
+// ---------------------------------------------------------------- le commentaire des statistiques du match
+// (19 novembre, demande du porteur du projet) Sur le panneau des statistiques : Roland lance, Monique (parfois Roland) commente
+// le chiffre le plus marquant de CE match, comparé aux habitudes du joueur du téléphone quand on les connaît.
+// info : { st (statsDuMatch), mes (les stats du match de l'appli : balles, lectures, remontée, premier set perdu), carriere
+// ({ signes : [P, C, F] sur tous ses matchs avant celui-ci, devines, lisibles }), gagne, outsider (0 moi, 1 lui, null),
+// scoresSets, pointsParSet, reserveUtilisee (ms), tempsMoyen (ms ou null) }. Renvoie la liste des situations remplies, de la plus
+// marquante à la moins marquante : [{ pool, signe? }].
+export function situationsStats(info) {
+  const { st, mes = {}, carriere = {}, gagne = false, outsider = null, scoresSets = [], pointsParSet = 11, reserveUtilisee = 0, tempsMoyen = null } = info;
+  const n0 = st.signes[0][0] + st.signes[0][1] + st.signes[0][2], n1 = st.signes[1][0] + st.signes[1][1] + st.signes[1][2];
+  const fr = st.signes[0].map(x => (n0 ? x / n0 : 0)), fr1 = st.signes[1].map(x => (n1 ? x / n1 : 0));
+  const top = fr.indexOf(Math.max(...fr)), top1 = fr1.indexOf(Math.max(...fr1));
+  const totC = (carriere.signes || [0, 0, 0]).reduce((a, b) => a + b, 0), frC = (carriere.signes || [0, 0, 0]).map(x => (totC ? x / totC : 0));
+  const connu = totC >= 60, favC = frC.indexOf(Math.max(...frC));
+  const impC = carriere.lisibles >= 30 ? indiceImprevisibilite(carriere.devines / carriere.lisibles) : null, imp = st.imprevisibilite[0];
+  const taux = ([a, b], min = 4) => (b >= min ? a / b : null);
+  const decisifs = st.reussite[0][1], [p0, p1] = st.points;
+  const out = [], si = (ok, pool, signe) => { if (ok) out.push({ pool, ...(signe !== undefined ? { signe } : {}) }); };
+  // 1. Ce qui sort de ses habitudes
+  si(connu && frC[favC] >= 0.42 && n0 >= 10 && fr[favC] <= 0.15, "stats_favori_oublie", favC);
+  si(connu && n0 >= 10 && fr[top] >= 0.5 && frC[top] < 0.28, "stats_signe_inhabituel", top);
+  si(impC !== null && impC >= 70 && imp !== null && imp <= 40, "stats_plus_lisible");
+  si(impC !== null && imp !== null && imp - impC >= 25, "stats_plus_imprevisible");
+  si(connu && frC[favC] >= 0.42 && n0 >= 12 && fr.every(x => x >= 0.26 && x <= 0.41), "stats_equilibre_inhabituel");
+  si(connu && n0 >= 10 && fr[top] >= 0.5 && frC[top] >= 0.38 && top === favC, "stats_signe_habitude", top);
+  // 2. Les grands faits du match
+  si(outsider === 0 && gagne, "stats_exploit");
+  si(gagne && mes.premierSetPerdu && scoresSets.length > 1, "stats_renverse");
+  si(gagne && st.premiersPoints.length === 3 && st.premiersPoints.every(g => g === 1), "stats_reaction");
+  // 3. Sa façon de jouer dans ce match
+  si(st.coups >= 12 && taux(st.changeSigne[0], 10) >= 0.8, "stats_insaisissable");
+  si(st.repetition[0].n >= 4, "stats_entete", st.repetition[0].signe);
+  si(taux(st.changeApresEgalite[0]) >= 0.85, "stats_change_egalite");
+  si(taux(st.changeApresPerte[0]) >= 0.85, "stats_change_perte");
+  si(taux(st.changeApresPerte[0]) !== null && taux(st.changeApresPerte[0]) <= 0.2, "stats_garde_perte");
+  si(st.apresEgalite[0] >= 3 && st.apresEgalite[0] >= 2 * st.apresEgalite[1], "stats_apres_egalite");
+  si((mes.lecturesReussies || 0) >= 3, "stats_lecture");
+  // (le signe préféré de son adversaire : l'a-t-il puni ?)
+  const contre = st.coupsContre?.[top1];
+  si(n1 >= 10 && fr1[top1] >= 0.45 && contre && contre[1] >= 5 && contre[0] / contre[1] >= 0.6, "stats_adv_contre", top1);
+  si(n1 >= 10 && fr1[top1] >= 0.45 && contre && contre[1] >= 5 && contre[0] / contre[1] <= 0.3, "stats_adv_ignore", top1);
+  si(n0 >= 10 && n1 >= 10 && top === top1 && fr[top] >= 0.4 && fr1[top1] >= 0.4, "stats_meme_favori");
+  si(imp !== null && st.imprevisibilite[1] !== null && Math.abs(imp - st.imprevisibilite[1]) >= 45, "stats_styles");
+  // 4. Les moments clés
+  si((mes.ballesObtenues || 0) >= 2 && mes.ballesConverties === mes.ballesObtenues, "stats_balles_converties");
+  si((mes.ballesObtenues || 0) >= 3 && (mes.ballesConverties || 0) <= mes.ballesObtenues / 3, "stats_balles_gachees");
+  si(st.smashs[0][0] >= 2, "stats_smashs");
+  si(st.smashs[0][1] >= 2 && st.smashs[0][0] === 0, "stats_smashs_rates");
+  si(st.coups >= 15 && st.smashs[0][1] === 0, "stats_sans_smash");
+  si(st.serie[0] >= 6, "stats_serie");
+  si((mes.meilleureRemontee || 0) >= 4, "stats_remontee");
+  const serres = scoresSets.filter(([a, b]) => Math.min(a, b) >= pointsParSet - 2);
+  si(serres.length >= 1 && serres.every(([a, b]) => a > b), "stats_fins_serrees");
+  si(st.premiersPoints.length === 3 && st.premiersPoints.every(g => g === 0), "stats_depart");
+  si(decisifs >= 8 && taux(st.reussite[0], 8) >= 0.75, "stats_reussite");
+  si(taux(st.memeApresGain[0]) >= 0.75, "stats_insiste");
+  si(reserveUtilisee >= 12000, "stats_reflechi");
+  si(tempsMoyen !== null && tempsMoyen <= 2500 && st.coups >= 12, "stats_vite");
+  si(outsider === 1 && (!gagne || scoresSets.length >= 3), "stats_favori_souffre");
+  si(st.coups >= 15 && st.egalites / st.coups >= 0.35, "stats_egalites");
+  si(!connu && n0 >= 10 && fr[top] >= 0.5, "stats_signe_inconnu", top);
+  si(!connu && n0 >= 12 && fr.every(x => x >= 0.26 && x <= 0.41), "stats_equilibre");
+  si(decisifs >= 10 && Math.abs(p0 - p1) <= 2, "stats_serre");
+  si(decisifs >= 10 && Math.max(p0, p1) >= 2 * Math.max(1, Math.min(p0, p1)), "stats_domination");
+  out.push({ pool: "stats_rien" });
+  return out;
+}
+// Le dialogue des statistiques : [Roland qui lance, l'analyse], ou null (une fois sur deux, ou rien d'enregistré). On tire parmi
+// les trois situations les plus marquantes (la première plus souvent), en évitant les répliques entendues aux derniers matchs.
+export function commentaireStats(info, { genre = "m", audible = null, anciens = [], rng = Math.random } = {}) {
+  if (rng() >= 0.5) return null;
+  const ok = l => l && (!audible || audible(l.id)), vus = new Set(anciens.map(baseDe));
+  const tirer = (pool, signe = 0) => {
+    const l = (POOLS[pool] || []).map(e => ligneMoment(e, { genre, signe })).filter(ok);
+    const neufs = l.filter(x => !vus.has(baseDe(x.id))), g = neufs.length ? neufs : l;
+    return g.length ? g[Math.floor(rng() * g.length)] : null;
+  };
+  const sits = situationsStats(info).map(s => ({ ...s, l: tirer(s.pool, s.signe ?? 0) })).filter(s => s.l).slice(0, 3);
+  const lance = tirer("stats_lance");
+  if (!sits.length || !lance) return null;
+  const r = rng(), choix = sits[r < 0.6 || sits.length === 1 ? 0 : r < 0.85 || sits.length === 2 ? 1 : 2];
+  return [lance, choix.l];
 }

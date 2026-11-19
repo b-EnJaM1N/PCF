@@ -1710,6 +1710,165 @@ export const MOMENTS = {
     { r: "c", t: "Les supporters peuvent libérer leur joie : leur champion a su trouver le chemin de la victoire ! Le kop adverse peine à cacher sa déception : ils y ont cru jusqu'au bout !", f: "Les supporters peuvent libérer leur joie : leur championne a su trouver le chemin de la victoire ! Le kop adverse peine à cacher sa déception : ils y ont cru jusqu'au bout !", si: "gagne" },
     { r: "d", t: "L'arbitre siffle la fin de la rencontre sur cet ultime point. On peut se satisfaire du spectacle proposé par les deux mains, dans cette passe d'armes aux allures de chassé-croisé." },
   ],
+  // L'accueil des nouveaux joueurs, pendant leur premier match (19 novembre, choisies par le porteur du projet ; voir annoncerCoup) : son tout premier point gagné
+  accueil_point_gagne: [
+    { r: "c", t: "Oh, le premier point de sa carrière ! On s'en souviendra !" },
+    { r: "c", t: "Et voilà ! Premier point, et déjà le goût de la victoire !" },
+  ],
+  // son tout premier point perdu
+  accueil_point_perdu: [
+    { r: "d", t: "Un point pour Bambi. Ce n'est rien : on apprend en perdant." },
+    { r: "c", t: "Pas de panique, il y a encore le temps de se rattraper !" },
+  ],
+  // la première égalité
+  accueil_egalite: [
+    { r: "d", t: "Même signe des deux côtés : on rejoue le coup. C'est la règle." },
+  ],
+  // vers le 5e coup : apprendre à lire l'adversaire
+  accueil_lecture: [
+    { r: "d", t: "Un conseil : regardez ce que Bambi vient de jouer. Il recommence souvent." },
+    { r: "c", t: "L'historique en bas de l'écran, c'est le trésor des grands joueurs !" },
+  ],
+  // vers le 8e coup : le smash
+  accueil_smash: [
+    { r: "c", t: "Et n'oubliez pas le smash : un appui long sur le signe, une fois par set ! Ça ne change pas le point, mais quel spectacle !" },
+  ],
+  // les 8 secondes passées : la réserve de temps (dit par l'appli, au minuteur)
+  accueil_reserve: [
+    { r: "d", t: "Attention au temps. Après huit secondes, on puise dans sa réserve. Et elle ne se remplit pas." },
+  ],
+  // Le commentaire des statistiques du match (19 novembre, choisies par le porteur du projet) : Roland lance (stats_lance), Monique
+  // (parfois Roland) analyse le chiffre le plus marquant de CE match, comparé à ses habitudes (voir commentaireStats, annonces.js).
+  // « Il » : le joueur du téléphone ; les textes par signe : [Pierre, Ciseaux, Feuille].
+  stats_lance: [
+    { r: "c", t: "Jetons un œil aux statistiques de ce match, Monique !" },
+    { r: "c", t: "Les chiffres du match, Madame ! Qu'est-ce qu'ils nous disent ?" },
+    { r: "c", t: "Monique, vous qui aimez les statistiques… Que retenez-vous de ce match ?" },
+  ],
+  stats_signe_habitude: [
+    { r: "d", t: ["Beaucoup de Pierre dans ce match… Comme d'habitude. Ses adversaires finiront par le savoir.", "Beaucoup de Ciseaux dans ce match… Comme d'habitude. Ses adversaires finiront par le savoir.", "Beaucoup de Feuille dans ce match… Comme d'habitude. Ses adversaires finiront par le savoir."] },
+  ],
+  stats_signe_inhabituel: [
+    { r: "d", t: ["Beaucoup de Pierre dans ce match, lui qui en joue si peu d'habitude. Un vrai changement de plan.", "Beaucoup de Ciseaux dans ce match, lui qui en joue si peu d'habitude. Un vrai changement de plan.", "Beaucoup de Feuille dans ce match, lui qui en joue si peu d'habitude. Un vrai changement de plan."], f: ["Beaucoup de Pierre dans ce match, elle qui en joue si peu d'habitude. Un vrai changement de plan.", "Beaucoup de Ciseaux dans ce match, elle qui en joue si peu d'habitude. Un vrai changement de plan.", "Beaucoup de Feuille dans ce match, elle qui en joue si peu d'habitude. Un vrai changement de plan."] },
+  ],
+  stats_signe_inconnu: [
+    { r: "d", t: ["Il a beaucoup joué la Pierre dans ce match. Un choix de stratégie, ou un réflexe ? On le saura la prochaine fois.", "Il a beaucoup joué les Ciseaux dans ce match. Un choix de stratégie, ou un réflexe ? On le saura la prochaine fois.", "Il a beaucoup joué la Feuille dans ce match. Un choix de stratégie, ou un réflexe ? On le saura la prochaine fois."], f: ["Elle a beaucoup joué la Pierre dans ce match. Un choix de stratégie, ou un réflexe ? On le saura la prochaine fois.", "Elle a beaucoup joué les Ciseaux dans ce match. Un choix de stratégie, ou un réflexe ? On le saura la prochaine fois.", "Elle a beaucoup joué la Feuille dans ce match. Un choix de stratégie, ou un réflexe ? On le saura la prochaine fois."] },
+  ],
+  stats_favori_oublie: [
+    { r: "d", t: ["Lui qui adore la Pierre, il l'a presque oubliée dans ce match. Il a changé ses habitudes pour surprendre.", "Lui qui adore les Ciseaux, il les a presque oubliés dans ce match. Il a changé ses habitudes pour surprendre.", "Lui qui adore la Feuille, il l'a presque oubliée dans ce match. Il a changé ses habitudes pour surprendre."], f: ["Elle qui adore la Pierre, elle l'a presque oubliée dans ce match. Elle a changé ses habitudes pour surprendre.", "Elle qui adore les Ciseaux, elle les a presque oubliés dans ce match. Elle a changé ses habitudes pour surprendre.", "Elle qui adore la Feuille, elle l'a presque oubliée dans ce match. Elle a changé ses habitudes pour surprendre."] },
+  ],
+  stats_equilibre_inhabituel: [
+    { r: "d", t: "D'habitude, il a son signe préféré. Cette fois, il a tout mélangé. Impossible à lire.", f: "D'habitude, elle a son signe préféré. Cette fois, elle a tout mélangé. Impossible à lire." },
+  ],
+  stats_equilibre: [
+    { r: "d", t: "Dans ce match, il a parfaitement équilibré ses trois signes. Impossible à lire.", f: "Dans ce match, elle a parfaitement équilibré ses trois signes. Impossible à lire." },
+  ],
+  stats_plus_imprevisible: [
+    { r: "d", t: "Dans ce match, il a été bien plus difficile à lire que d'habitude. Ça s'est vu au score.", f: "Dans ce match, elle a été bien plus difficile à lire que d'habitude. Ça s'est vu au score." },
+  ],
+  stats_plus_lisible: [
+    { r: "d", t: "Lui d'habitude si imprévisible, il a été très lisible dans ce match.", f: "Elle d'habitude si imprévisible, elle a été très lisible dans ce match." },
+  ],
+  stats_reussite: [
+    { r: "d", t: "Dans ce match, quand il n'y avait pas égalité, il gagnait presque à chaque fois. Remarquable.", f: "Dans ce match, quand il n'y avait pas égalité, elle gagnait presque à chaque fois. Remarquable." },
+  ],
+  stats_change_egalite: [
+    { r: "d", t: "Dans ce match, après chaque égalité, il a changé de signe. Une stratégie… ou une habitude qui se lit ?", f: "Dans ce match, après chaque égalité, elle a changé de signe. Une stratégie… ou une habitude qui se lit ?" },
+  ],
+  stats_apres_egalite: [
+    { r: "d", t: "C'est lui qui sortait gagnant des duels d'esprits, dans ce match. Les égalités lui ont souri.", f: "C'est elle qui sortait gagnante des duels d'esprits, dans ce match. Les égalités lui ont souri." },
+  ],
+  stats_egalites: [
+    { r: "d", t: "Beaucoup d'égalités dans ce match. Deux joueurs qui ont pensé pareil du début à la fin." },
+  ],
+  stats_insiste: [
+    { r: "d", t: "Dans ce match, quand ça marchait, il insistait. Son adversaire ne l'a pas vu venir. Ou trop tard.", f: "Dans ce match, quand ça marchait, elle insistait. Son adversaire ne l'a pas vu venir. Ou trop tard." },
+  ],
+  stats_smashs: [
+    { r: "d", t: "Ses smashs ont pesé lourd dans ce match. Bien choisis, bien placés." },
+  ],
+  stats_balles_converties: [
+    { r: "d", t: "Dans ce match, les balles importantes, il les a toutes converties. C'est la marque des grands.", f: "Dans ce match, les balles importantes, elle les a toutes converties. C'est la marque des grandes." },
+  ],
+  stats_balles_gachees: [
+    { r: "d", t: "Des balles de set, il en a eu dans ce match. Il en a laissé filer beaucoup trop.", f: "Des balles de set, elle en a eu dans ce match. Elle en a laissé filer beaucoup trop." },
+  ],
+  stats_serie: [
+    { r: "d", t: "La série de points de ce match a tout changé. Après ça, il n'y avait plus qu'un joueur.", f: "La série de points de ce match a tout changé. Après ça, il n'y avait plus qu'une joueuse." },
+  ],
+  stats_serre: [
+    { r: "d", t: "Si peu de points d'écart au total dans ce match. Il aurait pu basculer de l'autre côté." },
+  ],
+  stats_domination: [
+    { r: "d", t: "Les chiffres de ce match sont sans appel. Il n'y a pas eu de match." },
+  ],
+  stats_rien: [
+    { r: "d", t: "Des chiffres sans surprise pour ce match. Un duel honnête, de bout en bout." },
+  ],
+  stats_insaisissable: [
+    { r: "d", t: "Dans ce match, il a été insaisissable. Jamais deux fois le même signe, ou presque.", f: "Dans ce match, elle a été insaisissable. Jamais deux fois le même signe, ou presque." },
+    { r: "c", t: "Quel feu follet ! Dans ce match, impossible de savoir où il allait frapper !", f: "Quel feu follet ! Dans ce match, impossible de savoir où elle allait frapper !" },
+    { r: "d", t: "Il a changé de signe sans arrêt dans ce match. Son adversaire a couru après lui toute la partie.", f: "Elle a changé de signe sans arrêt dans ce match. Son adversaire a couru après elle toute la partie." },
+  ],
+  stats_entete: [
+    { r: "d", t: ["Dans ce match, il s'est entêté. La Pierre, encore et encore, quitte à se faire lire.", "Dans ce match, il s'est entêté. Les Ciseaux, encore et encore, quitte à se faire lire.", "Dans ce match, il s'est entêté. La Feuille, encore et encore, quitte à se faire lire."], f: ["Dans ce match, elle s'est entêtée. La Pierre, encore et encore, quitte à se faire lire.", "Dans ce match, elle s'est entêtée. Les Ciseaux, encore et encore, quitte à se faire lire.", "Dans ce match, elle s'est entêtée. La Feuille, encore et encore, quitte à se faire lire."] },
+    { r: "d", t: "Il a joué le même signe quatre, cinq fois d'affilée dans ce match. Du courage… ou de l'obstination.", f: "Elle a joué le même signe quatre, cinq fois d'affilée dans ce match. Du courage… ou de l'obstination." },
+  ],
+  stats_change_perte: [
+    { r: "d", t: "Dans ce match, après chaque point perdu, il a changé de signe. Un réflexe que son adversaire aurait pu exploiter.", f: "Dans ce match, après chaque point perdu, elle a changé de signe. Un réflexe que son adversaire aurait pu exploiter." },
+  ],
+  stats_garde_perte: [
+    { r: "d", t: "Même après un point perdu, il gardait son signe dans ce match. Têtu, mais cohérent.", f: "Même après un point perdu, elle gardait son signe dans ce match. Têtue, mais cohérente." },
+  ],
+  stats_lecture: [
+    { r: "d", t: "Dans ce match, il a lu son adversaire comme un livre ouvert. Les habitudes de l'autre, il les a toutes punies.", f: "Dans ce match, elle a lu son adversaire comme un livre ouvert. Les habitudes de l'autre, elle les a toutes punies." },
+    { r: "c", t: "Quelle lecture du jeu dans ce match ! Il voyait tout venir !", f: "Quelle lecture du jeu dans ce match ! Elle voyait tout venir !" },
+  ],
+  stats_adv_contre: [
+    { r: "d", t: ["Son adversaire a beaucoup joué la Pierre dans ce match. Lui l'a vu, et l'a puni.", "Son adversaire a beaucoup joué les Ciseaux dans ce match. Lui l'a vu, et l'a puni.", "Son adversaire a beaucoup joué la Feuille dans ce match. Lui l'a vu, et l'a puni."], f: ["Son adversaire a beaucoup joué la Pierre dans ce match. Elle l'a vu, et l'a puni.", "Son adversaire a beaucoup joué les Ciseaux dans ce match. Elle l'a vu, et l'a puni.", "Son adversaire a beaucoup joué la Feuille dans ce match. Elle l'a vu, et l'a puni."] },
+  ],
+  stats_adv_ignore: [
+    { r: "d", t: ["Son adversaire a joué la Pierre encore et encore dans ce match. Et lui ne l'a jamais vraiment contrée.", "Son adversaire a joué les Ciseaux encore et encore dans ce match. Et lui ne les a jamais vraiment contrés.", "Son adversaire a joué la Feuille encore et encore dans ce match. Et lui ne l'a jamais vraiment contrée."], f: ["Son adversaire a joué la Pierre encore et encore dans ce match. Et elle ne l'a jamais vraiment contrée.", "Son adversaire a joué les Ciseaux encore et encore dans ce match. Et elle ne les a jamais vraiment contrés.", "Son adversaire a joué la Feuille encore et encore dans ce match. Et elle ne l'a jamais vraiment contrée."] },
+  ],
+  stats_meme_favori: [
+    { r: "d", t: "Dans ce match, ils avaient le même signe préféré. Forcément, beaucoup d'égalités." },
+  ],
+  stats_styles: [
+    { r: "d", t: "Deux styles opposés dans ce match : un joueur insaisissable, l'autre très lisible. Ça s'est vu au score." },
+  ],
+  stats_remontee: [
+    { r: "d", t: "Dans ce match, il est revenu de loin. Mené de plusieurs points, il n'a jamais lâché.", f: "Dans ce match, elle est revenue de loin. Menée de plusieurs points, elle n'a jamais lâché." },
+  ],
+  stats_renverse: [
+    { r: "c", t: "Mené d'un set dans ce match, et pourtant vainqueur ! Quel caractère !", f: "Menée d'un set dans ce match, et pourtant victorieuse ! Quel caractère !" },
+  ],
+  stats_fins_serrees: [
+    { r: "d", t: "Dans ce match, c'est dans les fins de set serrées qu'il a fait la différence. Les nerfs, ça ne s'apprend pas.", f: "Dans ce match, c'est dans les fins de set serrées qu'elle a fait la différence. Les nerfs, ça ne s'apprend pas." },
+  ],
+  stats_sans_smash: [
+    { r: "d", t: "Pas un seul smash dans ce match. Prudent. Peut-être trop." },
+  ],
+  stats_smashs_rates: [
+    { r: "d", t: "Dans ce match, ses smashs sont tombés à côté. L'audace, ça se paie aussi." },
+  ],
+  stats_depart: [
+    { r: "d", t: "Il est entré dans ce match plus vite que son adversaire. Les premiers points ont donné le ton.", f: "Elle est entrée dans ce match plus vite que son adversaire. Les premiers points ont donné le ton." },
+  ],
+  stats_reaction: [
+    { r: "c", t: "Un départ difficile dans ce match… et quelle réaction ensuite !" },
+  ],
+  stats_reflechi: [
+    { r: "d", t: "Dans ce match, il a pris son temps. Beaucoup de réflexion, parfois trop.", f: "Dans ce match, elle a pris son temps. Beaucoup de réflexion, parfois trop." },
+  ],
+  stats_vite: [
+    { r: "d", t: "Il a joué vite dans ce match. Très vite. Ça a mis la pression sur son adversaire.", f: "Elle a joué vite dans ce match. Très vite. Ça a mis la pression sur son adversaire." },
+  ],
+  stats_exploit: [
+    { r: "c", t: "Dans ce match, il a fait mentir le classement ! Superbe performance !", f: "Dans ce match, elle a fait mentir le classement ! Superbe performance !" },
+  ],
+  stats_favori_souffre: [
+    { r: "d", t: "Favori sur le papier, il a beaucoup souffert dans ce match. Les classements ne jouent pas.", f: "Favorite sur le papier, elle a beaucoup souffert dans ce match. Les classements ne jouent pas." },
+  ],
 };
 
 // ---------------------------------------------------------------- les dialogues (temps morts)
@@ -2167,6 +2326,34 @@ export const DIALOGUES = {
   // la conclusion, seulement après un match en trois sets
   temps_forts_fin_trois: [
     ["Quel spectacle ! Quel match ! Quelle intensité !", "Roland, ils ont joué trois manches de pierre-feuille-ciseaux."],
+  ],
+  // L'accueil des nouveaux joueurs (19 novembre, choisis par le porteur du projet) : avant le tout premier match, les trois à la suite
+  accueil_bienvenue: [
+    [{ t: "Mesdames et messieurs, un nouveau joueur fait son entrée sur le court central ! Bienvenue au HandSlam !", f: "Mesdames et messieurs, une nouvelle joueuse fait son entrée sur le court central ! Bienvenue au HandSlam !" }, "Bienvenue. Les règles sont simples : Pierre bat Ciseaux, Ciseaux bat Feuille, Feuille bat Pierre."],
+    ["Monique, on lui explique comment gagner ?", "Huit secondes pour choisir un signe. Le premier à sept points, avec deux points d'écart, remporte le set."],
+    ["Et en face, c'est Bambi ! Le plus gentil de nos adversaires… en principe !", "Bambi a ses petites habitudes. Regardez l'historique en bas de l'écran."],
+  ],
+  // à la fin du premier match, gagné
+  accueil_victoire: [
+    ["Victoire pour son premier match ! Une étoile est née, mesdames et messieurs !", "Bien joué. Le prochain adversaire sera moins gentil. Revenez quand même."],
+    [{ t: "Quel baptême du feu ! Il a battu Bambi dès son premier match !", f: "Quel baptême du feu ! Elle a battu Bambi dès son premier match !" }, "Un bon début. Un deuxième match, et la Partie rapide s'ouvre."],
+  ],
+  // à la fin du premier match, perdu
+  accueil_defaite: [
+    ["Bambi l'emporte… mais quelle découverte, mesdames et messieurs !", "Tout le monde perd contre Bambi la première fois. Enfin, presque. On recommence ?"],
+    ["Ce n'est que partie remise ! La revanche est à un clic !", "Maintenant, vous connaissez ses habitudes. Profitez-en."],
+  ],
+  // avant le 2e match
+  accueil_deuxieme: [
+    ["Le revoilà sur le central ! Deuxième match, on prend ses marques !", "Cette fois, regardez bien l'historique. C'est là que tout se joue."],
+  ],
+  // avant le 3e match
+  accueil_troisieme: [
+    [{ t: "Troisième match ! Mesdames et messieurs, un habitué est en train de naître !", f: "Troisième match ! Mesdames et messieurs, une habituée est en train de naître !" }, "Encore une victoire ou une défaite, et la boutique vous ouvre ses portes."],
+  ],
+  // à la fin du 3e match, gagné ou perdu
+  accueil_fin_troisieme: [
+    ["Trois matchs ! Les jetons, les défis du jour et la boutique sont ouverts !", { t: "Vous voilà joueur à part entière. Bienvenue au club.", f: "Vous voilà joueuse à part entière. Bienvenue au club." }],
   ],
 };
 

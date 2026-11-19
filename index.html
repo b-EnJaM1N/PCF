@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="version" content="ca67503 du 19/11/2026">
+<meta name="version" content="a0ecb15 du 19/11/2026">
 <!-- (15 novembre, choix du porteur du projet : le titre et la description montrés par Google et dans les aperçus de partage) -->
 <title>HandSlam – Pierre-Feuille-Ciseaux devient un sport</title>
 <meta name="description" content="Le Pierre-Feuille-Ciseaux comme un vrai sport : duels entre amis, tournois, classement et gants à collectionner. Gratuit, sans publicité.">
@@ -917,6 +917,15 @@
   </div>
 </div>
 
+<!-- (19 novembre) les statistiques du match, après le dernier point, comme à la télé -->
+<div class="stats-fin" id="statsFin" role="dialog" aria-modal="true" aria-labelledby="sfTitre" hidden>
+  <div class="stats-fin-boite">
+    <p class="stats-fin-titre" id="sfTitre">📊 Statistiques du match</p>
+    <div class="stats-fin-tete"><span class="me" id="sfMoi"></span><span class="stats-fin-score" id="sfScore"></span><span class="bot" id="sfAdv"></span></div>
+    <div class="stats-fin-lignes" id="sfLignes"></div>
+    <button class="btn" id="sfContinuer">Continuer ▸</button>
+  </div>
+</div>
 <div class="inter" id="poignee" role="dialog" aria-modal="true" aria-labelledby="pmTitre">
   <div class="panel pm-panel">
     <div class="kick" id="pmTitre">La poignée de main</div>
@@ -951,6 +960,8 @@
 <!-- Le volet (18 novembre, version de test) : une bande aux couleurs de HandSlam balaie l'écran entre deux moments du match. -->
 <div class="volet" id="volet" aria-hidden="true" hidden><div class="volet-bande"><img src="icons/logo.svg" alt="" width="170" height="170"></div></div>
 <div class="replay" id="replay" role="dialog" aria-modal="true" aria-label="Replay" hidden>
+  <!-- (19 novembre) avant les temps forts : l'icône « replay » qui tourne, avec le jingle, pendant que Roland les annonce -->
+  <div class="rp-intro" id="rpIntro" hidden><div class="rp-intro-icone" aria-hidden="true">↻</div><p class="rp-intro-titre">Les temps forts</p><p class="rp-intro-sous">REPLAY</p></div>
   <div class="replay-boite">
     <div class="replay-bandeau"><span class="replay-point" aria-hidden="true"></span>REPLAY</div>
     <p class="replay-titre" id="rpTitre"></p>
