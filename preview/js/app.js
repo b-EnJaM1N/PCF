@@ -53,7 +53,7 @@ import { installerTutos } from "./tutos.js";
 import { chantsPerso, courtsPerso, soutenu, clePseudo, hashTexte, chantsPersoCommuns, persoCommente } from "./chants-perso.js";
 import { LANCEMENT } from "./lancement.js";
 import { annonceEnjeu } from "./enjeux.js";
-import { repartition, habitudes, piste, lecturesReussies, EMOJIS, compteVide, compterMatch, additionner, dossier } from "./lecture-adversaire.js";
+import { repartition, habitudes, piste, lecturesReussies, EMOJIS, NOMS as NOMS_SIGNES, compteVide, compterMatch, additionner, dossier, dossierDetaille } from "./lecture-adversaire.js";
 import { modeleFantome } from "./fantome.js";
 import { ouvert, proposerAvis } from "./nouveautes.js";   // (les nouveautés : sur la version de test, puis ouvertes à tous une par une)
 import { replayVisible, momentDuCoup, tempsForts, momentDuSet, TITRES as TITRES_REPLAY, VERDICTS, texteHabitude } from "./replay.js";
@@ -1813,11 +1813,8 @@ async function ongletsJoueur(el, uid, nom, { encore = () => true, bot = false } 
         + `<p class="hint mains-note">Vos ${MAX_MAINS} derniers duels, coup par coup (en jaune : le point est pour toi).</p>`
       : `<p class="hint">Vous ne vous êtes pas encore affrontés en ligne.</p>`;
   }
-  // 📁 Dossier
-  let k = compteVide();
-  for (const m of matchs || []) k = additionner(k, compterMatch(m.map(c => ({ a: c.a, b: c.b, gagnant: c.g ?? null }))));
-  const dos = matchs ? corpsDossier(dossier(k, { elle }), d => `D'après ses ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).`,
-    "Pas encore assez de matchs en ligne pour établir son dossier.") : `<p class="hint">Dossier indisponible pour l'instant.</p>`;
+  // 📁 Dossier (19 novembre : détaillé)
+  const dos = matchs ? htmlDossierDetaille(dossierDetaille(matchs, { elle }), elle) : `<p class="hint">Dossier indisponible pour l'instant.</p>`;
   // (19 novembre, choix du porteur du projet : le Dossier, seulement ses habitudes ; tout ce qui raconte ses matchs dans « Ses matchs »)
   zone(3).innerHTML = dos;
   // 📜 Ses matchs : ses derniers duels, ses adversaires les plus fréquents, puis le coup par coup
@@ -1827,6 +1824,34 @@ async function ongletsJoueur(el, uid, nom, { encore = () => true, bot = false } 
     : `<p class="hint">Historique indisponible pour l'instant.${fiche?.erreur ? ` (${esc(fiche.erreur)})` : ""}</p>`;
   zone(4).innerHTML = histo + `<h3 class="ff-titre">🖐️ Coup par coup</h3>${htmlMains(tous, { noms: [nom, "Adversaire"], gagneTexte: [`✅ ${il} gagne`, `❌ ${il} perd`], vide: "Pas encore de match en ligne terminé." })}`
     + `<p class="hint mains-note">Ses ${MAX_MAINS} derniers matchs en ligne, coup par coup (en jaune : le point est pour ${n}).</p>`;
+}
+// Le dossier détaillé d'un joueur en ligne (lecture-adversaire.js, dossierDetaille ; 19 novembre, demande du porteur du projet).
+function htmlDossierDetaille(d, elle) {
+  if (!d) return `<p class="hint">Pas encore assez de matchs en ligne pour établir son dossier.</p>`;
+  const il = elle ? "elle" : "il", Il = elle ? "Elle" : "Il", s = (k, n) => `${EMOJIS[k]} ${NOMS_SIGNES[k]}${n === undefined ? "" : ` ${n} %`}`;
+  const point = { rouge: "🔴", jaune: "🟡", vert: "🟢" };
+  const conseils = d.conseils.length ? `<ul class="dossier-conseils">${d.conseils.map(t => `<li>${esc(t)}</li>`).join("")}</ul>`
+    : `<p class="hint">Aucune faille nette : son jeu est bien varié. Lis-${elle ? "la" : "le"} pendant le match.</p>`;
+  const reflexes = d.reflexes.length ? `<div class="lines">${d.reflexes.map(x => `<div class="ln"><span>${esc(x.texte)}</span><span>${x.pct} % ${point[x.niveau]}</span></div>`).join("")}</div>`
+    + `<p class="hint">Le hasard donnerait 33 % (67 % pour « change de signe après un point perdu »). 🔴 très marqué · 🟡 un peu · 🟢 comme le hasard.</p>` : "";
+  const egalite = d.egalite ? `<h3 class="ff-titre">🤝 Après une égalité</h3><div class="lines">
+      <div class="ln"><span>${Il} garde le même signe</span><span>${d.egalite.garde} %</span></div>
+      <div class="ln"><span>${Il} joue le plus souvent</span><span>${s(d.egalite.favori, d.egalite.favoriPct)}</span></div></div>` : "";
+  const ouverture = d.ouverture ? `<h3 class="ff-titre">🎬 ${d.ouverture.sets ? "Ses débuts de set" : "Son premier coup"}</h3>`
+    + `<p class="dossier-signes">${d.ouverture.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
+    + `<p class="hint">D'après ${d.ouverture.vus} ${d.ouverture.sets ? "débuts de set" : "débuts de match"}.</p>` : "";
+  const smash = d.smash ? `<h3 class="ff-titre">💥 Ses smashs</h3><div class="lines">
+      <div class="ln"><span>Smashs joués</span><span>${d.smash.total}, dont ${d.smash.gagnes} gagnant${d.smash.gagnes > 1 ? "s" : ""}</span></div>
+      <div class="ln"><span>${Il} smashe surtout avec</span><span>${s(d.smash.favori)}</span></div></div>`
+    : `<h3 class="ff-titre">💥 Ses smashs</h3><p class="hint">Pas de smash dans ses derniers matchs (ou pas encore enregistré).</p>`;
+  const f = d.forme;
+  const forme = f ? `<h3 class="ff-titre">📈 Sa forme récente</h3><p class="hint">${Math.abs(f.ecart) >= 6
+    ? `Sur ses 10 derniers matchs, ${il} joue ${f.ecart > 0 ? "plus" : "moins"} ${NOMS_SIGNES[f.signe] === "Ciseaux" ? "les Ciseaux" : `la ${NOMS_SIGNES[f.signe]}`} : ${f.recent[f.signe]} % contre ${f.avant[f.signe]} % avant.`
+    : `Pas de changement net sur ses 10 derniers matchs.`}</p>` : "";
+  return `<h3 class="ff-titre">🎯 Pour ${elle ? "la" : "le"} battre</h3>${conseils}`
+    + `<p class="dossier-source">D'après ses ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).</p>`
+    + `<p class="dossier-signes">${d.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
+    + `<h3 class="ff-titre">🧠 Ses réflexes</h3>${reflexes}${egalite}${ouverture}${smash}${forme}`;
 }
 $("lastBody").addEventListener("click", e => { const x = e.target.closest(".nom-adv"); if (x) ouvrirFicheAdv(x.dataset.adv, x.dataset.nom); });
 $("faCarte").addEventListener("click", async () => {
