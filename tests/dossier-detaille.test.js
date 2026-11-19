@@ -1,0 +1,34 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { dossierDetaille, debutsDeSet } from "../app/js/lecture-adversaire.js";
+
+// Ses coups vus de son côté : b = son signe, a = celui d'en face, g = 1 s'il gagne le point (0 = Pierre, 1 = Ciseaux, 2 = Feuille).
+const coup = (b, a, s = false) => ({ b, a, g: b === a ? null : (b + 1) % 3 === a ? 1 : 0, ...(s ? { s: true } : {}) });
+
+test("les débuts de set, en rejouant le score", () => {
+  // set de 7 : il gagne 7 points d'affilée (Pierre contre Ciseaux), puis le 2e set commence
+  const c = [...Array(7)].map(() => coup(0, 1)).map(x => ({ ...x, gagnant: x.g }));
+  c.push({ ...coup(2, 0), gagnant: 1 });
+  assert.deepEqual(debutsDeSet(c, { pointsParSet: 7, setsGagnants: 2 }), [0, 7]);
+});
+
+test("le dossier détaillé : réflexes chiffrés, égalités, débuts, smashs, forme, conseils", () => {
+  // Il joue la Pierre en ouverture, rejoue toujours après un point gagné, et smashe avec la Feuille.
+  const unMatch = () => {
+    const m = [coup(0, 1), coup(0, 1), coup(0, 0), coup(0, 2), coup(2, 0, true), coup(2, 0), coup(1, 1), coup(1, 2), coup(1, 2)];
+    m[0] = { ...m[0], p: 11, n: 2 };
+    return m;
+  };
+  const d = dossierDetaille([...Array(16)].map(unMatch));
+  assert.equal(d.matchs, 16);
+  const rv = d.reflexes.find(r => r.cle === "rejoue_victoire");
+  assert.equal(rv.pct, 80); assert.equal(rv.niveau, "rouge");
+  assert.ok(d.egalite && d.egalite.vus >= 6);
+  assert.equal(d.ouverture.favori, 0); assert.ok(d.ouverture.sets);
+  assert.equal(d.smash.favori, 2); assert.equal(d.smash.total, 16);
+  assert.ok(d.forme);
+  assert.ok(d.conseils.length >= 1 && d.conseils.length <= 3);
+  assert.ok(d.conseils.some(t => /vient de gagner/.test(t)));
+  assert.match(dossierDetaille([...Array(16)].map(unMatch), { elle: true }).conseils.join(" "), /\belle\b/);
+  assert.equal(dossierDetaille([[coup(0, 1)]]), null, "pas assez de coups");
+});
