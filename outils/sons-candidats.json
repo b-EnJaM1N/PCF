@@ -1,23 +1,64 @@
 {
-  "_explication": "Des sons candidats, générés à part dans app/audio/essais/ et écoutés sur app/essais-sons.html avant d'entrer dans le jeu (robot « Voix », choix « sons-candidats »). Cinquième essai (3 novembre) : un fond de stade, en boucle, pour remplacer le murmure de tennis trop calme (les chants de supporters doivent en sortir naturellement).",
+  "_explication": "Des sons candidats, générés à part dans app/audio/essais/ et écoutés sur app/essais-sons.html avant d'entrer dans le jeu (robot « Voix », choix « sons-candidats »). Sixième essai (19 novembre, demande du porteur du projet : une ambiance de stade immersive, homogène et fluide) : trois fonds de foule selon l'intensité du match, le kop, les clappements, des réactions et la ola.",
   "candidats": {
-    "fond_1": {
-      "groupe": "Fond de stade",
-      "texte": "Ambience of a packed indoor arena between plays: thousands of spectators murmuring and chatting at once, a warm continuous crowd hum, very occasional distant claps, calm but alive, no music, no announcer, no whistle, steady level without sudden peaks, seamless loop",
+    "fond_calme": {
+      "groupe": "Fonds de foule (en boucle, selon le moment du match)",
       "duree": 30,
-      "boucle": true
+      "boucle": true,
+      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. Calm crowd ambience early in a match: thousands of spectators murmuring and chatting softly, a warm continuous hum, a few scattered claps, relaxed, steady level without sudden peaks, seamless loop"
     },
-    "fond_2": {
-      "groupe": "Fond de stade",
-      "texte": "Ambience of a full sports arena during a big match: a dense continuous crowd buzz, thousands of fans talking excitedly, scattered distant cheers and claps here and there, energetic but steady, no music, no announcer, no whistle, steady level without sudden peaks, seamless loop",
+    "fond_nerveux": {
+      "groupe": "Fonds de foule (en boucle, selon le moment du match)",
       "duree": 30,
-      "boucle": true
+      "boucle": true,
+      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. Tense crowd ambience late in a close set: a nervous continuous buzz of thousands of spectators, excited whispers and murmurs, occasional short shouts of encouragement, anticipation rising but steady, no sudden peaks, seamless loop"
     },
-    "fond_3": {
-      "groupe": "Fond de stade",
-      "texte": "Ambience of a lively stadium crowd before a decisive point: a loud continuous roar of thousands of supporters, distant chanting voices blending into the crowd, occasional drums far away, constant energy, no music, no announcer, no whistle, steady level without sudden peaks, seamless loop",
+    "fond_bouillant": {
+      "groupe": "Fonds de foule (en boucle, selon le moment du match)",
       "duree": 30,
-      "boucle": true
+      "boucle": true,
+      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. Roaring crowd ambience at the climax of a decisive set: a loud continuous roar of thousands of supporters, distant drums and chanting voices blending in, whistles here and there, constant intensity, no sudden peaks, seamless loop"
+    },
+    "kop_tambours": {
+      "groupe": "Le kop des supporters",
+      "duree": 20,
+      "boucle": true,
+      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. A group of passionate supporters in one stand: steady big drum beats and synchronized rhythmic clapping, a few voices chanting along without words, energetic, seamless loop"
+    },
+    "clappements": {
+      "groupe": "Le kop des supporters",
+      "duree": 8,
+      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. The whole crowd starts slow rhythmic clapping that gradually accelerates, building tension before a decisive point, then a short roar"
+    },
+    "montee_entree": {
+      "groupe": "Moments mis en scène",
+      "duree": 10,
+      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. The crowd builds up as the players walk onto the court: rising cheers, whistles and applause growing louder, then a big welcoming roar"
+    },
+    "explosion": {
+      "groupe": "Moments mis en scène",
+      "duree": 5,
+      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. The crowd erupts in a huge explosive roar right after the winning match point, screams of joy and thunderous applause"
+    },
+    "ola": {
+      "groupe": "Moments mis en scène",
+      "duree": 8,
+      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. A Mexican wave travels around the arena: a rolling roar moving from one side to the other, thousands of spectators cheering as it passes, then laughter and applause"
+    },
+    "applaudissements_faibles": {
+      "groupe": "Réactions",
+      "duree": 3,
+      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. Polite light applause after an ordinary point, short"
+    },
+    "applaudissements_forts": {
+      "groupe": "Réactions",
+      "duree": 4,
+      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. Strong enthusiastic applause with cheers and a few joyful whistles after a brilliant point"
+    },
+    "ooh_surprise": {
+      "groupe": "Réactions",
+      "duree": 2.5,
+      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. The whole crowd reacts with a surprised collective \"ooh!\" to an unexpected point, short"
     }
   }
 }

@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1315 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1333 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1112,6 +1112,11 @@ restent lus par la voix de synthèse.
 | `commentateur_fin_trois_sets_01.mp3` | Au bout du suspense, ce match a trouvé un vainqueur ! Les mains ont beaucoup donné et sont épuisées : séance de manucure demain, en prévision du prochain match ! |
 | `commentateur_fin_trois_sets_02.mp3` | Les supporters peuvent libérer leur joie : leur champion a su trouver le chemin de la victoire ! Le kop adverse peine à cacher sa déception : ils y ont cru jusqu'au bout ! |
 | `commentateur_fin_trois_sets_02_f.mp3` | Les supporters peuvent libérer leur joie : leur championne a su trouver le chemin de la victoire ! Le kop adverse peine à cacher sa déception : ils y ont cru jusqu'au bout ! |
+| `commentateur_accueil_point_gagne_01.mp3` | Oh, le premier point de sa carrière ! On s'en souviendra ! |
+| `commentateur_accueil_point_gagne_02.mp3` | Et voilà ! Premier point, et déjà le goût de la victoire ! |
+| `commentateur_accueil_point_perdu_01.mp3` | Pas de panique, il y a encore le temps de se rattraper ! |
+| `commentateur_accueil_lecture_01.mp3` | L'historique en bas de l'écran, c'est le trésor des grands joueurs ! |
+| `commentateur_accueil_smash_01.mp3` | Et n'oubliez pas le smash : un appui long sur le signe, une fois par set ! Ça ne change pas le point, mais quel spectacle ! |
 | `commentateur_dialogue_perso_chiromancien_avant_01.mp3` | Le Chiromancien est sur le central, Madame ! |
 | `commentateur_dialogue_perso_chiromancien_avant_02.mp3` | Madame, croyez-vous aux pouvoirs du Chiromancien ? |
 | `commentateur_dialogue_avant_debutant_01.mp3` | Un nouveau venu sur le central ! Bienvenue ! |
@@ -1437,8 +1442,21 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_temps_forts_fin_01.mp3` | Trois images qui resteront dans les mémoires ! |
 | `commentateur_dialogue_temps_forts_fin_02.mp3` | Voilà, vous avez revécu les grands moments de cette rencontre ! |
 | `commentateur_dialogue_temps_forts_fin_trois_01.mp3` | Quel spectacle ! Quel match ! Quelle intensité ! |
+| `commentateur_dialogue_accueil_bienvenue_01.mp3` | Mesdames et messieurs, un nouveau joueur fait son entrée sur le court central ! Bienvenue au HandSlam ! |
+| `commentateur_dialogue_accueil_bienvenue_01_f.mp3` | Mesdames et messieurs, une nouvelle joueuse fait son entrée sur le court central ! Bienvenue au HandSlam ! |
+| `commentateur_dialogue_accueil_bienvenue_02.mp3` | Monique, on lui explique comment gagner ? |
+| `commentateur_dialogue_accueil_bienvenue_03.mp3` | Et en face, c'est Bambi ! Le plus gentil de nos adversaires… en principe ! |
+| `commentateur_dialogue_accueil_victoire_01.mp3` | Victoire pour son premier match ! Une étoile est née, mesdames et messieurs ! |
+| `commentateur_dialogue_accueil_victoire_02.mp3` | Quel baptême du feu ! Il a battu Bambi dès son premier match ! |
+| `commentateur_dialogue_accueil_victoire_02_f.mp3` | Quel baptême du feu ! Elle a battu Bambi dès son premier match ! |
+| `commentateur_dialogue_accueil_defaite_01.mp3` | Bambi l'emporte… mais quelle découverte, mesdames et messieurs ! |
+| `commentateur_dialogue_accueil_defaite_02.mp3` | Ce n'est que partie remise ! La revanche est à un clic ! |
+| `commentateur_dialogue_accueil_deuxieme_01.mp3` | Le revoilà sur le central ! Deuxième match, on prend ses marques ! |
+| `commentateur_dialogue_accueil_troisieme_01.mp3` | Troisième match ! Mesdames et messieurs, un habitué est en train de naître ! |
+| `commentateur_dialogue_accueil_troisieme_01_f.mp3` | Troisième match ! Mesdames et messieurs, une habituée est en train de naître ! |
+| `commentateur_dialogue_accueil_fin_troisieme_01.mp3` | Trois matchs ! Les jetons, les défis du jour et la boutique sont ouverts ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (1002 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (1017 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -2132,6 +2150,10 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_double_01.mp3` | Un fort engagement de part et d'autre, mais une main reste au tapis. |
 | `commentatrice_fin_trois_sets_01.mp3` | Nous avons assisté à une belle rencontre, et les deux mains ont su se hisser à la hauteur de l'événement. Rendez-vous est pris pour une revanche qui s'annonce palpitante. |
 | `commentatrice_fin_trois_sets_02.mp3` | L'arbitre siffle la fin de la rencontre sur cet ultime point. On peut se satisfaire du spectacle proposé par les deux mains, dans cette passe d'armes aux allures de chassé-croisé. |
+| `commentatrice_accueil_point_perdu_01.mp3` | Un point pour Bambi. Ce n'est rien : on apprend en perdant. |
+| `commentatrice_accueil_egalite_01.mp3` | Même signe des deux côtés : on rejoue le coup. C'est la règle. |
+| `commentatrice_accueil_lecture_01.mp3` | Un conseil : regardez ce que Bambi vient de jouer. Il recommence souvent. |
+| `commentatrice_accueil_reserve_01.mp3` | Attention au temps. Après huit secondes, on puise dans sa réserve. Et elle ne se remplit pas. |
 | `commentatrice_dialogue_perso_chiromancien_avant_01.mp3` | J'ai caché mes mains. On ne sait jamais. |
 | `commentatrice_dialogue_perso_chiromancien_avant_02.mp3` | Je crois surtout à ses statistiques. |
 | `commentatrice_dialogue_avant_debutant_01.mp3` | On sera indulgents. Pendant trois coups. |
@@ -2444,6 +2466,17 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_temps_forts_fin_01.mp3` | Une rencontre qui aura offert quelques belles leçons de chifoumi. |
 | `commentatrice_dialogue_temps_forts_fin_02.mp3` | Et maintenant, place à la prochaine confrontation. |
 | `commentatrice_dialogue_temps_forts_fin_trois_01.mp3` | Roland, ils ont joué trois manches de pierre-feuille-ciseaux. |
+| `commentatrice_dialogue_accueil_bienvenue_01.mp3` | Bienvenue. Les règles sont simples : Pierre bat Ciseaux, Ciseaux bat Feuille, Feuille bat Pierre. |
+| `commentatrice_dialogue_accueil_bienvenue_02.mp3` | Huit secondes pour choisir un signe. Le premier à sept points, avec deux points d'écart, remporte le set. |
+| `commentatrice_dialogue_accueil_bienvenue_03.mp3` | Bambi a ses petites habitudes. Regardez l'historique en bas de l'écran. |
+| `commentatrice_dialogue_accueil_victoire_01.mp3` | Bien joué. Le prochain adversaire sera moins gentil. Revenez quand même. |
+| `commentatrice_dialogue_accueil_victoire_02.mp3` | Un bon début. Un deuxième match, et la Partie rapide s'ouvre. |
+| `commentatrice_dialogue_accueil_defaite_01.mp3` | Tout le monde perd contre Bambi la première fois. Enfin, presque. On recommence ? |
+| `commentatrice_dialogue_accueil_defaite_02.mp3` | Maintenant, vous connaissez ses habitudes. Profitez-en. |
+| `commentatrice_dialogue_accueil_deuxieme_01.mp3` | Cette fois, regardez bien l'historique. C'est là que tout se joue. |
+| `commentatrice_dialogue_accueil_troisieme_01.mp3` | Encore une victoire ou une défaite, et la boutique vous ouvre ses portes. |
+| `commentatrice_dialogue_accueil_fin_troisieme_01.mp3` | Vous voilà joueur à part entière. Bienvenue au club. |
+| `commentatrice_dialogue_accueil_fin_troisieme_01_f.mp3` | Vous voilà joueuse à part entière. Bienvenue au club. |
 
 ## Speaker — voix de salle, voyelles étirées (79 répliques)
 

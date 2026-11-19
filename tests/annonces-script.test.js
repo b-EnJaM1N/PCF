@@ -790,3 +790,19 @@ test("l'avant-match dure 10 à 15 secondes (estimé d'après le texte), avec l'o
   }
   assert.ok(ouvertures > 150, `${ouvertures} ouvertures`);
 });
+
+test("l'accueil du nouveau joueur : la bienvenue avant le 1er match, ses premiers points expliqués, la fin du 1er et du 3e match", () => {
+  const av = annoncesAvantMatch({ accueil: 1 }, rngFixe(1));
+  assert.equal(av.commentaires.length, 6);
+  assert.ok(av.commentaires.every(l => /_dialogue_accueil_bienvenue_/.test(l.id)));
+  assert.ok(annoncesAvantMatch({ accueil: 2 }, rngFixe(2)).commentaires.some(l => /accueil_deuxieme/.test(l.id)));
+  const m = nouveauMatch({ pointsParSet: 7, setsGagnants: 1 }), etat = Object.assign(nouvelEtatAnnonces(), { accueil: 1 }), rng = rngFixe(3);
+  const dits = [];
+  const coups = [[0, 0], [0, 1], [0, 2], [1, 2], [2, 0], [0, 1], [1, 2], [2, 0], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1]];
+  let fin = null;
+  for (const [a, b] of coups) { if (m.termine) break; const r = annoncerCoup(m, jouerCoup(m, a, b), etat, {}, rng); dits.push(...r.lignes.map(l => l.id)); if (m.termine) fin = r; }
+  for (const k of ["egalite", "point_gagne", "point_perdu", "lecture", "smash"]) assert.ok(dits.some(id => id.includes(`_accueil_${k}_`)), k);
+  assert.ok(fin && fin.lignes.some(l => /_dialogue_accueil_victoire_/.test(l.id)), "la fin du premier match");
+  // le 4e match : plus rien de l'accueil
+  assert.ok(!annoncesAvantMatch({ accueil: 0 }, rngFixe(4)).commentaires.some(l => /accueil/.test(l.id)));
+});
