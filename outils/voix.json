@@ -86,7 +86,12 @@
             "premier_set_ecrase",
             "un_set_partout",
             "dialogue_replay_moment",
-            "dialogue_tf"
+            "dialogue_tf",
+            "replay_reussite",
+            "replay_balle_ratee",
+            "replay_smash_signe",
+            "replay_double",
+            "fin_trois_sets"
           ],
           "ids": [
             "commentatrice_dialogue_figure_triple_loop_02",
