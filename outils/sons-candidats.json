@@ -5,19 +5,19 @@
       "groupe": "Fonds de foule (en boucle, selon le moment du match)",
       "duree": 30,
       "boucle": true,
-      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. Football stadium crowd ambience early in the match: a deep continuous rumble of 40,000 fans talking, scattered shouts and claps from the stands, a few distant chants starting and stopping, alive but relaxed, steady level without sudden peaks, seamless loop"
+      "texte": "Huge open-air football stadium, 40,000 supporters, evening match, TV broadcast microphones, no music, no announcer, no whistle. Crowd ambience early in the match: a deep continuous rumble of fans talking, scattered shouts and claps, a few distant chants starting and stopping, alive but relaxed, steady level, seamless loop"
     },
     "fond_nerveux": {
       "groupe": "Fonds de foule (en boucle, selon le moment du match)",
       "duree": 30,
       "boucle": true,
-      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. Football stadium crowd ambience during a tense moment: a loud nervous roar of 40,000 fans, whistles, groups of supporters chanting in the distance, shouts of encouragement, rising anticipation but steady, no sudden peaks, seamless loop"
+      "texte": "Huge open-air football stadium, 40,000 supporters, evening match, TV broadcast microphones, no music, no announcer, no whistle. Crowd ambience in a tense moment: a loud nervous roar, whistles, groups of supporters chanting in the distance, shouts of encouragement, rising anticipation but steady, seamless loop"
     },
     "fond_bouillant": {
       "groupe": "Fonds de foule (en boucle, selon le moment du match)",
       "duree": 30,
       "boucle": true,
-      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. Football stadium crowd ambience at the climax of a decisive match: a thunderous continuous roar of 40,000 supporters, the whole stadium chanting together, drums and flares atmosphere, whistles everywhere, constant maximum intensity, no sudden peaks, seamless loop"
+      "texte": "Huge open-air football stadium, 40,000 supporters, evening match, TV broadcast microphones, no music, no announcer, no whistle. Crowd ambience at the climax of a decisive match: a thunderous continuous roar, the whole stadium chanting together, drums, whistles everywhere, constant maximum intensity, seamless loop"
     },
     "kop_tambours": {
       "groupe": "Le kop des supporters",
