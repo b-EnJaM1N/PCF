@@ -2681,7 +2681,7 @@ restent lus par la voix de synthèse.
 | `journaliste_conclusion_01.mp3` | Merci. Et encore bravo. |
 | `journaliste_conclusion_02.mp3` | C'était… un honneur. À vous les studios. |
 
-## Sons du court (5 sons)
+## Sons du court (8 sons)
 
 Fabriqués par le code en attendant. Un vrai enregistrement portant ce nom les remplace.
 
@@ -2702,3 +2702,6 @@ Fabriqués par le code en attendant. Un vrai enregistrement portant ce nom les r
 | `public_huees_02.mp3` | undefined |
 | `public_bronca_01.mp3` | undefined |
 | `public_bronca_02.mp3` | undefined |
+| `public_applaudissements_faibles_01.mp3` | Applaudissements faibles du grand stade (un point ordinaire) |
+| `public_applaudissements_forts_01.mp3` | Applaudissements forts du grand stade (point arraché, smash, fin de set) |
+| `public_ooh_02.mp3` | « Ooh » de surprise du grand stade (point disputé) |

@@ -549,7 +549,10 @@ function finDeSet(match, evt, etat, ctx, rng) {
   if (decisifEnSuite && match.format.setsGagnants > 1) {
     // (un seul dialogue : seulement s'il n'a pas été entendu aux derniers matchs, sinon une réplique)
     const dialogueNeuf = !DIALOGUES_IDS.set_decisif.every(d => etat.anciens?.has(baseDe(d[0])));
-    ajoute((dialogueNeuf && rng() < 0.4 && dialogue(etat, "set_decisif", rng)) || choisir(etat, "set_decisif", { ...ctx, troisiemeSet: match.format.setsGagnants === 2 }, rng));
+    // (19 novembre, demande du porteur du projet : chacun son tour en fin de set, le résumé du set, puis le replay, puis l'annonce
+    // du set décisif : ces répliques sont marquées « apresReplay », l'appli les garde pour après le replay)
+    const x = (dialogueNeuf && rng() < 0.4 && dialogue(etat, "set_decisif", rng)) || choisir(etat, "set_decisif", { ...ctx, troisiemeSet: match.format.setsGagnants === 2 }, rng);
+    if (x) ajoute((Array.isArray(x) ? x : [x]).map(l => ({ ...l, apresReplay: true })));
   }
   return out;
 }

@@ -29,7 +29,12 @@ export const FICHIERS_AMBIANCE = {
   // La bronca : sifflets et huées de tout le stade (ElevenLabs Sound Effects, porteur du projet, 4 novembre), avec les gros sifflets,
   // à la place des longues huées (l'une puis l'autre).
   bronca1: "public_bronca_01", bronca2: "public_bronca_02",
+  // Le grand stade de foot, suite (19 novembre, les 8 sons de l'essai gardés par le porteur du projet) : en alternance avec les
+  // anciens, les applaudissements faibles (un point ordinaire), forts (un point arraché, un smash, la fin d'un set) et le « ooh ».
+  applaudFaibles: "public_applaudissements_faibles_01", applaudForts: "public_applaudissements_forts_01", oohSurprise: "public_ooh_02",
 };
+// Leur volume, pour qu'ils sonnent comme les anciens qu'ils remplacent une fois sur deux (ils sont enregistrés bien plus fort).
+export const VOLUME_GRAND_STADE = { applaudFaibles: 0.2, applaudForts: 0.32, oohSurprise: 0.84, explosion: 0.3, entree: 0.32, kop: 0.4, clappements: 0.4, ola: 0.35 };
 // Les réactions variées du public après un point (plusieurs versions de chacune, pour ne pas se répéter).
 export const FICHIERS_REACTIONS = {
   allez: ["public_allez_01"],   // (28 octobre : le « Allez ! » n° 1 de l'essai, gardé à l'écoute ; les anciens sont dans l'historique)
@@ -81,6 +86,9 @@ export const FICHIERS_STADE = {
   debut1: "stade_debut_01", debut2: "stade_debut_02",
   chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
   chantCourt3: "stade_chant_court_03",   // (les 7 premières secondes de « Pierre, feuille, ciseaux… », 4 novembre)
+  // Le grand stade de foot (19 novembre, choisis par le porteur du projet) : la montée du stade à l'entrée des joueurs, le kop
+  // et ses tambours (entre deux points), les clappements en rythme (une série), l'explosion (la balle de match), la ola (entre les sets).
+  entree: "stade_entree_01", kop: "stade_kop_01", clappements: "stade_clappements_01", explosion: "stade_explosion_01", ola: "stade_ola_01",
 };
 
 // Ceux qui sont joués : la trompette (« charge ») et le « Olé », avant une balle de set ou de match (et le « Olé » après une série) ;
@@ -88,12 +96,12 @@ export const FICHIERS_STADE = {
 // Les gros fichiers (chants entiers, hymne, stade du début de match) ne sont pas chargés au démarrage : chacun est téléchargé
 // la première fois qu'on en a besoin, et le suivant de chaque tour est préparé à l'avance (5 novembre : 6,4 Mo au premier match
 // avant, environ 2,5 Mo maintenant, pour les nouveaux joueurs en 4G).
-export const STADE_A_LA_DEMANDE = new Set(["hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "chant10", "chant11", "debut1", "debut2"]);
+export const STADE_A_LA_DEMANDE = new Set(["hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "chant10", "chant11", "debut1", "debut2", "entree", "kop", "ola"]);
 // (6 novembre, demande du porteur du projet : tous les chants à égalité ; « Pour les vainqueurs », chant4, n'a plus une pause sur deux)
 const TOUR_PAUSE = ["chant10", "chant5", "chant6", "chant4", "chant1", "chant11", "chant7", "chant2", "chant8", "chant3", "chant9"];
 const TOUR_EXTRAITS = ["chant10", "chant6", "chant5", "chant11", "chant7", "debut1", "chant8", "chant1", "chant9", "chant4", "debut2", "chant2", "chant3"];
 const TOUR_DEBUT = ["debut1", "chant10", "debut2", "chant11"];   // (le stade pendant la présentation d'un match ordinaire)
-export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "chant10", "chant11", "debut1", "debut2", "chantCourt1", "chantCourt2", "chantCourt3"];
+export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "chant10", "chant11", "debut1", "debut2", "chantCourt1", "chantCourt2", "chantCourt3", "entree", "kop", "clappements", "explosion", "ola"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
@@ -116,9 +124,17 @@ export function intensiteMatch(m) {
   const [a, b] = m.points, n = m.format.pointsParSet, sg = m.format.setsGagnants;
   const avance = Math.min(1, Math.max(a, b) / n), ecart = Math.abs(a - b);
   const serre = ecart <= 1 ? 1 : ecart === 2 ? 0.7 : ecart === 3 ? 0.45 : 0.25;
-  let i = Math.pow(avance, 1.6) * serre * 0.7;
-  if (sg > 1 && m.sets[0] === sg - 1 && m.sets[1] === sg - 1) i += 0.25;   // le set décisif
-  else if (sg > 1 && Math.max(m.sets[0], m.sets[1]) === sg - 1) i += 0.1;   // un joueur n'est plus qu'à un set de la victoire
+  // (19 novembre, remarque du porteur du projet : au set décisif, à 7-7 puis 7-8, « on ne sentait pas monter la tension » :
+  // la montée est plus franche (avant : avance^1,6 × 0,7, et +0,25 au set décisif))
+  let i = Math.pow(avance, 1.3) * serre * 0.8;
+  const decisif = sg > 1 && m.sets[0] === sg - 1 && m.sets[1] === sg - 1;
+  if (decisif) {
+    i += 0.3;   // le set décisif
+    // le money time du set décisif (à 4 points de la fin ou plus près, un point d'écart au plus) : le stade bouillonne, de plus en plus
+    const reste = n - Math.max(a, b);
+    if (reste <= 4 && ecart <= 1) i = Math.max(i, 0.75 + 0.05 * Math.min(3, 4 - reste));
+  }
+  if (!decisif && sg > 1 && Math.max(m.sets[0], m.sets[1]) === sg - 1) i += 0.1;   // un joueur n'est plus qu'à un set de la victoire
   const h = balle(m);
   if (h) i = Math.max(i, h.type === "match" ? 0.95 : 0.8);
   if (pointDecisif(m)) i = 1;
@@ -266,7 +282,7 @@ export class Ambiance {
       }
     }
     if (this.fondVoulu) this.fond(true);   // le murmure arrive pendant le match : on le lance
-    this.preparer("debut1");   // (le stade de la présentation du tout premier match, chargé après l'essentiel)
+    this.preparer("debut1"); this.preparer("entree");   // (le stade de la présentation du tout premier match, chargé après l'essentiel)
   }
 
   activer(on) {
@@ -315,6 +331,8 @@ export class Ambiance {
     // la Feuille (12 novembre, demande du porteur du projet) : une grosse claque par-dessus son coup, plus doux que les autres
     if (signe === 2 && this.buf.claque) this.jouer(this.buf.claque, 0.95, true, { delai: 0.01, vitesse: 0.96 + Math.random() * 0.06, salle: false });
     if (this.buf.clameur) this.jouer(this.buf.clameur, 0.55, true, { delai: 0.25 });
+    // (19 novembre : une fois sur deux, les applaudissements forts du grand stade par-dessus)
+    if ((this.smashTour = !this.smashTour) && this.buf.applaudForts) this.jouer(this.buf.applaudForts, 0.5 * VOLUME_GRAND_STADE.applaudForts, true, { delai: 0.7 });
   }
 
   // Le smash qui ne marque pas (11 novembre) : « bloque » (renvoyé : un impact sourd et la balle qui rebondit) ou
@@ -481,19 +499,28 @@ export class Ambiance {
     if (versions.length) {
       const choix = versions.filter(v => v !== this.derniereReaction), v = (choix.length ? choix : versions)[Math.floor(Math.random() * (choix.length || versions.length))];
       this.derniereReaction = v; buffer = v.b; egal = v.g; vitesse = h(0.97, 1.03);
-    } else if (type === "applaudir" || type === "bravo") { buffer = this.buf.point; vitesse = h(...APPLAUDIR.vitesse); }
+    } else if (type === "applaudirFort" && this.buf.applaudForts) { buffer = this.buf.applaudForts; egal = VOLUME_GRAND_STADE.applaudForts * 1.6; vitesse = h(0.97, 1.03); }
+    else if ((type === "applaudir" || type === "applaudirFort") && (this.applaudTour = !this.applaudTour) && this.buf.applaudFaibles) {
+      buffer = this.buf.applaudFaibles; egal = VOLUME_GRAND_STADE.applaudFaibles; vitesse = h(0.97, 1.03);
+    } else if (type === "applaudir" || type === "applaudirFort" || type === "bravo") { buffer = this.buf.point; vitesse = h(...APPLAUDIR.vitesse); }
     if (!buffer) return;
-    const vol = (type === "applaudir" || !versions.length ? h(...APPLAUDIR.vol) : VOLUME_REACTION[type]) * egal;
+    const vol = (type === "applaudir" || type === "applaudirFort" || !versions.length ? h(...APPLAUDIR.vol) : VOLUME_REACTION[type]) * egal;
     const son = this.jouer(buffer, vol, true, { delai, vitesse });
     if (!son) return;
     // Les cris enregistrés vont jusqu'au bout ; les applaudissements (et le brouhaha) s'éteignent au bout d'un moment.
     const parle = versions.length > 0 && type !== "brouhaha" && type !== "applaudir";
-    const duree = parle || type === "brouhaha" ? buffer.duration / vitesse : APPLAUDIR.duree;
+    // (les applaudissements du grand stade : un peu plus longs, ils s'éteignent au bout de 2 à 3 secondes)
+    const duree = parle || type === "brouhaha" ? buffer.duration / vitesse : buffer === this.buf.applaudForts ? 3 : buffer === this.buf.applaudFaibles ? 2 : APPLAUDIR.duree;
     try { son.g.gain.setTargetAtTime(0, this.ctx.currentTime + delai + duree, 0.25); son.src.stop(this.ctx.currentTime + delai + duree + 1.5); } catch { /* rien */ }
     this.bravos = { son, parle };
   }
   // Le « ooh » sur un point disputé.
-  ooh() { this.jouer(this.buf.ooh, 0.5, true, { delai: 0.15 }); }
+  // (19 novembre : une fois sur deux, le « ooh » du grand stade)
+  ooh() {
+    this.oohTour = !this.oohTour;
+    if (this.oohTour && this.buf.oohSurprise) this.jouer(this.buf.oohSurprise, 0.5 * VOLUME_GRAND_STADE.oohSurprise, true, { delai: 0.15 });
+    else this.jouer(this.buf.ooh, 0.5, true, { delai: 0.15 });
+  }
   // Les sifflets du public (renvoie leur durée en secondes, 0 s'ils ne sont pas prêts).
   // Un chant de supporters en entier (pause entre les sets, avant un grand match) : il baisse sous les commentaires, et s'éteint
   // en douceur dès que l'échange commence (calmer) ou qu'un autre chant démarre. On alterne les deux chants.
@@ -522,7 +549,7 @@ export class Ambiance {
   // Prépare le prochain son de chaque tour (pause, extraits, début de match ; l'hymne si on approche d'une finale).
   prechargerChants({ hymne = false } = {}) {
     for (const k of [this.suivantDans(TOUR_PAUSE, this.chantSuivant), this.suivantDans(TOUR_EXTRAITS, this.extraitSuivant),
-      this.suivantDans(TOUR_DEBUT, this.debutSuivant), hymne && "hymne"]) if (k) this.preparer(k);
+      this.suivantDans(TOUR_DEBUT, this.debutSuivant), hymne && "hymne", "entree", "ola"]) if (k) this.preparer(k);
   }
   // Le prochain chant personnalisé de la liste (au hasard la première fois ; en duel, la liste alterne les deux joueurs, 6 novembre).
   persoProchain(perso = []) {
@@ -564,7 +591,8 @@ export class Ambiance {
   // En duel (6 novembre, demande du porteur du projet) : les deux téléphones jouent le même chant au même moment. Le choix vient
   // d'un tirage commun (fait dans app.js à partir du numéro du duel) ; ici, les listes à piocher et la lecture d'un chant précis.
   listePause() { return TOUR_PAUSE.filter(k => this.disponible(k)); }
-  listeDebut() { return TOUR_DEBUT.filter(k => this.disponible(k)); }
+  // (la montée d'entrée du grand stade, une fois sur deux : autant de fois dans la liste que les autres réunis)
+  listeDebut() { const l = TOUR_DEBUT.filter(k => this.disponible(k)); return this.disponible("entree") && l.length ? [...l, ...l.map(() => "entree")] : l; }
   // Prépare un chant précis : un chant du stade (« chant5 », « debut1 »…) ou un chant personnalisé (son nom de fichier).
   preparerChant(id) {
     if (!id) return Promise.resolve(null);
@@ -587,7 +615,17 @@ export class Ambiance {
   }
   // Le stade pendant la présentation d'un match ordinaire (4 novembre, demande du porteur du projet) : le chœur ou la clameur, l'un
   // après l'autre ; il baisse sous les commentaires et s'éteint quand le jeu commence (comme un chant).
+  // (19 novembre : une fois sur deux, la montée du grand stade à l'entrée des joueurs, à la place)
   debutMatch({ vol = 0.4, delai = 0.3 } = {}) {
+    this.entreeTour = !this.entreeTour;
+    if (this.entreeTour && this.buf.entree) {
+      this.arreterChant();
+      const b = this.buf.entree, son = this.jouer(b, VOLUME_GRAND_STADE.entree, true, { delai, fondu: 0.6 });
+      this.prechargerChants();
+      if (!son) return false;
+      this.chantEnCours = son; this.porter(delai + b.duration);
+      return true;
+    }
     const k = this.suivantDans(TOUR_DEBUT, this.debutSuivant);
     if (!k) return false;
     if (!this.buf[k]) { this.preparer(k); return false; }
@@ -603,11 +641,14 @@ export class Ambiance {
   // Pendant le match, de temps en temps entre deux points (4 novembre, demande du porteur du projet : des supporters plus présents) :
   // quelques secondes prises au hasard dans les chants de la pause et du début de match, qui sortent de la foule puis s'éteignent.
   // Ils continuent sous l'échange (comme un vrai public) et baissent sous les commentaires.
+  // (19 novembre : une fois sur trois, le kop et ses tambours du grand stade)
   extraitMatch({ vol = 0.38, delai = 0.6, duree = 7 } = {}) {
-    const k = this.suivantDans(TOUR_EXTRAITS, this.extraitSuivant);
+    // (le kop n'est téléchargé qu'au premier extrait : pas de poids en plus pour un nouveau joueur qui ne va pas loin)
+    const kop = (this.extraitsJoues = (this.extraitsJoues || 0) + 1) % 3 === 0 && (this.buf.kop || void this.preparer("kop"));
+    const k = kop ? "kop" : this.suivantDans(TOUR_EXTRAITS, this.extraitSuivant);
     if (!k) return false;
     if (!this.buf[k]) { this.preparer(k); return false; }
-    this.extraitSuivant = k;
+    if (kop) vol = VOLUME_GRAND_STADE.kop; else this.extraitSuivant = k;
     this.prechargerChants();
     const b = this.buf[k], marge = Math.max(0, b.duration - duree - 2.5);
     const depuis = Math.min(marge, 1 + Math.random() * Math.max(0, marge - 1));
@@ -693,7 +734,21 @@ export class Ambiance {
   // (si un son n'est pas encore prêt, il est simplement ignoré)
 
   // "point", "clameur", "set" ou "ovation"
+  // L'explosion du grand stade (la balle de match gagnée ; 19 novembre) ; renvoie true si elle a été jouée.
+  explosion(vol = 1) { return !!(this.buf.explosion && this.jouer(this.buf.explosion, vol * VOLUME_GRAND_STADE.explosion, true, { salle: false })); }
+  // La ola du grand stade (la pause entre les sets ; 19 novembre) : elle fait le tour du stade, puis s'éteint ; renvoie sa durée.
+  ola({ delai = 0.8 } = {}) {
+    if (!this.buf.ola) { this.preparer("ola"); return 0; }
+    const son = this.jouer(this.buf.ola, VOLUME_GRAND_STADE.ola, true, { delai, fondu: 0.8 });
+    if (!son) return 0;
+    this.porter(delai + this.buf.ola.duration);
+    return this.buf.ola.duration;
+  }
+  // Les clappements en rythme du grand stade (une série ; 19 novembre) : ils s'éteignent au bout de 6 secondes.
+  clappements() { return this.stade("clappements", { vol: VOLUME_GRAND_STADE.clappements, delai: 0.4, coupe: 6, fondu: 0.6 }) > 0; }
   public(type, vol = 0.5) {
+    // (19 novembre : la fin d'un set, une fois sur deux, les applaudissements forts du grand stade)
+    if (type === "set" && (this.setTour = !this.setTour) && this.buf.applaudForts) { this.jouer(this.buf.applaudForts, vol * VOLUME_GRAND_STADE.applaudForts, true); return; }
     // Sans enregistrement, l'ovation = la foule du set, relancée, et la clameur par-dessus.
     if (type === "ovation" && !this.buf.ovation) {
       this.jouer(this.buf.set, vol, true);
