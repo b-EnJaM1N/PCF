@@ -983,7 +983,8 @@ export function situationsStats(info) {
 // Le dialogue des statistiques : [Roland qui lance, l'analyse], ou null (une fois sur deux, ou rien d'enregistré). On tire parmi
 // les trois situations les plus marquantes (la première plus souvent), en évitant les répliques entendues aux derniers matchs.
 export function commentaireStats(info, { genre = "m", audible = null, anciens = [], rng = Math.random } = {}) {
-  if (rng() >= 0.5) return null;
+  // (3 fois sur 4 : 19 novembre, demande du porteur du projet, trois matchs de suite sans ; une fois sur deux avant)
+  if (rng() >= 0.75) return null;
   const ok = l => l && (!audible || audible(l.id)), vus = new Set(anciens.map(baseDe));
   const tirer = (pool, signe = 0) => {
     const l = (POOLS[pool] || []).map(e => ligneMoment(e, { genre, signe })).filter(ok);
