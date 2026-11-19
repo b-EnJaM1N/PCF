@@ -75,7 +75,7 @@ test("les commentateurs se souviennent : des répliques enregistrées, au bon ge
   for (let i = 0; i < 30; i++) {
     const m = commentaireMemeOuverture({ ouverture: 2 }, 2, {}, Math.random);
     assert.ok(m.length >= 1 && !m.some(y => /pas son fort/.test(y.texte)));
-    assert.match(m.map(y => y.texte).join(" "), /même ouverture|Même ouverture|rouvre/);
+    assert.match(m.map(y => y.texte).join(" "), /même ouverture|Même ouverture|rouvre|ouverture assez prévisible/);
   }
   assert.match(commentaireMemeOuverture({ ouverture: 2 }, 2, { genreAdv: "f" }, () => 0)[0].texte, /^Elle rejoue/);
   assert.match(commentaireMemeOuverture({ ouverture: 2 }, 1, {}, () => 0)[0].texte, /ouverture/);

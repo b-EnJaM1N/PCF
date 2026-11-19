@@ -145,7 +145,7 @@ test("en duel, les deux téléphones font le même tirage de chants", async () =
 
 
 test("les sons des effets du match : séisme, vent, cling, pschhh, crépitement, étincelle, cœur", () => {
-  for (const [nom, f, max] of [["grondement", grondement, 1.1], ["vent", coupDeVent, 0.9], ["cling", cling, 0.7], ["pschitt", pschitt, 0.55], ["crépitement", crepitement, 0.6], ["étincelle", etincelle, 0.18], ["cœur", battementCoeur, 0.5]]) {
+  for (const [nom, f, max] of [["grondement", grondement, 2], ["vent", coupDeVent, 0.9], ["cling", cling, 0.7], ["pschitt", pschitt, 0.55], ["crépitement", crepitement, 0.6], ["étincelle", etincelle, 0.18], ["cœur", battementCoeur, 0.5]]) {
     const s = f(22050, rngFixe(7));
     assert.ok(s.length <= 22050 * max + 1, nom);
     assert.ok(valide(s), nom);

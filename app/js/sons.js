@@ -188,14 +188,15 @@ const finDouce = (s, fs, d = 0.03) => { for (let i = 0; i < 24; i++) s[i] *= i /
 
 // Le double smash des Pierres : un séisme, un grondement sourd qui roule.
 export function grondement(fs, rng = Math.random) {
-  const len = Math.floor(fs * 1.1), s = new Float32Array(len);
+  // (18 novembre : 1,1 s → 2 s, comme la secousse de l'écran)
+  const len = Math.floor(fs * 2), s = new Float32Array(len);
   let w1 = 0, w2 = 0;
   const k = 1 - Math.exp(-2 * Math.PI * 90 / fs);
   for (let i = 0; i < len; i++) {
-    const t = i / fs, env = Math.min(1, t / 0.05) * Math.exp(-t / 0.4);
+    const t = i / fs, env = Math.min(1, t / 0.05) * Math.exp(-t / 0.75);
     w1 += k * ((rng() * 2 - 1) - w1); w2 += k * (w1 - w2);
     const roule = 0.75 + 0.25 * Math.sin(2 * Math.PI * 9 * t);          // ça roule
-    s[i] = (w2 * 6 + Math.sin(2 * Math.PI * (48 - 10 * t) * t) * 0.6) * env * roule;
+    s[i] = (w2 * 6 + Math.sin(2 * Math.PI * Math.max(30, 48 - 10 * t) * t) * 0.6) * env * roule;
   }
   return normaliser([finDouce(s, fs)], 0.9)[0];
 }

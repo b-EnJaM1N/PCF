@@ -367,7 +367,7 @@ test("commentaires selon l'enjeu : le contexte, l'avant-match et l'après-match 
   // Avant une grande finale : toujours un dialogue de grande finale.
   for (let k = 0; k < 20; k++) {
     const { commentaires } = annoncesAvantMatch({ jeu: "majeur_finale", recents: [] }, rngFixe(k));
-    assert.match(commentaires[0].id, /^commentateur_dialogue_avant_majeur_finale_\d\d$/);
+    assert.ok(commentaires.some(l => /^commentateur_dialogue_avant_majeur_finale_\d\d$/.test(l.id)), commentaires.map(l => l.id).join());
   }
   // Après une finale de petit tournoi perdue (joueuse) : un dialogue de finale perdue, au féminin quand il le faut.
   const rng = rngFixe(9);
@@ -725,7 +725,8 @@ test("le Chiromancien : ses répliques seulement dans ses matchs, sur ses série
   for (let k = 0; k < 200; k++) {
     const av = annoncesAvantMatch({ perso: { nom: "chiromancien", joueur: 0 } }, rngFixe(k));
     av.commentaires.filter(l => perso(l.id)).forEach(l => dits.add(baseDe(l.id)));
-    if (av.commentaires.some(l => perso(l.id))) assert.ok(av.commentaires.every(l => perso(l.id)));
+    // (sa présentation tient lieu d'ouverture : pas de « Mesdames et messieurs » en plus ; 19 novembre)
+    if (av.commentaires.some(l => perso(l.id))) assert.ok(!av.commentaires.some(l => /avant_ouverture/.test(l.id)), av.commentaires.map(l => l.id).join());
   }
   assert.ok(dits.size >= 4 && [...dits].some(id => id.includes("_dialogue_")), [...dits].join());
   for (let k = 0; k < 100; k++) assert.ok(!annoncesAvantMatch({}, rngFixe(k)).commentaires.some(l => perso(l.id)));
@@ -776,4 +777,16 @@ test("le Chiromancien en duel : ses répliques aux mêmes moments sur les deux t
     }
   }
   assert.ok(total >= 20, `${total} répliques personnalisées`);
+});
+
+test("l'avant-match dure 10 à 15 secondes (estimé d'après le texte), avec l'ouverture de Roland si besoin", () => {
+  const duree = l => l.texte.length / (l.role === "commentatrice" ? 21 : 24) + 0.5;
+  let ouvertures = 0;
+  for (let k = 0; k < 300; k++) {
+    const av = annoncesAvantMatch({ humain: k % 3 === 0, recents: [], situations: k % 4 ? [] : ["revanche"] }, rngFixe(k));
+    const t = av.commentaires.reduce((x, l) => x + duree(l), 0);
+    assert.ok(t >= 9 && t <= 15, `${t.toFixed(1)} s : ${av.commentaires.map(l => l.id).join()}`);
+    if (av.commentaires.some(l => /avant_ouverture/.test(l.id))) ouvertures++;
+  }
+  assert.ok(ouvertures > 150, `${ouvertures} ouvertures`);
 });

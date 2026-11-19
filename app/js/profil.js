@@ -190,6 +190,7 @@ export function enregistrerMatch(P, r) {
   if (humain && !r.abandon) P.duelsFinis = (P.duelsFinis || 0) + 1;
   P.matchs++; if (gagne) P.victoires++;
   P.serieEnCours = gagne ? P.serieEnCours + 1 : 0;
+  P.defaitesEnCours = gagne ? 0 : (P.defaitesEnCours || 0) + 1;   // (19 novembre : pour Roland et Monique, 3 défaites de suite ou plus)
   P.meilleureSerieVictoires = Math.max(P.meilleureSerieVictoires, P.serieEnCours);
   P.sets[0] += match.sets[0]; P.sets[1] += match.sets[1]; P.coups += n;
   c.forEach(x => { P.signes[x.a]++; P.signesAdv[x.b]++; });
