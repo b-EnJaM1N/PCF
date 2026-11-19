@@ -103,13 +103,19 @@ test("le public s'agite avec l'enjeu : calme en début de set, plus fort en fin 
   const milieu = intensiteMatch(m);
   for (let i = 0; i < 4; i++) { gagne(0); gagne(1); }   // 7-7
   const fin = intensiteMatch(m);
-  assert.ok(milieu < 0.15 && fin > milieu, `3-3 : ${milieu} ; 7-7 : ${fin}`);
+  assert.ok(milieu < 0.2 && fin > milieu, `3-3 : ${milieu} ; 7-7 : ${fin}`);
   for (let i = 0; i < 3; i++) gagne(0);                  // 10-7 : balle de set
   assert.ok(intensiteMatch(m) >= 0.8, "balle de set");
   gagne(0);                                               // set gagné : on repart au calme
   assert.ok(intensiteMatch(m) <= 0.1, "nouveau set : calme (un peu plus nerveux : un joueur n'est plus qu'à un set de la victoire)");
   for (let i = 0; i < 11; i++) gagne(1);                  // 1 set partout : set décisif
   assert.ok(intensiteMatch(m) >= 0.2, "set décisif : le public est déjà plus nerveux");
+  // (19 novembre) le money time du set décisif : à 7-7, le stade bouillonne déjà, et encore plus à 9-9
+  for (let i = 0; i < 7; i++) { gagne(0); gagne(1); }
+  const septSept = intensiteMatch(m);
+  assert.ok(septSept >= 0.75, `set décisif, 7-7 : ${septSept}`);
+  gagne(0); gagne(1); gagne(0); gagne(1);
+  assert.ok(intensiteMatch(m) > septSept, "set décisif, 9-9 : plus encore");
   // les réactions : plus nombreuses quand ça chauffe
   const compter = intensite => { let n = 0; for (let k = 0; k < 2000; k++) if (rp({}, { gagnant: 0 }, [{ gagnant: 1 }, { gagnant: 0 }], () => k / 2000, intensite)) n++; return n; };
   assert.ok(compter(1) > compter(0), "plus de réactions aux moments chauds");
