@@ -34,6 +34,7 @@ async function principal() {
   if (candidats) mkdirSync(ou, { recursive: true });
   const liste = candidats
     ? Object.entries(JSON.parse(readFileSync(new URL("sons-candidats.json", import.meta.url), "utf8")).candidats).map(([id, s]) => ({ id, ...s, salle: false }))
+      .filter(s => !ids || ids.includes(s.id))   // (19 novembre : refaire seulement certains candidats)
     : sonsAFaire({ ids, refaire: process.argv.includes("--refaire") });
   console.log(`${liste.length} son(s) à générer, ${liste.reduce((n, s) => n + s.duree, 0)} secondes en tout.`);
   let faits = 0;

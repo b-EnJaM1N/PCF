@@ -262,6 +262,26 @@ export function etincelle(fs, rng = Math.random) {
   return normaliser([finDouce(s, fs, 0.01)], 0.5)[0];
 }
 
+// Le petit jingle du replay (19 novembre, demande du porteur du projet) : un souffle qui monte, puis trois notes claires, avant les
+// temps forts de fin de match, pendant que l'icône « replay » tourne. Environ 1,4 seconde.
+export function jingleReplay(fs, rng = Math.random) {
+  const len = Math.floor(fs * 1.4), s = new Float32Array(len);
+  let w = 0;
+  for (let i = 0; i < len; i++) {
+    const t = i / fs;
+    if (t < 0.6) {   // le souffle : un bruit filtré qui monte, puis s'arrête net
+      const k = 0.02 + 0.25 * (t / 0.6); w += k * ((rng() * 2 - 1) - w);
+      s[i] += w * Math.sin(Math.PI * t / 0.6) * 0.9;
+    }
+    for (const [t0, f] of [[0.45, 659.3], [0.6, 830.6], [0.75, 987.8]]) {   // mi, sol dièse, si
+      if (t < t0) continue;
+      const u = t - t0, env = Math.min(1, u / 0.008) * Math.exp(-u / 0.22);
+      s[i] += env * 0.32 * (Math.sin(2 * Math.PI * f * u) + 0.35 * Math.sin(4 * Math.PI * f * u) + 0.12 * Math.sin(6 * Math.PI * f * u));
+    }
+  }
+  return normaliser([finDouce(s, fs)], 0.85)[0];
+}
+
 // Le cœur qui bat (effets.js, niveauCoeur) : « boum-boum », deux coups sourds (le second plus faible), avec une harmonique
 // pour qu'on l'entende aussi sur le haut-parleur d'un téléphone.
 export function battementCoeur(fs) {

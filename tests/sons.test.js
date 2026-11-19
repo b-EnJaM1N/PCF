@@ -153,3 +153,12 @@ test("les sons des effets du match : séisme, vent, cling, pschhh, crépitement,
     assert.ok(Math.abs(s[0]) < 0.05 && Math.abs(s.at(-1)) < 0.05, `${nom} commence et finit sans clic`);
   }
 });
+
+test("le grand stade : les trois fonds se fondent selon l'intensité (calme, nerveux, bouillant), toujours en tout 1", async () => {
+  const { poidsStade } = await import("../app/js/ambiance.js");
+  assert.deepEqual(poidsStade(0), [1, 0, 0]);
+  assert.deepEqual(poidsStade(0.5), [0, 1, 0]);
+  assert.deepEqual(poidsStade(1), [0, 0, 1]);
+  for (let i = 0; i <= 1; i += 0.05) { const p = poidsStade(i); assert.ok(Math.abs(p[0] + p[1] + p[2] - 1) < 1e-9 && p.every(x => x >= 0), String(i)); }
+  const m = poidsStade(0.8); assert.ok(m[1] > 0 && m[2] > 0, "entre nerveux et bouillant : un mélange");
+});

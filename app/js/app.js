@@ -2,7 +2,7 @@
 import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, SONNE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, recupererSmash, issueSmash, gagnantCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement, commentaireStats } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
 import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache, mesDossards } from "./social-serveur.js";
 import { ficheVisible, htmlFiche } from "./fiche-joueur.js";
@@ -20,7 +20,7 @@ import { installerSignalement } from "./ecran-signaler.js";
 import { etatNotifications, activerNotifications, desactiverNotifications, rattacherAbonnement, testerNotification, texteTest } from "./notifications.js";
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
 import { MARQUE } from "./marque.js";
-import { nouvellesStats, suivreCoup } from "./stats-match.js";
+import { nouvellesStats, suivreCoup, statsDuMatch } from "./stats-match.js";
 import { estFiac } from "./profil.js";
 import { jouerRoutine } from "./routines.js";
 import { TITRES, FAMILLES, accorderTitres, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, reserveAuTenant, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
@@ -270,7 +270,8 @@ function annoncer(lignes, silencieux = false, { enJeu = false, coup = 0 } = {}) 
   if (!enJeu) { retenirCommentaires(lignes); voix.dire(lignes); return; }
   const recent = S && coup - (S.commentaireAuCoup ?? -9) < 2;
   // (les répliques personnalisées passent même juste après un commentaire : en duel, les deux joueurs doivent les entendre)
-  const dites = lignes.filter(l => l.role === "arbitre" || ((!recent || l.id.includes("_perso_")) && l.texte.length <= REPLIQUE_COURTE));
+  // (et l'accueil des nouveaux joueurs, même long : c'est leur premier match, ils ont le temps ; 19 novembre)
+  const dites = lignes.filter(l => l.role === "arbitre" || l.id.includes("_accueil_") || ((!recent || l.id.includes("_perso_")) && l.texte.length <= REPLIQUE_COURTE));
   retenirCommentaires(dites);
   if (S && dites.some(l => l.role !== "arbitre")) S.commentaireAuCoup = coup;
   voix.dire(dites);
@@ -310,6 +311,12 @@ function lancerMinuteur() {
       if (reste < 0.3) $("timer").classList.add("urgent");
     } else {
       // Les 8 secondes sont passées : on puise dans la réserve.
+      // (au premier match d'un nouveau joueur, la première fois, Monique l'explique ; 19 novembre)
+      if (S?.annonces?.accueil === 1 && !S.annonces.accueilDit.has("reserve")) {
+        S.annonces.accueilDit.add("reserve");
+        const l = (POOLS.accueil_reserve || []).map(it => ligneMoment(it, { genre: P.genre })).find(x => x && voix.fichiers.has(x.id));
+        if (l) voix.dire([l]);
+      }
       const r = Math.max(0, reserveDebut - (ecoule - DUREE_COUP_MS));
       m.reserve[0] = r;
       $("timer").classList.add("urgent", "reserve");
@@ -410,6 +417,8 @@ const boutons = on => document.querySelectorAll("#moves button").forEach(b => { 
 // smash : appui long sur le signe (un par set, pour le spectacle seulement ; voir peutSmasher).
 function jouer(signe, auto = false, smash = false) {
   if (S?.sonneJusqu && performance.now() < S.sonneJusqu) return;   // (sonné : même au clavier, pas de coup)
+  // (19 novembre) le temps mis à jouer, pour le commentaire des statistiques (« Il a joué vite dans ce match »)
+  if (S && !S.duel && !auto && tDebut && S.enJeu && !S.occupe) (S.tempsReponse ||= []).push(performance.now() - tDebut);
   if (S && S.duel) return jouerDuel(signe, smash);
   if (!S || !S.enJeu || S.occupe || S.match.termine || panneauOuvert || faceAFaceOuvert) return;
   S.occupe = true; arreterMinuteur(); boutons(false);
@@ -610,6 +619,7 @@ function dialogueReplay(nom, genre = "m") {
   const ids = DIALOGUES_IDS[nom] || [], ok = ids.map((_, k) => k).filter(k => ids[k].every(id => voix.fichiers.has(id)));
   if (!ok.length) return null;
   const dits = S ? (S.replayDits ||= new Set()) : new Set(), neufs = ok.filter(k => !dits.has(`${nom}:${k}`)), g = neufs.length ? neufs : ok;
+  if (!neufs.length && nom.startsWith("tf_")) return null;   // (un dialogue d'action déjà dit dans ce match : pas deux fois ; 19 novembre)
   const k = g[Math.floor(Math.random() * g.length)];
   dits.add(`${nom}:${k}`);
   return ligneDialogue(nom, k, genre);
@@ -643,9 +653,24 @@ function jouerReplay(liste, apres = () => {}) {
   voix.arreter();
   const ov = $("replay"), vite = reduitMouvement();
   let i = 0, t = null, fini = false, conclu = false;
-  const fermer = () => { if (fini) return; fini = true; clearTimeout(t); voix.arreter(); volet(() => { ov.hidden = true; apres(); }); };
+  const fermer = () => { if (fini) return; fini = true; clearTimeout(t); voix.arreter(); volet(() => { ov.hidden = true; $("rpIntro").hidden = true; apres(); }); };
   // (couper : arrêter net, sans la suite ; en duel, quand le set repart pendant le replay de la pause)
-  const couper = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); };
+  const couper = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; $("rpIntro").hidden = true; voix.arreter(); };
+  // (19 novembre, demande du porteur du projet) Les temps forts commencent par leur annonce : l'icône « replay » qui tourne et le
+  // jingle, pendant que Roland (ou Roland et Monique) les annonce ; la première action ne part qu'ensuite.
+  const introTempsForts = () => {
+    const el = $("rpIntro"); el.hidden = false;
+    try { ambiance.jingle(); } catch { /* sans son */ }
+    const d = Math.random() < 0.5 ? dialogueReplay("temps_forts_intro") : null, l = !d && ligneReplay("replay_debut", "m", "commentateur");
+    const debut = Date.now();
+    t = setTimeout(() => {
+      if (d) voix.dire(d); else if (l) voix.dire([l]);
+      voix.finiDeParler(() => {
+        if (fini) return;
+        t = setTimeout(() => { if (fini) return; el.hidden = true; afficherAction(); }, Math.max(vite ? 0 : 400, 2200 - (Date.now() - debut)));
+      }, 15000);
+    }, vite ? 0 : 900);
+  };
   $("rpPasser").onclick = fermer;
   $("rpNomMoi").textContent = nomAffiche(P); $("rpNomAdv").textContent = OPP.nom;
   $("rpMiniMoi").innerHTML = avatarSVG(avMoi()); $("rpMiniAdv").innerHTML = avatarSVG(avAdv());
@@ -666,13 +691,13 @@ function jouerReplay(liste, apres = () => {}) {
       }
       fermer(); return;
     }
-    if (i === 0) { afficherAction(); return; }
+    if (i === 0) { if (liste.length > 1) introTempsForts(); else afficherAction(); return; }
     boite.classList.remove("rp-entree"); boite.classList.add("rp-sortie");
     t = setTimeout(() => {
       if (fini) return;
       boite.classList.remove("rp-sortie"); void boite.offsetWidth; boite.classList.add("rp-entree");
       afficherAction();
-    }, vite ? 250 : 1100);
+    }, vite ? 250 : 550);   // (19 novembre : plus rapide, 1,1 s avant)
   };
   const afficherAction = () => {
     const mo = liste[i++], moi = $("rpMoi"), adv = $("rpAdv");
@@ -715,9 +740,9 @@ function jouerReplay(liste, apres = () => {}) {
     // grands moments de cette rencontre ! »)
     const sansAnnonce = ["tf_deuxieme", "tf_balle"].includes(dlgNom) || (dlg && !plusieurs);
     const annonce = sansAnnonce ? null : !plusieurs ? (i === 1 ? "replay_intro" : null) : i === 1 ? "replay_debut" : dernier ? "replay_enfin" : "replay_ensuite";
-    const intro = plusieurs && i === 1 && Math.random() < 0.5 ? dialogueReplay("temps_forts_intro") : null;
-    const la = !intro && annonce && (ligneReplay(annonce, "m", "commentateur") || (i === 1 ? ligneReplay("replay_intro", "m", roland) : null));
-    if (intro) voix.dire(intro); else if (la) voix.dire([la]);
+    // (aux temps forts, la première action a déjà été annoncée : voir introTempsForts)
+    const la = !(plusieurs && i === 1) && annonce && (ligneReplay(annonce, "m", "commentateur") || (i === 1 ? ligneReplay("replay_intro", "m", roland) : null));
+    if (la) voix.dire([la]);
     t = setTimeout(() => {
       if (!encore()) return;
       const devoile = Date.now();
@@ -756,7 +781,8 @@ function jouerReplay(liste, apres = () => {}) {
         : pa && ["pertinent", "propre", "piege"].includes(pa.verdict) && Math.random() < 0.35 ? piocher("replay_reussite", genre) : null;
       const c = dlg ? dlg[0] : variante || (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
       // (le temps de regarder, même sans le son : 3 secondes au moins, 6 avec la palette)
-      const suite = () => { t = setTimeout(montrer, Math.max(vite ? 800 : 1500, (pa ? 6500 : 3200) - (Date.now() - devoile))); };
+      // (19 novembre : un peu plus rapide entre deux actions ; 1,5 s, 6,5 s et 3,2 s avant)
+      const suite = () => { t = setTimeout(montrer, Math.max(vite ? 600 : 800, (pa ? 5000 : 2600) - (Date.now() - devoile))); };
       const reponse = dlg ? dlg[1] : pa ? lp : null;
       parler(c, () => (reponse ? parler(reponse, suite) : suite()));
     }, vite ? 300 : 2000);
@@ -903,7 +929,10 @@ function apresPoint(evt, a, cel, rp) {
     S.pointsSansChant = 0;
   }
   if (evt.gagnant !== null) S.pointsSansChant = (S.pointsSansChant || 0) + 1;
-  annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
+  // (19 novembre) à la fin du match, l'arbitre tout de suite ; le commentaire d'après-match, lui, attend le panneau des
+  // statistiques (après le cri et la poignée de main ; voir montrerStatsFin)
+  if (m.termine) { S.commentairesFin = a.lignes.filter(l => l.role !== "arbitre"); annoncer(a.lignes.filter(l => l.role === "arbitre")); }
+  else annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
   render(); renderHistorique(); renderLecture();
   if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);
 
@@ -913,7 +942,9 @@ function apresPoint(evt, a, cel, rp) {
     const seance = S;
     S.pauseFin = true; render();
     // (la poignée de main attend que le commentaire de fin de match soit fini : demande du porteur du projet, 25 octobre)
-    setTimeout(() => { if (S === seance) criEnGrand(cel, () => voix.finiDeParler(() => { if (S === seance) poigneeDeMain(finir); })); }, reduitMouvement() ? 900 : 1800);
+    // (19 novembre, choix du porteur du projet) Le cri, puis la poignée de main tout de suite, puis les statistiques du match pendant
+    // le commentaire d'après-match ; enfin, l'écran de fin.
+    setTimeout(() => { if (S === seance) criEnGrand(cel, () => voix.finiDeParler(() => { if (S === seance) poigneeDeMain(() => { if (S === seance) montrerStatsFin(finir); }); }, 4000)); }, reduitMouvement() ? 900 : 1800);
     return evt;
   }
   if (cel) setTimeout(() => criEnBulle(cel), 250);
@@ -936,7 +967,7 @@ function apresPoint(evt, a, cel, rp) {
     // demande du porteur du projet : on le voyait passer furtivement avant le replay).
     // (18 novembre, demande du porteur du projet) En duel aussi : la pause dure 15 secondes de plus pour le replay (étape SQL 81),
     // qui passe s'il reste au moins 20 secondes ; si le set repart pendant le replay, il s'arrête net.
-    const moSet = replayVisible() ? momentDuSet(S.moments || [], n - 1) : null, seanceSet = S;
+    const moSet = replayVisible() ? momentDuSet(S.moments || [], n - 1, g) : null, seanceSet = S;
     const ouvrirPause = () => {
       if (S !== seanceSet) return;
       ouvrirPanneau({
@@ -1234,6 +1265,56 @@ function finir() {
 // ---------------------------------------------------------------- la poignée de main
 // 5 secondes pour choisir (sinon, mon style habituel ; DELAI_CHOIX_MS), puis une courte animation, puis l'écran de fin.
 // Contre un humain, on envoie son choix et on attend un peu celui de l'adversaire (sinon, son style habituel).
+// Le panneau des statistiques du match (19 novembre, idée du porteur du projet : comme au tennis à la télé), après la poignée de
+// main : Roland et Monique y font leur commentaire d'après-match (gardé depuis le dernier point). Il reste au moins 6 secondes, et
+// jusqu'à la fin des commentaires (25 secondes au plus) ; « Continuer » pour passer.
+function montrerStatsFin(apres) {
+  const m = S.match, st = statsDuMatch(m.coups), mes = S.stats || {}, ov = $("statsFin"), seance = S;
+  const pc = (x, n) => (n ? `${Math.round((100 * x) / n)} %` : "–"), sur = ([a, b]) => (b ? `${a}/${b}` : "–");
+  const ligne = (titre, g, d, vg = null, vd = null) => {
+    const tg = vg ?? Number.parseFloat(g) ?? 0, td = vd ?? Number.parseFloat(d) ?? 0, tot = (tg || 0) + (td || 0);
+    const barre = tot > 0 ? `<div class="sf-barre"><i style="width:${(100 * (tg || 0)) / tot}%"></i><i style="width:${(100 * (td || 0)) / tot}%"></i></div>` : "";
+    return `<div class="sf-ligne"><b>${g}</b><div class="sf-milieu">${esc(titre)}${barre}</div><b>${d}</b></div>`;
+  };
+  const nb = j => st.signes[j][0] + st.signes[j][1] + st.signes[j][2];
+  const ballesAdv = [Math.max(0, (mes.ballesSubies || 0) - (mes.ballesSauvees || 0)), mes.ballesSubies || 0];
+  $("sfMoi").textContent = nomAffiche(P); $("sfAdv").textContent = OPP.nom;
+  $("sfScore").textContent = m.scoresSets.map(([a, b]) => `${a}–${b}`).join("  ");
+  const imp = j => (st.imprevisibilite[j] === null ? "–" : `${st.imprevisibilite[j]} %`);
+  // (19 novembre, choix du porteur du projet : sans « Points gagnés », qui doublait le score ; le % de réussite sans les égalités)
+  $("sfLignes").innerHTML = ligne("Réussite (sans les égalités)", pc(...st.reussite[0]), pc(...st.reussite[1]), st.reussite[0][0], st.reussite[1][0])
+    + ligne("Imprévisibilité", imp(0), imp(1), st.imprevisibilite[0] || 0, st.imprevisibilite[1] || 0)
+    + [[0, "🪨 Pierre"], [2, "📄 Feuille"], [1, "✂️ Ciseaux"]].map(([k, t]) => ligne(t, pc(st.signes[0][k], nb(0)), pc(st.signes[1][k], nb(1)), st.signes[0][k] / (nb(0) || 1), st.signes[1][k] / (nb(1) || 1))).join("")
+    + ligne("Change de signe après une égalité", pc(...st.changeApresEgalite[0]), pc(...st.changeApresEgalite[1]), st.changeApresEgalite[0][0] / (st.changeApresEgalite[0][1] || 1), st.changeApresEgalite[1][0] / (st.changeApresEgalite[1][1] || 1))
+    + ligne("Points gagnés juste après une égalité", st.apresEgalite[0], st.apresEgalite[1])
+    + ligne("Garde son signe après un point gagné", pc(...st.memeApresGain[0]), pc(...st.memeApresGain[1]), st.memeApresGain[0][0] / (st.memeApresGain[0][1] || 1), st.memeApresGain[1][0] / (st.memeApresGain[1][1] || 1))
+    + ligne("Smashs gagnants", sur(st.smashs[0]), sur(st.smashs[1]), st.smashs[0][0], st.smashs[1][0])
+    + ligne("Balles de set et de match converties", sur([mes.ballesConverties || 0, mes.ballesObtenues || 0]), sur(ballesAdv), mes.ballesConverties || 0, ballesAdv[0])
+    + ligne("Meilleure série", st.serie[0], st.serie[1])
+    + `<p class="sf-seul">${st.coups} coups joués · ${st.egalites} égalité${st.egalites > 1 ? "s" : ""}</p>`;
+  ov.hidden = false;
+  const debut = Date.now(), coms = S.commentairesFin || [];
+  S.commentairesFin = null;
+  let fait = false;
+  const fin = () => { if (fait) return; fait = true; ov.hidden = true; voix.arreter(); if (S === seance) apres(); };
+  $("sfContinuer").onclick = fin;
+  // Puis Roland et Monique commentent les chiffres de ce match, comparés à ses habitudes (une fois sur deux ; commentaireStats).
+  const tr = S.tempsReponse || [];
+  const dlgStats = commentaireStats({
+    st, mes, gagne: m.vainqueur === 0, outsider: S.annonces?.outsider ?? null, scoresSets: m.scoresSets, pointsParSet: m.format.pointsParSet,
+    carriere: { signes: P.signes, devines: P.devines, lisibles: P.lisibles }, reserveUtilisee: RESERVE_MS - (m.reserve?.[0] ?? RESERVE_MS),
+    tempsMoyen: tr.length >= 8 ? tr.reduce((a, b) => a + b, 0) / tr.length : null,
+  }, { genre: P.genre, audible: id => voix.fichiers.has(id), anciens: commentairesRecents() });
+  voix.finiDeParler(() => {
+    if (fait) return;
+    if (coms.length) annoncer(coms);
+    voix.finiDeParler(() => {
+      if (fait) return;
+      if (dlgStats) annoncer(dlgStats);
+      voix.finiDeParler(() => setTimeout(fin, Math.max(1500, 6000 - (Date.now() - debut))), 20000);
+    }, 25000);
+  }, 4000);
+}
 function poigneeDeMain(apres) {
   const seance = S;
   if (!S || (S.duel && (!D || D.finSpeciale))) { apres(); return; }
@@ -1849,6 +1930,9 @@ function presenterSpeaker() {
   // (en duel, le tirage commun aux deux téléphones pour ces répliques : le numéro du duel et le moment ; 18 novembre)
   const tirageCommun = S.duel && D?.duel?.id ? cle => tirageDuel(`com:${cle}`) / 4294967296 : null;
   if (S.annonces) { S.annonces.perso = persoCom; S.annonces.tirage = tirageCommun; }
+  // (19 novembre) l'accueil des nouveaux joueurs : leurs 3 premiers matchs (1, 2 ou 3), commentés pour eux
+  const accueil = (P.matchs || 0) < 3 ? (P.matchs || 0) + 1 : 0;
+  if (S.annonces) S.annonces.accueil = accueil;
   // (19 novembre) mes séries de victoires et de défaites avant ce match, pour les dialogues d'après-match (« Il est intouchable ! »)
   if (S.annonces) S.annonces.serieAvant = { victoires: P.serieEnCours || 0, defaites: P.defaitesEnCours || 0 };
   const monId = `h:${compteUI.session()?.user?.id}`;
@@ -1866,7 +1950,7 @@ function presenterSpeaker() {
       humain, dejaJoues: !!(f && f.v + f.d > 0), niveauMoi, niveauAdv, memePays: humain && OPP.drapeau === P.drapeau,
       rapide: !!(D?.duel?.rapide || S.contreBotRapide), officiel: !!(S.duel && D?.duel?.classe), setsGagnants: S.match.format.setsGagnants,
     }),
-    recents, perso: persoCom, tirage: tirageCommun,
+    recents, perso: persoCom, tirage: tirageCommun, accueil,
   });
   // On retient les phrases dites, pour ne pas les répéter aux prochains matchs.
   ecrire("speakerRecents", av.commentaires.map(l => l.id).concat(recents).slice(0, 80));
