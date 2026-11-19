@@ -294,8 +294,9 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
         moment = "signe_fetiche"; etat.dejaSet.add("fetiche"); ctx.signe = fetiche.signe; ctx.smashAdv = fetiche.joueur === 1;
       } else if (david && peutCommenter(3, 0.5) && rng() < (david === "david_mene" ? 0.7 : 0.4)) {   // David contre Goliath
         moment = david; etat.davidDit = true;
-      } else if ((ab = signeAbime(match)) && peutCommenter(2, 0.5) && rng() < 0.6) {   // le signe abîmé par un smash, rejoué et perdu
-        moment = "signe_abime"; ctx.signe = ab.signe; ctx.smashAdv = ab.joueur === 1;
+      } else if (!etat.abimeDit && (ab = signeAbime(match)) && peutCommenter(2, 0.5) && rng() < 0.6) {   // le signe abîmé par un smash, rejoué et perdu
+        // (une seule fois par match : 19 novembre, remarque du porteur du projet, elle revenait chaque fois que le signe ressortait)
+        moment = "signe_abime"; ctx.signe = ab.signe; ctx.smashAdv = ab.joueur === 1; etat.abimeDit = true;
       } else if (feu.allume && peutCommenter(2, 0.5) && rng() < 0.8) {   // ma main prend feu (8 points de suite ; effets.js)
         moment = "main_en_feu";
       } else if (feu.eteint && peutCommenter(4) && rng() < 0.35) {        // une flamme qui s'éteint (un point perdu)

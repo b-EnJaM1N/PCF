@@ -617,6 +617,7 @@ function dialogueReplay(nom, genre = "m") {
   const ids = DIALOGUES_IDS[nom] || [], ok = ids.map((_, k) => k).filter(k => ids[k].every(id => voix.fichiers.has(id)));
   if (!ok.length) return null;
   const dits = S ? (S.replayDits ||= new Set()) : new Set(), neufs = ok.filter(k => !dits.has(`${nom}:${k}`)), g = neufs.length ? neufs : ok;
+  if (!neufs.length && nom.startsWith("tf_")) return null;   // (un dialogue d'action déjà dit dans ce match : pas deux fois ; 19 novembre)
   const k = g[Math.floor(Math.random() * g.length)];
   dits.add(`${nom}:${k}`);
   return ligneDialogue(nom, k, genre);
@@ -650,9 +651,24 @@ function jouerReplay(liste, apres = () => {}) {
   voix.arreter();
   const ov = $("replay"), vite = reduitMouvement();
   let i = 0, t = null, fini = false, conclu = false;
-  const fermer = () => { if (fini) return; fini = true; clearTimeout(t); voix.arreter(); volet(() => { ov.hidden = true; apres(); }); };
+  const fermer = () => { if (fini) return; fini = true; clearTimeout(t); voix.arreter(); volet(() => { ov.hidden = true; $("rpIntro").hidden = true; apres(); }); };
   // (couper : arrêter net, sans la suite ; en duel, quand le set repart pendant le replay de la pause)
-  const couper = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); };
+  const couper = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; $("rpIntro").hidden = true; voix.arreter(); };
+  // (19 novembre, demande du porteur du projet) Les temps forts commencent par leur annonce : l'icône « replay » qui tourne et le
+  // jingle, pendant que Roland (ou Roland et Monique) les annonce ; la première action ne part qu'ensuite.
+  const introTempsForts = () => {
+    const el = $("rpIntro"); el.hidden = false;
+    try { ambiance.jingle(); } catch { /* sans son */ }
+    const d = Math.random() < 0.5 ? dialogueReplay("temps_forts_intro") : null, l = !d && ligneReplay("replay_debut", "m", "commentateur");
+    const debut = Date.now();
+    t = setTimeout(() => {
+      if (d) voix.dire(d); else if (l) voix.dire([l]);
+      voix.finiDeParler(() => {
+        if (fini) return;
+        t = setTimeout(() => { if (fini) return; el.hidden = true; afficherAction(); }, Math.max(vite ? 0 : 400, 2200 - (Date.now() - debut)));
+      }, 15000);
+    }, vite ? 0 : 900);
+  };
   $("rpPasser").onclick = fermer;
   $("rpNomMoi").textContent = nomAffiche(P); $("rpNomAdv").textContent = OPP.nom;
   $("rpMiniMoi").innerHTML = avatarSVG(avMoi()); $("rpMiniAdv").innerHTML = avatarSVG(avAdv());
@@ -673,13 +689,13 @@ function jouerReplay(liste, apres = () => {}) {
       }
       fermer(); return;
     }
-    if (i === 0) { afficherAction(); return; }
+    if (i === 0) { if (liste.length > 1) introTempsForts(); else afficherAction(); return; }
     boite.classList.remove("rp-entree"); boite.classList.add("rp-sortie");
     t = setTimeout(() => {
       if (fini) return;
       boite.classList.remove("rp-sortie"); void boite.offsetWidth; boite.classList.add("rp-entree");
       afficherAction();
-    }, vite ? 250 : 1100);
+    }, vite ? 250 : 550);   // (19 novembre : plus rapide, 1,1 s avant)
   };
   const afficherAction = () => {
     const mo = liste[i++], moi = $("rpMoi"), adv = $("rpAdv");
@@ -722,9 +738,9 @@ function jouerReplay(liste, apres = () => {}) {
     // grands moments de cette rencontre ! »)
     const sansAnnonce = ["tf_deuxieme", "tf_balle"].includes(dlgNom) || (dlg && !plusieurs);
     const annonce = sansAnnonce ? null : !plusieurs ? (i === 1 ? "replay_intro" : null) : i === 1 ? "replay_debut" : dernier ? "replay_enfin" : "replay_ensuite";
-    const intro = plusieurs && i === 1 && Math.random() < 0.5 ? dialogueReplay("temps_forts_intro") : null;
-    const la = !intro && annonce && (ligneReplay(annonce, "m", "commentateur") || (i === 1 ? ligneReplay("replay_intro", "m", roland) : null));
-    if (intro) voix.dire(intro); else if (la) voix.dire([la]);
+    // (aux temps forts, la première action a déjà été annoncée : voir introTempsForts)
+    const la = !(plusieurs && i === 1) && annonce && (ligneReplay(annonce, "m", "commentateur") || (i === 1 ? ligneReplay("replay_intro", "m", roland) : null));
+    if (la) voix.dire([la]);
     t = setTimeout(() => {
       if (!encore()) return;
       const devoile = Date.now();
@@ -763,7 +779,8 @@ function jouerReplay(liste, apres = () => {}) {
         : pa && ["pertinent", "propre", "piege"].includes(pa.verdict) && Math.random() < 0.35 ? piocher("replay_reussite", genre) : null;
       const c = dlg ? dlg[0] : variante || (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
       // (le temps de regarder, même sans le son : 3 secondes au moins, 6 avec la palette)
-      const suite = () => { t = setTimeout(montrer, Math.max(vite ? 800 : 1500, (pa ? 6500 : 3200) - (Date.now() - devoile))); };
+      // (19 novembre : un peu plus rapide entre deux actions ; 1,5 s, 6,5 s et 3,2 s avant)
+      const suite = () => { t = setTimeout(montrer, Math.max(vite ? 600 : 800, (pa ? 5000 : 2600) - (Date.now() - devoile))); };
       const reponse = dlg ? dlg[1] : pa ? lp : null;
       parler(c, () => (reponse ? parler(reponse, suite) : suite()));
     }, vite ? 300 : 2000);
@@ -943,7 +960,7 @@ function apresPoint(evt, a, cel, rp) {
     // demande du porteur du projet : on le voyait passer furtivement avant le replay).
     // (18 novembre, demande du porteur du projet) En duel aussi : la pause dure 15 secondes de plus pour le replay (étape SQL 81),
     // qui passe s'il reste au moins 20 secondes ; si le set repart pendant le replay, il s'arrête net.
-    const moSet = replayVisible() ? momentDuSet(S.moments || [], n - 1) : null, seanceSet = S;
+    const moSet = replayVisible() ? momentDuSet(S.moments || [], n - 1, g) : null, seanceSet = S;
     const ouvrirPause = () => {
       if (S !== seanceSet) return;
       ouvrirPanneau({
