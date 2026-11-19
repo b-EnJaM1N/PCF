@@ -1,64 +1,64 @@
 {
-  "_explication": "Des sons candidats, générés à part dans app/audio/essais/ et écoutés sur app/essais-sons.html avant d'entrer dans le jeu (robot « Voix », choix « sons-candidats »). Sixième essai (19 novembre, demande du porteur du projet : une ambiance de stade immersive, homogène et fluide) : trois fonds de foule selon l'intensité du match, le kop, les clappements, des réactions et la ola.",
+  "_explication": "Des sons candidats, générés à part dans app/audio/essais/ et écoutés sur app/essais-sons.html avant d'entrer dans le jeu (robot « Voix », choix « sons-candidats »). Septième essai (19 novembre : refait en grand stade de foot en plein air, 40 000 supporters, choix du porteur du projet ; avant : salle de 5 000 spectateurs, trop « tennis ») ; sixième essai (19 novembre, demande du porteur du projet : une ambiance de stade immersive, homogène et fluide) : trois fonds de foule selon l'intensité du match, le kop, les clappements, des réactions et la ola.",
   "candidats": {
     "fond_calme": {
       "groupe": "Fonds de foule (en boucle, selon le moment du match)",
       "duree": 30,
       "boucle": true,
-      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. Calm crowd ambience early in a match: thousands of spectators murmuring and chatting softly, a warm continuous hum, a few scattered claps, relaxed, steady level without sudden peaks, seamless loop"
+      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. Football stadium crowd ambience early in the match: a deep continuous rumble of 40,000 fans talking, scattered shouts and claps from the stands, a few distant chants starting and stopping, alive but relaxed, steady level without sudden peaks, seamless loop"
     },
     "fond_nerveux": {
       "groupe": "Fonds de foule (en boucle, selon le moment du match)",
       "duree": 30,
       "boucle": true,
-      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. Tense crowd ambience late in a close set: a nervous continuous buzz of thousands of spectators, excited whispers and murmurs, occasional short shouts of encouragement, anticipation rising but steady, no sudden peaks, seamless loop"
+      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. Football stadium crowd ambience during a tense moment: a loud nervous roar of 40,000 fans, whistles, groups of supporters chanting in the distance, shouts of encouragement, rising anticipation but steady, no sudden peaks, seamless loop"
     },
     "fond_bouillant": {
       "groupe": "Fonds de foule (en boucle, selon le moment du match)",
       "duree": 30,
       "boucle": true,
-      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. Roaring crowd ambience at the climax of a decisive set: a loud continuous roar of thousands of supporters, distant drums and chanting voices blending in, whistles here and there, constant intensity, no sudden peaks, seamless loop"
+      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. Football stadium crowd ambience at the climax of a decisive match: a thunderous continuous roar of 40,000 supporters, the whole stadium chanting together, drums and flares atmosphere, whistles everywhere, constant maximum intensity, no sudden peaks, seamless loop"
     },
     "kop_tambours": {
       "groupe": "Le kop des supporters",
       "duree": 20,
       "boucle": true,
-      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. A group of passionate supporters in one stand: steady big drum beats and synchronized rhythmic clapping, a few voices chanting along without words, energetic, seamless loop"
+      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. The ultras section behind the goal: powerful big drum beats, thousands of supporters chanting a wordless football chant together and clapping in rhythm, bouncing, energetic, seamless loop"
     },
     "clappements": {
       "groupe": "Le kop des supporters",
       "duree": 8,
-      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. The whole crowd starts slow rhythmic clapping that gradually accelerates, building tension before a decisive point, then a short roar"
+      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. The whole football stadium starts slow thunderous rhythmic clapping, like a Viking clap, \"hoo\" shouts, gradually accelerating, then a huge roar"
     },
     "montee_entree": {
       "groupe": "Moments mis en scène",
       "duree": 10,
-      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. The crowd builds up as the players walk onto the court: rising cheers, whistles and applause growing louder, then a big welcoming roar"
+      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. The teams walk out onto the pitch: the football stadium roars louder and louder, whistles, drums, 40,000 fans cheering and chanting, then a massive welcoming roar"
     },
     "explosion": {
       "groupe": "Moments mis en scène",
       "duree": 5,
-      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. The crowd erupts in a huge explosive roar right after the winning match point, screams of joy and thunderous applause"
+      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. The football stadium erupts like after a last-minute winning goal: a massive explosive roar of 40,000 fans, screams of joy, then thunderous cheering"
     },
     "ola": {
       "groupe": "Moments mis en scène",
       "duree": 8,
-      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. A Mexican wave travels around the arena: a rolling roar moving from one side to the other, thousands of spectators cheering as it passes, then laughter and applause"
+      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. A Mexican wave travels all around the huge football stadium: a rolling roar circling the stands, tens of thousands cheering as it passes, then applause"
     },
     "applaudissements_faibles": {
       "groupe": "Réactions",
       "duree": 3,
-      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. Polite light applause after an ordinary point, short"
+      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. Short applause and scattered claps from the football stadium crowd after an ordinary action"
     },
     "applaudissements_forts": {
       "groupe": "Réactions",
       "duree": 4,
-      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. Strong enthusiastic applause with cheers and a few joyful whistles after a brilliant point"
+      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. Huge applause and cheers from the whole football stadium after a brilliant action, whistles of joy"
     },
     "ooh_surprise": {
       "groupe": "Réactions",
       "duree": 2.5,
-      "texte": "A large indoor arena with about 5,000 spectators, evening match, warm natural hall reverb, heard from the TV broadcast microphones, no music, no announcer. The whole crowd reacts with a surprised collective \"ooh!\" to an unexpected point, short"
+      "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. 40,000 football fans react with a huge surprised collective \"ooooh!\" after a near miss, short"
     }
   }
 }
