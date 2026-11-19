@@ -224,6 +224,7 @@ export const MOMENTS = {
     { r: "c", t: "L'adversaire déroule, et lui subit !", f: "L'adversaire déroule, et elle subit !" },
     { r: "d", t: "Il va falloir sortir de ce trou. Vite." },
     { r: "c", t: "Aïe, la série noire continue !" },
+    { r: "c", t: "Il y a des jours où la main ne répond plus." },   // (19 novembre, bibliothèque du porteur du projet)
   ],
   obstination: [
     { r: "c", t: ["Troisième Pierre d'affilée ! C'est audacieux !", "Troisièmes Ciseaux d'affilée ! C'est audacieux !", "Troisième Feuille d'affilée ! C'est audacieux !"] },
@@ -243,6 +244,7 @@ export const MOMENTS = {
     { r: "c", t: ["Des pierres, des pierres, des pierres, des pierres, des pierres !", "Ciseaux, ciseaux, ciseaux, ciseaux, ciseaux !", "Des feuilles, des feuilles, des feuilles, des feuilles, des feuilles !"], clin: "cine", retiree: true },   // (retirée le 16 novembre, demande du porteur du projet)
     { r: "d", t: "Allô ? Non mais allô, quoi !", clin: "cine", retiree: true },   // (retirée le 12 novembre, demande du porteur du projet)
     { r: "d", t: "Bon. Il est décidé à mourir avec ses idées.", f: "Bon. Elle est décidée à mourir avec ses idées." },   // (17 novembre, écrite par le porteur du projet)
+    { r: "d", t: "Il faut savoir varier ses sorties." },   // (19 novembre, bibliothèque du porteur du projet)
   ],
   // Il change enfin de signe après une obstination.
   changement: [
@@ -257,6 +259,7 @@ export const MOMENTS = {
     { r: "c", t: "Ah ! Il a enfin trouvé les autres boutons !", f: "Ah ! Elle a enfin trouvé les autres boutons !" },   // (16 novembre, choisie par le porteur du projet)
     { r: "d", t: "Tiens, il découvre qu'il existe trois signes. Bonne nouvelle.", f: "Tiens, elle découvre qu'il existe trois signes. Bonne nouvelle." },
     { r: "c", t: ["Contre toute attente, il revient Pierre !", "Contre toute attente, il revient Ciseaux !", "Contre toute attente, il revient Feuille !"], f: ["Contre toute attente, elle revient Pierre !", "Contre toute attente, elle revient Ciseaux !", "Contre toute attente, elle revient Feuille !"] },   // (17 novembre, écrite par le porteur du projet)
+    { r: "d", t: "Le joueur a manifestement voulu surprendre son adversaire.", f: "La joueuse a manifestement voulu surprendre son adversaire." },   // (19 novembre, bibliothèque du porteur du projet)
   ],
   duel_esprits: [
     { r: "c", t: "Ils se lisent dans les pensées !" },
@@ -318,6 +321,10 @@ export const MOMENTS = {
     { r: "d", t: "Les mêmes causes produisent les mêmes effets." },   // (17 novembre, écrite par le porteur du projet)
     { r: "d", t: "Complètement à côté de son sujet." },
     { r: "d", t: "Son jeu manque de variation, il est encore sur les vieux schémas de la veille.", f: "Son jeu manque de variation, elle est encore sur les vieux schémas de la veille." },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "d", t: "C'est une erreur tactique assez élémentaire." },   // (19 novembre, bibliothèque du porteur du projet)
+    { r: "d", t: "La pierre est souvent surestimée dans les milieux amateurs.", seul: 0 },
+    { r: "d", t: "Il existe une école japonaise qui aurait désapprouvé ce geste." },
+    { r: "d", t: "Ce joueur manque cruellement de culture tactique.", f: "Cette joueuse manque cruellement de culture tactique.", rare: true },
   ],
   // J'ai lu le réflexe de l'adversaire.
   lecture_reussie: [
@@ -336,6 +343,7 @@ export const MOMENTS = {
     { r: "c", t: "Mais quelle lecture ! Il a vu le coup venir avant même l'adversaire !", f: "Mais quelle lecture ! Elle a vu le coup venir avant même l'adversaire !" },   // (16 novembre, choisie par le porteur du projet)
     { r: "d", t: "Il joue aux échecs. L'autre joue aux dames.", f: "Elle joue aux échecs. L'autre joue aux dames." },
     { r: "c", t: "Pris la main dans le sac !" },   // (16 novembre, les expressions avec « main », choisies par le porteur du projet)
+    { r: "d", t: "Il y a une vraie lecture du jeu." },   // (19 novembre, bibliothèque du porteur du projet)
   ],
   temps_ecoule: [
     { r: "c", t: "Il a oublié de jouer !", f: "Elle a oublié de jouer !" },
@@ -417,6 +425,7 @@ export const MOMENTS = {
   match_perdu_point_decisif: [
     { r: "c", t: "Oh non… Il s'incline sur le point décisif ! Cruel !", f: "Oh non… Elle s'incline sur le point décisif ! Cruel !" },
     { r: "d", t: "Le sport est cruel. Ce soir, très cruel." },
+    { r: "c", t: "La main a tremblé au pire moment !" },   // (19 novembre, bibliothèque du porteur du projet)
   ],
   // Une finale gagnée au point décisif : Roland enchaîne deux de ces répliques.
   sacre_point_decisif: [
@@ -468,6 +477,7 @@ export const MOMENTS = {
     { r: "c", t: "Oula, ça s'est joué à un souffle !" },   // (16 novembre, plus classiques, choisies par le porteur du projet)
     { r: "c", t: "Ça passe… et de justesse !" },
     { r: "d", t: "Les deux méritaient. Un seul l'emporte. C'est le sport." },
+    { r: "c", t: "Le suspense est insoutenable, même pour ceux qui ne comprennent pas les règles !" },   // (19 novembre, bibliothèque du porteur du projet)
   ],
   // La fin du premier set (17 novembre, écrites par le porteur du projet), selon l'écart de points : 3 ou 4, 5 ou 6, 7 et plus.
   // « gagne » / « perdu » : quand la phrase parle du vainqueur (ou du vaincu) du set comme de « il » (moi).
@@ -515,6 +525,10 @@ export const MOMENTS = {
     { r: "c", t: "Ah, quel set ! On a vu de tout !" },
     { r: "c", t: "Il a su accélérer au bon moment !", f: "Elle a su accélérer au bon moment !", si: "gagne" },
     { r: "d", t: "Le vainqueur a fait moins d'erreurs. C'est souvent comme ça que ça marche." },
+    { r: "d", t: "Dans ce genre de situation, l'expérience fait toute la différence." },   // (19 novembre, bibliothèque du porteur du projet)
+    { r: "d", t: "C'est typiquement le genre de point qu'on travaille à l'entraînement." },
+    { r: "d", t: "C'est précisément pour ce genre de situation que la préparation mentale existe." },
+    { r: "c", t: "Je me souviens d'une finale en 1997 où vous aviez réalisé le même geste, Madame !" },
   ],
   set_decisif: [
     { r: "c", t: "Set décisif ! Tout se joue maintenant !" },
@@ -629,6 +643,16 @@ export const MOMENTS = {
     { r: "c", t: "Le travail paie ! Bravo !" },
     { r: "d", t: "Une victoire méritée. Je le dis rarement, profitez-en." },
     { r: "c", t: "Oh, la joie du vainqueur !" },
+    { r: "c", t: "Victoire ! C'est historique !" },   // (19 novembre, bibliothèque du porteur du projet)
+    { r: "c", t: "Il l'a fait ! Il l'a vraiment fait !", f: "Elle l'a fait ! Elle l'a vraiment fait !" },
+    { r: "c", t: "Quel champion ! Quel mental ! Quelle main !", f: "Quelle championne ! Quel mental ! Quelle main !" },
+    { r: "c", t: "Il entre dans la légende du chifoumi !", f: "Elle entre dans la légende du chifoumi !" },
+    { r: "c", t: "On ne joue pas avec le destin, on le prend à pleine main !" },
+    { r: "c", t: "C'est une victoire qui va laisser des traces dans les annales du sport !" },
+    { r: "d", t: "La victoire est méritée, même si le déroulement reste discutable." },
+    { r: "d", t: "Une bonne décision au bon moment." },
+    { r: "d", t: "Il a su exploiter la faiblesse adverse.", f: "Elle a su exploiter la faiblesse adverse." },
+    { r: "d", t: "C'est une victoire qui récompense une certaine discipline." },
   ],
   defaite: [
     { r: "d", t: "Au revoir.", clin: "cine", retiree: true },
@@ -656,6 +680,16 @@ export const MOMENTS = {
     { r: "d", t: "Il rentrera chez lui en refaisant le match. Plusieurs fois.", f: "Elle rentrera chez elle en refaisant le match. Plusieurs fois." },
     { r: "c", t: "Oula, la soirée a été difficile…" },
     { r: "d", t: "Il y a des jours où rien ne veut sortir. C'était celui-là." },
+    { r: "c", t: "Aïe aïe aïe ! Le couperet est tombé !" },   // (19 novembre, bibliothèque du porteur du projet)
+    { r: "c", t: "Quelle désillusion ! On y croyait pourtant !" },
+    { r: "c", t: "C'est terrible ! Il était si près du bonheur !", f: "C'est terrible ! Elle était si près du bonheur !", si: "serre" },
+    { r: "c", t: "Un silence assourdissant dans le camp des perdants !" },
+    { r: "d", t: "Une défaite qui était malheureusement prévisible.", si: "outsider_moi" },
+    { r: "d", t: "Il a manqué de lucidité.", f: "Elle a manqué de lucidité." },
+    { r: "d", t: "Ce choix était une faute technique." },
+    { r: "d", t: "Il faudra revoir les fondamentaux." },
+    { r: "d", t: "Il n'a pas su lire le jeu adverse.", f: "Elle n'a pas su lire le jeu adverse." },
+    { r: "d", t: "C'est le genre de défaite qui doit faire réfléchir." },
   ],
   // (« domination », « Je suis ton père », dit avant le match quand l'adversaire dominait nos face-à-face : retiré le 2 novembre,
   // à la demande du porteur du projet)
@@ -678,6 +712,7 @@ export const MOMENTS = {
     { r: "d", t: "Même ouverture. Il assume.", f: "Même ouverture. Elle assume." },
     { r: "d", t: "La même ouverture que la dernière fois. Il teste la mémoire de son adversaire.", f: "La même ouverture que la dernière fois. Elle teste la mémoire de son adversaire." },
     { r: "c", t: "Il rouvre comme au dernier match ! Il ose ! Il ose !", f: "Elle rouvre comme au dernier match ! Elle ose ! Elle ose !" },
+    { r: "d", t: "Une ouverture assez prévisible." },   // (19 novembre, bibliothèque du porteur du projet)
   ],
   // Il change d'ouverture par rapport au dernier match (dit après le premier coup, une fois sur deux).
   memoire_change_ouverture: [
@@ -826,6 +861,11 @@ export const MOMENTS = {
     { r: "c", t: "Attention, ça va repasser au ralenti !" },   // (18 novembre, choisie par le porteur du projet)
     { r: "c", t: "Revivons ce moment ensemble !" },
     { r: "c", t: "On rembobine ! Regardez bien !" },
+    { r: "c", t: "Et maintenant, place aux images !" },   // (19 novembre, bibliothèque du porteur du projet)
+    { r: "c", t: "Ce point mérite bien un deuxième visionnage !" },
+    { r: "c", t: "Quel moment de sport ! On ne s'en lasse pas !" },
+    { r: "d", t: "Une séquence riche en enseignements techniques." },
+    { r: "d", t: "Voilà pourquoi il ne faut jamais relâcher sa concentration." },
   ],
   // Les temps forts de fin de match : Roland annonce chaque action (18 novembre, répliques choisies par le porteur du projet).
   replay_debut: [
@@ -1046,6 +1086,8 @@ export const MOMENTS = {
     { r: "d", t: "Joli. Je n'ai rien d'autre à ajouter." },
     { r: "c", t: "Ah, la belle inspiration !" },
     { r: "d", t: "Celui-là, on le mettra dans le résumé." },
+    { r: "d", t: "Classique, mais efficace." },   // (19 novembre, bibliothèque du porteur du projet)
+    { r: "c", t: "Il a sorti une pierre ! Une pierre de caractère !", f: "Elle a sorti une pierre ! Une pierre de caractère !", seul: 0 },
   ],
   // Trois points d'affilée gagnés avec la Pierre.
   trois_pierres: [
@@ -1189,6 +1231,7 @@ export const MOMENTS = {
     { r: "c", t: "Oh, ça se resserre ! Plus personne ne peut se permettre la moindre erreur !" },
     { r: "d", t: "Huit partout. Les calculatrices sont rangées, place au caractère." },
     { r: "c", t: "Le money time, mesdames et messieurs ! Accrochez-vous !" },
+    { r: "c", t: "Attention ! Ça peut basculer à tout moment !" },   // (19 novembre, bibliothèque du porteur du projet)
   ],
   // Un point perdu à 8-8 (5-5 dans un set de 7).
   rate_money_time: [
@@ -1199,12 +1242,14 @@ export const MOMENTS = {
     { r: "c", t: "Oula, ça, ça peut coûter le set !" },
     { r: "d", t: "On ne perd pas ce point-là. Et pourtant." },
     { r: "c", t: "Le coup est rude ! Il va falloir réagir tout de suite !" },
+    { r: "d", t: "J'ai déjà vu cette erreur en finale de championnat du monde." },   // (19 novembre, bibliothèque du porteur du projet)
   ],
   // Deux points d'avance pour la première fois du set.
   le_break: [
     { r: "c", t: "Il fait le break !", f: "Elle fait le break !" },
     { r: "c", t: "Et un nouveau point : il a désormais deux longueurs d'avance !", f: "Et un nouveau point : elle a désormais deux longueurs d'avance !" },   // (17 novembre, écrite par le porteur du projet)
     { r: "d", t: "Voilà une option sérieuse sur la victoire." },
+    { r: "d", t: "Ce choix traduit probablement une volonté de contrôle." },   // (19 novembre, bibliothèque du porteur du projet)
   ],
   // (17 novembre, écrites par le porteur du projet) Je mène de 6 points ou plus dans le set (une fois par set).
   lecon: [
@@ -1260,6 +1305,12 @@ export const MOMENTS = {
     { r: "c", t: "On ne s'ennuie pas une seconde !" },
     { r: "d", t: "Les deux mains sont vraiment très concentrées. Leurs propriétaires aussi, j'espère." },
     { r: "c", t: "Ah, quel plaisir de commenter un tel match !" },
+    { r: "c", t: "Quelle audace ! Quelle prise de risque !" },   // (19 novembre, bibliothèque du porteur du projet)
+    { r: "c", t: "Les mains ont parlé !" },
+    { r: "c", t: "Quel duel psychologique ! On est à deux doigts du génie !" },
+    { r: "c", t: "Il a joué sa carte… enfin, sa main !", f: "Elle a joué sa carte… enfin, sa main !" },
+    { r: "c", t: "Le destin vient de choisir son camp !" },
+    { r: "d", t: "J'aurais personnellement joué différemment." },
   ],
   premier_point_perdu: [
     // (13 novembre, demande du porteur du projet : après le 3e coup du match, quand il a ouvert Pierre, Feuille, Ciseaux, qu'il ne mène
@@ -1528,6 +1579,41 @@ export const MOMENTS = {
     { r: "d", t: "Entre amis, il n'y a pas de pitié." },
     { r: "d", t: "Ils se connaissent. Les surprises seront rares. Ou nombreuses." },   // (18 novembre, gros lot 1, choisie par le porteur du projet)
     { r: "d", t: "Un duel entre amis. Les plus cruels." },
+  ],
+  // L'avant-match en trois temps, 10 à 15 secondes (19 novembre, bibliothèque du porteur du projet) : l'ouverture (Roland),
+  // le cœur (les dialogues habituels, ou Monique qui pose le décor), le lancement (si le temps manque). Voir annoncesAvantMatch.
+  avant_ouverture: [
+    { r: "c", t: "Mesdames et messieurs, ils sont deux, ils n'ont que leurs mains, mais ils vont tout donner !" },
+    { r: "c", t: "Mesdames et messieurs, c'est le choc du soir ! Le public retient son souffle… Enfin, ceux qui regardent." },
+    { r: "c", t: "C'est un grand jour pour le sport, Monique ! La tension monte, et on n'a pas encore joué un seul coup !" },
+    { r: "c", t: "Mesdames et messieurs, c'est le choc du soir ! On sent une tension absolument phénoménale !" },
+    { r: "c", t: "Deux joueurs, trois possibilités, une seule vérité ! Mesdames et messieurs, la tension monte !" },
+    { r: "c", t: "L'histoire est en marche ! Enfin… elle attend le premier geste. Mais elle est en marche !" },
+    { r: "c", t: "Mesdames et messieurs, bonsoir ! Le court central est plein, et l'ambiance est électrique !" },
+    { r: "c", t: "Mesdames et messieurs, installez-vous : ça va commencer, et ça va chauffer !" },
+  ],
+  avant_coeur: [
+    { r: "d", t: "Il faut observer attentivement la posture des doigts. Tout commence là." },
+    { r: "d", t: "Le premier lancer est souvent révélateur, mais rarement décisif. Patience." },
+    { r: "d", t: "Dans ma carrière, j'ai appris à me méfier des joueurs trop confiants. On verra ce soir qui l'est trop." },
+    { r: "d", t: "Le chifoumi est un sport mental avant d'être digital. Retenez bien ça." },
+    { r: "d", t: "La précipitation est l'ennemie de la stratégie. On va voir qui l'a compris." },
+  ],
+  avant_lancement: [
+    { r: "c", t: "Les mains sont prêtes… C'est parti !" },
+    { r: "c", t: "Que le meilleur gagne ! Place au jeu !" },
+    { r: "d", t: "Bien. Assez parlé. Jouons." },
+    { r: "c", t: "Silence sur le central… Le match commence !" },
+  ],
+  // « Quelle attaque ! » / « Roland, il a simplement fait une feuille. » : Roland s'emballe sur un point gagné, Monique le
+  // ramène au signe joué (19 novembre) ; les deux listes vont ensemble (même rang).
+  decale_r: [
+    { r: "c", t: "Quelle attaque ! Une main exceptionnelle !" },
+    { r: "c", t: "Il a sorti le grand jeu !", f: "Elle a sorti le grand jeu !" },
+  ],
+  decale_m: [
+    { r: "d", t: ["Roland, il a simplement fait une pierre.", "Roland, il a simplement fait des ciseaux.", "Roland, il a simplement fait une feuille."], f: ["Roland, elle a simplement fait une pierre.", "Roland, elle a simplement fait des ciseaux.", "Roland, elle a simplement fait une feuille."] },
+    { r: "d", t: ["C'était une pierre.", "C'étaient des ciseaux.", "C'était une feuille."] },
   ],
 };
 
@@ -1898,6 +1984,7 @@ export const DIALOGUES = {
     ["Une défaite qui fait mal, Madame ?", "Toutes les défaites font mal. Certaines font aussi réfléchir."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
     [{ t: "Il reviendra plus fort, j'en suis sûr !", f: "Elle reviendra plus forte, j'en suis sûr !" }, "Ou pareil. Mais avec de l'expérience."],
     ["Madame, un mot pour le vaincu ?", "Courage. Et du repos."],
+    ["Quelle intelligence tactique !", { t: "Il a perdu, Roland.", f: "Elle a perdu, Roland." }],
   ],
   // Un joueur vient de pousser son cri de victoire (voir celebrations.js).
   cri: [
@@ -1907,6 +1994,84 @@ export const DIALOGUES = {
     ["Siuuuu !", "C'est Ronaldo sans les abdos."],
     ["Quel cri, Madame !", "On l'a entendu jusqu'au parking."],   // (18 novembre, gros lot 2, choisie par le porteur du projet)
     [{ t: "Il exulte !", f: "Elle exulte !" }, { t: "Qu'il en profite, ça ne durera pas.", f: "Qu'elle en profite, ça ne durera pas." }],
+  ],
+  // Vers le 15e coup du match (19 novembre, bibliothèque du porteur du projet)
+  titans: [
+    ["On assiste à un véritable combat de titans !", "Ils jouent depuis deux minutes, Roland."],
+  ],
+  // Les dialogues selon le résultat du match (19 novembre, bibliothèque du porteur du projet) : le moins bien classé gagne
+  resultat_surprise: [
+    ["Le coup de tonnerre !", "Un résultat statistiquement possible."],
+  ],
+  // le favori gagne
+  resultat_favori: [
+    ["Le patron a parlé !", "La hiérarchie est respectée."],
+  ],
+  // une grosse défaite (aucun set gagné, et de loin)
+  resultat_grosse_defaite: [
+    ["C'est la catastrophe !", "Une faillite technique."],
+  ],
+  // un match serré (joué jusqu'au set décisif)
+  resultat_serre: [
+    ["On ne respire plus !", "Le niveau est relativement équilibré."],
+  ],
+  // 3 victoires de suite ou plus
+  resultat_serie_victoires: [
+    [{ t: "Il est intouchable !", f: "Elle est intouchable !" }, "Attention à l'excès de confiance."],
+  ],
+  // 3 défaites de suite ou plus
+  resultat_serie_defaites: [
+    ["Il faut sauver ce qui peut l'être !", "Il serait peut-être temps de travailler les fondamentaux."],
+  ],
+  // Le replay du moment fort d'un set, en dialogue (19 novembre, bibliothèque du porteur du projet) : une fois sur trois, à la place des répliques habituelles
+  replay_moment: [
+    ["Et voici certainement le tournant de ce set !", "Absolument. Ce coup a pesé lourd dans la suite de la manche."],
+    ["Regardez-moi ça ! Quel moment !", "Un geste parfaitement exécuté, au moment où il le fallait."],
+    ["C'est ici que tout a basculé !", "Oui, ce point a clairement changé la dynamique du set."],
+    ["On repasse les images de ce moment décisif !", "Une séquence qui mérite effectivement d'être revue."],
+    ["Quel coup de tonnerre dans cette manche !", "Son adversaire ne s'en est visiblement pas remis."],
+    [{ t: "Il fallait oser ! Et il l'a fait !", f: "Il fallait oser ! Et elle l'a fait !" }, "Une prise de risque parfaitement récompensée."],
+    ["C'est peut-être le plus beau point de ce set !", "En tout cas, l'un des plus importants."],
+    ["Revoyons cette action qui a fait vibrer les supporters !", "Il y a beaucoup à apprendre de cette séquence."],
+  ],
+  // Les temps forts de fin de match (19 novembre, bibliothèque du porteur du projet) : l'introduction
+  temps_forts_intro: [
+    ["Allez, on se repasse les trois grands moments de cette rencontre !", "Trois séquences qui résument parfaitement les enjeux de ce match."],
+    ["Installez-vous confortablement, voici le résumé de cette bataille !", "Et certaines images méritent effectivement toute notre attention."],
+    ["Trois moments, trois émotions, une seule rencontre !", "Avec notamment un tournant qui a pesé très lourd dans la balance."],
+  ],
+  // la 1re action, dans le 1er set
+  tf_premier: [
+    ["Premier moment fort : ce coup du premier set qui a fait très mal à son adversaire !", { t: "Une action déterminante. Il a immédiatement pris l'ascendant psychologique.", f: "Une action déterminante. Elle a immédiatement pris l'ascendant psychologique." }],
+  ],
+  // la 2e action
+  tf_deuxieme: [
+    ["Deuxième séquence : regardez-moi ce geste technique !", "Une exécution remarquable. C'est exactement ce qu'on attend d'un joueur de ce niveau."],
+  ],
+  // la 3e action, la balle de match
+  tf_balle: [
+    ["Et enfin, la balle de match !", { t: "Très bien négociée. Il a su garder son sang-froid au moment décisif.", f: "Très bien négociée. Elle a su garder son sang-froid au moment décisif." }],
+  ],
+  // une action perdue par le joueur
+  tf_cher: [
+    ["On revient sur cette action qui a peut-être coûté très cher !", "Une erreur d'appréciation qui n'a malheureusement pas été sans conséquence."],
+  ],
+  // une balle sauvée par le perdant du match
+  tf_defense: [
+    [{ t: "Quelle défense ! Il a tout donné sur cette séquence !", f: "Quelle défense ! Elle a tout donné sur cette séquence !" }, { t: "Il a fait preuve d'une belle résistance, mais cela n'a pas suffi.", f: "Elle a fait preuve d'une belle résistance, mais cela n'a pas suffi." }],
+  ],
+  // n'importe quelle action
+  tf_tournant: [
+    ["Et voici le moment où le match a définitivement changé de visage !", "On voit très bien ici le changement d'attitude des deux joueurs."],
+  ],
+  // la conclusion, après la dernière action
+  temps_forts_fin: [
+    ["Trois images qui resteront dans les mémoires !", "Une rencontre qui aura offert quelques belles leçons de chifoumi."],
+    ["Voilà, vous avez revécu les grands moments de cette rencontre !", "Et maintenant, place à la prochaine confrontation."],
+  ],
+  // la conclusion, seulement après un match en trois sets
+  temps_forts_fin_trois: [
+    ["Quel spectacle ! Quel match ! Quelle intensité !", "Roland, ils ont joué trois manches de pierre-feuille-ciseaux."],
   ],
 };
 
