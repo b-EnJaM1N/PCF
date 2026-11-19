@@ -49,7 +49,8 @@ const FORCE_REACTION = 0.12;
 // Les trois fonds du stade, ramenés au niveau de l'ancien murmure (ils sont 6 à 7 dB plus forts), le bouillant un peu au-dessus.
 // (19 novembre, après le premier essai du porteur du projet, « pas grande différence » : un peu plus fort, 0,024 avant, et plus de
 // contraste entre le calme et le bouillant, [0,9, 1, 1,15] avant)
-const FORCE_FOND = 0.03, RELIEF_STADE = [0.8, 1.05, 1.45];
+// (19 novembre au soir, le porteur du projet le trouvait encore trop bas : 0,042, environ 3 dB de plus ; 0,03 avant)
+const FORCE_FOND = 0.042, RELIEF_STADE = [0.8, 1.05, 1.45];
 // La part de chaque fond du stade [calme, nerveux, bouillant] selon l'intensité du moment (0 à 1) : calme en début de set,
 // nerveux quand ça se resserre, bouillant aux balles de set et de match ; la somme vaut toujours 1 (les fonds se fondent).
 export function poidsStade(i) {
