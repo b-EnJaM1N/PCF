@@ -909,3 +909,87 @@ export function interview(gagne, rng = Math.random) {
   const conclusion = ligneJournaliste("conclusion", Math.floor(rng() * JOURNALISTE.conclusion.length));
   return { champion: gagne ? ligneSpeaker("champion", 0) : null, question, reponses, conclusion };
 }
+
+// ---------------------------------------------------------------- le commentaire des statistiques du match
+// (19 novembre, demande du porteur du projet) Sur le panneau des statistiques : Roland lance, Monique (parfois Roland) commente
+// le chiffre le plus marquant de CE match, comparé aux habitudes du joueur du téléphone quand on les connaît.
+// info : { st (statsDuMatch), mes (les stats du match de l'appli : balles, lectures, remontée, premier set perdu), carriere
+// ({ signes : [P, C, F] sur tous ses matchs avant celui-ci, devines, lisibles }), gagne, outsider (0 moi, 1 lui, null),
+// scoresSets, pointsParSet, reserveUtilisee (ms), tempsMoyen (ms ou null) }. Renvoie la liste des situations remplies, de la plus
+// marquante à la moins marquante : [{ pool, signe? }].
+export function situationsStats(info) {
+  const { st, mes = {}, carriere = {}, gagne = false, outsider = null, scoresSets = [], pointsParSet = 11, reserveUtilisee = 0, tempsMoyen = null } = info;
+  const n0 = st.signes[0][0] + st.signes[0][1] + st.signes[0][2], n1 = st.signes[1][0] + st.signes[1][1] + st.signes[1][2];
+  const fr = st.signes[0].map(x => (n0 ? x / n0 : 0)), fr1 = st.signes[1].map(x => (n1 ? x / n1 : 0));
+  const top = fr.indexOf(Math.max(...fr)), top1 = fr1.indexOf(Math.max(...fr1));
+  const totC = (carriere.signes || [0, 0, 0]).reduce((a, b) => a + b, 0), frC = (carriere.signes || [0, 0, 0]).map(x => (totC ? x / totC : 0));
+  const connu = totC >= 60, favC = frC.indexOf(Math.max(...frC));
+  const impC = carriere.lisibles >= 30 ? indiceImprevisibilite(carriere.devines / carriere.lisibles) : null, imp = st.imprevisibilite[0];
+  const taux = ([a, b], min = 4) => (b >= min ? a / b : null);
+  const decisifs = st.reussite[0][1], [p0, p1] = st.points;
+  const out = [], si = (ok, pool, signe) => { if (ok) out.push({ pool, ...(signe !== undefined ? { signe } : {}) }); };
+  // 1. Ce qui sort de ses habitudes
+  si(connu && frC[favC] >= 0.42 && n0 >= 10 && fr[favC] <= 0.15, "stats_favori_oublie", favC);
+  si(connu && n0 >= 10 && fr[top] >= 0.5 && frC[top] < 0.28, "stats_signe_inhabituel", top);
+  si(impC !== null && impC >= 70 && imp !== null && imp <= 40, "stats_plus_lisible");
+  si(impC !== null && imp !== null && imp - impC >= 25, "stats_plus_imprevisible");
+  si(connu && frC[favC] >= 0.42 && n0 >= 12 && fr.every(x => x >= 0.26 && x <= 0.41), "stats_equilibre_inhabituel");
+  si(connu && n0 >= 10 && fr[top] >= 0.5 && frC[top] >= 0.38 && top === favC, "stats_signe_habitude", top);
+  // 2. Les grands faits du match
+  si(outsider === 0 && gagne, "stats_exploit");
+  si(gagne && mes.premierSetPerdu && scoresSets.length > 1, "stats_renverse");
+  si(gagne && st.premiersPoints.length === 3 && st.premiersPoints.every(g => g === 1), "stats_reaction");
+  // 3. Sa façon de jouer dans ce match
+  si(st.coups >= 12 && taux(st.changeSigne[0], 10) >= 0.8, "stats_insaisissable");
+  si(st.repetition[0].n >= 4, "stats_entete", st.repetition[0].signe);
+  si(taux(st.changeApresEgalite[0]) >= 0.85, "stats_change_egalite");
+  si(taux(st.changeApresPerte[0]) >= 0.85, "stats_change_perte");
+  si(taux(st.changeApresPerte[0]) !== null && taux(st.changeApresPerte[0]) <= 0.2, "stats_garde_perte");
+  si(st.apresEgalite[0] >= 3 && st.apresEgalite[0] >= 2 * st.apresEgalite[1], "stats_apres_egalite");
+  si((mes.lecturesReussies || 0) >= 3, "stats_lecture");
+  // (le signe préféré de son adversaire : l'a-t-il puni ?)
+  const contre = st.coupsContre?.[top1];
+  si(n1 >= 10 && fr1[top1] >= 0.45 && contre && contre[1] >= 5 && contre[0] / contre[1] >= 0.6, "stats_adv_contre", top1);
+  si(n1 >= 10 && fr1[top1] >= 0.45 && contre && contre[1] >= 5 && contre[0] / contre[1] <= 0.3, "stats_adv_ignore", top1);
+  si(n0 >= 10 && n1 >= 10 && top === top1 && fr[top] >= 0.4 && fr1[top1] >= 0.4, "stats_meme_favori");
+  si(imp !== null && st.imprevisibilite[1] !== null && Math.abs(imp - st.imprevisibilite[1]) >= 45, "stats_styles");
+  // 4. Les moments clés
+  si((mes.ballesObtenues || 0) >= 2 && mes.ballesConverties === mes.ballesObtenues, "stats_balles_converties");
+  si((mes.ballesObtenues || 0) >= 3 && (mes.ballesConverties || 0) <= mes.ballesObtenues / 3, "stats_balles_gachees");
+  si(st.smashs[0][0] >= 2, "stats_smashs");
+  si(st.smashs[0][1] >= 2 && st.smashs[0][0] === 0, "stats_smashs_rates");
+  si(st.coups >= 15 && st.smashs[0][1] === 0, "stats_sans_smash");
+  si(st.serie[0] >= 6, "stats_serie");
+  si((mes.meilleureRemontee || 0) >= 4, "stats_remontee");
+  const serres = scoresSets.filter(([a, b]) => Math.min(a, b) >= pointsParSet - 2);
+  si(serres.length >= 1 && serres.every(([a, b]) => a > b), "stats_fins_serrees");
+  si(st.premiersPoints.length === 3 && st.premiersPoints.every(g => g === 0), "stats_depart");
+  si(decisifs >= 8 && taux(st.reussite[0], 8) >= 0.75, "stats_reussite");
+  si(taux(st.memeApresGain[0]) >= 0.75, "stats_insiste");
+  si(reserveUtilisee >= 12000, "stats_reflechi");
+  si(tempsMoyen !== null && tempsMoyen <= 2500 && st.coups >= 12, "stats_vite");
+  si(outsider === 1 && (!gagne || scoresSets.length >= 3), "stats_favori_souffre");
+  si(st.coups >= 15 && st.egalites / st.coups >= 0.35, "stats_egalites");
+  si(!connu && n0 >= 10 && fr[top] >= 0.5, "stats_signe_inconnu", top);
+  si(!connu && n0 >= 12 && fr.every(x => x >= 0.26 && x <= 0.41), "stats_equilibre");
+  si(decisifs >= 10 && Math.abs(p0 - p1) <= 2, "stats_serre");
+  si(decisifs >= 10 && Math.max(p0, p1) >= 2 * Math.max(1, Math.min(p0, p1)), "stats_domination");
+  out.push({ pool: "stats_rien" });
+  return out;
+}
+// Le dialogue des statistiques : [Roland qui lance, l'analyse], ou null (une fois sur deux, ou rien d'enregistré). On tire parmi
+// les trois situations les plus marquantes (la première plus souvent), en évitant les répliques entendues aux derniers matchs.
+export function commentaireStats(info, { genre = "m", audible = null, anciens = [], rng = Math.random } = {}) {
+  if (rng() >= 0.5) return null;
+  const ok = l => l && (!audible || audible(l.id)), vus = new Set(anciens.map(baseDe));
+  const tirer = (pool, signe = 0) => {
+    const l = (POOLS[pool] || []).map(e => ligneMoment(e, { genre, signe })).filter(ok);
+    const neufs = l.filter(x => !vus.has(baseDe(x.id))), g = neufs.length ? neufs : l;
+    return g.length ? g[Math.floor(rng() * g.length)] : null;
+  };
+  const sits = situationsStats(info).map(s => ({ ...s, l: tirer(s.pool, s.signe ?? 0) })).filter(s => s.l).slice(0, 3);
+  const lance = tirer("stats_lance");
+  if (!sits.length || !lance) return null;
+  const r = rng(), choix = sits[r < 0.6 || sits.length === 1 ? 0 : r < 0.85 || sits.length === 2 ? 1 : 2];
+  return [lance, choix.l];
+}

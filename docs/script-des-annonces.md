@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1333 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1345 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1117,6 +1117,18 @@ restent lus par la voix de synthèse.
 | `commentateur_accueil_point_perdu_01.mp3` | Pas de panique, il y a encore le temps de se rattraper ! |
 | `commentateur_accueil_lecture_01.mp3` | L'historique en bas de l'écran, c'est le trésor des grands joueurs ! |
 | `commentateur_accueil_smash_01.mp3` | Et n'oubliez pas le smash : un appui long sur le signe, une fois par set ! Ça ne change pas le point, mais quel spectacle ! |
+| `commentateur_stats_lance_01.mp3` | Jetons un œil aux statistiques de ce match, Monique ! |
+| `commentateur_stats_lance_02.mp3` | Les chiffres du match, Madame ! Qu'est-ce qu'ils nous disent ? |
+| `commentateur_stats_lance_03.mp3` | Monique, vous qui aimez les statistiques… Que retenez-vous de ce match ? |
+| `commentateur_stats_insaisissable_01.mp3` | Quel feu follet ! Dans ce match, impossible de savoir où il allait frapper ! |
+| `commentateur_stats_insaisissable_01_f.mp3` | Quel feu follet ! Dans ce match, impossible de savoir où elle allait frapper ! |
+| `commentateur_stats_lecture_01.mp3` | Quelle lecture du jeu dans ce match ! Il voyait tout venir ! |
+| `commentateur_stats_lecture_01_f.mp3` | Quelle lecture du jeu dans ce match ! Elle voyait tout venir ! |
+| `commentateur_stats_renverse_01.mp3` | Mené d'un set dans ce match, et pourtant vainqueur ! Quel caractère ! |
+| `commentateur_stats_renverse_01_f.mp3` | Menée d'un set dans ce match, et pourtant victorieuse ! Quel caractère ! |
+| `commentateur_stats_reaction_01.mp3` | Un départ difficile dans ce match… et quelle réaction ensuite ! |
+| `commentateur_stats_exploit_01.mp3` | Dans ce match, il a fait mentir le classement ! Superbe performance ! |
+| `commentateur_stats_exploit_01_f.mp3` | Dans ce match, elle a fait mentir le classement ! Superbe performance ! |
 | `commentateur_dialogue_perso_chiromancien_avant_01.mp3` | Le Chiromancien est sur le central, Madame ! |
 | `commentateur_dialogue_perso_chiromancien_avant_02.mp3` | Madame, croyez-vous aux pouvoirs du Chiromancien ? |
 | `commentateur_dialogue_avant_debutant_01.mp3` | Un nouveau venu sur le central ! Bienvenue ! |
@@ -1456,7 +1468,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_accueil_troisieme_01_f.mp3` | Troisième match ! Mesdames et messieurs, une habituée est en train de naître ! |
 | `commentateur_dialogue_accueil_fin_troisieme_01.mp3` | Trois matchs ! Les jetons, les défis du jour et la boutique sont ouverts ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (1017 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (1111 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -2154,6 +2166,100 @@ restent lus par la voix de synthèse.
 | `commentatrice_accueil_egalite_01.mp3` | Même signe des deux côtés : on rejoue le coup. C'est la règle. |
 | `commentatrice_accueil_lecture_01.mp3` | Un conseil : regardez ce que Bambi vient de jouer. Il recommence souvent. |
 | `commentatrice_accueil_reserve_01.mp3` | Attention au temps. Après huit secondes, on puise dans sa réserve. Et elle ne se remplit pas. |
+| `commentatrice_stats_signe_habitude_01_pierre.mp3` | Beaucoup de Pierre dans ce match… Comme d'habitude. Ses adversaires finiront par le savoir. |
+| `commentatrice_stats_signe_habitude_01_ciseaux.mp3` | Beaucoup de Ciseaux dans ce match… Comme d'habitude. Ses adversaires finiront par le savoir. |
+| `commentatrice_stats_signe_habitude_01_feuille.mp3` | Beaucoup de Feuille dans ce match… Comme d'habitude. Ses adversaires finiront par le savoir. |
+| `commentatrice_stats_signe_inhabituel_01_pierre.mp3` | Beaucoup de Pierre dans ce match, lui qui en joue si peu d'habitude. Un vrai changement de plan. |
+| `commentatrice_stats_signe_inhabituel_01_pierre_f.mp3` | Beaucoup de Pierre dans ce match, elle qui en joue si peu d'habitude. Un vrai changement de plan. |
+| `commentatrice_stats_signe_inhabituel_01_ciseaux.mp3` | Beaucoup de Ciseaux dans ce match, lui qui en joue si peu d'habitude. Un vrai changement de plan. |
+| `commentatrice_stats_signe_inhabituel_01_ciseaux_f.mp3` | Beaucoup de Ciseaux dans ce match, elle qui en joue si peu d'habitude. Un vrai changement de plan. |
+| `commentatrice_stats_signe_inhabituel_01_feuille.mp3` | Beaucoup de Feuille dans ce match, lui qui en joue si peu d'habitude. Un vrai changement de plan. |
+| `commentatrice_stats_signe_inhabituel_01_feuille_f.mp3` | Beaucoup de Feuille dans ce match, elle qui en joue si peu d'habitude. Un vrai changement de plan. |
+| `commentatrice_stats_signe_inconnu_01_pierre.mp3` | Il a beaucoup joué la Pierre dans ce match. Un choix de stratégie, ou un réflexe ? On le saura la prochaine fois. |
+| `commentatrice_stats_signe_inconnu_01_pierre_f.mp3` | Elle a beaucoup joué la Pierre dans ce match. Un choix de stratégie, ou un réflexe ? On le saura la prochaine fois. |
+| `commentatrice_stats_signe_inconnu_01_ciseaux.mp3` | Il a beaucoup joué les Ciseaux dans ce match. Un choix de stratégie, ou un réflexe ? On le saura la prochaine fois. |
+| `commentatrice_stats_signe_inconnu_01_ciseaux_f.mp3` | Elle a beaucoup joué les Ciseaux dans ce match. Un choix de stratégie, ou un réflexe ? On le saura la prochaine fois. |
+| `commentatrice_stats_signe_inconnu_01_feuille.mp3` | Il a beaucoup joué la Feuille dans ce match. Un choix de stratégie, ou un réflexe ? On le saura la prochaine fois. |
+| `commentatrice_stats_signe_inconnu_01_feuille_f.mp3` | Elle a beaucoup joué la Feuille dans ce match. Un choix de stratégie, ou un réflexe ? On le saura la prochaine fois. |
+| `commentatrice_stats_favori_oublie_01_pierre.mp3` | Lui qui adore la Pierre, il l'a presque oubliée dans ce match. Il a changé ses habitudes pour surprendre. |
+| `commentatrice_stats_favori_oublie_01_pierre_f.mp3` | Elle qui adore la Pierre, elle l'a presque oubliée dans ce match. Elle a changé ses habitudes pour surprendre. |
+| `commentatrice_stats_favori_oublie_01_ciseaux.mp3` | Lui qui adore les Ciseaux, il les a presque oubliés dans ce match. Il a changé ses habitudes pour surprendre. |
+| `commentatrice_stats_favori_oublie_01_ciseaux_f.mp3` | Elle qui adore les Ciseaux, elle les a presque oubliés dans ce match. Elle a changé ses habitudes pour surprendre. |
+| `commentatrice_stats_favori_oublie_01_feuille.mp3` | Lui qui adore la Feuille, il l'a presque oubliée dans ce match. Il a changé ses habitudes pour surprendre. |
+| `commentatrice_stats_favori_oublie_01_feuille_f.mp3` | Elle qui adore la Feuille, elle l'a presque oubliée dans ce match. Elle a changé ses habitudes pour surprendre. |
+| `commentatrice_stats_equilibre_inhabituel_01.mp3` | D'habitude, il a son signe préféré. Cette fois, il a tout mélangé. Impossible à lire. |
+| `commentatrice_stats_equilibre_inhabituel_01_f.mp3` | D'habitude, elle a son signe préféré. Cette fois, elle a tout mélangé. Impossible à lire. |
+| `commentatrice_stats_equilibre_01.mp3` | Dans ce match, il a parfaitement équilibré ses trois signes. Impossible à lire. |
+| `commentatrice_stats_equilibre_01_f.mp3` | Dans ce match, elle a parfaitement équilibré ses trois signes. Impossible à lire. |
+| `commentatrice_stats_plus_imprevisible_01.mp3` | Dans ce match, il a été bien plus difficile à lire que d'habitude. Ça s'est vu au score. |
+| `commentatrice_stats_plus_imprevisible_01_f.mp3` | Dans ce match, elle a été bien plus difficile à lire que d'habitude. Ça s'est vu au score. |
+| `commentatrice_stats_plus_lisible_01.mp3` | Lui d'habitude si imprévisible, il a été très lisible dans ce match. |
+| `commentatrice_stats_plus_lisible_01_f.mp3` | Elle d'habitude si imprévisible, elle a été très lisible dans ce match. |
+| `commentatrice_stats_reussite_01.mp3` | Dans ce match, quand il n'y avait pas égalité, il gagnait presque à chaque fois. Remarquable. |
+| `commentatrice_stats_reussite_01_f.mp3` | Dans ce match, quand il n'y avait pas égalité, elle gagnait presque à chaque fois. Remarquable. |
+| `commentatrice_stats_change_egalite_01.mp3` | Dans ce match, après chaque égalité, il a changé de signe. Une stratégie… ou une habitude qui se lit ? |
+| `commentatrice_stats_change_egalite_01_f.mp3` | Dans ce match, après chaque égalité, elle a changé de signe. Une stratégie… ou une habitude qui se lit ? |
+| `commentatrice_stats_apres_egalite_01.mp3` | C'est lui qui sortait gagnant des duels d'esprits, dans ce match. Les égalités lui ont souri. |
+| `commentatrice_stats_apres_egalite_01_f.mp3` | C'est elle qui sortait gagnante des duels d'esprits, dans ce match. Les égalités lui ont souri. |
+| `commentatrice_stats_egalites_01.mp3` | Beaucoup d'égalités dans ce match. Deux joueurs qui ont pensé pareil du début à la fin. |
+| `commentatrice_stats_insiste_01.mp3` | Dans ce match, quand ça marchait, il insistait. Son adversaire ne l'a pas vu venir. Ou trop tard. |
+| `commentatrice_stats_insiste_01_f.mp3` | Dans ce match, quand ça marchait, elle insistait. Son adversaire ne l'a pas vu venir. Ou trop tard. |
+| `commentatrice_stats_smashs_01.mp3` | Ses smashs ont pesé lourd dans ce match. Bien choisis, bien placés. |
+| `commentatrice_stats_balles_converties_01.mp3` | Dans ce match, les balles importantes, il les a toutes converties. C'est la marque des grands. |
+| `commentatrice_stats_balles_converties_01_f.mp3` | Dans ce match, les balles importantes, elle les a toutes converties. C'est la marque des grandes. |
+| `commentatrice_stats_balles_gachees_01.mp3` | Des balles de set, il en a eu dans ce match. Il en a laissé filer beaucoup trop. |
+| `commentatrice_stats_balles_gachees_01_f.mp3` | Des balles de set, elle en a eu dans ce match. Elle en a laissé filer beaucoup trop. |
+| `commentatrice_stats_serie_01.mp3` | La série de points de ce match a tout changé. Après ça, il n'y avait plus qu'un joueur. |
+| `commentatrice_stats_serie_01_f.mp3` | La série de points de ce match a tout changé. Après ça, il n'y avait plus qu'une joueuse. |
+| `commentatrice_stats_serre_01.mp3` | Si peu de points d'écart au total dans ce match. Il aurait pu basculer de l'autre côté. |
+| `commentatrice_stats_domination_01.mp3` | Les chiffres de ce match sont sans appel. Il n'y a pas eu de match. |
+| `commentatrice_stats_rien_01.mp3` | Des chiffres sans surprise pour ce match. Un duel honnête, de bout en bout. |
+| `commentatrice_stats_insaisissable_01.mp3` | Dans ce match, il a été insaisissable. Jamais deux fois le même signe, ou presque. |
+| `commentatrice_stats_insaisissable_01_f.mp3` | Dans ce match, elle a été insaisissable. Jamais deux fois le même signe, ou presque. |
+| `commentatrice_stats_insaisissable_02.mp3` | Il a changé de signe sans arrêt dans ce match. Son adversaire a couru après lui toute la partie. |
+| `commentatrice_stats_insaisissable_02_f.mp3` | Elle a changé de signe sans arrêt dans ce match. Son adversaire a couru après elle toute la partie. |
+| `commentatrice_stats_entete_01_pierre.mp3` | Dans ce match, il s'est entêté. La Pierre, encore et encore, quitte à se faire lire. |
+| `commentatrice_stats_entete_01_pierre_f.mp3` | Dans ce match, elle s'est entêtée. La Pierre, encore et encore, quitte à se faire lire. |
+| `commentatrice_stats_entete_01_ciseaux.mp3` | Dans ce match, il s'est entêté. Les Ciseaux, encore et encore, quitte à se faire lire. |
+| `commentatrice_stats_entete_01_ciseaux_f.mp3` | Dans ce match, elle s'est entêtée. Les Ciseaux, encore et encore, quitte à se faire lire. |
+| `commentatrice_stats_entete_01_feuille.mp3` | Dans ce match, il s'est entêté. La Feuille, encore et encore, quitte à se faire lire. |
+| `commentatrice_stats_entete_01_feuille_f.mp3` | Dans ce match, elle s'est entêtée. La Feuille, encore et encore, quitte à se faire lire. |
+| `commentatrice_stats_entete_02.mp3` | Il a joué le même signe quatre, cinq fois d'affilée dans ce match. Du courage… ou de l'obstination. |
+| `commentatrice_stats_entete_02_f.mp3` | Elle a joué le même signe quatre, cinq fois d'affilée dans ce match. Du courage… ou de l'obstination. |
+| `commentatrice_stats_change_perte_01.mp3` | Dans ce match, après chaque point perdu, il a changé de signe. Un réflexe que son adversaire aurait pu exploiter. |
+| `commentatrice_stats_change_perte_01_f.mp3` | Dans ce match, après chaque point perdu, elle a changé de signe. Un réflexe que son adversaire aurait pu exploiter. |
+| `commentatrice_stats_garde_perte_01.mp3` | Même après un point perdu, il gardait son signe dans ce match. Têtu, mais cohérent. |
+| `commentatrice_stats_garde_perte_01_f.mp3` | Même après un point perdu, elle gardait son signe dans ce match. Têtue, mais cohérente. |
+| `commentatrice_stats_lecture_01.mp3` | Dans ce match, il a lu son adversaire comme un livre ouvert. Les habitudes de l'autre, il les a toutes punies. |
+| `commentatrice_stats_lecture_01_f.mp3` | Dans ce match, elle a lu son adversaire comme un livre ouvert. Les habitudes de l'autre, elle les a toutes punies. |
+| `commentatrice_stats_adv_contre_01_pierre.mp3` | Son adversaire a beaucoup joué la Pierre dans ce match. Lui l'a vu, et l'a puni. |
+| `commentatrice_stats_adv_contre_01_pierre_f.mp3` | Son adversaire a beaucoup joué la Pierre dans ce match. Elle l'a vu, et l'a puni. |
+| `commentatrice_stats_adv_contre_01_ciseaux.mp3` | Son adversaire a beaucoup joué les Ciseaux dans ce match. Lui l'a vu, et l'a puni. |
+| `commentatrice_stats_adv_contre_01_ciseaux_f.mp3` | Son adversaire a beaucoup joué les Ciseaux dans ce match. Elle l'a vu, et l'a puni. |
+| `commentatrice_stats_adv_contre_01_feuille.mp3` | Son adversaire a beaucoup joué la Feuille dans ce match. Lui l'a vu, et l'a puni. |
+| `commentatrice_stats_adv_contre_01_feuille_f.mp3` | Son adversaire a beaucoup joué la Feuille dans ce match. Elle l'a vu, et l'a puni. |
+| `commentatrice_stats_adv_ignore_01_pierre.mp3` | Son adversaire a joué la Pierre encore et encore dans ce match. Et lui ne l'a jamais vraiment contrée. |
+| `commentatrice_stats_adv_ignore_01_pierre_f.mp3` | Son adversaire a joué la Pierre encore et encore dans ce match. Et elle ne l'a jamais vraiment contrée. |
+| `commentatrice_stats_adv_ignore_01_ciseaux.mp3` | Son adversaire a joué les Ciseaux encore et encore dans ce match. Et lui ne les a jamais vraiment contrés. |
+| `commentatrice_stats_adv_ignore_01_ciseaux_f.mp3` | Son adversaire a joué les Ciseaux encore et encore dans ce match. Et elle ne les a jamais vraiment contrés. |
+| `commentatrice_stats_adv_ignore_01_feuille.mp3` | Son adversaire a joué la Feuille encore et encore dans ce match. Et lui ne l'a jamais vraiment contrée. |
+| `commentatrice_stats_adv_ignore_01_feuille_f.mp3` | Son adversaire a joué la Feuille encore et encore dans ce match. Et elle ne l'a jamais vraiment contrée. |
+| `commentatrice_stats_meme_favori_01.mp3` | Dans ce match, ils avaient le même signe préféré. Forcément, beaucoup d'égalités. |
+| `commentatrice_stats_styles_01.mp3` | Deux styles opposés dans ce match : un joueur insaisissable, l'autre très lisible. Ça s'est vu au score. |
+| `commentatrice_stats_remontee_01.mp3` | Dans ce match, il est revenu de loin. Mené de plusieurs points, il n'a jamais lâché. |
+| `commentatrice_stats_remontee_01_f.mp3` | Dans ce match, elle est revenue de loin. Menée de plusieurs points, elle n'a jamais lâché. |
+| `commentatrice_stats_fins_serrees_01.mp3` | Dans ce match, c'est dans les fins de set serrées qu'il a fait la différence. Les nerfs, ça ne s'apprend pas. |
+| `commentatrice_stats_fins_serrees_01_f.mp3` | Dans ce match, c'est dans les fins de set serrées qu'elle a fait la différence. Les nerfs, ça ne s'apprend pas. |
+| `commentatrice_stats_sans_smash_01.mp3` | Pas un seul smash dans ce match. Prudent. Peut-être trop. |
+| `commentatrice_stats_smashs_rates_01.mp3` | Dans ce match, ses smashs sont tombés à côté. L'audace, ça se paie aussi. |
+| `commentatrice_stats_depart_01.mp3` | Il est entré dans ce match plus vite que son adversaire. Les premiers points ont donné le ton. |
+| `commentatrice_stats_depart_01_f.mp3` | Elle est entrée dans ce match plus vite que son adversaire. Les premiers points ont donné le ton. |
+| `commentatrice_stats_reflechi_01.mp3` | Dans ce match, il a pris son temps. Beaucoup de réflexion, parfois trop. |
+| `commentatrice_stats_reflechi_01_f.mp3` | Dans ce match, elle a pris son temps. Beaucoup de réflexion, parfois trop. |
+| `commentatrice_stats_vite_01.mp3` | Il a joué vite dans ce match. Très vite. Ça a mis la pression sur son adversaire. |
+| `commentatrice_stats_vite_01_f.mp3` | Elle a joué vite dans ce match. Très vite. Ça a mis la pression sur son adversaire. |
+| `commentatrice_stats_favori_souffre_01.mp3` | Favori sur le papier, il a beaucoup souffert dans ce match. Les classements ne jouent pas. |
+| `commentatrice_stats_favori_souffre_01_f.mp3` | Favorite sur le papier, elle a beaucoup souffert dans ce match. Les classements ne jouent pas. |
 | `commentatrice_dialogue_perso_chiromancien_avant_01.mp3` | J'ai caché mes mains. On ne sait jamais. |
 | `commentatrice_dialogue_perso_chiromancien_avant_02.mp3` | Je crois surtout à ses statistiques. |
 | `commentatrice_dialogue_avant_debutant_01.mp3` | On sera indulgents. Pendant trois coups. |
