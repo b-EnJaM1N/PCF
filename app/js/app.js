@@ -502,7 +502,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   if (silencieux) return evt;
 
   // Le public : il reprend entre les points, « ooh » sur un point disputé ; il s'agite selon l'enjeu (intensiteMatch).
-  ambiance.intensite(intensiteMatch(m)); ambiance.calmer(false);
+  // (19 novembre : à la balle de match, le stade ne retombe pas d'un coup ; il bouillonne pour une victoire)
+  ambiance.intensite(m.termine ? (m.vainqueur === 0 ? 1 : 0.5) : intensiteMatch(m)); ambiance.calmer(false);
   // (au premier point, le son est prêt : on charge les chants personnalisés des joueurs, pour la pause entre les sets)
   if (!S.persoCharge) {
     S.persoCharge = true; ambiance.prechargerPerso([...persoDuMatch(), ...courtsPerso(...joueursDuMatch())]);
@@ -878,7 +879,7 @@ function apresPoint(evt, a, cel, rp) {
   // (fin de match perdue : le public applaudit quand même les deux joueurs, un peu moins fort ; avant, les applaudissements du set)
   if (a.public) {
     const type = a.public === "serie" ? "clameur" : a.public === "set" && m.termine ? "ovation" : a.public;
-    const vol = a.public === "set" && m.termine ? 0.55 : { serie: 0.45, set: 0.6, ovation: 0.8 }[a.public];
+    const vol = a.public === "set" && m.termine ? (m.vainqueur === 0 ? 0.85 : 0.55) : { serie: 0.45, set: 0.6, ovation: 0.8 }[a.public];
     // (19 novembre : la balle de match gagnée, le grand stade explose d'abord, puis l'ovation)
     const explose = m.termine && evt.gagnant === 0 && ambiance.explosion();
     setTimeout(() => ambiance.public(type, vol), explose ? 1200 : 250);
@@ -937,7 +938,12 @@ function apresPoint(evt, a, cel, rp) {
   if (evt.gagnant !== null) S.pointsSansChant = (S.pointsSansChant || 0) + 1;
   // (19 novembre) à la fin du match, l'arbitre tout de suite ; le commentaire d'après-match, lui, attend le panneau des
   // statistiques (après le cri et la poignée de main ; voir montrerStatsFin)
-  if (m.termine) { S.commentairesFin = a.lignes.filter(l => l.role !== "arbitre"); annoncer(a.lignes.filter(l => l.role === "arbitre")); }
+  // (19 novembre, après la coupe Monique Latour gagnée par le porteur du projet : « Roland a mis très longtemps à exulter » : une
+  // victoire, Roland et Monique la commentent tout de suite, pendant le cri ; une défaite attend toujours le panneau)
+  if (m.termine && m.vainqueur === 0) { S.commentairesFin = []; annoncer(a.lignes); }
+  else if (m.termine) { S.commentairesFin = a.lignes.filter(l => l.role !== "arbitre"); annoncer(a.lignes.filter(l => l.role === "arbitre")); }
+  // (une fin de set : l'annonce du set décisif attend la fin du replay ; voir ouvrirPause)
+  else if (evt.finSet) { S.apresReplay = a.lignes.filter(l => l.apresReplay); annoncer(a.lignes.filter(l => !l.apresReplay)); }
   else annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
   render(); renderHistorique(); renderLecture();
   if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);
@@ -950,7 +956,7 @@ function apresPoint(evt, a, cel, rp) {
     // (la poignée de main attend que le commentaire de fin de match soit fini : demande du porteur du projet, 25 octobre)
     // (19 novembre, choix du porteur du projet) Le cri, puis la poignée de main tout de suite, puis les statistiques du match pendant
     // le commentaire d'après-match ; enfin, l'écran de fin.
-    setTimeout(() => { if (S === seance) criEnGrand(cel, () => voix.finiDeParler(() => { if (S === seance) poigneeDeMain(() => { if (S === seance) montrerStatsFin(finir); }); }, 4000)); }, reduitMouvement() ? 900 : 1800);
+    setTimeout(() => { if (S === seance) criEnGrand(cel, () => voix.finiDeParler(() => { if (S === seance) poigneeDeMain(() => { if (S === seance) montrerStatsFin(finir); }); }, m.vainqueur === 0 ? 10000 : 4000)); }, reduitMouvement() ? 900 : 1800);
     return evt;
   }
   if (cel) setTimeout(() => criEnBulle(cel), 250);
@@ -979,6 +985,9 @@ function apresPoint(evt, a, cel, rp) {
     const moSet = replayVisible() ? momentDuSet(S.moments || [], n - 1, g) : null, seanceSet = S;
     const ouvrirPause = () => {
       if (S !== seanceSet) return;
+      // (après le replay : l'annonce du set décisif par Roland ou Monique, quand les commentaires sont finis)
+      const apresReplay = S.apresReplay || []; S.apresReplay = null;
+      if (apresReplay.length) voix.finiDeParler(() => { if (S === seanceSet) annoncer(apresReplay); }, 15000);
       ouvrirPanneau({
       kick: `Fin du ${ORD[n - 1].toLowerCase()} set`,
       big: g === 0 ? "Set pour toi" : `Set pour ${OPP.nom}`, bigCls: g === 0 ? "me" : "bot",
@@ -1000,7 +1009,7 @@ function apresPoint(evt, a, cel, rp) {
           const d = D;
           d.replayEnCours = jouerReplay([moSet], () => { d.replayEnCours = null; if (S === seanceSet && D === d && D.duel.phase === "entre_sets") ouvrirPause(); });
         }, 4000);
-      } else if (moSet) voix.finiDeParler(() => { if (S === seanceSet) jouerReplay([moSet], ouvrirPause); }, 10000);
+      } else if (moSet) voix.finiDeParler(() => { if (S === seanceSet) jouerReplay([moSet], ouvrirPause); }, 25000);   // (25 s au plus : 10 avant, le replay pouvait couper le résumé)
       else ouvrirPause();
     }, cel ? 2400 : 1200);                                  // on laisse le temps de voir le cri
     return evt;
@@ -2635,7 +2644,7 @@ function ouvrirCeremonie({ sur = "", titre, sous = "", coupe = "", voix: ligne =
     `<i style="left:${hasard(0, 100).toFixed(1)}%;background:${couleurs[i % couleurs.length]};--d:${hasard(2.2, 3.6).toFixed(2)}s;--r:${hasard(0, 1.2).toFixed(2)}s;--x:${Math.round(hasard(-80, 80))}px;--t:${Math.round(hasard(360, 900))}deg"></i>`).join("");
   ov.hidden = false; $("cerOk").focus();
   // (la cérémonie du champion : l'ovation, puis le stade chante l'hymne « Que vivent nos héros », jusqu'à « Continuer »)
-  try { ambiance.initialiser(); if (triste) ambiance.reagir("ohDecu"); else if (!enjeu) { ambiance.public("ovation", 0.6); ambiance.hymne({ vol: 0.55, delai: 2.5, attendre: true }); } } catch { /* sans son */ }
+  try { ambiance.initialiser(); if (triste) ambiance.reagir("ohDecu"); else if (!enjeu) { ambiance.public("ovation", 0.85); ambiance.hymne({ vol: 0.55, delai: 2.5, attendre: true }); } } catch { /* sans son */ }
   if (ligne && CATALOGUE.has(ligne)) setTimeout(() => { if (!ov.hidden) voix.dire([CATALOGUE.get(ligne)]); }, 400);
   let fini = false;
   const fermer = () => { if (fini) return; fini = true; ov.hidden = true; $("cerConfettis").innerHTML = ""; if (!enjeu && !triste) ambiance.arreterChant(); apres(); };
