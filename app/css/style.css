@@ -127,17 +127,18 @@ body:not(.en-match) .rule { display: none; }
 .pal-case.pal-g0 { border-color: var(--me); }
 .pal-case.pal-g1 { border-color: var(--bot); }
 .pal-case.pal-point { margin-left: 6px; box-shadow: 0 0 0 2px #fff; }
-/* Le volet (18 novembre, version de test) : comme les jingles des retransmissions, une bande vert et or, penchée, balaie
+/* Le volet (18 novembre, version de test) : comme les jingles des retransmissions, une bande blanc cassé et or, penchée, balaie
    l'écran de gauche à droite en un peu plus d'une demi-seconde ; on change d'écran pendant qu'elle le couvre. */
 .volet { position: fixed; inset: 0; z-index: 60; pointer-events: none; overflow: hidden; }
 .volet[hidden] { display: none; }
 .volet-bande { position: absolute; top: -20%; bottom: -20%; left: -35%; width: 170%; display: flex; align-items: center; justify-content: center;
-  /* (vert et or, aux couleurs du logo du club : 18 novembre, choix du porteur du projet) */
-  background: linear-gradient(90deg, #C9A24A 0 5%, #F5EFE0 5% 5.6%, #0F3D2B 5.6% 30%, #175A40 50%, #0F3D2B 70% 94.4%, #F5EFE0 94.4% 95%, #C9A24A 95%);
+  /* (blanc cassé, la couleur du cœur de l'icône de l'appli, bordé d'or et d'un liseré vert : 19 novembre, choix du porteur du
+     projet ; le vert rappelait trop l'écran d'accueil) */
+  background: linear-gradient(90deg, #C9A24A 0 5%, #0F3D2B 5% 5.6%, #EFE6D0 5.6% 30%, #F8F3E6 50%, #EFE6D0 70% 94.4%, #0F3D2B 94.4% 95%, #C9A24A 95%);
   transform: translateX(-130%) skewX(-14deg);
   box-shadow: 0 0 30px rgba(0, 0, 0, .45); }
 /* (le logo du club au milieu de la bande, droit ; 18 novembre, demande du porteur du projet) */
-.volet-bande img { width: min(46vw, 190px); height: auto; transform: skewX(14deg); filter: drop-shadow(0 0 2px #C9A24A) drop-shadow(0 4px 12px rgba(0, 0, 0, .5)); }
+.volet-bande img { width: min(46vw, 190px); height: auto; transform: skewX(14deg); filter: drop-shadow(0 4px 12px rgba(15, 61, 43, .35)); }
 /* (18 novembre au soir, remarque du porteur du projet : trop rapide, on ne voyait pas le logo) 1,4 s : la bande entre en 0,4 s,
    reste un peu plus d'une demi-seconde, le logo grossit doucement, puis elle repart en 0,4 s */
 .volet.passe .volet-bande { animation: volet-passe 1.4s both; }
