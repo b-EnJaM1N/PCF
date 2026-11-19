@@ -84,7 +84,9 @@
             "premier_set_net",
             "premier_set_large",
             "premier_set_ecrase",
-            "un_set_partout"
+            "un_set_partout",
+            "dialogue_replay_moment",
+            "dialogue_tf"
           ],
           "ids": [
             "commentatrice_dialogue_figure_triple_loop_02",
@@ -197,7 +199,9 @@
             "dialogue_apres_majeur_finale_defaite",
             "match_perdu_point_decisif",
             "finale_perdue_point_decisif",
-            "dialogue_fin_match"
+            "dialogue_fin_match",
+            "dialogue_resultat_grosse_defaite",
+            "dialogue_resultat_serie_defaites"
           ]
         }
       ]

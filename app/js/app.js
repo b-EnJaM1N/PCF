@@ -604,6 +604,16 @@ function paletteDuReplay(pa, mo) {
 function lignePalette(pa, mo) { return auHasard(lignesPalette(`replay_palette_${pa.verdict}`, pa, mo)); }
 // La palette s'affiche avec le replay, dès le début de l'action (18 novembre) : le point rejoué reste caché (❔) jusqu'au dévoilement.
 // Pas de texte des commentaires : seulement les titres (18 novembre, demande du porteur du projet).
+// Un dialogue du replay (19 novembre, bibliothèque du porteur du projet) : un pas encore dit dans les replays de ce match, et
+// enregistré ; ou null.
+function dialogueReplay(nom, genre = "m") {
+  const ids = DIALOGUES_IDS[nom] || [], ok = ids.map((_, k) => k).filter(k => ids[k].every(id => voix.fichiers.has(id)));
+  if (!ok.length) return null;
+  const dits = S ? (S.replayDits ||= new Set()) : new Set(), neufs = ok.filter(k => !dits.has(`${nom}:${k}`)), g = neufs.length ? neufs : ok;
+  const k = g[Math.floor(Math.random() * g.length)];
+  dits.add(`${nom}:${k}`);
+  return ligneDialogue(nom, k, genre);
+}
 function montrerPalette(pa, mo, devoile = false) {
   const nom = j => (j === 0 ? nomAffiche(P) : OPP.nom), hab = pa.habitude;
   const ligne = (j, cle) => `<div class="pal-ligne${hab?.joueur === j ? " pal-lue" : ""}"><span class="pal-nom">${esc(nom(j))}</span>`
@@ -632,7 +642,7 @@ function jouerReplay(liste, apres = () => {}) {
   if (!liste.length) { apres(); return () => {}; }
   voix.arreter();
   const ov = $("replay"), vite = reduitMouvement();
-  let i = 0, t = null, fini = false;
+  let i = 0, t = null, fini = false, conclu = false;
   const fermer = () => { if (fini) return; fini = true; clearTimeout(t); voix.arreter(); volet(() => { ov.hidden = true; apres(); }); };
   // (couper : arrêter net, sans la suite ; en duel, quand le set repart pendant le replay de la pause)
   const couper = () => { if (fini) return; fini = true; clearTimeout(t); ov.hidden = true; voix.arreter(); };
@@ -646,7 +656,16 @@ function jouerReplay(liste, apres = () => {}) {
   boite.classList.remove("rp-sortie", "rp-entree");
   const montrer = () => {
     if (fini) return;
-    if (i >= liste.length) { fermer(); return; }
+    if (i >= liste.length) {
+      // (19 novembre) les temps forts finissent sur une conclusion de Roland et Monique (« Trois images qui resteront dans les
+      // mémoires ! »), puis on ferme ; « Roland, ils ont joué trois manches… » seulement après un match en trois sets.
+      if (liste.length > 1 && !conclu) {
+        conclu = true;
+        const fin = dialogueReplay(S?.match?.scoresSets?.length === 3 && Math.random() < 0.5 ? "temps_forts_fin_trois" : "temps_forts_fin");
+        if (fin) { voix.dire(fin); voix.finiDeParler(() => { if (!fini) fermer(); }, 15000); return; }
+      }
+      fermer(); return;
+    }
     if (i === 0) { afficherAction(); return; }
     boite.classList.remove("rp-entree"); boite.classList.add("rp-sortie");
     t = setTimeout(() => {
@@ -664,7 +683,17 @@ function jouerReplay(liste, apres = () => {}) {
     $("rpStatus").textContent = `Set ${mo.set + 1}`;
     $("rpCompte").textContent = liste.length > 1 ? `${i} / ${liste.length}` : "";
     $("rpVerdict").textContent = ""; $("rpCom").textContent = ""; $("rpPalette").hidden = true;
-    const pa0 = mo.palette ? paletteDuReplay(mo.palette, mo) : null, lp = pa0 ? lignePalette(pa0, mo) : null, pa = lp ? pa0 : null, roland = pa ? "commentateur" : null;
+    // (19 novembre, bibliothèque du porteur du projet) Les dialogues du replay : entre les sets, une fois sur trois, un dialogue
+    // remplace l'intro et les répliques habituelles, sans la palette (« Et voici certainement le tournant de ce set ! ») ; aux
+    // temps forts, 4 fois sur 10, un dialogue selon l'action (la 1re du 1er set, la 2e, la balle de match, une balle sauvée par le
+    // perdant du match, une action perdue, ou le tournant), la palette restant à l'écran.
+    const plusieurs = liste.length > 1, dernier = i === liste.length, genre = genreJoueur(mo.gagnant);
+    const perdantMatch = S?.match?.vainqueur === 0 || S?.match?.vainqueur === 1 ? 1 - S.match.vainqueur : null;
+    const candidats = !plusieurs ? (Math.random() < 1 / 3 ? ["replay_moment"] : [])
+      : Math.random() < 0.4 ? [i === 1 && mo.set === 0 && "tf_premier", i === 2 && "tf_deuxieme", dernier && mo.type === "match" && "tf_balle",
+        (mo.type === "sauvee_match" || mo.type === "sauvee_set") && mo.gagnant === perdantMatch && "tf_defense", mo.gagnant === 1 && "tf_cher", "tf_tournant"].filter(Boolean) : [];
+    const dlgNom = candidats[Math.floor(Math.random() * candidats.length)], dlg = dlgNom ? dialogueReplay(dlgNom, genre) : null;
+    const pa0 = mo.palette && !(dlg && !plusieurs) ? paletteDuReplay(mo.palette, mo) : null, lp = pa0 ? lignePalette(pa0, mo) : null, pa = lp ? pa0 : null, roland = pa || dlg ? "commentateur" : null;
     if (pa) montrerPalette(pa, mo);   // (la palette arrive avec le replay)
     // (les marques du smash et le feu de la main : ceux du moment rejoué, pas ceux de la fin du match ; 18 novembre)
     const dAvant = mo.degatsAvant || [null, null], dApres = mo.degatsApres || [null, null], fAvant = mo.feuAvant || [0, 0], fApres = mo.feuApres || [0, 0];
@@ -672,7 +701,7 @@ function jouerReplay(liste, apres = () => {}) {
     // Roland ou Monique : « Revoyons ça ! » pour la première action, puis un mot sur l'action au dévoilement ; avec la palette,
     // Monique donne ensuite son verdict. Chacun finit sa phrase avant que l'autre parle, et l'action suivante attend la fin
     // des commentaires (18 novembre, demande du porteur du projet : Roland était coupé par Monique) ; « Passer » pour jouer.
-    const genre = genreJoueur(mo.gagnant), action = i;
+    const action = i;
     const encore = () => !fini && action === i;
     const parler = (l, ensuite) => voix.finiDeParler(() => {
       if (!encore()) return;
@@ -681,10 +710,14 @@ function jouerReplay(liste, apres = () => {}) {
     }, 20000);
     // Les temps forts de fin de match (plusieurs actions) : Roland les annonce l'une après l'autre (« D'abord… », « Ensuite… »,
     // « Et enfin… » : replay_debut, replay_ensuite, replay_enfin ; 18 novembre), avec un fondu entre deux actions.
-    const plusieurs = liste.length > 1, dernier = i === liste.length;
-    const annonce = !plusieurs ? (i === 1 ? "replay_intro" : null) : i === 1 ? "replay_debut" : dernier ? "replay_enfin" : "replay_ensuite";
-    const la = annonce && (ligneReplay(annonce, "m", "commentateur") || (i === 1 ? ligneReplay("replay_intro", "m", roland) : null));
-    if (la) voix.dire([la]);
+    // (un dialogue qui annonce déjà l'ordre, « Deuxième séquence… », « Et enfin, la balle de match ! », ou le dialogue du set :
+    // pas d'annonce en plus ; aux temps forts, une fois sur deux, l'introduction en dialogue : « Allez, on se repasse les trois
+    // grands moments de cette rencontre ! »)
+    const sansAnnonce = ["tf_deuxieme", "tf_balle"].includes(dlgNom) || (dlg && !plusieurs);
+    const annonce = sansAnnonce ? null : !plusieurs ? (i === 1 ? "replay_intro" : null) : i === 1 ? "replay_debut" : dernier ? "replay_enfin" : "replay_ensuite";
+    const intro = plusieurs && i === 1 && Math.random() < 0.5 ? dialogueReplay("temps_forts_intro") : null;
+    const la = !intro && annonce && (ligneReplay(annonce, "m", "commentateur") || (i === 1 ? ligneReplay("replay_intro", "m", roland) : null));
+    if (intro) voix.dire(intro); else if (la) voix.dire([la]);
     t = setTimeout(() => {
       if (!encore()) return;
       const devoile = Date.now();
@@ -711,10 +744,11 @@ function jouerReplay(liste, apres = () => {}) {
         });
       }, vite ? 0 : 700);
       // (avec la palette : Roland décrit d'abord l'action à sa façon, replay_r_… ; sinon, la réplique habituelle du replay)
-      const c = (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
+      const c = dlg ? dlg[0] : (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
       // (le temps de regarder, même sans le son : 3 secondes au moins, 6 avec la palette)
       const suite = () => { t = setTimeout(montrer, Math.max(vite ? 800 : 1500, (pa ? 6500 : 3200) - (Date.now() - devoile))); };
-      parler(c, () => (pa ? parler(lp, suite) : suite()));
+      const reponse = dlg ? dlg[1] : pa ? lp : null;
+      parler(c, () => (reponse ? parler(reponse, suite) : suite()));
     }, vite ? 300 : 2000);
   };
   montrer();
@@ -1805,6 +1839,8 @@ function presenterSpeaker() {
   // (en duel, le tirage commun aux deux téléphones pour ces répliques : le numéro du duel et le moment ; 18 novembre)
   const tirageCommun = S.duel && D?.duel?.id ? cle => tirageDuel(`com:${cle}`) / 4294967296 : null;
   if (S.annonces) { S.annonces.perso = persoCom; S.annonces.tirage = tirageCommun; }
+  // (19 novembre) mes séries de victoires et de défaites avant ce match, pour les dialogues d'après-match (« Il est intouchable ! »)
+  if (S.annonces) S.annonces.serieAvant = { victoires: P.serieEnCours || 0, defaites: P.defaitesEnCours || 0 };
   const monId = `h:${compteUI.session()?.user?.id}`;
   let recents = []; try { recents = lire("speakerRecents", []) || []; } catch { /* rien */ }
   // La mémoire du dernier match contre le même adversaire (gardée pour le premier coup : la même ouverture ?).
