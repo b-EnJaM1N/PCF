@@ -879,10 +879,12 @@ function apresPoint(evt, a, cel, rp) {
   if (a.public) {
     const type = a.public === "serie" ? "clameur" : a.public === "set" && m.termine ? "ovation" : a.public;
     const vol = a.public === "set" && m.termine ? 0.55 : { serie: 0.45, set: 0.6, ovation: 0.8 }[a.public];
-    setTimeout(() => ambiance.public(type, vol), 250);
+    // (19 novembre : la balle de match gagnée, le grand stade explose d'abord, puis l'ovation)
+    const explose = m.termine && evt.gagnant === 0 && ambiance.explosion();
+    setTimeout(() => ambiance.public(type, vol), explose ? 1200 : 250);
   }
   // Sinon, parfois, une réaction du public : applaudissements, « Allez ! », « Bravo ! », « Ohhh… » ou brouhaha (voir reactionPoint).
-  else if (rp && !rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups, Math.random, intensiteMatch(m)); if (r) setTimeout(() => ambiance.reagir(r), 300); }
+  else if (rp && !rp.ooh) { const r = reactionPoint(S.bravos ||= {}, evt, m.coups, Math.random, intensiteMatch(m)); if (r) setTimeout(() => ambiance.reagir(r === "applaudir" && egalitesAvantDernier(m.coups) >= 1 ? "applaudirFort" : r), 300); }
   // Avant une balle de set ou de match, de temps en temps (une fois par set au plus) : la trompette ou « Olé, olé », puis l'arbitre
   // demande le silence et le public se tait (demande du porteur du projet, 3 novembre). Contre un bot, le coup suivant attend.
   const nSet = m.scoresSets.length, chant = evt.balleApres && !m.termine && !evt.finSet && !(S.chantSet ||= new Set()).has(nSet) && !(S.silenceSet ||= new Set()).has(nSet) && Math.random() < 0.35
@@ -922,6 +924,10 @@ function apresPoint(evt, a, cel, rp) {
       S.chantCourt = extraits[(extraits.indexOf(S.chantCourt) + 1) % (extraits.length || 1)];
       ambiance.stade(S.chantCourt, { vol: 0.65, delai: 0.4, salle: false });
     }
+  } else if (!evt.finSet && !m.termine && evt.gagnant !== null && series(m.coups).serie === 3 && !(S.clapSet ||= new Set()).has(nSet)
+    && Math.random() < 0.4 && ambiance.clappements()) {
+    // Les clappements en rythme du grand stade : 3 points d'affilée (une fois par set au plus ; 19 novembre).
+    S.clapSet.add(nSet);
   } else if (!evt.finSet && !m.termine && evt.gagnant !== null && (S.pointsSansChant || 0) >= 5 && Math.random() < 0.25 + 0.35 * intensiteMatch(m)
     && ambiance.extraitMatch()) {
     // Les supporters chantent quelques secondes entre deux points (au moins 5 points d'écart, plus souvent quand ça chauffe ;
@@ -952,8 +958,11 @@ function apresPoint(evt, a, cel, rp) {
     // La pause entre les sets : une fois sur deux, les supporters chantent (le chant baisse sous les commentaires, s'éteint au
     // premier échange du set suivant ; 3 novembre).
     // (3 fois sur 4 ; un chant personnalisé d'abord, puis un habituel, en alternance : 6 novembre, demande du porteur du projet)
-    if (S.duel && D) { const id = chantPauseDuel(m.scoresSets.length); if (id) ambiance.chanterChoisi(id, { vol: 0.5, delai: 2.5 }); }
-    else if (Math.random() < 0.75) ambiance.chanter({ vol: 0.5, delai: 2.5, perso: persoDuMatch(), alterner: true });
+    // (19 novembre : de temps en temps, la ola du grand stade d'abord, et le chant ensuite ; en duel, le même tirage des deux côtés)
+    const veutOla = S.duel && D ? tirageDuel(`ola${m.scoresSets.length}`) % 3 === 0 : Math.random() < 0.35, ola = veutOla && ambiance.ola();
+    const delaiChant = (S.duel && D ? veutOla : ola) ? 7.3 : 2.5;   // (la ola dure 8 secondes : le chant sort de la foule à sa fin)
+    if (S.duel && D) { const id = chantPauseDuel(m.scoresSets.length); if (id) ambiance.chanterChoisi(id, { vol: 0.5, delai: delaiChant }); }
+    else if (Math.random() < 0.75) ambiance.chanter({ vol: 0.5, delai: delaiChant, perso: persoDuMatch(), alterner: true });
     const [pa, pb] = evt.scoreSet, g = evt.gagnant, n = m.scoresSets.length;
     const suivant = annonceDebutSet(m), decisif = setDecisif(m);
     const nouveauSet = () => {
