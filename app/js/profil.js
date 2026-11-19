@@ -171,6 +171,10 @@ export function nouvelElo(elo, eloAdv, gagne, k = K_ELO) {
 }
 
 export const nomAffiche = P => P.pseudo || "Toi";
+// Mon jeu, contre les joueurs et contre les bots (19 novembre, demande du porteur du projet) : les mêmes compteurs que le total,
+// tenus à part à partir de cette date (avant, rien ne les distinguait).
+export const jeuVide = () => ({ matchs: 0, signes: [0, 0, 0], smashsTentes: 0, smashsReussis: 0, apresVictoire: 0, memeApresVictoire: 0,
+  apresDefaite: 0, memeApresDefaite: 0, devines: 0, lisibles: 0 });
 // Le pourcentage de smashs réussis (qui ont gagné le point), ou null si aucun smash joué.
 export const tauxSmash = P => (P.smashsTentes ? Math.round(100 * P.smashsReussis / P.smashsTentes) : null);
 export const titresObtenus = P => TITRES.filter(t => P.titres[t.id]).sort((a, b) => P.titres[b.id] - P.titres[a.id]);
@@ -204,6 +208,17 @@ export function enregistrerMatch(P, r) {
     else if (p.gagnant === 1) { P.apresDefaite++; if (c[i].a === p.a) P.memeApresDefaite++; }
   }
   P.devines += r.devines; P.lisibles += r.lisibles;
+  // (les mêmes, contre les joueurs ou contre les bots)
+  P.parAdv ||= {};
+  const j = (P.parAdv[humain ? "humains" : "bots"] ||= jeuVide());
+  j.matchs++; c.forEach(x => { j.signes[x.a]++; });
+  for (let i = 1; i < n; i++) {
+    const p = c[i - 1];
+    if (p.gagnant === 0) { j.apresVictoire++; if (c[i].a === p.a) j.memeApresVictoire++; }
+    else if (p.gagnant === 1) { j.apresDefaite++; if (c[i].a === p.a) j.memeApresDefaite++; }
+  }
+  j.devines += r.devines; j.lisibles += r.lisibles;
+  j.smashsTentes += stats.smashsTentes || 0; j.smashsReussis += stats.smashsReussis || 0;
   P.ballesObtenues += stats.ballesObtenues; P.ballesConverties += stats.ballesConverties;
   P.ballesSubies += stats.ballesSubies; P.ballesSauvees += stats.ballesSauvees;
   P.smashsTentes += stats.smashsTentes || 0; P.smashsReussis += stats.smashsReussis || 0;

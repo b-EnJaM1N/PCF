@@ -59,6 +59,13 @@ test("un duel ne change pas le niveau, mais remplit la fiche", () => {
   enregistrerMatch(P, { match: m, stats: nouvellesStats(), devines: 0, lisibles: 0, adversaire: { id: "h:uid-b", nom: "Bob#4821" }, compteNiveau: false });
   assert.equal(P.elo, 1200); assert.deepEqual(P.historiqueElo, [1200]);
   assert.equal(P.matchs, 1); assert.equal(P.faceAFace["h:uid-b"].v, 1); assert.equal(P.derniers[0].nomAdv, "Bob#4821");
+  // (19 novembre) « Mon jeu » contre les joueurs, à part de celui contre les bots
+  assert.equal(P.parAdv.humains.matchs, 1); assert.equal(P.parAdv.humains.signes[0], 14); assert.equal(P.parAdv.bots, undefined);
+  const m2 = nouveauMatch({ pointsParSet: 7, setsGagnants: 1 });
+  for (let i = 0; i < 7; i++) jouerCoup(m2, CISEAUX, PIERRE);
+  enregistrerMatch(P, { match: m2, stats: nouvellesStats(), devines: 2, lisibles: 5, adversaire: { id: "bambi", elo: 900, nom: "Bambi" } });
+  assert.equal(P.parAdv.bots.matchs, 1); assert.equal(P.parAdv.bots.signes[1], 7); assert.equal(P.parAdv.bots.lisibles, 5);
+  assert.equal(P.parAdv.humains.matchs, 1); assert.equal(P.matchs, 2);
 });
 
 test("temps restant d'après l'heure du serveur", () => {

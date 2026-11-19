@@ -24,7 +24,7 @@ import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup, statsDuMatch } from "./stats-match.js";
 import { estFiac } from "./profil.js";
 import { jouerRoutine } from "./routines.js";
-import { TITRES, FAMILLES, accorderTitres, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, reserveAuTenant, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash } from "./profil.js";
+import { TITRES, FAMILLES, accorderTitres, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, reserveAuTenant, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash, jeuVide } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
@@ -1558,6 +1558,44 @@ function guetterMessageFin() {
   d.toursGuet = 0;
 }
 
+// ---------------------------------------------------------------- Mon jeu (Ma fiche › Stats)
+// Contre les joueurs, contre les bots, ou en tout (19 novembre, demande du porteur du projet ; par défaut, contre les joueurs).
+// Les deux premiers ne sont comptés qu'à partir du 19 novembre : avant, rien ne les distinguait.
+let vueJeu = "humains";
+try { vueJeu = localStorage.getItem("hs_vue_jeu") || "humains"; } catch { /* rien */ }
+function renderMonJeu() {
+  const V = vueJeu === "total" ? P : (P.parAdv?.[vueJeu] || jeuVide());
+  const choix = [["humains", "👥 Joueurs"], ["bots", "🤖 Bots"], ["total", "Tout"]]
+    .map(([k, t]) => `<button type="button" class="jeu-vue${k === vueJeu ? " on" : ""}" data-vue="${k}" aria-pressed="${k === vueJeu}">${t}</button>`).join("");
+  const entete = `<div class="jeu-vues" role="group" aria-label="Mon jeu : contre qui">${choix}</div>`;
+  const vide = vueJeu === "total" ? !P.matchs : !V.matchs;
+  if (vide) {
+    $("gameBody").innerHTML = `${entete}<p class="hint">${vueJeu === "humains" ? "Aucun match contre un joueur" : "Aucun match contre un bot"} depuis le 19 novembre : ces chiffres se remplissent à partir de ton prochain match ${vueJeu === "humains" ? "en ligne" : "contre un bot"}. « Tout » montre l'ensemble de tes matchs.</p>`;
+  } else {
+    const tot = V.signes.reduce((a, b) => a + b, 0), fav = signeFavori(V.signes);
+    const taux = V.lisibles ? V.devines / V.lisibles : 1 / 3, ind = indiceImprevisibilite(taux);
+    const mv = V.apresVictoire ? Math.round(100 * V.memeApresVictoire / V.apresVictoire) : null;
+    const md = V.apresDefaite ? Math.round(100 * V.memeApresDefaite / V.apresDefaite) : null;
+    const nbMatchs = vueJeu === "total" ? "" : `<p class="hint">${V.matchs} match${V.matchs > 1 ? "s" : ""} ${vueJeu === "humains" ? "contre des joueurs" : "contre des bots"}, depuis le 19 novembre.</p>`;
+    $("gameBody").innerHTML = `${entete}${nbMatchs}<div class="bars">${barres(V.signes, tot)}</div>
+      <div class="lines">
+        <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
+        <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${V.smashsTentes ? `${V.smashsReussis} sur ${V.smashsTentes} (${tauxSmash(V)} %)` : "Aucun pour l'instant"}</span></div>
+        <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
+        <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
+      </div>
+      <p class="hint">Un joueur parfaitement imprévisible rejoue le même signe environ 33 % du temps.</p>
+      <h2 style="margin-top:16px">Indice d'imprévisibilité</h2>
+      <div class="big">${ind}<span style="font-size:1rem;color:var(--muted)"> / 100</span></div>
+      <div class="gauge"><div style="width:${ind}%"></div></div>
+      <p class="hint">L'analyse a deviné <b>${V.devines} coups sur ${V.lisibles}</b>, soit ${(taux * 100).toFixed(1).replace(".", ",")} %. Le hasard pur donnerait 33 % : 100 sur 100, 40 % : 80, 50 % : 50, 60 % : 20.</p>`;
+  }
+  $("gameBody").querySelectorAll(".jeu-vue").forEach(b => b.addEventListener("click", () => {
+    vueJeu = b.dataset.vue; try { localStorage.setItem("hs_vue_jeu", vueJeu); } catch { /* rien */ }
+    renderMonJeu();
+  }));
+}
+
 // ---------------------------------------------------------------- images à partager (La Une, la carte)
 // Aperçu, bouton « Partager » (si le téléphone sait partager une image) et lien « Enregistrer ».
 async function preparerPartage(canvas, { img, partager, enregistrer, msg, fichier, alt, titre }) {
@@ -2301,22 +2339,7 @@ function renderFiche() {
   $("ficheStatsVide").hidden = !!P.matchs;
 
   if (P.matchs) {
-    const tot = P.signes.reduce((a, b) => a + b, 0), fav = signeFavori(P.signes);
-    const taux = P.lisibles ? P.devines / P.lisibles : 1 / 3, ind = indiceImprevisibilite(taux);
-    const mv = P.apresVictoire ? Math.round(100 * P.memeApresVictoire / P.apresVictoire) : null;
-    const md = P.apresDefaite ? Math.round(100 * P.memeApresDefaite / P.apresDefaite) : null;
-    $("gameBody").innerHTML = `<div class="bars">${barres(P.signes, tot)}</div>
-      <div class="lines">
-        <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
-        <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${P.smashsTentes ? `${P.smashsReussis} sur ${P.smashsTentes} (${tauxSmash(P)} %)` : "Aucun pour l'instant"}</span></div>
-        <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
-        <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
-      </div>
-      <p class="hint">Un joueur parfaitement imprévisible rejoue le même signe environ 33 % du temps.</p>
-      <h2 style="margin-top:16px">Indice d'imprévisibilité</h2>
-      <div class="big">${ind}<span style="font-size:1rem;color:var(--muted)"> / 100</span></div>
-      <div class="gauge"><div style="width:${ind}%"></div></div>
-      <p class="hint">L'analyse a deviné <b>${P.devines} coups sur ${P.lisibles}</b>, soit ${(taux * 100).toFixed(1).replace(".", ",")} %. Le hasard pur donnerait 33 % : 100 sur 100, 40 % : 80, 50 % : 50, 60 % : 20.</p>`;
+    renderMonJeu();
     const pc = (a, b) => (b ? `${a} sur ${b} (${Math.round(100 * a / b)} %)` : "Aucune pour l'instant");
     $("mentalBody").innerHTML = `
       <div class="ln"><span>Balles de set et de match converties</span><span>${pc(P.ballesConverties, P.ballesObtenues)}</span></div>
