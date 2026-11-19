@@ -1765,13 +1765,13 @@ async function ouvrirFicheAdv(id, nom, { jouer = true } = {}) {
 }
 // La fiche d'un joueur en ligne, en 4 onglets (19 novembre, choix du porteur du projet) : 📊 Stats (ouvert d'abord : les mêmes
 // que dans Ma fiche, d'après sa fiche enregistrée en ligne, et ses chiffres en ligne), 🤝 Contre toi (notre face-à-face et l'historique
-// des mains de nos duels), 📁 Dossier (ses habitudes d'après ses 50 derniers matchs en ligne, et ses mains contre tout le monde),
-// 📜 Historique (ses derniers duels et ses adversaires les plus fréquents). Pour tous les joueurs en ligne (amis ou non).
+// des mains de nos duels), 📁 Dossier (ses habitudes d'après ses 50 derniers matchs en ligne),
+// 📜 Ses matchs (ses derniers duels, ses adversaires les plus fréquents, le coup par coup). Pour tous les joueurs en ligne (amis ou non).
 // el : où l'écrire ; encore() : la fiche est-elle toujours ouverte ? ; bot : un bot des tournois en ligne (pas de fiche de jeu).
 let nOngletsMains = 0;
 async function ongletsJoueur(el, uid, nom, { encore = () => true, bot = false } = {}) {
   const moi = compteUI?.session()?.user?.id, n = esc(nom), x = ++nOngletsMains;
-  const onglets = [["S", "📊 Stats"], ["C", "🤝 Contre toi"], ["D", "📁 Dossier"], ["H", "📜 Historique"]];
+  const onglets = [["S", "📊 Stats"], ["C", "🤝 Contre toi"], ["D", "📁 Dossier"], ["H", "📜 Ses matchs"]];
   el.innerHTML = `<div class="ff-choix quatre">${onglets.map(([k, t], i) => `<input type="radio" name="fo${x}" id="fo${k}${x}"${i ? "" : " checked"}><label for="fo${k}${x}">${t}</label>`).join("")}`
     + `${[1, 2, 3, 4].map(k => `<div class="ff-v${k}"><p class="hint">Chargement…</p></div>`).join("")}</div>`;
   const zone = k => el.querySelector(`.ff-v${k}`);
@@ -1817,13 +1817,15 @@ async function ongletsJoueur(el, uid, nom, { encore = () => true, bot = false } 
   for (const m of matchs || []) k = additionner(k, compterMatch(m.map(c => ({ a: c.a, b: c.b, gagnant: c.g ?? null }))));
   const dos = matchs ? corpsDossier(dossier(k, { elle }), d => `D'après ses ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).`,
     "Pas encore assez de matchs en ligne pour établir son dossier.") : `<p class="hint">Dossier indisponible pour l'instant.</p>`;
+  // (19 novembre, choix du porteur du projet : le Dossier, seulement ses habitudes ; tout ce qui raconte ses matchs dans « Ses matchs »)
+  zone(3).innerHTML = dos;
+  // 📜 Ses matchs : ses derniers duels, ses adversaires les plus fréquents, puis le coup par coup
   const tous = (matchs || []).slice(0, MAX_MAINS).map(mainDossier).filter(e => e.c);
-  zone(3).innerHTML = dos + `<h3 class="ff-titre">🖐️ Ses mains</h3>${htmlMains(tous, { noms: [nom, "Adversaire"], gagneTexte: [`✅ ${il} gagne`, `❌ ${il} perd`], vide: "Pas encore de match en ligne terminé." })}`
-    + `<p class="hint mains-note">Ses ${MAX_MAINS} derniers matchs en ligne, coup par coup (en jaune : le point est pour ${n}).</p>`;
-  // 📜 Historique
-  zone(4).innerHTML = ficheOk
+  const histo = ficheOk
     ? `<h3 class="ff-titre">Ses derniers duels</h3>${htmlHistorique(fiche, nom, avatarSVG)}<h3 class="ff-titre">Ses adversaires les plus fréquents</h3>${htmlFacesAutres(fiche, nom, avatarSVG)}`
     : `<p class="hint">Historique indisponible pour l'instant.${fiche?.erreur ? ` (${esc(fiche.erreur)})` : ""}</p>`;
+  zone(4).innerHTML = histo + `<h3 class="ff-titre">🖐️ Coup par coup</h3>${htmlMains(tous, { noms: [nom, "Adversaire"], gagneTexte: [`✅ ${il} gagne`, `❌ ${il} perd`], vide: "Pas encore de match en ligne terminé." })}`
+    + `<p class="hint mains-note">Ses ${MAX_MAINS} derniers matchs en ligne, coup par coup (en jaune : le point est pour ${n}).</p>`;
 }
 $("lastBody").addEventListener("click", e => { const x = e.target.closest(".nom-adv"); if (x) ouvrirFicheAdv(x.dataset.adv, x.dataset.nom); });
 $("faCarte").addEventListener("click", async () => {
