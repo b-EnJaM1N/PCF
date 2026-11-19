@@ -137,8 +137,9 @@ body:not(.en-match) .rule { display: none; }
   background: linear-gradient(90deg, #C9A24A 0 5%, #0F3D2B 5% 5.6%, #EFE6D0 5.6% 30%, #F8F3E6 50%, #EFE6D0 70% 94.4%, #0F3D2B 94.4% 95%, #C9A24A 95%);
   transform: translateX(-130%) skewX(-14deg);
   box-shadow: 0 0 30px rgba(0, 0, 0, .45); }
-/* (le logo du club au milieu de la bande, droit ; 18 novembre, demande du porteur du projet) */
-.volet-bande img { width: min(46vw, 190px); height: auto; transform: skewX(14deg); filter: drop-shadow(0 4px 12px rgba(15, 61, 43, .35)); }
+/* (le logo du club au milieu de la bande, droit ; 18 novembre, demande du porteur du projet ; 19 novembre : en grand, presque
+   comme à l'ouverture de l'appli, min(92vw, 75vh, 560px), un peu moins pour qu'il ne déborde pas en grossissant ; 190 px avant) */
+.volet-bande img { width: min(86vw, 70vh, 520px); height: auto; transform: skewX(14deg); filter: drop-shadow(0 4px 12px rgba(15, 61, 43, .35)); }
 /* (18 novembre au soir, remarque du porteur du projet : trop rapide, on ne voyait pas le logo) 1,4 s : la bande entre en 0,4 s,
    reste un peu plus d'une demi-seconde, le logo grossit doucement, puis elle repart en 0,4 s */
 .volet.passe .volet-bande { animation: volet-passe 1.4s both; }
