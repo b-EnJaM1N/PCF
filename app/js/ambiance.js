@@ -4,7 +4,7 @@
 // enregistrement portant leur nom est déposé dans app/audio/ (ex. public_ovation_01.mp3).
 // Le murmure de fond, la tension et le « ooh » n'existent qu'en enregistrement : sans fichier, rien.
 import { BPM_COEUR } from "./effets.js";
-import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe, debutDuSon, dechirure, claqueFeuille, smashBloque, smashRate, grondement, coupDeVent, cling, pschitt, crepitement, etincelle, battementCoeur } from "./sons.js";
+import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe, debutDuSon, dechirure, claqueFeuille, smashBloque, smashRate, grondement, coupDeVent, cling, pschitt, crepitement, etincelle, battementCoeur, jingleReplay } from "./sons.js";
 import { balle, pointDecisif } from "./regles.js";
 
 const AC = typeof window !== "undefined" ? window.AudioContext || window.webkitAudioContext : null;
@@ -42,7 +42,9 @@ export const FICHIERS_REACTIONS = {
 export const forceMoyenne = canaux => { let t = 0, n = 0; for (const c of canaux) for (let i = 0; i < c.length; i++) { t += c[i] * c[i]; n++; } return n ? Math.sqrt(t / n) : 0; };
 const FORCE_REACTION = 0.12;
 // Les trois fonds du stade, ramenés au niveau de l'ancien murmure (ils sont 6 à 7 dB plus forts), le bouillant un peu au-dessus.
-const FORCE_FOND = 0.024, RELIEF_STADE = [0.9, 1, 1.15];
+// (19 novembre, après le premier essai du porteur du projet, « pas grande différence » : un peu plus fort, 0,024 avant, et plus de
+// contraste entre le calme et le bouillant, [0,9, 1, 1,15] avant)
+const FORCE_FOND = 0.03, RELIEF_STADE = [0.8, 1.05, 1.45];
 // La part de chaque fond du stade [calme, nerveux, bouillant] selon l'intensité du moment (0 à 1) : calme en début de set,
 // nerveux quand ça se resserre, bouillant aux balles de set et de match ; la somme vaut toujours 1 (les fonds se fondent).
 export function poidsStade(i) {
@@ -207,7 +209,7 @@ export class Ambiance {
     const etapes = [
       () => { this.raquettes = HAUTEUR.map(h => this.tampon([coupDeRaquette(fs, h)])); },
       () => { this.buf.dechirure = this.tampon([dechirure(fs)]); this.buf.claque = this.tampon([claqueFeuille(fs)]); this.buf.smashBloque = this.tampon([smashBloque(fs)]); this.buf.smashRate = this.tampon([smashRate(fs)]); },
-      () => { for (const [cle, f] of Object.entries({ seisme: grondement, vent: coupDeVent, etincelles: cling, pschitt, crepitement, etincelle, coeur: battementCoeur })) this.buf[cle] = this.tampon([f(fs)]); },
+      () => { for (const [cle, f] of Object.entries({ seisme: grondement, vent: coupDeVent, etincelles: cling, pschitt, crepitement, etincelle, coeur: battementCoeur, jingle: jingleReplay })) this.buf[cle] = this.tampon([f(fs)]); },
       ...["set", "clameur", "point"].map(type => () => { this.buf[type] = this.tampon(applaudissements(fs, FOULES[type])); }),
       () => this.chargerFichiers(),
     ];
@@ -322,6 +324,8 @@ export class Ambiance {
     if (b) this.jouer(b, issue === "bloque" ? 0.8 : 0.7, true, { delai: 0.05, vitesse: 0.96 + Math.random() * 0.08, salle: false });
   }
 
+  // Le jingle du replay, avant les temps forts (19 novembre).
+  jingle() { if (this.ctx && this.buf.jingle) this.jouer(this.buf.jingle, 0.5, true, { salle: false }); }
   // Les effets du match (effets.js, 13 novembre) : le double smash avec le même signe (« seisme », « vent », « etincelles »),
   // la main en feu qui prend (« crepitement ») ou qui s'éteint (« pschitt »), l'étincelle des égalités en chaîne.
   effet(nom) {

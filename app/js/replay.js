@@ -37,7 +37,12 @@ export function tempsForts(moments, n = 3) {
   return [...moments].sort((x, y) => y.priorite - x.priorite || y.coup - x.coup).slice(0, n).sort((x, y) => x.coup - y.coup);
 }
 // L'action marquante d'un set (la plus forte), ou null.
-export const momentDuSet = (moments, set) => tempsForts(moments.filter(m => m.set === set), 1)[0] || null;
+// (19 novembre, remarque du porteur du projet : on revoyait un point du perdant du set, qui n'avait rien changé) gagnant : celui qui
+// a gagné le set ; on rejoue d'abord une de ses actions, celle du perdant seulement s'il n'en a aucune.
+export const momentDuSet = (moments, set, gagnant = null) => {
+  const du = moments.filter(m => m.set === set), siens = gagnant === null ? du : du.filter(m => m.gagnant === gagnant);
+  return tempsForts(siens.length ? siens : du, 1)[0] || null;
+};
 
 // ---------------------------------------------------------------- la palette (11 novembre, idée du porteur du projet)
 // Sous le replay, les 5 coups qui ont précédé le point, l'habitude qui comptait, et le verdict de Monique :

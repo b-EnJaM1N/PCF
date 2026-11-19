@@ -42,6 +42,12 @@ test("le replay : les 3 temps forts, dans l'ordre du match ; le moment de chaque
   assert.equal(momentDuSet(ms, 0).type, "smash");
   assert.equal(momentDuSet(ms, 1).type, "match");
   assert.equal(momentDuSet(ms, 2), null);
+  // (19 novembre) une action de celui qui a gagné le set d'abord ; celle du perdant seulement s'il n'en a aucune
+  const set0 = ms.filter(x => x.set === 0);
+  for (const g of [0, 1]) {
+    const mo = momentDuSet(ms, 0, g);
+    if (set0.some(x => x.gagnant === g)) assert.equal(mo.gagnant, g); else assert.ok(mo);
+  }
 });
 
 // ---------------------------------------------------------------- la palette (11 novembre)
