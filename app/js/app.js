@@ -791,7 +791,17 @@ function jouerReplay(liste, apres = () => {}) {
   montrer();
   return couper;
 }
-$("btnTempsForts").addEventListener("click", () => { if (S?.moments?.length) jouerReplay(tempsForts(S.moments)); });
+// (19 novembre, demande du porteur du projet : après les temps forts, on restait sur l'écran du match) Ensuite, le panneau des
+// statistiques revient, puis l'écran de fin (la Une, le menu, continuer…).
+$("btnTempsForts").addEventListener("click", () => {
+  if (!S?.moments?.length) return;
+  const seance = S;
+  jouerReplay(tempsForts(S.moments), () => {
+    if (S !== seance) return;
+    const versFin = () => { if (S === seance && !$("end").hidden) $("end").scrollIntoView({ behavior: reduitMouvement() ? "auto" : "smooth", block: "start" }); };
+    try { montrerStatsFin(versFin, { silencieux: true }); } catch { versFin(); }
+  });
+});
 
 // Le son du coup, au moment où les deux signes se dévoilent : le coup de raquette ; pour un smash qui gagne le point, le gros son
 // (avec le signe gagnant : la déchirure des Ciseaux) ; pour un smash bloqué ou raté (11 novembre), la raquette puis son bruit.
@@ -1286,7 +1296,8 @@ function finir() {
 // Le panneau des statistiques du match (19 novembre, idée du porteur du projet : comme au tennis à la télé), après la poignée de
 // main : Roland et Monique y font leur commentaire d'après-match (gardé depuis le dernier point). Il reste au moins 6 secondes, et
 // jusqu'à la fin des commentaires (25 secondes au plus) ; « Continuer » pour passer.
-function montrerStatsFin(apres) {
+// silencieux : sans les commentaires (le panneau revient après les temps forts ; 19 novembre)
+function montrerStatsFin(apres, { silencieux = false } = {}) {
   const m = S.match, st = statsDuMatch(m.coups), mes = S.stats || {}, ov = $("statsFin"), seance = S;
   const pc = (x, n) => (n ? `${Math.round((100 * x) / n)} %` : "–"), sur = ([a, b]) => (b ? `${a}/${b}` : "–");
   const ligne = (titre, g, d, vg = null, vd = null) => {
@@ -1318,6 +1329,7 @@ function montrerStatsFin(apres) {
   let fait = false;
   const fin = () => { if (fait) return; fait = true; ov.hidden = true; voix.arreter(); if (S === seance) apres(); };
   $("sfContinuer").onclick = fin;
+  if (silencieux) return;
   // Puis Roland et Monique commentent les chiffres de ce match, comparés à ses habitudes (une fois sur deux ; commentaireStats).
   const tr = S.tempsReponse || [];
   const dlgStats = commentaireStats({
