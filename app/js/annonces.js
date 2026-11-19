@@ -353,9 +353,9 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       // (19 novembre, bibliothèque du porteur du projet) Quand rien d'autre n'est dit : vers le 15e coup, « On assiste à un
       // véritable combat de titans ! » / « Ils jouent depuis deux minutes, Roland. » (4 fois sur 10, une fois par match) ; sur un
       // point gagné, Roland s'emballe et Monique le ramène au signe joué (« Roland, il a simplement fait une feuille. ») : rarement.
-      if (!moment && !dialogueFin.length && !h && n >= 14 && n <= 18 && !etat.titansDit && peutCommenter(3) && rng() < 0.4) {
-        const d = dialogue(etat, "titans", rng);
-        etat.titansDit = true;
+      // (19 novembre : on l'entendait un match sur deux ; maintenant une chance sur 7 environ, une fois par match ; un seul dialogue)
+      if (!moment && !dialogueFin.length && !h && n >= 14 && n <= 18 && !etat.titansDit && peutCommenter(3) && (etat.titansDit = true) && rng() < 0.15) {
+        const d = dialogue(etat, "titans", rng);   // (une seule chance par match, au premier moment possible)
         if (d) { dialogueFin = d; etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
       } else if (!moment && !dialogueFin.length && !h && g === 0 && !etat.decaleDit && peutCommenter(4) && rng() < 0.05) {
         const k = Math.floor(rng() * POOLS.decale_r.length), o = { genre: etat.genre, signe: dernier.a };
@@ -382,7 +382,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
     // (pour les écoles rares, seule la version cassante compte : sinon l'école reviendrait dès que la cassante a été entendue)
     const f = figureDe(c), ds = f && DIALOGUES_IDS[`figure_${f}`];
     const neuve = ds && (ECOLES_REGULIERES.includes(`figure_${f}`) ? ds : ds.slice(0, 1)).some(d => !etat.anciens?.has(baseDe(d[0])));
-    const d = neuve && rng() < 0.4 && dialogue(etat, `figure_${f}`, rng);
+    const d = neuve && rng() < 0.12 && dialogue(etat, `figure_${f}`, rng);   // (19 novembre : 0,4 → 0,12, elles revenaient un match sur deux)
     if (d) { dialogueFin = d; etat.figures++; etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
   }
   // Le smash passe avant tout le reste (8 fois sur 10) : réussi (l'adversaire est sonné), sonné (le smash réussi de l'adversaire),
@@ -581,7 +581,8 @@ function finDeMatch(match, evt, etat, ctx, rng) {
     : evt.gagnant === 1 && match.sets[0] === 0 && match.scoresSets.every(([a, b]) => b - a >= 5) ? "resultat_grosse_defaite"
     : sg > 1 && match.sets[0] + match.sets[1] === 2 * sg - 1 ? "resultat_serre"
     : classe ? "resultat_favori" : null;
-  if (resultat && rng() < 0.35) { const d = dialogue(etat, resultat, rng); if (d) return d; }
+  // (19 novembre : un seul dialogue par résultat ; le match serré et le favori, fréquents, plus rarement : 1 fois sur 10)
+  if (resultat && rng() < (resultat === "resultat_serre" || resultat === "resultat_favori" ? 0.1 : 0.35)) { const d = dialogue(etat, resultat, rng); if (d) return d; }
   // Un match en trois sets (19 novembre, commentaires d'un testeur), 4 fois sur 10 : « Au bout du suspense… »
   if (sg === 2 && match.scoresSets.length === 3 && rng() < 0.4) { const x = choisir(etat, "fin_trois_sets", { ...ctx, gagne: evt.gagnant === 0 }, rng); if (x) return [x]; }
   const jeu = etat.jeu && `apres_${etat.jeu}_${evt.gagnant === 0 ? "victoire" : "defaite"}`;
@@ -599,7 +600,8 @@ function finDeMatch(match, evt, etat, ctx, rng) {
     if (premierPerdu) return un(choisir(etat, "renversement", ctx, rng));
     // (18 novembre) deux sets à zéro, dans un match en 2 sets gagnants : l'analyse de Monique (répliques d'un testeur), 6 fois sur 10
     if (match.format.setsGagnants === 2 && match.sets[1] === 0 && rng() < 0.6) { const x = choisir(etat, "victoire_deux_zero", ctx, rng); if (x) return [x]; }
-    if (troisZero || rng() < 0.5) return un(choisir(etat, "balle_match_convertie", { ...ctx, troisZero, sansSetPerdu: match.sets[1] === 0 && match.format.setsGagnants > 1 }, rng));
+    // (19 novembre : la victoire ordinaire un peu plus souvent, 0,5 → 0,35, pour entendre ses 40 répliques)
+    if (troisZero || rng() < 0.35) return un(choisir(etat, "balle_match_convertie", { ...ctx, troisZero, sansSetPerdu: match.sets[1] === 0 && match.format.setsGagnants > 1 }, rng));
     return un(choisir(etat, "victoire", ctx, rng));
   }
   // (un seul dialogue de fin de match : pas s'il a été entendu aux derniers matchs)
