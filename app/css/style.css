@@ -158,7 +158,7 @@ body:not(.en-match) .rule { display: none; }
 .stats-fin-tete .me { text-align: left; color: var(--me); } .stats-fin-tete .bot { text-align: right; color: var(--bot); }
 .stats-fin-score { font-family: "Barlow Condensed", sans-serif; font-size: 1.3rem; }
 .stats-fin-lignes { display: flex; flex-direction: column; gap: 8px; }
-.sf-ligne { display: grid; grid-template-columns: 3.4em 1fr 3.4em; align-items: center; gap: 6px; font-size: .92rem; }
+.sf-ligne { display: grid; grid-template-columns: 4.6em 1fr 4.6em; align-items: center; gap: 6px; font-size: .92rem; }
 .sf-ligne b { font-family: "Barlow Condensed", sans-serif; font-size: 1.15rem; }
 .sf-ligne b:first-child { color: var(--me); } .sf-ligne b:last-child { color: var(--bot); text-align: right; }
 .sf-milieu { text-align: center; color: var(--muted); }
