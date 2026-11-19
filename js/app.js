@@ -12,6 +12,7 @@ import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatc
 import { histoireDuMatch } from "./une-logique.js";
 import { filVisible, matchDuDuel, hasardFixe, etapeDuDuel } from "./fil-cercle.js";
 import { dessinerUne } from "./une.js";
+import { dessinerStats } from "./image-stats.js";
 import { carteDe, notesDe, texteRang, rangDe } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
 import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee, situationPoignee } from "./poignee.js";
@@ -791,7 +792,17 @@ function jouerReplay(liste, apres = () => {}) {
   montrer();
   return couper;
 }
-$("btnTempsForts").addEventListener("click", () => { if (S?.moments?.length) jouerReplay(tempsForts(S.moments)); });
+// (19 novembre, demande du porteur du projet : après les temps forts, on restait sur l'écran du match) Ensuite, le panneau des
+// statistiques revient, puis l'écran de fin (la Une, le menu, continuer…).
+$("btnTempsForts").addEventListener("click", () => {
+  if (!S?.moments?.length) return;
+  const seance = S;
+  jouerReplay(tempsForts(S.moments), () => {
+    if (S !== seance) return;
+    const versFin = () => { if (S === seance && !$("end").hidden) $("end").scrollIntoView({ behavior: reduitMouvement() ? "auto" : "smooth", block: "start" }); };
+    try { montrerStatsFin(versFin, { silencieux: true }); } catch { versFin(); }
+  });
+});
 
 // Le son du coup, au moment où les deux signes se dévoilent : le coup de raquette ; pour un smash qui gagne le point, le gros son
 // (avec le signe gagnant : la déchirure des Ciseaux) ; pour un smash bloqué ou raté (11 novembre), la raquette puis son bruit.
@@ -1286,11 +1297,14 @@ function finir() {
 // Le panneau des statistiques du match (19 novembre, idée du porteur du projet : comme au tennis à la télé), après la poignée de
 // main : Roland et Monique y font leur commentaire d'après-match (gardé depuis le dernier point). Il reste au moins 6 secondes, et
 // jusqu'à la fin des commentaires (25 secondes au plus) ; « Continuer » pour passer.
-function montrerStatsFin(apres) {
+// silencieux : sans les commentaires (le panneau revient après les temps forts ; 19 novembre)
+function montrerStatsFin(apres, { silencieux = false } = {}) {
   const m = S.match, st = statsDuMatch(m.coups), mes = S.stats || {}, ov = $("statsFin"), seance = S;
   const pc = (x, n) => (n ? `${Math.round((100 * x) / n)} %` : "–"), sur = ([a, b]) => (b ? `${a}/${b}` : "–");
+  const donnees = [];   // (les mêmes lignes, pour l'image à partager)
   const ligne = (titre, g, d, vg = null, vd = null) => {
     const tg = vg ?? Number.parseFloat(g) ?? 0, td = vd ?? Number.parseFloat(d) ?? 0, tot = (tg || 0) + (td || 0);
+    donnees.push({ titre, g, d, tg: tg || 0, td: td || 0 });
     const barre = tot > 0 ? `<div class="sf-barre"><i style="width:${(100 * (tg || 0)) / tot}%"></i><i style="width:${(100 * (td || 0)) / tot}%"></i></div>` : "";
     return `<div class="sf-ligne"><b>${g}</b><div class="sf-milieu">${esc(titre)}${barre}</div><b>${d}</b></div>`;
   };
@@ -1309,6 +1323,8 @@ function montrerStatsFin(apres) {
     + ligne("Signe préféré", prefere(0), prefere(1), fav(0), fav(1))
     + ligne("Points gagnés juste après une égalité", st.apresEgalite[0], st.apresEgalite[1])
     + ligne("Garde son signe après un point gagné", pc(...st.memeApresGain[0]), pc(...st.memeApresGain[1]), st.memeApresGain[0][0] / (st.memeApresGain[0][1] || 1), st.memeApresGain[1][0] / (st.memeApresGain[1][1] || 1))
+    // (19 novembre au soir, demande du porteur du projet : on la rajoute)
+    + ligne("Change de signe après un point perdu", pc(...st.changeApresPerte[0]), pc(...st.changeApresPerte[1]), st.changeApresPerte[0][0] / (st.changeApresPerte[0][1] || 1), st.changeApresPerte[1][0] / (st.changeApresPerte[1][1] || 1))
     + ligne("Smashs gagnants", sur(st.smashs[0]), sur(st.smashs[1]), st.smashs[0][0], st.smashs[1][0])
     + ligne("Balles de set et de match converties", sur([mes.ballesConverties || 0, mes.ballesObtenues || 0]), sur(ballesAdv), mes.ballesConverties || 0, ballesAdv[0])
     + `<p class="sf-seul">${st.coups} coups joués · ${st.egalites} égalité${st.egalites > 1 ? "s" : ""}</p>`;
@@ -1318,6 +1334,20 @@ function montrerStatsFin(apres) {
   let fait = false;
   const fin = () => { if (fait) return; fait = true; ov.hidden = true; voix.arreter(); if (S === seance) apres(); };
   $("sfContinuer").onclick = fin;
+  // Partager l'image des statistiques (19 novembre, demande du porteur du projet) ; le panneau reste alors ouvert.
+  let garde = false;
+  const pied = `${st.coups} coups joués · ${st.egalites} égalité${st.egalites > 1 ? "s" : ""}`;
+  $("sfPartager").onclick = async () => {
+    garde = true;
+    try {
+      const cv = dessinerStats(document.createElement("canvas"), { moi: nomAffiche(P), adv: OPP.nom, score: $("sfScore").textContent, lignes: donnees, pied });
+      const blob = await new Promise(ok => cv.toBlob(ok, "image/png")), f = new File([blob], "handslam-statistiques.png", { type: "image/png" });
+      if (navigator.canShare?.({ files: [f] })) { await navigator.share({ files: [f], title: "Les statistiques de mon match HandSlam" }); return; }
+      const a = document.createElement("a"), url = URL.createObjectURL(blob);
+      a.href = url; a.download = f.name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 5000);
+    } catch (e) { if (e?.name !== "AbortError") console.warn("partage des statistiques", e); }
+  };
+  if (silencieux) return;
   // Puis Roland et Monique commentent les chiffres de ce match, comparés à ses habitudes (une fois sur deux ; commentaireStats).
   const tr = S.tempsReponse || [];
   const dlgStats = commentaireStats({
@@ -1331,7 +1361,7 @@ function montrerStatsFin(apres) {
     voix.finiDeParler(() => {
       if (fait) return;
       if (dlgStats) annoncer(dlgStats);
-      voix.finiDeParler(() => setTimeout(fin, Math.max(1500, 6000 - (Date.now() - debut))), 20000);
+      voix.finiDeParler(() => setTimeout(() => { if (!garde) fin(); }, Math.max(1500, 6000 - (Date.now() - debut))), 20000);
     }, 25000);
   }, 4000);
 }
