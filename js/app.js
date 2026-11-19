@@ -744,7 +744,17 @@ function jouerReplay(liste, apres = () => {}) {
         });
       }, vite ? 0 : 700);
       // (avec la palette : Roland décrit d'abord l'action à sa façon, replay_r_… ; sinon, la réplique habituelle du replay)
-      const c = dlg ? dlg[0] : (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
+      // (19 novembre, commentaires d'un testeur) Selon l'action, parfois : le double smash, le smash selon son signe, la balle
+      // ratée (« il » : celui qui l'a ratée), le point réussi (avec la palette « pertinent », « propre » ou « piège »).
+      const signeG = mo.gagnant === 0 ? mo.a : mo.b, sauvee = mo.type === "sauvee_set" || mo.type === "sauvee_match";
+      const piocher = (pool, g, garder = () => true) => auHasard((POOLS[pool] || []).filter(garder).map(it => ligneMoment(it, { genre: g, signe: signeG }))
+        .filter(x => x && voix.fichiers.has(x.id) && (!roland || x.role === roland)));
+      const variante = dlg ? null
+        : mo.type === "smash" && mo.smash[0] && mo.smash[1] && Math.random() < 0.5 ? piocher("replay_double", genre)
+        : mo.type === "smash" && Math.random() < 0.5 ? piocher("replay_smash_signe", genre, it => it.seul === signeG)
+        : sauvee && Math.random() < 0.5 ? piocher("replay_balle_ratee", genreJoueur(1 - mo.gagnant))
+        : pa && ["pertinent", "propre", "piege"].includes(pa.verdict) && Math.random() < 0.35 ? piocher("replay_reussite", genre) : null;
+      const c = dlg ? dlg[0] : variante || (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
       // (le temps de regarder, même sans le son : 3 secondes au moins, 6 avec la palette)
       const suite = () => { t = setTimeout(montrer, Math.max(vite ? 800 : 1500, (pa ? 6500 : 3200) - (Date.now() - devoile))); };
       const reponse = dlg ? dlg[1] : pa ? lp : null;
