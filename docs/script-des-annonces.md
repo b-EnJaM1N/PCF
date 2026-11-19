@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1287 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1315 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1049,9 +1049,37 @@ restent lus par la voix de synthèse.
 | `commentateur_avant_ouverture_06.mp3` | L'histoire est en marche ! Enfin… elle attend le premier geste. Mais elle est en marche ! |
 | `commentateur_avant_ouverture_07.mp3` | Mesdames et messieurs, bonsoir ! Le court central est plein, et l'ambiance est électrique ! |
 | `commentateur_avant_ouverture_08.mp3` | Mesdames et messieurs, installez-vous : ça va commencer, et ça va chauffer ! |
+| `commentateur_avant_ouverture_09.mp3` | Mesdames et messieurs, bonsoir et bienvenue ! Les mains sont échauffées, le public est chaud : c'est le choc du soir ! |
+| `commentateur_avant_ouverture_10.mp3` | Mesdames et messieurs, les lumières s'allument sur le court central… La tension monte ! |
+| `commentateur_avant_ouverture_11.mp3` | Ah, mesdames et messieurs, quelle soirée ! Le chifoumi est à l'honneur, et le court central est en ébullition ! |
+| `commentateur_avant_ouverture_12.mp3` | Mesdames et messieurs, il y a des matchs qu'on attend toute une saison. Celui-ci en fait partie ! |
+| `commentateur_avant_ouverture_13.mp3` | Bonsoir à tous ! Deux mains, un seul vainqueur, et des millions de possibilités ! |
+| `commentateur_avant_ouverture_14.mp3` | Mesdames et messieurs, retenez votre souffle : le grand frisson est pour maintenant ! |
+| `commentateur_avant_ouverture_15.mp3` | Oh, quelle ambiance ! Mesdames et messieurs, on va vivre un grand moment de sport ! |
+| `commentateur_avant_ouverture_16.mp3` | Mesdames et messieurs, les gradins tremblent ! Le match peut commencer d'une seconde à l'autre ! |
+| `commentateur_avant_ouverture_17.mp3` | Mesdames et messieurs, posez vos téléphones… Enfin, non, gardez-les : c'est là que ça se passe ! |
+| `commentateur_avant_ouverture_18.mp3` | Bienvenue sur le central ! Pierre, Feuille, Ciseaux : trois armes, deux joueurs, une seule gloire ! |
+| `commentateur_avant_ouverture_19.mp3` | Mesdames et messieurs, c'est l'heure ! Les mains sont prêtes, les cœurs battent, la tension est à son comble ! |
+| `commentateur_avant_ouverture_20.mp3` | Ah, mesdames et messieurs, je le sens : ce soir, il va se passer quelque chose ! |
+| `commentateur_avant_ouverture_21.mp3` | Mesdames et messieurs, l'arbitre est en place, les joueurs aussi… L'histoire peut s'écrire ! |
+| `commentateur_avant_ouverture_22.mp3` | Mesdames et mesdames, bonsoir ! On m'annonce un duel de très haute volée ! |
+| `commentateur_avant_ouverture_23.mp3` | Mesdames et messieurs, le central est plein à craquer ! On n'a jamais vu ça… depuis hier soir ! |
+| `commentateur_avant_ouverture_24.mp3` | Bonsoir et bienvenue ! Monique est à mes côtés, le public est en feu : tout est réuni pour un grand match ! |
+| `commentateur_avant_ouverture_25.mp3` | Mesdames et messieurs, on y est ! Le moment que tout le monde attendait ! |
+| `commentateur_avant_ouverture_26.mp3` | Mesdames et messieurs, faites du bruit pour les deux joueurs ! Le choc peut commencer ! |
+| `commentateur_avant_ouverture_27.mp3` | Ah, le parfum des grands soirs ! Mesdames et messieurs, bienvenue sur le court central ! |
+| `commentateur_avant_ouverture_28.mp3` | Mesdames et messieurs, accrochez-vous à vos sièges : ça va secouer ! |
 | `commentateur_avant_lancement_01.mp3` | Les mains sont prêtes… C'est parti ! |
 | `commentateur_avant_lancement_02.mp3` | Que le meilleur gagne ! Place au jeu ! |
 | `commentateur_avant_lancement_03.mp3` | Silence sur le central… Le match commence ! |
+| `commentateur_avant_lancement_04.mp3` | Allez, place au chifoumi ! |
+| `commentateur_avant_lancement_05.mp3` | Que le spectacle commence ! |
+| `commentateur_avant_lancement_06.mp3` | C'est l'heure de vérité ! |
+| `commentateur_avant_lancement_07.mp3` | Les mains sont en position… Le match commence ! |
+| `commentateur_avant_lancement_08.mp3` | Trois, deux, un… C'est parti ! |
+| `commentateur_avant_lancement_09.mp3` | Attention, ça commence, ne quittez pas ! |
+| `commentateur_avant_lancement_10.mp3` | Le match est lancé, mesdames et messieurs ! |
+| `commentateur_avant_lancement_11.mp3` | En avant pour un grand moment de HandSlam ! |
 | `commentateur_decale_r_01.mp3` | Quelle attaque ! Une main exceptionnelle ! |
 | `commentateur_decale_r_02.mp3` | Il a sorti le grand jeu ! |
 | `commentateur_decale_r_02_f.mp3` | Elle a sorti le grand jeu ! |
@@ -1410,7 +1438,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_temps_forts_fin_02.mp3` | Voilà, vous avez revécu les grands moments de cette rencontre ! |
 | `commentateur_dialogue_temps_forts_fin_trois_01.mp3` | Quel spectacle ! Quel match ! Quelle intensité ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (990 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (1002 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -2066,7 +2094,19 @@ restent lus par la voix de synthèse.
 | `commentatrice_avant_coeur_03.mp3` | Dans ma carrière, j'ai appris à me méfier des joueurs trop confiants. On verra ce soir qui l'est trop. |
 | `commentatrice_avant_coeur_04.mp3` | Le chifoumi est un sport mental avant d'être digital. Retenez bien ça. |
 | `commentatrice_avant_coeur_05.mp3` | La précipitation est l'ennemie de la stratégie. On va voir qui l'a compris. |
+| `commentatrice_avant_coeur_06.mp3` | Le premier signe donne souvent le ton. Pas toujours la fin. |
+| `commentatrice_avant_coeur_07.mp3` | On croit que c'est le hasard. Ce n'est presque jamais le hasard. |
+| `commentatrice_avant_coeur_08.mp3` | Il faudra rester froid. Le chifoumi punit les impatients. |
+| `commentatrice_avant_coeur_09.mp3` | Regardez les poignets. Ils parlent avant les mains. |
+| `commentatrice_avant_coeur_10.mp3` | Un match se gagne souvent sur trois ou quatre coups. Encore faut-il savoir lesquels. |
+| `commentatrice_avant_coeur_11.mp3` | Celui qui garde le même signe trop longtemps finira par le payer. |
+| `commentatrice_avant_coeur_12.mp3` | J'ai vu des favoris tomber pour moins que ça. Restons prudents. |
+| `commentatrice_avant_coeur_13.mp3` | Le public est bruyant. Les meilleurs, eux, n'entendent rien. |
+| `commentatrice_avant_coeur_14.mp3` | L'important, ce n'est pas de deviner. C'est de ne pas être deviné. |
+| `commentatrice_avant_coeur_15.mp3` | Ce soir, on va surtout voir qui sait changer d'avis au bon moment. |
 | `commentatrice_avant_lancement_01.mp3` | Bien. Assez parlé. Jouons. |
+| `commentatrice_avant_lancement_02.mp3` | Bien. Voyons ce qu'ils ont dans le ventre. Et dans les mains. |
+| `commentatrice_avant_lancement_03.mp3` | Silence. On joue. |
 | `commentatrice_decale_m_01_pierre.mp3` | Roland, il a simplement fait une pierre. |
 | `commentatrice_decale_m_01_pierre_f.mp3` | Roland, elle a simplement fait une pierre. |
 | `commentatrice_decale_m_01_ciseaux.mp3` | Roland, il a simplement fait des ciseaux. |
