@@ -2,7 +2,7 @@
 import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, SONNE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, recupererSmash, issueSmash, gagnantCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
-import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement } from "./annonces.js";
+import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement, commentaireStats } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
 import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache, mesDossards } from "./social-serveur.js";
 import { ficheVisible, htmlFiche } from "./fiche-joueur.js";
@@ -417,6 +417,8 @@ const boutons = on => document.querySelectorAll("#moves button").forEach(b => { 
 // smash : appui long sur le signe (un par set, pour le spectacle seulement ; voir peutSmasher).
 function jouer(signe, auto = false, smash = false) {
   if (S?.sonneJusqu && performance.now() < S.sonneJusqu) return;   // (sonné : même au clavier, pas de coup)
+  // (19 novembre) le temps mis à jouer, pour le commentaire des statistiques (« Il a joué vite dans ce match »)
+  if (S && !S.duel && !auto && tDebut && S.enJeu && !S.occupe) (S.tempsReponse ||= []).push(performance.now() - tDebut);
   if (S && S.duel) return jouerDuel(signe, smash);
   if (!S || !S.enJeu || S.occupe || S.match.termine || panneauOuvert || faceAFaceOuvert) return;
   S.occupe = true; arreterMinuteur(); boutons(false);
@@ -1296,10 +1298,21 @@ function montrerStatsFin(apres) {
   let fait = false;
   const fin = () => { if (fait) return; fait = true; ov.hidden = true; voix.arreter(); if (S === seance) apres(); };
   $("sfContinuer").onclick = fin;
+  // Puis Roland et Monique commentent les chiffres de ce match, comparés à ses habitudes (une fois sur deux ; commentaireStats).
+  const tr = S.tempsReponse || [];
+  const dlgStats = commentaireStats({
+    st, mes, gagne: m.vainqueur === 0, outsider: S.annonces?.outsider ?? null, scoresSets: m.scoresSets, pointsParSet: m.format.pointsParSet,
+    carriere: { signes: P.signes, devines: P.devines, lisibles: P.lisibles }, reserveUtilisee: RESERVE_MS - (m.reserve?.[0] ?? RESERVE_MS),
+    tempsMoyen: tr.length >= 8 ? tr.reduce((a, b) => a + b, 0) / tr.length : null,
+  }, { genre: P.genre, audible: id => voix.fichiers.has(id), anciens: commentairesRecents() });
   voix.finiDeParler(() => {
     if (fait) return;
     if (coms.length) annoncer(coms);
-    voix.finiDeParler(() => setTimeout(fin, Math.max(1500, 6000 - (Date.now() - debut))), 25000);
+    voix.finiDeParler(() => {
+      if (fait) return;
+      if (dlgStats) annoncer(dlgStats);
+      voix.finiDeParler(() => setTimeout(fin, Math.max(1500, 6000 - (Date.now() - debut))), 20000);
+    }, 25000);
   }, 4000);
 }
 function poigneeDeMain(apres) {

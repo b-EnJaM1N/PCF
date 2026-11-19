@@ -42,7 +42,12 @@ export function suivreCoup(st, match, evt) {
 export function statsDuMatch(coups = []) {
   const r = { points: [0, 0], signes: [[0, 0, 0], [0, 0, 0]], coups: coups.length, egalites: 0,
     changeApresEgalite: [[0, 0], [0, 0]], memeApresGain: [[0, 0], [0, 0]], smashs: [[0, 0], [0, 0]], serie: [0, 0],
-    reussite: [[0, 0], [0, 0]], apresEgalite: [0, 0], imprevisibilite: [null, null] };
+    reussite: [[0, 0], [0, 0]], apresEgalite: [0, 0], imprevisibilite: [null, null],
+    // (19 novembre, pour le commentaire des statistiques) changement de signe d'un coup à l'autre [fait, occasions], le même signe
+    // le plus longtemps d'affilée { n, signe }, changement après un point perdu [fait, occasions], les gagnants des premiers points
+    changeSigne: [[0, 0], [0, 0]], repetition: [{ n: 0, signe: null }, { n: 0, signe: null }], changeApresPerte: [[0, 0], [0, 0]], premiersPoints: [],
+    coupsContre: [[0, 0], [0, 0], [0, 0]] };   // (pour chaque signe de l'adversaire : [mes points gagnés, ses coups avec ce signe])
+  const rep = [{ n: 0, signe: null }, { n: 0, signe: null }];
   let suite = { j: null, n: 0 };
   const suivis = [new Suivi(), new Suivi()];
   coups.forEach((c, i) => {
@@ -50,16 +55,22 @@ export function statsDuMatch(coups = []) {
     [0, 1].forEach(j => {
       if (s[j] >= 0 && s[j] <= 2) r.signes[j][s[j]]++;
       if (c.smash?.[j]) { r.smashs[j][1]++; if (c.gagnant === j) r.smashs[j][0]++; }
+      rep[j] = rep[j].signe === s[j] ? { n: rep[j].n + 1, signe: s[j] } : { n: 1, signe: s[j] };
+      if (rep[j].n > r.repetition[j].n) r.repetition[j] = { ...rep[j] };
       if (prec) {
         const p = [prec.a, prec.b];
+        r.changeSigne[j][1]++; if (s[j] !== p[j]) r.changeSigne[j][0]++;
+        if (prec.gagnant === 1 - j) { r.changeApresPerte[j][1]++; if (s[j] !== p[j]) r.changeApresPerte[j][0]++; }
         if (prec.gagnant === null || prec.gagnant === undefined) { r.changeApresEgalite[j][1]++; if (s[j] !== p[j]) r.changeApresEgalite[j][0]++; }
         else if (prec.gagnant === j) { r.memeApresGain[j][1]++; if (s[j] === p[j]) r.memeApresGain[j][0]++; }
       }
     });
+    if (c.b >= 0 && c.b <= 2) { r.coupsContre[c.b][1]++; if (c.gagnant === 0) r.coupsContre[c.b][0]++; }
     [0, 1].forEach(j => { suivis[j].figer(); suivis[j].enregistrer(s[j], c.gagnant === null || c.gagnant === undefined ? "e" : c.gagnant === j ? "g" : "p"); });
     if (c.gagnant === 0 || c.gagnant === 1) {
       r.points[c.gagnant]++;
       r.reussite[0][1]++; r.reussite[1][1]++; r.reussite[c.gagnant][0]++;
+      if (r.premiersPoints.length < 3) r.premiersPoints.push(c.gagnant);
       if (prec && (prec.gagnant === null || prec.gagnant === undefined)) r.apresEgalite[c.gagnant]++;
       suite = suite.j === c.gagnant ? { j: c.gagnant, n: suite.n + 1 } : { j: c.gagnant, n: 1 };
       r.serie[c.gagnant] = Math.max(r.serie[c.gagnant], suite.n);
