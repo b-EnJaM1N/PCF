@@ -210,7 +210,8 @@ export function enregistrerMatch(P, r) {
   P.devines += r.devines; P.lisibles += r.lisibles;
   // (les mêmes, contre les joueurs ou contre les bots)
   P.parAdv ||= {};
-  const j = (P.parAdv[humain ? "humains" : "bots"] ||= jeuVide());
+  // (les bots des tournois en ligne, « Rocky 🤖 »…, comptent avec les bots)
+  const j = (P.parAdv[humain && !String(r.adversaire.nom || "").includes("🤖") ? "humains" : "bots"] ||= jeuVide());
   j.matchs++; c.forEach(x => { j.signes[x.a]++; });
   for (let i = 1; i < n; i++) {
     const p = c[i - 1];

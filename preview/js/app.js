@@ -41,7 +41,8 @@ import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
 import { installerDuels } from "./ecran-duel.js";
 import { installerCercles, renderFaceAFace } from "./ecran-cercles.js";
-import { duelsAvec, profils as profilsEnLigne } from "./duel-serveur.js";
+import { duelsAvec, profils as profilsEnLigne, mesDuelsTermines } from "./duel-serveur.js";
+import { jeuDepuisDuels, jeuMoins, estBotEnLigne } from "./stats-passees.js";
 import { profilDepuisLigne, etatPseudo, pseudoValide } from "./synchro.js";
 import { installerSng } from "./ecran-sng.js";
 import { installerJetons } from "./ecran-jetons.js";
@@ -1563,20 +1564,50 @@ function guetterMessageFin() {
 // Les deux premiers ne sont comptés qu'à partir du 19 novembre : avant, rien ne les distinguait.
 let vueJeu = "humains";
 try { vueJeu = localStorage.getItem("hs_vue_jeu") || "humains"; } catch { /* rien */ }
+// Une seule fois, avec un compte : « Mon jeu » contre les joueurs retrouvé dans les duels passés gardés par le serveur ; contre
+// les bots, le total moins ces matchs-là.
+let recupEnCours = false;
+async function recupererJeuPasse() {
+  const uid = compteUI?.session()?.user?.id;
+  if (P.parAdvRecupere || recupEnCours || !uid) return;
+  recupEnCours = true;
+  try {
+    const duels = [];
+    for (let debut = 0; debut < 20000; debut += 1000) {
+      const page = await mesDuelsTermines(debut);
+      duels.push(...(page || []));
+      if (!page || page.length < 1000) break;
+    }
+    const advs = [...new Set(duels.map(d => (d.j0 === uid ? d.j1 : d.j0)).filter(Boolean))], bots = new Set();
+    for (let i = 0; i < advs.length; i += 150) for (const p of await profilsEnLigne(advs.slice(i, i + 150))) if (estBotEnLigne(p.pseudo)) bots.add(p.id);
+    const h = jeuDepuisDuels(duels, uid, bots);
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now();
+    sauverP();
+  } catch (e) { console.warn("Mon jeu : matchs passés", e); }
+  recupEnCours = false;
+  if (!$("viewProfile").hidden) renderMonJeu();
+}
 function renderMonJeu() {
+  if (!P.parAdvRecupere && compteUI?.session()?.user) recupererJeuPasse();
+  // (sans compte et sans duel joué : tous les matchs passés étaient contre des bots)
+  else if (!P.parAdvRecupere && !compteUI?.session()?.user && !P.duelsFinis) {
+    const h = P.parAdv?.humains || jeuVide();
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); sauverP();
+  }
   const V = vueJeu === "total" ? P : (P.parAdv?.[vueJeu] || jeuVide());
   const choix = [["humains", "👥 Joueurs"], ["bots", "🤖 Bots"], ["total", "Tout"]]
     .map(([k, t]) => `<button type="button" class="jeu-vue${k === vueJeu ? " on" : ""}" data-vue="${k}" aria-pressed="${k === vueJeu}">${t}</button>`).join("");
   const entete = `<div class="jeu-vues" role="group" aria-label="Mon jeu : contre qui">${choix}</div>`;
   const vide = vueJeu === "total" ? !P.matchs : !V.matchs;
-  if (vide) {
-    $("gameBody").innerHTML = `${entete}<p class="hint">${vueJeu === "humains" ? "Aucun match contre un joueur" : "Aucun match contre un bot"} depuis le 19 novembre : ces chiffres se remplissent à partir de ton prochain match ${vueJeu === "humains" ? "en ligne" : "contre un bot"}. « Tout » montre l'ensemble de tes matchs.</p>`;
+  if (vide && recupEnCours) $("gameBody").innerHTML = `${entete}<p class="hint">Je retrouve tes matchs passés…</p>`;
+  else if (vide) {
+    $("gameBody").innerHTML = `${entete}<p class="hint">${vueJeu === "humains" ? "Aucun match contre un joueur" : "Aucun match contre un bot"} pour l'instant${P.parAdvRecupere || !compteUI?.session()?.user ? "" : " depuis le 19 novembre"}. « Tout » montre l'ensemble de tes matchs.</p>`;
   } else {
     const tot = V.signes.reduce((a, b) => a + b, 0), fav = signeFavori(V.signes);
     const taux = V.lisibles ? V.devines / V.lisibles : 1 / 3, ind = indiceImprevisibilite(taux);
     const mv = V.apresVictoire ? Math.round(100 * V.memeApresVictoire / V.apresVictoire) : null;
     const md = V.apresDefaite ? Math.round(100 * V.memeApresDefaite / V.apresDefaite) : null;
-    const nbMatchs = vueJeu === "total" ? "" : `<p class="hint">${V.matchs} match${V.matchs > 1 ? "s" : ""} ${vueJeu === "humains" ? "contre des joueurs" : "contre des bots"}, depuis le 19 novembre.</p>`;
+    const nbMatchs = vueJeu === "total" ? "" : `<p class="hint">${V.matchs} match${V.matchs > 1 ? "s" : ""} ${vueJeu === "humains" ? "contre des joueurs" : "contre des bots"}${P.parAdvRecupere ? "" : ", depuis le 19 novembre"}.</p>`;
     $("gameBody").innerHTML = `${entete}${nbMatchs}<div class="bars">${barres(V.signes, tot)}</div>
       <div class="lines">
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
