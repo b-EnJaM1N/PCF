@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1251 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1287 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -653,8 +653,12 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_sauvee_01.mp3` | Regardez ce sang-froid ! Il était au bord du gouffre ! |
 | `commentateur_replay_sauvee_01_f.mp3` | Regardez ce sang-froid ! Elle était au bord du gouffre ! |
 | `commentateur_replay_sauvee_02.mp3` | On revoit la balle sauvée ! Quel sang-froid ! |
+| `commentateur_replay_sauvee_03.mp3` | Il résiste bien à la pression adverse, et se dégage magistralement ! |
+| `commentateur_replay_sauvee_03_f.mp3` | Elle résiste bien à la pression adverse, et se dégage magistralement ! |
 | `commentateur_replay_smash_01.mp3` | Regardez cette belle technique ! Le geste est parfait ! |
 | `commentateur_replay_smash_02.mp3` | Revoyons ce smash ! Quelle frappe ! |
+| `commentateur_replay_smash_03.mp3` | On revoit ce choc : il n'y est pas allé de main morte ! |
+| `commentateur_replay_smash_03_f.mp3` | On revoit ce choc : elle n'y est pas allée de main morte ! |
 | `commentateur_replay_set_01.mp3` | Le coup qui fait basculer le set ! |
 | `commentateur_replay_set_02.mp3` | Le point du set, au ralenti ! |
 | `commentateur_replay_serie_01.mp3` | Il ne lâche rien ! |
@@ -725,6 +729,8 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_r_pas_la_08_pierre.mp3` | Oh non, pas la Pierre ! Pas là ! |
 | `commentateur_replay_r_pas_la_08_ciseaux.mp3` | Oh non, pas les Ciseaux ! Pas là ! |
 | `commentateur_replay_r_pas_la_08_feuille.mp3` | Oh non, pas la Feuille ! Pas là ! |
+| `commentateur_replay_r_pas_la_09.mp3` | Aïe… Il n'est pas attentif, et il se fait surprendre ! |
+| `commentateur_replay_r_pas_la_09_f.mp3` | Aïe… Elle n'est pas attentive, et elle se fait surprendre ! |
 | `commentateur_memoire_serie_3_01.mp3` | Trois victoires de suite ! Il arrive en confiance ! |
 | `commentateur_memoire_serie_3_01_f.mp3` | Trois victoires de suite ! Elle arrive en confiance ! |
 | `commentateur_memoire_serie_4_01.mp3` | Quatre victoires d'affilée ! Qui va enfin l'arrêter ? |
@@ -993,6 +999,7 @@ restent lus par la voix de synthèse.
 | `commentateur_smash_double_04.mp3` | Ils en viennent aux mains ! |
 | `commentateur_smash_double_05.mp3` | Les deux en même temps ! Ça fait des étincelles ! |
 | `commentateur_smash_double_06.mp3` | Oula, quel fracas au milieu du court ! |
+| `commentateur_smash_double_07.mp3` | Ils accélèrent ensemble… et personne ne prend le dessus ! |
 | `commentateur_signe_abime_01.mp3` | Il n'impressionne plus vraiment avec ses Ciseaux tout pétés ! |
 | `commentateur_signe_abime_01_f.mp3` | Elle n'impressionne plus vraiment avec ses Ciseaux tout pétés ! |
 | `commentateur_signe_abime_02.mp3` | Oula, ces Ciseaux tout cabossés ne font plus peur à personne ! |
@@ -1048,6 +1055,35 @@ restent lus par la voix de synthèse.
 | `commentateur_decale_r_01.mp3` | Quelle attaque ! Une main exceptionnelle ! |
 | `commentateur_decale_r_02.mp3` | Il a sorti le grand jeu ! |
 | `commentateur_decale_r_02_f.mp3` | Elle a sorti le grand jeu ! |
+| `commentateur_replay_reussite_01.mp3` | Regardez ! Voyez comment il installe sa séquence pour finalement porter l'estocade ! |
+| `commentateur_replay_reussite_01_f.mp3` | Regardez ! Voyez comment elle installe sa séquence pour finalement porter l'estocade ! |
+| `commentateur_replay_reussite_02.mp3` | Ah, c'est à ce moment-là qu'il trompe la main adverse ! |
+| `commentateur_replay_reussite_02_f.mp3` | Ah, c'est à ce moment-là qu'elle trompe la main adverse ! |
+| `commentateur_replay_reussite_03.mp3` | Il renverse le jeu, et son adversaire ne peut que constater les dégâts ! |
+| `commentateur_replay_reussite_03_f.mp3` | Elle renverse le jeu, et son adversaire ne peut que constater les dégâts ! |
+| `commentateur_replay_reussite_04.mp3` | Oh, voyez avec quelle virtuosité il contrecarre la main adverse ! |
+| `commentateur_replay_reussite_04_f.mp3` | Oh, voyez avec quelle virtuosité elle contrecarre la main adverse ! |
+| `commentateur_replay_reussite_05.mp3` | Son adversaire mord à l'hameçon, et il n'a plus qu'à remonter la prise ! |
+| `commentateur_replay_reussite_05_f.mp3` | Son adversaire mord à l'hameçon, et elle n'a plus qu'à remonter la prise ! |
+| `commentateur_replay_reussite_06.mp3` | Il attire la main adverse sur un signe pour mieux la prendre à contre-pied ! |
+| `commentateur_replay_reussite_06_f.mp3` | Elle attire la main adverse sur un signe pour mieux la prendre à contre-pied ! |
+| `commentateur_replay_reussite_07.mp3` | Oula ! Il l'a littéralement fusillé à bout portant ! |
+| `commentateur_replay_reussite_07_f.mp3` | Oula ! Elle l'a littéralement fusillé à bout portant ! |
+| `commentateur_replay_balle_ratee_01.mp3` | Oh, une main en forme de prière… mais les dieux du HandSlam restent sourds à son appel ! |
+| `commentateur_replay_balle_ratee_02.mp3` | Le geste du désespoir, contré sans pitié par la main adverse ! |
+| `commentateur_replay_smash_signe_01.mp3` | Il voit la main adverse se tendre, et il tranche dans le vif ! |
+| `commentateur_replay_smash_signe_01_f.mp3` | Elle voit la main adverse se tendre, et elle tranche dans le vif ! |
+| `commentateur_replay_smash_signe_02.mp3` | Ah ! Il anticipe un déploiement, et n'hésite pas à lui couper la feuille sous le pied ! |
+| `commentateur_replay_smash_signe_02_f.mp3` | Ah ! Elle anticipe un déploiement, et n'hésite pas à lui couper la feuille sous le pied ! |
+| `commentateur_replay_smash_signe_03.mp3` | Les ciseaux adverses viennent se casser les dents sur une pierre jouée avec une grande assurance ! |
+| `commentateur_replay_smash_signe_04.mp3` | Regardez cette action : l'adversaire se recroqueville sur la pierre, et reçoit immédiatement la sanction redoutée ! |
+| `commentateur_replay_smash_signe_05.mp3` | Oh, un plat de la main cinglant, qui vient ébrécher une pierre très hasardeuse ! |
+| `commentateur_replay_double_01.mp3` | Les deux mains s'engagent dans le choc, mais l'une d'elles en fait les frais ! |
+| `commentateur_replay_double_02.mp3` | Il assène un coup au moral de son adversaire, totalement déséquilibré par l'impact ! |
+| `commentateur_replay_double_02_f.mp3` | Elle assène un coup au moral de son adversaire, totalement déséquilibré par l'impact ! |
+| `commentateur_fin_trois_sets_01.mp3` | Au bout du suspense, ce match a trouvé un vainqueur ! Les mains ont beaucoup donné et sont épuisées : séance de manucure demain, en prévision du prochain match ! |
+| `commentateur_fin_trois_sets_02.mp3` | Les supporters peuvent libérer leur joie : leur champion a su trouver le chemin de la victoire ! Le kop adverse peine à cacher sa déception : ils y ont cru jusqu'au bout ! |
+| `commentateur_fin_trois_sets_02_f.mp3` | Les supporters peuvent libérer leur joie : leur championne a su trouver le chemin de la victoire ! Le kop adverse peine à cacher sa déception : ils y ont cru jusqu'au bout ! |
 | `commentateur_dialogue_perso_chiromancien_avant_01.mp3` | Le Chiromancien est sur le central, Madame ! |
 | `commentateur_dialogue_perso_chiromancien_avant_02.mp3` | Madame, croyez-vous aux pouvoirs du Chiromancien ? |
 | `commentateur_dialogue_avant_debutant_01.mp3` | Un nouveau venu sur le central ! Bienvenue ! |
@@ -1374,7 +1410,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_temps_forts_fin_02.mp3` | Voilà, vous avez revécu les grands moments de cette rencontre ! |
 | `commentateur_dialogue_temps_forts_fin_trois_01.mp3` | Quel spectacle ! Quel match ! Quelle intensité ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (968 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (990 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1747,8 +1783,12 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_intro_04.mp3` | Voilà pourquoi il ne faut jamais relâcher sa concentration. |
 | `commentatrice_replay_sauvee_01.mp3` | Au ralenti, on voit la peur. Et puis non. |
 | `commentatrice_replay_sauvee_02.mp3` | Au ralenti, on voit tout. Même ce qu'il ne fallait pas faire. |
+| `commentatrice_replay_sauvee_03.mp3` | Face à un adversaire trop sûr de lui, il joue juste et reste en vie. |
+| `commentatrice_replay_sauvee_03_f.mp3` | Face à un adversaire trop sûr de lui, elle joue juste et reste en vie. |
 | `commentatrice_replay_smash_01.mp3` | Toute la puissance est dans le poignet. |
 | `commentatrice_replay_smash_02.mp3` | Même au ralenti, ça va vite. |
+| `commentatrice_replay_smash_03.mp3` | Bonne lecture, qui lui permet de marquer son territoire. |
+| `commentatrice_replay_smash_04.mp3` | Au ralenti, l'impact est encore plus impressionnant. |
 | `commentatrice_replay_set_01.mp3` | Tout s'est joué là. |
 | `commentatrice_replay_set_02.mp3` | Tout s'est joué là. À une main près. |
 | `commentatrice_replay_serie_01.mp3` | La patience a payé. |
@@ -1789,6 +1829,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_palette_pas_la_09.mp3` | Il s'est entêté. Le bon coup était sous ses yeux. |
 | `commentatrice_replay_palette_pas_la_09_f.mp3` | Elle s'est entêtée. Le bon coup était sous ses yeux. |
 | `commentatrice_replay_palette_pas_la_10.mp3` | Une décision difficile à défendre. Même pour moi. |
+| `commentatrice_replay_palette_pas_la_11.mp3` | Un mauvais réflexe, et le point qui lui était promis lui échappe. |
 | `commentatrice_replay_palette_piege_01.mp3` | Il l'a amené exactement où il voulait. |
 | `commentatrice_replay_palette_piege_01_f.mp3` | Elle l'a amené exactement où elle voulait. |
 | `commentatrice_replay_palette_piege_02.mp3` | Magnifique changement de rythme, qui a laissé son adversaire sur place. |
@@ -1983,6 +2024,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_smash_double_02.mp3` | Deux marteaux, zéro clou. |
 | `commentatrice_smash_double_03.mp3` | Tout en délicatesse. |
 | `commentatrice_smash_double_04.mp3` | Deux smashs. Personne ne voulait être poli. |
+| `commentatrice_smash_double_05.mp3` | Les deux mains ont la même inspiration, et se neutralisent. |
 | `commentatrice_signe_abime_01.mp3` | Des Ciseaux ébréchés, ça ne coupe plus grand-chose. |
 | `commentatrice_signe_abime_02.mp3` | Une Pierre fêlée, c'est déjà presque du gravier. |
 | `commentatrice_signe_abime_03.mp3` | Une Feuille en lambeaux, ça n'enveloppe plus rien. |
@@ -2034,6 +2076,22 @@ restent lus par la voix de synthèse.
 | `commentatrice_decale_m_02_pierre.mp3` | C'était une pierre. |
 | `commentatrice_decale_m_02_ciseaux.mp3` | C'étaient des ciseaux. |
 | `commentatrice_decale_m_02_feuille.mp3` | C'était une feuille. |
+| `commentatrice_replay_reussite_01.mp3` | C'est très finement joué : il pousse son adversaire à la faute. |
+| `commentatrice_replay_reussite_01_f.mp3` | C'est très finement joué : elle pousse son adversaire à la faute. |
+| `commentatrice_replay_reussite_02.mp3` | Un très beau geste technique, que peu maîtrisent aussi bien que lui. |
+| `commentatrice_replay_reussite_02_f.mp3` | Un très beau geste technique, que peu maîtrisent aussi bien qu'elle. |
+| `commentatrice_replay_reussite_03.mp3` | Peu auraient choisi de jouer ainsi, mais c'est bien le signe fort qui lui donne le point. |
+| `commentatrice_replay_reussite_04.mp3` | Bonne alternance sur deux signes avant de convertir la séquence. |
+| `commentatrice_replay_reussite_05.mp3` | Une prime à l'audace sur cet enchaînement, qui laisse son adversaire impuissant. |
+| `commentatrice_replay_balle_ratee_01.mp3` | Une faute de main au plus mauvais moment, qui lui coûte très cher. |
+| `commentatrice_replay_balle_ratee_02.mp3` | Il ne respecte pas le jeu, et l'adversaire n'a plus qu'à conclure dans un fauteuil. |
+| `commentatrice_replay_balle_ratee_02_f.mp3` | Elle ne respecte pas le jeu, et l'adversaire n'a plus qu'à conclure dans un fauteuil. |
+| `commentatrice_replay_smash_signe_01.mp3` | La main adverse se détend… et se fait hacher menu. |
+| `commentatrice_replay_smash_signe_02.mp3` | Son adversaire avait anticipé une feuille, mais il finit avec des ciseaux en piteux état. |
+| `commentatrice_replay_smash_signe_03.mp3` | Ces enveloppements, toujours risqués, restent très impressionnants. |
+| `commentatrice_replay_double_01.mp3` | Un fort engagement de part et d'autre, mais une main reste au tapis. |
+| `commentatrice_fin_trois_sets_01.mp3` | Nous avons assisté à une belle rencontre, et les deux mains ont su se hisser à la hauteur de l'événement. Rendez-vous est pris pour une revanche qui s'annonce palpitante. |
+| `commentatrice_fin_trois_sets_02.mp3` | L'arbitre siffle la fin de la rencontre sur cet ultime point. On peut se satisfaire du spectacle proposé par les deux mains, dans cette passe d'armes aux allures de chassé-croisé. |
 | `commentatrice_dialogue_perso_chiromancien_avant_01.mp3` | J'ai caché mes mains. On ne sait jamais. |
 | `commentatrice_dialogue_perso_chiromancien_avant_02.mp3` | Je crois surtout à ses statistiques. |
 | `commentatrice_dialogue_avant_debutant_01.mp3` | On sera indulgents. Pendant trois coups. |
