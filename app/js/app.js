@@ -927,7 +927,10 @@ function apresPoint(evt, a, cel, rp) {
     S.pointsSansChant = 0;
   }
   if (evt.gagnant !== null) S.pointsSansChant = (S.pointsSansChant || 0) + 1;
-  annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
+  // (19 novembre) à la fin du match, l'arbitre tout de suite ; le commentaire d'après-match, lui, attend le panneau des
+  // statistiques (après le cri et la poignée de main ; voir montrerStatsFin)
+  if (m.termine) { S.commentairesFin = a.lignes.filter(l => l.role !== "arbitre"); annoncer(a.lignes.filter(l => l.role === "arbitre")); }
+  else annoncer(a.lignes, false, { enJeu: !evt.finSet && !m.termine, coup: m.coups.length });
   render(); renderHistorique(); renderLecture();
   if (S.premier) $("coach").textContent = conseil(m.coups.length, evt.gagnant);
 
@@ -937,8 +940,9 @@ function apresPoint(evt, a, cel, rp) {
     const seance = S;
     S.pauseFin = true; render();
     // (la poignée de main attend que le commentaire de fin de match soit fini : demande du porteur du projet, 25 octobre)
-    // (19 novembre) après le cri : les statistiques du match, le temps que Roland et Monique finissent ; puis la poignée de main.
-    setTimeout(() => { if (S === seance) criEnGrand(cel, () => { if (S === seance) montrerStatsFin(() => { if (S === seance) poigneeDeMain(finir); }); }); }, reduitMouvement() ? 900 : 1800);
+    // (19 novembre, choix du porteur du projet) Le cri, puis la poignée de main tout de suite, puis les statistiques du match pendant
+    // le commentaire d'après-match ; enfin, l'écran de fin.
+    setTimeout(() => { if (S === seance) criEnGrand(cel, () => voix.finiDeParler(() => { if (S === seance) poigneeDeMain(() => { if (S === seance) montrerStatsFin(finir); }); }, 4000)); }, reduitMouvement() ? 900 : 1800);
     return evt;
   }
   if (cel) setTimeout(() => criEnBulle(cel), 250);
@@ -1259,9 +1263,9 @@ function finir() {
 // ---------------------------------------------------------------- la poignée de main
 // 5 secondes pour choisir (sinon, mon style habituel ; DELAI_CHOIX_MS), puis une courte animation, puis l'écran de fin.
 // Contre un humain, on envoie son choix et on attend un peu celui de l'adversaire (sinon, son style habituel).
-// Le panneau des statistiques du match (19 novembre, idée du porteur du projet : comme au tennis à la télé). Il reste au moins
-// 5 secondes, et jusqu'à la fin des commentaires d'après-match (en duel, 8 secondes au plus : la poignée de main est à deux) ;
-// « Continuer » pour passer.
+// Le panneau des statistiques du match (19 novembre, idée du porteur du projet : comme au tennis à la télé), après la poignée de
+// main : Roland et Monique y font leur commentaire d'après-match (gardé depuis le dernier point). Il reste au moins 6 secondes, et
+// jusqu'à la fin des commentaires (25 secondes au plus) ; « Continuer » pour passer.
 function montrerStatsFin(apres) {
   const m = S.match, st = statsDuMatch(m.coups), mes = S.stats || {}, ov = $("statsFin"), seance = S;
   const pc = (x, n) => (n ? `${Math.round((100 * x) / n)} %` : "–"), sur = ([a, b]) => (b ? `${a}/${b}` : "–");
@@ -1274,20 +1278,29 @@ function montrerStatsFin(apres) {
   const ballesAdv = [Math.max(0, (mes.ballesSubies || 0) - (mes.ballesSauvees || 0)), mes.ballesSubies || 0];
   $("sfMoi").textContent = nomAffiche(P); $("sfAdv").textContent = OPP.nom;
   $("sfScore").textContent = m.scoresSets.map(([a, b]) => `${a}–${b}`).join("  ");
-  $("sfLignes").innerHTML = ligne("Points gagnés", st.points[0], st.points[1])
+  const imp = j => (st.imprevisibilite[j] === null ? "–" : `${st.imprevisibilite[j]} %`);
+  // (19 novembre, choix du porteur du projet : sans « Points gagnés », qui doublait le score ; le % de réussite sans les égalités)
+  $("sfLignes").innerHTML = ligne("Réussite (sans les égalités)", pc(...st.reussite[0]), pc(...st.reussite[1]), st.reussite[0][0], st.reussite[1][0])
+    + ligne("Imprévisibilité", imp(0), imp(1), st.imprevisibilite[0] || 0, st.imprevisibilite[1] || 0)
     + [[0, "🪨 Pierre"], [2, "📄 Feuille"], [1, "✂️ Ciseaux"]].map(([k, t]) => ligne(t, pc(st.signes[0][k], nb(0)), pc(st.signes[1][k], nb(1)), st.signes[0][k] / (nb(0) || 1), st.signes[1][k] / (nb(1) || 1))).join("")
     + ligne("Change de signe après une égalité", pc(...st.changeApresEgalite[0]), pc(...st.changeApresEgalite[1]), st.changeApresEgalite[0][0] / (st.changeApresEgalite[0][1] || 1), st.changeApresEgalite[1][0] / (st.changeApresEgalite[1][1] || 1))
+    + ligne("Points gagnés juste après une égalité", st.apresEgalite[0], st.apresEgalite[1])
     + ligne("Garde son signe après un point gagné", pc(...st.memeApresGain[0]), pc(...st.memeApresGain[1]), st.memeApresGain[0][0] / (st.memeApresGain[0][1] || 1), st.memeApresGain[1][0] / (st.memeApresGain[1][1] || 1))
     + ligne("Smashs gagnants", sur(st.smashs[0]), sur(st.smashs[1]), st.smashs[0][0], st.smashs[1][0])
     + ligne("Balles de set et de match converties", sur([mes.ballesConverties || 0, mes.ballesObtenues || 0]), sur(ballesAdv), mes.ballesConverties || 0, ballesAdv[0])
     + ligne("Meilleure série", st.serie[0], st.serie[1])
     + `<p class="sf-seul">${st.coups} coups joués · ${st.egalites} égalité${st.egalites > 1 ? "s" : ""}</p>`;
   ov.hidden = false;
-  const debut = Date.now();
+  const debut = Date.now(), coms = S.commentairesFin || [];
+  S.commentairesFin = null;
   let fait = false;
-  const fin = () => { if (fait) return; fait = true; ov.hidden = true; if (S === seance) apres(); };
+  const fin = () => { if (fait) return; fait = true; ov.hidden = true; voix.arreter(); if (S === seance) apres(); };
   $("sfContinuer").onclick = fin;
-  voix.finiDeParler(() => setTimeout(fin, Math.max(1500, 5000 - (Date.now() - debut))), S.duel ? 6500 : 20000);
+  voix.finiDeParler(() => {
+    if (fait) return;
+    if (coms.length) annoncer(coms);
+    voix.finiDeParler(() => setTimeout(fin, Math.max(1500, 6000 - (Date.now() - debut))), 25000);
+  }, 4000);
 }
 function poigneeDeMain(apres) {
   const seance = S;

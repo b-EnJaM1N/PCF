@@ -13,4 +13,9 @@ test("le panneau de fin de match : points, signes, égalités, changements aprè
   assert.deepEqual(s.memeApresGain, [[2, 2], [1, 1]]);
   assert.deepEqual(s.smashs, [[1, 1], [1, 1]]);
   assert.deepEqual(s.serie, [1, 1]);
+  assert.deepEqual(s.reussite, [[2, 4], [2, 4]], "sans les égalités");
+  assert.deepEqual(s.apresEgalite, [2, 0], "les deux points gagnés juste après une égalité : les miens");
+  assert.deepEqual(s.imprevisibilite, [null, null], "trop peu de coups");
+  const long = statsDuMatch(Array.from({ length: 30 }, (_, i) => ({ a: 0, b: i % 3, gagnant: [null, 0, 1][i % 3] })));
+  assert.ok(long.imprevisibilite[0] < 30 && long.imprevisibilite[1] < 60, String(long.imprevisibilite));   // toujours Pierre : très lisible
 });

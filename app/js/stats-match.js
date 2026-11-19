@@ -1,4 +1,4 @@
-import { lectureReussie } from "./analyse.js";
+import { lectureReussie, Suivi, indiceImprevisibilite } from "./analyse.js";
 // Statistiques « mental » et records d'un match, du point de vue du joueur (côté 0).
 
 export function nouvellesStats() {
@@ -36,11 +36,15 @@ export function suivreCoup(st, match, evt) {
 // Le panneau des statistiques de fin de match (19 novembre, idée du porteur du projet : comme au tennis à la télé), pour les deux
 // joueurs [moi, l'adversaire], d'après les coups du match (a : mon signe, b : le sien ; gagnant : 0, 1 ou null ; smash : [moi, lui]).
 // Renvoie { points, signes ([Pierre, Ciseaux, Feuille] pour chacun), coups, egalites, changeApresEgalite et memeApresGain
-// ([fait, occasions] pour chacun), smashs ([réussis, tentés]), serie (la plus longue suite de points gagnés) }.
+// ([fait, occasions] pour chacun), smashs ([réussis, tentés]), serie (la plus longue suite de points gagnés), reussite ([points
+// gagnés, coups décisifs] : sans les égalités), apresEgalite (points gagnés juste après une égalité), imprevisibilite (0 à 100,
+// comme sur la fiche : la part de ses coups qu'un lecteur n'a pas devinés ; null s'il y a trop peu de coups) }.
 export function statsDuMatch(coups = []) {
   const r = { points: [0, 0], signes: [[0, 0, 0], [0, 0, 0]], coups: coups.length, egalites: 0,
-    changeApresEgalite: [[0, 0], [0, 0]], memeApresGain: [[0, 0], [0, 0]], smashs: [[0, 0], [0, 0]], serie: [0, 0] };
+    changeApresEgalite: [[0, 0], [0, 0]], memeApresGain: [[0, 0], [0, 0]], smashs: [[0, 0], [0, 0]], serie: [0, 0],
+    reussite: [[0, 0], [0, 0]], apresEgalite: [0, 0], imprevisibilite: [null, null] };
   let suite = { j: null, n: 0 };
+  const suivis = [new Suivi(), new Suivi()];
   coups.forEach((c, i) => {
     const s = [c.a, c.b], prec = coups[i - 1];
     [0, 1].forEach(j => {
@@ -52,11 +56,15 @@ export function statsDuMatch(coups = []) {
         else if (prec.gagnant === j) { r.memeApresGain[j][1]++; if (s[j] === p[j]) r.memeApresGain[j][0]++; }
       }
     });
+    [0, 1].forEach(j => { suivis[j].figer(); suivis[j].enregistrer(s[j], c.gagnant === null || c.gagnant === undefined ? "e" : c.gagnant === j ? "g" : "p"); });
     if (c.gagnant === 0 || c.gagnant === 1) {
       r.points[c.gagnant]++;
+      r.reussite[0][1]++; r.reussite[1][1]++; r.reussite[c.gagnant][0]++;
+      if (prec && (prec.gagnant === null || prec.gagnant === undefined)) r.apresEgalite[c.gagnant]++;
       suite = suite.j === c.gagnant ? { j: c.gagnant, n: suite.n + 1 } : { j: c.gagnant, n: 1 };
       r.serie[c.gagnant] = Math.max(r.serie[c.gagnant], suite.n);
     } else r.egalites++;
   });
+  r.imprevisibilite = suivis.map(x => (x.lisibles >= 6 ? indiceImprevisibilite(x.devines / x.lisibles) : null));
   return r;
 }
