@@ -270,7 +270,8 @@ function annoncer(lignes, silencieux = false, { enJeu = false, coup = 0 } = {}) 
   if (!enJeu) { retenirCommentaires(lignes); voix.dire(lignes); return; }
   const recent = S && coup - (S.commentaireAuCoup ?? -9) < 2;
   // (les répliques personnalisées passent même juste après un commentaire : en duel, les deux joueurs doivent les entendre)
-  const dites = lignes.filter(l => l.role === "arbitre" || ((!recent || l.id.includes("_perso_")) && l.texte.length <= REPLIQUE_COURTE));
+  // (et l'accueil des nouveaux joueurs, même long : c'est leur premier match, ils ont le temps ; 19 novembre)
+  const dites = lignes.filter(l => l.role === "arbitre" || l.id.includes("_accueil_") || ((!recent || l.id.includes("_perso_")) && l.texte.length <= REPLIQUE_COURTE));
   retenirCommentaires(dites);
   if (S && dites.some(l => l.role !== "arbitre")) S.commentaireAuCoup = coup;
   voix.dire(dites);
@@ -310,6 +311,12 @@ function lancerMinuteur() {
       if (reste < 0.3) $("timer").classList.add("urgent");
     } else {
       // Les 8 secondes sont passées : on puise dans la réserve.
+      // (au premier match d'un nouveau joueur, la première fois, Monique l'explique ; 19 novembre)
+      if (S?.annonces?.accueil === 1 && !S.annonces.accueilDit.has("reserve")) {
+        S.annonces.accueilDit.add("reserve");
+        const l = (POOLS.accueil_reserve || []).map(it => ligneMoment(it, { genre: P.genre })).find(x => x && voix.fichiers.has(x.id));
+        if (l) voix.dire([l]);
+      }
       const r = Math.max(0, reserveDebut - (ecoule - DUREE_COUP_MS));
       m.reserve[0] = r;
       $("timer").classList.add("urgent", "reserve");
@@ -1849,6 +1856,9 @@ function presenterSpeaker() {
   // (en duel, le tirage commun aux deux téléphones pour ces répliques : le numéro du duel et le moment ; 18 novembre)
   const tirageCommun = S.duel && D?.duel?.id ? cle => tirageDuel(`com:${cle}`) / 4294967296 : null;
   if (S.annonces) { S.annonces.perso = persoCom; S.annonces.tirage = tirageCommun; }
+  // (19 novembre) l'accueil des nouveaux joueurs : leurs 3 premiers matchs (1, 2 ou 3), commentés pour eux
+  const accueil = (P.matchs || 0) < 3 ? (P.matchs || 0) + 1 : 0;
+  if (S.annonces) S.annonces.accueil = accueil;
   // (19 novembre) mes séries de victoires et de défaites avant ce match, pour les dialogues d'après-match (« Il est intouchable ! »)
   if (S.annonces) S.annonces.serieAvant = { victoires: P.serieEnCours || 0, defaites: P.defaitesEnCours || 0 };
   const monId = `h:${compteUI.session()?.user?.id}`;
@@ -1866,7 +1876,7 @@ function presenterSpeaker() {
       humain, dejaJoues: !!(f && f.v + f.d > 0), niveauMoi, niveauAdv, memePays: humain && OPP.drapeau === P.drapeau,
       rapide: !!(D?.duel?.rapide || S.contreBotRapide), officiel: !!(S.duel && D?.duel?.classe), setsGagnants: S.match.format.setsGagnants,
     }),
-    recents, perso: persoCom, tirage: tirageCommun,
+    recents, perso: persoCom, tirage: tirageCommun, accueil,
   });
   // On retient les phrases dites, pour ne pas les répéter aux prochains matchs.
   ecrire("speakerRecents", av.commentaires.map(l => l.id).concat(recents).slice(0, 80));

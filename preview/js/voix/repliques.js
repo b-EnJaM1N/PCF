@@ -1710,6 +1710,33 @@ export const MOMENTS = {
     { r: "c", t: "Les supporters peuvent libérer leur joie : leur champion a su trouver le chemin de la victoire ! Le kop adverse peine à cacher sa déception : ils y ont cru jusqu'au bout !", f: "Les supporters peuvent libérer leur joie : leur championne a su trouver le chemin de la victoire ! Le kop adverse peine à cacher sa déception : ils y ont cru jusqu'au bout !", si: "gagne" },
     { r: "d", t: "L'arbitre siffle la fin de la rencontre sur cet ultime point. On peut se satisfaire du spectacle proposé par les deux mains, dans cette passe d'armes aux allures de chassé-croisé." },
   ],
+  // L'accueil des nouveaux joueurs, pendant leur premier match (19 novembre, choisies par le porteur du projet ; voir annoncerCoup) : son tout premier point gagné
+  accueil_point_gagne: [
+    { r: "c", t: "Oh, le premier point de sa carrière ! On s'en souviendra !" },
+    { r: "c", t: "Et voilà ! Premier point, et déjà le goût de la victoire !" },
+  ],
+  // son tout premier point perdu
+  accueil_point_perdu: [
+    { r: "d", t: "Un point pour Bambi. Ce n'est rien : on apprend en perdant." },
+    { r: "c", t: "Pas de panique, il y a encore le temps de se rattraper !" },
+  ],
+  // la première égalité
+  accueil_egalite: [
+    { r: "d", t: "Même signe des deux côtés : on rejoue le coup. C'est la règle." },
+  ],
+  // vers le 5e coup : apprendre à lire l'adversaire
+  accueil_lecture: [
+    { r: "d", t: "Un conseil : regardez ce que Bambi vient de jouer. Il recommence souvent." },
+    { r: "c", t: "L'historique en bas de l'écran, c'est le trésor des grands joueurs !" },
+  ],
+  // vers le 8e coup : le smash
+  accueil_smash: [
+    { r: "c", t: "Et n'oubliez pas le smash : un appui long sur le signe, une fois par set ! Ça ne change pas le point, mais quel spectacle !" },
+  ],
+  // les 8 secondes passées : la réserve de temps (dit par l'appli, au minuteur)
+  accueil_reserve: [
+    { r: "d", t: "Attention au temps. Après huit secondes, on puise dans sa réserve. Et elle ne se remplit pas." },
+  ],
 };
 
 // ---------------------------------------------------------------- les dialogues (temps morts)
@@ -2167,6 +2194,34 @@ export const DIALOGUES = {
   // la conclusion, seulement après un match en trois sets
   temps_forts_fin_trois: [
     ["Quel spectacle ! Quel match ! Quelle intensité !", "Roland, ils ont joué trois manches de pierre-feuille-ciseaux."],
+  ],
+  // L'accueil des nouveaux joueurs (19 novembre, choisis par le porteur du projet) : avant le tout premier match, les trois à la suite
+  accueil_bienvenue: [
+    [{ t: "Mesdames et messieurs, un nouveau joueur fait son entrée sur le court central ! Bienvenue au HandSlam !", f: "Mesdames et messieurs, une nouvelle joueuse fait son entrée sur le court central ! Bienvenue au HandSlam !" }, "Bienvenue. Les règles sont simples : Pierre bat Ciseaux, Ciseaux bat Feuille, Feuille bat Pierre."],
+    ["Monique, on lui explique comment gagner ?", "Huit secondes pour choisir un signe. Le premier à sept points, avec deux points d'écart, remporte le set."],
+    ["Et en face, c'est Bambi ! Le plus gentil de nos adversaires… en principe !", "Bambi a ses petites habitudes. Regardez l'historique en bas de l'écran."],
+  ],
+  // à la fin du premier match, gagné
+  accueil_victoire: [
+    ["Victoire pour son premier match ! Une étoile est née, mesdames et messieurs !", "Bien joué. Le prochain adversaire sera moins gentil. Revenez quand même."],
+    [{ t: "Quel baptême du feu ! Il a battu Bambi dès son premier match !", f: "Quel baptême du feu ! Elle a battu Bambi dès son premier match !" }, "Un bon début. Un deuxième match, et la Partie rapide s'ouvre."],
+  ],
+  // à la fin du premier match, perdu
+  accueil_defaite: [
+    ["Bambi l'emporte… mais quelle découverte, mesdames et messieurs !", "Tout le monde perd contre Bambi la première fois. Enfin, presque. On recommence ?"],
+    ["Ce n'est que partie remise ! La revanche est à un clic !", "Maintenant, vous connaissez ses habitudes. Profitez-en."],
+  ],
+  // avant le 2e match
+  accueil_deuxieme: [
+    ["Le revoilà sur le central ! Deuxième match, on prend ses marques !", "Cette fois, regardez bien l'historique. C'est là que tout se joue."],
+  ],
+  // avant le 3e match
+  accueil_troisieme: [
+    [{ t: "Troisième match ! Mesdames et messieurs, un habitué est en train de naître !", f: "Troisième match ! Mesdames et messieurs, une habituée est en train de naître !" }, "Encore une victoire ou une défaite, et la boutique vous ouvre ses portes."],
+  ],
+  // à la fin du 3e match, gagné ou perdu
+  accueil_fin_troisieme: [
+    ["Trois matchs ! Les jetons, les défis du jour et la boutique sont ouverts !", { t: "Vous voilà joueur à part entière. Bienvenue au club.", f: "Vous voilà joueuse à part entière. Bienvenue au club." }],
   ],
 };
 

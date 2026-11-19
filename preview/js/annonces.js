@@ -44,6 +44,8 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
     dernierMoment: null,          // le dernier moment commenté (un « beau coup » jamais deux fois de suite)
     troisPierres: false,          // « Pierre qui roule… » : une fois par match
     perso: null,                  // (18 novembre) le joueur du match qui a ses répliques : { nom, joueur } (persoCommente, chants-perso.js)
+    accueil: 0,                   // (19 novembre) les 3 premiers matchs d'un nouveau joueur : 1, 2 ou 3 (0 ensuite)
+    accueilDit: new Set(),        // ce que Roland et Monique lui ont déjà expliqué pendant ce match
     tirage: null,                 // en duel : cle → nombre entre 0 et 1, le même sur les deux téléphones (répliques personnalisées)
   };
 }
@@ -409,8 +411,19 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
   if (persoPool && !persoPool.endsWith("_feu")) etat.dejaSet.add("perso");
   const perso = persoPool && choisirPerso(etat, persoPool, ctx, rng);
   if (perso) { moment = persoPool; dialogueFin = []; }
+  // L'accueil du nouveau joueur (19 novembre), pendant son premier match : son premier point gagné, perdu, sa première égalité,
+  // vers le 5e coup « lire l'adversaire », vers le 8e le smash ; avant tout le reste (pas en fin de set). Les phrases longues
+  // passent aussi pendant l'échange (l'appli les laisse dire, voir annoncer dans app.js).
+  let accueilL = null;
+  if (etat.accueil === 1 && !evt.finSet && !evt.finMatch) {
+    const fait = k => etat.accueilDit.has(k);
+    const k = evt.egalite ? (!fait("egalite") ? "egalite" : null) : evt.gagnant === 0 && !fait("point_gagne") ? "point_gagne"
+      : evt.gagnant === 1 && !fait("point_perdu") ? "point_perdu" : n >= 5 && !fait("lecture") ? "lecture" : n >= 8 && !fait("smash") ? "smash" : null;
+    if (k) { etat.accueilDit.add(k); accueilL = choisir(etat, `accueil_${k}`, { ...ctx, court: false }, rng); }
+    if (accueilL) { moment = `accueil_${k}`; dialogueFin = []; }
+  }
   if (moment) {
-    commentaire = perso || choisir(etat, moment, ctx, rng);
+    commentaire = accueilL || perso || choisir(etat, moment, ctx, rng);
     if (commentaire) { lignes.push(commentaire); etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
   }
   etat.dernierMoment = commentaire ? moment : null;
@@ -544,6 +557,9 @@ function finDeSet(match, evt, etat, ctx, rng) {
 // les phrases pendant qu'on regarde l'écran de fin (décision du porteur du projet).
 function finDeMatch(match, evt, etat, ctx, rng) {
   const un = x => (x ? (Array.isArray(x) ? x : [x]) : []);
+  // L'accueil du nouveau joueur (19 novembre) : à la fin de son premier match, et de son troisième.
+  if (etat.accueil === 1) { const d = dialogue(etat, evt.gagnant === 0 ? "accueil_victoire" : "accueil_defaite", rng); if (d) return d; }
+  if (etat.accueil === 3) { const d = dialogue(etat, "accueil_fin_troisieme", rng); if (d) return d; }
   // Selon l'enjeu (entraînement, tour d'un tournoi) : un dialogue adapté (toujours en finale). Les petites listes passent
   // moins souvent (2 dialogues après une défaite à l'entraînement : on les entendait à chaque fois), pour laisser venir
   // les répliques de victoire et de défaite habituelles.
@@ -698,7 +714,7 @@ const TOURS = ["huitiemes", "quarts", "demis", "finale"];
 // Renvoie { speaker, commentaires } : les deux listes de répliques, dans l'ordre. (Les surnoms dits par Roland : abandonnés le
 // 3 novembre, décision du porteur du projet ; les surnoms restent écrits.)
 export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = false, humain = false, genre = "m",
-  situations = [], recents = [], jeu = null, audible = null, memoire = null, heure = null, perso = null, tirage = null } = {}, rng = Math.random) {
+  situations = [], recents = [], jeu = null, audible = null, memoire = null, heure = null, perso = null, tirage = null, accueil = 0 } = {}, rng = Math.random) {
   const deja = new Set(recents);
   // Une version de la phrase, en évitant celles déjà entendues récemment.
   const dire = (cle, g = "m") => {
@@ -748,6 +764,13 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
   // (seulement les 6 derniers dialogues : sinon, au bout de quelques matchs, ils seraient tous écartés et plus rien ne serait dit)
   const dialoguesRecents = recents.filter(id => /^commentateur_dialogue_avant_match_/.test(id)).slice(0, 6);
   dialoguesRecents.forEach(id => { const m = /_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
+  // L'accueil du nouveau joueur (accueil : 1, 2 ou 3 ; 19 novembre) : avant son premier match, les trois dialogues de bienvenue
+  // (les règles, Bambi) ; avant le 2e et le 3e, un dialogue, puis l'ouverture et le lancement habituels.
+  if (accueil === 1) {
+    const l = DIALOGUES_IDS.accueil_bienvenue.flatMap((_, k) => ligneDialogue("accueil_bienvenue", k, genre)).filter(x => x && (!audible || audible(x.id)));
+    if (l.length) return { speaker: sp.filter(Boolean), commentaires: l };
+  }
+  if (accueil === 2 || accueil === 3) { const d = dialogue(etat, accueil === 2 ? "accueil_deuxieme" : "accueil_troisieme", rng); if (d) return finAvant(d); }
   // Le joueur qui a ses répliques personnalisées (perso : { nom, joueur } ; 18 novembre) : 4 fois sur 10, sa présentation (une
   // réplique) ou, une fois sur trois, un dialogue sur lui ; en évitant ce qui a été entendu aux derniers matchs.
   if (perso && (tirage ? tirage("perso_avant") : rng()) < 0.4) {   // (tirage : en duel, le même sur les deux téléphones)
