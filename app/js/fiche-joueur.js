@@ -23,6 +23,29 @@ export function lignesStats(s) {
   ];
 }
 
+// Les morceaux de la fiche, séparés (19 novembre : la fiche d'un joueur en onglets, Stats, Contre toi, Dossier, Historique).
+export function htmlStatsEnLigne(f, nom) {
+  const s = lignesStats(f?.stats);
+  return s.length ? `<table class="fiche-stats">${s.map(([l, v]) => `<tr><td>${l}</td><td><b>${esc(v)}</b></td></tr>`).join("")}</table>`
+    + `<p class="hint">Tous ses duels contre des joueurs en ligne (jamais contre un bot).</p>`
+    : `<p class="hint">${esc(nom)} n'a pas encore joué de duel contre un autre joueur.</p>`;
+}
+const ligneAdvDe = avatar => (a, droite, detail = "") => `<div class="joueur"><span class="mini">${avatar(a?.avatar || {})}</span>
+    <div style="min-width:0"><div class="jn">${esc(a?.pseudo || "?")}<small>#${esc(a?.numero ?? "")}</small></div>${detail ? `<div class="jd">${detail}</div>` : ""}</div>${droite}</div>`;
+export function htmlFacesAutres(f, nom, avatar = () => "") {
+  const ligneAdv = ligneAdvDe(avatar);
+  return f?.cache ? `<p class="hint">${esc(nom)} a choisi de cacher ses adversaires.</p>` : (f?.face_a_face || []).length
+    ? f.face_a_face.map(x => ligneAdv(x.adversaire, `<b class="fiche-bilan">${x.v} – ${x.d}</b>`, `${x.joues} duel${x.joues > 1 ? "s" : ""} · dernier le ${dateCourte(x.dernier)}`)).join("")
+    : `<p class="hint">Pas encore de face-à-face.</p>`;
+}
+export function htmlHistorique(f, nom, avatar = () => "") {
+  const ligneAdv = ligneAdvDe(avatar);
+  return f?.cache ? `<p class="hint">${esc(nom)} a choisi de cacher ses adversaires.</p>` : (f?.historique || []).length
+    ? f.historique.map(h => ligneAdv(h.adversaire, `<b class="fiche-bilan ${h.gagne ? "gagne" : "perdu"}">${h.gagne ? "V" : "D"}</b>`,
+        `${(h.scores || []).map(([a, b]) => `${a}–${b}`).join(", ")}${h.fin === "abandon" ? " (abandon)" : h.fin === "forfait" ? " (forfait)" : ""} · ${dateCourte(h.quand)}${h.officiel ? " · officiel" : " · amical"}${h.tournoi ? " · tournoi" : ""}`)).join("")
+    : `<p class="hint">Pas encore de duel terminé.</p>`;
+}
+
 // Les 3 onglets (sans script : trois boutons radio, comme « Contre toi / Tous ses matchs »).
 // f : ce que renvoie fiche_joueur ; nom : son pseudo ; x : un numéro unique pour les boutons ; avatar(av) → SVG.
 export function htmlFiche(f, nom, x, avatar = () => "") {

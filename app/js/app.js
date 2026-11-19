@@ -5,7 +5,7 @@ import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement, commentaireStats } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
 import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache, mesDossards } from "./social-serveur.js";
-import { ficheVisible, htmlFiche } from "./fiche-joueur.js";
+import { ficheVisible, htmlStatsEnLigne, htmlFacesAutres, htmlHistorique } from "./fiche-joueur.js";
 import { nouveauxDegats, noterDegats, degatsDe } from "./degats.js";
 import { nouveauFeu, noterFeu, feuDe, feuSVG, egalitesDeSuite, trembleDe, EGALITES_ETINCELLE, effetDouble, niveauCoeur, BPM_COEUR } from "./effets.js";
 import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier, origineIci } from "./visites.js";
@@ -1594,21 +1594,31 @@ function renderMonJeu() {
     const h = P.parAdv?.humains || jeuVide();
     P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); sauverP();
   }
-  const V = vueJeu === "total" ? P : (P.parAdv?.[vueJeu] || jeuVide());
+  $("gameBody").innerHTML = htmlJeu(P, vueJeu, { enCours: recupEnCours, connecte: !!compteUI?.session()?.user });
+  $("gameBody").querySelectorAll(".jeu-vue").forEach(b => b.addEventListener("click", () => {
+    vueJeu = b.dataset.vue; try { localStorage.setItem("hs_vue_jeu", vueJeu); } catch { /* rien */ }
+    renderMonJeu();
+  }));
+}
+// « Mon jeu » (ou « Son jeu », sur la fiche d'un autre joueur ; 19 novembre) : Q, une fiche de joueur ; vue : humains, bots ou total.
+// Sans la séparation joueurs / bots (une fiche d'un joueur qui n'a pas encore la dernière version), seulement le total.
+function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}) {
+  const separe = !autre || !!Q.parAdvRecupere;
+  if (!separe) vue = "total";
+  const V = vue === "total" ? Q : (Q.parAdv?.[vue] || jeuVide());
   const choix = [["humains", "👥 Joueurs"], ["bots", "🤖 Bots"], ["total", "Tout"]]
-    .map(([k, t]) => `<button type="button" class="jeu-vue${k === vueJeu ? " on" : ""}" data-vue="${k}" aria-pressed="${k === vueJeu}">${t}</button>`).join("");
-  const entete = `<div class="jeu-vues" role="group" aria-label="Mon jeu : contre qui">${choix}</div>`;
-  const vide = vueJeu === "total" ? !P.matchs : !V.matchs;
-  if (vide && recupEnCours) $("gameBody").innerHTML = `${entete}<p class="hint">Je retrouve tes matchs passés…</p>`;
-  else if (vide) {
-    $("gameBody").innerHTML = `${entete}<p class="hint">${vueJeu === "humains" ? "Aucun match contre un joueur" : "Aucun match contre un bot"} pour l'instant${P.parAdvRecupere || !compteUI?.session()?.user ? "" : " depuis le 19 novembre"}. « Tout » montre l'ensemble de tes matchs.</p>`;
-  } else {
-    const tot = V.signes.reduce((a, b) => a + b, 0), fav = signeFavori(V.signes);
-    const taux = V.lisibles ? V.devines / V.lisibles : 1 / 3, ind = indiceImprevisibilite(taux);
-    const mv = V.apresVictoire ? Math.round(100 * V.memeApresVictoire / V.apresVictoire) : null;
-    const md = V.apresDefaite ? Math.round(100 * V.memeApresDefaite / V.apresDefaite) : null;
-    const nbMatchs = vueJeu === "total" ? "" : `<p class="hint">${V.matchs} match${V.matchs > 1 ? "s" : ""} ${vueJeu === "humains" ? "contre des joueurs" : "contre des bots"}${P.parAdvRecupere ? "" : ", depuis le 19 novembre"}.</p>`;
-    $("gameBody").innerHTML = `${entete}${nbMatchs}<div class="bars">${barres(V.signes, tot)}</div>
+    .map(([k, t]) => `<button type="button" class="jeu-vue${k === vue ? " on" : ""}" data-vue="${k}" aria-pressed="${k === vue}">${t}</button>`).join("");
+  const entete = separe ? `<div class="jeu-vues" role="group" aria-label="Contre qui">${choix}</div>`
+    : `<p class="hint">Tous ses matchs, contre les joueurs et les bots (la séparation viendra quand ${esc(autre)} aura la dernière version de l'appli).</p>`;
+  const vide = vue === "total" ? !Q.matchs : !V.matchs;
+  if (vide && enCours) return `${entete}<p class="hint">Je retrouve tes matchs passés…</p>`;
+  if (vide) return `${entete}<p class="hint">${vue === "humains" ? "Aucun match contre un joueur" : vue === "bots" ? "Aucun match contre un bot" : "Aucun match"} pour l'instant${autre || Q.parAdvRecupere || !connecte ? "" : " depuis le 19 novembre"}.${vue === "total" ? "" : " « Tout » montre l'ensemble des matchs."}</p>`;
+  const tot = V.signes.reduce((a, b) => a + b, 0), fav = signeFavori(V.signes);
+  const taux = V.lisibles ? V.devines / V.lisibles : 1 / 3, ind = indiceImprevisibilite(taux);
+  const mv = V.apresVictoire ? Math.round(100 * V.memeApresVictoire / V.apresVictoire) : null;
+  const md = V.apresDefaite ? Math.round(100 * V.memeApresDefaite / V.apresDefaite) : null;
+  const nbMatchs = vue === "total" ? "" : `<p class="hint">${V.matchs} match${V.matchs > 1 ? "s" : ""} ${vue === "humains" ? "contre des joueurs" : "contre des bots"}${autre || Q.parAdvRecupere ? "" : ", depuis le 19 novembre"}.</p>`;
+  return `${entete}${nbMatchs}<div class="bars">${barres(V.signes, tot)}</div>
       <div class="lines">
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
         <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${V.smashsTentes ? `${V.smashsReussis} sur ${V.smashsTentes} (${tauxSmash(V)} %)` : "Aucun pour l'instant"}</span></div>
@@ -1620,11 +1630,23 @@ function renderMonJeu() {
       <div class="big">${ind}<span style="font-size:1rem;color:var(--muted)"> / 100</span></div>
       <div class="gauge"><div style="width:${ind}%"></div></div>
       <p class="hint">L'analyse a deviné <b>${V.devines} coups sur ${V.lisibles}</b>, soit ${(taux * 100).toFixed(1).replace(".", ",")} %. Le hasard pur donnerait 33 % : 100 sur 100, 40 % : 80, 50 % : 50, 60 % : 20.</p>`;
-  }
-  $("gameBody").querySelectorAll(".jeu-vue").forEach(b => b.addEventListener("click", () => {
-    vueJeu = b.dataset.vue; try { localStorage.setItem("hs_vue_jeu", vueJeu); } catch { /* rien */ }
-    renderMonJeu();
-  }));
+}
+// Le mental et les records d'une fiche (les miens dans Ma fiche, ceux d'un autre joueur sur sa fiche).
+function htmlMental(Q) {
+  const pc = (a, b) => (b ? `${a} sur ${b} (${Math.round(100 * a / b)} %)` : "Aucune pour l'instant");
+  return `
+      <div class="ln"><span>Balles de set et de match converties</span><span>${pc(Q.ballesConverties, Q.ballesObtenues)}</span></div>
+      <div class="ln"><span>Balles adverses sauvées</span><span>${pc(Q.ballesSauvees, Q.ballesSubies)}</span></div>
+      <div class="ln"><span>Sets décisifs gagnés</span><span>${Q.decisifsJoues ? `${Q.decisifsGagnes} sur ${Q.decisifsJoues}` : "Aucun joué"}</span></div>
+      <div class="ln"><span>Matchs gagnés après avoir perdu le 1er set</span><span>${Q.remontadas}</span></div>`;
+}
+function htmlRecords(Q) {
+  return `
+      <div class="ln"><span>Plus longue série de points</span><span>${Q.meilleureSeriePoints}</span></div>
+      <div class="ln"><span>Plus belle remontée dans un set</span><span>${Q.meilleureRemontee ? Q.meilleureRemontee + " points de retard" : "–"}</span></div>
+      <div class="ln"><span>Meilleure série de victoires</span><span>${Q.meilleureSerieVictoires}</span></div>
+      <div class="ln"><span>Plus long match</span><span>${Q.plusLongMatch} coups</span></div>
+      <div class="ln"><span>Sets gagnés / perdus</span><span>${Q.sets[0]} / ${Q.sets[1]}</span></div>`;
 }
 
 // ---------------------------------------------------------------- images à partager (La Une, la carte)
@@ -1736,42 +1758,71 @@ async function ouvrirFicheAdv(id, nom, { jouer = true } = {}) {
     }).catch(() => { /* on garde le petit bonhomme */ });
     const v = f?.v || 0, d = f?.d || 0;
     const local = v + d ? `<div class="ff-tete"><span>Toi</span><b>${v} – ${d}</b><span>${esc(court)}</span></div>` : `<p class="hint">Pas encore de duel enregistré contre ${esc(court)}.</p>`;
-    $("faCorps").innerHTML = moi ? `<p class="hint">Chargement…</p>` : local;
-    if (moi) {
-      let duels = null;
-      try { duels = await duelsAvec(uid); const r = statsFaceAFace(duels, moi); if (demande === ficheDemande) $("faCorps").innerHTML = r.matchs ? renderFaceAFace(r, court, { duels, uid: moi }) : local; }
-      catch { if (demande === ficheDemande) $("faCorps").innerHTML = local + `<p class="hint">Le détail de vos duels n'a pas pu être chargé. Vérifie ta connexion.</p>`; }
-      const suite = await dossierEtMains(uid, court, duels, /🤖/.test(nom) ? null : undefined);
-      if (demande === ficheDemande) $("faCorps").insertAdjacentHTML("beforeend", suite);
-    }
+    if (moi) ongletsJoueur($("faCorps"), uid, court, { encore: () => demande === ficheDemande, bot: /🤖/.test(nom) });
+    else $("faCorps").innerHTML = local;
   }
   $("ficheAdv").classList.add("show");
 }
-// Joueur en ligne : son dossier (ses 50 derniers matchs en ligne) et l'historique des mains, en 2 onglets :
-// « Contre toi » (nos 10 derniers duels) et « Tous ses matchs » (ses 10 derniers matchs en ligne, sans ses adversaires).
+// La fiche d'un joueur en ligne, en 4 onglets (19 novembre, choix du porteur du projet) : 📊 Stats (ouvert d'abord : les mêmes
+// que dans Ma fiche, d'après sa fiche enregistrée en ligne, et ses chiffres en ligne), 🤝 Contre toi (notre face-à-face et l'historique
+// des mains de nos duels), 📁 Dossier (ses habitudes d'après ses 50 derniers matchs en ligne, et ses mains contre tout le monde),
+// 📜 Historique (ses derniers duels et ses adversaires les plus fréquents). Pour tous les joueurs en ligne (amis ou non).
+// el : où l'écrire ; encore() : la fiche est-elle toujours ouverte ? ; bot : un bot des tournois en ligne (pas de fiche de jeu).
 let nOngletsMains = 0;
-async function dossierEtMains(uid, nom, duels, elle) {
-  const moi = compteUI?.session()?.user?.id, n = esc(nom);
-  if (elle === undefined) { try { elle = normaliserProfil((await profilsEnLigne([uid]))[0]?.fiche).genre === "f"; } catch { elle = false; } }
-  let matchs = null, fiche = null;
-  // (la fiche complète, étape 68 : sur la version de test d'abord, nouveautes.js : « fiche »)
-  await Promise.all([dossierJoueur(uid).then(m => { matchs = m; }).catch(() => {}),
-    ficheVisible() ? ficheJoueur(uid).then(f => { fiche = f; }).catch(() => {}) : null]);
+async function ongletsJoueur(el, uid, nom, { encore = () => true, bot = false } = {}) {
+  const moi = compteUI?.session()?.user?.id, n = esc(nom), x = ++nOngletsMains;
+  const onglets = [["S", "📊 Stats"], ["C", "🤝 Contre toi"], ["D", "📁 Dossier"], ["H", "📜 Historique"]];
+  el.innerHTML = `<div class="ff-choix quatre">${onglets.map(([k, t], i) => `<input type="radio" name="fo${x}" id="fo${k}${x}"${i ? "" : " checked"}><label for="fo${k}${x}">${t}</label>`).join("")}`
+    + `${[1, 2, 3, 4].map(k => `<div class="ff-v${k}"><p class="hint">Chargement…</p></div>`).join("")}</div>`;
+  const zone = k => el.querySelector(`.ff-v${k}`);
+  const [ligne, duels, matchs, fiche] = await Promise.all([
+    bot ? null : profilsEnLigne([uid]).then(l => l[0] || null).catch(() => null),
+    moi ? duelsAvec(uid).catch(() => undefined) : null,
+    dossierJoueur(uid).catch(() => null),
+    ficheVisible() ? ficheJoueur(uid).catch(() => null) : null]);
+  if (!encore() || !zone(1)) return;
+  const Q = ligne ? profilDepuisLigne(ligne) : null, elle = Q?.genre === "f", il = elle ? "Elle" : "Il";
+  // 📊 Stats
+  const enLigne = fiche ? `<h3 class="ff-titre">🌐 En ligne</h3>${htmlStatsEnLigne(fiche, nom)}` : "";
+  if (Q?.matchs) {
+    let vue = Q.parAdvRecupere ? "humains" : "total";
+    const pctV = Math.round((100 * Q.victoires) / Q.matchs);
+    zone(1).innerHTML = `<div class="fa-chiffres"><div><b>${Q.matchs}</b><span>matchs</span></div><div><b>${pctV} %</b><span>victoires</span></div><div><b>${Q.serieEnCours}</b><span>série en cours</span></div></div>`
+      + `<h3 class="ff-titre">📊 Son jeu</h3><div class="fa-jeu"></div>`
+      + `<h3 class="ff-titre">🧠 Son mental</h3><div class="lines">${htmlMental(Q)}</div>`
+      + `<h3 class="ff-titre">🏅 Ses records</h3><div class="lines">${htmlRecords(Q)}</div>${enLigne}`;
+    const jeu = zone(1).querySelector(".fa-jeu");
+    const dessiner = () => {
+      jeu.innerHTML = htmlJeu(Q, vue, { autre: nom });
+      jeu.querySelectorAll(".jeu-vue").forEach(b => b.addEventListener("click", () => { vue = b.dataset.vue; dessiner(); }));
+    };
+    dessiner();
+  } else zone(1).innerHTML = (bot ? "" : `<p class="hint">${n} n'a pas encore de statistiques de jeu.</p>`) + (enLigne || (bot ? `<p class="hint">Pas de statistiques pour un bot.</p>` : ""));
+  // 🤝 Contre toi
+  if (!moi) zone(2).innerHTML = `<p class="hint">Connecte-toi pour voir vos duels.</p>`;
+  else if (duels === undefined) zone(2).innerHTML = `<p class="hint">Le détail de vos duels n'a pas pu être chargé. Vérifie ta connexion.</p>`;
+  else {
+    const rf = statsFaceAFace(duels || [], moi);
+    const contre = (duels || []).filter(d => maPlace(d, moi) !== null && d.vainqueur != null && d.coups?.length)
+      .sort((a, b) => Date.parse(b.maj_le) - Date.parse(a.maj_le)).slice(0, MAX_MAINS)
+      .map(d => { const p = maPlace(d, moi); try { return mainDuel(d, rejouer(d, p).match, p); } catch { return null; } }).filter(Boolean);
+    zone(2).innerHTML = rf.matchs
+      ? renderFaceAFace(rf, nom, { duels, uid: moi }) + `<h3 class="ff-titre">🖐️ Historique des mains</h3>${htmlMains(contre, { noms: ["Toi", nom], vide: `Pas encore de duel contre ${nom}.` })}`
+        + `<p class="hint mains-note">Vos ${MAX_MAINS} derniers duels, coup par coup (en jaune : le point est pour toi).</p>`
+      : `<p class="hint">Vous ne vous êtes pas encore affrontés en ligne.</p>`;
+  }
+  // 📁 Dossier
   let k = compteVide();
   for (const m of matchs || []) k = additionner(k, compterMatch(m.map(c => ({ a: c.a, b: c.b, gagnant: c.g ?? null }))));
-  const dos = matchs ? corpsDossier(dossier(k, { elle: !!elle }), d => `D'après ses ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).`,
+  const dos = matchs ? corpsDossier(dossier(k, { elle }), d => `D'après ses ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).`,
     "Pas encore assez de matchs en ligne pour établir son dossier.") : `<p class="hint">Dossier indisponible pour l'instant.</p>`;
-  const contre = (duels || []).filter(d => maPlace(d, moi) !== null && d.vainqueur != null && d.coups?.length)
-    .sort((x, y) => Date.parse(y.maj_le) - Date.parse(x.maj_le)).slice(0, MAX_MAINS)
-    .map(d => { const p = maPlace(d, moi); try { return mainDuel(d, rejouer(d, p).match, p); } catch { return null; } }).filter(Boolean);
   const tous = (matchs || []).slice(0, MAX_MAINS).map(mainDossier).filter(e => e.c);
-  const il = elle ? "Elle" : "Il", x = ++nOngletsMains;
-  return (fiche ? htmlFiche(fiche, nom, x, avatarSVG) : "") + `<h3 class="ff-titre">📁 Son dossier</h3>${dos}<h3 class="ff-titre">🖐️ Historique des mains</h3>`
-    + `<div class="ff-choix"><input type="radio" name="fm${x}" id="fmMoi${x}" checked><label for="fmMoi${x}">Contre toi (${contre.length})</label>`
-    + `<input type="radio" name="fm${x}" id="fmTous${x}"><label for="fmTous${x}">Tous ses matchs (${tous.length})</label>`
-    + `<div class="ff-vue-tous">${htmlMains(contre, { noms: ["Toi", nom], vide: `Pas encore de duel contre ${nom}.` })}</div>`
-    + `<div class="ff-vue-off">${htmlMains(tous, { noms: [nom, "Adversaire"], gagneTexte: [`✅ ${il} gagne`, `❌ ${il} perd`], vide: "Pas encore de match en ligne terminé." })}`
-    + `<p class="hint mains-note">Ses ${MAX_MAINS} derniers matchs en ligne, coup par coup (en jaune : le point est pour ${n}).</p></div></div>`;
+  zone(3).innerHTML = dos + `<h3 class="ff-titre">🖐️ Ses mains</h3>${htmlMains(tous, { noms: [nom, "Adversaire"], gagneTexte: [`✅ ${il} gagne`, `❌ ${il} perd`], vide: "Pas encore de match en ligne terminé." })}`
+    + `<p class="hint mains-note">Ses ${MAX_MAINS} derniers matchs en ligne, coup par coup (en jaune : le point est pour ${n}).</p>`;
+  // 📜 Historique
+  zone(4).innerHTML = fiche
+    ? `<h3 class="ff-titre">Ses derniers duels</h3>${htmlHistorique(fiche, nom, avatarSVG)}<h3 class="ff-titre">Ses adversaires les plus fréquents</h3>${htmlFacesAutres(fiche, nom, avatarSVG)}`
+    : `<p class="hint">Historique indisponible pour l'instant.</p>`;
 }
 $("lastBody").addEventListener("click", e => { const x = e.target.closest(".nom-adv"); if (x) ouvrirFicheAdv(x.dataset.adv, x.dataset.nom); });
 $("faCarte").addEventListener("click", async () => {
@@ -2371,18 +2422,8 @@ function renderFiche() {
 
   if (P.matchs) {
     renderMonJeu();
-    const pc = (a, b) => (b ? `${a} sur ${b} (${Math.round(100 * a / b)} %)` : "Aucune pour l'instant");
-    $("mentalBody").innerHTML = `
-      <div class="ln"><span>Balles de set et de match converties</span><span>${pc(P.ballesConverties, P.ballesObtenues)}</span></div>
-      <div class="ln"><span>Balles adverses sauvées</span><span>${pc(P.ballesSauvees, P.ballesSubies)}</span></div>
-      <div class="ln"><span>Sets décisifs gagnés</span><span>${P.decisifsJoues ? `${P.decisifsGagnes} sur ${P.decisifsJoues}` : "Aucun joué"}</span></div>
-      <div class="ln"><span>Matchs gagnés après avoir perdu le 1er set</span><span>${P.remontadas}</span></div>`;
-    $("recBody").innerHTML = `
-      <div class="ln"><span>Plus longue série de points</span><span>${P.meilleureSeriePoints}</span></div>
-      <div class="ln"><span>Plus belle remontée dans un set</span><span>${P.meilleureRemontee ? P.meilleureRemontee + " points de retard" : "–"}</span></div>
-      <div class="ln"><span>Meilleure série de victoires</span><span>${P.meilleureSerieVictoires}</span></div>
-      <div class="ln"><span>Plus long match</span><span>${P.plusLongMatch} coups</span></div>
-      <div class="ln"><span>Sets gagnés / perdus</span><span>${P.sets[0]} / ${P.sets[1]}</span></div>`;
+    $("mentalBody").innerHTML = htmlMental(P);
+    $("recBody").innerHTML = htmlRecords(P);
     const h = P.historiqueElo, lo = Math.min(...h) - 20, hi = Math.max(...h) + 20, W = 300, H = 80;
     const y = v => H - 5 - ((v - lo) / (hi - lo)) * (H - 10);
     const pts = h.map((v, i) => `${h.length === 1 ? W / 2 : i * (W - 10) / (h.length - 1) + 5},${y(v)}`).join(" ");
@@ -3269,7 +3310,7 @@ cerclesUI = installerCercles({
   dejaDefie: id => !!duelsUI?.dejaDefie(id),
   annulerDefi: id => duelsUI.annulerDefi(id),
   voirCarte: id => voirCarteDe(id),
-  dossierEtMains: (uid, nom, duels, elle) => dossierEtMains(uid, nom, duels, elle),
+  ongletsJoueur: (el, uid, nom, o) => ongletsJoueur(el, uid, nom, o),
   fantomeDe: id => chargerFantome(id).then(f => !!f),
   titreUneFil: (d, membres) => { try { return uneDuFil(d, membres).h.titre; } catch { return null; } },
   ouvrirUneFil: (d, membres) => { const u = uneDuFil(d, membres); $("unePublier").hidden = true; return montrerUne(u.h, u.joueurs, u.score); },
