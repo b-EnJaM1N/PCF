@@ -280,6 +280,30 @@
       "duree": 40,
       "salle": false,
       "vrai": true
+    },
+    "public_fond_calme_01": {
+      "texte": "Huge open-air football stadium, 40,000 supporters, evening match, TV broadcast microphones, no music, no announcer, no whistle. Crowd ambience early in the match: a deep continuous rumble of fans talking, scattered shouts and claps, a few distant chants starting and stopping, alive but relaxed, steady level, seamless loop",
+      "duree": 30,
+      "boucle": true,
+      "vrai": true,
+      "note": "Choisi par le porteur du projet le 19 novembre (essai « grand stade de foot ») : ne pas régénérer.",
+      "salle": false
+    },
+    "public_fond_nerveux_01": {
+      "texte": "Huge open-air football stadium, 40,000 supporters, evening match, TV broadcast microphones, no music, no announcer, no whistle. Crowd ambience in a tense moment: a loud nervous roar, whistles, groups of supporters chanting in the distance, shouts of encouragement, rising anticipation but steady, seamless loop",
+      "duree": 30,
+      "boucle": true,
+      "vrai": true,
+      "note": "Choisi par le porteur du projet le 19 novembre (essai « grand stade de foot ») : ne pas régénérer.",
+      "salle": false
+    },
+    "public_fond_bouillant_01": {
+      "texte": "Huge open-air football stadium, 40,000 supporters, evening match, TV broadcast microphones, no music, no announcer, no whistle. Crowd ambience at the climax of a decisive match: a thunderous continuous roar, the whole stadium chanting together, drums, whistles everywhere, constant maximum intensity, seamless loop",
+      "duree": 30,
+      "boucle": true,
+      "vrai": true,
+      "note": "Choisi par le porteur du projet le 19 novembre (essai « grand stade de foot ») : ne pas régénérer.",
+      "salle": false
     }
   },
   "_salle": "Same venue for every sound: a large indoor tennis arena with about 5,000 spectators, evening final, warm natural hall reverb, heard from the TV broadcast microphones near the court, consistent loudness, no music."

@@ -2586,6 +2586,9 @@ Fabriqués par le code en attendant. Un vrai enregistrement portant ce nom les r
 | `public_set_01.mp3` | Applaudissements de fin de set |
 | `public_ovation_01.mp3` | Ovation de fin de match |
 | `public_fond_01.mp3` | undefined |
+| `public_fond_calme_01.mp3` | undefined |
+| `public_fond_nerveux_01.mp3` | undefined |
+| `public_fond_bouillant_01.mp3` | undefined |
 | `public_tension_01.mp3` | undefined |
 | `public_ooh_01.mp3` | undefined |
 | `stade_sifflet_01.mp3` | undefined |
