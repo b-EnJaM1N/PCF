@@ -53,6 +53,7 @@ const CONDITIONS = {
   premier_point: c => c.premierPoint, depart_rate: c => c.departRate, kolodrov: c => c.kolodrov,
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, pile4: c => c.pile4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
   apres_egalites: c => c.apresEgalites, varie: c => c.varie, mene: c => c.mene,   // (5 novembre)
+  serre: c => c.serre, outsider_moi: (c, e) => e.outsider === 0,   // (19 novembre : un match perdu de peu ; perdu en étant le moins bien classé)
   balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, quatorze: c => c.quatorze, quinze: c => c.quinze, gagne: c => c.gagne, perdu: c => c.gagne === false, trois_zero_debut: c => c.troisZeroDebut, soir: c => !!c.soir, jour: c => c.soir === false, en_finale: (c, e) => enFinale(e), quatorze_finale: (c, e) => c.quatorze && enFinale(e), sans_set_perdu: c => c.sansSetPerdu, troisieme_set: c => c.troisiemeSet, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
   // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
@@ -191,7 +192,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
 
   // Le match chauffe : balle de set ou de match, fin de set serrée.
   const chaud = !!(evt.balleAvant || evt.balleApres) || (!court && Math.max(...match.points) >= len - 3);
-  etat.reserve = Math.min(RESERVE_MAX, etat.reserve + (chaud ? 0.28 : 0.21));   // (16 novembre : un peu moins que 1/3 et 1/4, pour garder le même rythme avec les nouvelles répliques)
+  etat.reserve = Math.min(RESERVE_MAX, etat.reserve + (chaud ? 0.27 : 0.2));   // (16 novembre : un peu moins que 1/3 et 1/4 ; 19 novembre : 0,27 et 0,2, pour garder le même rythme avec la bibliothèque)
   const peutCommenter = (ecart, seuil = 1) => n >= 3 && etat.reserve >= seuil && n - etat.dernierCom >= ecart;
   let moment = null;
 
@@ -348,6 +349,18 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       } else if (peutCommenter(6) && rng() < 0.03) {
         // (5 novembre) quand rien d'autre n'est à dire, rarement : une réplique générale
         moment = "divers"; ctx.varie = n >= 3 && new Set(c.slice(n - 3).map(x => x.a)).size === 3; ctx.mene = a < b;
+      }
+      // (19 novembre, bibliothèque du porteur du projet) Quand rien d'autre n'est dit : vers le 15e coup, « On assiste à un
+      // véritable combat de titans ! » / « Ils jouent depuis deux minutes, Roland. » (4 fois sur 10, une fois par match) ; sur un
+      // point gagné, Roland s'emballe et Monique le ramène au signe joué (« Roland, il a simplement fait une feuille. ») : rarement.
+      if (!moment && !dialogueFin.length && !h && n >= 14 && n <= 18 && !etat.titansDit && peutCommenter(3) && rng() < 0.4) {
+        const d = dialogue(etat, "titans", rng);
+        etat.titansDit = true;
+        if (d) { dialogueFin = d; etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
+      } else if (!moment && !dialogueFin.length && !h && g === 0 && !etat.decaleDit && peutCommenter(4) && rng() < 0.05) {
+        const k = Math.floor(rng() * POOLS.decale_r.length), o = { genre: etat.genre, signe: dernier.a };
+        const d = [ligneMoment(POOLS.decale_r[k], o), ligneMoment(POOLS.decale_m[k], o)];
+        if (d.every(l => l && (!etat.audible || etat.audible(l.id)))) { dialogueFin = d; etat.decaleDit = true; etat.dernierCom = n; etat.reserve = Math.max(0, etat.reserve - 1); }
       }
       // Sur une balle de match pour moi, parfois le dialogue « l'immortalité » plutôt qu'une réplique.
       if (moment === "tension" && !ctx.balleContre && rng() < 0.3) {
@@ -557,6 +570,17 @@ function finDeMatch(match, evt, etat, ctx, rng) {
     const x = choisir(etat, "david_gagne", ctx, rng);
     if (x) return [x];
   }
+  // (19 novembre, bibliothèque du porteur du projet) Un dialogue selon le résultat, 35 fois sur 100 : la surprise (le moins bien
+  // classé gagne), une série de 3 victoires ou de 3 défaites, une grosse défaite (aucun set, chacun perdu de 5 points ou plus),
+  // un match serré (joué jusqu'au set décisif), le favori qui gagne.
+  const sg = match.format.setsGagnants, o = etat.outsider, classe = o === 0 || o === 1, serie = etat.serieAvant;
+  const resultat = classe && evt.gagnant === o ? "resultat_surprise"
+    : evt.gagnant === 0 && serie && serie.victoires + 1 >= 3 ? "resultat_serie_victoires"
+    : evt.gagnant === 1 && serie && serie.defaites + 1 >= 3 ? "resultat_serie_defaites"
+    : evt.gagnant === 1 && match.sets[0] === 0 && match.scoresSets.every(([a, b]) => b - a >= 5) ? "resultat_grosse_defaite"
+    : sg > 1 && match.sets[0] + match.sets[1] === 2 * sg - 1 ? "resultat_serre"
+    : classe ? "resultat_favori" : null;
+  if (resultat && rng() < 0.35) { const d = dialogue(etat, resultat, rng); if (d) return d; }
   const jeu = etat.jeu && `apres_${etat.jeu}_${evt.gagnant === 0 ? "victoire" : "defaite"}`;
   if (jeu && DIALOGUES_IDS[jeu] && (/finale/.test(jeu) || rng() < partDialogue(jeu))) {
     const d = dialogue(etat, jeu, rng);
@@ -577,7 +601,9 @@ function finDeMatch(match, evt, etat, ctx, rng) {
   }
   // (un seul dialogue de fin de match : pas s'il a été entendu aux derniers matchs)
   if (rng() < 0.3 && !DIALOGUES_IDS.fin_match.every(d => etat.anciens?.has(baseDe(d[0])))) return un(dialogue(etat, "fin_match", rng));
-  return un(choisir(etat, "defaite", ctx, rng));
+  // (« Il était si près du bonheur » : un match perdu de peu, le dernier set à 2 points ou moins, ou au set décisif)
+  const der = match.scoresSets.at(-1) || [0, 0], dePeu = Math.abs(der[0] - der[1]) <= 2 || (sg > 1 && match.sets[0] === sg - 1);
+  return un(choisir(etat, "defaite", { ...ctx, serre: dePeu }, rng));
 }
 
 // « Silence, s'il vous plaît » avant une balle de match : souvent, mais sans le rabâcher.
@@ -698,6 +724,22 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
   // Les commentateurs lancent le match (en évitant, eux aussi, ce qu'ils ont dit récemment).
   const etat = nouvelEtatAnnonces({ humain, genre });
   etat.audible = audible;
+  // L'avant-match dure 10 à 15 secondes (19 novembre, demande du porteur du projet : avant, de 2 à 7 secondes selon le tirage) :
+  // l'ouverture de Roland (« Mesdames et messieurs, c'est le choc du soir… »), le cœur (les dialogues habituels, ou Monique qui
+  // pose le décor) et, s'il manque du temps, le lancement (« Les mains sont prêtes… C'est parti ! »). La durée est estimée
+  // d'après le texte (24 caractères par seconde pour Roland, 21 pour Monique, à la vitesse du jeu ; une demi-seconde entre deux).
+  const anciensAvant = new Set(recents.map(baseDe));
+  const duree = l => l.texte.length / (l.role === "commentatrice" ? 21 : 24) + 0.5, total = ls => ls.reduce((t, l) => t + duree(l), 0);
+  const tirer = pool => choisir({ ...etat, anciens: anciensAvant, dits: new Set() }, pool, {}, rng);
+  const finAvant = coms => {
+    let c = (coms || []).filter(Boolean);
+    const place = l => l && total(c) + duree(l) <= 15;
+    const intro = c.some(l => /_presentation_direct_|_perso_\w+_presentation_|perso_\w+_avant/.test(l.id));
+    if (!intro && total(c) < 10) { const o = tirer("avant_ouverture"); if (place(o)) c = [o, ...c]; }
+    if (total(c) < 9.5) { const m = tirer("avant_coeur"); if (place(m)) c = [...c, m]; }
+    if (total(c) < 11) { const x = tirer("avant_lancement"); if (place(x)) c = [...c, x]; }
+    return { speaker: sp.filter(Boolean), commentaires: c };
+  };
   // (seulement les 6 derniers dialogues : sinon, au bout de quelques matchs, ils seraient tous écartés et plus rien ne serait dit)
   const dialoguesRecents = recents.filter(id => /^commentateur_dialogue_avant_match_/.test(id)).slice(0, 6);
   dialoguesRecents.forEach(id => { const m = /_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
@@ -707,7 +749,7 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
     const e2 = { ...etat, anciens: new Set(recents.map(baseDe)), dialoguesDits: new Set(etat.dialoguesDits) };
     const d = DIALOGUES_IDS[`perso_${perso.nom}_avant`] && rng() < 0.35 && dialogue(e2, `perso_${perso.nom}_avant`, rng);
     const l = !d && choisir(e2, `perso_${perso.nom}_presentation`, {}, rng);
-    if (d || l) return { speaker: sp.filter(Boolean), commentaires: d || [l] };
+    if (d || l) return finAvant(d || [l]);
   }
   // Un dialogue selon la situation (une fois sur deux), s'il n'a pas été entendu aux derniers matchs.
   // Selon l'enjeu (entraînement, tour d'un tournoi) : un dialogue adapté, 8 fois sur 10 (toujours en finale).
@@ -715,20 +757,20 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
     const recentsJeu = recents.filter(id => id.startsWith(`commentateur_dialogue_avant_${jeu}_`)).slice(0, 4);
     recentsJeu.forEach(id => { const m = /_(\d\d)(_f)?$/.exec(id); if (m) etat.dialoguesDits.add(`avant_${jeu}_${+m[1] - 1}`); });
     const d = dialogue(etat, `avant_${jeu}`, rng);
-    if (d) return { speaker: sp.filter(Boolean), commentaires: d };
+    if (d) return finAvant(d);
   }
   // (18 novembre) le tout premier match d'un des deux joueurs, en duel : un dialogue de bienvenue, 7 fois sur 10.
   if (humain && (moi.etiquette === "debutant" || adv.etiquette === "debutant") && rng() < 0.7) {
     const d = dialogue(etat, "avant_debutant", rng);
-    if (d) return { speaker: sp.filter(Boolean), commentaires: d };
+    if (d) return finAvant(d);
   }
   // Le souvenir du dernier match contre le même adversaire (commentaireMemoire), 6 fois sur 10.
-  if (memoire?.length && rng() < 0.6) return { speaker: sp.filter(Boolean), commentaires: memoire };
+  if (memoire?.length && rng() < 0.6) return finAvant(memoire);
   const contexte = tour === "finale" ? "avant_finale" : situations.includes("revanche") ? "avant_revanche"
     : situations.includes("nuit") ? "avant_nuit" : situations.includes("contre_bot") ? "avant_bot" : null;
   const contexteRecent = contexte && recents.slice(0, 20).includes(`commentateur_dialogue_${contexte}_01`);
   let com = null;
-  if (contexte && !contexteRecent && rng() < 0.5) return { speaker: sp.filter(Boolean), commentaires: dialogue(etat, contexte, rng) || [] };
+  if (contexte && !contexteRecent && rng() < 0.5) return finAvant(dialogue(etat, contexte, rng) || []);
   else if (humain && rng() < 0.5) com = choisir(etat, "humain", {}, rng);
   // Parfois, une seule phrase au lieu d'un dialogue : entre amis, une revanche, un grand match, ou n'importe quel match.
   if (!com && rng() < 0.35) {
@@ -752,11 +794,10 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
       // (la formule d'ouverture : une au hasard, en évitant celles entendues récemment)
       const h = heure ?? new Date().getHours();
       const intro = choisir({ ...etat, anciens: new Set(recents.map(baseDe)) }, "presentation_direct", { soir: h >= 18 || h < 5 }, rng);
-      return { speaker: sp.filter(Boolean), commentaires: intro ? [intro, ...d] : d };
+      return finAvant(intro ? [intro, ...d] : d);
     }
   }
-  const commentaires = com ? [com] : rng() < 0.85 ? dialogue(etat, "avant_match", rng) || [] : [];
-  return { speaker: sp.filter(Boolean), commentaires };
+  return finAvant(com ? [com] : rng() < 0.85 ? dialogue(etat, "avant_match", rng) || [] : []);
 }
 
 // La mémoire du dernier match (voir memoireDuDernier, historique-mains.js) : les répliques à dire avant le match (une seule,
