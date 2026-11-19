@@ -42,7 +42,7 @@ begin
 
   create temp table if not exists _fiche (id uuid, adv uuid, cote int, gagne boolean, sets smallint[], scores jsonb, coups jsonb,
     quand timestamptz, classe boolean, tournoi boolean, fin text) on commit drop;
-  delete from _fiche;
+  delete from _fiche where true;   -- (« where true » : Supabase refuse un delete sans where, 19 novembre)
   insert into _fiche
   select d.id, case when d.j0 = p_joueur then d.j1 else d.j0 end, case when d.j0 = p_joueur then 0 else 1 end,
          d.vainqueur = case when d.j0 = p_joueur then 0 else 1 end, d.sets, d.scores_sets, d.coups, d.maj_le, d.classe, d.tournoi_id is not null, d.fin
