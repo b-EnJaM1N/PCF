@@ -166,6 +166,7 @@ body:not(.en-match) .rule { display: none; }
 .sf-barre { display: flex; height: 5px; border-radius: 3px; overflow: hidden; background: rgba(255, 255, 255, .12); margin-top: 3px; }
 .sf-barre i { display: block; height: 100%; } .sf-barre i:first-child { background: var(--me); } .sf-barre i:last-child { background: var(--bot); margin-left: auto; }
 .sf-seul { text-align: center; color: var(--muted); font-size: .9rem; }
+.stats-fin-boutons { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; }
 /* (18 novembre) le coup rejoué (la dernière colonne) entouré au feutre rouge, comme à la main : deux traits un peu de travers,
    qui se dessinent */
 .pal-coups { position: relative; }
