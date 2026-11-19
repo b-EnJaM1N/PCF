@@ -1281,16 +1281,18 @@ function montrerStatsFin(apres) {
   $("sfMoi").textContent = nomAffiche(P); $("sfAdv").textContent = OPP.nom;
   $("sfScore").textContent = m.scoresSets.map(([a, b]) => `${a}–${b}`).join("  ");
   const imp = j => (st.imprevisibilite[j] === null ? "–" : `${st.imprevisibilite[j]} %`);
+  const favSigne = j => st.signes[j].indexOf(Math.max(...st.signes[j])), fav = j => (nb(j) ? st.signes[j][favSigne(j)] / nb(j) : 0);
+  const prefere = j => (nb(j) ? `${EMOJI[favSigne(j)]} ${pc(st.signes[j][favSigne(j)], nb(j))}` : "–");
   // (19 novembre, choix du porteur du projet : sans « Points gagnés », qui doublait le score ; le % de réussite sans les égalités)
   $("sfLignes").innerHTML = ligne("Réussite (sans les égalités)", pc(...st.reussite[0]), pc(...st.reussite[1]), st.reussite[0][0], st.reussite[1][0])
     + ligne("Imprévisibilité", imp(0), imp(1), st.imprevisibilite[0] || 0, st.imprevisibilite[1] || 0)
-    + [[0, "🪨 Pierre"], [2, "📄 Feuille"], [1, "✂️ Ciseaux"]].map(([k, t]) => ligne(t, pc(st.signes[0][k], nb(0)), pc(st.signes[1][k], nb(1)), st.signes[0][k] / (nb(0) || 1), st.signes[1][k] / (nb(1) || 1))).join("")
-    + ligne("Change de signe après une égalité", pc(...st.changeApresEgalite[0]), pc(...st.changeApresEgalite[1]), st.changeApresEgalite[0][0] / (st.changeApresEgalite[0][1] || 1), st.changeApresEgalite[1][0] / (st.changeApresEgalite[1][1] || 1))
+    // (19 novembre, le porteur du projet trouvait le panneau trop chargé : 7 lignes ; le signe préféré sur une seule ligne, sans
+    // « Change de signe après une égalité » ni « Meilleure série », que Monique commente quand ils comptent)
+    + ligne("Signe préféré", prefere(0), prefere(1), fav(0), fav(1))
     + ligne("Points gagnés juste après une égalité", st.apresEgalite[0], st.apresEgalite[1])
     + ligne("Garde son signe après un point gagné", pc(...st.memeApresGain[0]), pc(...st.memeApresGain[1]), st.memeApresGain[0][0] / (st.memeApresGain[0][1] || 1), st.memeApresGain[1][0] / (st.memeApresGain[1][1] || 1))
     + ligne("Smashs gagnants", sur(st.smashs[0]), sur(st.smashs[1]), st.smashs[0][0], st.smashs[1][0])
     + ligne("Balles de set et de match converties", sur([mes.ballesConverties || 0, mes.ballesObtenues || 0]), sur(ballesAdv), mes.ballesConverties || 0, ballesAdv[0])
-    + ligne("Meilleure série", st.serie[0], st.serie[1])
     + `<p class="sf-seul">${st.coups} coups joués · ${st.egalites} égalité${st.egalites > 1 ? "s" : ""}</p>`;
   ov.hidden = false;
   const debut = Date.now(), coms = S.commentairesFin || [];
