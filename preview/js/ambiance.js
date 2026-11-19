@@ -15,7 +15,10 @@ export const FICHIERS_AMBIANCE = {
   clameur: "public_clameur_01",
   set: "public_set_01",
   ovation: "public_ovation_01",
-  fond: "public_fond_01",           // en boucle pendant le match
+  fond: "public_fond_01",           // en boucle pendant le match (l'ancien fond : seulement si les trois fonds du stade manquent)
+  // Le grand stade de foot (19 novembre, choisis par le porteur du projet) : trois fonds en boucle, calme, nerveux, bouillant,
+  // qui se fondent l'un dans l'autre selon l'intensité du match (voir poidsStade) ; les chants, la trompette, le « Olé »… par-dessus.
+  fondCalme: "public_fond_calme_01", fondNerveux: "public_fond_nerveux_01", fondBouillant: "public_fond_bouillant_01",
   tension: "public_tension_01",     // balles de set et de match
   ooh: "public_ooh_01",             // point disputé
   sifflets: "stade_sifflet_01",     // le public siffle (rare ; l'arbitre le rappelle à l'ordre)
@@ -38,6 +41,15 @@ export const FICHIERS_REACTIONS = {
 // La force moyenne d'un enregistrement (racine de la moyenne des carrés), et celle visée pour les réactions du public.
 export const forceMoyenne = canaux => { let t = 0, n = 0; for (const c of canaux) for (let i = 0; i < c.length; i++) { t += c[i] * c[i]; n++; } return n ? Math.sqrt(t / n) : 0; };
 const FORCE_REACTION = 0.12;
+// Les trois fonds du stade, ramenés au niveau de l'ancien murmure (ils sont 6 à 7 dB plus forts), le bouillant un peu au-dessus.
+const FORCE_FOND = 0.024, RELIEF_STADE = [0.9, 1, 1.15];
+// La part de chaque fond du stade [calme, nerveux, bouillant] selon l'intensité du moment (0 à 1) : calme en début de set,
+// nerveux quand ça se resserre, bouillant aux balles de set et de match ; la somme vaut toujours 1 (les fonds se fondent).
+export function poidsStade(i) {
+  const n = Math.max(0, Math.min(1, i || 0));
+  const calme = Math.max(0, 1 - n / 0.5), bouillant = Math.max(0, Math.min(1, (n - 0.5) / 0.45));
+  return [calme, Math.max(0, 1 - calme - bouillant), bouillant];
+}
 const VOLUME_REACTION = { allez: 0.55, ohDecu: 0.42, bravo: 0.38, brouhaha: 0.3, rires: 0.36, applaudir: 0.22 };
 // Le coup de raquette : un son par signe (0 Pierre, 1 Ciseaux, 2 Feuille), et une version forte pour les grands moments
 // (balle de set ou de match, point décisif) : [normal, fort].
@@ -324,7 +336,27 @@ export class Ambiance {
     const ctx = this.ctx;
     if (!ctx) return;
     try {
-      if (on && !this.fondSource && this.buf.fond) {
+      const stade = ["fondCalme", "fondNerveux", "fondBouillant"].map(k => this.buf[k]);
+      if (on && !this.fondSource && stade.every(Boolean)) {
+        // Le grand stade : les trois fonds tournent ensemble, chacun sur deux couches décalées (gauche et droite), et seul leur
+        // volume change avec le moment du match (appliquer) : la foule passe du calme au bouillant sans coupure.
+        const g = ctx.createGain(); g.gain.value = 0; g.gain.setTargetAtTime(this.volumeFond(), ctx.currentTime, 0.8);
+        g.connect(this.salle);
+        this.stadeGains = stade.map((b, k) => {
+          const gk = ctx.createGain(); gk.gain.value = poidsStade(this.niveau)[k]; gk.connect(g);
+          const niveau = FORCE_FOND * RELIEF_STADE[k] / (forceMoyenne(Array.from({ length: b.numberOfChannels }, (_, c) => b.getChannelData(c))) || 1);
+          const sources = [[-0.35, 1, 0, 1], [0.35, 0.96, b.duration / 2, 0.75]].map(([cote, vitesse, depart, vol]) => {
+            const src = ctx.createBufferSource(); src.buffer = b; src.loop = true; src.playbackRate.value = vitesse;
+            const v = ctx.createGain(); v.gain.value = vol * niveau;
+            let sortie = v;
+            if (ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = cote; v.connect(p); sortie = p; }
+            src.connect(v); sortie.connect(gk); src.start(ctx.currentTime, depart % b.duration);
+            return src;
+          });
+          return { g: gk, sources };
+        });
+        this.fondSource = this.stadeGains.flatMap(x => x.sources); this.fondGain = g;
+      } else if (on && !this.fondSource && this.buf.fond) {
         // Deux couches du même enregistrement, décalées, l'une un peu à gauche et l'autre un peu à droite (et un peu plus grave) :
         // une foule plus dense et plus vivante, qui ne se répète pas à l'oreille.
         const g = ctx.createGain(); g.gain.value = 0; g.gain.setTargetAtTime(this.volumeFond(), ctx.currentTime, 0.8);
@@ -343,7 +375,7 @@ export class Ambiance {
         this.arreterChant();
         this.fondGain.gain.setTargetAtTime(0, ctx.currentTime, 0.6);
         for (const src of this.fondSource) src.stop(ctx.currentTime + 3);
-        this.fondSource = null; this.fondGain = null;
+        this.fondSource = null; this.fondGain = null; this.stadeGains = null;
         if (this.tensionGain) {
           this.tensionGain.gain.setTargetAtTime(0, ctx.currentTime, 0.6);
           for (const src of this.tensionSource) src.stop(ctx.currentTime + 3);
@@ -352,7 +384,8 @@ export class Ambiance {
         this.niveau = 0;
         this.coeur(0);
       }
-      if (on && this.fondSource && !this.tensionSource) this.lancerTension();
+      // (la couche « tension » de l'ancien fond : pas avec le grand stade, dont le fond bouillant tient ce rôle)
+      if (on && this.fondSource && !this.tensionSource && !this.stadeGains) this.lancerTension();
     } catch { /* sans murmure */ }
   }
   // La couche « tension » (le brouhaha agité), en boucle, muette tant que le moment n'est pas chaud.
@@ -407,6 +440,8 @@ export class Ambiance {
     if (!this.ctx) return;
     try {
       if (this.fondGain) this.fondGain.gain.setTargetAtTime(this.volumeFond(), this.ctx.currentTime, lissage);
+      // (le grand stade : la part de chaque fond suit l'intensité, lentement, pour que la foule monte et retombe sans à-coup)
+      if (this.stadeGains) poidsStade(this.niveau).forEach((p, k) => this.stadeGains[k].g.gain.setTargetAtTime(p, this.ctx.currentTime, Math.max(lissage, 1.5)));
       if (this.tensionGain) this.tensionGain.gain.setTargetAtTime(this.volumeTension(), this.ctx.currentTime, lissage);
     } catch { /* rien */ }
   }
