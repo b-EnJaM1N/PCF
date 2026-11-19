@@ -38,7 +38,7 @@ async function jouerJusquALaFin(nom, limite) {
     if (await page.locator("#end").isVisible()) { console.log(`  ok : ${nom} terminé (${coups} coups)`); return; }
     if (erreurs.length) return;
     // (une fenêtre par-dessus le jeu : présentation du match, fin de set, poignée de main… on avance)
-    for (const id of ["#foGo", "#iGo", "#pmChoix button"]) {
+    for (const id of ["#foGo", "#iGo", "#sfContinuer", "#pmChoix button"]) {
       const b = page.locator(id).first();
       if (await b.isVisible().catch(() => false)) await b.click({ timeout: 1000 }).catch(() => {});
     }
