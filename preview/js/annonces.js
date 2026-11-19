@@ -53,7 +53,7 @@ const CONDITIONS = {
   premier_point: c => c.premierPoint, depart_rate: c => c.departRate, kolodrov: c => c.kolodrov,
   onze_zero: c => c.onzeZero, serie6: c => c.serie6, serie4: c => c.serie4, pile4: c => c.pile4, trois_zero: c => c.troisZero, cinq_egalites: c => c.cinqEgalites,
   apres_egalites: c => c.apresEgalites, varie: c => c.varie, mene: c => c.mene,   // (5 novembre)
-  serre: c => c.serre, outsider_moi: (c, e) => e.outsider === 0,   // (19 novembre : un match perdu de peu ; perdu en étant le moins bien classé)
+  serre: c => c.serre, outsider_moi: (c, e) => e.outsider === 0, egalite: c => c.egalite,   // (19 novembre : un match perdu de peu ; perdu en étant le moins bien classé)
   balle_match: c => c.balleMatch, balle_contre: c => c.balleContre, balle_pour: c => !c.balleContre, quatorze: c => c.quatorze, quinze: c => c.quinze, gagne: c => c.gagne, perdu: c => c.gagne === false, trois_zero_debut: c => c.troisZeroDebut, soir: c => !!c.soir, jour: c => c.soir === false, en_finale: (c, e) => enFinale(e), quatorze_finale: (c, e) => c.quatorze && enFinale(e), sans_set_perdu: c => c.sansSetPerdu, troisieme_set: c => c.troisiemeSet, ciseau_retourne: c => c.ciseauRetourne, un_partout: c => c.unPartout, finale: c => c.finale,
   // L'enjeu du match (voir niveauEnjeu) : les grandes phrases sont réservées aux grands matchs.
   enjeu: (c, e) => !!e.enjeu, tableau: (c, e) => e.enjeu === "tableau", finale_tournoi: (c, e) => e.enjeu === "finale",
@@ -394,6 +394,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
     moment = smash[0] && smash[1] ? "smash_double" : issue === "gagne" ? (evt.gagnant === 0 ? "smash_reussi" : "smash_sonne")
       : issue === "bloque" ? "smash_bloque" : "smash_rate";
     ctx.smashAdv = smasheur === 1 && !(smash[0] && smash[1]);
+    ctx.egalite = !!evt.egalite;   // (le double smash à égalité : « Les deux mains ont la même inspiration… » ; 19 novembre)
     if (!evt.finSet) dialogueFin = [];
   }
   // Les répliques personnalisées d'un joueur du match (18 novembre, « Le Chiromancien ») : quand sa main s'enflamme (8 fois sur 10),
@@ -581,6 +582,8 @@ function finDeMatch(match, evt, etat, ctx, rng) {
     : sg > 1 && match.sets[0] + match.sets[1] === 2 * sg - 1 ? "resultat_serre"
     : classe ? "resultat_favori" : null;
   if (resultat && rng() < 0.35) { const d = dialogue(etat, resultat, rng); if (d) return d; }
+  // Un match en trois sets (19 novembre, commentaires d'un testeur), 4 fois sur 10 : « Au bout du suspense… »
+  if (sg === 2 && match.scoresSets.length === 3 && rng() < 0.4) { const x = choisir(etat, "fin_trois_sets", { ...ctx, gagne: evt.gagnant === 0 }, rng); if (x) return [x]; }
   const jeu = etat.jeu && `apres_${etat.jeu}_${evt.gagnant === 0 ? "victoire" : "defaite"}`;
   if (jeu && DIALOGUES_IDS[jeu] && (/finale/.test(jeu) || rng() < partDialogue(jeu))) {
     const d = dialogue(etat, jeu, rng);
