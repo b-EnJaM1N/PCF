@@ -1276,3 +1276,13 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .jeu-vues { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
 .jeu-vue { padding: 8px 4px; border-radius: 10px; border: 1.5px solid rgba(255, 255, 255, .18); background: var(--panel); color: var(--line); font: inherit; font-weight: 700; font-size: .92rem; cursor: pointer; }
 .jeu-vue.on { border-color: var(--me); color: var(--me); background: rgba(244, 197, 66, .12); }
+
+/* La fiche d'un joueur en ligne, en 4 onglets (19 novembre) */
+.ff-choix.quatre { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.ff-choix.quatre > label { font-size: .8rem; padding: 8px 2px; }
+.ff-choix.quatre > .ff-v1, .ff-choix.quatre > .ff-v2, .ff-choix.quatre > .ff-v3, .ff-choix.quatre > .ff-v4 { display: none; }
+.ff-choix.quatre > input:nth-of-type(1):checked ~ .ff-v1, .ff-choix.quatre > input:nth-of-type(2):checked ~ .ff-v2,
+.ff-choix.quatre > input:nth-of-type(3):checked ~ .ff-v3, .ff-choix.quatre > input:nth-of-type(4):checked ~ .ff-v4 { display: block; }
+.fa-chiffres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; text-align: center; margin: 4px 0 8px; }
+.fa-chiffres b { display: block; font-family: "Barlow Condensed", sans-serif; font-size: 1.7rem; }
+.fa-chiffres span { color: var(--muted); font-size: .82rem; }
