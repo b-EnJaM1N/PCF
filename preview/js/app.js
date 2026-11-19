@@ -1771,8 +1771,9 @@ async function ouvrirFicheAdv(id, nom, { jouer = true } = {}) {
 let nOngletsMains = 0;
 async function ongletsJoueur(el, uid, nom, { encore = () => true, bot = false } = {}) {
   const moi = compteUI?.session()?.user?.id, n = esc(nom), x = ++nOngletsMains;
-  const onglets = [["S", "📊 Stats"], ["C", "🤝 Contre toi"], ["D", "📁 Dossier"], ["H", "📜 Ses matchs"]];
-  el.innerHTML = `<div class="ff-choix quatre">${onglets.map(([k, t], i) => `<input type="radio" name="fo${x}" id="fo${k}${x}"${i ? "" : " checked"}><label for="fo${k}${x}">${t}</label>`).join("")}`
+  // (le symbole centré, le mot en dessous : 19 novembre, demande du porteur du projet)
+  const onglets = [["S", "📊", "Stats"], ["C", "🤝", "Contre toi"], ["D", "📁", "Dossier"], ["H", "📜", "Ses matchs"]];
+  el.innerHTML = `<div class="ff-choix quatre">${onglets.map(([k, ico, t], i) => `<input type="radio" name="fo${x}" id="fo${k}${x}"${i ? "" : " checked"}><label for="fo${k}${x}"><span class="fo-ico" aria-hidden="true">${ico}</span><span>${t}</span></label>`).join("")}`
     + `${[1, 2, 3, 4].map(k => `<div class="ff-v${k}"><p class="hint">Chargement…</p></div>`).join("")}</div>`;
   const zone = k => el.querySelector(`.ff-v${k}`);
   const [ligne, duels, matchs, fiche] = await Promise.all([
