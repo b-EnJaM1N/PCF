@@ -1779,11 +1779,12 @@ async function ongletsJoueur(el, uid, nom, { encore = () => true, bot = false } 
     bot ? null : profilsEnLigne([uid]).then(l => l[0] || null).catch(() => null),
     moi ? duelsAvec(uid).catch(() => undefined) : null,
     dossierJoueur(uid).catch(() => null),
-    ficheVisible() ? ficheJoueur(uid).catch(() => null) : null]);
+    ficheVisible() ? ficheJoueur(uid).catch(e => ({ erreur: e?.message || String(e) })) : null]);
   if (!encore() || !zone(1)) return;
   const Q = ligne ? profilDepuisLigne(ligne) : null, elle = Q?.genre === "f", il = elle ? "Elle" : "Il";
   // 📊 Stats
-  const enLigne = fiche ? `<h3 class="ff-titre">🌐 En ligne</h3>${htmlStatsEnLigne(fiche, nom)}` : "";
+  const ficheOk = fiche && !fiche.erreur;
+  const enLigne = ficheOk ? `<h3 class="ff-titre">🌐 En ligne</h3>${htmlStatsEnLigne(fiche, nom)}` : "";
   if (Q?.matchs) {
     let vue = Q.parAdvRecupere ? "humains" : "total";
     const pctV = Math.round((100 * Q.victoires) / Q.matchs);
@@ -1820,9 +1821,9 @@ async function ongletsJoueur(el, uid, nom, { encore = () => true, bot = false } 
   zone(3).innerHTML = dos + `<h3 class="ff-titre">🖐️ Ses mains</h3>${htmlMains(tous, { noms: [nom, "Adversaire"], gagneTexte: [`✅ ${il} gagne`, `❌ ${il} perd`], vide: "Pas encore de match en ligne terminé." })}`
     + `<p class="hint mains-note">Ses ${MAX_MAINS} derniers matchs en ligne, coup par coup (en jaune : le point est pour ${n}).</p>`;
   // 📜 Historique
-  zone(4).innerHTML = fiche
+  zone(4).innerHTML = ficheOk
     ? `<h3 class="ff-titre">Ses derniers duels</h3>${htmlHistorique(fiche, nom, avatarSVG)}<h3 class="ff-titre">Ses adversaires les plus fréquents</h3>${htmlFacesAutres(fiche, nom, avatarSVG)}`
-    : `<p class="hint">Historique indisponible pour l'instant.</p>`;
+    : `<p class="hint">Historique indisponible pour l'instant.${fiche?.erreur ? ` (${esc(fiche.erreur)})` : ""}</p>`;
 }
 $("lastBody").addEventListener("click", e => { const x = e.target.closest(".nom-adv"); if (x) ouvrirFicheAdv(x.dataset.adv, x.dataset.nom); });
 $("faCarte").addEventListener("click", async () => {
