@@ -31,7 +31,8 @@
 // (15 novembre au soir : les routines d'entrée ouvertes à tous, accord du porteur du projet.)
 // (17 novembre au soir : les records des face-à-face ouverts à tous, accord du porteur du projet.)
 // (18 novembre au soir : le replay, avec la palette et les temps forts, ouvert à tous, accord du porteur du projet.)
-export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets", "dossard", "invitations", "classementCercle", "pageCercle", "records", "routines", "recordsFaceAFace", "replay"]);
+// (19 novembre : le volet ouvert à tous, pour avoir l'avis des testeurs, accord du porteur du projet.)
+export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets", "dossard", "invitations", "classementCercle", "pageCercle", "records", "routines", "recordsFaceAFace", "replay", "volet"]);
 
 export function versionDeTest(loc = typeof location !== "undefined" ? location : null) {
   if (!loc) return false;
