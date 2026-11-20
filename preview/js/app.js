@@ -1858,7 +1858,7 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
   // (20 novembre) Le flair et l'endurance, comme sur la carte (assez de preuves, sinon on le dit).
   const pcR = (x, n) => `<b>${Math.round((100 * x) / n)} %</b> <span class="ratio">(${x}/${n})</span>`;
   const fl = d.flair, en = d.endurance;
-  const flairEnd = `<h3 class="ff-titre">🔍 ${toi ? "Ton" : "Son"} flair et ${toi ? "ton" : "son"} endurance</h3><div class="lines">
+  const flairEnd = `<h3 class="ff-titre">🔍 ${toi ? "Ton" : "Son"} flair et ${toi ? "ta" : "sa"} résistance</h3><div class="lines">
       <div class="ln"><span>Lectures réussies (une habitude de l'adversaire punie)</span><span>${fl && fl.tentees >= 30 ? pcR(fl.reussies, fl.tentees) : `pas encore assez (${fl?.tentees || 0} sur 30)`}</span></div>
       <div class="ln"><span>Quand ${toi ? "tu ne gagnes" : elle ? "elle ne gagne" : "il ne gagne"} pas le point : égalité plutôt que point perdu</span><span>${en && en.nonGagnes >= 50 ? pcR(en.egalites, en.nonGagnes) : `pas encore assez (${en?.nonGagnes || 0} coups sur 50)`}</span></div></div>`;
   const f = d.forme;
@@ -1914,7 +1914,7 @@ function renderCarte() {
     $("carteRarete").textContent = texteRang(c.rang);
     const notes = notesDe(P);
     $("carteNotes").innerHTML = notes.map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
-    $("carteCalcul").innerHTML = notes.map(n => `<li><b>${esc(n.nom)}</b> : ${esc(n.calcul)}</li>`).join("");
+    $("carteCalcul").innerHTML = notes.map(n => `<li><b>${esc(n.nom)}</b> : ${esc(n.calcul)}</li>`).join("");   // (« Le détail du calcul »)
     await preparerPartage(canvas, { img: $("carteImg"), partager: $("cartePartager"), enregistrer: $("carteEnregistrer"), msg: $("carteMsg"),
       fichier: "ma-carte.png", alt: `Carte de joueur de ${nomAffiche(P)} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
   }, 250);

@@ -8,21 +8,24 @@ import { titresObtenus, signeFavori } from "./profil.js";
 // (20 novembre, deuxième version, choix du porteur du projet : toutes les stats sans décimale ni signe « % » ;
 // le sang-froid s'écrit SGF ; le flair devient le pourcentage de lectures réussies.)
 const pc = (a, b) => (b ? `${Math.round((100 * a) / b)}` : "–");
-// (20 novembre, barème validé par le porteur du projet) Les notes de 1 à 99, en trois paliers : 50 = le hasard, 90 = excellent,
+// (20 novembre, barème validé par le porteur du projet) Les notes de 1 à 99, en trois paliers : 70 = la moyenne (le hasard), 90 = excellent,
 // 99 = hors norme (très difficile à atteindre). Entre deux repères, une règle de trois ; en dessous du hasard, jusqu'à 1.
 // Chaque barème : [[pourcentage, note], …], dans l'ordre. Les repères se changent ici (à caler sur les vrais chiffres des joueurs).
 export const BAREMES = {
-  PUN: [[35, 1], [50, 50], [60, 90], [66, 99]],
-  SGF: [[25, 1], [50, 50], [65, 90], [75, 99]],
-  FLA: [[20, 1], [50, 50], [65, 90], [80, 99]],
-  END: [[20, 1], [50, 50], [60, 90], [66, 99]],
-  // l'imprévisibilité : la part de tes coups que l'analyse devine (moins, c'est mieux ; 33 % = le hasard)
-  IMP: [[20, 99], [25, 96], [30, 92], [100 / 3, 90], [40, 75], [50, 50], [60, 20], [70, 1]],
-  // la diversification (son score de 0 à 100, voir diversification) : 40 / 30 / 30 = 75 ; 35 / 33 / 32 = 90 ; 33,3 % partout = 99
-  DIV: [[0, 1], [75, 75], [93.75, 90], [99, 98], [100, 99]],
+  // (20 novembre au soir, choix du porteur du projet : 70 = la moyenne, le niveau du hasard ; 90 = excellent ; 99 = hors norme)
+  // le Punch : la part de TOUS les coups (égalités comprises) qui marquent le point ; au hasard, 1 sur 3
+  PUN: [[15, 1], [100 / 3, 70], [40, 90], [45, 99]],
+  SGF: [[20, 1], [50, 70], [60, 90], [70, 99]],
+  FLA: [[20, 1], [50, 70], [60, 90], [75, 99]],
+  // la Résistance : quand on ne marque pas, la part d'égalités (plutôt que de points perdus) ; au hasard, la moitié
+  RES: [[20, 1], [50, 70], [60, 90], [66.7, 99]],
+  // l'imprévisibilité : la part de tes coups que l'analyse devine (moins, c'est mieux) ; 1 sur 3 (le hasard) = 90, choix du porteur du projet
+  IMP: [[20, 99], [100 / 3, 90], [45, 70], [50, 60], [60, 35], [70, 1]],
+  // la diversification (son score de 0 à 100, voir diversification) : 40 / 30 / 30 = 70 ; 35 / 33 / 32 = 90 ; un tiers chacun = 99
+  DIV: [[0, 1], [75, 70], [93.75, 90], [99, 98], [100, 99]],
 };
-// Assez de preuves pour une note (sinon « – ») : 30 lectures tentées pour le Flair, 50 coups non gagnés pour l'Endurance.
-export const MINIMUM = { FLA: 30, END: 50 };
+// Assez de preuves pour une note (sinon « – ») : 30 lectures tentées pour le Flair, 50 coups non gagnés pour la Résistance.
+export const MINIMUM = { FLA: 30, RES: 50 };
 export function noteBareme(p, bareme) {
   if (p === null || p === undefined || Number.isNaN(p)) return null;
   const b = bareme;
@@ -51,26 +54,28 @@ export function notesDe(P) {
   const ok = !!h?.matchs, rien = "–";
   const div = ok ? diversification(h.signes) : null;
   const imp = ok && h.lisibles >= 30 ? (100 * h.devines) / h.lisibles : null;   // (la part de coups devinés, en %)
-  const points = ok ? [(h.apresVictoire || 0) + (h.victoires || 0), (h.apresVictoire || 0) + (h.apresDefaite || 0) + h.matchs] : [0, 0];
+  // (le Punch : les coups qui marquent le point ÷ tous les coups, égalités comprises ; il faut les égalités comptées)
+  const gagnes = ok ? (h.apresVictoire || 0) + (h.victoires || 0) : 0, perdusTous = ok ? (h.apresDefaite || 0) + h.matchs - (h.victoires || 0) : 0;
+  const points = ok && h.egalites !== undefined ? [gagnes, gagnes + perdusTous + h.egalites] : [0, 0];
   const sgf = ok ? [(h.ballesConverties || 0) + (h.ballesSauvees || 0) + (h.decisifsGagnes || 0), (h.ballesObtenues || 0) + (h.ballesSubies || 0) + (h.decisifsJoues || 0)] : [0, 0];
   const lectures = ok && (h.flairTentees || 0) >= MINIMUM.FLA ? [h.flairReussies || 0, h.flairTentees] : [0, 0];
-  // (l'Endurance, deuxième version : ne pas perdre le point quand on ne le gagne pas, égalités ÷ (égalités + points perdus))
+  // (la Résistance, ex-Endurance : ne pas perdre le point quand on ne le gagne pas, égalités ÷ (égalités + points perdus))
   const perdus = ok ? (h.apresDefaite || 0) + h.matchs - (h.victoires || 0) : 0, nonGagnes = (h?.egalites || 0) + perdus;
-  const endurance = ok && h.egalites !== undefined && nonGagnes >= MINIMUM.END ? [h.egalites, nonGagnes] : [0, 0];
-  // (20 novembre : une phrase courte par note ; le calcul, à déplier à part)
+  const resistance = ok && h.egalites !== undefined && nonGagnes >= MINIMUM.RES ? [h.egalites, nonGagnes] : [0, 0];
+  // (20 novembre : une phrase courte par note ; le calcul, à déplier à part ; textes validés par le porteur du projet)
   return [
-    { code: "IMP", nom: "Imprévisibilité", valeur: imp === null ? rien : `${noteBareme(imp, BAREMES.IMP)}`, aide: "ton jeu est-il difficile à lire ?",
-      calcul: `la part de tes coups que l'analyse devine (moins, c'est mieux) : ${reperes(BAREMES.IMP)} ; à partir de 30 coups lus` },
-    { code: "PUN", nom: "Punch", valeur: notePc(...points, BAREMES.PUN), aide: "les points que tu gagnes hors égalités",
-      calcul: `points gagnés ÷ points joués sans les égalités : ${reperes(BAREMES.PUN)}` },
+    { code: "IMP", nom: "Imprévisibilité", valeur: imp === null ? rien : `${noteBareme(imp, BAREMES.IMP)}`, aide: "ton jeu est-il difficile à deviner ?",
+      calcul: "l'appli essaie de deviner ton prochain coup à partir de tes habitudes. Moins elle y arrive, mieux c'est. Deviné 1 coup sur 2 → 60 · un peu moins d'1 sur 2 → 70 · 1 sur 3 (comme le hasard) → 90 · 1 sur 5 → 99" },
+    { code: "PUN", nom: "Punch", valeur: notePc(...points, BAREMES.PUN), aide: "combien de tes coups marquent le point",
+      calcul: "sur tous tes coups, égalités comprises, combien marquent le point. 1 sur 3 (le hasard) → 70 · 4 sur 10 → 90 · 45 sur 100 → 99" },
     { code: "DIV", nom: "Diversification", valeur: div === null ? rien : `${noteBareme(div, BAREMES.DIV)}`, aide: "l'équilibre entre tes trois signes",
-      calcul: "40 / 30 / 30 % = 75 · 35 / 33 / 32 % = 90 · 33,3 % chacun = 99" },
-    { code: "SGF", nom: "Sang-froid", valeur: notePc(...sgf, BAREMES.SGF), aide: "les moments décisifs que tu réussis",
-      calcul: `balles de set et de match converties et sauvées, sets décisifs gagnés : ${reperes(BAREMES.SGF)}` },
+      calcul: "tes trois signes sont-ils joués autant les uns que les autres ? 40 % / 30 % / 30 % → 70 · 35 / 33 / 32 → 90 · exactement un tiers chacun → 99 · un signe joué 60 % du temps ou plus → 1" },
+    { code: "SGF", nom: "Sang-froid", valeur: notePc(...sgf, BAREMES.SGF), aide: "les moments décisifs que tu remportes",
+      calcul: "dans les moments décisifs (tes balles de set et de match, celles de ton adversaire, les sets décisifs), combien tu en remportes. La moitié → 70 · 6 sur 10 → 90 · 7 sur 10 → 99" },
     { code: "FLA", nom: "Flair", valeur: notePc(...lectures, BAREMES.FLA), aide: "les habitudes de ton adversaire que tu punis",
-      calcul: `quand il a une habitude bien installée dans le match et que tu joues ce qui la bat, le point est pour toi : ${reperes(BAREMES.FLA)} ; à partir de ${MINIMUM.FLA} lectures` },
-    { code: "END", nom: "Endurance", valeur: notePc(...endurance, BAREMES.END), aide: "ne pas perdre le point quand tu ne le gagnes pas",
-      calcul: `la part d'égalités parmi les points que tu ne gagnes pas : ${reperes(BAREMES.END)} ; à partir de ${MINIMUM.END} coups` },
+      calcul: `quand ton adversaire a une habitude bien installée dans le match (par exemple, il rejoue le signe qui vient de gagner) et que tu joues ce qui la bat, combien de fois le point est pour toi. La moitié → 70 · 6 sur 10 → 90 · 3 sur 4 → 99 · à partir de ${MINIMUM.FLA} essais` },
+    { code: "RÉS", nom: "Résistance", valeur: notePc(...resistance, BAREMES.RES), aide: "éviter de perdre le point quand tu ne le marques pas",
+      calcul: `quand tu ne marques pas le point, combien de fois tu évites de le perdre (une égalité plutôt qu'un point perdu). La moitié (le hasard) → 70 · 6 sur 10 → 90 · 2 sur 3 → 99 · à partir de ${MINIMUM.RES} coups` },
   ];
 }
 
