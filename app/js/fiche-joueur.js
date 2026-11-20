@@ -9,24 +9,25 @@ const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "
 const pct = (k, n) => (n ? Math.round((100 * k) / n) : 0);
 export const dateCourte = q => new Date(q).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
 
-// Les stats en lignes : [[libellé, valeur]].
+// Les stats en lignes : [[libellé, valeur, rapport ?]] (20 novembre, demande du porteur du projet : le pourcentage en avant, en gras,
+// et le rapport entre parenthèses).
 export function lignesStats(s) {
   if (!s?.joues) return [];
   return [
     ["Duels joués", `${s.joues}`],
-    ["Victoires", `${s.v} – ${s.d} (${pct(s.v, s.joues)} %)`],
-    ["Duels officiels", s.officiels ? `${s.officiels_v} – ${s.officiels - s.officiels_v} (${pct(s.officiels_v, s.officiels)} %)` : "aucun"],
+    ["Victoires", `${pct(s.v, s.joues)} %`, `${s.v} – ${s.d}`],
+    ["Duels officiels", s.officiels ? `${pct(s.officiels_v, s.officiels)} %` : "aucun", s.officiels ? `${s.officiels_v} – ${s.officiels - s.officiels_v}` : null],
     ["Sets", `${s.sets_g} gagnés, ${s.sets_p} perdus`],
     ["Série en cours", s.serie ? `${s.serie} victoire${s.serie > 1 ? "s" : ""} d'affilée` : "—"],
     ["Meilleure série", `${s.meilleure_serie} victoire${s.meilleure_serie > 1 ? "s" : ""}`],
-    ["Smashs réussis", s.smashs ? `${s.smashs_reussis} sur ${s.smashs} (${pct(s.smashs_reussis, s.smashs)} %)` : "aucun smash"],
+    ["Smashs réussis", s.smashs ? `${pct(s.smashs_reussis, s.smashs)} %` : "aucun smash", s.smashs ? `${s.smashs_reussis}/${s.smashs}` : null],
   ];
 }
 
 // Les morceaux de la fiche, séparés (19 novembre : la fiche d'un joueur en onglets, Stats, Contre toi, Dossier, Historique).
 export function htmlStatsEnLigne(f, nom) {
   const s = lignesStats(f?.stats);
-  return s.length ? `<table class="fiche-stats">${s.map(([l, v]) => `<tr><td>${l}</td><td><b>${esc(v)}</b></td></tr>`).join("")}</table>`
+  return s.length ? `<table class="fiche-stats">${s.map(([l, v, x]) => `<tr><td>${l}</td><td><b>${esc(v)}</b>${x ? ` <span class="ratio">(${esc(x)})</span>` : ""}</td></tr>`).join("")}</table>`
     + `<p class="hint">Tous ses duels contre des joueurs en ligne (jamais contre un bot).</p>`
     : `<p class="hint">${esc(nom)} n'a pas encore joué de duel contre un autre joueur.</p>`;
 }
@@ -50,7 +51,7 @@ export function htmlHistorique(f, nom, avatar = () => "") {
 // f : ce que renvoie fiche_joueur ; nom : son pseudo ; x : un numéro unique pour les boutons ; avatar(av) → SVG.
 export function htmlFiche(f, nom, x, avatar = () => "") {
   const n = esc(nom), s = lignesStats(f?.stats);
-  const stats = s.length ? `<table class="fiche-stats">${s.map(([l, v]) => `<tr><td>${l}</td><td><b>${esc(v)}</b></td></tr>`).join("")}</table>`
+  const stats = s.length ? `<table class="fiche-stats">${s.map(([l, v, x]) => `<tr><td>${l}</td><td><b>${esc(v)}</b>${x ? ` <span class="ratio">(${esc(x)})</span>` : ""}</td></tr>`).join("")}</table>`
     + `<p class="hint">Tous ses duels contre des joueurs en ligne (jamais contre un bot).</p>`
     : `<p class="hint">${n} n'a pas encore joué de duel contre un autre joueur.</p>`;
   const cache = `<p class="hint">${n} a choisi de cacher ses adversaires.</p>`;
