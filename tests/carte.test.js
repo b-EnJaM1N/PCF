@@ -1,29 +1,33 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { notesDe, rangDe, texteRang, carteDe, RANGS } from "../app/js/carte-logique.js";
+import { notesDe, rangDe, texteRang, carteDe, RANGS, diversification } from "../app/js/carte-logique.js";
 import { profilParDefaut } from "../app/js/profil.js";
 
 const note = (P, code) => notesDe(P).find(n => n.code === code).valeur;
 
-test("un nouveau joueur : carte bronze, notes à 50, niveau d'entraînement", () => {
+test("un nouveau joueur : carte en bois, des tirets, niveau d'entraînement", () => {
   const P = profilParDefaut(), c = carteDe(P);
   assert.equal(c.rarete, "bois");
   assert.equal(c.niveau, 1200); assert.equal(c.typeNiveau, "NIVEAU");
   assert.equal(c.signe, null);
-  assert.deepEqual(c.notes.map(n => n.valeur), [50, 50, 50, 50, 50, 1]);
+  assert.deepEqual(c.notes.map(n => n.code), ["IMP", "RÉU", "DIV", "VIC", "SFR", "FLA"]);
+  assert.ok(c.notes.every(n => n.valeur === "–"), "pas de match contre des joueurs : des tirets");
 });
 
-test("les notes : 50 = le hasard, et il faut des preuves pour s'en éloigner", () => {
+test("les stats de la carte : seulement contre les joueurs, en pourcentages", () => {
   const P = profilParDefaut();
-  Object.assign(P, { matchs: 2, victoires: 2 });
-  assert.equal(note(P, "VIC"), 55);            // 2 sur 2 : encore peu de preuves
-  Object.assign(P, { matchs: 40, victoires: 30 });
-  assert.equal(note(P, "VIC"), 75);
-  Object.assign(P, { ballesObtenues: 40, ballesConverties: 40 });
-  assert.equal(note(P, "FIN"), 99);
-  Object.assign(P, { ballesSubies: 40, ballesSauvees: 0 });
-  assert.equal(note(P, "MEN"), 1);
-  for (const n of notesDe(P)) assert.ok(n.valeur >= 1 && n.valeur <= 99, n.code);
+  Object.assign(P, { matchs: 100, victoires: 90 });   // (le total, avec les bots, ne compte pas)
+  P.parAdv = { humains: { matchs: 10, victoires: 6, signes: [40, 30, 30], apresVictoire: 50, apresDefaite: 40, devines: 0, lisibles: 0,
+    ballesObtenues: 10, ballesConverties: 5, ballesSubies: 8, ballesSauvees: 3, decisifsJoues: 2, decisifsGagnes: 2, lecturesReussies: 15 } };
+  assert.equal(note(P, "VIC"), "60%");
+  assert.equal(note(P, "RÉU"), "56%");              // (50 + 6) / (50 + 40 + 10)
+  assert.equal(note(P, "DIV"), "75,0");
+  assert.equal(note(P, "SFR"), "50%");              // (5 + 3 + 2) / (10 + 8 + 2)
+  assert.equal(note(P, "FLA"), "1,5");
+  assert.equal(note(P, "IMP"), "–", "pas encore assez de coups lus");
+  assert.equal(diversification([100, 100, 100]), 100);
+  assert.ok(diversification([101, 100, 99]) < 100, "100 est difficile à atteindre");
+  assert.equal(diversification([60, 20, 20]), 0);
 });
 
 test("les 10 rangs : on monte en jouant, puis avec le niveau officiel", () => {

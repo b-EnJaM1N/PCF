@@ -121,7 +121,8 @@ export async function dessinerCarte(canvas, c, j) {
   const cols = [260, 690];
   c.notes.forEach((n, i) => {
     const x = cols[i % 2], yy = y + 110 + Math.floor(i / 2) * 110;
-    ctx.textAlign = "right"; ctx.font = `800 88px ${COND}`; ctx.fillText(String(n.valeur), x + 70, yy);
+    // (20 novembre : de vrais pourcentages, plus larges que les notes sur 99)
+    ctx.textAlign = "right"; ctx.font = `800 76px ${COND}`; ctx.fillText(String(n.valeur), x + 70, yy);
     ctx.textAlign = "left"; ctx.font = `700 50px ${COND}`; ctx.fillText(n.code, x + 96, yy);
   });
   ctx.fillRect(L / 2 - 2, y + 30, 4, 320);
