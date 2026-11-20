@@ -1837,9 +1837,9 @@ function htmlDossierDetaille(d, elle) {
   const egalite = d.egalite ? `<h3 class="ff-titre">🤝 Après une égalité</h3><div class="lines">
       <div class="ln"><span>${Il} garde le même signe</span><span>${d.egalite.garde} %</span></div>
       <div class="ln"><span>${Il} joue le plus souvent</span><span>${s(d.egalite.favori, d.egalite.favoriPct)}</span></div></div>` : "";
-  const ouverture = d.ouverture ? `<h3 class="ff-titre">🎬 Ses couvertures</h3>`
+  const ouverture = d.ouverture ? `<h3 class="ff-titre">🎬 Ses ouvertures</h3>`
     + `<p class="dossier-signes">${d.ouverture.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
-    + `<p class="hint">La couverture, c'est le premier coup ${d.ouverture.sets ? "de chaque set" : "du match"}. D'après ${d.ouverture.vus} couvertures.</p>` : "";
+    + `<p class="hint">L'ouverture, c'est le premier coup ${d.ouverture.sets ? "de chaque set" : "du match"}. D'après ${d.ouverture.vus} ouvertures.</p>` : "";
   const smash = d.smash ? `<h3 class="ff-titre">💥 Ses smashs</h3><div class="lines">
       <div class="ln"><span>Smashs joués</span><span>${d.smash.total}, dont ${d.smash.gagnes} gagnant${d.smash.gagnes > 1 ? "s" : ""}</span></div>
       <div class="ln"><span>${Il} smashe surtout avec</span><span>${s(d.smash.favori)}</span></div></div>`

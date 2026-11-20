@@ -220,7 +220,7 @@ export function dossierDetaille(matchs, { elle = false } = {}) {
   if (egalite && Math.abs(egalite.garde - 33) >= 8) ajouter(Math.abs(egalite.garde - 33), egalite.garde > 33
     ? "Après une égalité, il garde souvent son signe : joue ce qui le bat."
     : "Après une égalité, il change presque toujours : joue le signe que votre signe commun bat (tu gagnes ou tu fais égalité).");
-  if (ouverture && ouverture.vus >= 8 && ouverture.favoriPct >= 42) ajouter(ouverture.favoriPct - 33, `En couverture, il joue souvent ${NOMS_LE[ouverture.favori]} : commence par ${NOMS_LE[quiBat(ouverture.favori)]}.`);
+  if (ouverture && ouverture.vus >= 8 && ouverture.favoriPct >= 42) ajouter(ouverture.favoriPct - 33, `En ouverture, il joue souvent ${NOMS_LE[ouverture.favori]} : commence par ${NOMS_LE[quiBat(ouverture.favori)]}.`);
   return {
     matchs: liste.length, coups: n, repartition: rep, reflexes, egalite, ouverture, smash, forme,
     conseils: conseils.sort((x, y) => y.force - x.force).slice(0, 3).map(c => c.texte),
