@@ -1572,7 +1572,7 @@ try { vueJeu = localStorage.getItem("hs_vue_jeu") || "humains"; } catch { /* rie
 let recupEnCours = false;
 async function recupererJeuPasse() {
   const uid = compteUI?.session()?.user?.id;
-  if (P.parAdvVersion >= 5 || recupEnCours || !uid) return;
+  if (P.parAdvVersion >= 6 || recupEnCours || !uid) return;
   recupEnCours = true;
   try {
     const duels = [];
@@ -1584,18 +1584,18 @@ async function recupererJeuPasse() {
     const advs = [...new Set(duels.map(d => (d.j0 === uid ? d.j1 : d.j0)).filter(Boolean))], bots = new Set();
     for (let i = 0; i < advs.length; i += 150) for (const p of await profilsEnLigne(advs.slice(i, i + 150))) if (estBotEnLigne(p.pseudo)) bots.add(p.id);
     const h = jeuDepuisDuels(duels, uid, bots);
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 5;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair et l'Endurance)
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 6;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair ; 6 : l'Endurance, les égalités)
     sauverP();
   } catch (e) { console.warn("Mon jeu : matchs passés", e); }
   recupEnCours = false;
   if (!$("viewProfile").hidden) renderMonJeu();
 }
 function renderMonJeu() {
-  if (!(P.parAdvVersion >= 5) && compteUI?.session()?.user) recupererJeuPasse();
+  if (!(P.parAdvVersion >= 6) && compteUI?.session()?.user) recupererJeuPasse();
   // (sans compte et sans duel joué : tous les matchs passés étaient contre des bots)
-  else if (!(P.parAdvVersion >= 5) && !compteUI?.session()?.user && !P.duelsFinis) {
+  else if (!(P.parAdvVersion >= 6) && !compteUI?.session()?.user && !P.duelsFinis) {
     const h = P.parAdv?.humains || jeuVide();
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 5; sauverP();
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 6; sauverP();
   }
   $("gameBody").innerHTML = htmlJeu(P, vueJeu, { enCours: recupEnCours, connecte: !!compteUI?.session()?.user });
   $("gameBody").querySelectorAll(".jeu-vue").forEach(b => b.addEventListener("click", () => {
@@ -1860,7 +1860,7 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
   const fl = d.flair, en = d.endurance;
   const flairEnd = `<h3 class="ff-titre">🔍 ${toi ? "Ton" : "Son"} flair et ${toi ? "ton" : "son"} endurance</h3><div class="lines">
       <div class="ln"><span>Lectures réussies (une habitude de l'adversaire punie)</span><span>${fl && fl.tentees >= 30 ? pcR(fl.reussies, fl.tentees) : `pas encore assez (${fl?.tentees || 0} sur 30)`}</span></div>
-      <div class="ln"><span>Après 2 égalités ou plus, le point gagné</span><span>${en && en.chaines >= 10 ? pcR(en.gagnees, en.chaines) : `pas encore assez (${en?.chaines || 0} sur 10)`}</span></div></div>`;
+      <div class="ln"><span>Quand ${toi ? "tu ne gagnes" : elle ? "elle ne gagne" : "il ne gagne"} pas le point : égalité plutôt que point perdu</span><span>${en && en.nonGagnes >= 50 ? pcR(en.egalites, en.nonGagnes) : `pas encore assez (${en?.nonGagnes || 0} coups sur 50)`}</span></div></div>`;
   const f = d.forme;
   const forme = f ? `<h3 class="ff-titre">📈 ${sa} forme récente</h3><p class="hint">${Math.abs(f.ecart) >= 6
     ? `Sur ${ses_} 10 derniers matchs, ${il} ${toi ? "joues" : "joue"} ${f.ecart > 0 ? "plus" : "moins"} ${NOMS_SIGNES[f.signe] === "Ciseaux" ? "les Ciseaux" : `la ${NOMS_SIGNES[f.signe]}`} : ${f.recent[f.signe]} % contre ${f.avant[f.signe]} % avant.`
