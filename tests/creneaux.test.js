@@ -12,6 +12,9 @@ test("les textes des plages et du rendez-vous", () => {
   assert.equal(textePlage(p, maintenant), "demain 20 h – 22 h 30");
   assert.equal(texteRdv(new Date(2026, 10, 24, 21, 15).toISOString(), maintenant), "mardi 24 à 21 h 15");
   assert.equal(new Date(plage("2026-11-21", "23:00", "01:00").fin).getDate(), 22, "jusqu'au lendemain");
+  const fixe = plage("2026-11-21", "21:00", "fixe");
+  assert.equal(textePlage(fixe, maintenant), "demain à 21 h", "une heure fixe");
+  assert.deepEqual(heuresDansPlage(fixe, maintenant).map(x => x.texte), ["21 h"], "une seule heure à accepter");
 });
 
 test("les jours, les plages rapides et les heures à choisir", () => {

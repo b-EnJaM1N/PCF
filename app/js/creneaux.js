@@ -13,10 +13,13 @@ export function jour(d, maintenant = new Date()) {
   if (ecart === 1) return "demain";
   return ecart < 7 ? `${JOURS[d.getDay()]} ${d.getDate()}` : `${JOURS[d.getDay()]} ${d.getDate()} ${d.toLocaleDateString("fr-FR", { month: "long" })}`;
 }
-// « demain 20 h – 22 h ».
+// Une heure fixe (20 novembre, demande du porteur du projet) : une plage d'un quart d'heure exactement ; l'autre n'a que cette heure
+// à accepter.
+export const heureFixe = p => new Date(p.fin) - new Date(p.debut) === 15 * 60e3;
+// « demain 20 h – 22 h » ; une heure fixe : « demain à 21 h ».
 export const textePlage = (p, maintenant = new Date()) => {
   const d = new Date(p.debut), f = new Date(p.fin);
-  return `${jour(d, maintenant)} ${heure(d)} – ${heure(f)}`;
+  return heureFixe(p) ? `${jour(d, maintenant)} à ${heure(d)}` : `${jour(d, maintenant)} ${heure(d)} – ${heure(f)}`;
 };
 // « jeudi 26 à 21 h » (le rendez-vous).
 export const texteRdv = (rdv, maintenant = new Date()) => { const d = new Date(rdv); return `${jour(d, maintenant)} à ${heure(d)}`; };
@@ -34,9 +37,12 @@ export const HEURES = Array.from({ length: 48 }, (_, i) => `${String(Math.floor(
 export const texteHeure = hh => { const [h, m] = hh.split(":"); return `${Number(h)} h${m === "00" ? "" : ` ${m}`}`; };
 
 // Une plage d'après le jour et les heures choisis (« 24:00 » ou une fin avant le début : jusqu'au lendemain).
+// a = "fixe" : une heure fixe (un quart d'heure).
 export function plage(jourIso, de, a) {
-  const [y, mo, j] = jourIso.split("-").map(Number), [h1, m1] = de.split(":").map(Number), [h2, m2] = a.split(":").map(Number);
-  const debut = new Date(y, mo - 1, j, h1, m1), fin = new Date(y, mo - 1, j, h2, m2);
+  const [y, mo, j] = jourIso.split("-").map(Number), [h1, m1] = de.split(":").map(Number);
+  const debut = new Date(y, mo - 1, j, h1, m1);
+  if (a === "fixe") return { debut: debut.toISOString(), fin: new Date(debut.getTime() + 15 * 60e3).toISOString() };
+  const [h2, m2] = a.split(":").map(Number), fin = new Date(y, mo - 1, j, h2, m2);
   if (fin <= debut) fin.setDate(fin.getDate() + 1);
   return { debut: debut.toISOString(), fin: fin.toISOString() };
 }
@@ -56,6 +62,7 @@ export function plagesRapides(echeance, maintenant = new Date()) {
 
 // Les heures qu'on peut choisir dans une plage, tous les quarts d'heure (pas dans le passé). → [{ valeur: ISO, texte: "20 h 15" }]
 export function heuresDansPlage(p, maintenant = new Date()) {
+  if (heureFixe(p)) { const d = new Date(p.debut); return d > maintenant ? [{ valeur: d.toISOString(), texte: heure(d) }] : []; }
   const r = [], fin = new Date(p.fin);
   let d = new Date(p.debut);
   d.setSeconds(0, 0);
