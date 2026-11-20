@@ -157,7 +157,8 @@ export function debutsDeSet(coups, format) {
   }
   return r;
 }
-export function dossierDetaille(matchs, { elle = false } = {}) {
+// toi : mon propre dossier (Ma fiche › Stats, 20 novembre) : tout au « tu », et des failles à la place des conseils.
+export function dossierDetaille(matchs, { elle = false, toi = false } = {}) {
   const liste = (matchs || []).filter(m => Array.isArray(m) && m.length);
   const coupsDe = m => m.map(c => ({ a: c.a, b: c.b, gagnant: c.g ?? null, s: !!c.s }));
   let k = compteVide();
@@ -166,12 +167,12 @@ export function dossierDetaille(matchs, { elle = false } = {}) {
   const n = k.coups, P = (x, y) => (y ? Math.round((100 * x) / y) : null);
   // Ses réflexes, avec leur part et ce que donnerait le hasard (base).
   const reflexes = [
-    { cle: "rejoue_victoire", texte: "Après un point gagné, il rejoue le même signe", oui: k.rejoueVictoire, vus: k.apresVictoire, base: 33 },
-    { cle: "change_defaite", texte: "Après un point perdu, il change de signe", oui: k.changeDefaite, vus: k.apresDefaite, base: 67 },
-    { cle: "repete", texte: "Il rejoue deux fois de suite le même signe", oui: k.repete, vus: k.transitions, base: 33 },
-    { cle: "boucle", texte: "Il tourne en boucle (Pierre, Feuille, Ciseaux…)", oui: k.boucle, vus: k.transitions, base: 33 },
-    { cle: "copie", texte: "Il rejoue le dernier signe de son adversaire", oui: k.copie, vus: k.transitions, base: 33 },
-    { cle: "contre", texte: "Il joue ce qui battait le dernier signe de son adversaire", oui: k.contre, vus: k.transitions, base: 33 },
+    { cle: "rejoue_victoire", texte: toi ? "Après un point gagné, tu rejoues le même signe" : "Après un point gagné, il rejoue le même signe", oui: k.rejoueVictoire, vus: k.apresVictoire, base: 33 },
+    { cle: "change_defaite", texte: toi ? "Après un point perdu, tu changes de signe" : "Après un point perdu, il change de signe", oui: k.changeDefaite, vus: k.apresDefaite, base: 67 },
+    { cle: "repete", texte: toi ? "Tu rejoues deux fois de suite le même signe" : "Il rejoue deux fois de suite le même signe", oui: k.repete, vus: k.transitions, base: 33 },
+    { cle: "boucle", texte: toi ? "Tu tournes en boucle (Pierre, Feuille, Ciseaux…)" : "Il tourne en boucle (Pierre, Feuille, Ciseaux…)", oui: k.boucle, vus: k.transitions, base: 33 },
+    { cle: "copie", texte: toi ? "Tu rejoues le dernier signe de ton adversaire" : "Il rejoue le dernier signe de son adversaire", oui: k.copie, vus: k.transitions, base: 33 },
+    { cle: "contre", texte: toi ? "Tu joues ce qui battait le dernier signe de ton adversaire" : "Il joue ce qui battait le dernier signe de son adversaire", oui: k.contre, vus: k.transitions, base: 33 },
   ].filter(r => r.vus >= 6).map(r => { const pct = P(r.oui, r.vus); return { ...r, texte: ILS(r.texte, elle), pct, niveau: NIVEAU(Math.abs(pct - r.base)) }; });
   // Après une égalité : il garde son signe ou il change, et ce qu'il joue.
   let apresEg = 0, gardeEg = 0; const signeEg = [0, 0, 0];
@@ -203,24 +204,29 @@ export function dossierDetaille(matchs, { elle = false } = {}) {
   // Pour le battre : les failles les plus nettes, de la plus forte à la plus faible (3 au plus).
   const conseils = [];
   const rep = k.signes.map(x => P(x, n)), fav = rep.indexOf(Math.max(...rep));
-  const ajouter = (force, texte) => conseils.push({ force, texte: ILS(texte, elle) });
-  if (rep[fav] >= 40) ajouter(rep[fav] - 33, `Il joue beaucoup ${NOMS_LE[fav]} (${rep[fav]} %) : ${NOMS_LE[quiBat(fav)]} ${fav === 1 ? "les" : "la"} bat.`);
+  // (pour moi, la faille vue par mes adversaires : « tu » …, et ce qu'ils peuvent en faire)
+  const ajouter = (force, texte, tu) => conseils.push({ force, texte: toi ? tu : ILS(texte, elle) });
+  if (rep[fav] >= 40) ajouter(rep[fav] - 33, `Il joue beaucoup ${NOMS_LE[fav]} (${rep[fav]} %) : ${NOMS_LE[quiBat(fav)]} ${fav === 1 ? "les" : "la"} bat.`,
+    `Tu joues beaucoup ${NOMS_LE[fav]} (${rep[fav]} %) : un adversaire attentif jouera ${NOMS_LE[quiBat(fav)]}.`);
   for (const r of reflexes) {
     const e = Math.abs(r.pct - r.base);
     if (e < 8) continue;
-    if (r.cle === "rejoue_victoire" && r.pct > r.base) ajouter(e, "Quand il vient de gagner un point, il rejoue souvent le même signe : joue ce qui le bat.");
-    if (r.cle === "change_defaite" && r.pct > r.base) ajouter(e, "Quand il vient de perdre un point, il change de signe : rejoue ce qui bat ton dernier signe (tu gagnes ou tu fais égalité).");
-    if (r.cle === "change_defaite" && r.pct < r.base) ajouter(e, "Quand il vient de perdre un point, il s'entête : rejoue le signe qui vient de gagner.");
-    if (r.cle === "repete" && r.pct < r.base) ajouter(e, "Il rejoue rarement le même signe : joue le signe que son dernier coup bat (tu gagnes ou tu fais égalité).");
-    if (r.cle === "repete" && r.pct > r.base) ajouter(e, "Il rejoue souvent le même signe : joue ce qui bat son dernier coup.");
-    if (r.cle === "boucle" && r.pct > r.base) ajouter(e, "Il tourne en boucle (Pierre, Feuille, Ciseaux…) : joue le signe que son dernier coup bat.");
-    if (r.cle === "copie" && r.pct > r.base) ajouter(e, "Il rejoue souvent ton dernier signe : joue ce qui bat ton propre dernier signe.");
-    if (r.cle === "contre" && r.pct > r.base) ajouter(e, "Il joue souvent ce qui battait ton dernier signe : joue le signe que ton dernier signe bat.");
+    if (r.cle === "rejoue_victoire" && r.pct > r.base) ajouter(e, "Quand il vient de gagner un point, il rejoue souvent le même signe : joue ce qui le bat.", "Quand tu viens de gagner un point, tu rejoues souvent le même signe : facile à contrer.");
+    if (r.cle === "change_defaite" && r.pct > r.base) ajouter(e, "Quand il vient de perdre un point, il change de signe : rejoue ce qui bat ton dernier signe (tu gagnes ou tu fais égalité).", "Quand tu viens de perdre un point, tu changes presque toujours de signe : ton adversaire peut jouer sans risque de perdre.");
+    if (r.cle === "change_defaite" && r.pct < r.base) ajouter(e, "Quand il vient de perdre un point, il s'entête : rejoue le signe qui vient de gagner.", "Quand tu viens de perdre un point, tu t'entêtes : ton adversaire n'a qu'à rejouer le signe qui vient de gagner.");
+    if (r.cle === "repete" && r.pct < r.base) ajouter(e, "Il rejoue rarement le même signe : joue le signe que son dernier coup bat (tu gagnes ou tu fais égalité).", "Tu rejoues rarement le même signe : ton adversaire peut écarter ton dernier coup et jouer sans risque de perdre.");
+    if (r.cle === "repete" && r.pct > r.base) ajouter(e, "Il rejoue souvent le même signe : joue ce qui bat son dernier coup.", "Tu rejoues souvent le même signe : ton adversaire n'a qu'à jouer ce qui bat ton dernier coup.");
+    if (r.cle === "boucle" && r.pct > r.base) ajouter(e, "Il tourne en boucle (Pierre, Feuille, Ciseaux…) : joue le signe que son dernier coup bat.", "Tu tournes en boucle (Pierre, Feuille, Ciseaux…) : ton prochain signe se devine.");
+    if (r.cle === "copie" && r.pct > r.base) ajouter(e, "Il rejoue souvent ton dernier signe : joue ce qui bat ton propre dernier signe.", "Tu rejoues souvent le dernier signe de ton adversaire : il peut l'anticiper.");
+    if (r.cle === "contre" && r.pct > r.base) ajouter(e, "Il joue souvent ce qui battait ton dernier signe : joue le signe que ton dernier signe bat.", "Tu joues souvent ce qui battait le dernier signe de ton adversaire : il peut l'anticiper.");
   }
   if (egalite && Math.abs(egalite.garde - 33) >= 8) ajouter(Math.abs(egalite.garde - 33), egalite.garde > 33
     ? "Après une égalité, il garde souvent son signe : joue ce qui le bat."
-    : "Après une égalité, il change presque toujours : joue le signe que votre signe commun bat (tu gagnes ou tu fais égalité).");
-  if (ouverture && ouverture.vus >= 8 && ouverture.favoriPct >= 42) ajouter(ouverture.favoriPct - 33, `En ouverture, il joue souvent ${NOMS_LE[ouverture.favori]} : commence par ${NOMS_LE[quiBat(ouverture.favori)]}.`);
+    : "Après une égalité, il change presque toujours : joue le signe que votre signe commun bat (tu gagnes ou tu fais égalité).",
+    egalite.garde > 33 ? "Après une égalité, tu gardes souvent ton signe : facile à contrer."
+    : "Après une égalité, tu changes presque toujours : ton adversaire peut jouer sans risque de perdre.");
+  if (ouverture && ouverture.vus >= 8 && ouverture.favoriPct >= 42) ajouter(ouverture.favoriPct - 33, `En ouverture, il joue souvent ${NOMS_LE[ouverture.favori]} : commence par ${NOMS_LE[quiBat(ouverture.favori)]}.`,
+    `En ouverture, tu joues souvent ${NOMS_LE[ouverture.favori]} : un adversaire attentif commencera par ${NOMS_LE[quiBat(ouverture.favori)]}.`);
   return {
     matchs: liste.length, coups: n, repartition: rep, reflexes, egalite, ouverture, smash, forme,
     conseils: conseils.sort((x, y) => y.force - x.force).slice(0, 3).map(c => c.texte),
