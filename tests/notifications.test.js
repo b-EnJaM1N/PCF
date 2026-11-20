@@ -24,6 +24,15 @@ test("les messages des notifications", () => {
   assert.equal(message("ami_demande", null, adv).url, "./?ouvrir=amis");
   assert.equal(message("ami_accepte", null, adv).titre, "✅ Bob#4821 a accepté ta demande d'ami");
   assert.equal(message("invitation_cercle", null, adv, undefined, { nom: "FIAC CLUB" }).titre, "🏰 Bob#4821 t'invite dans le cercle FIAC CLUB");
+  // caler un match de tournoi (étape 84)
+  const t = { nom: "Coupe test" };
+  assert.equal(message("creneaux", null, adv, t).titre, "📅 Bob#4821 te propose des créneaux");
+  assert.match(message("creneaux", null, adv, t).texte, /\(Coupe test\)/);
+  assert.equal(message("rdv_fixe", null, adv, t, undefined, "2026-11-26T20:00:00Z").titre, "✅ Rendez-vous fixé : jeudi à 21 h");
+  assert.equal(message("rdv_rappel", null, adv, t, undefined, "2026-11-26T20:30:00Z").texte, "Contre Bob#4821, à 21 h 30 (Coupe test). Prépare-toi !");
+  assert.equal(message("rdv_heure", null, adv, t).url, "./?ouvrir=tournois");
+  assert.equal(message("rdv_heure", null, adv).url, "./?ouvrir=duels", "un défi programmé ouvre « Défis »");
+  assert.equal(message("creneaux", null, adv).texte, "Pour votre défi. Touche pour choisir une heure.");
   assert.equal(texteFormat(7, 1), "Sets de 7 points · match en 1 set");
   assert.equal(texteFormat(1, 1), "Sets de 1 point · match en 1 set");
 });

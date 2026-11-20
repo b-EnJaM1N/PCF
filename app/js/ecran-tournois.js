@@ -15,6 +15,7 @@ import { texteDepart as texteDepartProgramme } from "./programmes-logique.js";
 import { monResultat, texteJetons } from "./jetons-logique.js";
 import { lire, ecrire } from "./stockage.js";
 import { estFiac } from "./profil.js";
+import { jour as jourRdv, textePlage, texteRdv, joursPossibles, HEURES, texteHeure, plage, plagesRapides, heuresDansPlage, etatRdv, forfaitPossible } from "./creneaux.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -181,7 +182,7 @@ export function installerTournois(ctx) {
     clearInterval(minuterie);
     await charger();
     // Sit & Go en direct : mise à jour plus fréquente.
-    if (ouvert === id) { clearInterval(minuterie); minuterie = setInterval(() => { if (!$("socTournoi").hidden && !document.hidden) charger(); }, detail?.mode === "direct" ? 4000 : 10000); }
+    if (ouvert === id) { clearInterval(minuterie); minuterie = setInterval(() => { if (!$("socTournoi").hidden && !document.hidden && !saisieRdv()) charger(); }, detail?.mode === "direct" ? 4000 : 10000); }
   }
   function fermer() { ouvert = null; detail = null; clearInterval(minuterie); }
   // Les records du tournoi (13 novembre, demande du porteur du projet ; records-cercle.js) : pendant et après le tournoi,
@@ -321,6 +322,8 @@ export function installerTournois(ctx) {
           : `Retrouvez-vous pour jouer avant la date limite${reste ? ` (dans ${reste})` : ""}. Si un seul de vous deux essaie de jouer, la victoire lui revient par forfait.`}</p>
         <button class="btn" id="tJouer" ${jattends ? "disabled" : ""}>${enCours ? "Reprendre le match" : attendMoi ? "Jouer maintenant" : jattends ? `En attente de ${esc(adv.pseudo)}…` : "Jouer mon match"}</button>`;
       $("tJouer").addEventListener("click", () => jouerMonMatch(mm));
+      // Programmer le match (étape 84 ; version d'essai d'abord) : les créneaux, le rendez-vous.
+      if (nouveauteOuverte("creneaux") && !enCours) { $("tMonMatchCorps").insertAdjacentHTML("beforeend", `<div class="rdv" id="tRdv"></div>`); afficherRdv(mm, uid, t); }
       // Championnat : mes autres matchs, jouables dans n'importe quel ordre.
       const autres = ch ? mesMatchsRestants(t, uid).filter(m => m.id !== mm.match.id) : [];
       if (autres.length) {
@@ -506,12 +509,110 @@ export function installerTournois(ctx) {
 
   async function jouerMonMatch(mm) {
     if ($("tJouer")) $("tJouer").disabled = true;
+    // (un rendez-vous fixé : « j'y suis », pour le forfait si l'autre ne vient pas)
+    if (nouveauteOuverte("creneaux")) await social.presentRdv(mm.match.id).catch(() => {});
     try {
       const duel = await social.jouerMatchTournoi(mm.match.id);
       if (duel.phase === "attente") { dire(`Invitation envoyée à ${mm.adversaire.pseudo} : le match démarre dès son arrivée.`); return charger(); }
       const [p] = await ctx.profils([mm.adversaire.id]);
       ctx.lancerDuel(duel, p);
     } catch (err) { dire(err.message, true); charger(); }
+  }
+
+  // ------------------------------------------------ programmer le match (20 novembre, idée et choix du porteur du projet ; étape SQL 84)
+  // Un joueur propose des plages ; l'autre choisit une heure précise dans une plage (le rendez-vous est fixé), propose d'autres
+  // plages, ou décline. 15 minutes après l'heure, celui qui était là peut réclamer la victoire par forfait.
+  // (20 novembre, remarque du porteur du projet : « quand je manipule les créneaux, ça quitte le menu » : la page se mettait à jour
+  // toutes les 10 secondes et effaçait la saisie ; elle attend maintenant que le formulaire soit envoyé ou fermé)
+  let rdvTouche = 0;
+  const saisieRdv = () => {
+    const f = $("tRdvForm"), z = $("tRdv");
+    return !!(f && !f.hidden) || !!(z && z.contains(document.activeElement)) || Date.now() - rdvTouche < 60e3;
+  };
+  async function afficherRdv(mm, uid, t) {
+    const zone = $("tRdv"), id = mm.match.id, adv = esc(mm.adversaire.pseudo);
+    if (!zone) return;
+    zone.innerHTML = `<p class="hint">📅 Chargement du rendez-vous…</p>`;
+    let info;
+    try { info = await social.creneauxDe(id); } catch (e) { zone.innerHTML = `<p class="hint">📅 ${esc(e.message)}</p>`; return; }
+    if ($("tRdv") !== zone) return;
+    const c = info.creneaux, etat = etatRdv(c, uid), echeance = info.echeance || t.echeance;
+    const liste = pl => `<ul class="rdv-plages">${pl.map(p => `<li>${esc(textePlage(p))}</li>`).join("")}</ul>`;
+    const action = (a, texte, cls = "petit alt") => `<button class="${cls}" data-rdv="${a}">${texte}</button>`;
+    let html = "";
+    if (etat === "aucun") html = `<p><b>📅 Programmer le match</b></p><p class="hint">Propose des créneaux à ${adv} : il choisira l'heure.</p>${action("proposer", "📅 Proposer des créneaux", "btn alt")}`;
+    else if (etat === "j_ai_propose") html = `<p><b>📅 Tes créneaux</b> · en attente de la réponse de ${adv}</p>${liste(c.plages)}${action("proposer", "Changer mes créneaux")}`;
+    else if (etat === "decline_par_lui") html = `<p><b>📅 ${adv} ne peut pas sur tes créneaux.</b></p>${action("proposer", "📅 Proposer d'autres créneaux", "btn alt")}`;
+    else if (etat === "j_ai_decline") html = `<p><b>📅 Tu as décliné ses créneaux.</b></p>${action("proposer", "📅 Proposer mes créneaux", "btn alt")}`;
+    else if (etat === "a_choisir") {
+      const options = c.plages.flatMap(p => heuresDansPlage(p).map(h => ({ ...h, texte: `${jourRdv(new Date(h.valeur))} à ${h.texte}` })));
+      html = `<p><b>📅 ${adv} te propose :</b></p>${liste(c.plages)}`
+        + (options.length ? `<label class="rdv-choix">Choisis l'heure <select id="tRdvHeure">${options.map(o => `<option value="${esc(o.valeur)}">${esc(o.texte)}</option>`).join("")}</select></label>
+          <div class="rdv-actions">${action("choisir", "✅ Fixer le rendez-vous", "petit")}${action("proposer", "Autres créneaux")}${action("decliner", "Décliner")}</div>`
+          : `<p class="hint">Ces créneaux sont passés.</p><div class="rdv-actions">${action("proposer", "Proposer mes créneaux")}</div>`);
+    } else if (etat === "fixe") {
+      const rdv = new Date(c.rdv), passe = Date.now() > rdv.getTime() + 15 * 60e3;
+      html = `<p><b>📅 Rendez-vous ${esc(texteRdv(c.rdv))}</b></p>`
+        + `<p class="hint">${Date.now() < rdv.getTime() - 15 * 60e3 ? "Un rappel arrive 10 minutes avant. À l'heure, touche « Jouer mon match »."
+          : passe ? (forfaitPossible(c) ? `${adv} n'est pas venu au rendez-vous : tu peux réclamer la victoire.` : "L'heure du rendez-vous est passée.")
+          : "C'est le moment : touche « Jouer mon match »."}</p>`
+        + `<div class="rdv-actions">${forfaitPossible(c) ? action("forfait", "🏳️ Réclamer la victoire par forfait", "petit") : ""}${action("proposer", "Changer l'heure")}</div>`;
+    }
+    zone.innerHTML = html + `<div id="tRdvForm" hidden></div><p class="hint rdv-msg" id="tRdvMsg"></p>`;
+    rdvTouche = 0;
+    zone.addEventListener("input", () => { rdvTouche = Date.now(); });   // (un choix d'heure en cours : pas de mise à jour pendant une minute)
+    const msg = (texte, erreur = false) => { const m = $("tRdvMsg"); if (m) { m.textContent = texte; m.classList.toggle("erreur", erreur); } };
+    const agir = async (f, ok) => { try { await f(); dire(ok); charger(); } catch (e) { msg(e.message, true); } };
+    zone.querySelectorAll("button[data-rdv]").forEach(b => b.addEventListener("click", () => {
+      const a = b.dataset.rdv;
+      if (a === "proposer") return formulaireCreneaux(id, echeance, adv);
+      if (a === "choisir") return agir(() => social.choisirCreneau(id, $("tRdvHeure").value), "Rendez-vous fixé : il est prévenu.");
+      if (a === "decliner") return agir(() => social.declinerCreneaux(id), "Créneaux déclinés : il est prévenu.");
+      if (a === "forfait" && confirm(`Réclamer la victoire par forfait contre ${mm.adversaire.pseudo} ?`)) return agir(() => social.forfaitRdv(id), "Victoire par forfait enregistrée.");
+    }));
+  }
+  // Le formulaire des plages (jusqu'à 5) : les plages rapides, ou un jour et des heures au choix.
+  function formulaireCreneaux(id, echeance, adv) {
+    const f = $("tRdvForm"); if (!f) return;
+    if (f.dataset.pret) { f.hidden = false; return; }   // (déjà ouvert : pas deux fois les mêmes boutons)
+    f.dataset.pret = "1";
+    const jours = joursPossibles(echeance), rapides = plagesRapides(echeance);
+    const opts = (liste, val) => liste.map(o => `<option value="${o.valeur}"${o.valeur === val ? " selected" : ""}>${o.texte}</option>`).join("");
+    const heures = HEURES.map(h => ({ valeur: h, texte: texteHeure(h) }));
+    const ligne = () => `<div class="rdv-ligne"><select class="rj">${opts(jours)}</select><select class="rd">${opts(heures, "20:00")}</select><span>à</span><select class="ra">${opts(heures, "22:00")}</select><button class="petit alt rx" aria-label="Retirer cette plage">✕</button></div>`;
+    f.hidden = false;
+    f.innerHTML = `<p class="hint">Tes plages pour ${adv} (5 au plus), avant la date limite :</p>`
+      + (rapides.length ? `<div class="rdv-rapides">${rapides.map((r, i) => `<button class="petit alt" data-rapide="${i}">+ ${r.texte}</button>`).join("")}</div>` : "")
+      + `<div id="tRdvLignes">${ligne()}</div><button class="petit alt" id="tRdvPlus">+ Une autre plage</button>
+         <button class="btn" id="tRdvEnvoyer">📅 Envoyer mes créneaux</button><button class="btn alt" id="tRdvFermer">Annuler</button>`;
+    const lignes = () => [...f.querySelectorAll(".rdv-ligne")];
+    const ajouter = (j, de, a) => {
+      if (lignes().length >= 5) return;
+      $("tRdvLignes").insertAdjacentHTML("beforeend", ligne());
+      const l = lignes().at(-1); if (j) { l.querySelector(".rj").value = j; l.querySelector(".rd").value = de; l.querySelector(".ra").value = a; }
+    };
+    f.addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      if (b.classList.contains("rx")) { b.closest(".rdv-ligne").remove(); return; }
+      if (b.id === "tRdvPlus") return ajouter();
+      if (b.id === "tRdvFermer") { f.hidden = true; rdvTouche = 0; return; }
+      if (b.dataset.rapide !== undefined) {
+        const p = rapides[+b.dataset.rapide].p, d = new Date(p.debut), x = new Date(p.fin), hh = z => `${String(z.getHours()).padStart(2, "0")}:${String(z.getMinutes()).padStart(2, "0")}`;
+        const j = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        const vide = lignes().find(l => !l.dataset.rempli);
+        if (vide) { vide.querySelector(".rj").value = j; vide.querySelector(".rd").value = hh(d); vide.querySelector(".ra").value = hh(x); vide.dataset.rempli = "1"; }
+        else ajouter(j, hh(d), hh(x));
+        return;
+      }
+      if (b.id === "tRdvEnvoyer") {
+        const plages = lignes().map(l => plage(l.querySelector(".rj").value, l.querySelector(".rd").value, l.querySelector(".ra").value));
+        if (!plages.length) { $("tRdvMsg").textContent = "Ajoute au moins une plage."; return; }
+        b.disabled = true;
+        social.proposerCreneaux(id, plages).then(() => { dire("Créneaux envoyés : il est prévenu."); charger(); })
+          .catch(err => { $("tRdvMsg").textContent = err.message; $("tRdvMsg").classList.add("erreur"); b.disabled = false; });
+      }
+    });
+    f.addEventListener("change", e => { const l = e.target.closest(".rdv-ligne"); if (l) l.dataset.rempli = "1"; });
   }
 
   // ------------------------------------------------ arrivée par un lien « ?tournoi=CODE »
