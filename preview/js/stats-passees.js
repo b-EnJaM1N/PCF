@@ -41,7 +41,7 @@ export function jeuDepuisDuels(duels, uid, bots = new Set()) {
           if (mien === null || mien === undefined || sien === null || sien === undefined) continue;
           suivreCoup(st, m, jouerCoup(m, mien, sien));
         }
-        for (const k of ["ballesObtenues", "ballesConverties", "ballesSubies", "ballesSauvees", "lecturesReussies"]) j[k] += st[k];
+        for (const k of ["ballesObtenues", "ballesConverties", "ballesSubies", "ballesSauvees", "lecturesReussies", "lecturesRatees"]) j[k] += st[k];
         const sg = d.sets_gagnants || 2;
         if (sg > 1 && m.scoresSets.length === 2 * sg - 1) { j.decisifsJoues++; if (d.vainqueur === moi) j.decisifsGagnes++; }
       } catch { /* un match qu'on ne sait pas rejouer : sans ces compteurs */ }
@@ -56,6 +56,6 @@ export function jeuMoins(P, h) {
   b.matchs = pos(P.matchs - h.matchs); b.victoires = pos((P.victoires || 0) - (h.victoires || 0));
   b.signes = P.signes.map((x, i) => pos(x - h.signes[i]));
   for (const k of ["smashsTentes", "smashsReussis", "apresVictoire", "memeApresVictoire", "apresDefaite", "memeApresDefaite", "devines", "lisibles",
-    "ballesObtenues", "ballesConverties", "ballesSubies", "ballesSauvees", "decisifsJoues", "decisifsGagnes", "lecturesReussies"]) b[k] = pos((P[k] || 0) - (h[k] || 0));
+    "ballesObtenues", "ballesConverties", "ballesSubies", "ballesSauvees", "decisifsJoues", "decisifsGagnes", "lecturesReussies", "lecturesRatees"]) b[k] = pos((P[k] || 0) - (h[k] || 0));
   return b;
 }
