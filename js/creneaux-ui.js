@@ -41,7 +41,7 @@ export function ouvrirPanneau(zone, { c, uid, adv, actions, fini, texteEnvoyer =
     const echeance = new Date(Date.now() + 14 * 864e5).toISOString(), jours = joursPossibles(echeance), rapides = plagesRapides(echeance);
     const opts = (liste, val) => liste.map(o => `<option value="${o.valeur}"${o.valeur === val ? " selected" : ""}>${o.texte}</option>`).join("");
     const heures = HEURES.map(h => ({ valeur: h, texte: texteHeure(h) }));
-    const ligne = () => `<div class="rdv-ligne"><select class="rj">${opts(jours)}</select><select class="rd">${opts(heures, "20:00")}</select><span>à</span><select class="ra">${opts(heures, "22:00")}</select><button class="petit alt rx" aria-label="Retirer cette plage">✕</button></div>`;
+    const ligne = () => `<div class="rdv-ligne"><select class="rj">${opts(jours)}</select><select class="rd">${opts(heures, "20:00")}</select><span>à</span><select class="ra"><option value="fixe">heure fixe</option>${opts(heures, "22:00")}</select><button class="petit alt rx" aria-label="Retirer cette plage">✕</button></div>`;
     zone.innerHTML = `<p><b>📅 Programmer le défi</b>${etat === "fixe" ? ` · rendez-vous actuel ${esc(texteRdv(c.rdv))}` : ""}</p><p class="hint">Tes plages pour ${a} (5 au plus) : il choisira l'heure.</p>`
       + (rapides.length ? `<div class="rdv-rapides">${rapides.map((r, i) => `<button class="petit alt" data-rapide="${i}">+ ${r.texte}</button>`).join("")}</div>` : "")
       + `<div class="rdv-lignes">${ligne()}</div><button class="petit alt" data-r="plus">+ Une autre plage</button>
