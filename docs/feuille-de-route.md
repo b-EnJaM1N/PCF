@@ -418,6 +418,7 @@ Un serveur vérifie les coups (anti-triche) ; pause de 60 s après une déconnex
 - L'organisateur choisit le format ; au format officiel, les matchs comptent pour le niveau officiel.
 
 - **Programmer un match** (20 novembre, idée et choix du porteur du projet ; étape SQL 84, `creneaux.js`, version d'essai d'abord) : dans un tournoi ou un championnat à date limite, « 📅 Programmer le match » : un joueur propose des plages (jusqu'à 5, avant la date limite ; plages rapides « Ce soir 20 h – 22 h »…), l'autre choisit une heure précise dans une plage (le rendez-vous est fixé), propose d'autres plages ou décline ; notifications à chaque étape, rappels 10 minutes avant et à l'heure ; 15 minutes après l'heure, celui qui était là (« Jouer mon match » touché depuis 15 minutes avant) peut réclamer la victoire par forfait.
+- **Programmer un défi** (20 novembre, choix du porteur du projet ; étape SQL 85, `creneaux-ui.js`, version d'essai d'abord) : sur un défi pas encore commencé (entre amis ou par pseudo ; envoyé, reçu ou accepté), « 📅 » propose les mêmes plages ; choisir une heure accepte le défi, gardé jusqu'à une heure après l'heure prévue ; rappels comme pour les tournois ; pas de forfait (ensuite, annulé sans vainqueur).
 
 ### 6. Tournois en direct, façon poker
 Tout le monde est présent, les matchs s'enchaînent automatiquement, on reste connecté tant qu'on est en lice. **Jamais d'argent en jeu** (réglementation des jeux d'argent).

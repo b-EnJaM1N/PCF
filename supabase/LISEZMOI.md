@@ -535,6 +535,14 @@ en ligne compte toujours les siens.
    remplace tout le code par la nouvelle version de [`functions/notifier/index.ts`](functions/notifier/index.ts)
    (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/functions/notifier/index.ts) → **Deploy**.
 
+## 1 octogies quinto. Programmer un défi entre joueurs (étape 85)
+
+1. Même manipulation que d'habitude avec [`etape-85-programmer-defi.sql`](etape-85-programmer-defi.sql), **après** l'étape 84
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-85-programmer-defi.sql).
+   Sur un défi pas encore commencé (envoyé, reçu ou accepté), « 📅 » : les mêmes créneaux que pour les tournois ; choisir une heure
+   accepte le défi, gardé jusqu'à une heure après l'heure prévue (pas de forfait : ensuite, annulé sans vainqueur).
+2. **Mettre à jour la fonction « Notifier »** (même manipulation) : une notification de défi programmé ouvre « Défis »
+
 ## 1 octogies. Les smileys dans les messages du duel (étape 80)
 
 Même manipulation que d'habitude avec [`etape-80-smileys.sql`](etape-80-smileys.sql), **après** l'étape 79

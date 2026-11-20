@@ -55,20 +55,22 @@ export function message(evenement: string, duel: any, adv: { pseudo: string; num
   const qui = `${adv.pseudo}#${adv.numero}`;
   // Programmer un match de tournoi (étape 84, 20 novembre).
   const du = tournoi?.nom ? ` (${tournoi.nom})` : "";
+  // (étape 85 : un défi programmé, sans tournoi, ouvre « Défis »)
+  const ouvrirRdv = tournoi ? "./?ouvrir=tournois" : "./?ouvrir=duels";
   if (evenement === "creneaux") return {
-    titre: `📅 ${qui} te propose des créneaux`, texte: `Pour votre match${du}. Touche pour choisir une heure.`, url: "./?ouvrir=tournois", tag: `rdv-${qui}`,
+    titre: `📅 ${qui} te propose des créneaux`, texte: `Pour ${tournoi ? `votre match${du}` : "votre défi"}. Touche pour choisir une heure.`, url: ouvrirRdv, tag: `rdv-${qui}`,
   };
   if (evenement === "rdv_fixe") return {
-    titre: `✅ Rendez-vous fixé${quand ? ` : ${jourHeureParis(quand)}` : ""}`, texte: `${qui} a choisi l'heure de votre match${du}.`, url: "./?ouvrir=tournois", tag: `rdv-${qui}`,
+    titre: `✅ Rendez-vous fixé${quand ? ` : ${jourHeureParis(quand)}` : ""}`, texte: `${qui} a choisi l'heure de votre match${du}.`, url: ouvrirRdv, tag: `rdv-${qui}`,
   };
   if (evenement === "rdv_decline") return {
-    titre: `❌ ${qui} ne peut pas sur tes créneaux`, texte: `Pour votre match${du} : touche pour en proposer d'autres.`, url: "./?ouvrir=tournois", tag: `rdv-${qui}`,
+    titre: `❌ ${qui} ne peut pas sur tes créneaux`, texte: `Pour votre match${du} : touche pour en proposer d'autres.`, url: ouvrirRdv, tag: `rdv-${qui}`,
   };
   if (evenement === "rdv_rappel") return {
-    titre: "⏰ Ton match dans 10 minutes", texte: `Contre ${qui}${quand ? `, à ${heureParis(quand)}` : ""}${du}. Prépare-toi !`, url: "./?ouvrir=tournois", tag: `rdv-${qui}`,
+    titre: "⏰ Ton match dans 10 minutes", texte: `Contre ${qui}${quand ? `, à ${heureParis(quand)}` : ""}${du}. Prépare-toi !`, url: ouvrirRdv, tag: `rdv-${qui}`,
   };
   if (evenement === "rdv_heure") return {
-    titre: "🏆 C'est l'heure de ton match !", texte: `${qui} arrive${du} : touche pour lancer le match.`, url: "./?ouvrir=tournois", tag: `rdv-${qui}`,
+    titre: "🏆 C'est l'heure de ton match !", texte: `${qui} arrive${du} : touche pour lancer le match.`, url: ouvrirRdv, tag: `rdv-${qui}`,
   };
   // Les amis et les cercles (étape 79, 15 novembre) : adv est celui qui demande, accepte ou invite.
   if (evenement === "ami_demande") return {
