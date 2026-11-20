@@ -378,6 +378,10 @@ export function installerDuels(ctx) {
       $("duelEnjeuZone").hidden = !p;
       $("defiEnvoyer").textContent = enCoursDefi.programmer ? "📅 Envoyer et choisir les créneaux" : p ? "Envoyer le défi" : "Créer le lien et le partager";
       $("defiEnvoyer").disabled = false;
+      // (20 novembre, demande du porteur du projet : sous « Envoyer le défi », « 📅 Envoyer et programmer » ; ouvert depuis
+      // « 📅 Programmer un défi », le bouton principal le fait déjà)
+      $("defiProgrammer").hidden = !p || !nouveauteOuverte("creneaux") || enCoursDefi.programmer;
+      $("defiProgrammer").disabled = false;
       $("defiFenetreMsg").textContent = ""; $("defiFenetreMsg").classList.remove("erreur");
       $("defiFenetre").hidden = false;
     });
@@ -385,6 +389,11 @@ export function installerDuels(ctx) {
   const fermerDefi = (resultat = null) => { const e = enCoursDefi; enCoursDefi = null; $("defiFenetre").hidden = true; e?.resoudre(resultat); };
   $("defiAnnuler").addEventListener("click", () => fermerDefi());
   $("defiFenetre").addEventListener("click", e => { if (e.target.id === "defiFenetre") fermerDefi(); });
+  $("defiProgrammer").addEventListener("click", () => {
+    if (!enCoursDefi) return;
+    enCoursDefi.programmer = true; $("defiProgrammer").disabled = true;
+    $("defiEnvoyer").click();
+  });
   $("defiEnvoyer").addEventListener("click", async () => {
     const e = enCoursDefi; if (!e) return;
     $("defiEnvoyer").disabled = true;
@@ -399,7 +408,7 @@ export function installerDuels(ctx) {
       }
     } catch (err) {
       $("defiFenetreMsg").textContent = err.message; $("defiFenetreMsg").classList.add("erreur");
-      $("defiEnvoyer").disabled = false;
+      $("defiEnvoyer").disabled = false; $("defiProgrammer").disabled = false;
     }
   });
 
