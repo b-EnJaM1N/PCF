@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { notesDe, rangDe, texteRang, carteDe, RANGS, diversification, noteBareme, BAREMES } from "../app/js/carte-logique.js";
+import { notesDe, rangDe, texteRang, carteDe, RANGS, diversification, noteBareme, BAREMES, avecPreuves } from "../app/js/carte-logique.js";
 import { profilParDefaut } from "../app/js/profil.js";
 
 const note = (P, code) => notesDe(P).find(n => n.code === code).valeur;
@@ -10,7 +10,7 @@ test("un nouveau joueur : carte en bois, des tirets, niveau d'entraînement", ()
   assert.equal(c.rarete, "bois");
   assert.equal(c.niveau, 1200); assert.equal(c.typeNiveau, "NIVEAU");
   assert.equal(c.signe, null);
-  assert.deepEqual(c.notes.map(n => n.code), ["IMP", "PUN", "DIV", "SGF", "FLA", "RÉS"]);
+  assert.deepEqual(c.notes.map(n => n.code), ["IMP", "PUN", "POL", "SGF", "FLA", "RÉS"]);
   assert.ok(c.notes.every(n => n.valeur === "–"), "pas de match contre des joueurs : des tirets");
 });
 
@@ -19,14 +19,15 @@ test("les stats de la carte : seulement contre les joueurs, en pourcentages", ()
   Object.assign(P, { matchs: 100, victoires: 90 });   // (le total, avec les bots, ne compte pas)
   P.parAdv = { humains: { matchs: 10, victoires: 6, signes: [40, 30, 30], apresVictoire: 50, apresDefaite: 40, devines: 0, lisibles: 0,
     ballesObtenues: 10, ballesConverties: 5, ballesSubies: 8, ballesSauvees: 3, decisifsJoues: 2, decisifsGagnes: 2, flairTentees: 40, flairReussies: 30, endChaines: 6, endGagnees: 5 } };
-  assert.equal(note(P, "DIV"), "70");              // 40 / 30 / 30
+  assert.equal(note(P, "POL"), "70");              // 40 / 30 / 30
   assert.equal(note(P, "SGF"), "70");              // (5 + 3 + 2) / (10 + 8 + 2) = 50 % : la moyenne
-  assert.equal(note(P, "FLA"), "99");              // 30 sur 40 = 75 %
+  assert.equal(note(P, "FLA"), "82");              // 30 sur 40 = 75 % (99), mais 40 lectures sur 100 : 70 + 29 × 0,4
   assert.equal(note(P, "RÉS"), "–", "les égalités pas encore comptées : pas de note");
   assert.equal(note(P, "PUN"), "–", "le Punch aussi a besoin des égalités");
   P.parAdv.humains.egalites = 54;                  // marqués : 56 ; perdus : 40 + 10 - 6 = 44
-  assert.equal(note(P, "PUN"), "79");              // 56 sur 154 coups = 36,4 % : 70 + 3,03 × 20 / 6,67
-  assert.equal(note(P, "RÉS"), "80");              // 54 sur 98 = 55,1 % : 70 + 5,1 × 20 / 10
+  assert.equal(note(P, "PUN"), "73");              // 56 sur 154 coups = 36,4 % (79), 154 coups sur 500 : 70 + 9 × 0,308
+  assert.equal(note(P, "RÉS"), "73");              // 54 sur 98 = 55,1 % (80), 98 sur 300 : 70 + 10 × 0,327
+  assert.equal(avecPreuves(90, 20, 100), 74); assert.equal(avecPreuves(90, 50, 100), 80); assert.equal(avecPreuves(90, 300, 100), 90);
   assert.equal(note(P, "IMP"), "–", "pas encore assez de coups lus");
   assert.equal(diversification([100, 100, 100]), 100);
   assert.equal(diversification([1001, 1000, 999]), 100, "33,3 % partout, au dixième près");

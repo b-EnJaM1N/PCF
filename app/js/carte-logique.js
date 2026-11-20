@@ -35,7 +35,11 @@ export function noteBareme(p, bareme) {
   else for (let k = 1; k < b.length; k++) if (p <= b[k][0]) { const [x0, y0] = b[k - 1], [x1, y1] = b[k]; n = y0 + ((p - x0) * (y1 - y0)) / (x1 - x0); break; }
   return Math.max(1, Math.min(99, Math.round(n)));
 }
-const notePc = (a, b, bareme) => (b ? `${noteBareme((100 * a) / b, bareme)}` : "–");
+// Le poids des preuves (20 novembre, validé par le porteur du projet) : la note part de 70 et ne rejoint sa vraie valeur qu'avec
+// assez de situations (sinon, un joueur chanceux sur peu de matchs aurait 90) : on garde n ÷ PREUVES de l'écart à 70.
+export const PREUVES = { IMP: 300, PUN: 500, POL: 300, SGF: 100, FLA: 100, RES: 300 };
+export const avecPreuves = (note, n, besoin) => (note === null ? null : Math.round(70 + (note - 70) * Math.min(1, n / besoin)));
+const notePc = (a, b, bareme, besoin) => (b ? `${avecPreuves(noteBareme((100 * a) / b, bareme), b, besoin)}` : "–");
 // Les repères, en clair (« Le détail du calcul », sous la carte).
 const reperes = (b, unite = " %") => b.filter(([, n]) => [50, 90, 99].includes(n)).map(([x, n]) => `${Math.round(x)}${unite} = ${n}`).join(" · ");
 
@@ -64,17 +68,17 @@ export function notesDe(P) {
   const resistance = ok && h.egalites !== undefined && nonGagnes >= MINIMUM.RES ? [h.egalites, nonGagnes] : [0, 0];
   // (20 novembre : une phrase courte par note ; le calcul, à déplier à part ; textes validés par le porteur du projet)
   return [
-    { code: "IMP", nom: "Imprévisibilité", valeur: imp === null ? rien : `${noteBareme(imp, BAREMES.IMP)}`, aide: "ton jeu est-il difficile à deviner ?",
+    { code: "IMP", nom: "Imprévisibilité", valeur: imp === null ? rien : `${avecPreuves(noteBareme(imp, BAREMES.IMP), h.lisibles, PREUVES.IMP)}`, aide: "ton jeu est-il difficile à deviner ?",
       calcul: "l'appli essaie de deviner ton prochain coup à partir de tes habitudes. Moins elle y arrive, mieux c'est. Deviné 1 coup sur 2 → 60 · un peu moins d'1 sur 2 → 70 · 1 sur 3 (comme le hasard) → 90 · 1 sur 5 → 99" },
-    { code: "PUN", nom: "Punch", valeur: notePc(...points, BAREMES.PUN), aide: "combien de tes coups marquent le point",
+    { code: "PUN", nom: "Punch", valeur: notePc(...points, BAREMES.PUN, PREUVES.PUN), aide: "combien de tes coups marquent le point",
       calcul: "sur tous tes coups, égalités comprises, combien marquent le point. 1 sur 3 (le hasard) → 70 · 4 sur 10 → 90 · 45 sur 100 → 99" },
-    { code: "DIV", nom: "Diversification", valeur: div === null ? rien : `${noteBareme(div, BAREMES.DIV)}`, aide: "l'équilibre entre tes trois signes",
+    { code: "POL", nom: "Polyvalence", valeur: div === null ? rien : `${avecPreuves(noteBareme(div, BAREMES.DIV), h.signes.reduce((x, y) => x + y, 0), PREUVES.POL)}`, aide: "l'équilibre entre tes trois signes",
       calcul: "tes trois signes sont-ils joués autant les uns que les autres ? 40 % / 30 % / 30 % → 70 · 35 / 33 / 32 → 90 · exactement un tiers chacun → 99 · un signe joué 60 % du temps ou plus → 1" },
-    { code: "SGF", nom: "Sang-froid", valeur: notePc(...sgf, BAREMES.SGF), aide: "les moments décisifs que tu remportes",
+    { code: "SGF", nom: "Sang-froid", valeur: notePc(...sgf, BAREMES.SGF, PREUVES.SGF), aide: "les moments décisifs que tu remportes",
       calcul: "dans les moments décisifs (tes balles de set et de match, celles de ton adversaire, les sets décisifs), combien tu en remportes. La moitié → 70 · 6 sur 10 → 90 · 7 sur 10 → 99" },
-    { code: "FLA", nom: "Flair", valeur: notePc(...lectures, BAREMES.FLA), aide: "les habitudes de ton adversaire que tu punis",
+    { code: "FLA", nom: "Flair", valeur: notePc(...lectures, BAREMES.FLA, PREUVES.FLA), aide: "les habitudes de ton adversaire que tu punis",
       calcul: `quand ton adversaire a une habitude bien installée dans le match (par exemple, il rejoue le signe qui vient de gagner) et que tu joues ce qui la bat, combien de fois le point est pour toi. La moitié → 70 · 6 sur 10 → 90 · 3 sur 4 → 99 · à partir de ${MINIMUM.FLA} essais` },
-    { code: "RÉS", nom: "Résistance", valeur: notePc(...resistance, BAREMES.RES), aide: "éviter de perdre le point quand tu ne le marques pas",
+    { code: "RÉS", nom: "Résistance", valeur: notePc(...resistance, BAREMES.RES, PREUVES.RES), aide: "éviter de perdre le point quand tu ne le marques pas",
       calcul: `quand tu ne marques pas le point, combien de fois tu évites de le perdre (une égalité plutôt qu'un point perdu). La moitié (le hasard) → 70 · 6 sur 10 → 90 · 2 sur 3 → 99 · à partir de ${MINIMUM.RES} coups` },
   ];
 }
