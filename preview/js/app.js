@@ -3363,7 +3363,7 @@ cerclesUI = installerCercles({
   compte: compteUI,
   signaler, aller, vueCourante: () => vueCourante,
   ouvrirOnglet,
-  defier: p => duelsUI.defier(p),
+  defier: (p, o) => duelsUI.defier(p, o),
   dejaDefie: id => !!duelsUI?.dejaDefie(id),
   annulerDefi: id => duelsUI.annulerDefi(id),
   voirCarte: id => voirCarteDe(id),

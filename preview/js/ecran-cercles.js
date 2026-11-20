@@ -249,6 +249,7 @@ export function installerCercles(ctx) {
     $("aStats").innerHTML = `<p class="hint">Chargement…</p>`; dire("aMsg", "");
     const deja = !!ctx.dejaDefie?.(id);
     $("aDefier").disabled = deja; $("aDefier").textContent = deja ? texteAttente(a) : "Défier"; if ($("aAnnulerDefi")) $("aAnnulerDefi").hidden = !deja;
+    $("aProgrammer").hidden = deja || !ouvert("creneaux");   // (20 novembre : envoyer un défi et choisir tout de suite les créneaux)
     // Son fantôme (fantome.js) : un bot qui joue comme lui, d'après ses matchs en ligne (pour l'instant sur la version de test).
     $("aFantome").hidden = true;
     if (fantomeVisible() && ctx.fantomeDe) ctx.fantomeDe(id).then(ok => {
@@ -290,6 +291,12 @@ export function installerCercles(ctx) {
     $("aRetirer").disabled = false;
   });
   $("aFantome").addEventListener("click", () => { const a = amis.find(x => x.id === amiOuvert); if (a) ctx.jouerFantome?.(a); });
+  $("aProgrammer").addEventListener("click", async () => {
+    const a = amis.find(x => x.id === amiOuvert); if (!a) return;
+    $("aProgrammer").disabled = true;
+    try { await ctx.defier(a, { programmer: true }); } catch (err) { dire("aMsg", err.message, true); }
+    $("aProgrammer").disabled = false;
+  });
   $("aDefier").addEventListener("click", async () => {
     const a = amis.find(x => x.id === amiOuvert); if (!a) return;
     $("aDefier").disabled = true;
