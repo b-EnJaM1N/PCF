@@ -173,7 +173,7 @@ export function nouvelElo(elo, eloAdv, gagne, k = K_ELO) {
 export const nomAffiche = P => P.pseudo || "Toi";
 // Mon jeu, contre les joueurs et contre les bots (19 novembre, demande du porteur du projet) : les mêmes compteurs que le total,
 // tenus à part à partir de cette date (avant, rien ne les distinguait).
-export const jeuVide = () => ({ matchs: 0, signes: [0, 0, 0], smashsTentes: 0, smashsReussis: 0, apresVictoire: 0, memeApresVictoire: 0,
+export const jeuVide = () => ({ matchs: 0, victoires: 0, signes: [0, 0, 0], smashsTentes: 0, smashsReussis: 0, apresVictoire: 0, memeApresVictoire: 0,
   apresDefaite: 0, memeApresDefaite: 0, devines: 0, lisibles: 0 });
 // Le pourcentage de smashs réussis (qui ont gagné le point), ou null si aucun smash joué.
 export const tauxSmash = P => (P.smashsTentes ? Math.round(100 * P.smashsReussis / P.smashsTentes) : null);
@@ -212,7 +212,7 @@ export function enregistrerMatch(P, r) {
   P.parAdv ||= {};
   // (les bots des tournois en ligne, « Rocky 🤖 »…, comptent avec les bots)
   const j = (P.parAdv[humain && !String(r.adversaire.nom || "").includes("🤖") ? "humains" : "bots"] ||= jeuVide());
-  j.matchs++; c.forEach(x => { j.signes[x.a]++; });
+  j.matchs++; if (gagne) j.victoires = (j.victoires || 0) + 1; c.forEach(x => { j.signes[x.a]++; });
   for (let i = 1; i < n; i++) {
     const p = c[i - 1];
     if (p.gagnant === 0) { j.apresVictoire++; if (c[i].a === p.a) j.memeApresVictoire++; }

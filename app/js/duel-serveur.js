@@ -49,7 +49,7 @@ export const mesDuelsRecents = () => essayer(async () => verifier(await client()
 
 // Tous mes duels terminés, par pages de 1000 (pour retrouver « Mon jeu » contre les joueurs dans les matchs passés ; 19 novembre).
 export const mesDuelsTermines = (debut = 0) => essayer(async () => verifier(await client().from("duels")
-  .select("j0, j1, coups").eq("phase", "termine").order("cree_le", { ascending: true }).range(debut, debut + 999)));
+  .select("j0, j1, coups, vainqueur").eq("phase", "termine").order("cree_le", { ascending: true }).range(debut, debut + 999)));
 
 export const lireDuel = id => essayer(async () => verifier(await client().from("duels").select("*").eq("id", id).single()));
 

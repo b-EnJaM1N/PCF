@@ -6,13 +6,13 @@ import { profilParDefaut } from "../app/js/profil.js";
 test("Mon jeu contre les joueurs, retrouvé dans les duels passés (les bots en ligne à part)", () => {
   const duels = [
     // moi en j0 : Pierre gagnant, Pierre encore (égalité), Feuille avec un smash gagnant
-    { j0: "moi", j1: "ami", coups: [{ a: 0, b: 1, g: 0 }, { a: 0, b: 0, g: null }, { a: 2, b: 0, g: 0, smash: [true, false] }] },
+    { j0: "moi", j1: "ami", vainqueur: 0, coups: [{ a: 0, b: 1, g: 0 }, { a: 0, b: 0, g: null }, { a: 2, b: 0, g: 0, smash: [true, false] }] },
     // moi en j1 : Ciseaux perdant, puis Ciseaux encore
     { j0: "amie", j1: "moi", coups: [{ a: 0, b: 1, g: 0 }, { a: 2, b: 1, g: 1 }] },
     { j0: "moi", j1: "rocky", coups: [{ a: 0, b: 1, g: 0 }] },   // un bot en ligne : pas compté
   ];
   const h = jeuDepuisDuels(duels, "moi", new Set(["rocky"]));
-  assert.equal(h.matchs, 2);
+  assert.equal(h.matchs, 2); assert.equal(h.victoires, 1);
   assert.deepEqual(h.signes, [2, 2, 1]);
   assert.equal(h.apresVictoire, 1); assert.equal(h.memeApresVictoire, 1);
   assert.equal(h.apresDefaite, 1); assert.equal(h.memeApresDefaite, 1);
