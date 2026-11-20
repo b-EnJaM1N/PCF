@@ -182,7 +182,7 @@ export function installerTournois(ctx) {
     clearInterval(minuterie);
     await charger();
     // Sit & Go en direct : mise à jour plus fréquente.
-    if (ouvert === id) { clearInterval(minuterie); minuterie = setInterval(() => { if (!$("socTournoi").hidden && !document.hidden) charger(); }, detail?.mode === "direct" ? 4000 : 10000); }
+    if (ouvert === id) { clearInterval(minuterie); minuterie = setInterval(() => { if (!$("socTournoi").hidden && !document.hidden && !saisieRdv()) charger(); }, detail?.mode === "direct" ? 4000 : 10000); }
   }
   function fermer() { ouvert = null; detail = null; clearInterval(minuterie); }
   // Les records du tournoi (13 novembre, demande du porteur du projet ; records-cercle.js) : pendant et après le tournoi,
@@ -522,6 +522,13 @@ export function installerTournois(ctx) {
   // ------------------------------------------------ programmer le match (20 novembre, idée et choix du porteur du projet ; étape SQL 84)
   // Un joueur propose des plages ; l'autre choisit une heure précise dans une plage (le rendez-vous est fixé), propose d'autres
   // plages, ou décline. 15 minutes après l'heure, celui qui était là peut réclamer la victoire par forfait.
+  // (20 novembre, remarque du porteur du projet : « quand je manipule les créneaux, ça quitte le menu » : la page se mettait à jour
+  // toutes les 10 secondes et effaçait la saisie ; elle attend maintenant que le formulaire soit envoyé ou fermé)
+  let rdvTouche = 0;
+  const saisieRdv = () => {
+    const f = $("tRdvForm"), z = $("tRdv");
+    return !!(f && !f.hidden) || !!(z && z.contains(document.activeElement)) || Date.now() - rdvTouche < 60e3;
+  };
   async function afficherRdv(mm, uid, t) {
     const zone = $("tRdv"), id = mm.match.id, adv = esc(mm.adversaire.pseudo);
     if (!zone) return;
@@ -552,6 +559,8 @@ export function installerTournois(ctx) {
         + `<div class="rdv-actions">${forfaitPossible(c) ? action("forfait", "🏳️ Réclamer la victoire par forfait", "petit") : ""}${action("proposer", "Changer l'heure")}</div>`;
     }
     zone.innerHTML = html + `<div id="tRdvForm" hidden></div><p class="hint rdv-msg" id="tRdvMsg"></p>`;
+    rdvTouche = 0;
+    zone.addEventListener("input", () => { rdvTouche = Date.now(); });   // (un choix d'heure en cours : pas de mise à jour pendant une minute)
     const msg = (texte, erreur = false) => { const m = $("tRdvMsg"); if (m) { m.textContent = texte; m.classList.toggle("erreur", erreur); } };
     const agir = async (f, ok) => { try { await f(); dire(ok); charger(); } catch (e) { msg(e.message, true); } };
     zone.querySelectorAll("button[data-rdv]").forEach(b => b.addEventListener("click", () => {
@@ -575,7 +584,7 @@ export function installerTournois(ctx) {
     f.innerHTML = `<p class="hint">Tes plages pour ${adv} (5 au plus), avant la date limite :</p>`
       + (rapides.length ? `<div class="rdv-rapides">${rapides.map((r, i) => `<button class="petit alt" data-rapide="${i}">+ ${r.texte}</button>`).join("")}</div>` : "")
       + `<div id="tRdvLignes">${ligne()}</div><button class="petit alt" id="tRdvPlus">+ Une autre plage</button>
-         <button class="btn" id="tRdvEnvoyer">📅 Envoyer mes créneaux</button>`;
+         <button class="btn" id="tRdvEnvoyer">📅 Envoyer mes créneaux</button><button class="btn alt" id="tRdvFermer">Annuler</button>`;
     const lignes = () => [...f.querySelectorAll(".rdv-ligne")];
     const ajouter = (j, de, a) => {
       if (lignes().length >= 5) return;
@@ -586,6 +595,7 @@ export function installerTournois(ctx) {
       const b = e.target.closest("button"); if (!b) return;
       if (b.classList.contains("rx")) { b.closest(".rdv-ligne").remove(); return; }
       if (b.id === "tRdvPlus") return ajouter();
+      if (b.id === "tRdvFermer") { f.hidden = true; rdvTouche = 0; return; }
       if (b.dataset.rapide !== undefined) {
         const p = rapides[+b.dataset.rapide].p, d = new Date(p.debut), x = new Date(p.fin), hh = z => `${String(z.getHours()).padStart(2, "0")}:${String(z.getMinutes()).padStart(2, "0")}`;
         const j = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
