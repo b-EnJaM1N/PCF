@@ -3387,6 +3387,10 @@ function majDossard() {
   }).catch(() => {});
 }
 compteUI.surConnexion(session => { if (session?.user) majDossard(); });
+// (20 novembre, demande du porteur du projet : les stats des adversaires séparées joueurs / bots, comme les miennes) « Mon jeu »
+// contre les joueurs et contre les bots est retrouvé dès l'ouverture de l'appli (et plus seulement en ouvrant Ma fiche › Stats) :
+// enregistré dans la fiche en ligne, il apparaît aussitôt sur la fiche que voient les autres. (8 secondes : après la synchronisation)
+compteUI.surConnexion(session => { if (session?.user) setTimeout(() => { recupererJeuPasse(); }, 8000); });
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") majDossard(); });
 
 function gagnerTrophees(nouveaux) {
