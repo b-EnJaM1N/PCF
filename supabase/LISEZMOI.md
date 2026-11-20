@@ -543,6 +543,14 @@ en ligne compte toujours les siens.
    accepte le défi, gardé jusqu'à une heure après l'heure prévue (pas de forfait : ensuite, annulé sans vainqueur).
 2. **Mettre à jour la fonction « Notifier »** (même manipulation) : une notification de défi programmé ouvre « Défis »
 
+## 1 octogies sexto. Le défi programmé, version complète (étape 86)
+
+1. Même manipulation que d'habitude avec [`etape-86-defi-programme.sql`](etape-86-defi-programme.sql), **après** l'étape 85
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-86-defi-programme.sql).
+   La notification dit l'horaire ; « Décliner » refuse le défi ; un défi programmé ne se lance jamais avant l'heure (salle
+   d'attente ouverte 5 minutes avant) et ne s'accepte qu'en choisissant un horaire.
+2. **Mettre à jour la fonction « Notifier »** (même manipulation) : l'horaire dans la notification.
+
 ## 1 octogies. Les smileys dans les messages du duel (étape 80)
 
 Même manipulation que d'habitude avec [`etape-80-smileys.sql`](etape-80-smileys.sql), **après** l'étape 79
