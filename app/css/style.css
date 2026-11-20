@@ -1300,3 +1300,5 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .rdv-ligne select, .rdv-choix select { padding: 6px; border-radius: 8px; font: inherit; }
 .rdv-msg.erreur { color: var(--bot); }
 #tRdvForm .btn { margin-top: 8px; }
+.ami-actions { display: grid; grid-template-columns: 1fr; gap: 8px; } .ami-actions:has(#aProgrammer:not([hidden])) { grid-template-columns: 1fr 1fr; }
+.ami-actions .btn { margin: 0; }
