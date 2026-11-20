@@ -1302,3 +1302,5 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 #tRdvForm .btn { margin-top: 8px; }
 .ami-actions { display: grid; grid-template-columns: 1fr; gap: 8px; } .ami-actions:has(#aProgrammer:not([hidden])) { grid-template-columns: 1fr 1fr; }
 .ami-actions .btn { margin: 0; }
+.rdv-mode { display: flex; gap: 6px; width: 100%; margin-top: 4px; } .rdv-mode .petit.on { border-color: var(--me); }
+.rdv-ligne { border-top: 1px solid rgba(255, 255, 255, .08); padding-top: 6px; }
