@@ -133,7 +133,9 @@ export function installerDuels(ctx) {
     if (actif && !ctx.duelEnCours() && joueurs.get(adversaireDe(actif, uid))) { quitterSalle(); ctx.lancerDuel(actif, joueurs.get(adversaireDe(actif, uid))); }
     // Un défi reçu pas encore montré : une fenêtre s'ouvre (pas pendant un match ni dans une salle d'attente).
     const nouveau = recus.find(d => !d.tournoi_match && !defisVus.has(d.id) && joueurs.get(d.j0));
-    if (nouveau && !fenetre && !salle && !actif && !ctx.duelEnCours() && !document.body.classList.contains("en-match")) montrerDefi(nouveau, joueurs.get(nouveau.j0), recus.length - 1);
+    if (nouveau && !fenetre && !salle && !actif && !ctx.duelEnCours() && !document.body.classList.contains("en-match")) montrerDefi(nouveau, joueurs.get(nouveau.j0), recus.length - 1, creneaux.get(nouveau.id));
+    // (les créneaux arrivent juste après le défi : la fenêtre déjà ouverte les montre)
+    else if (fenetre && !fenetre.mode && !fenetre.programme && creneaux.get(fenetre.duel.id)?.statut === "propose") montrerDefi(fenetre.duel, fenetre.adv, recus.length - 1, creneaux.get(fenetre.duel.id));
     if (fenetre && ![...recus, ...rdvs].some(d => d.id === fenetre.duel.id)) fermerFenetre();   // annulé ou commencé entre-temps
     const libre = !actif && !salle && !fenetre && !document.hidden && !ctx.duelEnCours() && !document.body.classList.contains("en-match");
     // Mon défi vient d'être accepté, l'appli ouverte : j'entre tout de suite dans la salle d'attente (le match démarre si l'autre y est).
@@ -200,15 +202,26 @@ export function installerDuels(ctx) {
   }
 
   // ------------------------------------------------ la fenêtre « X te défie ! »
-  function montrerDefi(duel, adv, autres) {
-    fenetre = { duel, adv };
+  // c : ses créneaux, si le défi est programmé (20 novembre, remarque du porteur du projet : « pour celui qui reçoit, c'est comme
+  // un défi normal » : la fenêtre montre maintenant les créneaux proposés, à choisir tout de suite).
+  function montrerDefi(duel, adv, autres, c = null) {
+    const programme = !!c && c.statut === "propose" && c.propose_par !== uid;
+    fenetre = { duel, adv, programme };
     defisVus.add(duel.id); ecrire("defisVus", [...defisVus].slice(-50));
     $("defiRecuTitre").textContent = `⚔️ ${adv.pseudo} te défie !`;
     $("defiRecuCorps").innerHTML = `<div class="joueur"><span class="mini">${avatarSVG(adv.avatar || {})}</span>
       <div style="min-width:0"><div class="jn">${esc(adv.drapeau || "")} ${nomComplet(adv)}</div><div class="jd">${FORMAT(duel)}</div>${duel.enjeu ? `<div class="jd enjeu">🎯 Enjeu : « ${esc(duel.enjeu)} »</div>` : ""}</div><span></span></div>
       ${autres > 0 ? `<p class="hint">Et ${autres} autre${autres > 1 ? "s" : ""} défi${autres > 1 ? "s" : ""} t'attend${autres > 1 ? "ent" : ""} dans Jouer › Défier un ami.</p>` : ""}
-      <p class="hint">En acceptant, tu entres dans la salle d'attente : le match démarre dès que vous êtes là tous les deux.</p>`;
-    $("defiRecuAccepter").textContent = duel.enjeu ? "Accepter le défi et l'enjeu" : "Accepter";
+      ${programme ? `<div class="rdv" id="defiRecuCreneaux"></div><p class="hint">Ou joue tout de suite : tu entres dans la salle d'attente, le match démarre dès que vous êtes là tous les deux.</p>`
+        : `<p class="hint">En acceptant, tu entres dans la salle d'attente : le match démarre dès que vous êtes là tous les deux.</p>`}`;
+    if (programme) {
+      $("defiRecuTitre").textContent = `📅 ${adv.pseudo} te propose un défi programmé`;
+      ouvrirPanneau($("defiRecuCreneaux"), { c, uid, adv: adv.pseudo, sansFermer: true,
+        actions: { proposer: pl => serveur.proposerCreneauxDuel(duel.id, pl), choisir: h => serveur.choisirCreneauDuel(duel.id, h), decliner: () => serveur.declinerCreneauxDuel(duel.id) },
+        fini: m => { fermerFenetre(); ctx.ouvrirOnglet("duel"); dire(m); rafraichir(); } });
+    }
+    $("defiRecuAccepter").textContent = programme ? (duel.enjeu ? "Jouer maintenant (défi et enjeu)" : "Jouer maintenant") : duel.enjeu ? "Accepter le défi et l'enjeu" : "Accepter";
+    $("defiRecuAccepter").classList.toggle("alt", programme);
     $("defiRecuAccepter").disabled = $("defiRecuRefuser").disabled = false;
     $("defiRecuFenetre").hidden = false;
   }
@@ -230,7 +243,7 @@ export function installerDuels(ctx) {
     $("defiRecuAccepter").disabled = $("defiRecuRefuser").disabled = false;
     $("defiRecuFenetre").hidden = false;
   }
-  function fermerFenetre() { fenetre = null; $("defiRecuFenetre").hidden = true; $("defiRecuRefuser").textContent = "Refuser"; }
+  function fermerFenetre() { fenetre = null; $("defiRecuFenetre").hidden = true; $("defiRecuRefuser").textContent = "Refuser"; $("defiRecuAccepter").classList.remove("alt"); }
   $("defiRecuPlusTard").addEventListener("click", () => { if (fenetre?.mode === "rdv") quittes.add(fenetre.duel.id); fermerFenetre(); });
   $("defiRecuFenetre").addEventListener("click", e => { if (e.target.id === "defiRecuFenetre") fermerFenetre(); });
   $("defiRecuRefuser").addEventListener("click", async () => {
