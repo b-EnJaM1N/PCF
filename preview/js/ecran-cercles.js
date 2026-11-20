@@ -248,7 +248,7 @@ export function installerCercles(ctx) {
     $("aInfo").textContent = `${textePresence(a)}Niveau ${texteNiveau(a.classement, a.joues)}${a.joues ? ` · ${pluriel(a.joues, "duel officiel")}` : ""}`;
     $("aStats").innerHTML = `<p class="hint">Chargement…</p>`; dire("aMsg", "");
     const deja = !!ctx.dejaDefie?.(id);
-    $("aDefier").disabled = deja; $("aDefier").textContent = deja ? texteAttente(a) : "Défier"; if ($("aAnnulerDefi")) $("aAnnulerDefi").hidden = !deja;
+    $("aDefier").disabled = deja; $("aDefier").textContent = deja ? texteAttente(a) : "⚔️ Défier"; if ($("aAnnulerDefi")) $("aAnnulerDefi").hidden = !deja;
     $("aProgrammer").hidden = deja || !ouvert("creneaux");   // (20 novembre : envoyer un défi et choisir tout de suite les créneaux)
     // Son fantôme (fantome.js) : un bot qui joue comme lui, d'après ses matchs en ligne (pour l'instant sur la version de test).
     $("aFantome").hidden = true;
@@ -277,7 +277,7 @@ export function installerCercles(ctx) {
   $("aAnnulerDefi")?.addEventListener("click", async () => {
     const a = amis.find(x => x.id === amiOuvert); if (!a || !confirm(`Annuler ton défi à ${a.pseudo} ?`)) return;
     $("aAnnulerDefi").disabled = true;
-    try { await ctx.annulerDefi?.(a.id); dire("aMsg", `Défi à ${a.pseudo} annulé.`); $("aDefier").disabled = false; $("aDefier").textContent = "Défier"; $("aAnnulerDefi").hidden = true; }
+    try { await ctx.annulerDefi?.(a.id); dire("aMsg", `Défi à ${a.pseudo} annulé.`); $("aDefier").disabled = false; $("aDefier").textContent = "⚔️ Défier"; $("aAnnulerDefi").hidden = true; }
     catch (err) { dire("aMsg", err.message, true); }
     $("aAnnulerDefi").disabled = false;
   });
