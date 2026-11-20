@@ -5,6 +5,7 @@ import { Suivi } from "./analyse.js";
 import { jeuVide } from "./profil.js";
 import { nouveauMatch, jouerCoup } from "./regles.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
+import { flairEtEndurance } from "./flair.js";
 
 export const estBotEnLigne = pseudo => String(pseudo || "").includes("🤖");
 
@@ -31,6 +32,9 @@ export function jeuDepuisDuels(duels, uid, bots = new Set()) {
       prec = { mien, g };
     }
     j.devines += suivi.devines; j.lisibles += suivi.lisibles;
+    // (20 novembre) le Flair et l'Endurance, vus de mon côté
+    const fe = flairEtEndurance(coups.map(c => ({ a: moi === 0 ? c.a : c.b, b: moi === 0 ? c.b : c.a, gagnant: c.g === null || c.g === undefined ? null : c.g === moi ? 0 : 1 })));
+    j.flairTentees += fe.tentees; j.flairReussies += fe.reussies; j.endChaines += fe.chaines; j.endGagnees += fe.gagnees;
     // (20 novembre) Les balles de set et de match, les sets décisifs et les lectures réussies : on rejoue le score du match.
     if (d.points_par_set) {
       try {
@@ -56,6 +60,6 @@ export function jeuMoins(P, h) {
   b.matchs = pos(P.matchs - h.matchs); b.victoires = pos((P.victoires || 0) - (h.victoires || 0));
   b.signes = P.signes.map((x, i) => pos(x - h.signes[i]));
   for (const k of ["smashsTentes", "smashsReussis", "apresVictoire", "memeApresVictoire", "apresDefaite", "memeApresDefaite", "devines", "lisibles",
-    "ballesObtenues", "ballesConverties", "ballesSubies", "ballesSauvees", "decisifsJoues", "decisifsGagnes", "lecturesReussies", "lecturesRatees"]) b[k] = pos((P[k] || 0) - (h[k] || 0));
+    "ballesObtenues", "ballesConverties", "ballesSubies", "ballesSauvees", "decisifsJoues", "decisifsGagnes", "lecturesReussies", "lecturesRatees", "flairTentees", "flairReussies", "endChaines", "endGagnees"]) b[k] = pos((P[k] || 0) - (h[k] || 0));
   return b;
 }
