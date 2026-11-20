@@ -3,25 +3,37 @@
 import { indiceImprevisibilite } from "./analyse.js";
 import { titresObtenus, signeFavori } from "./profil.js";
 
-const borne = x => Math.max(1, Math.min(99, Math.round(x)));
-// Un taux comparé au hasard (une chance sur deux) : 50 % → 50, 100 % → 99.
-// Avec peu d'occasions, la note reste proche de 50 : il faut des preuves pour monter (ou descendre).
-function note(reussis, total, confiance) {
-  if (!total) return 50;
-  const brut = 50 + (reussis / total - 0.5) * 100;
-  return borne(50 + (brut - 50) * Math.min(1, total / confiance));
+// (20 novembre, choix du porteur du projet) Six stats en vrais pourcentages, seulement contre de vrais joueurs (« Mon jeu » contre
+// les joueurs, P.parAdv.humains) : avant, six notes sur 99 (victoires, finition, mental, sets décisifs, imprévisibilité, expérience).
+// Tant qu'un joueur n'a aucun match en ligne, « – ».
+// (20 novembre, deuxième version, choix du porteur du projet : toutes les stats en pourcentage, sans décimale ni signe « % » ;
+// le sang-froid s'écrit SGF ; le flair devient le pourcentage de lectures réussies.)
+const pc = (a, b) => (b ? `${Math.round((100 * a) / b)}` : "–");
+// La diversification : l'équilibre entre les trois signes, sur un barème serré. 100 seulement quand les trois signes sont à 33,3 %
+// chacun (au dixième près) ; sinon, au plus 99 (40 / 30 / 30 : 75 ; 50 / 25 / 25 : 37 ; 60 / 20 / 20 ou pire : 0).
+export function diversification(signes) {
+  const t = (signes || []).reduce((a, b) => a + b, 0);
+  if (!t) return null;
+  const parts = signes.map(s => Math.round((1000 * s) / t) / 10);
+  if (parts.every(p => p >= 33.3 && p <= 33.4)) return 100;
+  const ecart = signes.reduce((e, s) => e + Math.abs(s / t - 1 / 3), 0);
+  return Math.min(99, Math.max(0, Math.floor(100 - 187.5 * ecart)));
 }
-
-// Les six notes de la carte, avec leur explication.
 export function notesDe(P) {
-  const lecture = P.lisibles >= 30 ? indiceImprevisibilite(P.devines / P.lisibles) : 50;
+  const h = P.parAdv?.humains;
+  const ok = !!h?.matchs, rien = "–";
+  const div = ok ? diversification(h.signes) : null;
+  const imp = ok && h.lisibles >= 30 ? indiceImprevisibilite(h.devines / h.lisibles) : null;
+  const points = ok ? [(h.apresVictoire || 0) + (h.victoires || 0), (h.apresVictoire || 0) + (h.apresDefaite || 0) + h.matchs] : [0, 0];
+  const sgf = ok ? [(h.ballesConverties || 0) + (h.ballesSauvees || 0) + (h.decisifsGagnes || 0), (h.ballesObtenues || 0) + (h.ballesSubies || 0) + (h.decisifsJoues || 0)] : [0, 0];
+  const lectures = ok ? [h.lecturesReussies || 0, (h.lecturesReussies || 0) + (h.lecturesRatees || 0)] : [0, 0];
   return [
-    { code: "VIC", nom: "Victoires", valeur: note(P.victoires, P.matchs, 20), aide: "ton taux de victoires" },
-    { code: "FIN", nom: "Finition", valeur: note(P.ballesConverties, P.ballesObtenues, 20), aide: "tes balles de set et de match converties" },
-    { code: "MEN", nom: "Mental", valeur: note(P.ballesSauvees, P.ballesSubies, 20), aide: "les balles de set et de match que tu sauves" },
-    { code: "DÉC", nom: "Sets décisifs", valeur: note(P.decisifsGagnes, P.decisifsJoues, 8), aide: "tes sets décisifs gagnés" },
-    { code: "IMP", nom: "Imprévisibilité", valeur: borne(50 + (lecture - 50) * Math.min(1, P.lisibles / 100)), aide: "à quel point ton jeu est difficile à lire" },
-    { code: "EXP", nom: "Expérience", valeur: borne(14 * Math.log(1 + P.matchs)), aide: "le nombre de matchs joués" },
+    { code: "IMP", nom: "Imprévisibilité", valeur: imp === null ? rien : `${imp}`, aide: "à quel point ton jeu est difficile à lire" },
+    { code: "RÉU", nom: "Taux de réussite", valeur: pc(...points), aide: "les points gagnés, sans compter les égalités (en %)" },
+    { code: "DIV", nom: "Diversification", valeur: div === null ? rien : `${div}`, aide: "l'équilibre entre tes trois signes (100 : 33,3 % chacun)" },
+    { code: "VIC", nom: "Victoires", valeur: ok ? pc(h.victoires || 0, h.matchs) : rien, aide: "tes matchs gagnés (en %)" },
+    { code: "SGF", nom: "Sang-froid", valeur: pc(...sgf), aide: "les moments décisifs réussis : balles de set et de match converties et sauvées, sets décisifs gagnés (en %)" },
+    { code: "FLA", nom: "Flair", valeur: pc(...lectures), aide: "tes lectures réussies : quand tu contres un réflexe de ton adversaire, le point est pour toi (en %)" },
   ];
 }
 

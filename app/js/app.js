@@ -1301,13 +1301,15 @@ function finir() {
 // silencieux : sans les commentaires (le panneau revient après les temps forts ; 19 novembre)
 function montrerStatsFin(apres, { silencieux = false } = {}) {
   const m = S.match, st = statsDuMatch(m.coups), mes = S.stats || {}, ov = $("statsFin"), seance = S;
-  const pc = (x, n) => (n ? `${Math.round((100 * x) / n)} %` : "–"), sur = ([a, b]) => (b ? `${a}/${b}` : "–");
+  const pc = (x, n) => (n ? `${Math.round((100 * x) / n)} %` : "–"), sur = ([a, b]) => (b ? `${a}/${b}` : null), enPc = ([a, b]) => pc(a, b);
   const donnees = [];   // (les mêmes lignes, pour l'image à partager)
-  const ligne = (titre, g, d, vg = null, vd = null) => {
+  // rg, rd : le rapport, sous le pourcentage (20 novembre : le pourcentage en avant, le rapport entre parenthèses)
+  const ligne = (titre, g, d, vg = null, vd = null, { rg = null, rd = null } = {}) => {
     const tg = vg ?? Number.parseFloat(g) ?? 0, td = vd ?? Number.parseFloat(d) ?? 0, tot = (tg || 0) + (td || 0);
-    donnees.push({ titre, g, d, tg: tg || 0, td: td || 0 });
+    donnees.push({ titre, g, d, tg: tg || 0, td: td || 0, rg, rd });
     const barre = tot > 0 ? `<div class="sf-barre"><i style="width:${(100 * (tg || 0)) / tot}%"></i><i style="width:${(100 * (td || 0)) / tot}%"></i></div>` : "";
-    return `<div class="sf-ligne"><b>${g}</b><div class="sf-milieu">${esc(titre)}${barre}</div><b>${d}</b></div>`;
+    const rap = x => (x ? `<small class="sf-ratio">(${x})</small>` : "");
+    return `<div class="sf-ligne"><b>${g}${rap(rg)}</b><div class="sf-milieu">${esc(titre)}${barre}</div><b>${d}${rap(rd)}</b></div>`;
   };
   const nb = j => st.signes[j][0] + st.signes[j][1] + st.signes[j][2];
   const ballesAdv = [Math.max(0, (mes.ballesSubies || 0) - (mes.ballesSauvees || 0)), mes.ballesSubies || 0];
@@ -1317,17 +1319,18 @@ function montrerStatsFin(apres, { silencieux = false } = {}) {
   const favSigne = j => st.signes[j].indexOf(Math.max(...st.signes[j])), fav = j => (nb(j) ? st.signes[j][favSigne(j)] / nb(j) : 0);
   const prefere = j => (nb(j) ? `${EMOJI[favSigne(j)]} ${pc(st.signes[j][favSigne(j)], nb(j))}` : "–");
   // (19 novembre, choix du porteur du projet : sans « Points gagnés », qui doublait le score ; le % de réussite sans les égalités)
-  $("sfLignes").innerHTML = ligne("Réussite (sans les égalités)", pc(...st.reussite[0]), pc(...st.reussite[1]), st.reussite[0][0], st.reussite[1][0])
+  $("sfLignes").innerHTML = ligne("Taux de réussite", pc(...st.reussite[0]), pc(...st.reussite[1]), st.reussite[0][0], st.reussite[1][0], { rg: sur(st.reussite[0]), rd: sur(st.reussite[1]) })
     + ligne("Imprévisibilité", imp(0), imp(1), st.imprevisibilite[0] || 0, st.imprevisibilite[1] || 0)
     // (19 novembre, le porteur du projet trouvait le panneau trop chargé : 7 lignes ; le signe préféré sur une seule ligne, sans
     // « Change de signe après une égalité » ni « Meilleure série », que Monique commente quand ils comptent)
     + ligne("Signe préféré", prefere(0), prefere(1), fav(0), fav(1))
     + ligne("Points gagnés juste après une égalité", st.apresEgalite[0], st.apresEgalite[1])
-    + ligne("Garde son signe après un point gagné", pc(...st.memeApresGain[0]), pc(...st.memeApresGain[1]), st.memeApresGain[0][0] / (st.memeApresGain[0][1] || 1), st.memeApresGain[1][0] / (st.memeApresGain[1][1] || 1))
+    + ligne("Garde son signe après un point gagné", pc(...st.memeApresGain[0]), pc(...st.memeApresGain[1]), st.memeApresGain[0][0] / (st.memeApresGain[0][1] || 1), st.memeApresGain[1][0] / (st.memeApresGain[1][1] || 1), { rg: sur(st.memeApresGain[0]), rd: sur(st.memeApresGain[1]) })
     // (19 novembre au soir, demande du porteur du projet : on la rajoute)
-    + ligne("Change de signe après un point perdu", pc(...st.changeApresPerte[0]), pc(...st.changeApresPerte[1]), st.changeApresPerte[0][0] / (st.changeApresPerte[0][1] || 1), st.changeApresPerte[1][0] / (st.changeApresPerte[1][1] || 1))
-    + ligne("Smashs gagnants", sur(st.smashs[0]), sur(st.smashs[1]), st.smashs[0][0], st.smashs[1][0])
-    + ligne("Balles de set et de match converties", sur([mes.ballesConverties || 0, mes.ballesObtenues || 0]), sur(ballesAdv), mes.ballesConverties || 0, ballesAdv[0])
+    + ligne("Change de signe après un point perdu", pc(...st.changeApresPerte[0]), pc(...st.changeApresPerte[1]), st.changeApresPerte[0][0] / (st.changeApresPerte[0][1] || 1), st.changeApresPerte[1][0] / (st.changeApresPerte[1][1] || 1), { rg: sur(st.changeApresPerte[0]), rd: sur(st.changeApresPerte[1]) })
+    + ligne("Smashs gagnants", enPc(st.smashs[0]), enPc(st.smashs[1]), st.smashs[0][0], st.smashs[1][0], { rg: sur(st.smashs[0]), rd: sur(st.smashs[1]) })
+    + ligne("Balles de set et de match converties", enPc([mes.ballesConverties || 0, mes.ballesObtenues || 0]), enPc(ballesAdv), mes.ballesConverties || 0, ballesAdv[0],
+      { rg: sur([mes.ballesConverties || 0, mes.ballesObtenues || 0]), rd: sur(ballesAdv) })
     + `<p class="sf-seul">${st.coups} coups joués · ${st.egalites} égalité${st.egalites > 1 ? "s" : ""}</p>`;
   ov.hidden = false;
   const debut = Date.now(), coms = S.commentairesFin || [];
@@ -1569,7 +1572,7 @@ try { vueJeu = localStorage.getItem("hs_vue_jeu") || "humains"; } catch { /* rie
 let recupEnCours = false;
 async function recupererJeuPasse() {
   const uid = compteUI?.session()?.user?.id;
-  if (P.parAdvRecupere || recupEnCours || !uid) return;
+  if (P.parAdvVersion >= 4 || recupEnCours || !uid) return;
   recupEnCours = true;
   try {
     const duels = [];
@@ -1581,18 +1584,18 @@ async function recupererJeuPasse() {
     const advs = [...new Set(duels.map(d => (d.j0 === uid ? d.j1 : d.j0)).filter(Boolean))], bots = new Set();
     for (let i = 0; i < advs.length; i += 150) for (const p of await profilsEnLigne(advs.slice(i, i + 150))) if (estBotEnLigne(p.pseudo)) bots.add(p.id);
     const h = jeuDepuisDuels(duels, uid, bots);
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now();
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 4;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées)
     sauverP();
   } catch (e) { console.warn("Mon jeu : matchs passés", e); }
   recupEnCours = false;
   if (!$("viewProfile").hidden) renderMonJeu();
 }
 function renderMonJeu() {
-  if (!P.parAdvRecupere && compteUI?.session()?.user) recupererJeuPasse();
+  if (!(P.parAdvVersion >= 4) && compteUI?.session()?.user) recupererJeuPasse();
   // (sans compte et sans duel joué : tous les matchs passés étaient contre des bots)
-  else if (!P.parAdvRecupere && !compteUI?.session()?.user && !P.duelsFinis) {
+  else if (!(P.parAdvVersion >= 4) && !compteUI?.session()?.user && !P.duelsFinis) {
     const h = P.parAdv?.humains || jeuVide();
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); sauverP();
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 4; sauverP();
   }
   $("gameBody").innerHTML = htmlJeu(P, vueJeu, { enCours: recupEnCours, connecte: !!compteUI?.session()?.user });
   $("gameBody").querySelectorAll(".jeu-vue").forEach(b => b.addEventListener("click", () => {
@@ -1621,7 +1624,8 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
   return `${entete}${nbMatchs}<div class="bars">${barres(V.signes, tot)}</div>
       <div class="lines">
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
-        <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${V.smashsTentes ? `${V.smashsReussis} sur ${V.smashsTentes} (${tauxSmash(V)} %)` : "Aucun pour l'instant"}</span></div>
+        <div class="ln"><span>Taux de réussite</span><span>${(() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })()}</span></div>
+        <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
         <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
       </div>
@@ -1631,13 +1635,18 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
       <div class="gauge"><div style="width:${ind}%"></div></div>
       <p class="hint">L'analyse a deviné <b>${V.devines} coups sur ${V.lisibles}</b>, soit ${(taux * 100).toFixed(1).replace(".", ",")} %. Le hasard pur donnerait 33 % : 100 sur 100, 40 % : 80, 50 % : 50, 60 % : 20.</p>`;
 }
+// Les points gagnés et joués (sans les égalités) d'une fiche, exacts : après chaque point, on sait s'il était gagné (apresVictoire,
+// apresDefaite) ; seul manque le dernier point de chaque match, toujours gagné par le vainqueur du match (20 novembre).
+const pointsDe = V => [(V.apresVictoire || 0) + (V.victoires || 0), (V.apresVictoire || 0) + (V.apresDefaite || 0) + (V.matchs || 0)];
+// (20 novembre, demande du porteur du projet) Le pourcentage en avant, en gras, et le rapport entre parenthèses : « 67 % (2/3) ».
+const pcRatio = (a, b, vide = "–") => (b ? `<b>${Math.round((100 * a) / b)} %</b> <span class="ratio">(${a}/${b})</span>` : vide);
 // Le mental et les records d'une fiche (les miens dans Ma fiche, ceux d'un autre joueur sur sa fiche).
 function htmlMental(Q) {
-  const pc = (a, b) => (b ? `${a} sur ${b} (${Math.round(100 * a / b)} %)` : "Aucune pour l'instant");
+  const pc = (a, b) => pcRatio(a, b, "Aucune pour l'instant");
   return `
       <div class="ln"><span>Balles de set et de match converties</span><span>${pc(Q.ballesConverties, Q.ballesObtenues)}</span></div>
       <div class="ln"><span>Balles adverses sauvées</span><span>${pc(Q.ballesSauvees, Q.ballesSubies)}</span></div>
-      <div class="ln"><span>Sets décisifs gagnés</span><span>${Q.decisifsJoues ? `${Q.decisifsGagnes} sur ${Q.decisifsJoues}` : "Aucun joué"}</span></div>
+      <div class="ln"><span>Sets décisifs gagnés</span><span>${pcRatio(Q.decisifsGagnes, Q.decisifsJoues, "Aucun joué")}</span></div>
       <div class="ln"><span>Matchs gagnés après avoir perdu le 1er set</span><span>${Q.remontadas}</span></div>`;
 }
 function htmlRecords(Q) {

@@ -26,6 +26,10 @@ export function dessinerStats(canvas, { moi, adv, score, lignes, pied }) {
   for (const l of lignes) {
     x.font = police(58, 800); x.textAlign = "left"; x.fillStyle = C.me; x.fillText(String(l.g), 70, y);
     x.textAlign = "right"; x.fillStyle = C.bot; x.fillText(String(l.d), L - 70, y);
+    // (le rapport, en petit sous le pourcentage : 20 novembre)
+    x.font = police(30, 500, false); x.fillStyle = C.muted;
+    if (l.rg) { x.textAlign = "left"; x.fillText(`(${l.rg})`, 70, y + 44); }
+    if (l.rd) { x.textAlign = "right"; x.fillText(`(${l.rd})`, L - 70, y + 44); }
     x.textAlign = "center"; x.fillStyle = C.muted; x.font = police(36, 500, false); x.fillText(l.titre, L / 2, y - 14);
     const tot = (l.tg || 0) + (l.td || 0), bx = 290, bl = L - 580, by = y + 22, bh = 12;
     x.fillStyle = "rgba(255,255,255,.12)"; x.fillRect(bx, by, bl, bh);

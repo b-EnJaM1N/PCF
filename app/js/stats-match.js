@@ -1,4 +1,4 @@
-import { lectureReussie, Suivi, indiceImprevisibilite } from "./analyse.js";
+import { lectureReussie, lectureRatee, Suivi, indiceImprevisibilite } from "./analyse.js";
 // Statistiques « mental » et records d'un match, du point de vue du joueur (côté 0).
 
 export function nouvellesStats() {
@@ -9,6 +9,7 @@ export function nouvellesStats() {
     retardMaxSet: 0, meilleureRemontee: 0,
     premierSetPerdu: false,
     lecturesReussies: 0,                      // réflexes de l'adversaire lus et contrés
+    lecturesRatees: 0,                        // (20 novembre, pour le flair de la carte) la même lecture tentée, mais il a changé
     smashsTentes: 0, smashsReussis: 0,        // mes smashs, et ceux qui ont gagné le point
   };
 }
@@ -16,6 +17,7 @@ export function nouvellesStats() {
 export function suivreCoup(st, match, evt) {
   if (evt.egalite) return st;
   if (lectureReussie(match.coups)) st.lecturesReussies++;
+  if (lectureRatee(match.coups)) st.lecturesRatees++;
   const g = evt.gagnant, ba = evt.balleAvant;
   st.serie = st.serie.joueur === g ? { joueur: g, n: st.serie.n + 1 } : { joueur: g, n: 1 };
   if (ba) {
