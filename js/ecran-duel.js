@@ -9,6 +9,8 @@ import { pointPresence, textePresence, parPresence } from "./social-logique.js";
 import { etatNotifications, activerNotifications } from "./notifications.js";
 import { MISES, gainDuel } from "./jetons-logique.js";
 import { IDEES, erreurEnjeu, nettoyerEnjeu } from "./enjeux.js";
+import { ouvert as nouveauteOuverte } from "./nouveautes.js";
+import { etatCourt, ouvrirPanneau } from "./creneaux-ui.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -99,7 +101,8 @@ export function installerDuels(ctx) {
     if (!uid) { quitterSalle(); ctx.signaler("duels", { recus: 0, enCours: 0, rdv: 0, rdvNouveaux: 0 }); return; }
     // Défis reçus et envoyés : en direct, avec une vérification régulière en secours.
     arrets.push(serveur.ecouter("recus", `j1=eq.${uid}`, rafraichir), serveur.ecouter("envoyes", `j0=eq.${uid}`, rafraichir));
-    minuterie = setInterval(rafraichir, 8000);
+    // (pas pendant que je programme un défi : la mise à jour effacerait la saisie)
+    minuterie = setInterval(() => { if (!document.querySelector("#viewDuel .rdv:not([hidden])")) rafraichir(); }, 8000);
     rafraichir();
     serveur.profils([uid]).then(([p]) => { if (p) $("duelVisible").checked = p.visible_recherche; }).catch(() => {});
     rejoindreLienEnAttente();
@@ -118,6 +121,10 @@ export function installerDuels(ctx) {
     const recus = duels.filter(d => d.phase === "attente" && d.j1 === uid && !d.accepte_le);
     const envoyes = duels.filter(d => d.phase === "attente" && d.j0 === uid && !d.accepte_le);
     const rdvs = duels.filter(d => enRendezVous(d));
+    // Programmer un défi (étape 85 ; version d'essai d'abord) : l'état des créneaux de mes défis.
+    const prog = nouveauteOuverte("creneaux");
+    const creneaux = new Map(prog ? ((await serveur.mesCreneauxDuels().catch(() => [])) || []).map(c => [c.duel_id, c]) : []);
+    const programmable = d => prog && !d.tournoi_match && !d.rapide && !!d.j1;
     defiesA = new Map(duels.filter(d => d.phase === "attente" && d.j0 === uid && d.j1).map(d => [d.j1, d.id]));
     chargerAmis();
 
@@ -130,7 +137,7 @@ export function installerDuels(ctx) {
     if (fenetre && ![...recus, ...rdvs].some(d => d.id === fenetre.duel.id)) fermerFenetre();   // annulé ou commencé entre-temps
     const libre = !actif && !salle && !fenetre && !document.hidden && !ctx.duelEnCours() && !document.body.classList.contains("en-match");
     // Mon défi vient d'être accepté, l'appli ouverte : j'entre tout de suite dans la salle d'attente (le match démarre si l'autre y est).
-    const frais = rdvs.find(d => d.j0 === uid && !quittes.has(d.id) && Date.now() - Date.parse(d.accepte_le) < 2 * 60000 && joueurs.get(d.j1));
+    const frais = rdvs.find(d => d.j0 === uid && !quittes.has(d.id) && Date.now() - Date.parse(d.accepte_le) < 2 * 60000 && Date.parse(d.accepte_le) <= Date.now() && !creneaux.has(d.id) && joueurs.get(d.j1));
     if (libre && frais) { ctx.ouvrirOnglet("duel"); entrerSalle(frais, joueurs.get(frais.j1)); }
     // Sinon (j'ouvre l'appli plus tard, ou l'autre m'attend) : une fenêtre me le propose.
     else if (libre) {
@@ -139,10 +146,14 @@ export function installerDuels(ctx) {
       if (attendu) proposerRdv(attendu, joueurs.get(adversaireDe(attendu, uid)));
     }
 
-    const ligne = (d, p, boutons, info = "") => `<div class="joueur" data-id="${d.id}">
+    const ligne = (d, p, boutons, info = "") => {
+      const c = creneaux.get(d.id), rdv = programmable(d) ? etatCourt(c, uid, p?.pseudo || "") : "";
+      const bouton = programmable(d) ? `<button class="petit alt" data-a="programmer" title="Programmer le défi" aria-label="Programmer le défi">📅</button>` : "";
+      return `<div class="joueur" data-id="${d.id}">
       <span class="mini">${p ? avatarSVG(p.avatar || {}) : "🔗"}</span>
-      <div style="min-width:0"><div class="jn">${p ? nomComplet(p) : "Défi par lien"}</div><div class="jd">${d.tournoi_match ? "🏆 Match de tournoi · " : ""}${FORMAT(d)}</div>${d.enjeu ? `<div class="jd enjeu">🎯 Enjeu : « ${esc(d.enjeu)} »</div>` : ""}${info ? `<div class="jd">${info}</div>` : ""}</div>
-      <div class="actions">${boutons}</div></div>`;
+      <div style="min-width:0"><div class="jn">${p ? nomComplet(p) : "Défi par lien"}</div><div class="jd">${d.tournoi_match ? "🏆 Match de tournoi · " : ""}${FORMAT(d)}</div>${d.enjeu ? `<div class="jd enjeu">🎯 Enjeu : « ${esc(d.enjeu)} »</div>` : ""}${info && !(c?.statut === "fixe") ? `<div class="jd">${info}</div>` : ""}${rdv ? `<div class="jd">${rdv}</div>` : ""}</div>
+      <div class="actions">${boutons}${bouton}</div></div>${programmable(d) ? `<div class="rdv" data-rdv="${d.id}" hidden></div>` : ""}`;
+    };
     $("duelEnCoursCard").hidden = !enCours.length;
     $("duelEnCours").innerHTML = enCours.map(d => ligne(d, joueurs.get(adversaireDe(d, uid)), `<button class="petit" data-a="reprendre">Reprendre</button>`)).join("");
     $("duelRdvCard").hidden = !rdvs.length;
@@ -166,6 +177,14 @@ export function installerDuels(ctx) {
       if (a === "partager") return partager(b.dataset.code);
       if (a === "reprendre") { const d = enCours.find(x => x.id === id); return ctx.lancerDuel(d, joueurs.get(adversaireDe(d, uid))); }
       if (a === "rejoindre") { const d = rdvs.find(x => x.id === id); quittes.delete(id); return entrerSalle(d, joueurs.get(adversaireDe(d, uid))); }
+      if (a === "programmer") {
+        const d = [...recus, ...envoyes, ...rdvs].find(x => x.id === id), zone = document.querySelector(`#viewDuel .rdv[data-rdv="${id}"]`);
+        if (!d || !zone) return;
+        if (!zone.hidden) { zone.hidden = true; zone.innerHTML = ""; return; }
+        return ouvrirPanneau(zone, { c: creneaux.get(id) || null, uid, adv: joueurs.get(adversaireDe(d, uid))?.pseudo || "ton adversaire",
+          actions: { proposer: pl => serveur.proposerCreneauxDuel(id, pl), choisir: h => serveur.choisirCreneauDuel(id, h), decliner: () => serveur.declinerCreneauxDuel(id) },
+          fini: m => { zone.hidden = true; zone.innerHTML = ""; dire(m); rafraichir(); } });
+      }
       b.disabled = true;
       if (a === "accepter") {
         // Accepter, c'est entrer dans la salle d'attente (un match de tournoi, lui, commence tout de suite).
@@ -294,7 +313,7 @@ export function installerDuels(ctx) {
     $("duelAmis").innerHTML = amis.map(a => `<div class="joueur cliquable" data-id="${a.id}" role="button" tabindex="0">
       <span class="mini">${avatarSVG(a.avatar || {})}</span>
       <div style="min-width:0"><div class="jn">${esc(a.drapeau || "")} ${nomComplet(a)}${pointPresence(a)}</div><div class="jd">${textePresence(a)}Niveau ${a.classement}</div></div>
-      <div class="actions">${defiesA.has(a.id) ? `<button class="petit alt" disabled>${texteDefie(a)}</button><button class="petit alt" data-a="annuler-defi">Annuler</button>` : `<button class="petit" data-a="defier">Défier</button>`}</div></div>`).join("");
+      <div class="actions">${defiesA.has(a.id) ? `<button class="petit alt" disabled>${texteDefie(a)}</button><button class="petit alt" data-a="annuler-defi">Annuler</button>` : `<button class="petit" data-a="defier">Défier</button>${nouveauteOuverte("creneaux") ? `<button class="petit alt" data-a="defier-programmer" title="Programmer un défi" aria-label="Programmer un défi">📅</button>` : ""}`}</div></div>`).join("");
   }
   $("duelAmis").addEventListener("click", async e => {
     const x = e.target.closest("button[data-a=annuler-defi]");
@@ -305,12 +324,12 @@ export function installerDuels(ctx) {
       try { await annulerDefi(a.id); dire(`Défi à ${a.pseudo} annulé.`); } catch (err) { dire(err.message, true); x.disabled = false; }
       return;
     }
-    const b = e.target.closest("button[data-a=defier]");
+    const b = e.target.closest("button[data-a=defier], button[data-a=defier-programmer]");
     // Toucher un ami (ailleurs que sur le bouton) : notre face-à-face, avec l'historique de nos duels.
     if (!b) { const l = e.target.closest(".joueur"); if (l && !e.target.closest("button")) ctx.ouvrirAmi?.(l.dataset.id); return; }
     const a = amis.find(x => x.id === b.closest(".joueur").dataset.id); if (!a) return;
     b.disabled = true;
-    if (await defier(a)) renderAmis(); else b.disabled = false;
+    if (await defier(a, { programmer: b.dataset.a === "defier-programmer" })) renderAmis(); else b.disabled = false;
   });
 
   // ------------------------------------------------ recherche
@@ -346,10 +365,12 @@ export function installerDuels(ctx) {
   // ------------------------------------------------ la fenêtre « Défier X » (la même partout : recherche, amis, cercles, face-à-face, lien)
   // Renvoie une promesse : le texte de confirmation une fois le défi envoyé, ou null si on ferme sans envoyer.
   let enCoursDefi = null;   // { p (null : défi par lien), resoudre }
-  function defier(p) {
+  // programmer : « 📅 Programmer un défi » (20 novembre, demande du porteur du projet) : dans la fenêtre, le format et l'enjeu,
+  // puis les créneaux, puis un seul envoi (le défi et ses créneaux).
+  function defier(p, { programmer = false } = {}) {
     return new Promise(resoudre => {
       enCoursDefi?.resoudre(null);
-      enCoursDefi = { p, resoudre };
+      enCoursDefi = { p, resoudre, programmer: programmer && !!p && nouveauteOuverte("creneaux") };
       $("defiFenetreTitre").textContent = p ? `⚔️ Défier ${p.pseudo}` : "🔗 Défier par un lien";
       $("defiFenetreAdv").innerHTML = p
         ? `<div class="joueur"><span class="mini">${avatarSVG(p.avatar || {})}</span><div style="min-width:0"><div class="jn">${esc(p.drapeau || "")} ${nomComplet(p)}</div><div class="jd">Niveau ${p.classement ?? p.niveau ?? ""}</div></div><span></span></div>`
@@ -357,13 +378,33 @@ export function installerDuels(ctx) {
       $("duelEnjeuZone").hidden = !p;
       $("defiEnvoyer").textContent = p ? "Envoyer le défi" : "Créer le lien et le partager";
       $("defiEnvoyer").disabled = false;
+      // (20 novembre, demande du porteur du projet : sous « Envoyer le défi », « 📅 Programmer un défi » ouvre le choix des créneaux
+      // dans la fenêtre ; on envoie ensuite le tout)
+      $("defiProgrammer").hidden = !p || !nouveauteOuverte("creneaux");
+      $("defiProgrammer").disabled = false;
+      $("defiEnvoyer").hidden = false; $("defiCreneaux").hidden = true; $("defiCreneaux").innerHTML = "";
       $("defiFenetreMsg").textContent = ""; $("defiFenetreMsg").classList.remove("erreur");
       $("defiFenetre").hidden = false;
+      if (enCoursDefi.programmer) programmerDansFenetre();
     });
+  }
+  // Le choix des créneaux dans la fenêtre « Défier » : un seul envoi crée le défi, puis lui envoie les créneaux.
+  function programmerDansFenetre() {
+    const e = enCoursDefi; if (!e?.p) return;
+    $("defiEnvoyer").hidden = true; $("defiProgrammer").hidden = true;
+    ouvrirPanneau($("defiCreneaux"), { c: null, uid, adv: e.p.pseudo, texteEnvoyer: "📅 Envoyer le défi programmé", texteFermer: "Sans créneaux",
+      actions: { proposer: async plages => {
+        // (si les créneaux ont échoué après l'envoi du défi, on ne renvoie pas un second défi)
+        if (!e.duelId) { e.texte = await envoyerDefi(e.p); e.duelId = defiesA.get(e.p.id); }
+        await serveur.proposerCreneauxDuel(e.duelId, plages);
+      } },
+      fini: () => { const t = `${e.texte || ""} Tes créneaux lui sont envoyés : il choisira l'heure.`.trim(); fermerDefi(t); dire(t); rafraichir(); },
+      fermer: () => { $("defiEnvoyer").hidden = false; $("defiProgrammer").hidden = false; } });
   }
   const fermerDefi = (resultat = null) => { const e = enCoursDefi; enCoursDefi = null; $("defiFenetre").hidden = true; e?.resoudre(resultat); };
   $("defiAnnuler").addEventListener("click", () => fermerDefi());
   $("defiFenetre").addEventListener("click", e => { if (e.target.id === "defiFenetre") fermerDefi(); });
+  $("defiProgrammer").addEventListener("click", () => programmerDansFenetre());
   $("defiEnvoyer").addEventListener("click", async () => {
     const e = enCoursDefi; if (!e) return;
     $("defiEnvoyer").disabled = true;
@@ -375,7 +416,7 @@ export function installerDuels(ctx) {
       }
     } catch (err) {
       $("defiFenetreMsg").textContent = err.message; $("defiFenetreMsg").classList.add("erreur");
-      $("defiEnvoyer").disabled = false;
+      $("defiEnvoyer").disabled = false; $("defiProgrammer").disabled = false;
     }
   });
 

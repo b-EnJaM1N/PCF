@@ -18,6 +18,11 @@ export const creer = (adversaire, points, sets, classe = true, mise = 0, enjeu =
 export const rejoindre = code => rpc("rejoindre_duel", { p_code: code });
 export const repondre = (id, accepte) => rpc("repondre_duel", { p_id: id, p_accepte: accepte });
 export const annuler = id => rpc("annuler_duel", { p_id: id });
+// Programmer un défi (étape 85) : → la liste de mes défis programmés [{ duel_id, propose_par, plages, statut, rdv }]
+export const mesCreneauxDuels = () => rpc("mes_creneaux_duels");
+export const proposerCreneauxDuel = (id, plages) => rpc("proposer_creneaux_duel", { p_duel: id, p_plages: plages });
+export const choisirCreneauDuel = (id, heure) => rpc("choisir_creneau_duel", { p_duel: id, p_heure: heure });
+export const declinerCreneauxDuel = id => rpc("decliner_creneaux_duel", { p_duel: id });
 // Dans la salle d'attente d'un défi accepté (étape 37) : « je suis là » ; renvoie le duel (« presentation » quand les deux y sont).
 export const rendezVous = id => rpc("rendez_vous", { p_id: id });
 export const pret = id => rpc("pret", { p_id: id });

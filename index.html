@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="version" content="e3013e4 du 20/11/2026">
+<meta name="version" content="d536c26 du 20/11/2026">
 <!-- (15 novembre, choix du porteur du projet : le titre et la description montrés par Google et dans les aperçus de partage) -->
 <title>HandSlam – Pierre-Feuille-Ciseaux devient un sport</title>
 <meta name="description" content="Le Pierre-Feuille-Ciseaux comme un vrai sport : duels entre amis, tournois, classement et gants à collectionner. Gratuit, sans publicité.">
@@ -400,14 +400,19 @@
           <span class="blason-grand" id="aAvatar"></span>
           <div><h2 id="aNom"></h2><p class="hint" id="aInfo"></p></div>
         </section>
+        <!-- (20 novembre, remarque du porteur du projet : les boutons étaient poussés tout en bas par ses stats, on ne les voyait
+             qu'un instant ; ils passent au-dessus) -->
+        <div class="ami-actions">
+          <button class="btn" id="aDefier">Défier</button>
+          <button class="btn alt" id="aProgrammer" hidden>📅 Programmer un défi</button>
+        </div>
+        <button class="btn alt" id="aAnnulerDefi" hidden>Annuler mon défi</button>
+        <button class="btn alt" id="aFantome" hidden>👻 Défier son fantôme</button>
+        <p class="locknote" id="aMsg" role="status"></p>
         <section class="card">
           <div id="aStats"><p class="hint">Chargement…</p></div>
         </section>
-        <button class="btn" id="aDefier">Défier</button>
-        <button class="btn alt" id="aAnnulerDefi" hidden>Annuler mon défi</button>
-        <button class="btn alt" id="aFantome" hidden>👻 Défier son fantôme</button>
         <button class="btn alt" id="aCarte">🃏 Voir sa carte</button>
-        <p class="locknote" id="aMsg" role="status"></p>
         <button class="btn alt danger" id="aRetirer" style="margin-top:22px">🗑️ Retirer de mes amis</button>
       </div>
 
@@ -1057,7 +1062,9 @@
       </div>
     </div>
     <div class="actions-col" style="margin-top:12px">
+      <div class="rdv" id="defiCreneaux" hidden></div>
       <button class="btn" id="defiEnvoyer">Envoyer le défi</button>
+      <button class="btn alt" id="defiProgrammer" hidden>📅 Programmer un défi</button>
       <button class="linkbtn" id="defiAnnuler">Annuler</button>
     </div>
     <p class="locknote" id="defiFenetreMsg" role="status"></p>

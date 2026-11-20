@@ -73,6 +73,13 @@ export const refuserInvitation = id => rpc("refuser_invitation", { p_id: id });
 export const lancerTournoi = id => rpc("lancer_tournoi", { p_id: id });
 export const annulerTournoi = id => rpc("annuler_tournoi", { p_id: id });
 export const jouerMatchTournoi = id => rpc("jouer_match_tournoi", { p_match: id });                        // → le duel
+// Caler un match de tournoi (étape 84) : → { echeance, mode, creneaux: { propose_par, plages, statut, rdv, moi_la, adv_la } | null }
+export const creneauxDe = id => rpc("creneaux_de", { p_match: id });
+export const proposerCreneaux = (id, plages) => rpc("proposer_creneaux", { p_match: id, p_plages: plages });
+export const choisirCreneau = (id, heure) => rpc("choisir_creneau", { p_match: id, p_heure: heure });
+export const declinerCreneaux = id => rpc("decliner_creneaux", { p_match: id });
+export const presentRdv = id => rpc("present_rdv", { p_match: id });
+export const forfaitRdv = id => rpc("forfait_rdv", { p_match: id });
 // Championnat du cercle (supabase/etape-35-championnat.sql) : p_jours = 3, 7 ou 14 ; enjeu facultatif.
 // hebdo (étape 36) : une édition chaque semaine, du lundi 12 h au dimanche 22 h.
 // options (étape 66, seulement si on en donne) : { poules, playoffs, ko_points, ko_sets, fin_points, fin_sets, garder_poules }.
