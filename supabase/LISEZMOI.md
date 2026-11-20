@@ -517,6 +517,13 @@ Même manipulation que d'habitude avec [`etape-82-dossier-complet.sql`](etape-82
 Le dossier renvoie en plus ses smashs et le format de chaque match (pour retrouver ses débuts de set) ; les anciennes versions
 de l'appli ignorent ces champs. À recoller aussi : l'étape 68 corrigée le 19 novembre (Supabase refusait sa fonction).
 
+## 1 octogies tertio. Le dossier, seulement contre de vrais joueurs (étape 83)
+
+Même manipulation que d'habitude avec [`etape-83-dossier-humains.sql`](etape-83-dossier-humains.sql), **après** l'étape 82
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-83-dossier-humains.sql).
+Le dossier d'un joueur (et son fantôme) ne compte plus ses matchs contre les bots des tournois en ligne ; le dossier d'un bot
+en ligne compte toujours les siens.
+
 ## 1 octogies. Les smileys dans les messages du duel (étape 80)
 
 Même manipulation que d'habitude avec [`etape-80-smileys.sql`](etape-80-smileys.sql), **après** l'étape 79

@@ -1826,33 +1826,51 @@ async function ongletsJoueur(el, uid, nom, { encore = () => true, bot = false } 
     + `<p class="hint mains-note">Ses ${MAX_MAINS} derniers matchs en ligne, coup par coup (en jaune : le point est pour ${n}).</p>`;
 }
 // Le dossier détaillé d'un joueur en ligne (lecture-adversaire.js, dossierDetaille ; 19 novembre, demande du porteur du projet).
-function htmlDossierDetaille(d, elle) {
-  if (!d) return `<p class="hint">Pas encore assez de matchs en ligne pour établir son dossier.</p>`;
-  const il = elle ? "elle" : "il", Il = elle ? "Elle" : "Il", s = (k, n) => `${EMOJIS[k]} ${NOMS_SIGNES[k]}${n === undefined ? "" : ` ${n} %`}`;
+// toi : mon propre dossier (Ma fiche › Stats, 20 novembre) : au « tu », avec mes failles.
+function htmlDossierDetaille(d, elle, { toi = false } = {}) {
+  if (!d) return `<p class="hint">Pas encore assez de matchs en ligne pour établir ${toi ? "ton" : "son"} dossier.</p>`;
+  const il = toi ? "tu" : elle ? "elle" : "il", s = (k, n) => `${EMOJIS[k]} ${NOMS_SIGNES[k]}${n === undefined ? "" : ` ${n} %`}`;
+  const ses = toi ? "Tes" : "Ses", sa = toi ? "Ta" : "Sa", ses_ = toi ? "tes" : "ses";
   const point = { rouge: "🔴", jaune: "🟡", vert: "🟢" };
   const conseils = d.conseils.length ? `<ul class="dossier-conseils">${d.conseils.map(t => `<li>${esc(t)}</li>`).join("")}</ul>`
-    : `<p class="hint">Aucune faille nette : son jeu est bien varié. Lis-${elle ? "la" : "le"} pendant le match.</p>`;
+    : `<p class="hint">${toi ? "Aucune faille nette : ton jeu est bien varié. Bravo !" : `Aucune faille nette : son jeu est bien varié. Lis-${elle ? "la" : "le"} pendant le match.`}</p>`;
   const reflexes = d.reflexes.length ? `<div class="lines">${d.reflexes.map(x => `<div class="ln"><span>${esc(x.texte)}</span><span>${x.pct} % ${point[x.niveau]}</span></div>`).join("")}</div>`
     + `<p class="hint">Le hasard donnerait 33 % (67 % pour « change de signe après un point perdu »). 🔴 très marqué · 🟡 un peu · 🟢 comme le hasard.</p>` : "";
   const egalite = d.egalite ? `<h3 class="ff-titre">🤝 Après une égalité</h3><div class="lines">
-      <div class="ln"><span>${Il} garde le même signe</span><span>${d.egalite.garde} %</span></div>
-      <div class="ln"><span>${Il} joue le plus souvent</span><span>${s(d.egalite.favori, d.egalite.favoriPct)}</span></div></div>` : "";
-  const ouverture = d.ouverture ? `<h3 class="ff-titre">🎬 Ses ouvertures</h3>`
+      <div class="ln"><span>${toi ? "Tu gardes" : elle ? "Elle garde" : "Il garde"} le même signe</span><span>${d.egalite.garde} %</span></div>
+      <div class="ln"><span>${toi ? "Tu joues" : elle ? "Elle joue" : "Il joue"} le plus souvent</span><span>${s(d.egalite.favori, d.egalite.favoriPct)}</span></div></div>` : "";
+  const ouverture = d.ouverture ? `<h3 class="ff-titre">🎬 ${ses} ouvertures</h3>`
     + `<p class="dossier-signes">${d.ouverture.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
     + `<p class="hint">L'ouverture, c'est le premier coup ${d.ouverture.sets ? "de chaque set" : "du match"}. D'après ${d.ouverture.vus} ouvertures.</p>` : "";
-  const smash = d.smash ? `<h3 class="ff-titre">💥 Ses smashs</h3><div class="lines">
+  const smash = d.smash ? `<h3 class="ff-titre">💥 ${ses} smashs</h3><div class="lines">
       <div class="ln"><span>Smashs joués</span><span>${d.smash.total}, dont ${d.smash.gagnes} gagnant${d.smash.gagnes > 1 ? "s" : ""}</span></div>
-      <div class="ln"><span>${Il} smashe surtout avec</span><span>${s(d.smash.favori)}</span></div></div>`
-    : `<h3 class="ff-titre">💥 Ses smashs</h3><p class="hint">Pas de smash dans ses derniers matchs (ou pas encore enregistré).</p>`;
+      <div class="ln"><span>${toi ? "Tu smashes" : elle ? "Elle smashe" : "Il smashe"} surtout avec</span><span>${s(d.smash.favori)}</span></div></div>`
+    : `<h3 class="ff-titre">💥 ${ses} smashs</h3><p class="hint">Pas de smash dans ${ses_} derniers matchs (ou pas encore enregistré).</p>`;
   const f = d.forme;
-  const forme = f ? `<h3 class="ff-titre">📈 Sa forme récente</h3><p class="hint">${Math.abs(f.ecart) >= 6
-    ? `Sur ses 10 derniers matchs, ${il} joue ${f.ecart > 0 ? "plus" : "moins"} ${NOMS_SIGNES[f.signe] === "Ciseaux" ? "les Ciseaux" : `la ${NOMS_SIGNES[f.signe]}`} : ${f.recent[f.signe]} % contre ${f.avant[f.signe]} % avant.`
-    : `Pas de changement net sur ses 10 derniers matchs.`}</p>` : "";
-  return `<h3 class="ff-titre">🎯 Pour ${elle ? "la" : "le"} battre</h3>${conseils}`
-    + `<p class="dossier-source">D'après ses ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).</p>`
+  const forme = f ? `<h3 class="ff-titre">📈 ${sa} forme récente</h3><p class="hint">${Math.abs(f.ecart) >= 6
+    ? `Sur ${ses_} 10 derniers matchs, ${il} ${toi ? "joues" : "joue"} ${f.ecart > 0 ? "plus" : "moins"} ${NOMS_SIGNES[f.signe] === "Ciseaux" ? "les Ciseaux" : `la ${NOMS_SIGNES[f.signe]}`} : ${f.recent[f.signe]} % contre ${f.avant[f.signe]} % avant.`
+    : `Pas de changement net sur ${ses_} 10 derniers matchs.`}</p>` : "";
+  return `<h3 class="ff-titre">🎯 ${toi ? "Tes failles" : `Pour ${elle ? "la" : "le"} battre`}</h3>${conseils}`
+    + `<p class="dossier-source">D'après ${ses_} ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).${toi ? " C'est ce que tes adversaires voient de toi." : ""}</p>`
     + `<p class="dossier-signes">${d.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
-    + `<h3 class="ff-titre">🧠 Ses réflexes</h3>${reflexes}${egalite}${ouverture}${smash}${forme}`;
+    + `<h3 class="ff-titre">🧠 ${ses} réflexes</h3>${reflexes}${egalite}${ouverture}${smash}${forme}`;
 }
+// Mon dossier (Ma fiche › Stats ; 20 novembre, demande du porteur du projet) : avec un compte, d'après mes 50 derniers matchs en
+// ligne, ce que voient mes adversaires. Chargé à l'ouverture de la carte, puis gardé jusqu'au prochain match.
+let monDossier = null, monDossierPour = null;
+async function renderMonDossier() {
+  const uid = compteUI?.session()?.user?.id, carte = $("cDossier");
+  carte.hidden = !uid || !P.matchs;
+  if (!uid || !carte.open) return;
+  const cle = `${uid}:${P.matchs}`;
+  if (monDossierPour !== cle) {
+    $("dossierBody").innerHTML = `<p class="hint">Chargement…</p>`;
+    try { monDossier = await dossierJoueur(uid); monDossierPour = cle; }
+    catch { $("dossierBody").innerHTML = `<p class="hint">Ton dossier n'a pas pu être chargé. Vérifie ta connexion.</p>`; return; }
+  }
+  $("dossierBody").innerHTML = htmlDossierDetaille(dossierDetaille(monDossier, { toi: true }), P.genre === "f", { toi: true });
+}
+$("cDossier").addEventListener("toggle", () => renderMonDossier());
 $("lastBody").addEventListener("click", e => { const x = e.target.closest(".nom-adv"); if (x) ouvrirFicheAdv(x.dataset.adv, x.dataset.nom); });
 $("faCarte").addEventListener("click", async () => {
   const b = $("faCarte"); b.disabled = true;
@@ -2451,6 +2469,7 @@ function renderFiche() {
 
   if (P.matchs) {
     renderMonJeu();
+    renderMonDossier();
     $("mentalBody").innerHTML = htmlMental(P);
     $("recBody").innerHTML = htmlRecords(P);
     const h = P.historiqueElo, lo = Math.min(...h) - 20, hi = Math.max(...h) + 20, W = 300, H = 80;
