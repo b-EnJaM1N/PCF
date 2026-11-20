@@ -10,7 +10,7 @@ test("un nouveau joueur : carte en bois, des tirets, niveau d'entraînement", ()
   assert.equal(c.rarete, "bois");
   assert.equal(c.niveau, 1200); assert.equal(c.typeNiveau, "NIVEAU");
   assert.equal(c.signe, null);
-  assert.deepEqual(c.notes.map(n => n.code), ["IMP", "PUN", "DIV", "SGF", "FLA", "END"]);
+  assert.deepEqual(c.notes.map(n => n.code), ["IMP", "PUN", "DIV", "SGF", "FLA", "RÉS"]);
   assert.ok(c.notes.every(n => n.valeur === "–"), "pas de match contre des joueurs : des tirets");
 });
 
@@ -19,24 +19,25 @@ test("les stats de la carte : seulement contre les joueurs, en pourcentages", ()
   Object.assign(P, { matchs: 100, victoires: 90 });   // (le total, avec les bots, ne compte pas)
   P.parAdv = { humains: { matchs: 10, victoires: 6, signes: [40, 30, 30], apresVictoire: 50, apresDefaite: 40, devines: 0, lisibles: 0,
     ballesObtenues: 10, ballesConverties: 5, ballesSubies: 8, ballesSauvees: 3, decisifsJoues: 2, decisifsGagnes: 2, flairTentees: 40, flairReussies: 30, endChaines: 6, endGagnees: 5 } };
-  assert.equal(note(P, "PUN"), "74");              // 56 % : (50 + 6) / (50 + 40 + 10) ; 50 + 6 × 40 / 10
-  assert.equal(note(P, "DIV"), "75");
-  assert.equal(note(P, "SGF"), "50");              // 50 % : le hasard              // (5 + 3 + 2) / (10 + 8 + 2)
-  assert.equal(note(P, "FLA"), "96");              // 30 sur 40 = 75 % : 90 + 10 × 9 / 15
-  assert.equal(note(P, "END"), "–", "les égalités pas encore comptées : pas de note");
-  P.parAdv.humains.egalites = 54;                  // perdus : 40 + 10 - 6 = 44 ; 54 sur 98 = 55 %
-  assert.equal(note(P, "END"), "70");              // 55,1 % : 50 + 5,1 × 40 / 10
+  assert.equal(note(P, "DIV"), "70");              // 40 / 30 / 30
+  assert.equal(note(P, "SGF"), "70");              // (5 + 3 + 2) / (10 + 8 + 2) = 50 % : la moyenne
+  assert.equal(note(P, "FLA"), "99");              // 30 sur 40 = 75 %
+  assert.equal(note(P, "RÉS"), "–", "les égalités pas encore comptées : pas de note");
+  assert.equal(note(P, "PUN"), "–", "le Punch aussi a besoin des égalités");
+  P.parAdv.humains.egalites = 54;                  // marqués : 56 ; perdus : 40 + 10 - 6 = 44
+  assert.equal(note(P, "PUN"), "79");              // 56 sur 154 coups = 36,4 % : 70 + 3,03 × 20 / 6,67
+  assert.equal(note(P, "RÉS"), "80");              // 54 sur 98 = 55,1 % : 70 + 5,1 × 20 / 10
   assert.equal(note(P, "IMP"), "–", "pas encore assez de coups lus");
   assert.equal(diversification([100, 100, 100]), 100);
   assert.equal(diversification([1001, 1000, 999]), 100, "33,3 % partout, au dixième près");
   assert.equal(diversification([101, 100, 99]), 98, "33,7 / 33,3 / 33,0 : pas encore 100");
   assert.equal(diversification([60, 20, 20]), 0);
   // le barème façon FIFA : 50 = le hasard, 99 au repère, 1 autant en dessous
-  // les trois paliers : 50 = le hasard, 90 = excellent, 99 = hors norme
-  assert.equal(noteBareme(50, BAREMES.PUN), 50); assert.equal(noteBareme(60, BAREMES.PUN), 90); assert.equal(noteBareme(66, BAREMES.PUN), 99);
-  assert.equal(noteBareme(80, BAREMES.PUN), 99); assert.equal(noteBareme(35, BAREMES.PUN), 1); assert.equal(noteBareme(20, BAREMES.END), 1);
-  // l'imprévisibilité (la part de coups devinés) : 33 % = 90, et 99 seulement à 20 %
-  assert.deepEqual([20, 25, 30, 100 / 3, 40, 50, 60].map(p => noteBareme(p, BAREMES.IMP)), [99, 96, 92, 90, 75, 50, 20]);
+  // les trois paliers : 70 = la moyenne (le hasard), 90 = excellent, 99 = hors norme
+  assert.equal(noteBareme(100 / 3, BAREMES.PUN), 70); assert.equal(noteBareme(40, BAREMES.PUN), 90); assert.equal(noteBareme(45, BAREMES.PUN), 99);
+  assert.equal(noteBareme(60, BAREMES.PUN), 99); assert.equal(noteBareme(15, BAREMES.PUN), 1); assert.equal(noteBareme(20, BAREMES.RES), 1);
+  // l'imprévisibilité (la part de coups devinés) : 1 sur 3 = 90 (choix du porteur du projet), 99 seulement à 20 %
+  assert.deepEqual([20, 100 / 3, 45, 50, 60].map(p => noteBareme(p, BAREMES.IMP)), [99, 90, 70, 60, 35]);
 });
 
 test("les 10 rangs : on monte en jouant, puis avec le niveau officiel", () => {
