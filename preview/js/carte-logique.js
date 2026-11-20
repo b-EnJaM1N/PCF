@@ -6,9 +6,17 @@ import { titresObtenus, signeFavori } from "./profil.js";
 // (20 novembre, choix du porteur du projet) Six stats en vrais pourcentages, seulement contre de vrais joueurs (« Mon jeu » contre
 // les joueurs, P.parAdv.humains) : avant, six notes sur 99 (victoires, finition, mental, sets décisifs, imprévisibilité, expérience).
 // Tant qu'un joueur n'a aucun match en ligne, « – ».
-// (20 novembre, deuxième version, choix du porteur du projet : toutes les stats en pourcentage, sans décimale ni signe « % » ;
+// (20 novembre, deuxième version, choix du porteur du projet : toutes les stats sans décimale ni signe « % » ;
 // le sang-froid s'écrit SGF ; le flair devient le pourcentage de lectures réussies.)
 const pc = (a, b) => (b ? `${Math.round((100 * a) / b)}` : "–");
+// (20 novembre, barème validé par le porteur du projet : des notes façon FIFA, de 1 à 99, 50 = le hasard) Le pourcentage p devient
+// une note : 50 % → 50, « top » → 99, et autant en dessous du hasard → 1 (règle de trois entre les deux). Les repères se changent ici.
+export const BAREME = { RÉU: 65, VIC: 80, SGF: 75, FLA: 80 };
+export function noteFifa(p, top) {
+  if (p === null || p === undefined) return null;
+  return Math.max(1, Math.min(99, Math.round(50 + ((p - 50) * 49) / (top - 50))));
+}
+const notePc = (a, b, top) => (b ? `${noteFifa((100 * a) / b, top)}` : "–");
 // La diversification : l'équilibre entre les trois signes, sur un barème serré. 100 seulement quand les trois signes sont à 33,3 %
 // chacun (au dixième près) ; sinon, au plus 99 (40 / 30 / 30 : 75 ; 50 / 25 / 25 : 37 ; 60 / 20 / 20 ou pire : 0).
 export function diversification(signes) {
@@ -28,12 +36,12 @@ export function notesDe(P) {
   const sgf = ok ? [(h.ballesConverties || 0) + (h.ballesSauvees || 0) + (h.decisifsGagnes || 0), (h.ballesObtenues || 0) + (h.ballesSubies || 0) + (h.decisifsJoues || 0)] : [0, 0];
   const lectures = ok ? [h.lecturesReussies || 0, (h.lecturesReussies || 0) + (h.lecturesRatees || 0)] : [0, 0];
   return [
-    { code: "IMP", nom: "Imprévisibilité", valeur: imp === null ? rien : `${imp}`, aide: "à quel point ton jeu est difficile à lire" },
-    { code: "RÉU", nom: "Taux de réussite", valeur: pc(...points), aide: "les points gagnés, sans compter les égalités (en %)" },
-    { code: "DIV", nom: "Diversification", valeur: div === null ? rien : `${div}`, aide: "l'équilibre entre tes trois signes (100 : 33,3 % chacun)" },
-    { code: "VIC", nom: "Victoires", valeur: ok ? pc(h.victoires || 0, h.matchs) : rien, aide: "tes matchs gagnés (en %)" },
-    { code: "SGF", nom: "Sang-froid", valeur: pc(...sgf), aide: "les moments décisifs réussis : balles de set et de match converties et sauvées, sets décisifs gagnés (en %)" },
-    { code: "FLA", nom: "Flair", valeur: pc(...lectures), aide: "tes lectures réussies : quand tu contres un réflexe de ton adversaire, le point est pour toi (en %)" },
+    { code: "IMP", nom: "Imprévisibilité", valeur: imp === null ? rien : `${Math.min(99, imp)}`, aide: "à quel point ton jeu est difficile à lire" },
+    { code: "RÉU", nom: "Taux de réussite", valeur: notePc(...points, BAREME.RÉU), aide: `les points gagnés, sans compter les égalités (50 : la moitié ; 99 : ${BAREME.RÉU} % ou plus)` },
+    { code: "DIV", nom: "Diversification", valeur: div === null ? rien : `${Math.min(99, div)}`, aide: "l'équilibre entre tes trois signes (99 : 33,3 % chacun)" },
+    { code: "VIC", nom: "Victoires", valeur: ok ? notePc(h.victoires || 0, h.matchs, BAREME.VIC) : rien, aide: `tes matchs gagnés (50 : la moitié ; 99 : ${BAREME.VIC} % ou plus)` },
+    { code: "SGF", nom: "Sang-froid", valeur: notePc(...sgf, BAREME.SGF), aide: `les moments décisifs réussis : balles de set et de match converties et sauvées, sets décisifs gagnés (50 : la moitié ; 99 : ${BAREME.SGF} % ou plus)` },
+    { code: "FLA", nom: "Flair", valeur: notePc(...lectures, BAREME.FLA), aide: `tes lectures réussies : quand tu contres un réflexe de ton adversaire, le point est pour toi (50 : la moitié ; 99 : ${BAREME.FLA} % ou plus)` },
   ];
 }
 
