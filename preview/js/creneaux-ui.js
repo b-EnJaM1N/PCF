@@ -17,7 +17,8 @@ export function etatCourt(c, uid, adv) {
 
 // zone : l'élément où ouvrir le panneau ; c : les créneaux (ou null) ; uid : moi ; adv : son pseudo ;
 // actions : { proposer(plages), choisir(heure), decliner() } (des promesses) ; fini(message) : après une action réussie.
-export function ouvrirPanneau(zone, { c, uid, adv, actions, fini }) {
+// (fenêtre « Défier » : texteEnvoyer, le texte du bouton d'envoi ; fermer(), quand on annule)
+export function ouvrirPanneau(zone, { c, uid, adv, actions, fini, texteEnvoyer = "📅 Envoyer mes créneaux", texteFermer = "Annuler", fermer = () => {} }) {
   const etat = etatRdv(c, uid), a = esc(adv);
   const msg = (t, erreur = false) => { const m = zone.querySelector(".rdv-msg"); if (m) { m.textContent = t; m.classList.toggle("erreur", erreur); } };
   const agir = async (f, ok) => { try { await f(); fini(ok); } catch (e) { msg(e.message, true); } };
@@ -44,14 +45,14 @@ export function ouvrirPanneau(zone, { c, uid, adv, actions, fini }) {
     zone.innerHTML = `<p><b>📅 Programmer le défi</b>${etat === "fixe" ? ` · rendez-vous actuel ${esc(texteRdv(c.rdv))}` : ""}</p><p class="hint">Tes plages pour ${a} (5 au plus) : il choisira l'heure.</p>`
       + (rapides.length ? `<div class="rdv-rapides">${rapides.map((r, i) => `<button class="petit alt" data-rapide="${i}">+ ${r.texte}</button>`).join("")}</div>` : "")
       + `<div class="rdv-lignes">${ligne()}</div><button class="petit alt" data-r="plus">+ Une autre plage</button>
-         <div class="rdv-actions"><button class="petit" data-r="envoyer">📅 Envoyer mes créneaux</button><button class="petit alt" data-r="fermer">Annuler</button></div><p class="hint rdv-msg"></p>`;
+         <div class="rdv-actions"><button class="petit" data-r="envoyer">${esc(texteEnvoyer)}</button><button class="petit alt" data-r="fermer">${esc(texteFermer)}</button></div><p class="hint rdv-msg"></p>`;
     const lignes = () => [...zone.querySelectorAll(".rdv-ligne")];
     const remplir = (l, j, de, a2) => { l.querySelector(".rj").value = j; l.querySelector(".rd").value = de; l.querySelector(".ra").value = a2; l.dataset.rempli = "1"; };
     zone.onclick = e => {
       const b = e.target.closest("button"); if (!b) return;
       if (b.classList.contains("rx")) { b.closest(".rdv-ligne").remove(); return; }
       if (b.dataset.r === "plus") { if (lignes().length < 5) zone.querySelector(".rdv-lignes").insertAdjacentHTML("beforeend", ligne()); return; }
-      if (b.dataset.r === "fermer") { zone.onclick = null; zone.hidden = true; zone.innerHTML = ""; return; }
+      if (b.dataset.r === "fermer") { zone.onclick = null; zone.hidden = true; zone.innerHTML = ""; fermer(); return; }
       if (b.dataset.rapide !== undefined) {
         const p = rapides[+b.dataset.rapide].p, d = new Date(p.debut), x = new Date(p.fin), hh = z => `${String(z.getHours()).padStart(2, "0")}:${String(z.getMinutes()).padStart(2, "0")}`;
         const j = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
