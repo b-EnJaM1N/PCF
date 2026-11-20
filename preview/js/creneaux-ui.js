@@ -29,7 +29,7 @@ export function etatCourt(c, uid, adv) {
 // zone : l'élément où ouvrir le panneau ; c : les créneaux (ou null) ; uid : moi ; adv : son pseudo ;
 // actions : { proposer(plages), choisir(heure), decliner() } (des promesses) ; fini(message) : après une action réussie.
 // (fenêtre « Défier » : texteEnvoyer, le texte du bouton d'envoi ; fermer(), quand on annule)
-export function ouvrirPanneau(zone, { c, uid, adv, actions, fini, texteEnvoyer = "📅 Envoyer mes créneaux", texteFermer = "Annuler", fermer = () => {} }) {
+export function ouvrirPanneau(zone, { c, uid, adv, actions, fini, texteEnvoyer = "📅 Envoyer mes créneaux", texteFermer = "Annuler", fermer = () => {}, sansFermer = false }) {
   const etat = etatRdv(c, uid), a = esc(adv);
   const msg = (t, erreur = false) => { const m = zone.querySelector(".rdv-msg"); if (m) { m.textContent = t; m.classList.toggle("erreur", erreur); } };
   const agir = async (f, ok) => { try { await f(); fini(ok); } catch (e) { msg(e.message, true); } };
@@ -38,11 +38,11 @@ export function ouvrirPanneau(zone, { c, uid, adv, actions, fini, texteEnvoyer =
     const options = c.plages.flatMap(p => heuresDansPlage(p).map(h => ({ ...h, texte: `${jour(new Date(h.valeur))} à ${h.texte}` })));
     zone.innerHTML = `<p><b>📅 ${a} te propose :</b></p><ul class="rdv-plages">${c.plages.map(p => `<li>${esc(textePlage(p))}</li>`).join("")}</ul>`
       + (options.length ? `<label class="rdv-choix">Choisis l'heure <select class="rdv-heure">${options.map(o => `<option value="${esc(o.valeur)}">${esc(o.texte)}</option>`).join("")}</select></label>` : `<p class="hint">Ces créneaux sont passés.</p>`)
-      + `<div class="rdv-actions">${options.length ? `<button class="petit" data-r="choisir">✅ Fixer le rendez-vous</button>` : ""}<button class="petit alt" data-r="autres">Autres créneaux</button><button class="petit alt" data-r="decliner">Décliner</button><button class="petit alt" data-r="fermer">Fermer</button></div><p class="hint rdv-msg"></p>`;
+      + `<div class="rdv-actions">${options.length ? `<button class="petit" data-r="choisir">✅ Fixer le rendez-vous</button>` : ""}<button class="petit alt" data-r="autres">Autres créneaux</button><button class="petit alt" data-r="decliner">Décliner</button>${sansFermer ? "" : `<button class="petit alt" data-r="fermer">Fermer</button>`}</div><p class="hint rdv-msg"></p>`;
     zone.querySelector("[data-r=choisir]")?.addEventListener("click", () => agir(() => actions.choisir(zone.querySelector(".rdv-heure").value), "Rendez-vous fixé : il est prévenu."));
     zone.querySelector("[data-r=decliner]").addEventListener("click", () => agir(() => actions.decliner(), "Créneaux déclinés : il est prévenu."));
     zone.querySelector("[data-r=autres]").addEventListener("click", () => formulaire());
-    zone.querySelector("[data-r=fermer]").addEventListener("click", () => { zone.hidden = true; zone.innerHTML = ""; });
+    zone.querySelector("[data-r=fermer]")?.addEventListener("click", () => { zone.hidden = true; zone.innerHTML = ""; });
     return;
   }
   formulaire();
