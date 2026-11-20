@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { notesDe, rangDe, texteRang, carteDe, RANGS, diversification } from "../app/js/carte-logique.js";
+import { notesDe, rangDe, texteRang, carteDe, RANGS, diversification, noteFifa } from "../app/js/carte-logique.js";
 import { profilParDefaut } from "../app/js/profil.js";
 
 const note = (P, code) => notesDe(P).find(n => n.code === code).valeur;
@@ -19,16 +19,19 @@ test("les stats de la carte : seulement contre les joueurs, en pourcentages", ()
   Object.assign(P, { matchs: 100, victoires: 90 });   // (le total, avec les bots, ne compte pas)
   P.parAdv = { humains: { matchs: 10, victoires: 6, signes: [40, 30, 30], apresVictoire: 50, apresDefaite: 40, devines: 0, lisibles: 0,
     ballesObtenues: 10, ballesConverties: 5, ballesSubies: 8, ballesSauvees: 3, decisifsJoues: 2, decisifsGagnes: 2, lecturesReussies: 15, lecturesRatees: 5 } };
-  assert.equal(note(P, "VIC"), "60");
-  assert.equal(note(P, "RÉU"), "56");              // (50 + 6) / (50 + 40 + 10)
+  assert.equal(note(P, "VIC"), "66");              // 60 % : 50 + 10 × 49 / 30
+  assert.equal(note(P, "RÉU"), "70");              // 56 % : (50 + 6) / (50 + 40 + 10)
   assert.equal(note(P, "DIV"), "75");
-  assert.equal(note(P, "SGF"), "50");              // (5 + 3 + 2) / (10 + 8 + 2)
-  assert.equal(note(P, "FLA"), "75");
+  assert.equal(note(P, "SGF"), "50");              // 50 % : le hasard              // (5 + 3 + 2) / (10 + 8 + 2)
+  assert.equal(note(P, "FLA"), "91");              // 75 % : 50 + 25 × 49 / 30
   assert.equal(note(P, "IMP"), "–", "pas encore assez de coups lus");
   assert.equal(diversification([100, 100, 100]), 100);
   assert.equal(diversification([1001, 1000, 999]), 100, "33,3 % partout, au dixième près");
   assert.equal(diversification([101, 100, 99]), 98, "33,7 / 33,3 / 33,0 : pas encore 100");
   assert.equal(diversification([60, 20, 20]), 0);
+  // le barème façon FIFA : 50 = le hasard, 99 au repère, 1 autant en dessous
+  assert.equal(noteFifa(50, 65), 50); assert.equal(noteFifa(65, 65), 99); assert.equal(noteFifa(80, 65), 99);
+  assert.equal(noteFifa(35, 65), 1); assert.equal(noteFifa(57, 65), 73); assert.equal(noteFifa(65, 80), 75);
 });
 
 test("les 10 rangs : on monte en jouant, puis avec le niveau officiel", () => {
