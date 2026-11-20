@@ -417,6 +417,8 @@ Un serveur vérifie les coups (anti-triche) ; pause de 60 s après une déconnex
 - **Match non joué à temps** : il revient à la personne qui a essayé de le jouer ; si personne, à la meilleure tête de série.
 - L'organisateur choisit le format ; au format officiel, les matchs comptent pour le niveau officiel.
 
+- **Caler un match** (20 novembre, idée et choix du porteur du projet ; étape SQL 84, `creneaux.js`, version d'essai d'abord) : dans un tournoi ou un championnat à date limite, « 📅 Caler le match » : un joueur propose des plages (jusqu'à 5, avant la date limite ; plages rapides « Ce soir 20 h – 22 h »…), l'autre choisit une heure précise dans une plage (le rendez-vous est fixé), propose d'autres plages ou décline ; notifications à chaque étape, rappels 10 minutes avant et à l'heure ; 15 minutes après l'heure, celui qui était là (« Jouer mon match » touché depuis 15 minutes avant) peut réclamer la victoire par forfait.
+
 ### 6. Tournois en direct, façon poker
 Tout le monde est présent, les matchs s'enchaînent automatiquement, on reste connecté tant qu'on est en lice. **Jamais d'argent en jeu** (réglementation des jeux d'argent).
 
