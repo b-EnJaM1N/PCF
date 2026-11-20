@@ -1288,3 +1288,5 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .fa-chiffres b { display: block; font-family: "Barlow Condensed", sans-serif; font-size: 1.7rem; }
 .fa-chiffres span { color: var(--muted); font-size: .82rem; }
 .dossier-conseils { margin: 4px 0 10px; padding-left: 20px; } .dossier-conseils li { margin: 4px 0; font-weight: 600; }
+.ratio { font-weight: 400; color: var(--muted); font-size: .88em; }
+.sf-ratio { display: block; font-family: "Barlow", sans-serif; font-size: .72rem; font-weight: 400; color: var(--muted); }
