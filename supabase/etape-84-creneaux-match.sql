@@ -1,9 +1,9 @@
--- HandSlam — Étape 84 : caler un match de tournoi (les créneaux et le rendez-vous).
+-- HandSlam — Étape 84 : programmer un match de tournoi (les créneaux et le rendez-vous).
 -- À coller dans Supabase : « SQL Editor » → « New query » → coller → « Run ». Peut être relancé sans risque. Nécessite les étapes 2 à 83.
 -- Puis mettre à jour la fonction « Notifier » (supabase/functions/notifier/index.ts : les notifications des créneaux).
 --
 -- 20 novembre (idée et choix du porteur du projet) : dans un tournoi ou un championnat à date limite, les deux joueurs doivent
--- être là en même temps. « 📅 Caler le match » : un joueur propose des plages (« jeudi 20 h – 22 h », jusqu'à 5) avant la date
+-- être là en même temps. « 📅 Programmer le match » : un joueur propose des plages (« jeudi 20 h – 22 h », jusqu'à 5) avant la date
 -- limite ; l'autre choisit une heure précise dans une plage (le rendez-vous est fixé), propose d'autres plages, ou décline.
 -- Chacun peut reproposer des plages tant que le match n'est pas joué. Rappels : 10 minutes avant, puis à l'heure (minuteur).
 -- 15 minutes après l'heure du rendez-vous, celui qui était là (« J'y suis », de 15 minutes avant à maintenant) et dont
@@ -42,7 +42,7 @@ exception when others then
   raise notice 'notification non envoyée : %', sqlerrm;
 end $$;
 
--- Le match p_match, s'il est à caler par moi : renvoie le match, le tournoi et ma place (0 ou 1).
+-- Le match p_match, s'il est à programmer par moi : renvoie le match, le tournoi et ma place (0 ou 1).
 create or replace function public._match_a_caler(p_match uuid, out m public.matchs_tournoi, out t public.tournois, out moi smallint)
 language plpgsql security definer set search_path = public as $$
 begin

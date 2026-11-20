@@ -36,7 +36,7 @@ export const jourHeureParis = (date: string) =>
 // adv : { pseudo, numero } de l'adversaire (pour « invitation » : celui qui invite) ; tournoi : { nom, depart, mode } (tournoi programmé,
 // ou tournoi auquel on est invité).
 // cercle : { nom } (invitation dans un cercle).
-// Caler un match de tournoi (étape 84) : "creneaux" | "rdv_fixe" | "rdv_decline" | "rdv_rappel" | "rdv_heure" ; adv : l'autre joueur ;
+// Programmer un match de tournoi (étape 84) : "creneaux" | "rdv_fixe" | "rdv_decline" | "rdv_rappel" | "rdv_heure" ; adv : l'autre joueur ;
 // quand : l'heure du rendez-vous.
 export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }, tournoi?: { nom: string; depart?: string; mode?: string }, cercle?: { nom: string }, quand?: string) {
   if (evenement === "test") return {
@@ -53,7 +53,7 @@ export function message(evenement: string, duel: any, adv: { pseudo: string; num
     url: "./?ouvrir=programmes", tag: "programme",
   };
   const qui = `${adv.pseudo}#${adv.numero}`;
-  // Caler un match de tournoi (étape 84, 20 novembre).
+  // Programmer un match de tournoi (étape 84, 20 novembre).
   const du = tournoi?.nom ? ` (${tournoi.nom})` : "";
   if (evenement === "creneaux") return {
     titre: `📅 ${qui} te propose des créneaux`, texte: `Pour votre match${du}. Touche pour choisir une heure.`, url: "./?ouvrir=tournois", tag: `rdv-${qui}`,

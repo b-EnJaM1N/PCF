@@ -1,6 +1,6 @@
--- Tests de supabase/etape-84-creneaux-match.sql : caler un match de tournoi (créneaux, rendez-vous, rappels, forfait).
+-- Tests de supabase/etape-84-creneaux-match.sql : programmer un match de tournoi (créneaux, rendez-vous, rappels, forfait).
 \set QUIET on
-\echo Tests de la base de données (étape 84 : caler un match de tournoi)
+\echo Tests de la base de données (étape 84 : programmer un match de tournoi)
 
 insert into auth.users select ('00000000-0000-0000-0000-0000000000' || lpad(i::text, 2, '0'))::uuid, 'j' || i || '@x.fr' from generate_series(1, 3) i;
 insert into profils (id, pseudo, numero) select ('00000000-0000-0000-0000-0000000000' || lpad(i::text, 2, '0'))::uuid, 'Joueur' || i, 1000 + i from generate_series(1, 3) i;
@@ -25,7 +25,7 @@ do $$
 declare r jsonb; m uuid := '22222222-2222-2222-2222-222222222222';
 begin
   perform pg_temp.en_tant_que(pg_temp.u(3));
-  perform pg_temp.refuse(format('select proposer_creneaux(%L, %L)', m, jsonb_build_array(jsonb_build_object('debut', now() + interval '1 hour', 'fin', now() + interval '2 hours'))), 'un autre joueur ne cale pas notre match');
+  perform pg_temp.refuse(format('select proposer_creneaux(%L, %L)', m, jsonb_build_array(jsonb_build_object('debut', now() + interval '1 hour', 'fin', now() + interval '2 hours'))), 'un autre joueur ne programme pas notre match');
 
   perform pg_temp.en_tant_que(pg_temp.u(1));
   perform pg_temp.refuse(format('select proposer_creneaux(%L, %L)', m, jsonb_build_array(jsonb_build_object('debut', now() + interval '30 hours', 'fin', now() + interval '31 hours'))), 'pas après la date limite');

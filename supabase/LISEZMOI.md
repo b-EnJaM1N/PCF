@@ -524,11 +524,11 @@ Même manipulation que d'habitude avec [`etape-83-dossier-humains.sql`](etape-83
 Le dossier d'un joueur (et son fantôme) ne compte plus ses matchs contre les bots des tournois en ligne ; le dossier d'un bot
 en ligne compte toujours les siens.
 
-## 1 octogies quarto. Caler un match de tournoi (étape 84)
+## 1 octogies quarto. Programmer un match de tournoi (étape 84)
 
 1. Même manipulation que d'habitude avec [`etape-84-creneaux-match.sql`](etape-84-creneaux-match.sql), **après** l'étape 83
    (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-84-creneaux-match.sql).
-   Dans un tournoi ou un championnat à date limite, « 📅 Caler le match » : un joueur propose des plages, l'autre choisit une
+   Dans un tournoi ou un championnat à date limite, « 📅 Programmer le match » : un joueur propose des plages, l'autre choisit une
    heure (rendez-vous), propose d'autres plages ou décline ; rappels 10 minutes avant et à l'heure (minuteur, chaque minute) ;
    15 minutes après l'heure, celui qui était là peut réclamer la victoire par forfait.
 2. **Mettre à jour la fonction « Notifier »** : **Edge Functions** → **Notifier** → onglet **Code** →
