@@ -1,4 +1,4 @@
-// Caler un match de tournoi (20 novembre, idée et choix du porteur du projet ; étape SQL 84) : les plages proposées, le rendez-vous.
+// Programmer un match de tournoi (20 novembre, idée et choix du porteur du projet ; étape SQL 84) : les plages proposées, le rendez-vous.
 // Ici, seulement les calculs et les textes (testés) ; l'écran est dans ecran-tournois.js.
 // Les heures sont celles du téléphone (les joueurs sont en France).
 

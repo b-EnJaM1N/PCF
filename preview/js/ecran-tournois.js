@@ -322,7 +322,7 @@ export function installerTournois(ctx) {
           : `Retrouvez-vous pour jouer avant la date limite${reste ? ` (dans ${reste})` : ""}. Si un seul de vous deux essaie de jouer, la victoire lui revient par forfait.`}</p>
         <button class="btn" id="tJouer" ${jattends ? "disabled" : ""}>${enCours ? "Reprendre le match" : attendMoi ? "Jouer maintenant" : jattends ? `En attente de ${esc(adv.pseudo)}…` : "Jouer mon match"}</button>`;
       $("tJouer").addEventListener("click", () => jouerMonMatch(mm));
-      // Caler le match (étape 84 ; version d'essai d'abord) : les créneaux, le rendez-vous.
+      // Programmer le match (étape 84 ; version d'essai d'abord) : les créneaux, le rendez-vous.
       if (nouveauteOuverte("creneaux") && !enCours) { $("tMonMatchCorps").insertAdjacentHTML("beforeend", `<div class="rdv" id="tRdv"></div>`); afficherRdv(mm, uid, t); }
       // Championnat : mes autres matchs, jouables dans n'importe quel ordre.
       const autres = ch ? mesMatchsRestants(t, uid).filter(m => m.id !== mm.match.id) : [];
@@ -519,7 +519,7 @@ export function installerTournois(ctx) {
     } catch (err) { dire(err.message, true); charger(); }
   }
 
-  // ------------------------------------------------ caler le match (20 novembre, idée et choix du porteur du projet ; étape SQL 84)
+  // ------------------------------------------------ programmer le match (20 novembre, idée et choix du porteur du projet ; étape SQL 84)
   // Un joueur propose des plages ; l'autre choisit une heure précise dans une plage (le rendez-vous est fixé), propose d'autres
   // plages, ou décline. 15 minutes après l'heure, celui qui était là peut réclamer la victoire par forfait.
   async function afficherRdv(mm, uid, t) {
@@ -533,7 +533,7 @@ export function installerTournois(ctx) {
     const liste = pl => `<ul class="rdv-plages">${pl.map(p => `<li>${esc(textePlage(p))}</li>`).join("")}</ul>`;
     const action = (a, texte, cls = "petit alt") => `<button class="${cls}" data-rdv="${a}">${texte}</button>`;
     let html = "";
-    if (etat === "aucun") html = `<p><b>📅 Caler le match</b></p><p class="hint">Propose des créneaux à ${adv} : il choisira l'heure.</p>${action("proposer", "📅 Proposer des créneaux", "btn alt")}`;
+    if (etat === "aucun") html = `<p><b>📅 Programmer le match</b></p><p class="hint">Propose des créneaux à ${adv} : il choisira l'heure.</p>${action("proposer", "📅 Proposer des créneaux", "btn alt")}`;
     else if (etat === "j_ai_propose") html = `<p><b>📅 Tes créneaux</b> · en attente de la réponse de ${adv}</p>${liste(c.plages)}${action("proposer", "Changer mes créneaux")}`;
     else if (etat === "decline_par_lui") html = `<p><b>📅 ${adv} ne peut pas sur tes créneaux.</b></p>${action("proposer", "📅 Proposer d'autres créneaux", "btn alt")}`;
     else if (etat === "j_ai_decline") html = `<p><b>📅 Tu as décliné ses créneaux.</b></p>${action("proposer", "📅 Proposer mes créneaux", "btn alt")}`;
