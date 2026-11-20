@@ -47,6 +47,7 @@ const FICHIERS = [
   "js/stats-passees.js",
   "js/creneaux.js",
   "js/creneaux-ui.js",
+  "js/flair.js",
   "js/une-logique.js",
   "js/carte.js",
   "js/carte-logique.js",
