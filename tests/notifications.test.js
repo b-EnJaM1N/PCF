@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { message, texteFormat } from "../supabase/functions/notifier/index.ts";
+import { message, texteFormat, texteCreneauParis } from "../supabase/functions/notifier/index.ts";
 
 test("les messages des notifications", () => {
   const duel = { id: "d1", points_par_set: 11, sets_gagnants: 2, classe: true, phase: "attente" }, adv = { pseudo: "Bob", numero: 4821 };
@@ -24,15 +24,17 @@ test("les messages des notifications", () => {
   assert.equal(message("ami_demande", null, adv).url, "./?ouvrir=amis");
   assert.equal(message("ami_accepte", null, adv).titre, "✅ Bob#4821 a accepté ta demande d'ami");
   assert.equal(message("invitation_cercle", null, adv, undefined, { nom: "FIAC CLUB" }).titre, "🏰 Bob#4821 t'invite dans le cercle FIAC CLUB");
-  // caler un match de tournoi (étape 84)
-  const t = { nom: "Coupe test" };
-  assert.equal(message("creneaux", null, adv, t).titre, "📅 Bob#4821 te propose des créneaux");
-  assert.match(message("creneaux", null, adv, t).texte, /\(Coupe test\)/);
-  assert.equal(message("rdv_fixe", null, adv, t, undefined, "2026-11-26T20:00:00Z").titre, "✅ Rendez-vous fixé : jeudi à 21 h");
-  assert.equal(message("rdv_rappel", null, adv, t, undefined, "2026-11-26T20:30:00Z").texte, "Contre Bob#4821, à 21 h 30 (Coupe test). Prépare-toi !");
+  // programmer un match ou un défi (étapes 84 à 86)
+  const t = { nom: "Coupe test" }, maintenant = new Date("2026-11-20T12:00:00Z");
+  assert.equal(texteCreneauParis({ debut: "2026-11-20T18:00:00Z", fin: "2026-11-20T18:15:00Z" }, maintenant), "aujourd'hui à 19 h");
+  assert.equal(texteCreneauParis({ debut: "2026-11-21T19:00:00Z", fin: "2026-11-21T21:00:00Z" }, maintenant), "demain entre 20 h et 22 h");
+  assert.match(message("creneaux", null, adv, undefined, undefined, undefined, [{ debut: "2026-11-24T18:00:00Z", fin: "2026-11-24T18:15:00Z" }], "d9").titre, /^📅 Bob#4821 te propose un défi .+ à 19 h$/);
+  assert.equal(message("creneaux", null, adv, undefined, undefined, undefined, [{ debut: "x", fin: "y" }, { debut: "x", fin: "y" }], "d9").titre, "📅 Bob#4821 te propose un défi : 2 créneaux");
+  assert.equal(message("creneaux", null, adv, undefined, undefined, undefined, [], "d9").tag, "duel-d9", "elle remplace « X te défie » sur le téléphone");
+  assert.equal(message("rdv_decline", null, adv).titre, "❌ Bob#4821 a décliné ton défi");
   assert.equal(message("rdv_heure", null, adv, t).url, "./?ouvrir=tournois");
   assert.equal(message("rdv_heure", null, adv).url, "./?ouvrir=duels", "un défi programmé ouvre « Défis »");
-  assert.equal(message("creneaux", null, adv).texte, "Pour votre défi. Touche pour choisir une heure.");
+  assert.equal(message("rdv_rappel", null, adv, t, undefined, "2026-11-26T20:30:00Z").texte, "Contre Bob#4821, à 21 h 30 (Coupe test). Prépare-toi !");
   assert.equal(texteFormat(7, 1), "Sets de 7 points · match en 1 set");
   assert.equal(texteFormat(1, 1), "Sets de 1 point · match en 1 set");
 });

@@ -15,7 +15,7 @@ import { texteDepart as texteDepartProgramme } from "./programmes-logique.js";
 import { monResultat, texteJetons } from "./jetons-logique.js";
 import { lire, ecrire } from "./stockage.js";
 import { estFiac } from "./profil.js";
-import { MODES, changerMode, finDe } from "./creneaux-ui.js";
+import { MODES, changerMode, finDe, ouvrirPanneau } from "./creneaux-ui.js";
 import { jour as jourRdv, textePlage, texteRdv, joursPossibles, HEURES, texteHeure, plage, plagesRapides, heuresDansPlage, etatRdv, forfaitPossible } from "./creneaux.js";
 
 const $ = id => document.getElementById(id);
@@ -534,10 +534,13 @@ export function installerTournois(ctx) {
     const zone = $("tRdv"), id = mm.match.id, adv = esc(mm.adversaire.pseudo);
     if (!zone) return;
     zone.innerHTML = `<p class="hint">📅 Chargement du rendez-vous…</p>`;
+    const jouer = $("tJouer");
     let info;
     try { info = await social.creneauxDe(id); } catch (e) { zone.innerHTML = `<p class="hint">📅 ${esc(e.message)}</p>`; return; }
     if ($("tRdv") !== zone) return;
     const c = info.creneaux, etat = etatRdv(c, uid), echeance = info.echeance || t.echeance;
+    // (20 novembre : rien avant l'heure ; « Jouer mon match » apparaît 5 minutes avant le rendez-vous)
+    if (jouer && etat === "fixe" && Date.now() < Date.parse(c.rdv) - 5 * 60e3) jouer.hidden = true;
     const liste = pl => `<ul class="rdv-plages">${pl.map(p => `<li>${esc(textePlage(p))}</li>`).join("")}</ul>`;
     const action = (a, texte, cls = "petit alt") => `<button class="${cls}" data-rdv="${a}">${texte}</button>`;
     let html = "";
@@ -546,15 +549,16 @@ export function installerTournois(ctx) {
     else if (etat === "decline_par_lui") html = `<p><b>📅 ${adv} ne peut pas sur tes créneaux.</b></p>${action("proposer", "📅 Proposer d'autres créneaux", "btn alt")}`;
     else if (etat === "j_ai_decline") html = `<p><b>📅 Tu as décliné ses créneaux.</b></p>${action("proposer", "📅 Proposer mes créneaux", "btn alt")}`;
     else if (etat === "a_choisir") {
-      const options = c.plages.flatMap(p => heuresDansPlage(p).map(h => ({ ...h, texte: `${jourRdv(new Date(h.valeur))} à ${h.texte}` })));
-      html = `<p><b>📅 ${adv} te propose :</b></p>${liste(c.plages)}`
-        + (options.length ? `<label class="rdv-choix">Choisis l'heure <select id="tRdvHeure">${options.map(o => `<option value="${esc(o.valeur)}">${esc(o.texte)}</option>`).join("")}</select></label>
-          <div class="rdv-actions">${action("choisir", "✅ Fixer le rendez-vous", "petit")}${action("proposer", "Autres créneaux")}${action("decliner", "Décliner")}</div>`
-          : `<p class="hint">Ces créneaux sont passés.</p><div class="rdv-actions">${action("proposer", "Proposer mes créneaux")}</div>`);
+      // (20 novembre : comme pour un défi, chaque proposition avec « ✅ Accepter », puis « Proposer un autre horaire » et « Décliner »)
+      zone.innerHTML = `<p><b>📅 ${adv} te propose un horaire :</b></p><div class="rdv-reponse" id="tRdvReponse"></div><div id="tRdvForm" hidden></div>`;
+      ouvrirPanneau($("tRdvReponse"), { c, uid, adv: mm.adversaire.pseudo, sansFermer: true, texteDecliner: "Décliner cet horaire",
+        actions: { proposer: pl => social.proposerCreneaux(id, pl), choisir: h => social.choisirCreneau(id, h), decliner: () => social.declinerCreneaux(id) },
+        fini: m => { dire(m); charger(); } });
+      return;
     } else if (etat === "fixe") {
       const rdv = new Date(c.rdv), passe = Date.now() > rdv.getTime() + 15 * 60e3;
       html = `<p><b>📅 Rendez-vous ${esc(texteRdv(c.rdv))}</b></p>`
-        + `<p class="hint">${Date.now() < rdv.getTime() - 15 * 60e3 ? "Un rappel arrive 10 minutes avant. À l'heure, touche « Jouer mon match »."
+        + `<p class="hint">${Date.now() < rdv.getTime() - 5 * 60e3 ? "Un rappel arrive 10 minutes avant. « Jouer mon match » apparaît 5 minutes avant l'heure."
           : passe ? (forfaitPossible(c) ? `${adv} n'est pas venu au rendez-vous : tu peux réclamer la victoire.` : "L'heure du rendez-vous est passée.")
           : "C'est le moment : touche « Jouer mon match »."}</p>`
         + `<div class="rdv-actions">${forfaitPossible(c) ? action("forfait", "🏳️ Réclamer la victoire par forfait", "petit") : ""}${action("proposer", "Changer l'heure")}</div>`;
@@ -567,7 +571,6 @@ export function installerTournois(ctx) {
     zone.querySelectorAll("button[data-rdv]").forEach(b => b.addEventListener("click", () => {
       const a = b.dataset.rdv;
       if (a === "proposer") return formulaireCreneaux(id, echeance, adv);
-      if (a === "choisir") return agir(() => social.choisirCreneau(id, $("tRdvHeure").value), "Rendez-vous fixé : il est prévenu.");
       if (a === "decliner") return agir(() => social.declinerCreneaux(id), "Créneaux déclinés : il est prévenu.");
       if (a === "forfait" && confirm(`Réclamer la victoire par forfait contre ${mm.adversaire.pseudo} ?`)) return agir(() => social.forfaitRdv(id), "Victoire par forfait enregistrée.");
     }));

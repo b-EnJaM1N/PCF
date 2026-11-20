@@ -9,7 +9,7 @@ test("les textes des plages et du rendez-vous", () => {
   assert.equal(jour(new Date(2026, 10, 21, 9), maintenant), "demain");
   assert.equal(jour(new Date(2026, 10, 24, 9), maintenant), "mardi 24");
   const p = plage("2026-11-21", "20:00", "22:30");
-  assert.equal(textePlage(p, maintenant), "demain 20 h – 22 h 30");
+  assert.equal(textePlage(p, maintenant), "demain entre 20 h et 22 h 30");
   assert.equal(texteRdv(new Date(2026, 10, 24, 21, 15).toISOString(), maintenant), "mardi 24 à 21 h 15");
   assert.equal(new Date(plage("2026-11-21", "23:00", "01:00").fin).getDate(), 22, "jusqu'au lendemain");
   const fixe = plage("2026-11-21", "21:00", "fixe");

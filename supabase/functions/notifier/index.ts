@@ -27,9 +27,21 @@ export const heureParis = (date: string) => {
   return `${Number(h)} h${m === "00" ? "" : ` ${m}`}`;
 };
 
-// Le jour et l'heure d'un rendez-vous, à Paris : « jeudi à 21 h » (étape 84).
-export const jourHeureParis = (date: string) =>
-  `${new Date(date).toLocaleDateString("fr-FR", { timeZone: "Europe/Paris", weekday: "long" })} à ${heureParis(date)}`;
+// Le jour d'une date à Paris, comparé à maintenant : « aujourd'hui », « demain », ou « jeudi » (étape 86).
+const jourIso = (d: Date) => d.toLocaleDateString("fr-CA", { timeZone: "Europe/Paris" });
+export function jourParisRelatif(date: string, maintenant = new Date()) {
+  const d = new Date(date), demain = new Date(maintenant.getTime() + 864e5);
+  if (jourIso(d) === jourIso(maintenant)) return "aujourd'hui";
+  if (jourIso(d) === jourIso(demain)) return "demain";
+  return d.toLocaleDateString("fr-FR", { timeZone: "Europe/Paris", weekday: "long" });
+}
+// Le jour et l'heure d'un rendez-vous, à Paris : « jeudi à 21 h », « aujourd'hui à 19 h ».
+export const jourHeureParis = (date: string, maintenant = new Date()) => `${jourParisRelatif(date, maintenant)} à ${heureParis(date)}`;
+// Un créneau : « aujourd'hui à 19 h » (heure fixe : un quart d'heure) ou « demain entre 20 h et 22 h ».
+export function texteCreneauParis(p: { debut: string; fin: string }, maintenant = new Date()) {
+  const fixe = new Date(p.fin).getTime() - new Date(p.debut).getTime() === 15 * 60e3;
+  return fixe ? jourHeureParis(p.debut, maintenant) : `${jourParisRelatif(p.debut, maintenant)} entre ${heureParis(p.debut)} et ${heureParis(p.fin)}`;
+}
 
 // evenement : "defi" | "accepte" | "attend" | "tournoi" | "test" | "freeroll" | "programme" | "invitation"
 //   | "ami_demande" | "ami_accepte" | "invitation_cercle" (étape 79) ; duel : la ligne du duel ;
@@ -38,7 +50,8 @@ export const jourHeureParis = (date: string) =>
 // cercle : { nom } (invitation dans un cercle).
 // Programmer un match de tournoi (étape 84) : "creneaux" | "rdv_fixe" | "rdv_decline" | "rdv_rappel" | "rdv_heure" ; adv : l'autre joueur ;
 // quand : l'heure du rendez-vous.
-export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }, tournoi?: { nom: string; depart?: string; mode?: string }, cercle?: { nom: string }, quand?: string) {
+export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }, tournoi?: { nom: string; depart?: string; mode?: string }, cercle?: { nom: string }, quand?: string,
+  plages?: { debut: string; fin: string }[], ref?: string) {
   if (evenement === "test") return {
     titre: "🔔 Notification de test", texte: "Si tu lis ceci, les notifications marchent sur ce téléphone !", url: "./", tag: "test",
   };
@@ -57,20 +70,25 @@ export function message(evenement: string, duel: any, adv: { pseudo: string; num
   const du = tournoi?.nom ? ` (${tournoi.nom})` : "";
   // (étape 85 : un défi programmé, sans tournoi, ouvre « Défis »)
   const ouvrirRdv = tournoi ? "./?ouvrir=tournois" : "./?ouvrir=duels";
-  if (evenement === "creneaux") return {
-    titre: `📅 ${qui} te propose des créneaux`, texte: `Pour ${tournoi ? `votre match${du}` : "votre défi"}. Touche pour choisir une heure.`, url: ouvrirRdv, tag: `rdv-${qui}`,
-  };
+  // (étape 86 : la notification dit tout, et celle d'un défi remplace « X te défie » sur le téléphone, même étiquette)
+  const tag = ref ? `duel-${ref}` : `rdv-${qui}`, defi = !tournoi, leDefi = defi ? "votre défi" : `votre match${du}`;
+  if (evenement === "creneaux") {
+    const p = plages || [], un = p.length === 1 ? texteCreneauParis(p[0]) : null;
+    return defi
+      ? { titre: `📅 ${qui} te propose un défi${un ? ` ${un}` : p.length > 1 ? ` : ${p.length} créneaux` : ""}`, texte: "Touche pour accepter, proposer un autre horaire ou décliner.", url: ouvrirRdv, tag }
+      : { titre: `📅 ${qui} te propose un horaire${un ? ` : ${un}` : p.length > 1 ? ` : ${p.length} créneaux` : ""}`, texte: `Pour votre match${du}. Touche pour accepter, proposer un autre horaire ou décliner.`, url: ouvrirRdv, tag };
+  }
   if (evenement === "rdv_fixe") return {
-    titre: `✅ Rendez-vous fixé${quand ? ` : ${jourHeureParis(quand)}` : ""}`, texte: `${qui} a choisi l'heure de votre match${du}.`, url: ouvrirRdv, tag: `rdv-${qui}`,
+    titre: `✅ ${qui} a accepté${quand ? ` : ${jourHeureParis(quand)}` : ""}`, texte: `Rendez-vous pour ${leDefi}. Tu recevras un rappel 10 minutes avant.`, url: ouvrirRdv, tag,
   };
-  if (evenement === "rdv_decline") return {
-    titre: `❌ ${qui} ne peut pas sur tes créneaux`, texte: `Pour votre match${du} : touche pour en proposer d'autres.`, url: ouvrirRdv, tag: `rdv-${qui}`,
-  };
+  if (evenement === "rdv_decline") return defi
+    ? { titre: `❌ ${qui} a décliné ton défi`, texte: "Tu peux lui en proposer un autre quand tu veux.", url: ouvrirRdv, tag }
+    : { titre: `❌ ${qui} ne peut pas à cet horaire`, texte: `Pour votre match${du} : touche pour proposer un autre horaire.`, url: ouvrirRdv, tag };
   if (evenement === "rdv_rappel") return {
-    titre: "⏰ Ton match dans 10 minutes", texte: `Contre ${qui}${quand ? `, à ${heureParis(quand)}` : ""}${du}. Prépare-toi !`, url: ouvrirRdv, tag: `rdv-${qui}`,
+    titre: defi ? "⏰ Ton défi dans 10 minutes" : "⏰ Ton match dans 10 minutes", texte: `Contre ${qui}${quand ? `, à ${heureParis(quand)}` : ""}${du}. Prépare-toi !`, url: ouvrirRdv, tag,
   };
   if (evenement === "rdv_heure") return {
-    titre: "🏆 C'est l'heure de ton match !", texte: `${qui} arrive${du} : touche pour lancer le match.`, url: ouvrirRdv, tag: `rdv-${qui}`,
+    titre: defi ? "🏆 C'est l'heure de ton défi !" : "🏆 C'est l'heure de ton match !", texte: `Contre ${qui}${du} : touche pour rejoindre, le match démarre dès que vous êtes là tous les deux.`, url: ouvrirRdv, tag,
   };
   // Les amis et les cercles (étape 79, 15 novembre) : adv est celui qui demande, accepte ou invite.
   if (evenement === "ami_demande") return {
@@ -135,7 +153,7 @@ async function servir(req: Request) {
   if (!id) return reponse({ erreur: "notification manquante" }, 400);
   // On « prend » la notification : si elle est déjà partie, on ne la renvoie pas.
   const { data: notif } = await sb.from("notifications").update({ envoye_le: new Date().toISOString() })
-    .eq("id", id).is("envoye_le", null).select("duel_id, joueur, evenement, tournoi_id, de, cercle_id, quand").maybeSingle();
+    .eq("id", id).is("envoye_le", null).select("duel_id, joueur, evenement, tournoi_id, de, cercle_id, quand, plages, ref_duel").maybeSingle();
   if (!notif) return reponse({ ok: true, deja: true });
   let duel: any = null, adv: any = null;
   if (notif.duel_id) {
@@ -148,7 +166,7 @@ async function servir(req: Request) {
   if (notif.tournoi_id) ({ data: tournoi } = await sb.from("tournois").select("nom, depart, mode").eq("id", notif.tournoi_id).maybeSingle());
   let cercle: any = null;
   if (notif.cercle_id) ({ data: cercle } = await sb.from("cercles").select("nom").eq("id", notif.cercle_id).maybeSingle());
-  const m = message(notif.evenement, duel, adv || { pseudo: "Un joueur", numero: 0 }, tournoi || undefined, cercle || undefined, notif.quand || undefined);
+  const m = message(notif.evenement, duel, adv || { pseudo: "Un joueur", numero: 0 }, tournoi || undefined, cercle || undefined, notif.quand || undefined, notif.plages || undefined, notif.ref_duel || undefined);
 
   webpush.setVapidDetails(ADRESSE_APPLI, cles.publique, cles.privee);
   const { data: abonnements } = await sb.from("abonnements_push").select("endpoint, p256dh, auth").eq("joueur", notif.joueur);
