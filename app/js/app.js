@@ -1572,7 +1572,7 @@ try { vueJeu = localStorage.getItem("hs_vue_jeu") || "humains"; } catch { /* rie
 let recupEnCours = false;
 async function recupererJeuPasse() {
   const uid = compteUI?.session()?.user?.id;
-  if (P.parAdvVersion >= 4 || recupEnCours || !uid) return;
+  if (P.parAdvVersion >= 5 || recupEnCours || !uid) return;
   recupEnCours = true;
   try {
     const duels = [];
@@ -1584,18 +1584,18 @@ async function recupererJeuPasse() {
     const advs = [...new Set(duels.map(d => (d.j0 === uid ? d.j1 : d.j0)).filter(Boolean))], bots = new Set();
     for (let i = 0; i < advs.length; i += 150) for (const p of await profilsEnLigne(advs.slice(i, i + 150))) if (estBotEnLigne(p.pseudo)) bots.add(p.id);
     const h = jeuDepuisDuels(duels, uid, bots);
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 4;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées)
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 5;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair et l'Endurance)
     sauverP();
   } catch (e) { console.warn("Mon jeu : matchs passés", e); }
   recupEnCours = false;
   if (!$("viewProfile").hidden) renderMonJeu();
 }
 function renderMonJeu() {
-  if (!(P.parAdvVersion >= 4) && compteUI?.session()?.user) recupererJeuPasse();
+  if (!(P.parAdvVersion >= 5) && compteUI?.session()?.user) recupererJeuPasse();
   // (sans compte et sans duel joué : tous les matchs passés étaient contre des bots)
-  else if (!(P.parAdvVersion >= 4) && !compteUI?.session()?.user && !P.duelsFinis) {
+  else if (!(P.parAdvVersion >= 5) && !compteUI?.session()?.user && !P.duelsFinis) {
     const h = P.parAdv?.humains || jeuVide();
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 4; sauverP();
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 5; sauverP();
   }
   $("gameBody").innerHTML = htmlJeu(P, vueJeu, { enCours: recupEnCours, connecte: !!compteUI?.session()?.user });
   $("gameBody").querySelectorAll(".jeu-vue").forEach(b => b.addEventListener("click", () => {
@@ -1855,6 +1855,12 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
       <div class="ln"><span>Smashs joués</span><span>${d.smash.total}, dont ${d.smash.gagnes} gagnant${d.smash.gagnes > 1 ? "s" : ""}</span></div>
       <div class="ln"><span>${toi ? "Tu smashes" : elle ? "Elle smashe" : "Il smashe"} surtout avec</span><span>${s(d.smash.favori)}</span></div></div>`
     : `<h3 class="ff-titre">💥 ${ses} smashs</h3><p class="hint">Pas de smash dans ${ses_} derniers matchs (ou pas encore enregistré).</p>`;
+  // (20 novembre) Le flair et l'endurance, comme sur la carte (assez de preuves, sinon on le dit).
+  const pcR = (x, n) => `<b>${Math.round((100 * x) / n)} %</b> <span class="ratio">(${x}/${n})</span>`;
+  const fl = d.flair, en = d.endurance;
+  const flairEnd = `<h3 class="ff-titre">🔍 ${toi ? "Ton" : "Son"} flair et ${toi ? "ton" : "son"} endurance</h3><div class="lines">
+      <div class="ln"><span>Lectures réussies (une habitude de l'adversaire punie)</span><span>${fl && fl.tentees >= 30 ? pcR(fl.reussies, fl.tentees) : `pas encore assez (${fl?.tentees || 0} sur 30)`}</span></div>
+      <div class="ln"><span>Après 2 égalités ou plus, le point gagné</span><span>${en && en.chaines >= 10 ? pcR(en.gagnees, en.chaines) : `pas encore assez (${en?.chaines || 0} sur 10)`}</span></div></div>`;
   const f = d.forme;
   const forme = f ? `<h3 class="ff-titre">📈 ${sa} forme récente</h3><p class="hint">${Math.abs(f.ecart) >= 6
     ? `Sur ${ses_} 10 derniers matchs, ${il} ${toi ? "joues" : "joue"} ${f.ecart > 0 ? "plus" : "moins"} ${NOMS_SIGNES[f.signe] === "Ciseaux" ? "les Ciseaux" : `la ${NOMS_SIGNES[f.signe]}`} : ${f.recent[f.signe]} % contre ${f.avant[f.signe]} % avant.`
@@ -1862,7 +1868,7 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
   return `<h3 class="ff-titre">🎯 ${toi ? "Tes failles" : `Pour ${elle ? "la" : "le"} battre`}</h3>${conseils}`
     + `<p class="dossier-source">D'après ${ses_} ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).${toi ? " C'est ce que tes adversaires voient de toi." : ""}</p>`
     + `<p class="dossier-signes">${d.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
-    + `<h3 class="ff-titre">🧠 ${ses} réflexes</h3>${reflexes}${egalite}${ouverture}${smash}${forme}`;
+    + `<h3 class="ff-titre">🧠 ${ses} réflexes</h3>${reflexes}${egalite}${ouverture}${smash}${flairEnd}${forme}`;
 }
 // Mon dossier (Ma fiche › Stats ; 20 novembre, demande du porteur du projet) : avec un compte, d'après mes 50 derniers matchs en
 // ligne, ce que voient mes adversaires. Chargé à l'ouverture de la carte, puis gardé jusqu'au prochain match.

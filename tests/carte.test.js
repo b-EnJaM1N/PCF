@@ -10,7 +10,7 @@ test("un nouveau joueur : carte en bois, des tirets, niveau d'entraînement", ()
   assert.equal(c.rarete, "bois");
   assert.equal(c.niveau, 1200); assert.equal(c.typeNiveau, "NIVEAU");
   assert.equal(c.signe, null);
-  assert.deepEqual(c.notes.map(n => n.code), ["IMP", "RÉU", "DIV", "VIC", "SGF", "FLA"]);
+  assert.deepEqual(c.notes.map(n => n.code), ["IMP", "RÉU", "DIV", "SGF", "FLA", "END"]);
   assert.ok(c.notes.every(n => n.valeur === "–"), "pas de match contre des joueurs : des tirets");
 });
 
@@ -18,12 +18,14 @@ test("les stats de la carte : seulement contre les joueurs, en pourcentages", ()
   const P = profilParDefaut();
   Object.assign(P, { matchs: 100, victoires: 90 });   // (le total, avec les bots, ne compte pas)
   P.parAdv = { humains: { matchs: 10, victoires: 6, signes: [40, 30, 30], apresVictoire: 50, apresDefaite: 40, devines: 0, lisibles: 0,
-    ballesObtenues: 10, ballesConverties: 5, ballesSubies: 8, ballesSauvees: 3, decisifsJoues: 2, decisifsGagnes: 2, lecturesReussies: 15, lecturesRatees: 5 } };
-  assert.equal(note(P, "VIC"), "66");              // 60 % : 50 + 10 × 49 / 30
+    ballesObtenues: 10, ballesConverties: 5, ballesSubies: 8, ballesSauvees: 3, decisifsJoues: 2, decisifsGagnes: 2, flairTentees: 40, flairReussies: 30, endChaines: 6, endGagnees: 5 } };
   assert.equal(note(P, "RÉU"), "70");              // 56 % : (50 + 6) / (50 + 40 + 10)
   assert.equal(note(P, "DIV"), "75");
   assert.equal(note(P, "SGF"), "50");              // 50 % : le hasard              // (5 + 3 + 2) / (10 + 8 + 2)
-  assert.equal(note(P, "FLA"), "91");              // 75 % : 50 + 25 × 49 / 30
+  assert.equal(note(P, "FLA"), "91");              // 30 sur 40 = 75 % : 50 + 25 × 49 / 30
+  assert.equal(note(P, "END"), "–", "moins de 10 chaînes d'égalités : pas encore de note");
+  P.parAdv.humains.endChaines = 10; P.parAdv.humains.endGagnees = 6;
+  assert.equal(note(P, "END"), "70");              // 60 % : 50 + 10 × 49 / 25
   assert.equal(note(P, "IMP"), "–", "pas encore assez de coups lus");
   assert.equal(diversification([100, 100, 100]), 100);
   assert.equal(diversification([1001, 1000, 999]), 100, "33,3 % partout, au dixième près");
