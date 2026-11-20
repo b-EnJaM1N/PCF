@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="version" content="f3b86d0 du 20/11/2026">
+<meta name="version" content="d2e0f5f du 20/11/2026">
 <!-- (15 novembre, choix du porteur du projet : le titre et la description montrés par Google et dans les aperçus de partage) -->
 <title>HandSlam – Pierre-Feuille-Ciseaux devient un sport</title>
 <meta name="description" content="Le Pierre-Feuille-Ciseaux comme un vrai sport : duels entre amis, tournois, classement et gants à collectionner. Gratuit, sans publicité.">
@@ -735,8 +735,9 @@
       <summary><img id="carteImg" class="carte-img" alt="Ma carte de joueur"><span class="carte-toucher">🃏 Ma carte de joueur<small>Touche pour l'agrandir et la partager</small></span></summary>
       <p class="hint" id="carteRarete"></p>
       <details class="carte-aide"><summary>Comment sont calculées les notes ?</summary>
-        <p class="hint">Chaque note est sur 99. 50, c'est le niveau du hasard ; il faut des preuves pour s'en éloigner : avec peu de matchs, les notes restent proches de 50.</p>
+        <p class="hint">Chaque note va de 1 à 99 : 50, c'est le hasard ; au-dessus de 90, c'est excellent ; 99, c'est hors norme. Seuls tes matchs contre de vrais joueurs comptent.</p>
         <ul id="carteNotes"></ul>
+        <details class="carte-aide"><summary>Le détail du calcul</summary><ul class="hint" id="carteCalcul"></ul></details>
       </details>
       <p class="hint" id="carteMsg" role="status"></p>
       <button class="btn" id="cartePartager">Partager ma carte</button>
