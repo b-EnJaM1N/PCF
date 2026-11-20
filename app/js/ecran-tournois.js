@@ -15,6 +15,7 @@ import { texteDepart as texteDepartProgramme } from "./programmes-logique.js";
 import { monResultat, texteJetons } from "./jetons-logique.js";
 import { lire, ecrire } from "./stockage.js";
 import { estFiac } from "./profil.js";
+import { MODES, changerMode, finDe } from "./creneaux-ui.js";
 import { jour as jourRdv, textePlage, texteRdv, joursPossibles, HEURES, texteHeure, plage, plagesRapides, heuresDansPlage, etatRdv, forfaitPossible } from "./creneaux.js";
 
 const $ = id => document.getElementById(id);
@@ -579,9 +580,9 @@ export function installerTournois(ctx) {
     const jours = joursPossibles(echeance), rapides = plagesRapides(echeance);
     const opts = (liste, val) => liste.map(o => `<option value="${o.valeur}"${o.valeur === val ? " selected" : ""}>${o.texte}</option>`).join("");
     const heures = HEURES.map(h => ({ valeur: h, texte: texteHeure(h) }));
-    const ligne = () => `<div class="rdv-ligne"><select class="rj">${opts(jours)}</select><select class="rd">${opts(heures, "20:00")}</select><span>à</span><select class="ra"><option value="fixe">heure fixe</option>${opts(heures, "22:00")}</select><button class="petit alt rx" aria-label="Retirer cette plage">✕</button></div>`;
+    const ligne = () => `<div class="rdv-ligne" data-mode="plage">${MODES}<select class="rj">${opts(jours)}</select><select class="rd">${opts(heures, "20:00")}</select><span class="rfin">à</span><select class="ra">${opts(heures, "22:00")}</select><button class="petit alt rx" aria-label="Retirer cette plage">✕</button></div>`;
     f.hidden = false;
-    f.innerHTML = `<p class="hint">Tes plages pour ${adv} (5 au plus), avant la date limite :</p>`
+    f.innerHTML = `<p class="hint">Tes créneaux pour ${adv} (5 au plus, avant la date limite) : une plage, où il choisira l'heure, ou une heure fixe.</p>`
       + (rapides.length ? `<div class="rdv-rapides">${rapides.map((r, i) => `<button class="petit alt" data-rapide="${i}">+ ${r.texte}</button>`).join("")}</div>` : "")
       + `<div id="tRdvLignes">${ligne()}</div><button class="petit alt" id="tRdvPlus">+ Une autre plage</button>
          <button class="btn" id="tRdvEnvoyer">📅 Envoyer mes créneaux</button><button class="btn alt" id="tRdvFermer">Annuler</button>`;
@@ -594,18 +595,19 @@ export function installerTournois(ctx) {
     f.addEventListener("click", e => {
       const b = e.target.closest("button"); if (!b) return;
       if (b.classList.contains("rx")) { b.closest(".rdv-ligne").remove(); return; }
+      if (b.dataset.mode) { changerMode(b); return; }
       if (b.id === "tRdvPlus") return ajouter();
       if (b.id === "tRdvFermer") { f.hidden = true; rdvTouche = 0; return; }
       if (b.dataset.rapide !== undefined) {
         const p = rapides[+b.dataset.rapide].p, d = new Date(p.debut), x = new Date(p.fin), hh = z => `${String(z.getHours()).padStart(2, "0")}:${String(z.getMinutes()).padStart(2, "0")}`;
         const j = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
         const vide = lignes().find(l => !l.dataset.rempli);
-        if (vide) { vide.querySelector(".rj").value = j; vide.querySelector(".rd").value = hh(d); vide.querySelector(".ra").value = hh(x); vide.dataset.rempli = "1"; }
+        if (vide) { changerMode(vide.querySelector('[data-mode="plage"]')); vide.querySelector(".rj").value = j; vide.querySelector(".rd").value = hh(d); vide.querySelector(".ra").value = hh(x); vide.dataset.rempli = "1"; }
         else ajouter(j, hh(d), hh(x));
         return;
       }
       if (b.id === "tRdvEnvoyer") {
-        const plages = lignes().map(l => plage(l.querySelector(".rj").value, l.querySelector(".rd").value, l.querySelector(".ra").value));
+        const plages = lignes().map(l => plage(l.querySelector(".rj").value, l.querySelector(".rd").value, finDe(l)));
         if (!plages.length) { $("tRdvMsg").textContent = "Ajoute au moins une plage."; return; }
         b.disabled = true;
         social.proposerCreneaux(id, plages).then(() => { dire("Créneaux envoyés : il est prévenu."); charger(); })
