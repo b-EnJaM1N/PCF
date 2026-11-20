@@ -37,8 +37,8 @@ begin
   perform pg_temp.en_tant_que(pg_temp.u(2)::text);
   r := dossier_joueur(pg_temp.u(1));
   perform pg_temp.verifier(jsonb_array_length(r) = 2, 'deux matchs terminés (le duel en cours et le match des autres ne comptent pas)');
-  perform pg_temp.verifier(r->0 = '[{"b":1,"a":0,"g":0}]'::jsonb, 'le plus récent d''abord, vu de son côté (il était j1 : Ciseaux contre Pierre, point perdu)');
-  perform pg_temp.verifier(r->1 = '[{"b":0,"a":1,"g":1},{"b":2,"a":2,"g":null}]'::jsonb, 'quand il était j0 : Pierre contre Ciseaux gagné, puis égalité');
+  perform pg_temp.verifier(r->0 = '[{"b":1,"a":0,"g":0,"p":7,"n":2}]'::jsonb, 'le plus récent d''abord, vu de son côté (il était j1 : Ciseaux contre Pierre, point perdu)');
+  perform pg_temp.verifier(r->1 = '[{"b":0,"a":1,"g":1,"p":7,"n":2},{"b":2,"a":2,"g":null}]'::jsonb, 'quand il était j0 : Pierre contre Ciseaux gagné, puis égalité');
   perform pg_temp.verifier(dossier_joueur(gen_random_uuid()) = '[]'::jsonb, 'joueur inconnu : dossier vide');
 end $$;
 

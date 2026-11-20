@@ -510,6 +510,13 @@ Même manipulation que d'habitude avec [`etape-81-pause-replay.sql`](etape-81-pa
 En duel, la pause entre deux sets dure 45 secondes au lieu de 30 : le replay du moment fort du set passe d'abord (on peut le
 passer), puis il reste 30 secondes. Le set repart toujours dès que les deux joueurs sont prêts. **À coller avant la fusion.**
 
+## 1 octogies secundo. Le dossier de l'adversaire, plus complet (étape 82)
+
+Même manipulation que d'habitude avec [`etape-82-dossier-complet.sql`](etape-82-dossier-complet.sql), **après** l'étape 81
+(version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-82-dossier-complet.sql).
+Le dossier renvoie en plus ses smashs et le format de chaque match (pour retrouver ses débuts de set) ; les anciennes versions
+de l'appli ignorent ces champs. À recoller aussi : l'étape 68 corrigée le 19 novembre (Supabase refusait sa fonction).
+
 ## 1 octogies. Les smileys dans les messages du duel (étape 80)
 
 Même manipulation que d'habitude avec [`etape-80-smileys.sql`](etape-80-smileys.sql), **après** l'étape 79
