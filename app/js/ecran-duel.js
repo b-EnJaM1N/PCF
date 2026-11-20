@@ -365,8 +365,8 @@ export function installerDuels(ctx) {
   // ------------------------------------------------ la fenêtre « Défier X » (la même partout : recherche, amis, cercles, face-à-face, lien)
   // Renvoie une promesse : le texte de confirmation une fois le défi envoyé, ou null si on ferme sans envoyer.
   let enCoursDefi = null;   // { p (null : défi par lien), resoudre }
-  // programmer : « 📅 Programmer un défi » (20 novembre, demande du porteur du projet) : le défi est envoyé, puis le choix des
-  // créneaux s'ouvre tout de suite dans « Mes défis ».
+  // programmer : « 📅 Programmer un défi » (20 novembre, demande du porteur du projet) : dans la fenêtre, le format et l'enjeu,
+  // puis les créneaux, puis un seul envoi (le défi et ses créneaux).
   function defier(p, { programmer = false } = {}) {
     return new Promise(resoudre => {
       enCoursDefi?.resoudre(null);
@@ -376,32 +376,40 @@ export function installerDuels(ctx) {
         ? `<div class="joueur"><span class="mini">${avatarSVG(p.avatar || {})}</span><div style="min-width:0"><div class="jn">${esc(p.drapeau || "")} ${nomComplet(p)}</div><div class="jd">Niveau ${p.classement ?? p.niveau ?? ""}</div></div><span></span></div>`
         : `<p class="hint">Choisis le format, puis envoie le lien (WhatsApp, SMS…) : le premier qui l'ouvre devient ton adversaire.</p>`;
       $("duelEnjeuZone").hidden = !p;
-      $("defiEnvoyer").textContent = enCoursDefi.programmer ? "📅 Envoyer et choisir les créneaux" : p ? "Envoyer le défi" : "Créer le lien et le partager";
+      $("defiEnvoyer").textContent = p ? "Envoyer le défi" : "Créer le lien et le partager";
       $("defiEnvoyer").disabled = false;
-      // (20 novembre, demande du porteur du projet : sous « Envoyer le défi », « 📅 Envoyer et programmer » ; ouvert depuis
-      // « 📅 Programmer un défi », le bouton principal le fait déjà)
-      $("defiProgrammer").hidden = !p || !nouveauteOuverte("creneaux") || enCoursDefi.programmer;
+      // (20 novembre, demande du porteur du projet : sous « Envoyer le défi », « 📅 Programmer un défi » ouvre le choix des créneaux
+      // dans la fenêtre ; on envoie ensuite le tout)
+      $("defiProgrammer").hidden = !p || !nouveauteOuverte("creneaux");
       $("defiProgrammer").disabled = false;
+      $("defiEnvoyer").hidden = false; $("defiCreneaux").hidden = true; $("defiCreneaux").innerHTML = "";
       $("defiFenetreMsg").textContent = ""; $("defiFenetreMsg").classList.remove("erreur");
       $("defiFenetre").hidden = false;
+      if (enCoursDefi.programmer) programmerDansFenetre();
     });
+  }
+  // Le choix des créneaux dans la fenêtre « Défier » : un seul envoi crée le défi, puis lui envoie les créneaux.
+  function programmerDansFenetre() {
+    const e = enCoursDefi; if (!e?.p) return;
+    $("defiEnvoyer").hidden = true; $("defiProgrammer").hidden = true;
+    ouvrirPanneau($("defiCreneaux"), { c: null, uid, adv: e.p.pseudo, texteEnvoyer: "📅 Envoyer le défi programmé", texteFermer: "Sans créneaux",
+      actions: { proposer: async plages => {
+        // (si les créneaux ont échoué après l'envoi du défi, on ne renvoie pas un second défi)
+        if (!e.duelId) { e.texte = await envoyerDefi(e.p); e.duelId = defiesA.get(e.p.id); }
+        await serveur.proposerCreneauxDuel(e.duelId, plages);
+      } },
+      fini: () => { const t = `${e.texte || ""} Tes créneaux lui sont envoyés : il choisira l'heure.`.trim(); fermerDefi(t); dire(t); rafraichir(); },
+      fermer: () => { $("defiEnvoyer").hidden = false; $("defiProgrammer").hidden = false; } });
   }
   const fermerDefi = (resultat = null) => { const e = enCoursDefi; enCoursDefi = null; $("defiFenetre").hidden = true; e?.resoudre(resultat); };
   $("defiAnnuler").addEventListener("click", () => fermerDefi());
   $("defiFenetre").addEventListener("click", e => { if (e.target.id === "defiFenetre") fermerDefi(); });
-  $("defiProgrammer").addEventListener("click", () => {
-    if (!enCoursDefi) return;
-    enCoursDefi.programmer = true; $("defiProgrammer").disabled = true;
-    $("defiEnvoyer").click();
-  });
+  $("defiProgrammer").addEventListener("click", () => programmerDansFenetre());
   $("defiEnvoyer").addEventListener("click", async () => {
     const e = enCoursDefi; if (!e) return;
     $("defiEnvoyer").disabled = true;
     try {
-      if (e.p) {
-        const texte = await envoyerDefi(e.p); fermerDefi(texte);
-        if (e.programmer) await ouvrirProgrammation(defiesA.get(e.p.id));
-      }
+      if (e.p) { const texte = await envoyerDefi(e.p); fermerDefi(texte); }
       else {
         const d = await serveur.creer(null, format.len, format.win, format.classe, format.mise);
         fermerDefi("lien"); await partager(d.code); rafraichir();
@@ -411,17 +419,6 @@ export function installerDuels(ctx) {
       $("defiEnvoyer").disabled = false; $("defiProgrammer").disabled = false;
     }
   });
-
-  // Ouvre « Mes défis » et le panneau 📅 du défi id (juste envoyé).
-  async function ouvrirProgrammation(id) {
-    if (!id) return;
-    ctx.ouvrirOnglet("duel");
-    await rafraichir();
-    const b = document.querySelector(`#viewDuel .joueur[data-id="${id}"] button[data-a=programmer]`);
-    if (!b) return;
-    b.click();
-    setTimeout(() => document.querySelector(`#viewDuel .rdv[data-rdv="${id}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
-  }
 
   async function envoyerDefi(p) {
     const enjeu = enjeuChoisi();
