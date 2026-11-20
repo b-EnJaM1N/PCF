@@ -1290,3 +1290,13 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .dossier-conseils { margin: 4px 0 10px; padding-left: 20px; } .dossier-conseils li { margin: 4px 0; font-weight: 600; }
 .ratio { font-weight: 400; color: var(--muted); font-size: .88em; }
 .sf-ratio { display: block; font-family: "Barlow", sans-serif; font-size: .72rem; font-weight: 400; color: var(--muted); }
+/* Caler un match de tournoi (étape 84) */
+.rdv { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: var(--panel); border: 1px solid rgba(255, 255, 255, .12); }
+.rdv p { margin: 4px 0; }
+.rdv-plages { margin: 4px 0 8px; padding-left: 20px; }
+.rdv-actions, .rdv-rapides { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.rdv-choix { display: flex; align-items: center; gap: 8px; margin: 6px 0; flex-wrap: wrap; }
+.rdv-ligne { display: flex; align-items: center; gap: 4px; margin: 6px 0; flex-wrap: wrap; }
+.rdv-ligne select, .rdv-choix select { padding: 6px; border-radius: 8px; font: inherit; }
+.rdv-msg.erreur { color: var(--bot); }
+#tRdvForm .btn { margin-top: 8px; }
