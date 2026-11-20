@@ -236,7 +236,9 @@ export function dossierDetaille(matchs, { elle = false, toi = false } = {}) {
   }
   return {
     matchs: liste.length, coups: n, repartition: rep, reflexes, egalite, ouverture, smash, forme,
-    flair: { tentees: fe.tentees, reussies: fe.reussies }, endurance: { chaines: fe.chaines, gagnees: fe.gagnees },
+    // (l'endurance : ne pas perdre le point quand on ne le gagne pas, égalités ÷ (égalités + points perdus))
+    flair: { tentees: fe.tentees, reussies: fe.reussies },
+    endurance: (() => { let e = 0, p = 0; for (const m of liste) for (const c of m) { if (c.g === null || c.g === undefined) e++; else if (c.g === 0) p++; } return { egalites: e, nonGagnes: e + p }; })(),
     conseils: conseils.sort((x, y) => y.force - x.force).slice(0, 3).map(c => c.texte),
   };
 }
