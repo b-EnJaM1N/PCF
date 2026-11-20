@@ -1304,3 +1304,10 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .ami-actions .btn { margin: 0; }
 .rdv-mode { display: flex; gap: 6px; width: 100%; margin-top: 4px; } .rdv-mode .petit.on { border-color: var(--me); }
 .rdv-ligne { border-top: 1px solid rgba(255, 255, 255, .08); padding-top: 6px; }
+/* Le défi programmé reçu (20 novembre) : chaque proposition, avec son « Accepter » */
+.rdv-reponse { background: none; border: 0; padding: 0; }
+.rdv-prop { margin: 8px 0; padding: 10px 12px; border-radius: 12px; background: rgba(244, 197, 66, .08); border: 1px solid rgba(244, 197, 66, .35); }
+.rdv-prop b { display: block; font-size: 1.05rem; margin-bottom: 6px; }
+.rdv-prop .btn { width: 100%; margin-top: 6px; }
+.rdv-prop.passee { opacity: .55; }
+.rdv-reponse .rdv-actions { flex-direction: column; } .rdv-reponse .rdv-actions .btn { width: 100%; margin: 0; }

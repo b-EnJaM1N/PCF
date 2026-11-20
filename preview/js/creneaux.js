@@ -16,10 +16,10 @@ export function jour(d, maintenant = new Date()) {
 // Une heure fixe (20 novembre, demande du porteur du projet) : une plage d'un quart d'heure exactement ; l'autre n'a que cette heure
 // à accepter.
 export const heureFixe = p => new Date(p.fin) - new Date(p.debut) === 15 * 60e3;
-// « demain 20 h – 22 h » ; une heure fixe : « demain à 21 h ».
+// « demain entre 20 h et 22 h » ; une heure fixe : « demain à 21 h ».
 export const textePlage = (p, maintenant = new Date()) => {
   const d = new Date(p.debut), f = new Date(p.fin);
-  return heureFixe(p) ? `${jour(d, maintenant)} à ${heure(d)}` : `${jour(d, maintenant)} ${heure(d)} – ${heure(f)}`;
+  return heureFixe(p) ? `${jour(d, maintenant)} à ${heure(d)}` : `${jour(d, maintenant)} entre ${heure(d)} et ${heure(f)}`;
 };
 // « jeudi 26 à 21 h » (le rendez-vous).
 export const texteRdv = (rdv, maintenant = new Date()) => { const d = new Date(rdv); return `${jour(d, maintenant)} à ${heure(d)}`; };

@@ -1,6 +1,6 @@
 // Le panneau « 📅 Programmer » d'un défi (20 novembre ; étape SQL 85) : proposer des plages, ou choisir une heure dans celles de
 // l'autre, proposer d'autres plages, décliner. Les calculs sont dans creneaux.js. (Les matchs de tournoi ont le leur, ecran-tournois.js.)
-import { jour, textePlage, texteRdv, joursPossibles, HEURES, texteHeure, plage, plagesRapides, heuresDansPlage, etatRdv } from "./creneaux.js";
+import { heureFixe, textePlage, texteRdv, joursPossibles, HEURES, texteHeure, plage, plagesRapides, heuresDansPlage, etatRdv } from "./creneaux.js";
 
 // Chaque ligne : « Une plage » (de … à …) ou « Une heure fixe » (20 novembre, demande du porteur du projet : l'heure fixe, cachée
 // dans l'heure de fin, ne se trouvait pas).
@@ -18,9 +18,10 @@ const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "
 // La petite ligne d'état sous un défi (ou "" s'il n'est pas programmé).
 export function etatCourt(c, uid, adv) {
   const e = etatRdv(c, uid), a = esc(adv);
-  if (e === "fixe") return `📅 Rendez-vous ${esc(texteRdv(c.rdv))}`;
-  if (e === "j_ai_propose") return `📅 Créneaux envoyés · en attente de ${a}`;
-  if (e === "a_choisir") return `📅 <b>${a} te propose des créneaux</b> : touche 📅 pour choisir`;
+  const lesPlages = () => (c.plages.length === 1 ? esc(textePlage(c.plages[0])) : `${c.plages.length} créneaux`);
+  if (e === "fixe") return `📅 Rendez-vous ${esc(texteRdv(c.rdv))}${Date.now() < Date.parse(c.rdv) - 5 * 60e3 ? " · la salle d'attente ouvre 5 min avant" : ""}`;
+  if (e === "j_ai_propose") return `📅 Tu as proposé ${lesPlages()} · en attente de ${a}`;
+  if (e === "a_choisir") return `📅 <b>${a} propose ${lesPlages()}</b>`;
   if (e === "decline_par_lui") return `📅 ${a} ne peut pas sur tes créneaux`;
   if (e === "j_ai_decline") return "📅 Tu as décliné ses créneaux";
   return "";
@@ -29,18 +30,30 @@ export function etatCourt(c, uid, adv) {
 // zone : l'élément où ouvrir le panneau ; c : les créneaux (ou null) ; uid : moi ; adv : son pseudo ;
 // actions : { proposer(plages), choisir(heure), decliner() } (des promesses) ; fini(message) : après une action réussie.
 // (fenêtre « Défier » : texteEnvoyer, le texte du bouton d'envoi ; fermer(), quand on annule)
-export function ouvrirPanneau(zone, { c, uid, adv, actions, fini, texteEnvoyer = "📅 Envoyer mes créneaux", texteFermer = "Annuler", fermer = () => {}, sansFermer = false }) {
+export function ouvrirPanneau(zone, { c, uid, adv, actions, fini, texteEnvoyer = "📅 Envoyer mes créneaux", texteFermer = "Annuler", fermer = () => {}, sansFermer = false,
+  texteDecliner = "Décliner", confirmerDecliner = null }) {
   const etat = etatRdv(c, uid), a = esc(adv);
   const msg = (t, erreur = false) => { const m = zone.querySelector(".rdv-msg"); if (m) { m.textContent = t; m.classList.toggle("erreur", erreur); } };
   const agir = async (f, ok) => { try { await f(); fini(ok); } catch (e) { msg(e.message, true); } };
   zone.hidden = false;
+  // (20 novembre, parcours validé par le porteur du projet) Chaque proposition, avec son bouton « ✅ Accepter » (pour une plage :
+  // « À quelle heure ? ») ; puis « 🕐 Proposer un autre horaire » et « Décliner ».
   if (etat === "a_choisir") {
-    const options = c.plages.flatMap(p => heuresDansPlage(p).map(h => ({ ...h, texte: `${jour(new Date(h.valeur))} à ${h.texte}` })));
-    zone.innerHTML = `<p><b>📅 ${a} te propose :</b></p><ul class="rdv-plages">${c.plages.map(p => `<li>${esc(textePlage(p))}</li>`).join("")}</ul>`
-      + (options.length ? `<label class="rdv-choix">Choisis l'heure <select class="rdv-heure">${options.map(o => `<option value="${esc(o.valeur)}">${esc(o.texte)}</option>`).join("")}</select></label>` : `<p class="hint">Ces créneaux sont passés.</p>`)
-      + `<div class="rdv-actions">${options.length ? `<button class="petit" data-r="choisir">✅ Fixer le rendez-vous</button>` : ""}<button class="petit alt" data-r="autres">Autres créneaux</button><button class="petit alt" data-r="decliner">Décliner</button>${sansFermer ? "" : `<button class="petit alt" data-r="fermer">Fermer</button>`}</div><p class="hint rdv-msg"></p>`;
-    zone.querySelector("[data-r=choisir]")?.addEventListener("click", () => agir(() => actions.choisir(zone.querySelector(".rdv-heure").value), "Rendez-vous fixé : il est prévenu."));
-    zone.querySelector("[data-r=decliner]").addEventListener("click", () => agir(() => actions.decliner(), "Créneaux déclinés : il est prévenu."));
+    const blocs = c.plages.map((p, i) => {
+      const h = heuresDansPlage(p), plage = !heureFixe(p);
+      if (!h.length) return `<div class="rdv-prop passee"><b>${esc(textePlage(p))}</b><span class="hint"> · passé</span></div>`;
+      return `<div class="rdv-prop"><b>${esc(textePlage(p))}</b>`
+        + (plage ? `<label class="rdv-choix">À quelle heure ? <select class="rdv-heure" data-i="${i}">${h.map(o => `<option value="${esc(o.valeur)}">${esc(o.texte)}</option>`).join("")}</select></label>` : "")
+        + `<button class="btn" data-accepter="${i}" data-heure="${esc(h[0].valeur)}">✅ Accepter</button></div>`;
+    }).join("");
+    zone.innerHTML = blocs + `<div class="rdv-actions"><button class="btn alt" data-r="autres">🕐 Proposer un autre horaire</button><button class="btn alt danger" data-r="decliner">${esc(texteDecliner)}</button></div>`
+      + (sansFermer ? "" : `<button class="linkbtn" data-r="fermer">Fermer</button>`) + `<p class="hint rdv-msg"></p>`;
+    zone.querySelectorAll("[data-accepter]").forEach(b => b.addEventListener("click", () => {
+      const sel = zone.querySelector(`.rdv-heure[data-i="${b.dataset.accepter}"]`);
+      b.disabled = true;
+      agir(() => actions.choisir(sel ? sel.value : b.dataset.heure), "C'est accepté : il est prévenu. Rendez-vous à l'heure !").finally(() => { b.disabled = false; });
+    }));
+    zone.querySelector("[data-r=decliner]").addEventListener("click", () => { if (!confirmerDecliner || confirm(confirmerDecliner)) agir(() => actions.decliner(), "C'est décliné : il est prévenu."); });
     zone.querySelector("[data-r=autres]").addEventListener("click", () => formulaire());
     zone.querySelector("[data-r=fermer]")?.addEventListener("click", () => { zone.hidden = true; zone.innerHTML = ""; });
     return;
