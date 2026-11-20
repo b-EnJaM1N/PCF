@@ -32,3 +32,11 @@ test("le dossier détaillé : réflexes chiffrés, égalités, débuts, smashs, 
   assert.match(dossierDetaille([...Array(16)].map(unMatch), { elle: true }).conseils.join(" "), /\belle\b/);
   assert.equal(dossierDetaille([[coup(0, 1)]]), null, "pas assez de coups");
 });
+
+test("mon propre dossier : au « tu », avec mes failles", () => {
+  const coup = (b, a) => ({ b, a, g: b === a ? null : (b + 1) % 3 === a ? 1 : 0 });
+  const m = () => [coup(0, 1), coup(0, 1), coup(0, 1), coup(0, 2), coup(0, 1), coup(0, 1)];
+  const d = dossierDetaille([...Array(5)].map(m), { toi: true });
+  assert.ok(d.reflexes.every(r => /\btu\b|\bTu\b/.test(r.texte)), "les réflexes au « tu »");
+  assert.ok(d.conseils.length && d.conseils.every(t => typeof t === "string" && /\btu\b|\bTu\b/.test(t)), d.conseils.join(" | "));
+});
