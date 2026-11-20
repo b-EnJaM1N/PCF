@@ -6,14 +6,14 @@ import { jeuVide } from "./profil.js";
 
 export const estBotEnLigne = pseudo => String(pseudo || "").includes("🤖");
 
-// duels : les duels terminés (j0, j1, coups) ; uid : moi ; bots : l'ensemble des identifiants des bots.
+// duels : les duels terminés (j0, j1, coups, vainqueur) ; uid : moi ; bots : l'ensemble des identifiants des bots.
 export function jeuDepuisDuels(duels, uid, bots = new Set()) {
   const j = jeuVide();
   for (const d of duels || []) {
     const moi = d.j0 === uid ? 0 : d.j1 === uid ? 1 : -1, adv = moi === 0 ? d.j1 : d.j0;
     const coups = d.coups || [];
     if (moi < 0 || !coups.length || bots.has(adv)) continue;
-    j.matchs++;
+    j.matchs++; if (d.vainqueur === moi) j.victoires++;
     const suivi = new Suivi();
     let prec = null;
     for (const c of coups) {
@@ -36,7 +36,7 @@ export function jeuDepuisDuels(duels, uid, bots = new Set()) {
 // Contre les bots : le total moins ce qui a été joué contre les joueurs (jamais en dessous de zéro).
 export function jeuMoins(P, h) {
   const b = jeuVide(), pos = x => Math.max(0, x);
-  b.matchs = pos(P.matchs - h.matchs);
+  b.matchs = pos(P.matchs - h.matchs); b.victoires = pos((P.victoires || 0) - (h.victoires || 0));
   b.signes = P.signes.map((x, i) => pos(x - h.signes[i]));
   for (const k of ["smashsTentes", "smashsReussis", "apresVictoire", "memeApresVictoire", "apresDefaite", "memeApresDefaite", "devines", "lisibles"]) b[k] = pos((P[k] || 0) - h[k]);
   return b;
