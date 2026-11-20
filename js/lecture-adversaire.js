@@ -3,6 +3,7 @@
 // Les coups : { a: mon signe, b: son signe, gagnant: 0 (moi), 1 (lui) ou null (égalité) }.
 // Les signes : 0 = Pierre, 1 = Ciseaux, 2 = Feuille ; x bat y quand (x + 1) % 3 === y.
 
+import { nouveauMatch, jouerCoup } from "./regles.js";
 export const NOMS = ["Pierre", "Ciseaux", "Feuille"];
 export const EMOJIS = ["🪨", "✂️", "📄"];
 const NOMS_LE = ["la Pierre", "les Ciseaux", "la Feuille"];
@@ -137,3 +138,93 @@ export function dossier(k, { max = 4, elle = false } = {}) {
     habitudes: liste.sort((x, y) => y.force - x.force).slice(0, max).map(h => (elle ? h.texte.replace(/\bil\b/g, "elle") : h.texte)),
   };
 }
+
+// ---------------------------------------------------------------- le dossier détaillé (19 novembre, demande du porteur du projet)
+// « L'onglet Dossier n'est pas un peu léger ? » : à partir de ses derniers matchs en ligne (le plus récent d'abord ; coups vus de
+// son côté, avec « s » quand il smashe, et « p », « n » le format du match sur le premier coup, étape SQL 82), tous ses réflexes
+// avec leur pourcentage comparé au hasard, ce qu'il fait après une égalité, ses débuts de set, ses smashs, sa forme récente, et
+// quelques conseils pour le battre.
+const ILS = (t, elle) => (elle ? t.replace(/\bIl\b/g, "Elle").replace(/\bil\b/g, "elle").replace(/\bqu'il\b/g, "qu'elle") : t);
+const NIVEAU = ecart => (ecart >= 18 ? "rouge" : ecart >= 8 ? "jaune" : "vert");
+const bat = x => (x + 1) % 3;                    // le signe que x bat
+
+// Les indices des premiers coups de chaque set d'un match (en rejouant le score ; les points de pénalité ne sont pas dans les coups).
+export function debutsDeSet(coups, format) {
+  const m = nouveauMatch(format), r = [];
+  for (let i = 0; i < coups.length && !m.termine; i++) {
+    if (m.points[0] === 0 && m.points[1] === 0 && (i === 0 || coups[i - 1].gagnant !== null)) r.push(i);
+    jouerCoup(m, coups[i].b, coups[i].a);
+  }
+  return r;
+}
+export function dossierDetaille(matchs, { elle = false } = {}) {
+  const liste = (matchs || []).filter(m => Array.isArray(m) && m.length);
+  const coupsDe = m => m.map(c => ({ a: c.a, b: c.b, gagnant: c.g ?? null, s: !!c.s }));
+  let k = compteVide();
+  for (const m of liste) k = additionner(k, compterMatch(coupsDe(m)));
+  if (k.coups < 10) return null;
+  const n = k.coups, P = (x, y) => (y ? Math.round((100 * x) / y) : null);
+  // Ses réflexes, avec leur part et ce que donnerait le hasard (base).
+  const reflexes = [
+    { cle: "rejoue_victoire", texte: "Après un point gagné, il rejoue le même signe", oui: k.rejoueVictoire, vus: k.apresVictoire, base: 33 },
+    { cle: "change_defaite", texte: "Après un point perdu, il change de signe", oui: k.changeDefaite, vus: k.apresDefaite, base: 67 },
+    { cle: "repete", texte: "Il rejoue deux fois de suite le même signe", oui: k.repete, vus: k.transitions, base: 33 },
+    { cle: "boucle", texte: "Il tourne en boucle (Pierre, Feuille, Ciseaux…)", oui: k.boucle, vus: k.transitions, base: 33 },
+    { cle: "copie", texte: "Il rejoue le dernier signe de son adversaire", oui: k.copie, vus: k.transitions, base: 33 },
+    { cle: "contre", texte: "Il joue ce qui battait le dernier signe de son adversaire", oui: k.contre, vus: k.transitions, base: 33 },
+  ].filter(r => r.vus >= 6).map(r => { const pct = P(r.oui, r.vus); return { ...r, texte: ILS(r.texte, elle), pct, niveau: NIVEAU(Math.abs(pct - r.base)) }; });
+  // Après une égalité : il garde son signe ou il change, et ce qu'il joue.
+  let apresEg = 0, gardeEg = 0; const signeEg = [0, 0, 0];
+  // Ses smashs, ses débuts de set (sinon de match).
+  const smashs = [0, 0, 0], smashsGagnes = [0, 0, 0], debuts = [0, 0, 0];
+  let avecFormat = false;
+  for (const m of liste) {
+    const c = coupsDe(m);
+    for (let i = 1; i < c.length; i++) if (c[i - 1].gagnant === null) { apresEg++; signeEg[c[i].b]++; if (c[i].b === c[i - 1].b) gardeEg++; }
+    for (const x of c) if (x.s) { smashs[x.b]++; if (x.gagnant === 1) smashsGagnes[x.b]++; }
+    const f = m[0]?.p ? { pointsParSet: m[0].p, setsGagnants: m[0].n || 2 } : null;
+    let idx = [0];
+    if (f) { try { idx = debutsDeSet(c, f); avecFormat = true; } catch { idx = [0]; } }
+    for (const i of idx) if (c[i]) debuts[c[i].b]++;
+  }
+  const favEg = signeEg.indexOf(Math.max(...signeEg)), totDeb = debuts[0] + debuts[1] + debuts[2], favDeb = debuts.indexOf(Math.max(...debuts));
+  const egalite = apresEg >= 6 ? { vus: apresEg, garde: P(gardeEg, apresEg), favori: favEg, favoriPct: P(signeEg[favEg], apresEg) } : null;
+  const ouverture = totDeb >= 4 ? { vus: totDeb, sets: avecFormat, repartition: debuts.map(x => P(x, totDeb)), favori: favDeb, favoriPct: P(debuts[favDeb], totDeb) } : null;
+  const totSmash = smashs[0] + smashs[1] + smashs[2];
+  const smash = totSmash ? { total: totSmash, gagnes: smashsGagnes.reduce((a, b) => a + b, 0), parSigne: smashs, favori: smashs.indexOf(Math.max(...smashs)) } : null;
+  // Sa forme récente : ses 10 derniers matchs comparés aux précédents.
+  let forme = null;
+  if (liste.length >= 15) {
+    const rep = ms => { const r = [0, 0, 0]; for (const m of ms) for (const x of m) r[x.b]++; const t = r[0] + r[1] + r[2]; return r.map(v => P(v, t)); };
+    const recent = rep(liste.slice(0, 10)), avant = rep(liste.slice(10));
+    const ecarts = recent.map((v, i) => v - avant[i]), i = ecarts.map(Math.abs).indexOf(Math.max(...ecarts.map(Math.abs)));
+    forme = { recent, avant, signe: i, ecart: ecarts[i] };
+  }
+  // Pour le battre : les failles les plus nettes, de la plus forte à la plus faible (3 au plus).
+  const conseils = [];
+  const rep = k.signes.map(x => P(x, n)), fav = rep.indexOf(Math.max(...rep));
+  const ajouter = (force, texte) => conseils.push({ force, texte: ILS(texte, elle) });
+  if (rep[fav] >= 40) ajouter(rep[fav] - 33, `Il joue beaucoup ${NOMS_LE[fav]} (${rep[fav]} %) : ${NOMS_LE[quiBat(fav)]} ${fav === 1 ? "les" : "la"} bat.`);
+  for (const r of reflexes) {
+    const e = Math.abs(r.pct - r.base);
+    if (e < 8) continue;
+    if (r.cle === "rejoue_victoire" && r.pct > r.base) ajouter(e, "Quand il vient de gagner un point, il rejoue souvent le même signe : joue ce qui le bat.");
+    if (r.cle === "change_defaite" && r.pct > r.base) ajouter(e, "Quand il vient de perdre un point, il change de signe : rejoue ce qui bat ton dernier signe (tu gagnes ou tu fais égalité).");
+    if (r.cle === "change_defaite" && r.pct < r.base) ajouter(e, "Quand il vient de perdre un point, il s'entête : rejoue le signe qui vient de gagner.");
+    if (r.cle === "repete" && r.pct < r.base) ajouter(e, "Il rejoue rarement le même signe : joue le signe que son dernier coup bat (tu gagnes ou tu fais égalité).");
+    if (r.cle === "repete" && r.pct > r.base) ajouter(e, "Il rejoue souvent le même signe : joue ce qui bat son dernier coup.");
+    if (r.cle === "boucle" && r.pct > r.base) ajouter(e, "Il tourne en boucle (Pierre, Feuille, Ciseaux…) : joue le signe que son dernier coup bat.");
+    if (r.cle === "copie" && r.pct > r.base) ajouter(e, "Il rejoue souvent ton dernier signe : joue ce qui bat ton propre dernier signe.");
+    if (r.cle === "contre" && r.pct > r.base) ajouter(e, "Il joue souvent ce qui battait ton dernier signe : joue le signe que ton dernier signe bat.");
+  }
+  if (egalite && Math.abs(egalite.garde - 33) >= 8) ajouter(Math.abs(egalite.garde - 33), egalite.garde > 33
+    ? "Après une égalité, il garde souvent son signe : joue ce qui le bat."
+    : "Après une égalité, il change presque toujours : joue le signe que votre signe commun bat (tu gagnes ou tu fais égalité).");
+  if (ouverture && ouverture.vus >= 8 && ouverture.favoriPct >= 42) ajouter(ouverture.favoriPct - 33, `En ouverture, il joue souvent ${NOMS_LE[ouverture.favori]} : commence par ${NOMS_LE[quiBat(ouverture.favori)]}.`);
+  return {
+    matchs: liste.length, coups: n, repartition: rep, reflexes, egalite, ouverture, smash, forme,
+    conseils: conseils.sort((x, y) => y.force - x.force).slice(0, 3).map(c => c.texte),
+  };
+}
+// (pour les tests : le signe que x bat)
+export const signeBattu = bat;

@@ -256,14 +256,8 @@ export function installerCercles(ctx) {
       $("aFantome").hidden = false; $("aFantome").disabled = !ok;
       $("aFantome").textContent = ok ? "👻 Défier son fantôme" : "👻 Son fantôme : pas encore assez de matchs en ligne";
     });
-    let duels = null;
-    try {
-      duels = await duelsAvec(id); const r = statsFaceAFace(duels, uid);
-      if (amiOuvert === id) $("aStats").innerHTML = renderFaceAFace(r, a.pseudo, { duels, uid });
-    } catch { if (amiOuvert === id) $("aStats").innerHTML = `<p class="hint">Impossible de charger vos duels. Vérifie ta connexion.</p>`; }
-    // Son dossier et l'historique des mains (contre toi, et tous ses matchs).
-    const suite = await ctx.dossierEtMains?.(id, a.pseudo, duels);
-    if (amiOuvert === id && suite) $("aStats").insertAdjacentHTML("beforeend", suite);
+    // (19 novembre) Sa fiche en 4 onglets : Stats, Contre toi, Dossier, Historique (app.js, ongletsJoueur).
+    ctx.ongletsJoueur?.($("aStats"), id, a.pseudo, { encore: () => amiOuvert === id });
   }
   // Ouvert depuis Jouer › Défier un ami : le retour y ramène.
   let origineAmi = null;
