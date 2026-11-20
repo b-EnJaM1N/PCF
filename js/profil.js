@@ -173,8 +173,10 @@ export function nouvelElo(elo, eloAdv, gagne, k = K_ELO) {
 export const nomAffiche = P => P.pseudo || "Toi";
 // Mon jeu, contre les joueurs et contre les bots (19 novembre, demande du porteur du projet) : les mêmes compteurs que le total,
 // tenus à part à partir de cette date (avant, rien ne les distinguait).
-export const jeuVide = () => ({ matchs: 0, signes: [0, 0, 0], smashsTentes: 0, smashsReussis: 0, apresVictoire: 0, memeApresVictoire: 0,
-  apresDefaite: 0, memeApresDefaite: 0, devines: 0, lisibles: 0 });
+export const jeuVide = () => ({ matchs: 0, victoires: 0, signes: [0, 0, 0], smashsTentes: 0, smashsReussis: 0, apresVictoire: 0, memeApresVictoire: 0,
+  apresDefaite: 0, memeApresDefaite: 0, devines: 0, lisibles: 0,
+  // (20 novembre : pour la carte, le sang-froid et le flair)
+  ballesObtenues: 0, ballesConverties: 0, ballesSubies: 0, ballesSauvees: 0, decisifsJoues: 0, decisifsGagnes: 0, lecturesReussies: 0, lecturesRatees: 0 });
 // Le pourcentage de smashs réussis (qui ont gagné le point), ou null si aucun smash joué.
 export const tauxSmash = P => (P.smashsTentes ? Math.round(100 * P.smashsReussis / P.smashsTentes) : null);
 export const titresObtenus = P => TITRES.filter(t => P.titres[t.id]).sort((a, b) => P.titres[b.id] - P.titres[a.id]);
@@ -212,7 +214,7 @@ export function enregistrerMatch(P, r) {
   P.parAdv ||= {};
   // (les bots des tournois en ligne, « Rocky 🤖 »…, comptent avec les bots)
   const j = (P.parAdv[humain && !String(r.adversaire.nom || "").includes("🤖") ? "humains" : "bots"] ||= jeuVide());
-  j.matchs++; c.forEach(x => { j.signes[x.a]++; });
+  j.matchs++; if (gagne) j.victoires = (j.victoires || 0) + 1; c.forEach(x => { j.signes[x.a]++; });
   for (let i = 1; i < n; i++) {
     const p = c[i - 1];
     if (p.gagnant === 0) { j.apresVictoire++; if (c[i].a === p.a) j.memeApresVictoire++; }
@@ -220,6 +222,8 @@ export function enregistrerMatch(P, r) {
   }
   j.devines += r.devines; j.lisibles += r.lisibles;
   j.smashsTentes += stats.smashsTentes || 0; j.smashsReussis += stats.smashsReussis || 0;
+  for (const k of ["ballesObtenues", "ballesConverties", "ballesSubies", "ballesSauvees", "lecturesReussies", "lecturesRatees"]) j[k] = (j[k] || 0) + (stats[k] || 0);
+  if (match.format.setsGagnants > 1 && match.scoresSets.length === 2 * match.format.setsGagnants - 1) { j.decisifsJoues = (j.decisifsJoues || 0) + 1; if (gagne) j.decisifsGagnes = (j.decisifsGagnes || 0) + 1; }
   P.ballesObtenues += stats.ballesObtenues; P.ballesConverties += stats.ballesConverties;
   P.ballesSubies += stats.ballesSubies; P.ballesSauvees += stats.ballesSauvees;
   P.smashsTentes += stats.smashsTentes || 0; P.smashsReussis += stats.smashsReussis || 0;

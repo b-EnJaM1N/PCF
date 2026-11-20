@@ -3,17 +3,19 @@
 // Les bots des tournois en ligne (« Rocky 🤖 »…) ne comptent pas comme des joueurs.
 import { Suivi } from "./analyse.js";
 import { jeuVide } from "./profil.js";
+import { nouveauMatch, jouerCoup } from "./regles.js";
+import { nouvellesStats, suivreCoup } from "./stats-match.js";
 
 export const estBotEnLigne = pseudo => String(pseudo || "").includes("🤖");
 
-// duels : les duels terminés (j0, j1, coups) ; uid : moi ; bots : l'ensemble des identifiants des bots.
+// duels : les duels terminés (j0, j1, coups, vainqueur, points_par_set, sets_gagnants) ; uid : moi ; bots : l'ensemble des identifiants des bots.
 export function jeuDepuisDuels(duels, uid, bots = new Set()) {
   const j = jeuVide();
   for (const d of duels || []) {
     const moi = d.j0 === uid ? 0 : d.j1 === uid ? 1 : -1, adv = moi === 0 ? d.j1 : d.j0;
     const coups = d.coups || [];
     if (moi < 0 || !coups.length || bots.has(adv)) continue;
-    j.matchs++;
+    j.matchs++; if (d.vainqueur === moi) j.victoires++;
     const suivi = new Suivi();
     let prec = null;
     for (const c of coups) {
@@ -29,6 +31,21 @@ export function jeuDepuisDuels(duels, uid, bots = new Set()) {
       prec = { mien, g };
     }
     j.devines += suivi.devines; j.lisibles += suivi.lisibles;
+    // (20 novembre) Les balles de set et de match, les sets décisifs et les lectures réussies : on rejoue le score du match.
+    if (d.points_par_set) {
+      try {
+        const m = nouveauMatch({ pointsParSet: d.points_par_set, setsGagnants: d.sets_gagnants || 2 }), st = nouvellesStats();
+        for (const c of coups) {
+          if (m.termine) break;
+          const mien = moi === 0 ? c.a : c.b, sien = moi === 0 ? c.b : c.a;
+          if (mien === null || mien === undefined || sien === null || sien === undefined) continue;
+          suivreCoup(st, m, jouerCoup(m, mien, sien));
+        }
+        for (const k of ["ballesObtenues", "ballesConverties", "ballesSubies", "ballesSauvees", "lecturesReussies", "lecturesRatees"]) j[k] += st[k];
+        const sg = d.sets_gagnants || 2;
+        if (sg > 1 && m.scoresSets.length === 2 * sg - 1) { j.decisifsJoues++; if (d.vainqueur === moi) j.decisifsGagnes++; }
+      } catch { /* un match qu'on ne sait pas rejouer : sans ces compteurs */ }
+    }
   }
   return j;
 }
@@ -36,8 +53,9 @@ export function jeuDepuisDuels(duels, uid, bots = new Set()) {
 // Contre les bots : le total moins ce qui a été joué contre les joueurs (jamais en dessous de zéro).
 export function jeuMoins(P, h) {
   const b = jeuVide(), pos = x => Math.max(0, x);
-  b.matchs = pos(P.matchs - h.matchs);
+  b.matchs = pos(P.matchs - h.matchs); b.victoires = pos((P.victoires || 0) - (h.victoires || 0));
   b.signes = P.signes.map((x, i) => pos(x - h.signes[i]));
-  for (const k of ["smashsTentes", "smashsReussis", "apresVictoire", "memeApresVictoire", "apresDefaite", "memeApresDefaite", "devines", "lisibles"]) b[k] = pos((P[k] || 0) - h[k]);
+  for (const k of ["smashsTentes", "smashsReussis", "apresVictoire", "memeApresVictoire", "apresDefaite", "memeApresDefaite", "devines", "lisibles",
+    "ballesObtenues", "ballesConverties", "ballesSubies", "ballesSauvees", "decisifsJoues", "decisifsGagnes", "lecturesReussies", "lecturesRatees"]) b[k] = pos((P[k] || 0) - (h[k] || 0));
   return b;
 }
