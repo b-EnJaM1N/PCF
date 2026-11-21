@@ -2405,7 +2405,7 @@ $("hubHors").addEventListener("click", versCompte);
 $("compteFinBtn").addEventListener("click", versCompte);
 
 // ---------------------------------------------------------------- la première visite
-// Le menu « Jouer » s'ouvre au fil des matchs ; au tout début, un écran de bienvenue propose un premier match contre Bambi.
+// Le menu « Jouer » s'ouvre au fil des matchs ; au tout début, un écran de bienvenue propose un premier match contre Boomerang.
 // « Tout afficher » est gardé dans la fiche (donc avec le compte, sur tous les téléphones) et sur ce téléphone.
 const menuComplet = () => !!(P.menuComplet || lire("menuComplet"));
 if (lire("menuComplet") && !P.menuComplet) { P.menuComplet = true; sauverP(); }   // (un ancien « Tout afficher » rejoint le compte)

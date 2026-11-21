@@ -1481,11 +1481,11 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_accueil_bienvenue_01.mp3` | Mesdames et messieurs, un nouveau joueur fait son entrée sur le court central ! Bienvenue au HandSlam ! |
 | `commentateur_dialogue_accueil_bienvenue_01_f.mp3` | Mesdames et messieurs, une nouvelle joueuse fait son entrée sur le court central ! Bienvenue au HandSlam ! |
 | `commentateur_dialogue_accueil_bienvenue_02.mp3` | Monique, on lui explique comment gagner ? |
-| `commentateur_dialogue_accueil_bienvenue_03.mp3` | Et en face, c'est Bambi ! Le plus gentil de nos adversaires… en principe ! |
+| `commentateur_dialogue_accueil_bienvenue_03.mp3` | Et en face, c'est Boomerang ! Il a l'air gentil… en principe ! |
 | `commentateur_dialogue_accueil_victoire_01.mp3` | Victoire pour son premier match ! Une étoile est née, mesdames et messieurs ! |
-| `commentateur_dialogue_accueil_victoire_02.mp3` | Quel baptême du feu ! Il a battu Bambi dès son premier match ! |
-| `commentateur_dialogue_accueil_victoire_02_f.mp3` | Quel baptême du feu ! Elle a battu Bambi dès son premier match ! |
-| `commentateur_dialogue_accueil_defaite_01.mp3` | Bambi l'emporte… mais quelle découverte, mesdames et messieurs ! |
+| `commentateur_dialogue_accueil_victoire_02.mp3` | Quel baptême du feu ! Il a battu Boomerang dès son premier match ! |
+| `commentateur_dialogue_accueil_victoire_02_f.mp3` | Quel baptême du feu ! Elle a battu Boomerang dès son premier match ! |
+| `commentateur_dialogue_accueil_defaite_01.mp3` | Boomerang l'emporte… mais quelle découverte, mesdames et messieurs ! |
 | `commentateur_dialogue_accueil_defaite_02.mp3` | Ce n'est que partie remise ! La revanche est à un clic ! |
 | `commentateur_dialogue_accueil_deuxieme_01.mp3` | Le revoilà sur le central ! Deuxième match, on prend ses marques ! |
 | `commentateur_dialogue_accueil_troisieme_01.mp3` | Troisième match ! Mesdames et messieurs, un habitué est en train de naître ! |
@@ -2249,9 +2249,9 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_verdict_perdant_match_03.mp3` | Un très joli piège… mais ça n'a pas suffi pour remporter le match. |
 | `commentatrice_fin_trois_sets_01.mp3` | Nous avons assisté à une belle rencontre, et les deux mains ont su se hisser à la hauteur de l'événement. Rendez-vous est pris pour une revanche qui s'annonce palpitante. |
 | `commentatrice_fin_trois_sets_02.mp3` | L'arbitre siffle la fin de la rencontre sur cet ultime point. On peut se satisfaire du spectacle proposé par les deux mains, dans cette passe d'armes aux allures de chassé-croisé. |
-| `commentatrice_accueil_point_perdu_01.mp3` | Un point pour Bambi. Ce n'est rien : on apprend en perdant. |
+| `commentatrice_accueil_point_perdu_01.mp3` | Un point pour Boomerang. Ce n'est rien : on apprend en perdant. |
 | `commentatrice_accueil_egalite_01.mp3` | Même signe des deux côtés : on rejoue le coup. C'est la règle. |
-| `commentatrice_accueil_lecture_01.mp3` | Un conseil : regardez ce que Bambi vient de jouer. Il recommence souvent. |
+| `commentatrice_accueil_lecture_01.mp3` | Un conseil : regardez ce que Boomerang vient de jouer. Quand il gagne, il recommence. |
 | `commentatrice_accueil_reserve_01.mp3` | Attention au temps. Après huit secondes, on puise dans sa réserve. Et elle ne se remplit pas. |
 | `commentatrice_stats_signe_habitude_01_pierre.mp3` | Beaucoup de Pierre dans ce match… Comme d'habitude. Ses adversaires finiront par le savoir. |
 | `commentatrice_stats_signe_habitude_01_ciseaux.mp3` | Beaucoup de Ciseaux dans ce match… Comme d'habitude. Ses adversaires finiront par le savoir. |
@@ -2661,10 +2661,10 @@ restent lus par la voix de synthèse.
 | `commentatrice_dialogue_temps_forts_fin_trois_01.mp3` | Roland, ils ont joué trois manches de pierre-feuille-ciseaux. |
 | `commentatrice_dialogue_accueil_bienvenue_01.mp3` | Bienvenue. Les règles sont simples : Pierre bat Ciseaux, Ciseaux bat Feuille, Feuille bat Pierre. |
 | `commentatrice_dialogue_accueil_bienvenue_02.mp3` | Huit secondes pour choisir un signe. Le premier à sept points, avec deux points d'écart, remporte le set. |
-| `commentatrice_dialogue_accueil_bienvenue_03.mp3` | Bambi a ses petites habitudes. Regardez l'historique en bas de l'écran. |
+| `commentatrice_dialogue_accueil_bienvenue_03.mp3` | Boomerang a ses petites habitudes. Regardez l'historique en bas de l'écran. |
 | `commentatrice_dialogue_accueil_victoire_01.mp3` | Bien joué. Le prochain adversaire sera moins gentil. Revenez quand même. |
 | `commentatrice_dialogue_accueil_victoire_02.mp3` | Un bon début. Un deuxième match, et la Partie rapide s'ouvre. |
-| `commentatrice_dialogue_accueil_defaite_01.mp3` | Tout le monde perd contre Bambi la première fois. Enfin, presque. On recommence ? |
+| `commentatrice_dialogue_accueil_defaite_01.mp3` | Tout le monde perd contre Boomerang la première fois. Enfin, presque. On recommence ? |
 | `commentatrice_dialogue_accueil_defaite_02.mp3` | Maintenant, vous connaissez ses habitudes. Profitez-en. |
 | `commentatrice_dialogue_accueil_deuxieme_01.mp3` | Cette fois, regardez bien l'historique. C'est là que tout se joue. |
 | `commentatrice_dialogue_accueil_troisieme_01.mp3` | Encore une victoire ou une défaite, et la boutique vous ouvre ses portes. |

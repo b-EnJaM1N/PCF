@@ -1825,7 +1825,7 @@ export const MOMENTS = {
   ],
   // son tout premier point perdu
   accueil_point_perdu: [
-    { r: "d", t: "Un point pour Bambi. Ce n'est rien : on apprend en perdant." },
+    { r: "d", t: "Un point pour Boomerang. Ce n'est rien : on apprend en perdant." },
     { r: "c", t: "Pas de panique, il y a encore le temps de se rattraper !" },
   ],
   // la première égalité
@@ -1834,7 +1834,7 @@ export const MOMENTS = {
   ],
   // vers le 5e coup : apprendre à lire l'adversaire
   accueil_lecture: [
-    { r: "d", t: "Un conseil : regardez ce que Bambi vient de jouer. Il recommence souvent." },
+    { r: "d", t: "Un conseil : regardez ce que Boomerang vient de jouer. Quand il gagne, il recommence." },
     { r: "c", t: "L'historique en bas de l'écran, c'est le trésor des grands joueurs !" },
   ],
   // vers le 8e coup : le smash
@@ -2436,19 +2436,20 @@ export const DIALOGUES = {
     ["Quel spectacle ! Quel match ! Quelle intensité !", "Roland, ils ont joué trois manches de pierre-feuille-ciseaux."],
   ],
   // L'accueil des nouveaux joueurs (19 novembre, choisis par le porteur du projet) : avant le tout premier match, les trois à la suite
+  // (21 novembre, choix du porteur du projet : le premier adversaire est Boomerang, et non plus Bambi, trop facile)
   accueil_bienvenue: [
     [{ t: "Mesdames et messieurs, un nouveau joueur fait son entrée sur le court central ! Bienvenue au HandSlam !", f: "Mesdames et messieurs, une nouvelle joueuse fait son entrée sur le court central ! Bienvenue au HandSlam !" }, "Bienvenue. Les règles sont simples : Pierre bat Ciseaux, Ciseaux bat Feuille, Feuille bat Pierre."],
     ["Monique, on lui explique comment gagner ?", "Huit secondes pour choisir un signe. Le premier à sept points, avec deux points d'écart, remporte le set."],
-    ["Et en face, c'est Bambi ! Le plus gentil de nos adversaires… en principe !", "Bambi a ses petites habitudes. Regardez l'historique en bas de l'écran."],
+    ["Et en face, c'est Boomerang ! Il a l'air gentil… en principe !", "Boomerang a ses petites habitudes. Regardez l'historique en bas de l'écran."],
   ],
   // à la fin du premier match, gagné
   accueil_victoire: [
     ["Victoire pour son premier match ! Une étoile est née, mesdames et messieurs !", "Bien joué. Le prochain adversaire sera moins gentil. Revenez quand même."],
-    [{ t: "Quel baptême du feu ! Il a battu Bambi dès son premier match !", f: "Quel baptême du feu ! Elle a battu Bambi dès son premier match !" }, "Un bon début. Un deuxième match, et la Partie rapide s'ouvre."],
+    [{ t: "Quel baptême du feu ! Il a battu Boomerang dès son premier match !", f: "Quel baptême du feu ! Elle a battu Boomerang dès son premier match !" }, "Un bon début. Un deuxième match, et la Partie rapide s'ouvre."],
   ],
   // à la fin du premier match, perdu
   accueil_defaite: [
-    ["Bambi l'emporte… mais quelle découverte, mesdames et messieurs !", "Tout le monde perd contre Bambi la première fois. Enfin, presque. On recommence ?"],
+    ["Boomerang l'emporte… mais quelle découverte, mesdames et messieurs !", "Tout le monde perd contre Boomerang la première fois. Enfin, presque. On recommence ?"],
     ["Ce n'est que partie remise ! La revanche est à un clic !", "Maintenant, vous connaissez ses habitudes. Profitez-en."],
   ],
   // avant le 2e match
