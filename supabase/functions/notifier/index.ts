@@ -78,6 +78,12 @@ export function message(evenement: string, duel: any, adv: { pseudo: string; num
     texte: `${adv.pseudo}#${adv.numero}, l'organisateur, l'a fixée ${quand ? jourHeureParis(quand) : "à une autre date"}.`,
     url: "./?ouvrir=tournois", tag: `echeance-${tournoi?.nom || ""}`,
   };
+  // (étape 88) l'organisateur (adv) a annulé le championnat
+  if (evenement === "tournoi_annule") return {
+    titre: `🚫 Championnat annulé : ${tournoi?.nom || ""}`.trimEnd(),
+    texte: `Décision de l'organisateur, ${adv.pseudo}#${adv.numero}. Les matchs déjà joués restent, mais il n'y aura pas de champion.`,
+    url: "./?ouvrir=tournois", tag: `echeance-${tournoi?.nom || ""}`,
+  };
   // (étape 88) l'organisateur (adv) a disqualifié le joueur
   if (evenement === "disqualifie") return {
     titre: `❌ Tu es disqualifié de ${tournoi?.nom || "ce championnat"}`,

@@ -109,5 +109,20 @@ select disqualifier_joueur(pg_temp.v('quatre')::uuid, pg_temp.j(4));
 select pg_temp.interdit(format('select disqualifier_joueur(%L, %L)', pg_temp.v('quatre'), pg_temp.j(3)), 'au moins 3 joueurs restants');
 select pg_temp.interdit(format('select disqualifier_joueur(%L, %L)', pg_temp.v('quatre'), pg_temp.j(4)), 'déjà disqualifié');
 
+-- 4. Annuler un championnat en cours : les matchs joués restent, pas de champion, personne ne s'y colle, les joueurs prévenus
+reset role;
+insert into t select 'annule', pg_temp.championnat(5, '{}', 'Le dernier paie le café');
+update matchs_tournoi set vainqueur = j0, fin = 'score' where id = (select id from matchs_tournoi where tournoi_id = pg_temp.v('annule')::uuid order by position limit 1);
+select pg_temp.en_tant_que(pg_temp.j(2)::text);
+select pg_temp.interdit(format('select annuler_tournoi(%L)', pg_temp.v('annule')), 'seul l''organisateur annule');
+select pg_temp.en_tant_que(pg_temp.j(1)::text);
+select annuler_tournoi(pg_temp.v('annule')::uuid);
+reset role;
+select pg_temp.verifier((select phase = 'annule' and vainqueur is null and dernier is null from pg_temp.tournoi(pg_temp.v('annule')::uuid)),
+  'annulé en cours : pas de champion, personne ne s''y colle');
+select pg_temp.verifier((select count(*) = 1 from matchs_tournoi where tournoi_id = pg_temp.v('annule')::uuid and fin = 'score'), 'le match joué reste');
+select pg_temp.verifier((select count(*) = 4 from notifications where tournoi_id = pg_temp.v('annule')::uuid and evenement = 'tournoi_annule'),
+  'les 4 autres joueurs sont prévenus');
+
 reset role;
 create or replace function public._limite_tournois() returns int language sql immutable as $$ select 5 $$;

@@ -86,3 +86,9 @@ test("le joueur disqualifié est prévenu (étape 88)", () => {
   assert.equal(r.titre, "❌ Tu es disqualifié de La ligue du Fiac");
   assert.match(r.texte, /^Décision de l'organisateur, Benja#7\. Tes matchs pas encore joués sont perdus par forfait\.$/);
 });
+
+test("les joueurs sont prévenus quand l'organisateur annule le championnat (étape 88)", () => {
+  const r = message("tournoi_annule", null, { pseudo: "Benja", numero: 7 }, { nom: "La ligue du Fiac", mode: "championnat" });
+  assert.equal(r.titre, "🚫 Championnat annulé : La ligue du Fiac");
+  assert.match(r.texte, /^Décision de l'organisateur, Benja#7\./);
+});

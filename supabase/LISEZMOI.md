@@ -550,6 +550,7 @@ en ligne compte toujours les siens.
    L'organisateur disqualifie un joueur (❌ dans le classement), pendant les poules ou les playoffs : ses matchs joués restent,
    les autres sont gagnés par forfait par ses adversaires ; il ne joue pas les playoffs ; avec un enjeu, il s'y colle.
    Le classement montre aussi le nombre de forfaits de chacun.
+   L'organisateur peut aussi annuler un championnat en cours (les matchs joués restent ; pas de champion ; personne ne s'y colle).
 2. **Mettre à jour la fonction « Notifier »** (même manipulation) : le joueur disqualifié est prévenu.
 
 ## 1 octogies septimo. L'organisateur décide du calendrier du championnat (étape 87)

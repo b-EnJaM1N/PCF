@@ -10,7 +10,9 @@
 --    adversaires (pendant les playoffs : son match est perdu par forfait, son adversaire passe) ;
 --  * il passe en dernier du classement, ne compte plus pour les playoffs (leur forme se recalcule sans lui) ;
 --  * avec un enjeu, il s'y colle d'office (pas de playouts) ;
---  * le classement montre aussi le nombre de forfaits de chacun, pour aider l'organisateur à décider.
+--  * le classement montre aussi le nombre de forfaits de chacun, pour aider l'organisateur à décider ;
+--  * l'organisateur peut aussi annuler un championnat en cours : les matchs déjà joués restent (niveau officiel compris), pas
+--    de champion (le tenant du titre garde son gant), personne ne s'y colle, les joueurs sont prévenus.
 
 alter table public.inscrits_tournoi add column if not exists disqualifie_le timestamptz;
 
@@ -19,7 +21,7 @@ alter table public.notifications add constraint notifications_evenement_check
   check (evenement in ('defi', 'accepte', 'tournoi', 'test', 'freeroll', 'programme', 'attend', 'invitation',
                        'ami_demande', 'ami_accepte', 'invitation_cercle',
                        'creneaux', 'rdv_fixe', 'rdv_decline', 'rdv_rappel', 'rdv_heure',
-                       'poules_24h', 'calendrier', 'disqualifie'));
+                       'poules_24h', 'calendrier', 'disqualifie', 'tournoi_annule'));
 
 -- ---------------------------------------------------------------- le classement, la forme des playoffs, la fin
 -- Remplacent les versions de l'étape 66 : le disqualifié en dernier (et le nombre de forfaits de chacun) ; les playoffs sans lui ;
@@ -284,7 +286,32 @@ begin
   return voir_tournoi(p_id);
 end $$;
 
+-- ---------------------------------------------------------------- annuler
+-- Remplace la version de l'étape 5 : pendant les inscriptions, comme avant ; un championnat en cours peut aussi être annulé par son
+-- organisateur (les duels pas commencés sont annulés ; ceux en cours se finissent, sans effet sur le championnat).
+create or replace function public.annuler_tournoi(p_id uuid) returns void
+language plpgsql security definer set search_path = public as $$
+declare t public.tournois; d public.duels; j uuid;
+begin
+  select * into t from tournois where id = p_id for update;
+  if t.id is null or not _organise(t) then raise exception 'Seul l''organisateur peut annuler le tournoi'; end if;
+  if t.phase = 'inscriptions' then
+    update tournois set phase = 'annule', fini_le = now() where id = p_id;
+    return;
+  end if;
+  if t.phase <> 'en_cours' or t.mode <> 'championnat' then raise exception 'Un tournoi commencé ne peut plus être annulé'; end if;
+  for d in select x.* from duels x join matchs_tournoi m on m.duel_id = x.id where m.tournoi_id = p_id and m.fin is null and x.phase = 'attente' loop
+    perform set_config('pcf.interne', '1', true);
+    update duels set phase = 'annule', maj_le = now() where id = d.id;
+    perform set_config('pcf.interne', '', true);
+  end loop;
+  update tournois set phase = 'annule', fini_le = now(), echeance = null, vainqueur = null, dernier = null, hebdo = false where id = p_id;
+  for j in select joueur from inscrits_tournoi where tournoi_id = p_id and joueur <> auth.uid() loop
+    perform _notifier_creneau(j, 'tournoi_annule', auth.uid(), p_id);
+  end loop;
+end $$;
+
 -- ---------------------------------------------------------------- sécurité
 revoke all on function public._classement_poule(uuid, int), public._construire_playoffs(uuid), public._avancer_championnat(uuid) from public, anon, authenticated;
-revoke all on function public.disqualifier_joueur(uuid, uuid) from public, anon;
-grant execute on function public.disqualifier_joueur(uuid, uuid) to authenticated;
+revoke all on function public.disqualifier_joueur(uuid, uuid), public.annuler_tournoi(uuid) from public, anon;
+grant execute on function public.disqualifier_joueur(uuid, uuid), public.annuler_tournoi(uuid) to authenticated;
