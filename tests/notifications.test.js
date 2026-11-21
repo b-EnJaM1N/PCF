@@ -69,3 +69,14 @@ test("la notification d'un tournoi programmé, avec son nom et son heure", () =>
   assert.equal(m.url, "./?ouvrir=programmes");
   assert.match(message("programme", null, { pseudo: "x", numero: 0 }, { nom: "L'Apéro", depart: "2026-12-01T17:00:00Z" }).texte, /à 18 h avec/);
 });
+
+test("le calendrier d'un championnat : le rappel 24 h avant, et la nouvelle date limite (étape 87)", () => {
+  const quand = new Date(Date.now() + 864e5 * 3).toISOString();
+  const r = message("poules_24h", null, { pseudo: "Un joueur", numero: 0 }, { nom: "La ligue du Fiac", mode: "championnat", playoffs: true }, undefined, quand);
+  assert.match(r.titre, /Plus que 24 h pour jouer tes matchs de poule/);
+  assert.match(r.texte, /^La ligue du Fiac : date limite .+ à .+\. Un match pas joué/);
+  const c = message("calendrier", null, { pseudo: "Benja", numero: 7 }, { nom: "La ligue du Fiac", mode: "championnat", playoffs: false }, undefined, quand);
+  assert.equal(c.titre, "📅 La ligue du Fiac : nouvelle date limite");
+  assert.match(c.texte, /^Benja#7, l'organisateur, l'a fixée .+ à /);
+  assert.equal(c.url, "./?ouvrir=tournois");
+});

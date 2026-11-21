@@ -543,6 +543,15 @@ en ligne compte toujours les siens.
    accepte le défi, gardé jusqu'à une heure après l'heure prévue (pas de forfait : ensuite, annulé sans vainqueur).
 2. **Mettre à jour la fonction « Notifier »** (même manipulation) : une notification de défi programmé ouvre « Défis »
 
+## 1 octogies septimo. L'organisateur décide du calendrier du championnat (étape 87)
+
+1. Même manipulation que d'habitude avec [`etape-87-calendrier-championnat.sql`](etape-87-calendrier-championnat.sql), **après**
+   l'étape 86 (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-87-calendrier-championnat.sql).
+   À la création : la durée des poules (ou du championnat) et celle des playoffs, en jours entiers (1 à 30) ; pendant les poules,
+   l'organisateur avance ou recule leur date limite ; rappel 24 h avant à ceux qui ont encore un match à jouer.
+   **À coller avant la fusion** : sinon, une durée autre que 3, 7 ou 14 jours est refusée à la création.
+2. **Mettre à jour la fonction « Notifier »** (même manipulation) : le rappel 24 h avant et la nouvelle date limite.
+
 ## 1 octogies sexto. Le défi programmé, version complète (étape 86)
 
 1. Même manipulation que d'habitude avec [`etape-86-defi-programme.sql`](etape-86-defi-programme.sql), **après** l'étape 85
