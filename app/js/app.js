@@ -2662,7 +2662,9 @@ function renderAlertes() {
     a.programme ? carte('data-aller="viewFreeroll"', "🗓️", a.programme.phase === "en_cours" ? `${esc(a.programme.nom)} est en cours` : `${esc(a.programme.nom)} commence bientôt`, "Garde l'appli ouverte : ton match se lance tout seul") : "",
     a.sng ? carte('data-aller="viewSng"', "⚡", a.sng.phase === "inscriptions" ? "Tu es en salle de Sit & Go" : "Ton Sit & Go est en cours", "Garde l'appli ouverte") : "",
   ].join("");
-  const n = a.duels.recus + (a.duels.rdvNouveaux || 0) + a.tournois.length + a.invitations.length;   // la carte « Défi accepté » reste, sans pastille une fois vu
+  // (la carte « Défi accepté » reste, sans pastille une fois vu ; 21 novembre, demande du porteur du projet : un match de tournoi
+  // à jouer garde sa carte « Ton match de tournoi t'attend », mais ne met plus de pastille sur l'onglet Jouer)
+  const n = a.duels.recus + (a.duels.rdvNouveaux || 0) + a.invitations.length;
   $("pastilleJouer").hidden = !n; $("pastilleJouer").textContent = n;
 }
 $("hubAlertes").addEventListener("click", e => { const b = e.target.closest("[data-tournoi]"); if (b) cerclesUI.ouvrirTournoi(b.dataset.tournoi); });
