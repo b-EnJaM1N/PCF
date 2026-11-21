@@ -13,18 +13,16 @@ export function htmlComparaison(moi, lui) {
   const r = comparer(moi.notes, lui.notes), [ga, gb] = r.generales;
   const gen = (g, autre, qui) => `<div class="cmp-joueur${g !== null && (autre === null || g > autre) ? " mieux" : ""}"><b class="cmp-gen">${g ?? "–"}</b><span>${esc(qui)}</span></div>`;
   const cell = (v, m) => `<td class="cmp-n${m ? " mieux" : ""}">${esc(v)}</td>`;
-  const nbNotes = r.lignes.length, egal = r.egalites ? ` · ${r.egalites} égalité${r.egalites > 1 ? "s" : ""}` : "";
   return `<div class="cmp-generales">${gen(ga, gb, "Toi")}<span class="cmp-vs">GÉNÉRAL</span>${gen(gb, ga, lui.nom)}</div>
     <p class="hint cmp-niv">${esc(moi.typeNiveau.toLowerCase())} ${moi.niveau} · ${esc(lui.typeNiveau.toLowerCase())} ${lui.niveau}</p>
     <table class="cmp-table"><thead><tr><th>Toi</th><th></th><th>${esc(lui.nom)}</th></tr></thead><tbody>
     ${r.lignes.map(l => `<tr>${cell(l.a, l.mieux === 0)}<td class="cmp-code"><b>${esc(l.code)}</b><small>${esc(l.nom)}</small></td>${cell(l.b, l.mieux === 1)}</tr>`).join("")}
-    </tbody></table>
-    <p class="cmp-score">Tu gagnes <b>${r.gagnees} note${r.gagnees > 1 ? "s" : ""} sur ${nbNotes}</b> · ${esc(lui.nom)} en gagne ${r.perdues}${egal}</p>`;
+    </tbody></table>`;   // (21 novembre, demande du porteur du projet : sans « Tu gagnes 2 notes sur 6 », qui n'apportait rien)
 }
 
-// L'image à partager (21 novembre, demande du porteur du projet) : 1080 × 1420, avec les deux pseudos (pas « Toi »).
+// L'image à partager (21 novembre, demande du porteur du projet) : 1080 × 1340, avec les deux pseudos (pas « Toi »).
 export async function dessinerComparaison(canvas, moi, lui) {
-  const L = 1080, H = 1420, COND = "\"Barlow Condensed\", sans-serif", TXT = "Barlow, sans-serif", OR = "#F4C542", GRIS = "#9DB4D3", BLANC = "#F5F7FA";
+  const L = 1080, H = 1340, COND = "\"Barlow Condensed\", sans-serif", TXT = "Barlow, sans-serif", OR = "#F4C542", GRIS = "#9DB4D3", BLANC = "#F5F7FA";
   try { await Promise.all(["800 80px \"Barlow Condensed\"", "700 40px \"Barlow Condensed\"", "500 30px Barlow", "700 30px Barlow"].map(f => document.fonts.load(f))); } catch { /* police de secours */ }
   canvas.width = L; canvas.height = H;
   const ctx = canvas.getContext("2d"), r = comparer(moi.notes, lui.notes), [ga, gb] = r.generales;
@@ -57,9 +55,6 @@ export async function dessinerComparaison(canvas, moi, lui) {
     y += 115;
   });
   ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.fillRect(110, y, L - 220, 2);
-  // Le score
-  const egal = r.egalites ? ` · ${r.egalites} ÉGALITÉ${r.egalites > 1 ? "S" : ""}` : "";
-  ecrire(`NOTES GAGNÉES : ${r.gagnees} – ${r.perdues}${egal}`, L / 2, y + 80, `700 48px ${COND}`, BLANC, "center", L - 200);
   ecrire(MARQUE.nom.toLocaleUpperCase("fr-FR"), L / 2, H - 56, `800 34px ${COND}`, OR);
   return canvas;
 }

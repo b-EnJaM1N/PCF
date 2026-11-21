@@ -1332,4 +1332,4 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .cmp-n { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.6rem; width: 28%; }
 .cmp-n.mieux { color: var(--me); font-weight: 800; }
 .cmp-code small { display: block; color: var(--muted); font-size: .78rem; }
-.cmp-score { text-align: center; margin: 12px 0 4px; }
+.cmp-panel .cmp-table { margin-bottom: 12px; }
