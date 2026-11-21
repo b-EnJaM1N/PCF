@@ -843,7 +843,9 @@ function jouerReplay(liste, apres = () => {}) {
       const suite = () => { t = setTimeout(montrer, Math.max(vite ? 600 : 800, (pa ? 5000 : 2600) - (Date.now() - devoile))); };
       const reponse = dlg ? dlg[1] : motFin || (pa ? lp : null);
       parler(c, () => (reponse ? parler(reponse, suite) : suite()));
-    }, vite ? 300 : 2000);
+    // (21 novembre, demande du porteur du projet : au premier temps fort, Roland mettait 2 à 3 secondes à parler) Sans annonce
+    // à dire (« Ensuite… »), le point se dévoile presque tout de suite, et Roland le commente aussitôt.
+    }, vite ? 300 : la ? 2000 : 700);
   };
   montrer();
   return couper;
@@ -1457,7 +1459,9 @@ function poigneeDeMain(apres) {
     const moment = situationPoignee(moi, adv);
     const cands = moment ? (POOLS[moment] || []).map(it => ligneMoment(it)).filter(l => l && voix.fichiers.has(l.id)) : [];
     const com = cands.length ? cands[Math.floor(Math.random() * cands.length)] : null;
-    if (com || ligne) setTimeout(() => voix.dire([ligne, com].filter(Boolean)), 500);
+    // (21 novembre, remarque du porteur du projet : la poignée coupait le commentaire de fin de match) seulement si plus personne
+    // ne parle : sinon, on laisse Roland et Monique finir.
+    if (com || ligne) setTimeout(() => { if (!voix.occupe) voix.dire([ligne, com].filter(Boolean)); }, 500);
     (S.citations ||= []).push(...[ligne, com].filter(l => l && l.role !== "arbitre"));
     ov.onclick = terminer;                                   // toucher l'écran : on passe
     // (avec un commentaire, on laisse le temps de l'entendre)
