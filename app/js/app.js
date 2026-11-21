@@ -496,7 +496,7 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
     }
     if (evt.finSet) {
       const sg = m.format.setsGagnants, decisif = evt.finMatch && (sg === 1 || m.scoresSets.length === 2 * sg - 1);
-      marquerSet(S.moments ||= [], S.pointsSet || [], m.format.pointsParSet, evt.gagnant, decisif);
+      marquerSet(S.moments ||= [], S.pointsSet || [], m.format.pointsParSet, evt.gagnant, decisif, evt.finMatch ? evt.gagnant : null);
       S.pointsSet = [];
     }
   }

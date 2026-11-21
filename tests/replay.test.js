@@ -135,3 +135,17 @@ test("le score du point : bascule, relance, fin serrée, avance, début (21 nove
   assert.ok(moments.some(m => m.type === "bascule_match" && m.score[0] === 9 && m.score[1] === 8));
   assert.ok(moments.some(m => m.type === "relance"));
 });
+
+test("une balle sauvée n'est gardée que si elle a servi : le set (balle de set) ou le match (balle de match) gagné (21 novembre)", async () => {
+  const { marquerSet } = await import("../app/js/replay.js");
+  const pts = [0, 0, 1].map((g, i) => ({ gagnant: g, score: [i < 2 ? i + 1 : 2, i === 2 ? 1 : 0], coup: i, set: 1, type: "point", priorite: 0 }));
+  const ms = [
+    { set: 1, coup: 0, gagnant: 1, type: "sauvee_set", priorite: 8 },     // sauvée par 1, qui perd le set : retirée
+    { set: 1, coup: 1, gagnant: 0, type: "sauvee_set", priorite: 8 },     // sauvée par 0, qui gagne le set : gardée
+    { set: 0, coup: 9, gagnant: 1, type: "sauvee_match", priorite: 9 },   // set d'avant, sauvée par 1, qui perd le match : retirée à la fin
+  ];
+  marquerSet(ms, pts, 3, 0, false, null);
+  assert.deepEqual(ms.map(m => m.coup), [1, 9]);
+  marquerSet(ms, pts, 3, 0, true, 0);
+  assert.deepEqual(ms.filter(m => m.type.startsWith("sauvee")).map(m => m.coup), [1]);
+});
