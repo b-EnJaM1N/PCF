@@ -13,8 +13,9 @@ import { histoireDuMatch } from "./une-logique.js";
 import { filVisible, matchDuDuel, hasardFixe, etapeDuDuel } from "./fil-cercle.js";
 import { dessinerUne } from "./une.js";
 import { dessinerStats } from "./image-stats.js";
-import { carteDe, notesDe, texteRang, rangDe } from "./carte-logique.js";
+import { carteDe, notesDe, texteRang, rangDe, texteCoefs } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
+import { installerComparaison } from "./comparer-cartes.js";
 import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee, situationPoignee } from "./poignee.js";
 import { installerRapide } from "./ecran-rapide.js";
 import { installerSignalement } from "./ecran-signaler.js";
@@ -41,7 +42,7 @@ import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
 import { installerDuels } from "./ecran-duel.js";
 import { installerCercles, renderFaceAFace } from "./ecran-cercles.js";
-import { duelsAvec, profils as profilsEnLigne, mesDuelsTermines } from "./duel-serveur.js";
+import { duelsAvec, profils as profilsEnLigne, mesDuelsTermines, chercher as chercherJoueurs } from "./duel-serveur.js";
 import { jeuDepuisDuels, jeuMoins, estBotEnLigne } from "./stats-passees.js";
 import { profilDepuisLigne, etatPseudo, pseudoValide } from "./synchro.js";
 import { installerSng } from "./ecran-sng.js";
@@ -1705,6 +1706,7 @@ $("btnUne").addEventListener("click", async () => {
 });
 async function montrerUne(h, joueurs, score) {
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
+  $("uneComparer").hidden = true;
   $("une").classList.add("show");
   const adresse = (location.host + location.pathname).replace(/index\.html$/, "").replace(/preview\/$/, "");
   const canvas = await dessinerUne(document.createElement("canvas"), h, joueurs, { ...score, adresse,
@@ -1913,7 +1915,8 @@ function renderCarte() {
     if (jeton !== carteJeton) return;
     $("carteRarete").textContent = texteRang(c.rang);
     const notes = notesDe(P);
-    $("carteNotes").innerHTML = notes.map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
+    $("carteNotes").innerHTML = `<li><b>GÉNÉRAL ${c.generale ?? "–"}</b> · la moyenne de tes six notes (${esc(texteCoefs())} ; une note pas encore calculée compte 70)</li>`
+      + notes.map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
     $("carteCalcul").innerHTML = notes.map(n => `<li><b>${esc(n.nom)}</b> : ${esc(n.calcul)}</li>`).join("");   // (« Le détail du calcul »)
     await preparerPartage(canvas, { img: $("carteImg"), partager: $("cartePartager"), enregistrer: $("carteEnregistrer"), msg: $("carteMsg"),
       fichier: "ma-carte.png", alt: `Carte de joueur de ${nomAffiche(P)} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
@@ -1922,7 +1925,8 @@ function renderCarte() {
 
 // La carte d'un autre joueur (page d'un ami, derniers matchs), d'après sa fiche en ligne ; sauf s'il a choisi de la cacher.
 // Renvoie un message si elle ne peut pas être montrée.
-async function voirCarteDe(uid) {
+// (21 novembre) La carte d'un autre joueur, calculée : { ligne, J, c, nom }, ou un message si elle ne peut pas être montrée.
+async function carteDeJoueur(uid) {
   let ligne;
   try { [ligne] = await profilsEnLigne([uid]); } catch { return "Impossible de charger sa carte. Vérifie ta connexion."; }
   if (!ligne) return "Ce joueur n'existe plus.";
@@ -1931,14 +1935,29 @@ async function voirCarteDe(uid) {
   let cl = null;
   try { cl = (await classements([uid])).get(uid) || null; } catch { /* sans niveau officiel */ }
   const nom = `${ligne.pseudo}${ligne.numero ? `#${ligne.numero}` : ""}`;
-  const c = carteDe(J, { niveauOfficiel: cl ? cl.points : null, provisoire: !!cl && provisoire(cl.joues), surnom: surnomDe(J).texte, titre: J.matchs ? dernierTitre(J) : "" });
+  return { ligne, J, nom, c: carteDe(J, { niveauOfficiel: cl ? cl.points : null, provisoire: !!cl && provisoire(cl.joues), surnom: surnomDe(J).texte, titre: J.matchs ? dernierTitre(J) : "" }) };
+}
+async function voirCarteDe(uid) {
+  const x = await carteDeJoueur(uid);
+  if (typeof x === "string") return x;
+  const { ligne, J, nom, c } = x;
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
+  $("uneComparer").hidden = uid === compteUI?.session()?.user?.id; $("uneComparer").dataset.uid = uid;   // (21 novembre : « ⚖️ Comparer avec moi »)
   $("une").classList.add("show");
   const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG({ ...J.av, brode: clePseudo(ligne.pseudo, ligne.numero) }), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur, cadreFlammes: CADRES[J.cadre]?.flammes });
   await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
     fichier: "carte-de-joueur.png", alt: `Carte de joueur de ${nom} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
   return null;
 }
+// Comparer ma carte (comparer-cartes.js).
+const maCarteCalculee = () => carteDe(P, { niveauOfficiel: monClassement, provisoire: monClassement !== null && provisoire(mesDuelsOfficiels) });
+const comparaison = installerComparaison({
+  maCarte: () => { const c = maCarteCalculee(); return { nom: nomAffiche(P), notes: c.notes, typeNiveau: c.typeNiveau, niveau: c.niveau }; },
+  carteEnLigne: async id => { const x = await carteDeJoueur(id); return typeof x === "string" ? x : { nom: x.ligne.pseudo, notes: x.c.notes, typeNiveau: x.c.typeNiveau, niveau: x.c.niveau }; },
+  mesAmis: () => mesAmis(), chercher: t => chercherJoueurs(t), monId: () => compteUI?.session()?.user?.id,
+});
+$("carteComparer").addEventListener("click", () => { if (!compteUI?.session()?.user?.id) { $("carteMsg").textContent = "Connecte-toi pour comparer ta carte."; return; } comparaison.ouvrir(); });
+$("uneComparer").addEventListener("click", () => { $("une").classList.remove("show"); comparaison.ouvrir($("uneComparer").dataset.uid); });
 
 // ---------------------------------------------------------------- interview d'après-finale
 function ouvrirInterview(gagne) {
