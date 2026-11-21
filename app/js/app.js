@@ -13,7 +13,7 @@ import { histoireDuMatch } from "./une-logique.js";
 import { filVisible, matchDuDuel, hasardFixe, etapeDuDuel } from "./fil-cercle.js";
 import { dessinerUne } from "./une.js";
 import { dessinerStats } from "./image-stats.js";
-import { carteDe, notesDe, texteRang, rangDe, texteCoefs } from "./carte-logique.js";
+import { carteDe, notesDe, texteRang, rangDe, texteCoefs, partBots, HUMAINS_POUR_CARTE } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
 import { installerComparaison } from "./comparer-cartes.js";
 import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee, situationPoignee } from "./poignee.js";
@@ -1973,7 +1973,10 @@ function renderCarte() {
     if (jeton !== carteJeton) return;
     $("carteRarete").textContent = texteRang(c.rang);
     const notes = notesDe(P);
-    $("carteNotes").innerHTML = `<li><b>GÉNÉRAL ${c.generale ?? "–"}</b> · la moyenne de tes six notes (${esc(texteCoefs())} ; une note pas encore calculée compte 70)</li>`
+    // (21 novembre) la part des bots dans les notes, tant que le joueur a moins de 20 matchs contre de vrais joueurs
+    const kb = partBots(P), nh = P.parAdv?.humains?.matchs || 0;
+    $("carteNotes").innerHTML = (kb > 0 && c.generale !== null ? `<li>🤖 Tes matchs contre les bots comptent encore pour ${Math.round(100 * kb)} % (${nh} match${nh > 1 ? "s" : ""} contre des joueurs sur ${HUMAINS_POUR_CARTE}).</li>` : "")
+      + `<li><b>GÉNÉRAL ${c.generale ?? "–"}</b> · la moyenne de tes six notes (${esc(texteCoefs())} ; une note pas encore calculée compte 70)</li>`
       + notes.map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
     $("carteCalcul").innerHTML = notes.map(n => `<li><b>${esc(n.nom)}</b> : ${esc(n.calcul)}</li>`).join("");   // (« Le détail du calcul »)
     await preparerPartage(canvas, { img: $("carteImg"), partager: $("cartePartager"), enregistrer: $("carteEnregistrer"), msg: $("carteMsg"),
