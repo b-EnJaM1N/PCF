@@ -214,6 +214,15 @@ export function installerTournois(ctx) {
   }
   $("tRecordsCarte").addEventListener("toggle", () => { if ($("tRecordsCarte").open) chargerRecords(); });
   $("tRetour").addEventListener("click", () => { fermer(); ctx.retour(); });
+  // (étape 88) Disqualifier un joueur (l'organisateur, depuis le classement)
+  $("tClassement").addEventListener("click", async e => {
+    const b = e.target.closest("button[data-disq]"); if (!b || !detail) return;
+    const id = ouvert, nom = b.dataset.nom;
+    if (!confirm(`Disqualifier ${nom} ? Ses matchs pas encore joués seront gagnés par forfait par ses adversaires, et il ne jouera pas les playoffs.${detail.enjeu ? " Avec l'enjeu, c'est lui qui s'y colle." : ""} Il sera prévenu.`)) return;
+    b.disabled = true;
+    try { await social.disqualifierJoueur(id, b.dataset.disq); if (ouvert === id) { await charger(); dire(`${nom} est disqualifié.`); } }
+    catch (err) { dire(err.message, true); b.disabled = false; }
+  });
   $("tCalendrier").addEventListener("click", async e => {
     const b = e.target.closest("button[data-j]"); if (!b || !detail) return;
     const j = +b.dataset.j, id = ouvert;
@@ -414,8 +423,10 @@ export function installerTournois(ctx) {
     if (ch && t.classement) {
       const fini = t.phase === "termine", dernier = quiSyColle(t);
       const entete = titre => `${titre ? `<tr><th colspan="6" class="cl-poule">${titre}</th></tr>` : ""}<tr><th></th><th></th><th title="Points">Pts</th><th title="Victoires">V</th><th title="Défaites">D</th><th title="Sets gagnés">Sets</th></tr>`;
-      const lignes = cl => cl.map(l => `<tr class="${l.joueur.id === uid ? "moi" : ""}"><td>${l.rang}</td>
-          <td><span class="cl-nom">${esc(l.joueur.pseudo)}${l.joueur.id === uid ? " (toi)" : ""}${fini && l.joueur.id === t.vainqueur?.id && (t.playoffs || l.v > 0) ? " 🏆" : ""}${fini && t.enjeu && l.joueur.id === dernier?.id ? " 🎯" : ""}</span></td>
+      // (21 novembre, étape 88) les forfaits de chacun ; un disqualifié barré ; l'organisateur peut disqualifier (❌)
+      const peutDisq = t.createur && t.phase === "en_cours";
+      const lignes = cl => cl.map(l => `<tr class="${l.joueur.id === uid ? "moi" : ""}${l.disqualifie ? " cl-disq" : ""}"><td>${l.rang}</td>
+          <td><span class="cl-nom">${l.disqualifie ? "<s>" : ""}${esc(l.joueur.pseudo)}${l.disqualifie ? "</s> <small>disqualifié</small>" : ""}${l.joueur.id === uid ? " (toi)" : ""}${fini && l.joueur.id === t.vainqueur?.id && (t.playoffs || l.v > 0) ? " 🏆" : ""}${fini && t.enjeu && l.joueur.id === dernier?.id ? " 🎯" : ""}</span>${l.forfaits ? `<small class="cl-forfaits">${l.forfaits} forfait${l.forfaits > 1 ? "s" : ""}</small>` : ""}${peutDisq && !l.disqualifie && l.joueur.id !== uid ? `<button class="petit alt cl-disq-b" data-disq="${esc(l.joueur.id)}" data-nom="${esc(l.joueur.pseudo)}" aria-label="Disqualifier ${esc(l.joueur.pseudo)}">❌</button>` : ""}</td>
           <td><b>${l.points}</b></td><td>${l.v}</td><td>${l.d}</td><td>${l.sets}</td></tr>`).join("");
       $("tClassement").innerHTML = t.poules?.length ? t.poules.map((cl, k) => entete(`Poule ${LETTRES_POULES[k]}`) + lignes(cl)).join("")
         : entete("") + lignes(t.classement);
