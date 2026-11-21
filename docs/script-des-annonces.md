@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1349 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1369 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1113,6 +1113,26 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_generique_02.mp3` | Regardez bien les deux mains ! |
 | `commentateur_replay_generique_03.mp3` | Voilà un point bien construit ! |
 | `commentateur_replay_generique_04.mp3` | Admirez le geste ! |
+| `commentateur_replay_sit_serre_01.mp3` | À ce stade du set, chaque point pesait une tonne ! |
+| `commentateur_replay_sit_serre_02.mp3` | Dans le money time, il a trouvé la solution ! |
+| `commentateur_replay_sit_serre_02_f.mp3` | Dans le money time, elle a trouvé la solution ! |
+| `commentateur_replay_sit_avance_01.mp3` | Il a creusé l'écart, tranquillement ! |
+| `commentateur_replay_sit_avance_01_f.mp3` | Elle a creusé l'écart, tranquillement ! |
+| `commentateur_replay_sit_avance_02.mp3` | Et un point de plus ! Il a déroulé ! |
+| `commentateur_replay_sit_avance_02_f.mp3` | Et un point de plus ! Elle a déroulé ! |
+| `commentateur_replay_sit_relance_01.mp3` | Et là, il s'est relancé ! |
+| `commentateur_replay_sit_relance_01_f.mp3` | Et là, elle s'est relancée ! |
+| `commentateur_replay_sit_relance_02.mp3` | Mené, il a refusé de lâcher ! Et tout est reparti de là ! |
+| `commentateur_replay_sit_relance_02_f.mp3` | Menée, elle a refusé de lâcher ! Et tout est reparti de là ! |
+| `commentateur_replay_sit_mene_perd_01.mp3` | Il s'est accroché ! Il ne voulait pas lâcher ce set ! |
+| `commentateur_replay_sit_mene_perd_01_f.mp3` | Elle s'est accrochée ! Elle ne voulait pas lâcher ce set ! |
+| `commentateur_replay_sit_bascule_01.mp3` | Là, il est passé devant ! Et il n'a plus jamais été rejoint ! |
+| `commentateur_replay_sit_bascule_01_f.mp3` | Là, elle est passée devant ! Et elle n'a plus jamais été rejointe ! |
+| `commentateur_replay_sit_bascule_02.mp3` | Le point de la bascule ! Tout est parti de là ! |
+| `commentateur_replay_sit_bascule_match_01.mp3` | Le point qui a fait basculer le match ! |
+| `commentateur_replay_sit_debut_01.mp3` | Il a bien lancé son set ! |
+| `commentateur_replay_sit_debut_01_f.mp3` | Elle a bien lancé son set ! |
+| `commentateur_replay_sit_debut_02.mp3` | Premier coup de semonce dans ce set ! |
 | `commentateur_fin_trois_sets_01.mp3` | Au bout du suspense, ce match a trouvé un vainqueur ! Les mains ont beaucoup donné et sont épuisées : séance de manucure demain, en prévision du prochain match ! |
 | `commentateur_fin_trois_sets_02.mp3` | Les supporters peuvent libérer leur joie : leur champion a su trouver le chemin de la victoire ! Le kop adverse peine à cacher sa déception : ils y ont cru jusqu'au bout ! |
 | `commentateur_fin_trois_sets_02_f.mp3` | Les supporters peuvent libérer leur joie : leur championne a su trouver le chemin de la victoire ! Le kop adverse peine à cacher sa déception : ils y ont cru jusqu'au bout ! |
@@ -1472,7 +1492,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_accueil_troisieme_01_f.mp3` | Troisième match ! Mesdames et messieurs, une habituée est en train de naître ! |
 | `commentateur_dialogue_accueil_fin_troisieme_01.mp3` | Trois matchs ! Les jetons, les défis du jour et la boutique sont ouverts ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (1133 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (1166 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -2186,6 +2206,39 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_gagnant_match_01_f.mp3` | Ce point montre bien pourquoi elle a remporté ce match. |
 | `commentatrice_replay_gagnant_match_02.mp3` | Il a su faire la différence quand il le fallait. |
 | `commentatrice_replay_gagnant_match_02_f.mp3` | Elle a su faire la différence quand il le fallait. |
+| `commentatrice_replay_sit_serre_01.mp3` | Dans une fin de set aussi serrée, c'est ce genre de point qui a fait la différence. |
+| `commentatrice_replay_sit_serre_02.mp3` | Il a pris l'ascendant au moment où tout se jouait. |
+| `commentatrice_replay_sit_serre_02_f.mp3` | Elle a pris l'ascendant au moment où tout se jouait. |
+| `commentatrice_replay_sit_serre_03.mp3` | Quand tout était serré, il a eu les nerfs les plus solides. |
+| `commentatrice_replay_sit_serre_03_f.mp3` | Quand tout était serré, elle a eu les nerfs les plus solides. |
+| `commentatrice_replay_sit_avance_01.mp3` | Avec une telle avance, il a pu jouer libéré. Et ça s'est vu. |
+| `commentatrice_replay_sit_avance_01_f.mp3` | Avec une telle avance, elle a pu jouer libérée. Et ça s'est vu. |
+| `commentatrice_replay_sit_avance_02.mp3` | Il a confirmé sa domination dans ce set. |
+| `commentatrice_replay_sit_avance_02_f.mp3` | Elle a confirmé sa domination dans ce set. |
+| `commentatrice_replay_sit_avance_03.mp3` | Pas de relâchement malgré l'avance. C'est la marque des grands. |
+| `commentatrice_replay_sit_relance_01.mp3` | C'est ce point qui lui a permis de se relancer. Et il a pris l'ascendant. |
+| `commentatrice_replay_sit_relance_01_f.mp3` | C'est ce point qui lui a permis de se relancer. Et elle a pris l'ascendant. |
+| `commentatrice_replay_sit_relance_02.mp3` | Le début de la remontée. Son adversaire ne le savait pas encore. |
+| `commentatrice_replay_sit_relance_03.mp3` | Il était dos au mur. Ce point a tout changé. |
+| `commentatrice_replay_sit_relance_03_f.mp3` | Elle était dos au mur. Ce point a tout changé. |
+| `commentatrice_replay_sit_mene_perd_01.mp3` | Il a réduit l'écart… mais le retard était trop important. |
+| `commentatrice_replay_sit_mene_perd_01_f.mp3` | Elle a réduit l'écart… mais le retard était trop important. |
+| `commentatrice_replay_sit_mene_perd_02.mp3` | Une belle réaction, qui n'a malheureusement pas suffi pour revenir. |
+| `commentatrice_replay_sit_mene_perd_03.mp3` | Il a essayé de revenir. Il lui a manqué un peu de temps. |
+| `commentatrice_replay_sit_mene_perd_03_f.mp3` | Elle a essayé de revenir. Il lui a manqué un peu de temps. |
+| `commentatrice_replay_sit_bascule_01.mp3` | C'est ce point qui l'a fait passer devant pour de bon. |
+| `commentatrice_replay_sit_bascule_02.mp3` | À partir de là, son adversaire a couru après le score. |
+| `commentatrice_replay_sit_bascule_match_01.mp3` | Dans ce set décisif, c'est ce point qui l'a fait passer devant. Il n'a plus jamais été rejoint. |
+| `commentatrice_replay_sit_bascule_match_01_f.mp3` | Dans ce set décisif, c'est ce point qui l'a fait passer devant. Elle n'a plus jamais été rejointe. |
+| `commentatrice_replay_sit_bascule_match_02.mp3` | Tout le match s'est joué sur ce point. |
+| `commentatrice_replay_sit_debut_01.mp3` | Un bon départ, ça l'a mis en confiance. |
+| `commentatrice_replay_sit_debut_01_f.mp3` | Un bon départ, ça l'a mise en confiance. |
+| `commentatrice_replay_sit_debut_02.mp3` | Il a posé les bases dès le début du set. |
+| `commentatrice_replay_sit_debut_02_f.mp3` | Elle a posé les bases dès le début du set. |
+| `commentatrice_replay_smash_perdant_set_01.mp3` | Malgré ce beau smash, ça n'a pas suffi à déstabiliser son adversaire, et il a perdu le set. |
+| `commentatrice_replay_smash_perdant_set_01_f.mp3` | Malgré ce beau smash, ça n'a pas suffi à déstabiliser son adversaire, et elle a perdu le set. |
+| `commentatrice_replay_smash_perdant_match_01.mp3` | Malgré ce beau smash, ça n'a pas suffi à déstabiliser son adversaire, et il a perdu le match. |
+| `commentatrice_replay_smash_perdant_match_01_f.mp3` | Malgré ce beau smash, ça n'a pas suffi à déstabiliser son adversaire, et elle a perdu le match. |
 | `commentatrice_fin_trois_sets_01.mp3` | Nous avons assisté à une belle rencontre, et les deux mains ont su se hisser à la hauteur de l'événement. Rendez-vous est pris pour une revanche qui s'annonce palpitante. |
 | `commentatrice_fin_trois_sets_02.mp3` | L'arbitre siffle la fin de la rencontre sur cet ultime point. On peut se satisfaire du spectacle proposé par les deux mains, dans cette passe d'armes aux allures de chassé-croisé. |
 | `commentatrice_accueil_point_perdu_01.mp3` | Un point pour Bambi. Ce n'est rien : on apprend en perdant. |

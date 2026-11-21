@@ -7,15 +7,19 @@ import { habitudes, piste, s_applique } from "./lecture-adversaire.js";
 export const replayVisible = loc => ouvert("replay", loc);
 
 // Ce qui rend une action marquante, du plus fort au moins fort.
-export const PRIORITES = { match: 10, sauvee_match: 9, sauvee_set: 8, smash: 7, set: 6, piege: 5, serie: 5, egalites: 4 };
+// (21 novembre, choix du porteur du projet : la bascule et la relance, calculées avec le score, juste après les balles sauvées ;
+// la bascule du set décisif est « la bascule du match » ; « point » : un point sans rien de marquant, gardé pour le calcul)
+export const PRIORITES = { match: 10, bascule_match: 9.5, sauvee_match: 9, sauvee_set: 8, bascule: 7.8, relance: 7.7, smash: 7, set: 6, piege: 5, serie: 5, egalites: 4, point: 0 };
 export const TITRES = {
   match: "Balle de match !", sauvee_match: "Balle de match sauvée !", sauvee_set: "Balle de set sauvée !",
   smash: "💥 Le smash !", piege: "🪤 Le piège !", set: "Balle de set !", serie: "Cinq points d'affilée !", egalites: "Enfin, après les égalités !",
+  bascule: "La bascule !", relance: "La relance !", bascule_match: "Le point qui a fait basculer le match !", point: "Revoyons ce point !",
 };
 
 // L'action marquante d'un coup, ou null. evt : ce que renvoie jouerCoup ; coups : les coups du match (celui-ci compris) ;
 // smash : [moi, l'adversaire] ; score : le score du set après ce point ; serie : la série de points en cours après ce coup (series(coups).serie).
-export function momentDuCoup(evt, coups, { smash = [false, false], smashGagne = false, serie = 0, set = 0, score = null } = {}) {
+// tous : un point sans rien de marquant donne quand même un moment, de type « point » (pour trouver la bascule et la relance du set).
+export function momentDuCoup(evt, coups, { smash = [false, false], smashGagne = false, serie = 0, set = 0, score = null, tous = false } = {}) {
   if (evt.gagnant === null || evt.gagnant === undefined) return null;
   let egalites = 0;
   for (let i = coups.length - 2; i >= 0 && coups[i].gagnant === null; i--) egalites++;
@@ -26,7 +30,7 @@ export function momentDuCoup(evt, coups, { smash = [false, false], smashGagne = 
     : evt.finSet ? "set"
     : piegeDuPoint(coups) ? "piege"
     : serie === 5 ? "serie"
-    : egalites >= 3 ? "egalites" : null;
+    : egalites >= 3 ? "egalites" : tous ? "point" : null;
   if (!type) return null;
   return { type, priorite: PRIORITES[type], a: evt.a, b: evt.b, gagnant: evt.gagnant, smash: [!!smash[0], !!smash[1]],
     score: evt.finSet ? [...evt.scoreSet] : score ? [...score] : null, egalites, set, coup: coups.length - 1, palette: paletteDuPoint(coups, { smashGagne }) };
@@ -51,12 +55,76 @@ export function tempsFortsMatch(moments, vainqueur, n = 3) {
   for (const m of tries) { if (garde.length >= n) break; if (!garde.includes(m)) garde.push(m); }
   return garde.sort((x, y) => x.coup - y.coup);
 }
+// ---------------------------------------------------------------- le score du point (21 novembre, choix du porteur du projet)
+// Selon le score juste avant le point (vu de celui qui marque) et le gagnant du set, ce qu'on peut en dire :
+//   serre      : fin de set serrée (sets de 11 : 6-6 ou au-delà, 1 point d'écart au plus ; sets de 7 : 4-4), et il a gagné le set ;
+//   avance     : il menait largement (sets de 11 : 4 points ; de 7 : 3), et il a gagné le set ;
+//   relance    : le point qui l'a relancé (il était mené de 2 points ou plus, au plus fort de son retard), et il a gagné le set ;
+//   mene_perd  : il était mené de 2 points ou plus, et il a perdu le set ;
+//   bascule    : le point après lequel le gagnant du set a mené jusqu'au bout (avant, égalité ou retard) ;
+//   debut      : le début du set (sets de 11 : 2 points ou moins chacun ; de 7 : 1 ou moins).
+// Dans les sets de 3 et de 1 point, chaque point compte : « serre ».
+const SEUILS = { 11: { serre: 6, avance: 4, debut: 2 }, 7: { serre: 4, avance: 3, debut: 1 } };
+// points : les points du set dans l'ordre ({ gagnant, score : le score après le point }) ; n : points par set ; w : le gagnant du set.
+// → { bascule, relance (les numéros des points, ou null), situations : une par point (ou null) }
+export function situationsDuSet(points, n, w) {
+  const avant = points.map(p => p.score.map((v, j) => (j === p.gagnant ? v - 1 : v)));
+  // La bascule : après le dernier point où w ne menait pas, il a mené jusqu'au bout.
+  let dernier = -1;
+  points.forEach((p, i) => { if (p.score[w] <= p.score[1 - w]) dernier = i; });
+  // (pas le point qui finit le set : celui-là, on le revoit déjà comme balle de set)
+  const bascule = dernier >= 0 && dernier + 1 < points.length - 1 ? dernier + 1 : null;
+  // La relance : le premier point marqué par w au plus fort de son retard (2 points ou plus).
+  let relance = null, pire = 1;
+  points.forEach((p, i) => { const retard = avant[i][1 - w] - avant[i][w]; if (p.gagnant === w && retard > pire) { pire = retard; relance = i; } });
+  if (relance === bascule) relance = null;
+  const t = SEUILS[n];
+  const situations = points.map((p, i) => {
+    const s = p.gagnant, moi = avant[i][s], lui = avant[i][1 - s], gagne = s === w;
+    if (i === bascule) return "bascule";
+    if (i === relance) return "relance";
+    if (!t) return gagne ? "serre" : null;
+    if (Math.min(moi, lui) >= t.serre && Math.abs(moi - lui) <= 1) return gagne ? "serre" : null;
+    if (lui - moi >= 2) return gagne ? null : "mene_perd";
+    if (moi - lui >= t.avance) return gagne ? "avance" : null;
+    if (Math.max(moi, lui) <= t.debut) return "debut";
+    return null;
+  });
+  return { bascule, relance, situations };
+}
+
+// À la fin d'un set : chaque moment du set reçoit sa situation (« situation »), et la bascule et la relance deviennent des moments
+// (ou prennent la place d'un moment moins fort). tous : les moments de tous les points du set (type « point » compris), dans
+// l'ordre ; moments : ceux gardés pour le replay (complétés ici) ; decisif : le set décisif (sa bascule est celle du match).
+// vainqueur : à la fin du match, son vainqueur (sinon null).
+// (21 novembre, règle du porteur du projet) Une balle de set sauvée n'est gardée que si celui qui l'a sauvée a gagné le set ; une
+// balle de match sauvée, que s'il a gagné le match (sinon, elle n'a servi à rien : 10-6, deux balles sauvées, et le set perdu).
+export function marquerSet(moments, tous, n, w, decisif = false, vainqueur = null) {
+  const set = tous[0]?.set;
+  for (let k = moments.length - 1; k >= 0; k--) {
+    const m = moments[k], inutile = (m.type === "sauvee_set" || m.type === "sauvee_match") && m.set === set && m.gagnant !== w;
+    if (inutile || (m.type === "sauvee_match" && vainqueur !== null && m.gagnant !== vainqueur)) moments.splice(k, 1);
+  }
+  const { bascule, relance, situations } = situationsDuSet(tous, n, w);
+  tous.forEach((p, i) => {
+    const nouveau = i === bascule ? (decisif ? "bascule_match" : "bascule") : i === relance ? "relance" : null;
+    let m = moments.find(x => x.set === p.set && x.coup === p.coup);
+    if (!m && nouveau) { m = { ...p }; moments.push(m); }
+    if (!m) return;
+    m.situation = situations[i];
+    if (nouveau && PRIORITES[nouveau] > m.priorite) { m.type = nouveau; m.priorite = PRIORITES[nouveau]; }
+  });
+  return moments;
+}
+
 // L'action marquante d'un set (la plus forte), ou null.
 // (19 novembre, remarque du porteur du projet : on revoyait un point du perdant du set, qui n'avait rien changé) gagnant : celui qui
 // a gagné le set ; on rejoue d'abord une de ses actions, celle du perdant seulement s'il n'en a aucune.
-export const momentDuSet = (moments, set, gagnant = null) => {
+// (21 novembre, demande du porteur du projet) smashPerdant : on peut aussi montrer un smash réussi du perdant du set.
+export const momentDuSet = (moments, set, gagnant = null, { smashPerdant = false } = {}) => {
   const du = moments.filter(m => m.set === set), siens = gagnant === null ? du : du.filter(m => m.gagnant === gagnant);
-  return tempsForts(siens.length ? siens : du, 1)[0] || null;
+  const smash = smashPerdant && gagnant !== null ? tempsForts(du.filter(m => m.gagnant !== gagnant && m.smash?.[m.gagnant]), 1)[0] : null;
+  return smash || tempsForts(siens.length ? siens : du, 1)[0] || null;
 };
 
 // ---------------------------------------------------------------- la palette (11 novembre, idée du porteur du projet)

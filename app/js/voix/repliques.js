@@ -1735,6 +1735,66 @@ export const MOMENTS = {
     { r: "d", t: "Ce point montre bien pourquoi il a remporté ce match.", f: "Ce point montre bien pourquoi elle a remporté ce match." },
     { r: "d", t: "Il a su faire la différence quand il le fallait.", f: "Elle a su faire la différence quand il le fallait." },
   ],
+  // Le score du point rejoué (21 novembre, phrases choisies par le porteur du projet, au passé composé ; « il » : celui qui a marqué).
+  // A. Une fin de set serrée (11 points : 6-6 ou au-delà ; 7 points : 4-4), et il a gagné le set
+  replay_sit_serre: [
+    { r: "c", t: "À ce stade du set, chaque point pesait une tonne !" },
+    { r: "c", t: "Dans le money time, il a trouvé la solution !", f: "Dans le money time, elle a trouvé la solution !" },
+    { r: "d", t: "Dans une fin de set aussi serrée, c'est ce genre de point qui a fait la différence." },
+    { r: "d", t: "Il a pris l'ascendant au moment où tout se jouait.", f: "Elle a pris l'ascendant au moment où tout se jouait." },
+    { r: "d", t: "Quand tout était serré, il a eu les nerfs les plus solides.", f: "Quand tout était serré, elle a eu les nerfs les plus solides." },
+  ],
+  // B. Une large avance (11 points : 4 points d'avance ; 7 points : 3), et il a gagné le set
+  replay_sit_avance: [
+    { r: "c", t: "Il a creusé l'écart, tranquillement !", f: "Elle a creusé l'écart, tranquillement !" },
+    { r: "c", t: "Et un point de plus ! Il a déroulé !", f: "Et un point de plus ! Elle a déroulé !" },
+    { r: "d", t: "Avec une telle avance, il a pu jouer libéré. Et ça s'est vu.", f: "Avec une telle avance, elle a pu jouer libérée. Et ça s'est vu." },
+    { r: "d", t: "Il a confirmé sa domination dans ce set.", f: "Elle a confirmé sa domination dans ce set." },
+    { r: "d", t: "Pas de relâchement malgré l'avance. C'est la marque des grands." },
+  ],
+  // C. La relance : il était mené de 2 points ou plus, et il a gagné le set
+  replay_sit_relance: [
+    { r: "c", t: "Et là, il s'est relancé !", f: "Et là, elle s'est relancée !" },
+    { r: "c", t: "Mené, il a refusé de lâcher ! Et tout est reparti de là !", f: "Menée, elle a refusé de lâcher ! Et tout est reparti de là !" },
+    { r: "d", t: "C'est ce point qui lui a permis de se relancer. Et il a pris l'ascendant.", f: "C'est ce point qui lui a permis de se relancer. Et elle a pris l'ascendant." },
+    { r: "d", t: "Le début de la remontée. Son adversaire ne le savait pas encore." },
+    { r: "d", t: "Il était dos au mur. Ce point a tout changé.", f: "Elle était dos au mur. Ce point a tout changé." },
+  ],
+  // D. Il était mené de 2 points ou plus, et il a perdu le set
+  replay_sit_mene_perd: [
+    { r: "c", t: "Il s'est accroché ! Il ne voulait pas lâcher ce set !", f: "Elle s'est accrochée ! Elle ne voulait pas lâcher ce set !" },
+    { r: "d", t: "Il a réduit l'écart… mais le retard était trop important.", f: "Elle a réduit l'écart… mais le retard était trop important." },
+    { r: "d", t: "Une belle réaction, qui n'a malheureusement pas suffi pour revenir." },
+    { r: "d", t: "Il a essayé de revenir. Il lui a manqué un peu de temps.", f: "Elle a essayé de revenir. Il lui a manqué un peu de temps." },
+  ],
+  // E. La bascule du set : le point après lequel le gagnant du set a mené jusqu'à la fin
+  replay_sit_bascule: [
+    { r: "c", t: "Là, il est passé devant ! Et il n'a plus jamais été rejoint !", f: "Là, elle est passée devant ! Et elle n'a plus jamais été rejointe !" },
+    { r: "c", t: "Le point de la bascule ! Tout est parti de là !" },
+    { r: "d", t: "C'est ce point qui l'a fait passer devant pour de bon." },
+    { r: "d", t: "À partir de là, son adversaire a couru après le score." },
+  ],
+  // E bis. La bascule du match (la bascule du set décisif, aux temps forts)
+  replay_sit_bascule_match: [
+    { r: "c", t: "Le point qui a fait basculer le match !" },
+    { r: "d", t: "Dans ce set décisif, c'est ce point qui l'a fait passer devant. Il n'a plus jamais été rejoint.", f: "Dans ce set décisif, c'est ce point qui l'a fait passer devant. Elle n'a plus jamais été rejointe." },
+    { r: "d", t: "Tout le match s'est joué sur ce point." },
+  ],
+  // F. Le début du set (11 points : 2 points ou moins chacun ; 7 points : 1 ou moins)
+  replay_sit_debut: [
+    { r: "c", t: "Il a bien lancé son set !", f: "Elle a bien lancé son set !" },
+    { r: "c", t: "Premier coup de semonce dans ce set !" },
+    { r: "d", t: "Un bon départ, ça l'a mis en confiance.", f: "Un bon départ, ça l'a mise en confiance." },
+    { r: "d", t: "Il a posé les bases dès le début du set.", f: "Elle a posé les bases dès le début du set." },
+  ],
+  // Un smash réussi par le perdant du set, rejoué entre les sets (21 novembre, phrase du porteur du projet)
+  replay_smash_perdant_set: [
+    { r: "d", t: "Malgré ce beau smash, ça n'a pas suffi à déstabiliser son adversaire, et il a perdu le set.", f: "Malgré ce beau smash, ça n'a pas suffi à déstabiliser son adversaire, et elle a perdu le set." },
+  ],
+  // Le même, par le perdant du match, aux temps forts
+  replay_smash_perdant_match: [
+    { r: "d", t: "Malgré ce beau smash, ça n'a pas suffi à déstabiliser son adversaire, et il a perdu le match.", f: "Malgré ce beau smash, ça n'a pas suffi à déstabiliser son adversaire, et elle a perdu le match." },
+  ],
   // Un match en trois sets, à la fin (19 novembre, commentaires d'un testeur) : « gagne » seulement si je gagne
   fin_trois_sets: [
     { r: "c", t: "Au bout du suspense, ce match a trouvé un vainqueur ! Les mains ont beaucoup donné et sont épuisées : séance de manucure demain, en prévision du prochain match !" },
