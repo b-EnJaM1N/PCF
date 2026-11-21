@@ -1492,7 +1492,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_accueil_troisieme_01_f.mp3` | Troisième match ! Mesdames et messieurs, une habituée est en train de naître ! |
 | `commentateur_dialogue_accueil_fin_troisieme_01.mp3` | Trois matchs ! Les jetons, les défis du jour et la boutique sont ouverts ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (1166 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (1174 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -2239,6 +2239,14 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_smash_perdant_set_01_f.mp3` | Malgré ce beau smash, ça n'a pas suffi à déstabiliser son adversaire, et elle a perdu le set. |
 | `commentatrice_replay_smash_perdant_match_01.mp3` | Malgré ce beau smash, ça n'a pas suffi à déstabiliser son adversaire, et il a perdu le match. |
 | `commentatrice_replay_smash_perdant_match_01_f.mp3` | Malgré ce beau smash, ça n'a pas suffi à déstabiliser son adversaire, et elle a perdu le match. |
+| `commentatrice_replay_verdict_perdant_set_01.mp3` | Belle lecture de sa part… mais ça n'a pas suffi pour remporter le set. |
+| `commentatrice_replay_verdict_perdant_set_02.mp3` | Il a cassé son habitude au bon moment… mais ça n'a pas suffi pour remporter le set. |
+| `commentatrice_replay_verdict_perdant_set_02_f.mp3` | Elle a cassé son habitude au bon moment… mais ça n'a pas suffi pour remporter le set. |
+| `commentatrice_replay_verdict_perdant_set_03.mp3` | Un très joli piège… mais ça n'a pas suffi pour remporter le set. |
+| `commentatrice_replay_verdict_perdant_match_01.mp3` | Belle lecture de sa part… mais ça n'a pas suffi pour remporter le match. |
+| `commentatrice_replay_verdict_perdant_match_02.mp3` | Il a cassé son habitude au bon moment… mais ça n'a pas suffi pour remporter le match. |
+| `commentatrice_replay_verdict_perdant_match_02_f.mp3` | Elle a cassé son habitude au bon moment… mais ça n'a pas suffi pour remporter le match. |
+| `commentatrice_replay_verdict_perdant_match_03.mp3` | Un très joli piège… mais ça n'a pas suffi pour remporter le match. |
 | `commentatrice_fin_trois_sets_01.mp3` | Nous avons assisté à une belle rencontre, et les deux mains ont su se hisser à la hauteur de l'événement. Rendez-vous est pris pour une revanche qui s'annonce palpitante. |
 | `commentatrice_fin_trois_sets_02.mp3` | L'arbitre siffle la fin de la rencontre sur cet ultime point. On peut se satisfaire du spectacle proposé par les deux mains, dans cette passe d'armes aux allures de chassé-croisé. |
 | `commentatrice_accueil_point_perdu_01.mp3` | Un point pour Bambi. Ce n'est rien : on apprend en perdant. |

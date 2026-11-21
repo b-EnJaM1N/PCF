@@ -149,3 +149,16 @@ test("une balle sauvée n'est gardée que si elle a servi : le set (balle de set
   marquerSet(ms, pts, 3, 0, true, 0);
   assert.deepEqual(ms.filter(m => m.type.startsWith("sauvee")).map(m => m.coup), [1]);
 });
+
+test("une réplique qui parle des signes n'est dite que si l'historique la confirme (21 novembre)", async () => {
+  const { signesOK } = await import("../app/js/replay.js");
+  const avant = [{ a: 0, b: 1 }, { a: 2, b: 1 }, { a: 0, b: 1 }, { a: 2, b: 1 }];
+  assert.equal(signesOK("meme", avant, { a: 1, b: 1 }, 1), true, "il a rejoué Ciseaux");
+  assert.equal(signesOK("meme", avant, { a: 1, b: 2 }, 1), false, "il a changé : pas « encore le même signe »");
+  assert.equal(signesOK("change", avant, { a: 1, b: 2 }, 1), true);
+  assert.equal(signesOK("trois", avant, { a: 1, b: 1 }, 1), true);
+  assert.equal(signesOK("trois", avant, { a: 2, b: 1 }, 0), false);
+  assert.equal(signesOK("alterne", avant, { a: 1, b: 1 }, 0), true, "Pierre, Feuille, Pierre, Feuille");
+  assert.equal(signesOK("alterne", avant, { a: 1, b: 1 }, 1), false);
+  assert.equal(signesOK(undefined, [], { a: 0, b: 0 }, 0), true);
+});
