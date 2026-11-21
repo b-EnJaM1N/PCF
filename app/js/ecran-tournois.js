@@ -6,7 +6,7 @@ import { blasonSVG } from "./social-logique.js";
 import { texteFormat, POINTS_PAR_SET } from "./regles.js";
 import { formatCourt } from "./duel-logique.js";
 import { nomTour, monTour, DUREES, texteDuree, texteReste, texteFin, monMatch, attente, tableau, resume, lienTournoi, codeTournoiDepuisAdresse,
-  mesMatchsRestants, DUREES_CHAMPIONNAT, MAX_CHAMPIONNAT, matchsParJoueur, texteDureeChampionnat, dernierDuClassement, texteDepart,
+  mesMatchsRestants, MAX_CHAMPIONNAT, JOURS_MIN, JOURS_MAX, matchsParJoueur, texteDureeChampionnat, dernierDuClassement, texteDepart,
   textePlayoffs, phaseChampionnat, tableauFinal, quiSyColle, LETTRES_POULES, ETATS_INVITE, invitable, texteInvitation } from "./tournoi-logique.js";
 import { ouvert as nouveauteOuverte } from "./nouveautes.js";
 import { calculerRecords, htmlRecords } from "./records-cercle.js";
@@ -69,7 +69,7 @@ export function installerTournois(ctx) {
   ["socTournois", "cTournois"].forEach(z => { $(z).addEventListener("click", ouvrirDepuisListe); $(z).addEventListener("keydown", ouvrirDepuisListe); });
 
   // ------------------------------------------------ créer un tournoi
-  const form = { len: 11, win: 2, duree: 60, type: "libre", ar: 0, jours: 7, hebdo: 0,
+  const form = { len: 11, win: 2, duree: 60, type: "libre", ar: 0, jours: 7, joursPo: 2, hebdo: 0,
     poules: 1, po: 0, garder: 1, koLen: null, koWin: null, finLen: null, finWin: null };   // (poules et playoffs : étape 66)
   const avecPoules = () => champ() && nouveauteOuverte("poules");
   const avecPlayoffs = () => avecPoules() && (form.poules > 1 || !!form.po);
@@ -85,6 +85,8 @@ export function installerTournois(ctx) {
     $("tnRepet").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.v === form.hebdo));
     const hebdo = ch && !!form.hebdo;   // chaque semaine : la durée est fixe (du lundi 12 h au dimanche 22 h)
     $("tnDureeLbl").hidden = hebdo; $("tnDuree").hidden = hebdo;
+    // (21 novembre, étape 87) l'organisateur choisit les durées, en jours entiers : les poules (ou tout le championnat) et les playoffs
+    $("tnPoDureeLbl").hidden = $("tnPoDuree").hidden = hebdo || !(ch && avecPlayoffs());
     $("tnLen").innerHTML = segLen(form.len);
     $("tnWin").innerHTML = segWin(form.win);
     // Poules et playoffs (étape 66) : sur la version de test d'abord (nouveautes.js : « poules »).
@@ -105,8 +107,11 @@ export function installerTournois(ctx) {
       $("tnKoLen").innerHTML = segLen(kl); $("tnKoWin").innerHTML = segWin(kw);
       $("tnFinLen").innerHTML = segLen(form.finLen ?? kl); $("tnFinWin").innerHTML = segWin(form.finWin ?? kw);
     }
-    $("tnDureeLbl").textContent = ch ? "Durée du championnat" : "Durée de chaque tour";
-    $("tnDuree").innerHTML = (ch ? DUREES_CHAMPIONNAT : DUREES).map(([v, l]) => `<button data-v="${v}" aria-pressed="${v === (ch ? form.jours : form.duree)}">${l}</button>`).join("");
+    $("tnDureeLbl").textContent = ch ? (pl ? "Phase de poules" : "Durée du championnat") : "Durée de chaque tour";
+    const pas = (n, cle) => `<button data-pas="-1" data-cle="${cle}" aria-label="Un jour de moins"${n <= JOURS_MIN ? " disabled" : ""}>−</button>`
+      + `<button aria-pressed="true" tabindex="-1">${n} jour${n > 1 ? "s" : ""}</button><button data-pas="1" data-cle="${cle}" aria-label="Un jour de plus"${n >= JOURS_MAX ? " disabled" : ""}>+</button>`;
+    $("tnDuree").innerHTML = ch ? pas(form.jours, "jours") : DUREES.map(([v, l]) => `<button data-v="${v}" aria-pressed="${v === form.duree}">${l}</button>`).join("");
+    $("tnPoDuree").innerHTML = pas(form.joursPo, "joursPo");
     $("inTNom").placeholder = ch ? "Ex. Le championnat de la semaine" : "Ex. L'Open de la Famille";
     $("tnCreer").textContent = ch ? "Créer le championnat" : "Créer le tournoi";
     $("tnNomLbl").textContent = ch ? "Nom du championnat" : "Nom du tournoi";
@@ -115,14 +120,14 @@ export function installerTournois(ctx) {
     $("tnHint").textContent = ch
       ? format + `Chacun joue contre tous${form.ar ? " deux fois (aller-retour)" : ""}, quand il veut ${hebdo
           ? "du lundi 12 h au dimanche 22 h. Chaque semaine, une nouvelle édition repart avec les mêmes joueurs (chacun peut se désinscrire jusqu'au lundi midi) : "
-          : `pendant ${texteDureeChampionnat(form.jours * 1440)} : `}`
+          : `pendant ${pl ? `les ${texteDureeChampionnat(form.jours * 1440)} de la phase de poules` : texteDureeChampionnat(form.jours * 1440)} : `}`
         + (pl && form.poules > 1 ? `En ${form.poules} poules (chacun contre tous dans sa poule), composées par niveau. De ${3 * form.poules} à ${MAX_CHAMPIONNAT * form.poules} joueurs. `
           : `à 6 joueurs, ${matchsParJoueur(6, form.ar)} matchs chacun. De 3 à ${MAX_CHAMPIONNAT} joueurs. `) + "Victoire : 2 points. "
         + "Un match pas joué à la fin est gagné par celui qui a essayé de le jouer, perdu pour les deux si personne n'a essayé."
-        + (pl ? ` Playoffs (le dernier tiers du temps) : ${form.poules > 1 ? textePlayoffs(form.poules * 4, form.poules)
+        + (pl ? ` Playoffs ${hebdo ? "(le dernier tiers du temps)" : `juste après, pendant ${texteDureeChampionnat(form.joursPo * 1440)} partagés entre les tours (12 h au moins chacun) ; durée totale : ${texteDureeChampionnat((form.jours + form.joursPo) * 1440)}`} : ${form.poules > 1 ? textePlayoffs(form.poules * 4, form.poules)
             + (form.poules === 2 ? " (les 4 premiers en quarts dès 5 joueurs par poule)" : "")
             : "finale à 3 joueurs, demi-finales à 4 ou 5, façon Top 14 dès 6"}. Un match de playoffs pas joué : celui qui a essayé passe, sinon le mieux classé de la saison. `
-            + "Avec des quarts ou des barrages : 10 jours au moins (toutes les 2 semaines si chaque semaine). Le champion : le vainqueur de la finale."
+            + (hebdo ? "Avec des quarts ou des barrages : toutes les 2 semaines. " : "") + "Le champion : le vainqueur de la finale."
             + ($("tnEnjeuOn").checked ? " Avec l'enjeu : les derniers jouent les playouts, le perdant s'y colle." : "") : "")
       : format + `Chaque tour dure ${texteDuree(form.duree)} : les deux joueurs jouent leur match quand ils veulent pendant ce temps.`
         + (form.duree <= 15 ? " Idéal quand tout le monde est là." : "");
@@ -131,7 +136,12 @@ export function installerTournois(ctx) {
     ["tnKoLen", "koLen"], ["tnKoWin", "koWin"], ["tnFinLen", "finLen"], ["tnFinWin", "finWin"]].forEach(([id, cle]) => $(id).addEventListener("click", e => {
     const b = e.target.closest("button"); if (b) { form[cle] = +b.dataset.v; renderForm(); }
   }));
-  $("tnDuree").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { form[champ() ? "jours" : "duree"] = +b.dataset.v; renderForm(); } });
+  const changerJours = e => {
+    const b = e.target.closest("button[data-pas]"); if (!b) return false;
+    form[b.dataset.cle] = Math.min(JOURS_MAX, Math.max(JOURS_MIN, form[b.dataset.cle] + +b.dataset.pas)); renderForm(); return true;
+  };
+  $("tnDuree").addEventListener("click", e => { if (changerJours(e)) return; const b = e.target.closest("button[data-v]"); if (b) { form.duree = +b.dataset.v; renderForm(); } });
+  $("tnPoDuree").addEventListener("click", changerJours);
   $("tnType").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { form.type = b.dataset.v; renderForm(); } });
   // L'enjeu du championnat (facultatif) : mêmes idées et mêmes règles que le défi entre amis.
   $("tnEnjeuOn").addEventListener("change", e => { $("tnEnjeuBox").hidden = !e.target.checked; if (e.target.checked) $("tnEnjeu").focus(); renderForm(); });
@@ -162,7 +172,8 @@ export function installerTournois(ctx) {
       const ch = champ();
       const options = avecPoules() ? { poules: form.poules, playoffs: avecPlayoffs(), garder_poules: !!form.garder,
         ...(avecPlayoffs() ? { ko_points: form.koLen ?? form.len, ko_sets: form.koWin ?? form.win,
-          fin_points: form.finLen ?? form.koLen ?? form.len, fin_sets: form.finWin ?? form.koWin ?? form.win } : {}) } : null;
+          fin_points: form.finLen ?? form.koLen ?? form.len, fin_sets: form.finWin ?? form.koWin ?? form.win,
+          ...(form.hebdo ? {} : { jours_playoffs: form.joursPo }) } : {}) } : null;
       const t = ch ? await social.creerChampionnat(nom, cercleForm.id, form.len, form.win, form.hebdo ? 7 : form.jours, !!form.ar, enjeuChoisi(), !!form.hebdo, options)
         : await social.creerTournoi(nom, cercleForm?.id ?? null, form.len, form.win, form.duree);
       ctx.apresChangement();
@@ -176,7 +187,8 @@ export function installerTournois(ctx) {
   async function ouvrir(id, message = "") {
     ouvert = id; detail = null;
     $("tNom").textContent = "…"; $("tInfo").textContent = ""; $("tEtat").textContent = "";
-    ["tMonMatch", "tInscriptions", "tTableauCarte", "tClassementCarte", "tEnjeuCarte", "tSerieCarte", "tRecordsCarte"].forEach(x => { $(x).hidden = true; });
+    ["tMonMatch", "tInscriptions", "tTableauCarte", "tClassementCarte", "tEnjeuCarte", "tSerieCarte", "tRecordsCarte", "tCalendrier", "tAnnulerEnCours"].forEach(x => { $(x).hidden = true; });
+    $("tCalMsg").textContent = "";
     $("tRecordsCarte").open = false; $("tRecordsListe").innerHTML = ""; $("tRecordsMsg").textContent = ""; recordsDe = null;
     dire(message);
     ctx.montrer("socTournoi"); window.scrollTo(0, 0);
@@ -202,6 +214,33 @@ export function installerTournois(ctx) {
   }
   $("tRecordsCarte").addEventListener("toggle", () => { if ($("tRecordsCarte").open) chargerRecords(); });
   $("tRetour").addEventListener("click", () => { fermer(); ctx.retour(); });
+  $("tAnnulerEnCours").addEventListener("click", async () => {
+    if (!detail) return;
+    const id = ouvert;
+    if (!confirm(`Annuler « ${detail.nom} » ? Les matchs déjà joués restent, mais il n'y aura pas de champion${detail.enjeu ? " et personne ne s'y collera" : ""}. Les joueurs seront prévenus. C'est définitif.`)) return;
+    $("tAnnulerEnCours").disabled = true;
+    try { await social.annulerTournoi(id); ctx.apresChangement(); if (ouvert === id) { await charger(); dire("Championnat annulé : les joueurs sont prévenus."); } }
+    catch (err) { dire(err.message, true); }
+    $("tAnnulerEnCours").disabled = false;
+  });
+  // (étape 88) Disqualifier un joueur (l'organisateur, depuis le classement)
+  $("tClassement").addEventListener("click", async e => {
+    const b = e.target.closest("button[data-disq]"); if (!b || !detail) return;
+    const id = ouvert, nom = b.dataset.nom;
+    if (!confirm(`Disqualifier ${nom} ? Ses matchs pas encore joués seront gagnés par forfait par ses adversaires, et il ne jouera pas les playoffs.${detail.enjeu ? " Avec l'enjeu, c'est lui qui s'y colle." : ""} Il sera prévenu.`)) return;
+    b.disabled = true;
+    try { await social.disqualifierJoueur(id, b.dataset.disq); if (ouvert === id) { await charger(); dire(`${nom} est disqualifié.`); } }
+    catch (err) { dire(err.message, true); b.disabled = false; }
+  });
+  $("tCalendrier").addEventListener("click", async e => {
+    const b = e.target.closest("button[data-j]"); if (!b || !detail) return;
+    const j = +b.dataset.j, id = ouvert;
+    if (!confirm(`${j > 0 ? "Reculer" : "Avancer"} la date limite de ${Math.abs(j)} jour${Math.abs(j) > 1 ? "s" : ""} ? Les joueurs seront prévenus.`)) return;
+    b.disabled = true; $("tCalMsg").textContent = "";
+    try { await social.decalerCalendrier(id, j); if (ouvert === id) { await charger(); $("tCalMsg").textContent = "C'est fait : les joueurs sont prévenus."; } }
+    catch (err) { $("tCalMsg").textContent = err.message; }
+    b.disabled = false;
+  });
 
   async function charger() {
     const id = ouvert; if (!id) return;
@@ -240,20 +279,33 @@ export function installerTournois(ctx) {
     const fmt = (p, s) => texteFormat({ pointsParSet: p, setsGagnants: s });
     const ko = t.playoffs && (t.ko_points || t.fin_points)
       ? ` · élimination directe : ${fmt(t.ko_points || t.points_par_set, t.ko_sets || t.sets_gagnants)} · finale : ${fmt(t.fin_points || t.ko_points || t.points_par_set, t.fin_sets || t.ko_sets || t.sets_gagnants)}` : "";
-    if (ch) $("tInfo").textContent = `Championnat du cercle « ${t.cercle?.nom ?? ""} » · ${t.nb_poules > 1 ? `${t.nb_poules} poules` : t.aller_retour ? "aller-retour" : "aller simple"}${t.playoffs ? " · avec playoffs" : ""} · ${format}${ko} · ${t.serie ? `semaine n°\u00a0${t.edition}` : texteDureeChampionnat(t.duree_minutes)}`;
+    if (ch) $("tInfo").textContent = `Championnat du cercle « ${t.cercle?.nom ?? ""} » · ${t.nb_poules > 1 ? `${t.nb_poules} poules` : t.aller_retour ? "aller-retour" : "aller simple"}${t.playoffs ? " · avec playoffs" : ""} · ${format}${ko} · ${t.serie ? `semaine n°\u00a0${t.edition}` : t.jours_playoffs ? `poules : ${texteDureeChampionnat(t.duree_minutes)} · playoffs : ${texteDureeChampionnat(t.jours_playoffs * 1440)}` : texteDureeChampionnat(t.duree_minutes)}`;
     else $("tInfo").textContent = `${t.programme ? "Tournoi programmé · " : t.freeroll ? "Freeroll · " : direct ? "Sit & Go public · " : t.cercle ? `Cercle « ${t.cercle.nom} » · ` : "Tournoi privé · "}${texteFormat({ pointsParSet: t.points_par_set, setsGagnants: t.sets_gagnants })}`
       + `${formatCourt(t.points_par_set, t.sets_gagnants) ? " · amical" : " · officiel"}${direct ? "" : ` · tours de ${texteDuree(t.duree_minutes)}`}${t.finale_sets ? ` · finale en ${t.finale_sets} sets gagnants` : ""}`;
     const reste = texteReste(t.echeance, maintenant);
     const maxCh = MAX_CHAMPIONNAT * (t.nb_poules || 1), phaseCh = t.playoffs ? phaseChampionnat(t) : "Championnat";
     const premierSaison = t.playoffs && t.premier_saison && t.premier_saison.id !== t.vainqueur?.id ? ` · 🥇 1er de la saison : ${t.premier_saison.pseudo}` : "";
     $("tEtat").textContent = ch ? (t.phase === "inscriptions" ? `Inscriptions ouvertes · ${t.joueurs.length} joueur${t.joueurs.length > 1 ? "s" : ""} (de ${3 * (t.nb_poules || 1)} à ${maxCh})${t.depart ? ` · départ ${texteDepart(t.depart)}` : ""}`
-        : t.phase === "en_cours" ? `${phaseCh} en cours · ${reste ? `${t.playoffs ? "date limite" : "fin"} dans ${reste}` : "fin passée, résultats en cours"}`
+        // (21 novembre, étape 87) la date limite dit à quoi elle sert : la fin des poules (puis celle des playoffs), ou celle du championnat
+        : t.phase === "en_cours" ? (!reste ? `${phaseCh} en cours · date limite passée, résultats en cours`
+          : t.playoffs && t.tour === 1 ? `Phase de poules en cours · fin ${texteRdv(t.echeance)} (dans ${reste})${t.fin_prevue ? ` · playoffs ensuite, jusqu'à ${texteRdv(t.fin_prevue)}` : ""}`
+          : t.playoffs ? `${phaseCh} en cours · date limite ${texteRdv(t.echeance)} (dans ${reste})${t.fin_prevue ? ` · fin du championnat ${texteRdv(t.fin_prevue)}` : ""}`
+          : `${phaseCh} en cours · fin ${texteRdv(t.echeance)} (dans ${reste})`)
         : t.phase === "termine" ? (t.vainqueur ? `🏆 Champion du cercle : ${t.vainqueur.pseudo}#${t.vainqueur.numero}${premierSaison}` : "Championnat terminé, sans vainqueur (aucun match joué)") : "Championnat annulé")
       : t.phase === "inscriptions" ? `Inscriptions ouvertes · ${t.joueurs.length} joueur${t.joueurs.length > 1 ? "s" : ""}${
           !direct ? " (de 3 à 32)" : t.depart ? ` · départ ${texteDepartProgramme(t.depart, maintenant)}` : t.freeroll ? " · départ à 20 h" : t.taille ? ` sur ${t.taille}` : ""}`
       : t.phase === "en_cours" ? (direct ? `${nomTour(t.tour, t.nb_tours)} · en direct` : `${nomTour(t.tour, t.nb_tours)} · ${reste ? `date limite dans ${reste}` : "date limite passée, résultats en cours"}`)
       : t.phase === "termine" ? (t.vainqueur ? `🏆 Vainqueur : ${t.vainqueur.pseudo}#${t.vainqueur.numero}` : "Tournoi terminé") : "Tournoi annulé";
 
+    // (21 novembre, étape 88) L'organisateur peut annuler un championnat en cours.
+    $("tAnnulerEnCours").hidden = !(ch && t.phase === "en_cours" && t.organise);
+    // (21 novembre, étape 87) L'organisateur avance ou recule la date limite des poules (ou de la saison, sans playoffs).
+    const cal = ch && t.createur && t.phase === "en_cours" && t.tour === 1 && !t.serie;
+    $("tCalendrier").hidden = !cal;
+    if (cal) {
+      $("tCalTitre").textContent = t.playoffs ? "📅 Date limite des poules" : "📅 Date limite du championnat";
+      $("tCalTexte").textContent = `Aujourd'hui : ${texteRdv(t.echeance)}. Tu peux l'avancer ou la reculer (12 heures au moins après maintenant)${t.playoffs ? " ; les playoffs se décalent avec" : ""}. Les joueurs sont prévenus.`;
+    }
     // Tournoi terminé : ma place et mes gains (calculés comme le serveur les verse).
     const res = monResultat(t, uid); if (res) retenirResultat(t.id, res);
     const entree = t.mise > 0 && !t.freeroll ? ` (entrée : ${texteJetons(t.mise)})` : "";
@@ -382,8 +434,10 @@ export function installerTournois(ctx) {
     if (ch && t.classement) {
       const fini = t.phase === "termine", dernier = quiSyColle(t);
       const entete = titre => `${titre ? `<tr><th colspan="6" class="cl-poule">${titre}</th></tr>` : ""}<tr><th></th><th></th><th title="Points">Pts</th><th title="Victoires">V</th><th title="Défaites">D</th><th title="Sets gagnés">Sets</th></tr>`;
-      const lignes = cl => cl.map(l => `<tr class="${l.joueur.id === uid ? "moi" : ""}"><td>${l.rang}</td>
-          <td><span class="cl-nom">${esc(l.joueur.pseudo)}${l.joueur.id === uid ? " (toi)" : ""}${fini && l.joueur.id === t.vainqueur?.id && (t.playoffs || l.v > 0) ? " 🏆" : ""}${fini && t.enjeu && l.joueur.id === dernier?.id ? " 🎯" : ""}</span></td>
+      // (21 novembre, étape 88) les forfaits de chacun ; un disqualifié barré ; l'organisateur peut disqualifier (❌)
+      const peutDisq = t.createur && t.phase === "en_cours";
+      const lignes = cl => cl.map(l => `<tr class="${l.joueur.id === uid ? "moi" : ""}${l.disqualifie ? " cl-disq" : ""}"><td>${l.rang}</td>
+          <td><span class="cl-nom">${l.disqualifie ? "<s>" : ""}${esc(l.joueur.pseudo)}${l.disqualifie ? "</s> <small>disqualifié</small>" : ""}${l.joueur.id === uid ? " (toi)" : ""}${fini && l.joueur.id === t.vainqueur?.id && (t.playoffs || l.v > 0) ? " 🏆" : ""}${fini && t.enjeu && l.joueur.id === dernier?.id ? " 🎯" : ""}</span>${l.forfaits ? `<small class="cl-forfaits">${l.forfaits} forfait${l.forfaits > 1 ? "s" : ""}</small>` : ""}${peutDisq && !l.disqualifie && l.joueur.id !== uid ? `<button class="petit alt cl-disq-b" data-disq="${esc(l.joueur.id)}" data-nom="${esc(l.joueur.pseudo)}" aria-label="Disqualifier ${esc(l.joueur.pseudo)}">❌</button>` : ""}</td>
           <td><b>${l.points}</b></td><td>${l.v}</td><td>${l.d}</td><td>${l.sets}</td></tr>`).join("");
       $("tClassement").innerHTML = t.poules?.length ? t.poules.map((cl, k) => entete(`Poule ${LETTRES_POULES[k]}`) + lignes(cl)).join("")
         : entete("") + lignes(t.classement);

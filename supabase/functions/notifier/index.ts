@@ -50,7 +50,9 @@ export function texteCreneauParis(p: { debut: string; fin: string }, maintenant 
 // cercle : { nom } (invitation dans un cercle).
 // Programmer un match de tournoi (étape 84) : "creneaux" | "rdv_fixe" | "rdv_decline" | "rdv_rappel" | "rdv_heure" ; adv : l'autre joueur ;
 // quand : l'heure du rendez-vous.
-export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }, tournoi?: { nom: string; depart?: string; mode?: string }, cercle?: { nom: string }, quand?: string,
+// Le calendrier d'un championnat (étape 87) : "poules_24h" (plus que 24 h ; quand : la date limite) | "calendrier" (l'organisateur,
+// adv, a changé la date limite ; quand : la nouvelle).
+export function message(evenement: string, duel: any, adv: { pseudo: string; numero: number }, tournoi?: { nom: string; depart?: string; mode?: string; playoffs?: boolean }, cercle?: { nom: string }, quand?: string,
   plages?: { debut: string; fin: string }[], ref?: string) {
   if (evenement === "test") return {
     titre: "🔔 Notification de test", texte: "Si tu lis ceci, les notifications marchent sur ce téléphone !", url: "./", tag: "test",
@@ -64,6 +66,29 @@ export function message(evenement: string, duel: any, adv: { pseudo: string; num
     titre: `🗓️ ${tournoi?.nom || "Ton tournoi"} commence dans 10 minutes`,
     texte: `Ouvre HandSlam et garde l'appli ouverte : le tournoi démarre à ${tournoi?.depart ? heureParis(tournoi.depart) : "l'heure"} avec les inscrits présents.`,
     url: "./?ouvrir=programmes", tag: "programme",
+  };
+  // (étape 87, 21 novembre) le calendrier d'un championnat
+  if (evenement === "poules_24h") return {
+    titre: `⏳ Plus que 24 h pour jouer tes matchs${tournoi?.playoffs ? " de poule" : ""}`,
+    texte: `${tournoi?.nom || "Ton championnat"}${quand ? ` : date limite ${jourHeureParis(quand)}` : ""}. Un match pas joué à temps est perdu, sauf pour celui qui a essayé de le jouer.`,
+    url: "./?ouvrir=tournois", tag: `echeance-${tournoi?.nom || ""}`,
+  };
+  if (evenement === "calendrier") return {
+    titre: `📅 ${tournoi?.nom || "Ton championnat"} : nouvelle date limite${tournoi?.playoffs ? " des poules" : ""}`,
+    texte: `${adv.pseudo}#${adv.numero}, l'organisateur, l'a fixée ${quand ? jourHeureParis(quand) : "à une autre date"}.`,
+    url: "./?ouvrir=tournois", tag: `echeance-${tournoi?.nom || ""}`,
+  };
+  // (étape 88) l'organisateur (adv) a annulé le championnat
+  if (evenement === "tournoi_annule") return {
+    titre: `🚫 Championnat annulé : ${tournoi?.nom || ""}`.trimEnd(),
+    texte: `Décision de l'organisateur, ${adv.pseudo}#${adv.numero}. Les matchs déjà joués restent, mais il n'y aura pas de champion.`,
+    url: "./?ouvrir=tournois", tag: `echeance-${tournoi?.nom || ""}`,
+  };
+  // (étape 88) l'organisateur (adv) a disqualifié le joueur
+  if (evenement === "disqualifie") return {
+    titre: `❌ Tu es disqualifié de ${tournoi?.nom || "ce championnat"}`,
+    texte: `Décision de l'organisateur, ${adv.pseudo}#${adv.numero}. Tes matchs pas encore joués sont perdus par forfait.`,
+    url: "./?ouvrir=tournois", tag: `echeance-${tournoi?.nom || ""}`,
   };
   const qui = `${adv.pseudo}#${adv.numero}`;
   // Programmer un match de tournoi (étape 84, 20 novembre).
@@ -163,7 +188,7 @@ async function servir(req: Request) {
   }
   if (!notif.duel_id && notif.de) ({ data: adv } = await sb.from("profils").select("pseudo, numero").eq("id", notif.de).maybeSingle());   // qui invite
   let tournoi: any = null;
-  if (notif.tournoi_id) ({ data: tournoi } = await sb.from("tournois").select("nom, depart, mode").eq("id", notif.tournoi_id).maybeSingle());
+  if (notif.tournoi_id) ({ data: tournoi } = await sb.from("tournois").select("nom, depart, mode, playoffs").eq("id", notif.tournoi_id).maybeSingle());
   let cercle: any = null;
   if (notif.cercle_id) ({ data: cercle } = await sb.from("cercles").select("nom").eq("id", notif.cercle_id).maybeSingle());
   const m = message(notif.evenement, duel, adv || { pseudo: "Un joueur", numero: 0 }, tournoi || undefined, cercle || undefined, notif.quand || undefined, notif.plages || undefined, notif.ref_duel || undefined);

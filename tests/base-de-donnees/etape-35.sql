@@ -62,7 +62,7 @@ select pg_temp.en_tant_que(:'D'); select rejoindre_cercle(pg_temp.v('code_cercle
 
 select pg_temp.en_tant_que(:'A');
 select pg_temp.interdit('select creer_championnat(''Ligue'', null, 1, 2, 7)', 'un championnat se joue dans un cercle');
-select pg_temp.interdit(format('select creer_championnat(''Ligue'', %L, 1, 2, 5)', pg_temp.v('cercle')), 'durée invalide refusée');
+select pg_temp.interdit(format('select creer_championnat(''Ligue'', %L, 1, 2, 31)', pg_temp.v('cercle')), 'durée invalide refusée (de 1 à 30 jours depuis l''étape 87)');
 select pg_temp.interdit(format('select creer_championnat(''Ligue'', %L, 1, 2, 7, false, ''Le perdant paie 10 euros'')', pg_temp.v('cercle')), 'pas d''argent dans l''enjeu');
 select pg_temp.interdit(format('select creer_championnat(''Ligue'', %L, 1, 2, 7, false, ''ok'')', pg_temp.v('cercle')), 'enjeu trop court refusé');
 select pg_temp.en_tant_que(:'E');

@@ -1333,3 +1333,8 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .cmp-n.mieux { color: var(--me); font-weight: 800; }
 .cmp-code small { display: block; color: var(--muted); font-size: .78rem; }
 .cmp-panel .cmp-table { margin-bottom: 12px; }
+
+/* Disqualifier un joueur du championnat (étape 88) */
+.cl-forfaits { display: block; color: var(--muted); font-size: .75rem; }
+.cl-disq td { opacity: .55; }
+.cl-disq-b { margin-left: 6px; padding: 2px 6px; font-size: .75rem; vertical-align: middle; }
