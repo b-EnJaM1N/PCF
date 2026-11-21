@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="version" content="6be57cf du 21/11/2026 (test)">
+<meta name="version" content="809deee du 21/11/2026 (test)">
 <!-- (15 novembre, choix du porteur du projet : le titre et la description montrés par Google et dans les aperçus de partage) -->
 <title>HandSlam – Pierre-Feuille-Ciseaux devient un sport</title>
 <meta name="description" content="Le Pierre-Feuille-Ciseaux comme un vrai sport : duels entre amis, tournois, classement et gants à collectionner. Gratuit, sans publicité.">
@@ -579,6 +579,8 @@
       </div>
       <span class="lbl" id="tnDureeLbl">Durée de chaque tour</span>
       <div class="seg" id="tnDuree"></div>
+      <span class="lbl" id="tnPoDureeLbl" hidden>Playoffs</span>
+      <div class="seg" id="tnPoDuree" hidden></div>
       <div id="tnEnjeuZone" hidden>
         <label class="sound" style="align-items:flex-start;margin:12px 0 8px"><input type="checkbox" id="tnEnjeuOn"> <span>🎯 Mettre un enjeu (le dernier s'y colle)</span></label>
         <div id="tnEnjeuBox" hidden>
@@ -598,6 +600,13 @@
     <section class="card cercle-tete">
       <span class="blason-grand" id="tIcone"></span>
       <div><h2 id="tNom"></h2><p class="hint" id="tInfo"></p><p class="hint" id="tEtat" style="color:var(--line);margin-top:4px"></p><p class="t-resultat" id="tResultat" hidden></p></div>
+    </section>
+    <!-- (21 novembre, étape 87) L'organisateur avance ou recule la date limite des poules. -->
+    <section class="card" id="tCalendrier" hidden>
+      <h2 id="tCalTitre">📅 Date limite des poules</h2>
+      <p class="hint" id="tCalTexte"></p>
+      <div class="rdv-actions"><button class="petit alt" data-j="-1">− 1 jour</button><button class="petit alt" data-j="1">+ 1 jour</button><button class="petit alt" data-j="2">+ 2 jours</button></div>
+      <p class="hint" id="tCalMsg" role="status"></p>
     </section>
     <section class="card" id="tEnjeuCarte" hidden>
       <p class="enjeu-fin" id="tEnjeu" style="margin:0"></p>

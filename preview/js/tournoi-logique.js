@@ -67,7 +67,9 @@ export const MAX_CHAMPIONNAT = 10;   // comme _max_championnat() dans supabase/e
 // Nombre de matchs de chaque joueur, et au total.
 export const matchsParJoueur = (n, allerRetour) => (n - 1) * (allerRetour ? 2 : 1);
 export const matchsTotal = (n, allerRetour) => n * (n - 1) / 2 * (allerRetour ? 2 : 1);
-export const texteDureeChampionnat = minutes => (DUREES_CHAMPIONNAT.find(([j]) => j * 1440 === minutes) || [, `${Math.round(minutes / 1440)} jours`])[1];
+export const texteDureeChampionnat = minutes => { const n = Math.round(minutes / 1440); return n === 7 ? "1 semaine" : n === 14 ? "2 semaines" : `${n} jour${n > 1 ? "s" : ""}`; };
+// (étape 87, 21 novembre) Les durées que l'organisateur choisit, en jours entiers.
+export const JOURS_MIN = 1, JOURS_MAX = 30;
 // Le champion du cercle : le vainqueur du dernier championnat terminé (liste dans l'ordre du serveur, ou n'importe quel ordre).
 export function championDuCercle(tournois) {
   const finis = (tournois || []).filter(t => t.mode === "championnat" && t.phase === "termine" && t.vainqueur);
