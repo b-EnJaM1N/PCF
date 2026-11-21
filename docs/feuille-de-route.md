@@ -2,6 +2,10 @@
 
 Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ · contact : contact.handslam@gmail.com
 
+**Décision du 21 novembre (après l'audit)** : on n'ajoute plus de fonctionnalités, on améliore l'existant. L'acquisition et
+l'entonnoir d'entrée seront regardés à l'ouverture au public ; la seule vraie inconnue restante : des groupes qui ne connaissent pas
+le porteur du projet jouent-ils entre eux dans la durée ?
+
 ## Pour reprendre (session du 10 novembre au soir)
 
 Test fermé prolongé de 14 jours (refus de Google du 10 novembre) : **nouvelle demande d'accès à la production vers le 24 novembre**,
