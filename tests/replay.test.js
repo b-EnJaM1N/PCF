@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { momentDuCoup, tempsForts, momentDuSet } from "../app/js/replay.js";
+import { momentDuCoup, tempsForts, tempsFortsMatch, momentDuSet } from "../app/js/replay.js";
 import { nouveauMatch, jouerCoup } from "../app/js/regles.js";
 
 // Joue une suite de coups ([moi, lui]) et garde les actions marquantes.
@@ -96,4 +96,14 @@ test("la palette : le piège (3 fois le même signe ou plus, puis le changement 
   assert.equal(piegeDuPoint(cs([[0, 0], [0, 2], [0, 0], [0, 1]])), null);    // pas de changement
   assert.equal(piegeDuPoint(cs([[0, 0], [0, 2], [0, 0], [1, 0]])), null);    // le changement ne marque pas
   assert.equal(paletteDuPoint(cs([[0, 1], [2, 0]]), { smashGagne: true }).verdict, "smash");
+});
+
+test("les temps forts du match : surtout le vainqueur, une action du perdant au plus (21 novembre)", () => {
+  const m = (coup, gagnant, priorite) => ({ coup, gagnant, priorite });
+  const ms = [m(1, 1, 9), m(2, 1, 8), m(3, 1, 7), m(4, 0, 5), m(5, 0, 4), m(6, 0, 10)];
+  // le vainqueur (0) a 3 actions : 2 de lui au moins, une seule du perdant, la plus forte
+  assert.deepEqual(tempsFortsMatch(ms, 0).map(x => x.coup), [1, 4, 6]);
+  // le vainqueur n'a qu'une action : on complète avec celles du perdant
+  assert.deepEqual(tempsFortsMatch([m(1, 1, 9), m(2, 1, 8), m(6, 0, 10)], 0).map(x => x.coup), [1, 2, 6]);
+  assert.deepEqual(tempsFortsMatch(ms, null).map(x => x.coup), tempsForts(ms).map(x => x.coup));
 });
