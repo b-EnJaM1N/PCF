@@ -195,7 +195,8 @@ export function installerCercles(ctx) {
   // trop de fausses manips ; on retire un ami en bas de sa page).
   const boutonsAmi = p => boutonDefier(p) + (ctx.dejaDefie?.(p.id) ? `<button class="petit alt" data-a="annuler-defi">Annuler</button>` : "");
   const marquerDefie = (b, p) => { b.textContent = texteDefie(p); b.classList.add("alt"); b.dataset.a = "defie"; b.disabled = true; };
-  const texteAttente = p => `${texteDefie(p)} (en attente de sa réponse)`;
+  // (21 novembre) un défi programmé dit son horaire : « 📅 Défi programmé envoyé · demain à 22 h 15 »
+  const texteAttente = p => ctx.texteDefiProgramme?.(p.id) || `${texteDefie(p)} (en attente de sa réponse)`;
   const ligneJoueur = (p, sous, boutons) => `<div class="joueur" data-id="${p.id}">
     <span class="mini">${avatarSVG(p.avatar || {})}</span>
     <div style="min-width:0"><div class="jn">${esc(p.drapeau || "")} ${nomComplet(p)}${pointPresence(p)}</div><div class="jd">${sous}</div></div>
@@ -770,6 +771,13 @@ export function installerCercles(ctx) {
 
   surSession(ctx.compte.session());
   return {
+    // (21 novembre) les défis ont changé : le bouton de la page de l'ami ouverte se met à jour
+    majDefiAmi: () => {
+      const a = amiOuvert && !$("socAmi").hidden ? amis.find(x => x.id === amiOuvert) : null; if (!a) return;
+      const deja = !!ctx.dejaDefie?.(a.id);
+      $("aDefier").disabled = deja; $("aDefier").textContent = deja ? texteAttente(a) : "⚔️ Défier"; if ($("aAnnulerDefi")) $("aAnnulerDefi").hidden = !deja;
+      $("aProgrammer").hidden = deja || !ouvert("creneaux");
+    },
     rafraichir: () => { rafraichir(); if (!$("socTournoi").hidden) tournois.rafraichir(); else if (cercleOuvert) chargerCercle(); },
     ouvrirTournoi: id => tournois.ouvrir(id),
     proposerInvitation: () => proposerDerniereInvitation(),

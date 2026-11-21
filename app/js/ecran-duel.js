@@ -11,6 +11,7 @@ import { MISES, gainDuel } from "./jetons-logique.js";
 import { IDEES, erreurEnjeu, nettoyerEnjeu } from "./enjeux.js";
 import { ouvert as nouveauteOuverte } from "./nouveautes.js";
 import { etatCourt, ouvrirPanneau } from "./creneaux-ui.js";
+import { textePlage, texteRdv } from "./creneaux.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -24,6 +25,7 @@ export function installerDuels(ctx) {
   const quittes = new Set();
   // Les joueurs que j'ai défiés et qui n'ont pas encore joué (pour afficher « Défié ✓ » dans les cercles et les amis).
   let defiesA = new Map();   // les joueurs que j'ai défiés (défi en attente) → le numéro du duel
+  let creneauxDe = new Map();   // (21 novembre) le numéro du duel → ses créneaux (défi programmé)
   // Mes amis, sous la barre de recherche (rechargés au plus une fois par minute).
   let amis = [], amisLus = 0;
   // Les défis reçus déjà montrés dans la fenêtre (une seule fois chacun, même après avoir fermé l'appli).
@@ -130,7 +132,9 @@ export function installerDuels(ctx) {
     const avantLHeure = d => { const c = creneaux.get(d.id); return !!c && (c.statut === "propose" || (c.statut === "fixe" && Date.now() < Date.parse(c.rdv) - 5 * 60e3)); };
     const cleProposition = d => `${d.id}:${JSON.stringify(creneaux.get(d.id)?.plages || [])}`;
     defiesA = new Map(duels.filter(d => d.phase === "attente" && d.j0 === uid && d.j1).map(d => [d.j1, d.id]));
+    creneauxDe = creneaux;
     chargerAmis();
+    ctx.apresDefis?.();
 
     // Un défi vient d'être accepté (ou je reviens dans l'appli) : on y va.
     const actif = enCours[0];
@@ -507,5 +511,14 @@ export function installerDuels(ctx) {
     const duel = defiesA.get(id); if (!duel) return;
     await serveur.annuler(duel); defiesA.delete(id); rafraichir();
   }
-  return { rafraichir, defier, annulerDefi, uid: () => uid, dejaDefie: id => defiesA.has(id) };
+  // (21 novembre, demande du porteur du projet) Le défi programmé que j'ai envoyé à ce joueur : « 📅 Défi programmé envoyé · demain à
+  // 22 h 15 » (ou l'heure fixée), ou "" si ce n'est pas un défi programmé.
+  function texteDefiProgramme(id) {
+    const c = creneauxDe.get(defiesA.get(id)); if (!c) return "";
+    if (c.statut === "fixe" && c.rdv) return `📅 Défi programmé · ${texteRdv(c.rdv)}`;
+    if (c.statut === "propose" && c.propose_par === uid) return `📅 Défi programmé envoyé · ${c.plages.length === 1 ? textePlage(c.plages[0]) : `${c.plages.length} créneaux`}`;
+    if (c.statut === "propose") return "📅 Défi programmé : il te propose un horaire";
+    return "";
+  }
+  return { rafraichir, defier, annulerDefi, uid: () => uid, dejaDefie: id => defiesA.has(id), texteDefiProgramme };
 }
