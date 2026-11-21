@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { notesDe, rangDe, texteRang, carteDe, RANGS, diversification, noteBareme, BAREMES, avecPreuves, generale, comparer } from "../app/js/carte-logique.js";
-import { profilParDefaut } from "../app/js/profil.js";
+import { profilParDefaut, jeuVide } from "../app/js/profil.js";
 
 const note = (P, code) => notesDe(P).find(n => n.code === code).valeur;
 
@@ -18,7 +18,8 @@ test("les stats de la carte : seulement contre les joueurs, en pourcentages", ()
   const P = profilParDefaut();
   Object.assign(P, { matchs: 100, victoires: 90 });   // (le total, avec les bots, ne compte pas)
   P.parAdv = { humains: { matchs: 10, victoires: 6, signes: [40, 30, 30], apresVictoire: 50, apresDefaite: 40, devines: 0, lisibles: 0,
-    ballesObtenues: 10, ballesConverties: 5, ballesSubies: 8, ballesSauvees: 3, decisifsJoues: 2, decisifsGagnes: 2, flairTentees: 40, flairReussies: 30, endChaines: 6, endGagnees: 5 } };
+    ballesObtenues: 10, ballesConverties: 5, ballesSubies: 8, ballesSauvees: 3, decisifsJoues: 2, decisifsGagnes: 2, flairTentees: 40, flairReussies: 30, endChaines: 6, endGagnees: 5 },
+    bots: jeuVide() };   // (aucun match contre les bots : la carte ne compte que les joueurs)
   assert.equal(note(P, "POL"), "70");              // 40 / 30 / 30
   assert.equal(note(P, "SGF"), "70");              // (5 + 3 + 2) / (10 + 8 + 2) = 50 % : la moyenne
   assert.equal(note(P, "FLA"), "82");              // 30 sur 40 = 75 % (99), mais 40 lectures sur 100 : 70 + 29 × 0,4
@@ -73,4 +74,19 @@ test("la note générale : coefficients (Punch, Imprévisibilité et Flair ×2, 
   assert.deepEqual(r.lignes.map(l => l.mieux), [0, 1, null, 0, null, 0]);
   assert.deepEqual([r.gagnees, r.perdues, r.egalites], [3, 1, 1]);
   assert.deepEqual(r.generales, [generale(n([80, 88, 95, 70, "–", 72])), generale(n([75, 90, 95, 60, 80, 70]))]);
+});
+
+test("sans assez de matchs contre des joueurs, la carte compte aussi les bots, de moins en moins (21 novembre)", async () => {
+  const { jeuPourCarte, partBots, HUMAINS_POUR_CARTE } = await import("../app/js/carte-logique.js");
+  const P = profilParDefaut(), bots = { ...jeuVide(), matchs: 40, signes: [60, 20, 20], egalites: 30 };
+  P.parAdv = { humains: jeuVide(), bots };
+  assert.equal(partBots(P), 1);
+  assert.deepEqual(jeuPourCarte(P).signes, [60, 20, 20], "aucun match contre un joueur : les bots seuls");
+  assert.equal(note(P, "POL"), "47", "la Polyvalence d'après les bots : 60 / 20 / 20 (note 1), sur 100 coups (un tiers des preuves) : 70 - 69 / 3");
+  P.parAdv.humains = { ...jeuVide(), matchs: HUMAINS_POUR_CARTE / 2, signes: [10, 10, 10], egalites: 4 };
+  assert.equal(partBots(P), 0.5);
+  assert.deepEqual(jeuPourCarte(P).signes, [40, 20, 20], "à mi-chemin : les bots comptent pour moitié");
+  assert.equal(jeuPourCarte(P).egalites, 19);
+  P.parAdv.humains.matchs = HUMAINS_POUR_CARTE;
+  assert.deepEqual(jeuPourCarte(P).signes, [10, 10, 10], "assez de matchs contre des joueurs : les bots ne comptent plus");
 });
