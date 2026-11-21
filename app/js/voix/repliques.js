@@ -9,6 +9,8 @@
 //   quand : "set" ou "match" — dit seulement sur une balle de set, ou seulement sur une balle de match
 //   seul  : jeu de mots sur un signe — dit seulement si le joueur vient de jouer ce signe (0 Pierre, 1 Ciseaux, 2 Feuille)
 //   signe : pour les textes par signe, le signe de qui — "moi" (défaut) ou "adv"
+//   signes : (replay) seulement si l'historique le confirme, pour le joueur dont on parle — "meme" (il a rejoué son signe du coup
+//            d'avant), "change" (il en a changé), "trois" (trois fois de suite le même), "alterne" (deux signes en alternance avant)
 //
 // Le moteur (annonces.js) choisit la réplique ; script.js en fait des fichiers audio nommés
 // qui_moment_NN (+ _pierre / _ciseaux / _feuille pour les signes, + _f pour la version au féminin).
@@ -927,10 +929,10 @@ export const MOMENTS = {
     { r: "d", t: "L'habitude, il l'a créée exprès. Pour mieux la casser.", f: "L'habitude, elle l'a créée exprès. Pour mieux la casser." },
   ],
   replay_palette_mauvais: [
-    { r: "d", t: "Il rejoue la même chose. On ne peut pas faire ça à ce niveau.", f: "Elle rejoue la même chose. On ne peut pas faire ça à ce niveau." },
+    { r: "d", t: "Il rejoue la même chose. On ne peut pas faire ça à ce niveau.", f: "Elle rejoue la même chose. On ne peut pas faire ça à ce niveau.", signes: "meme" },
     { r: "d", t: ["Il n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Pierre n'était pas la bonne option dans cette situation.", "Il n'a pas senti le coup. Le jeu n'était clairement pas là : choisir les Ciseaux n'était pas la bonne option dans cette situation.", "Il n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Feuille n'était pas la bonne option dans cette situation."], f: ["Elle n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Pierre n'était pas la bonne option dans cette situation.", "Elle n'a pas senti le coup. Le jeu n'était clairement pas là : choisir les Ciseaux n'était pas la bonne option dans cette situation.", "Elle n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Feuille n'était pas la bonne option dans cette situation."] },   // (18 novembre ; le signe : celui qu'il a joué)
     { r: "d", t: "Il a joué ce que tout le monde attendait. Son adversaire le premier.", f: "Elle a joué ce que tout le monde attendait. Son adversaire le premier." },
-    { r: "d", t: "Une fois, c'est une idée. Trois fois, c'est une habitude. Et l'adversaire l'a vue." },
+    { r: "d", t: "Une fois, c'est une idée. Trois fois, c'est une habitude. Et l'adversaire l'a vue.", signes: "trois" },
   ],
   // « Le jeu n'était pas là » : le perdant du point a pris la mauvaise décision (18 novembre, précision du porteur du projet : pas
   // un pari réussi). « Il » : celui qui a perdu le point ; le signe : celui qu'il a joué. (Les répliques « pari » d'avant sont
@@ -974,7 +976,7 @@ export const MOMENTS = {
     { r: "c", t: "Oh, la patience ! Il a attendu, attendu… et paf !", f: "Oh, la patience ! Elle a attendu, attendu… et paf !" },
   ],
   replay_r_propre: [
-    { r: "c", t: "Et là, il change tout ! L'adversaire attendait encore la même chose !", f: "Et là, elle change tout ! L'adversaire attendait encore la même chose !" },
+    { r: "c", t: "Et là, il change tout ! L'adversaire attendait encore la même chose !", f: "Et là, elle change tout ! L'adversaire attendait encore la même chose !", signes: "change" },
     { r: "c", t: "Et là, surprise ! Personne ne s'y attendait !" },   // (18 novembre, choisie par le porteur du projet)
     { r: "c", t: "Oh, le changement de rythme ! L'adversaire est pris à contre-pied !" },
     { r: "c", t: "Ah, il a senti le moment ! Il change, et ça paie !", f: "Ah, elle a senti le moment ! Elle change, et ça paie !" },
@@ -982,9 +984,9 @@ export const MOMENTS = {
   ],
   replay_r_mauvais: [
     { r: "c", t: "Oula… Il retombe dans ses travers, et ça se paie cash !", f: "Oula… Elle retombe dans ses travers, et ça se paie cash !" },
-    { r: "c", t: "Aïe… Encore le même signe ! L'adversaire n'attendait que ça !" },   // (18 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Aïe… Encore le même signe ! L'adversaire n'attendait que ça !", signes: "meme" },   // (18 novembre, choisie par le porteur du projet)
     { r: "c", t: "Oula, il s'est fait cueillir ! Trop prévisible !", f: "Oula, elle s'est fait cueillir ! Trop prévisible !" },
-    { r: "c", t: "Oh non… Il a répété une fois de trop !", f: "Oh non… Elle a répété une fois de trop !" },
+    { r: "c", t: "Oh non… Il a répété une fois de trop !", f: "Oh non… Elle a répété une fois de trop !", signes: "meme" },
     { r: "c", t: "Et voilà le prix de l'habitude ! Ça ne pardonne pas !" },
   ],
   replay_r_smash: [
@@ -1674,7 +1676,7 @@ export const MOMENTS = {
     { r: "c", t: "Oh, voyez avec quelle virtuosité il contrecarre la main adverse !", f: "Oh, voyez avec quelle virtuosité elle contrecarre la main adverse !" },
     { r: "c", t: "Son adversaire mord à l'hameçon, et il n'a plus qu'à remonter la prise !", f: "Son adversaire mord à l'hameçon, et elle n'a plus qu'à remonter la prise !" },
     { r: "d", t: "Peu auraient choisi de jouer ainsi, mais c'est bien le signe fort qui lui donne le point." },
-    { r: "d", t: "Bonne alternance sur deux signes avant de convertir la séquence." },
+    { r: "d", t: "Bonne alternance sur deux signes avant de convertir la séquence.", signes: "alterne" },
     { r: "d", t: "Une prime à l'audace sur cet enchaînement, qui laisse son adversaire impuissant." },
     { r: "c", t: "Il attire la main adverse sur un signe pour mieux la prendre à contre-pied !", f: "Elle attire la main adverse sur un signe pour mieux la prendre à contre-pied !" },
     { r: "c", t: "Oula ! Il l'a littéralement fusillé à bout portant !", f: "Oula ! Elle l'a littéralement fusillé à bout portant !" },

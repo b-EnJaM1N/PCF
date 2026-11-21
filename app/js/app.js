@@ -57,7 +57,7 @@ import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, NOMS as NOMS_SIGNES, compteVide, compterMatch, additionner, dossier, dossierDetaille } from "./lecture-adversaire.js";
 import { modeleFantome } from "./fantome.js";
 import { ouvert, proposerAvis } from "./nouveautes.js";   // (les nouveautés : sur la version de test, puis ouvertes à tous une par une)
-import { replayVisible, momentDuCoup, tempsFortsMatch, momentDuSet, marquerSet, TITRES as TITRES_REPLAY, VERDICTS, texteHabitude } from "./replay.js";
+import { replayVisible, momentDuCoup, tempsFortsMatch, momentDuSet, marquerSet, signesOK, TITRES as TITRES_REPLAY, VERDICTS, texteHabitude } from "./replay.js";
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder, titresSerie, prochainPalier } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
@@ -610,7 +610,7 @@ const genreJoueur = j => (j === 0 ? P.genre : OPP.humain ? OPP.genre : botAuFemi
 const pourPalette = pa => it => (!it.cle || it.cle === pa.habitude?.cle)
   && (!it.paire || (pa.piege && it.paire[0] === pa.piege.repete && it.paire[1] === pa.piege.signe))
   && (it.n === undefined || (pa.piege && it.n === Math.min(6, pa.piege.n)));
-const lignesPalette = (pool, pa, mo, role = null) => (POOLS[pool] || []).filter(pourPalette(pa))
+const lignesPalette = (pool, pa, mo, role = null) => (POOLS[pool] || []).filter(it => pourPalette(pa)(it) && signesOK(it.signes, pa.coups, mo, pa.joueur))
   .map(it => ligneMoment(it, { genre: genreJoueur(pa.joueur), signe: pa.joueur === 0 ? mo.a : mo.b }))
   .filter(x => x && voix.fichiers.has(x.id) && (!role || x.role === role));
 // Une réplique au hasard, en évitant celles déjà dites dans les replays de ce match (18 novembre, demande du porteur du projet :
@@ -817,7 +817,7 @@ function jouerReplay(liste, apres = () => {}) {
       // (19 novembre, commentaires d'un testeur) Selon l'action, parfois : le double smash, le smash selon son signe, la balle
       // ratée (« il » : celui qui l'a ratée), le point réussi (avec la palette « pertinent », « propre » ou « piège »).
       const signeG = mo.gagnant === 0 ? mo.a : mo.b, sauvee = mo.type === "sauvee_set" || mo.type === "sauvee_match";
-      const piocher = (pool, g, garder = () => true) => auHasard((POOLS[pool] || []).filter(garder).map(it => ligneMoment(it, { genre: g, signe: signeG }))
+      const piocher = (pool, g, garder = () => true) => auHasard((POOLS[pool] || []).filter(it => garder(it) && signesOK(it.signes, mo.palette?.coups, mo, mo.gagnant)).map(it => ligneMoment(it, { genre: g, signe: signeG }))
         .filter(x => x && voix.fichiers.has(x.id) && (!roland || x.role === roland)));
       const variante = dlg ? null
         : mo.type === "smash" && mo.smash[0] && mo.smash[1] && Math.random() < 0.5 ? piocher("replay_double", genre)
