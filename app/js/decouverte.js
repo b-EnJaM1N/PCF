@@ -1,4 +1,4 @@
-// La première visite : un match tout de suite contre Bambi (sans compte), puis le menu « Jouer » s'ouvre au fil des matchs.
+// La première visite : un match tout de suite contre Boomerang (sans compte), puis le menu « Jouer » s'ouvre au fil des matchs.
 // Ici, seulement les règles (testées automatiquement) ; l'écran est dans app.js.
 
 // Ce qui s'ouvre après combien de matchs joués (tous les matchs : bots, duels, tournois).
@@ -20,8 +20,9 @@ export function palier(matchs = 0, complet = false) {
 // Ce qui vient de s'ouvrir entre deux nombres de matchs.
 export const nouveautes = (avant, apres) => PALIERS.filter(p => avant < p.matchs && apres >= p.matchs).map(p => p.texte);
 
-// Le premier match : contre Bambi (le débutant), un set de 7 points.
-export const PREMIER_MATCH = { bot: "bambi", pointsParSet: 7, setsGagnants: 1 };
+// Le premier match : contre Boomerang (le réactif), un set de 7 points.
+// (21 novembre, choix du porteur du projet : Bambi, le débutant, était trop facile)
+export const PREMIER_MATCH = { bot: "boomerang", pointsParSet: 7, setsGagnants: 1 };
 
 // Le conseil affiché pendant le premier match, selon le nombre de coups joués et le résultat du dernier
 // (gagnant : 0 = moi, 1 = le bot, null = égalité).
@@ -29,8 +30,8 @@ export function conseil(coups, gagnant) {
   if (coups === 0) return "👉 Touche Pierre, Feuille ou Ciseaux avant la fin de la barre (8 secondes). Pierre bat Ciseaux, Ciseaux bat Feuille, Feuille bat Pierre.";
   if (coups <= 3) {
     if (gagnant === null) return "🤝 Égalité : même signe des deux côtés, le coup est rejoué.";
-    return `${gagnant === 0 ? "✅ Point pour toi !" : "❌ Point pour Bambi."} Le premier à 7 points, avec 2 points d'écart, gagne le set.`;
+    return `${gagnant === 0 ? "✅ Point pour toi !" : "❌ Point pour Boomerang."} Le premier à 7 points, avec 2 points d'écart, gagne le set.`;
   }
-  if (coups <= 9) return "🔎 Regarde l'historique en bas de l'écran : Bambi rejoue le même signe tant qu'il n'a pas perdu deux fois de suite. À toi de le lire !";
+  if (coups <= 9) return "🔎 Regarde l'historique en bas de l'écran : Boomerang garde son signe quand il gagne, et en change quand il perd. À toi de le lire !";
   return "🧠 Les bots plus forts te lisent aussi : si tu joues toujours pareil, ils le verront. Varie tes coups !";
 }

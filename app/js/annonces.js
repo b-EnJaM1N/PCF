@@ -769,7 +769,7 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
   const dialoguesRecents = recents.filter(id => /^commentateur_dialogue_avant_match_/.test(id)).slice(0, 6);
   dialoguesRecents.forEach(id => { const m = /_avant_match_(\d\d)/.exec(id); if (m) etat.dialoguesDits.add(`avant_match_${+m[1] - 1}`); });
   // L'accueil du nouveau joueur (accueil : 1, 2 ou 3 ; 19 novembre) : avant son premier match, les trois dialogues de bienvenue
-  // (les règles, Bambi) ; avant le 2e et le 3e, un dialogue, puis l'ouverture et le lancement habituels.
+  // (les règles, Boomerang) ; avant le 2e et le 3e, un dialogue, puis l'ouverture et le lancement habituels.
   if (accueil === 1) {
     const l = DIALOGUES_IDS.accueil_bienvenue.flatMap((_, k) => ligneDialogue("accueil_bienvenue", k, genre)).filter(x => x && (!audible || audible(x.id)));
     if (l.length) return { speaker: sp.filter(Boolean), commentaires: l };

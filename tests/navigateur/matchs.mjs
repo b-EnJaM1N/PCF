@@ -1,5 +1,5 @@
 // Le robot qui joue de vrais matchs dans un navigateur (5 novembre, accord du porteur du projet, après « chaud is not defined »
-// en plein match) : il ouvre l'appli comme un nouveau joueur, joue le premier match contre Bambi, puis un match d'entraînement
+// en plein match) : il ouvre l'appli comme un nouveau joueur, joue le premier match contre Boomerang, puis un match d'entraînement
 // en un set de 11 points, en touchant les signes au hasard. Il échoue à la moindre erreur dans la page (le bandeau rouge
 // « Oups, un problème »), ou si un match ne se termine pas. Lancé avant chaque mise en ligne (npm run test:navigateur).
 import { createServer } from "node:http";
@@ -58,7 +58,7 @@ try {
   const titre = page.locator("#demarrage.titre");
   if (await titre.isVisible({ timeout: 3000 }).catch(() => false)) { await titre.click(); await page.waitForTimeout(4000); }
   await page.locator("#premierMatch").click({ timeout: 15000 });
-  await jouerJusquALaFin("premier match contre Bambi", 240000);
+  await jouerJusquALaFin("premier match contre Boomerang", 240000);
   sonsPremierMatch = sons;
   if (!erreurs.length) {
     // Un match d'entraînement en un set de 11 points (assez long pour passer par toutes les ambiances du match).
