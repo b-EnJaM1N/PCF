@@ -1,6 +1,7 @@
 // La carte de joueur : les notes sur 99 et la rareté, calculées d'après la fiche.
 // Ici, seulement les calculs (testés automatiquement). Le dessin est dans carte.js.
-import { titresObtenus, signeFavori } from "./profil.js";
+import { titresObtenus, signeFavori, jeuVide } from "./profil.js";
+import { jeuMoins } from "./stats-passees.js";
 
 // (20 novembre, choix du porteur du projet) Six stats en vrais pourcentages, seulement contre de vrais joueurs (« Mon jeu » contre
 // les joueurs, P.parAdv.humains) : avant, six notes sur 99 (victoires, finition, mental, sets décisifs, imprévisibilité, expérience).
@@ -53,8 +54,29 @@ export function diversification(signes) {
   const ecart = signes.reduce((e, s) => e + Math.abs(s / t - 1 / 3), 0);
   return Math.min(99, Math.max(0, Math.floor(100 - 187.5 * ecart)));
 }
+// (21 novembre, demande du porteur du projet) Sans match contre de vrais joueurs, la carte prend les matchs contre les bots ; leur
+// poids baisse à chaque match contre un joueur, et disparaît après HUMAINS_POUR_CARTE matchs contre des joueurs.
+export const HUMAINS_POUR_CARTE = 20;
+// La part des matchs contre les bots dans la carte (de 1 à 0).
+export const partBots = P => Math.max(0, 1 - (P.parAdv?.humains?.matchs || 0) / HUMAINS_POUR_CARTE);
+// Les compteurs de la carte : ceux contre les joueurs, plus ceux contre les bots, pondérés par partBots.
+export function jeuPourCarte(P) {
+  const h = P.parAdv?.humains || null, k = partBots(P);
+  if (k <= 0) return h;
+  const b = P.parAdv?.bots || jeuMoins(P, h || jeuVide());
+  if (!h?.matchs) return b;
+  const r = {};
+  for (const c of new Set([...Object.keys(h), ...Object.keys(b)])) {
+    const x = h[c], y = b[c];
+    r[c] = Array.isArray(x) || Array.isArray(y) ? (x || [0, 0, 0]).map((v, i) => v + k * ((y || [])[i] || 0))
+      : typeof x === "number" || typeof y === "number" ? (x || 0) + k * (y || 0) : x ?? y;
+  }
+  // (les égalités : comptées seulement si elles le sont des deux côtés, sinon le Punch et la Résistance seraient faussés)
+  if (h.egalites === undefined || (b.matchs && b.egalites === undefined)) delete r.egalites;
+  return r;
+}
 export function notesDe(P) {
-  const h = P.parAdv?.humains;
+  const h = jeuPourCarte(P);
   const ok = !!h?.matchs, rien = "–";
   const div = ok ? diversification(h.signes) : null;
   const imp = ok && h.lisibles >= 30 ? (100 * h.devines) / h.lisibles : null;   // (la part de coups devinés, en %)
