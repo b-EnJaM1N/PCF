@@ -83,6 +83,32 @@ export function notesDe(P) {
   ];
 }
 
+// La note générale (21 novembre, choix du porteur du projet) : la moyenne des six notes, avec des coefficients (total 10) ;
+// une note pas encore calculée (« – ») compte 70, le hasard. Aucune note du tout (pas de match contre un joueur) : null.
+export const COEFS = { IMP: 2, PUN: 3, POL: 1, SGF: 1, FLA: 2, "RÉS": 1 };
+export function generale(notes) {
+  const nb = n => (Number.isFinite(Number(n.valeur)) && n.valeur !== "" ? Number(n.valeur) : null);
+  if (!notes.some(n => nb(n) !== null)) return null;
+  let s = 0, t = 0;
+  for (const n of notes) { const k = COEFS[n.code] ?? 1; s += k * (nb(n) ?? 70); t += k; }
+  return Math.round(s / t);
+}
+export const texteCoefs = () => "Punch ×3 · Imprévisibilité ×2 · Flair ×2 · Polyvalence, Sang-froid, Résistance ×1";
+
+// Comparer deux cartes (21 novembre, demande du porteur du projet) : notes de A et de B (notesDe). → { lignes : [{ code, nom, a, b,
+// mieux : 0 (A), 1 (B) ou null }], generales : [a, b], gagnees, perdues, egalites } (vu de A ; une note « – » ne compte pour personne).
+export function comparer(notesA, notesB) {
+  const nb = v => (Number.isFinite(Number(v)) && v !== "" ? Number(v) : null);
+  const r = { lignes: [], generales: [generale(notesA), generale(notesB)], gagnees: 0, perdues: 0, egalites: 0 };
+  notesA.forEach((n, i) => {
+    const m = notesB.find(x => x.code === n.code) || notesB[i], a = nb(n.valeur), b = nb(m?.valeur);
+    let mieux = null;
+    if (a !== null && b !== null) { if (a > b) { mieux = 0; r.gagnees++; } else if (b > a) { mieux = 1; r.perdues++; } else r.egalites++; }
+    r.lignes.push({ code: n.code, nom: n.nom, a: n.valeur, b: m?.valeur ?? "–", mieux });
+  });
+  return r;
+}
+
 // Les 10 rangs de la carte, du plus courant au plus rare. On monte les premiers en jouant,
 // les suivants demandent du niveau officiel (les tournois gagnés contre les bots ne mènent pas plus haut que Platine).
 export const RANGS = [
@@ -112,13 +138,13 @@ export function texteRang({ rang, numero, suivant }) {
 
 // Tout ce que la carte affiche. niveauOfficiel : le niveau des duels entre humains, s'il est connu.
 export function carteDe(P, { niveauOfficiel = null, provisoire = false, surnom = "", titre = "" } = {}) {
-  const fav = P.matchs ? signeFavori(P.signes) : null;
+  const fav = P.matchs ? signeFavori(P.signes) : null, notes = notesDe(P);
   return {
     rarete: rangDe(P, niveauOfficiel).rang.id, rang: rangDe(P, niveauOfficiel),
     niveau: niveauOfficiel ?? P.elo,
     typeNiveau: niveauOfficiel === null || niveauOfficiel === undefined ? "NIVEAU" : provisoire ? "NIVEAU PROVISOIRE" : "NIVEAU OFFICIEL",
     signe: fav,                        // 0 Pierre, 1 Ciseaux, 2 Feuille, ou null
-    notes: notesDe(P),
+    notes, generale: generale(notes),
     surnom, titre,
     titres: titresObtenus(P).length, matchs: P.matchs,
   };
