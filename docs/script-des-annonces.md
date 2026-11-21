@@ -653,30 +653,30 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_sauvee_01.mp3` | Regardez ce sang-froid ! Il était au bord du gouffre ! |
 | `commentateur_replay_sauvee_01_f.mp3` | Regardez ce sang-froid ! Elle était au bord du gouffre ! |
 | `commentateur_replay_sauvee_02.mp3` | On revoit la balle sauvée ! Quel sang-froid ! |
-| `commentateur_replay_sauvee_03.mp3` | Il résiste bien à la pression adverse, et se dégage magistralement ! |
-| `commentateur_replay_sauvee_03_f.mp3` | Elle résiste bien à la pression adverse, et se dégage magistralement ! |
-| `commentateur_replay_smash_01.mp3` | Regardez cette belle technique ! Le geste est parfait ! |
+| `commentateur_replay_sauvee_03.mp3` | Il a bien résisté à la pression adverse, et s'est dégagé magistralement ! |
+| `commentateur_replay_sauvee_03_f.mp3` | Elle a bien résisté à la pression adverse, et s'est dégagée magistralement ! |
+| `commentateur_replay_smash_01.mp3` | Regardez cette belle technique ! Le geste était parfait ! |
 | `commentateur_replay_smash_02.mp3` | Revoyons ce smash ! Quelle frappe ! |
 | `commentateur_replay_smash_03.mp3` | On revoit ce choc : il n'y est pas allé de main morte ! |
 | `commentateur_replay_smash_03_f.mp3` | On revoit ce choc : elle n'y est pas allée de main morte ! |
-| `commentateur_replay_set_01.mp3` | Le coup qui fait basculer le set ! |
+| `commentateur_replay_set_01.mp3` | Le coup qui a fait basculer le set ! |
 | `commentateur_replay_set_02.mp3` | Le point du set, au ralenti ! |
-| `commentateur_replay_serie_01.mp3` | Il ne lâche rien ! |
-| `commentateur_replay_serie_01_f.mp3` | Elle ne lâche rien ! |
-| `commentateur_replay_serie_02.mp3` | Regardez cette série ! Il ne lâche rien ! |
-| `commentateur_replay_serie_02_f.mp3` | Regardez cette série ! Elle ne lâche rien ! |
-| `commentateur_replay_r_piege_01.mp3` | On voit le coup : il enchaîne les Pierres, et il vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
-| `commentateur_replay_r_piege_01_f.mp3` | On voit le coup : elle enchaîne les Pierres, et elle vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
-| `commentateur_replay_r_piege_02.mp3` | On voit le coup : il enchaîne les Pierres, et il vient cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
-| `commentateur_replay_r_piege_02_f.mp3` | On voit le coup : elle enchaîne les Pierres, et elle vient cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
-| `commentateur_replay_r_piege_03.mp3` | On voit le coup : il enchaîne les Ciseaux, et il vient cueillir son adversaire avec la Pierre. Magnifique mouvement ! |
-| `commentateur_replay_r_piege_03_f.mp3` | On voit le coup : elle enchaîne les Ciseaux, et elle vient cueillir son adversaire avec la Pierre. Magnifique mouvement ! |
-| `commentateur_replay_r_piege_04.mp3` | On voit le coup : il enchaîne les Ciseaux, et il vient cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
-| `commentateur_replay_r_piege_04_f.mp3` | On voit le coup : elle enchaîne les Ciseaux, et elle vient cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
-| `commentateur_replay_r_piege_05.mp3` | On voit le coup : il enchaîne les Feuilles, et il vient cueillir son adversaire avec la Pierre. Magnifique mouvement ! |
-| `commentateur_replay_r_piege_05_f.mp3` | On voit le coup : elle enchaîne les Feuilles, et elle vient cueillir son adversaire avec la Pierre. Magnifique mouvement ! |
-| `commentateur_replay_r_piege_06.mp3` | On voit le coup : il enchaîne les Feuilles, et il vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
-| `commentateur_replay_r_piege_06_f.mp3` | On voit le coup : elle enchaîne les Feuilles, et elle vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
+| `commentateur_replay_serie_01.mp3` | Il n'a rien lâché ! |
+| `commentateur_replay_serie_01_f.mp3` | Elle n'a rien lâché ! |
+| `commentateur_replay_serie_02.mp3` | Regardez cette série ! Il n'a rien lâché ! |
+| `commentateur_replay_serie_02_f.mp3` | Regardez cette série ! Elle n'a rien lâché ! |
+| `commentateur_replay_r_piege_01.mp3` | On voit le coup : il a enchaîné les Pierres, et il est venu cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_01_f.mp3` | On voit le coup : elle a enchaîné les Pierres, et elle est venue cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_02.mp3` | On voit le coup : il a enchaîné les Pierres, et il est venu cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_02_f.mp3` | On voit le coup : elle a enchaîné les Pierres, et elle est venue cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_03.mp3` | On voit le coup : il a enchaîné les Ciseaux, et il est venu cueillir son adversaire avec la Pierre. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_03_f.mp3` | On voit le coup : elle a enchaîné les Ciseaux, et elle est venue cueillir son adversaire avec la Pierre. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_04.mp3` | On voit le coup : il a enchaîné les Ciseaux, et il est venu cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_04_f.mp3` | On voit le coup : elle a enchaîné les Ciseaux, et elle est venue cueillir son adversaire avec la Feuille. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_05.mp3` | On voit le coup : il a enchaîné les Feuilles, et il est venu cueillir son adversaire avec la Pierre. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_05_f.mp3` | On voit le coup : elle a enchaîné les Feuilles, et elle est venue cueillir son adversaire avec la Pierre. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_06.mp3` | On voit le coup : il a enchaîné les Feuilles, et il est venu cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
+| `commentateur_replay_r_piege_06_f.mp3` | On voit le coup : elle a enchaîné les Feuilles, et elle est venue cueillir son adversaire avec les Ciseaux. Magnifique mouvement ! |
 | `commentateur_replay_r_piege_07.mp3` | Regardez bien : Pierre, Pierre, Pierre… et là, les Ciseaux ! L'adversaire n'a rien vu venir ! |
 | `commentateur_replay_r_piege_08.mp3` | Regardez bien : Pierre, Pierre, Pierre… et là, la Feuille ! L'adversaire n'a rien vu venir ! |
 | `commentateur_replay_r_piege_09.mp3` | Regardez bien : Ciseaux, Ciseaux, Ciseaux… et là, la Pierre ! L'adversaire n'a rien vu venir ! |
@@ -693,16 +693,16 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_r_pertinent_04_f.mp3` | Et voilà le travail ! Elle attendait ce moment depuis trois coups ! |
 | `commentateur_replay_r_pertinent_05.mp3` | Oh, la patience ! Il a attendu, attendu… et paf ! |
 | `commentateur_replay_r_pertinent_05_f.mp3` | Oh, la patience ! Elle a attendu, attendu… et paf ! |
-| `commentateur_replay_r_propre_01.mp3` | Et là, il change tout ! L'adversaire attendait encore la même chose ! |
-| `commentateur_replay_r_propre_01_f.mp3` | Et là, elle change tout ! L'adversaire attendait encore la même chose ! |
+| `commentateur_replay_r_propre_01.mp3` | Et là, il a tout changé ! L'adversaire attendait encore la même chose ! |
+| `commentateur_replay_r_propre_01_f.mp3` | Et là, elle a tout changé ! L'adversaire attendait encore la même chose ! |
 | `commentateur_replay_r_propre_02.mp3` | Et là, surprise ! Personne ne s'y attendait ! |
-| `commentateur_replay_r_propre_03.mp3` | Oh, le changement de rythme ! L'adversaire est pris à contre-pied ! |
-| `commentateur_replay_r_propre_04.mp3` | Ah, il a senti le moment ! Il change, et ça paie ! |
-| `commentateur_replay_r_propre_04_f.mp3` | Ah, elle a senti le moment ! Elle change, et ça paie ! |
-| `commentateur_replay_r_propre_05.mp3` | Il casse la routine au moment parfait ! Superbe ! |
-| `commentateur_replay_r_propre_05_f.mp3` | Elle casse la routine au moment parfait ! Superbe ! |
-| `commentateur_replay_r_mauvais_01.mp3` | Oula… Il retombe dans ses travers, et ça se paie cash ! |
-| `commentateur_replay_r_mauvais_01_f.mp3` | Oula… Elle retombe dans ses travers, et ça se paie cash ! |
+| `commentateur_replay_r_propre_03.mp3` | Oh, le changement de rythme ! L'adversaire a été pris à contre-pied ! |
+| `commentateur_replay_r_propre_04.mp3` | Ah, il a senti le moment ! Il a changé, et ça a payé ! |
+| `commentateur_replay_r_propre_04_f.mp3` | Ah, elle a senti le moment ! Elle a changé, et ça a payé ! |
+| `commentateur_replay_r_propre_05.mp3` | Il a cassé la routine au moment parfait ! Superbe ! |
+| `commentateur_replay_r_propre_05_f.mp3` | Elle a cassé la routine au moment parfait ! Superbe ! |
+| `commentateur_replay_r_mauvais_01.mp3` | Oula… Il est retombé dans ses travers, et ça s'est payé cash ! |
+| `commentateur_replay_r_mauvais_01_f.mp3` | Oula… Elle est retombée dans ses travers, et ça s'est payé cash ! |
 | `commentateur_replay_r_mauvais_02.mp3` | Aïe… Encore le même signe ! L'adversaire n'attendait que ça ! |
 | `commentateur_replay_r_mauvais_03.mp3` | Oula, il s'est fait cueillir ! Trop prévisible ! |
 | `commentateur_replay_r_mauvais_03_f.mp3` | Oula, elle s'est fait cueillir ! Trop prévisible ! |
@@ -715,8 +715,8 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_r_smash_04.mp3` | Quel coup de massue ! L'adversaire n'a rien vu venir ! |
 | `commentateur_replay_r_smash_subi_01.mp3` | Oula, il l'a pris en pleine figure, ce smash ! |
 | `commentateur_replay_r_smash_subi_01_f.mp3` | Oula, elle l'a pris en pleine figure, ce smash ! |
-| `commentateur_replay_r_smash_subi_02.mp3` | Aïe, aïe, aïe ! Regardez ses doigts, il ne s'en remettra pas ! |
-| `commentateur_replay_r_smash_subi_02_f.mp3` | Aïe, aïe, aïe ! Regardez ses doigts, elle ne s'en remettra pas ! |
+| `commentateur_replay_r_smash_subi_02.mp3` | Aïe, aïe, aïe ! Regardez ses doigts, il ne s'en est pas remis ! |
+| `commentateur_replay_r_smash_subi_02_f.mp3` | Aïe, aïe, aïe ! Regardez ses doigts, elle ne s'en est pas remise ! |
 | `commentateur_replay_r_smash_subi_03.mp3` | Oula, ce smash, il va le sentir encore demain ! |
 | `commentateur_replay_r_smash_subi_03_f.mp3` | Oula, ce smash, elle va le sentir encore demain ! |
 | `commentateur_replay_r_smash_subi_04.mp3` | Il a encaissé… et il n'a jamais vraiment récupéré ! |
@@ -729,8 +729,8 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_r_pas_la_08_pierre.mp3` | Oh non, pas la Pierre ! Pas là ! |
 | `commentateur_replay_r_pas_la_08_ciseaux.mp3` | Oh non, pas les Ciseaux ! Pas là ! |
 | `commentateur_replay_r_pas_la_08_feuille.mp3` | Oh non, pas la Feuille ! Pas là ! |
-| `commentateur_replay_r_pas_la_09.mp3` | Aïe… Il n'est pas attentif, et il se fait surprendre ! |
-| `commentateur_replay_r_pas_la_09_f.mp3` | Aïe… Elle n'est pas attentive, et elle se fait surprendre ! |
+| `commentateur_replay_r_pas_la_09.mp3` | Aïe… Il n'a pas été attentif, et il s'est fait surprendre ! |
+| `commentateur_replay_r_pas_la_09_f.mp3` | Aïe… Elle n'a pas été attentive, et elle s'est fait surprendre ! |
 | `commentateur_memoire_serie_3_01.mp3` | Trois victoires de suite ! Il arrive en confiance ! |
 | `commentateur_memoire_serie_3_01_f.mp3` | Trois victoires de suite ! Elle arrive en confiance ! |
 | `commentateur_memoire_serie_4_01.mp3` | Quatre victoires d'affilée ! Qui va enfin l'arrêter ? |
@@ -1083,32 +1083,32 @@ restent lus par la voix de synthèse.
 | `commentateur_decale_r_01.mp3` | Quelle attaque ! Une main exceptionnelle ! |
 | `commentateur_decale_r_02.mp3` | Il a sorti le grand jeu ! |
 | `commentateur_decale_r_02_f.mp3` | Elle a sorti le grand jeu ! |
-| `commentateur_replay_reussite_01.mp3` | Regardez ! Voyez comment il installe sa séquence pour finalement porter l'estocade ! |
-| `commentateur_replay_reussite_01_f.mp3` | Regardez ! Voyez comment elle installe sa séquence pour finalement porter l'estocade ! |
-| `commentateur_replay_reussite_02.mp3` | Ah, c'est à ce moment-là qu'il trompe la main adverse ! |
-| `commentateur_replay_reussite_02_f.mp3` | Ah, c'est à ce moment-là qu'elle trompe la main adverse ! |
-| `commentateur_replay_reussite_03.mp3` | Il renverse le jeu, et son adversaire ne peut que constater les dégâts ! |
-| `commentateur_replay_reussite_03_f.mp3` | Elle renverse le jeu, et son adversaire ne peut que constater les dégâts ! |
-| `commentateur_replay_reussite_04.mp3` | Oh, voyez avec quelle virtuosité il contrecarre la main adverse ! |
-| `commentateur_replay_reussite_04_f.mp3` | Oh, voyez avec quelle virtuosité elle contrecarre la main adverse ! |
-| `commentateur_replay_reussite_05.mp3` | Son adversaire mord à l'hameçon, et il n'a plus qu'à remonter la prise ! |
-| `commentateur_replay_reussite_05_f.mp3` | Son adversaire mord à l'hameçon, et elle n'a plus qu'à remonter la prise ! |
-| `commentateur_replay_reussite_06.mp3` | Il attire la main adverse sur un signe pour mieux la prendre à contre-pied ! |
-| `commentateur_replay_reussite_06_f.mp3` | Elle attire la main adverse sur un signe pour mieux la prendre à contre-pied ! |
+| `commentateur_replay_reussite_01.mp3` | Regardez ! Voyez comment il a installé sa séquence pour finalement porter l'estocade ! |
+| `commentateur_replay_reussite_01_f.mp3` | Regardez ! Voyez comment elle a installé sa séquence pour finalement porter l'estocade ! |
+| `commentateur_replay_reussite_02.mp3` | Ah, c'est à ce moment-là qu'il a trompé la main adverse ! |
+| `commentateur_replay_reussite_02_f.mp3` | Ah, c'est à ce moment-là qu'elle a trompé la main adverse ! |
+| `commentateur_replay_reussite_03.mp3` | Il a renversé le jeu, et son adversaire n'a pu que constater les dégâts ! |
+| `commentateur_replay_reussite_03_f.mp3` | Elle a renversé le jeu, et son adversaire n'a pu que constater les dégâts ! |
+| `commentateur_replay_reussite_04.mp3` | Oh, voyez avec quelle virtuosité il a contrecarré la main adverse ! |
+| `commentateur_replay_reussite_04_f.mp3` | Oh, voyez avec quelle virtuosité elle a contrecarré la main adverse ! |
+| `commentateur_replay_reussite_05.mp3` | Son adversaire a mordu à l'hameçon, et il n'a plus eu qu'à remonter la prise ! |
+| `commentateur_replay_reussite_05_f.mp3` | Son adversaire a mordu à l'hameçon, et elle n'a plus eu qu'à remonter la prise ! |
+| `commentateur_replay_reussite_06.mp3` | Il a attiré la main adverse sur un signe pour mieux la prendre à contre-pied ! |
+| `commentateur_replay_reussite_06_f.mp3` | Elle a attiré la main adverse sur un signe pour mieux la prendre à contre-pied ! |
 | `commentateur_replay_reussite_07.mp3` | Oula ! Il l'a littéralement fusillé à bout portant ! |
 | `commentateur_replay_reussite_07_f.mp3` | Oula ! Elle l'a littéralement fusillé à bout portant ! |
-| `commentateur_replay_balle_ratee_01.mp3` | Oh, une main en forme de prière… mais les dieux du HandSlam restent sourds à son appel ! |
+| `commentateur_replay_balle_ratee_01.mp3` | Oh, une main en forme de prière… mais les dieux du HandSlam sont restés sourds à son appel ! |
 | `commentateur_replay_balle_ratee_02.mp3` | Le geste du désespoir, contré sans pitié par la main adverse ! |
-| `commentateur_replay_smash_signe_01.mp3` | Il voit la main adverse se tendre, et il tranche dans le vif ! |
-| `commentateur_replay_smash_signe_01_f.mp3` | Elle voit la main adverse se tendre, et elle tranche dans le vif ! |
-| `commentateur_replay_smash_signe_02.mp3` | Ah ! Il anticipe un déploiement, et n'hésite pas à lui couper la feuille sous le pied ! |
-| `commentateur_replay_smash_signe_02_f.mp3` | Ah ! Elle anticipe un déploiement, et n'hésite pas à lui couper la feuille sous le pied ! |
-| `commentateur_replay_smash_signe_03.mp3` | Les ciseaux adverses viennent se casser les dents sur une pierre jouée avec une grande assurance ! |
-| `commentateur_replay_smash_signe_04.mp3` | Regardez cette action : l'adversaire se recroqueville sur la pierre, et reçoit immédiatement la sanction redoutée ! |
-| `commentateur_replay_smash_signe_05.mp3` | Oh, un plat de la main cinglant, qui vient ébrécher une pierre très hasardeuse ! |
-| `commentateur_replay_double_01.mp3` | Les deux mains s'engagent dans le choc, mais l'une d'elles en fait les frais ! |
-| `commentateur_replay_double_02.mp3` | Il assène un coup au moral de son adversaire, totalement déséquilibré par l'impact ! |
-| `commentateur_replay_double_02_f.mp3` | Elle assène un coup au moral de son adversaire, totalement déséquilibré par l'impact ! |
+| `commentateur_replay_smash_signe_01.mp3` | Il a vu la main adverse se tendre, et il a tranché dans le vif ! |
+| `commentateur_replay_smash_signe_01_f.mp3` | Elle a vu la main adverse se tendre, et elle a tranché dans le vif ! |
+| `commentateur_replay_smash_signe_02.mp3` | Ah ! Il a anticipé un déploiement, et n'a pas hésité à lui couper la feuille sous le pied ! |
+| `commentateur_replay_smash_signe_02_f.mp3` | Ah ! Elle a anticipé un déploiement, et n'a pas hésité à lui couper la feuille sous le pied ! |
+| `commentateur_replay_smash_signe_03.mp3` | Les ciseaux adverses sont venus se casser les dents sur une pierre jouée avec une grande assurance ! |
+| `commentateur_replay_smash_signe_04.mp3` | Regardez cette action : l'adversaire s'est recroquevillé sur la pierre, et a reçu immédiatement la sanction redoutée ! |
+| `commentateur_replay_smash_signe_05.mp3` | Oh, un plat de la main cinglant, qui est venu ébrécher une pierre très hasardeuse ! |
+| `commentateur_replay_double_01.mp3` | Les deux mains se sont engagées dans le choc, mais l'une d'elles en a fait les frais ! |
+| `commentateur_replay_double_02.mp3` | Il a asséné un coup au moral de son adversaire, totalement déséquilibré par l'impact ! |
+| `commentateur_replay_double_02_f.mp3` | Elle a asséné un coup au moral de son adversaire, totalement déséquilibré par l'impact ! |
 | `commentateur_replay_generique_01.mp3` | Revoyons ce point au ralenti ! |
 | `commentateur_replay_generique_02.mp3` | Regardez bien les deux mains ! |
 | `commentateur_replay_generique_03.mp3` | Voilà un point bien construit ! |
@@ -1865,34 +1865,34 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_intro_04.mp3` | Voilà pourquoi il ne faut jamais relâcher sa concentration. |
 | `commentatrice_replay_sauvee_01.mp3` | Au ralenti, on voit la peur. Et puis non. |
 | `commentatrice_replay_sauvee_02.mp3` | Au ralenti, on voit tout. Même ce qu'il ne fallait pas faire. |
-| `commentatrice_replay_sauvee_03.mp3` | Face à un adversaire trop sûr de lui, il joue juste et reste en vie. |
-| `commentatrice_replay_sauvee_03_f.mp3` | Face à un adversaire trop sûr de lui, elle joue juste et reste en vie. |
+| `commentatrice_replay_sauvee_03.mp3` | Face à un adversaire trop sûr de lui, il a joué juste et il est resté en vie. |
+| `commentatrice_replay_sauvee_03_f.mp3` | Face à un adversaire trop sûr de lui, elle a joué juste et elle est restée en vie. |
 | `commentatrice_replay_smash_01.mp3` | Toute la puissance est dans le poignet. |
 | `commentatrice_replay_smash_02.mp3` | Même au ralenti, ça va vite. |
-| `commentatrice_replay_smash_03.mp3` | Bonne lecture, qui lui permet de marquer son territoire. |
+| `commentatrice_replay_smash_03.mp3` | Bonne lecture, qui lui a permis de marquer son territoire. |
 | `commentatrice_replay_smash_04.mp3` | Au ralenti, l'impact est encore plus impressionnant. |
 | `commentatrice_replay_set_01.mp3` | Tout s'est joué là. |
 | `commentatrice_replay_set_02.mp3` | Tout s'est joué là. À une main près. |
 | `commentatrice_replay_serie_01.mp3` | La patience a payé. |
 | `commentatrice_replay_serie_02.mp3` | Cinq points d'affilée. Ça ne s'improvise pas. |
-| `commentatrice_replay_palette_pertinent_01.mp3` | Il l'avait lu. Après une défaite, l'autre change toujours. |
-| `commentatrice_replay_palette_pertinent_01_f.mp3` | Elle l'avait lu. Après une défaite, l'autre change toujours. |
+| `commentatrice_replay_palette_pertinent_01.mp3` | Il l'avait lu. Après une défaite, l'autre changeait toujours. |
+| `commentatrice_replay_palette_pertinent_01_f.mp3` | Elle l'avait lu. Après une défaite, l'autre changeait toujours. |
 | `commentatrice_replay_palette_pertinent_02.mp3` | Tout était sur la palette. Il n'a eu qu'à se servir. |
 | `commentatrice_replay_palette_pertinent_02_f.mp3` | Tout était sur la palette. Elle n'a eu qu'à se servir. |
 | `commentatrice_replay_palette_pertinent_03.mp3` | Tout était écrit dans les coups d'avant. Il a su lire entre les lignes. |
 | `commentatrice_replay_palette_pertinent_03_f.mp3` | Tout était écrit dans les coups d'avant. Elle a su lire entre les lignes. |
 | `commentatrice_replay_palette_pertinent_04.mp3` | Il connaissait la réponse avant que la question soit posée. |
 | `commentatrice_replay_palette_pertinent_04_f.mp3` | Elle connaissait la réponse avant que la question soit posée. |
-| `commentatrice_replay_palette_propre_01.mp3` | Il casse sa propre habitude au bon moment. Très propre. |
-| `commentatrice_replay_palette_propre_01_f.mp3` | Elle casse sa propre habitude au bon moment. Très propre. |
-| `commentatrice_replay_palette_propre_02.mp3` | Il casse son propre rythme juste quand il fallait. Rien à redire. |
-| `commentatrice_replay_palette_propre_02_f.mp3` | Elle casse son propre rythme juste quand il fallait. Rien à redire. |
+| `commentatrice_replay_palette_propre_01.mp3` | Il a cassé sa propre habitude au bon moment. Très propre. |
+| `commentatrice_replay_palette_propre_01_f.mp3` | Elle a cassé sa propre habitude au bon moment. Très propre. |
+| `commentatrice_replay_palette_propre_02.mp3` | Il a cassé son propre rythme juste quand il fallait. Rien à redire. |
+| `commentatrice_replay_palette_propre_02_f.mp3` | Elle a cassé son propre rythme juste quand il fallait. Rien à redire. |
 | `commentatrice_replay_palette_propre_03.mp3` | Il a changé au bon moment. C'est tout un art. |
 | `commentatrice_replay_palette_propre_03_f.mp3` | Elle a changé au bon moment. C'est tout un art. |
 | `commentatrice_replay_palette_propre_04.mp3` | L'habitude, il l'a créée exprès. Pour mieux la casser. |
 | `commentatrice_replay_palette_propre_04_f.mp3` | L'habitude, elle l'a créée exprès. Pour mieux la casser. |
-| `commentatrice_replay_palette_mauvais_01.mp3` | Il rejoue la même chose. On ne peut pas faire ça à ce niveau. |
-| `commentatrice_replay_palette_mauvais_01_f.mp3` | Elle rejoue la même chose. On ne peut pas faire ça à ce niveau. |
+| `commentatrice_replay_palette_mauvais_01.mp3` | Il a rejoué la même chose. On ne peut pas faire ça à ce niveau. |
+| `commentatrice_replay_palette_mauvais_01_f.mp3` | Elle a rejoué la même chose. On ne peut pas faire ça à ce niveau. |
 | `commentatrice_replay_palette_mauvais_02_pierre.mp3` | Il n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Pierre n'était pas la bonne option dans cette situation. |
 | `commentatrice_replay_palette_mauvais_02_pierre_f.mp3` | Elle n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Pierre n'était pas la bonne option dans cette situation. |
 | `commentatrice_replay_palette_mauvais_02_ciseaux.mp3` | Il n'a pas senti le coup. Le jeu n'était clairement pas là : choisir les Ciseaux n'était pas la bonne option dans cette situation. |
@@ -1911,7 +1911,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_palette_pas_la_09.mp3` | Il s'est entêté. Le bon coup était sous ses yeux. |
 | `commentatrice_replay_palette_pas_la_09_f.mp3` | Elle s'est entêtée. Le bon coup était sous ses yeux. |
 | `commentatrice_replay_palette_pas_la_10.mp3` | Une décision difficile à défendre. Même pour moi. |
-| `commentatrice_replay_palette_pas_la_11.mp3` | Un mauvais réflexe, et le point qui lui était promis lui échappe. |
+| `commentatrice_replay_palette_pas_la_11.mp3` | Un mauvais réflexe, et le point qui lui était promis lui a échappé. |
 | `commentatrice_replay_palette_piege_01.mp3` | Il l'a amené exactement où il voulait. |
 | `commentatrice_replay_palette_piege_01_f.mp3` | Elle l'a amené exactement où elle voulait. |
 | `commentatrice_replay_palette_piege_02.mp3` | Magnifique changement de rythme, qui a laissé son adversaire sur place. |
@@ -2170,20 +2170,20 @@ restent lus par la voix de synthèse.
 | `commentatrice_decale_m_02_pierre.mp3` | C'était une pierre. |
 | `commentatrice_decale_m_02_ciseaux.mp3` | C'étaient des ciseaux. |
 | `commentatrice_decale_m_02_feuille.mp3` | C'était une feuille. |
-| `commentatrice_replay_reussite_01.mp3` | C'est très finement joué : il pousse son adversaire à la faute. |
-| `commentatrice_replay_reussite_01_f.mp3` | C'est très finement joué : elle pousse son adversaire à la faute. |
+| `commentatrice_replay_reussite_01.mp3` | C'est très finement joué : il a poussé son adversaire à la faute. |
+| `commentatrice_replay_reussite_01_f.mp3` | C'est très finement joué : elle a poussé son adversaire à la faute. |
 | `commentatrice_replay_reussite_02.mp3` | Un très beau geste technique, que peu maîtrisent aussi bien que lui. |
 | `commentatrice_replay_reussite_02_f.mp3` | Un très beau geste technique, que peu maîtrisent aussi bien qu'elle. |
-| `commentatrice_replay_reussite_03.mp3` | Peu auraient choisi de jouer ainsi, mais c'est bien le signe fort qui lui donne le point. |
+| `commentatrice_replay_reussite_03.mp3` | Peu auraient choisi de jouer ainsi, mais c'est bien le signe fort qui lui a donné le point. |
 | `commentatrice_replay_reussite_04.mp3` | Bonne alternance sur deux signes avant de convertir la séquence. |
-| `commentatrice_replay_reussite_05.mp3` | Une prime à l'audace sur cet enchaînement, qui laisse son adversaire impuissant. |
-| `commentatrice_replay_balle_ratee_01.mp3` | Une faute de main au plus mauvais moment, qui lui coûte très cher. |
-| `commentatrice_replay_balle_ratee_02.mp3` | Il ne respecte pas le jeu, et l'adversaire n'a plus qu'à conclure dans un fauteuil. |
-| `commentatrice_replay_balle_ratee_02_f.mp3` | Elle ne respecte pas le jeu, et l'adversaire n'a plus qu'à conclure dans un fauteuil. |
-| `commentatrice_replay_smash_signe_01.mp3` | La main adverse se détend… et se fait hacher menu. |
-| `commentatrice_replay_smash_signe_02.mp3` | Son adversaire avait anticipé une feuille, mais il finit avec des ciseaux en piteux état. |
+| `commentatrice_replay_reussite_05.mp3` | Une prime à l'audace sur cet enchaînement, qui a laissé son adversaire impuissant. |
+| `commentatrice_replay_balle_ratee_01.mp3` | Une faute de main au plus mauvais moment, qui lui a coûté très cher. |
+| `commentatrice_replay_balle_ratee_02.mp3` | Il n'a pas respecté le jeu, et l'adversaire n'a plus eu qu'à conclure dans un fauteuil. |
+| `commentatrice_replay_balle_ratee_02_f.mp3` | Elle n'a pas respecté le jeu, et l'adversaire n'a plus eu qu'à conclure dans un fauteuil. |
+| `commentatrice_replay_smash_signe_01.mp3` | La main adverse s'est détendue… et s'est fait hacher menu. |
+| `commentatrice_replay_smash_signe_02.mp3` | Son adversaire avait anticipé une feuille, mais il a fini avec des ciseaux en piteux état. |
 | `commentatrice_replay_smash_signe_03.mp3` | Ces enveloppements, toujours risqués, restent très impressionnants. |
-| `commentatrice_replay_double_01.mp3` | Un fort engagement de part et d'autre, mais une main reste au tapis. |
+| `commentatrice_replay_double_01.mp3` | Un fort engagement de part et d'autre, mais une main est restée au tapis. |
 | `commentatrice_replay_generique_01.mp3` | On voit toute la concentration des deux joueurs. |
 | `commentatrice_replay_generique_02.mp3` | À ce niveau, chaque point se mérite. |
 | `commentatrice_replay_generique_03.mp3` | Une séquence intéressante, à revoir calmement. |

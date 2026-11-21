@@ -892,46 +892,46 @@ export const MOMENTS = {
     { r: "d", t: "Au ralenti, on voit la peur. Et puis non." },
     { r: "c", t: "On revoit la balle sauvée ! Quel sang-froid !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
     { r: "d", t: "Au ralenti, on voit tout. Même ce qu'il ne fallait pas faire." },
-    { r: "c", t: "Il résiste bien à la pression adverse, et se dégage magistralement !", f: "Elle résiste bien à la pression adverse, et se dégage magistralement !" },   // (19 novembre, commentaires d'un testeur, retouchés et choisis par le porteur du projet)
-    { r: "d", t: "Face à un adversaire trop sûr de lui, il joue juste et reste en vie.", f: "Face à un adversaire trop sûr de lui, elle joue juste et reste en vie." },
+    { r: "c", t: "Il a bien résisté à la pression adverse, et s'est dégagé magistralement !", f: "Elle a bien résisté à la pression adverse, et s'est dégagée magistralement !" },   // (19 novembre, commentaires d'un testeur, retouchés et choisis par le porteur du projet)
+    { r: "d", t: "Face à un adversaire trop sûr de lui, il a joué juste et il est resté en vie.", f: "Face à un adversaire trop sûr de lui, elle a joué juste et elle est restée en vie." },
   ],
   replay_smash: [
-    { r: "c", t: "Regardez cette belle technique ! Le geste est parfait !" },
+    { r: "c", t: "Regardez cette belle technique ! Le geste était parfait !" },
     { r: "d", t: "Toute la puissance est dans le poignet." },
     { r: "c", t: "Revoyons ce smash ! Quelle frappe !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
     { r: "d", t: "Même au ralenti, ça va vite." },
-    { r: "d", t: "Bonne lecture, qui lui permet de marquer son territoire." },   // (19 novembre, commentaires d'un testeur, retouchés et choisis par le porteur du projet)
+    { r: "d", t: "Bonne lecture, qui lui a permis de marquer son territoire." },   // (19 novembre, commentaires d'un testeur, retouchés et choisis par le porteur du projet)
     { r: "c", t: "On revoit ce choc : il n'y est pas allé de main morte !", f: "On revoit ce choc : elle n'y est pas allée de main morte !" },
     { r: "d", t: "Au ralenti, l'impact est encore plus impressionnant." },
   ],
   replay_set: [
-    { r: "c", t: "Le coup qui fait basculer le set !" },
+    { r: "c", t: "Le coup qui a fait basculer le set !" },
     { r: "d", t: "Tout s'est joué là." },
     { r: "c", t: "Le point du set, au ralenti !" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
     { r: "d", t: "Tout s'est joué là. À une main près." },
   ],
   replay_serie: [
-    { r: "c", t: "Il ne lâche rien !", f: "Elle ne lâche rien !" },
+    { r: "c", t: "Il n'a rien lâché !", f: "Elle n'a rien lâché !" },
     { r: "d", t: "La patience a payé." },
-    { r: "c", t: "Regardez cette série ! Il ne lâche rien !", f: "Regardez cette série ! Elle ne lâche rien !", type: "serie" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
+    { r: "c", t: "Regardez cette série ! Il n'a rien lâché !", f: "Regardez cette série ! Elle n'a rien lâché !", type: "serie" },   // (18 novembre, gros lot 2, choisie par le porteur du projet)
     { r: "d", t: "Cinq points d'affilée. Ça ne s'improvise pas.", type: "serie" },
   ],
   // La palette du replay (11 novembre, répliques validées par le porteur du projet) : le verdict de Monique sur le point
   // (« il » : le gagnant ; pour « mauvais », le perdant). cle : seulement quand l'habitude lue est celle-là.
   replay_palette_pertinent: [
-    { r: "d", t: "Il l'avait lu. Après une défaite, l'autre change toujours.", f: "Elle l'avait lu. Après une défaite, l'autre change toujours.", cle: "change_defaite" },
+    { r: "d", t: "Il l'avait lu. Après une défaite, l'autre changeait toujours.", f: "Elle l'avait lu. Après une défaite, l'autre changeait toujours.", cle: "change_defaite" },
     { r: "d", t: "Tout était sur la palette. Il n'a eu qu'à se servir.", f: "Tout était sur la palette. Elle n'a eu qu'à se servir." },
     { r: "d", t: "Tout était écrit dans les coups d'avant. Il a su lire entre les lignes.", f: "Tout était écrit dans les coups d'avant. Elle a su lire entre les lignes." },   // (18 novembre, choisie par le porteur du projet)
     { r: "d", t: "Il connaissait la réponse avant que la question soit posée.", f: "Elle connaissait la réponse avant que la question soit posée." },
   ],
   replay_palette_propre: [
-    { r: "d", t: "Il casse sa propre habitude au bon moment. Très propre.", f: "Elle casse sa propre habitude au bon moment. Très propre." },
-    { r: "d", t: "Il casse son propre rythme juste quand il fallait. Rien à redire.", f: "Elle casse son propre rythme juste quand il fallait. Rien à redire." },   // (18 novembre)
+    { r: "d", t: "Il a cassé sa propre habitude au bon moment. Très propre.", f: "Elle a cassé sa propre habitude au bon moment. Très propre." },
+    { r: "d", t: "Il a cassé son propre rythme juste quand il fallait. Rien à redire.", f: "Elle a cassé son propre rythme juste quand il fallait. Rien à redire." },   // (18 novembre)
     { r: "d", t: "Il a changé au bon moment. C'est tout un art.", f: "Elle a changé au bon moment. C'est tout un art." },   // (18 novembre, choisie par le porteur du projet)
     { r: "d", t: "L'habitude, il l'a créée exprès. Pour mieux la casser.", f: "L'habitude, elle l'a créée exprès. Pour mieux la casser." },
   ],
   replay_palette_mauvais: [
-    { r: "d", t: "Il rejoue la même chose. On ne peut pas faire ça à ce niveau.", f: "Elle rejoue la même chose. On ne peut pas faire ça à ce niveau.", signes: "meme" },
+    { r: "d", t: "Il a rejoué la même chose. On ne peut pas faire ça à ce niveau.", f: "Elle a rejoué la même chose. On ne peut pas faire ça à ce niveau.", signes: "meme" },
     { r: "d", t: ["Il n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Pierre n'était pas la bonne option dans cette situation.", "Il n'a pas senti le coup. Le jeu n'était clairement pas là : choisir les Ciseaux n'était pas la bonne option dans cette situation.", "Il n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Feuille n'était pas la bonne option dans cette situation."], f: ["Elle n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Pierre n'était pas la bonne option dans cette situation.", "Elle n'a pas senti le coup. Le jeu n'était clairement pas là : choisir les Ciseaux n'était pas la bonne option dans cette situation.", "Elle n'a pas senti le coup. Le jeu n'était clairement pas là : choisir la Feuille n'était pas la bonne option dans cette situation."] },   // (18 novembre ; le signe : celui qu'il a joué)
     { r: "d", t: "Il a joué ce que tout le monde attendait. Son adversaire le premier.", f: "Elle a joué ce que tout le monde attendait. Son adversaire le premier." },
     { r: "d", t: "Une fois, c'est une idée. Trois fois, c'est une habitude. Et l'adversaire l'a vue.", signes: "trois" },
@@ -950,19 +950,19 @@ export const MOMENTS = {
     { r: "d", t: ["La Pierre, ici ? Non. Le jeu n'était clairement pas là.", "Les Ciseaux, ici ? Non. Le jeu n'était clairement pas là.", "La Feuille, ici ? Non. Le jeu n'était clairement pas là."] },
     { r: "d", t: "Il s'est entêté. Le bon coup était sous ses yeux.", f: "Elle s'est entêtée. Le bon coup était sous ses yeux." },
     { r: "d", t: "Une décision difficile à défendre. Même pour moi." },
-    { r: "d", t: "Un mauvais réflexe, et le point qui lui était promis lui échappe." },   // (19 novembre, commentaires d'un testeur, retouchés et choisis par le porteur du projet)
+    { r: "d", t: "Un mauvais réflexe, et le point qui lui était promis lui a échappé." },   // (19 novembre, commentaires d'un testeur, retouchés et choisis par le porteur du projet)
   ],
   // La palette du replay (18 novembre, répliques choisies par le porteur du projet). Roland décrit l'action au dévoilement
   // (replay_r_…, à la place de la réplique habituelle du replay), Monique donne le verdict (replay_palette_…).
   // « Il » : le joueur dont parle le verdict (le gagnant ; pour « mauvais » et « smash_subi », celui qui a perdu le point).
   // Le piège : paire [signe répété, signe qui marque] ; n : combien de fois il l'a répété (6 : six fois ou plus).
   replay_r_piege: [
-    { r: "c", t: "On voit le coup : il enchaîne les Pierres, et il vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement !", f: "On voit le coup : elle enchaîne les Pierres, et elle vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement !", paire: [0, 1] },
-    { r: "c", t: "On voit le coup : il enchaîne les Pierres, et il vient cueillir son adversaire avec la Feuille. Magnifique mouvement !", f: "On voit le coup : elle enchaîne les Pierres, et elle vient cueillir son adversaire avec la Feuille. Magnifique mouvement !", paire: [0, 2] },
-    { r: "c", t: "On voit le coup : il enchaîne les Ciseaux, et il vient cueillir son adversaire avec la Pierre. Magnifique mouvement !", f: "On voit le coup : elle enchaîne les Ciseaux, et elle vient cueillir son adversaire avec la Pierre. Magnifique mouvement !", paire: [1, 0] },
-    { r: "c", t: "On voit le coup : il enchaîne les Ciseaux, et il vient cueillir son adversaire avec la Feuille. Magnifique mouvement !", f: "On voit le coup : elle enchaîne les Ciseaux, et elle vient cueillir son adversaire avec la Feuille. Magnifique mouvement !", paire: [1, 2] },
-    { r: "c", t: "On voit le coup : il enchaîne les Feuilles, et il vient cueillir son adversaire avec la Pierre. Magnifique mouvement !", f: "On voit le coup : elle enchaîne les Feuilles, et elle vient cueillir son adversaire avec la Pierre. Magnifique mouvement !", paire: [2, 0] },
-    { r: "c", t: "On voit le coup : il enchaîne les Feuilles, et il vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement !", f: "On voit le coup : elle enchaîne les Feuilles, et elle vient cueillir son adversaire avec les Ciseaux. Magnifique mouvement !", paire: [2, 1] },
+    { r: "c", t: "On voit le coup : il a enchaîné les Pierres, et il est venu cueillir son adversaire avec les Ciseaux. Magnifique mouvement !", f: "On voit le coup : elle a enchaîné les Pierres, et elle est venue cueillir son adversaire avec les Ciseaux. Magnifique mouvement !", paire: [0, 1] },
+    { r: "c", t: "On voit le coup : il a enchaîné les Pierres, et il est venu cueillir son adversaire avec la Feuille. Magnifique mouvement !", f: "On voit le coup : elle a enchaîné les Pierres, et elle est venue cueillir son adversaire avec la Feuille. Magnifique mouvement !", paire: [0, 2] },
+    { r: "c", t: "On voit le coup : il a enchaîné les Ciseaux, et il est venu cueillir son adversaire avec la Pierre. Magnifique mouvement !", f: "On voit le coup : elle a enchaîné les Ciseaux, et elle est venue cueillir son adversaire avec la Pierre. Magnifique mouvement !", paire: [1, 0] },
+    { r: "c", t: "On voit le coup : il a enchaîné les Ciseaux, et il est venu cueillir son adversaire avec la Feuille. Magnifique mouvement !", f: "On voit le coup : elle a enchaîné les Ciseaux, et elle est venue cueillir son adversaire avec la Feuille. Magnifique mouvement !", paire: [1, 2] },
+    { r: "c", t: "On voit le coup : il a enchaîné les Feuilles, et il est venu cueillir son adversaire avec la Pierre. Magnifique mouvement !", f: "On voit le coup : elle a enchaîné les Feuilles, et elle est venue cueillir son adversaire avec la Pierre. Magnifique mouvement !", paire: [2, 0] },
+    { r: "c", t: "On voit le coup : il a enchaîné les Feuilles, et il est venu cueillir son adversaire avec les Ciseaux. Magnifique mouvement !", f: "On voit le coup : elle a enchaîné les Feuilles, et elle est venue cueillir son adversaire avec les Ciseaux. Magnifique mouvement !", paire: [2, 1] },
     { r: "c", t: "Regardez bien : Pierre, Pierre, Pierre… et là, les Ciseaux ! L'adversaire n'a rien vu venir !", paire: [0, 1] },
     { r: "c", t: "Regardez bien : Pierre, Pierre, Pierre… et là, la Feuille ! L'adversaire n'a rien vu venir !", paire: [0, 2] },
     { r: "c", t: "Regardez bien : Ciseaux, Ciseaux, Ciseaux… et là, la Pierre ! L'adversaire n'a rien vu venir !", paire: [1, 0] },
@@ -978,14 +978,14 @@ export const MOMENTS = {
     { r: "c", t: "Oh, la patience ! Il a attendu, attendu… et paf !", f: "Oh, la patience ! Elle a attendu, attendu… et paf !" },
   ],
   replay_r_propre: [
-    { r: "c", t: "Et là, il change tout ! L'adversaire attendait encore la même chose !", f: "Et là, elle change tout ! L'adversaire attendait encore la même chose !", signes: "change" },
+    { r: "c", t: "Et là, il a tout changé ! L'adversaire attendait encore la même chose !", f: "Et là, elle a tout changé ! L'adversaire attendait encore la même chose !", signes: "change" },
     { r: "c", t: "Et là, surprise ! Personne ne s'y attendait !" },   // (18 novembre, choisie par le porteur du projet)
-    { r: "c", t: "Oh, le changement de rythme ! L'adversaire est pris à contre-pied !" },
-    { r: "c", t: "Ah, il a senti le moment ! Il change, et ça paie !", f: "Ah, elle a senti le moment ! Elle change, et ça paie !" },
-    { r: "c", t: "Il casse la routine au moment parfait ! Superbe !", f: "Elle casse la routine au moment parfait ! Superbe !" },
+    { r: "c", t: "Oh, le changement de rythme ! L'adversaire a été pris à contre-pied !" },
+    { r: "c", t: "Ah, il a senti le moment ! Il a changé, et ça a payé !", f: "Ah, elle a senti le moment ! Elle a changé, et ça a payé !" },
+    { r: "c", t: "Il a cassé la routine au moment parfait ! Superbe !", f: "Elle a cassé la routine au moment parfait ! Superbe !" },
   ],
   replay_r_mauvais: [
-    { r: "c", t: "Oula… Il retombe dans ses travers, et ça se paie cash !", f: "Oula… Elle retombe dans ses travers, et ça se paie cash !" },
+    { r: "c", t: "Oula… Il est retombé dans ses travers, et ça s'est payé cash !", f: "Oula… Elle est retombée dans ses travers, et ça s'est payé cash !" },
     { r: "c", t: "Aïe… Encore le même signe ! L'adversaire n'attendait que ça !", signes: "meme" },   // (18 novembre, choisie par le porteur du projet)
     { r: "c", t: "Oula, il s'est fait cueillir ! Trop prévisible !", f: "Oula, elle s'est fait cueillir ! Trop prévisible !" },
     { r: "c", t: "Oh non… Il a répété une fois de trop !", f: "Oh non… Elle a répété une fois de trop !", signes: "meme" },
@@ -999,7 +999,7 @@ export const MOMENTS = {
   ],
   replay_r_smash_subi: [
     { r: "c", t: "Oula, il l'a pris en pleine figure, ce smash !", f: "Oula, elle l'a pris en pleine figure, ce smash !" },
-    { r: "c", t: "Aïe, aïe, aïe ! Regardez ses doigts, il ne s'en remettra pas !", f: "Aïe, aïe, aïe ! Regardez ses doigts, elle ne s'en remettra pas !" },   // (18 novembre, choisie par le porteur du projet)
+    { r: "c", t: "Aïe, aïe, aïe ! Regardez ses doigts, il ne s'en est pas remis !", f: "Aïe, aïe, aïe ! Regardez ses doigts, elle ne s'en est pas remise !" },   // (18 novembre, choisie par le porteur du projet)
     { r: "c", t: "Oula, ce smash, il va le sentir encore demain !", f: "Oula, ce smash, elle va le sentir encore demain !" },
     { r: "c", t: "Il a encaissé… et il n'a jamais vraiment récupéré !", f: "Elle a encaissé… et elle n'a jamais vraiment récupéré !" },
   ],
@@ -1012,7 +1012,7 @@ export const MOMENTS = {
     { r: "c", t: "Aïe, aïe, aïe… La mauvaise décision au pire moment !" },
     { r: "c", t: "Mais qu'est-ce qu'il a fait ? Tout le monde l'avait vu venir, sauf lui !", f: "Mais qu'est-ce qu'elle a fait ? Tout le monde l'avait vu venir, sauf elle !" },
     { r: "c", t: ["Oh non, pas la Pierre ! Pas là !", "Oh non, pas les Ciseaux ! Pas là !", "Oh non, pas la Feuille ! Pas là !"] },
-    { r: "c", t: "Aïe… Il n'est pas attentif, et il se fait surprendre !", f: "Aïe… Elle n'est pas attentive, et elle se fait surprendre !" },   // (19 novembre, commentaires d'un testeur, retouchés et choisis par le porteur du projet)
+    { r: "c", t: "Aïe… Il n'a pas été attentif, et il s'est fait surprendre !", f: "Aïe… Elle n'a pas été attentive, et elle s'est fait surprendre !" },   // (19 novembre, commentaires d'un testeur, retouchés et choisis par le porteur du projet)
   ],
   replay_palette_piege: [
     { r: "d", t: "Il l'a amené exactement où il voulait.", f: "Elle l'a amené exactement où elle voulait." },
@@ -1670,42 +1670,42 @@ export const MOMENTS = {
   ],
   // Le replay d'un point réussi (19 novembre, commentaires d'un testeur) : « il » est le gagnant du point
   replay_reussite: [
-    { r: "c", t: "Regardez ! Voyez comment il installe sa séquence pour finalement porter l'estocade !", f: "Regardez ! Voyez comment elle installe sa séquence pour finalement porter l'estocade !" },
-    { r: "c", t: "Ah, c'est à ce moment-là qu'il trompe la main adverse !", f: "Ah, c'est à ce moment-là qu'elle trompe la main adverse !" },
-    { r: "d", t: "C'est très finement joué : il pousse son adversaire à la faute.", f: "C'est très finement joué : elle pousse son adversaire à la faute." },
-    { r: "c", t: "Il renverse le jeu, et son adversaire ne peut que constater les dégâts !", f: "Elle renverse le jeu, et son adversaire ne peut que constater les dégâts !", gagnantSet: true },
+    { r: "c", t: "Regardez ! Voyez comment il a installé sa séquence pour finalement porter l'estocade !", f: "Regardez ! Voyez comment elle a installé sa séquence pour finalement porter l'estocade !" },
+    { r: "c", t: "Ah, c'est à ce moment-là qu'il a trompé la main adverse !", f: "Ah, c'est à ce moment-là qu'elle a trompé la main adverse !" },
+    { r: "d", t: "C'est très finement joué : il a poussé son adversaire à la faute.", f: "C'est très finement joué : elle a poussé son adversaire à la faute." },
+    { r: "c", t: "Il a renversé le jeu, et son adversaire n'a pu que constater les dégâts !", f: "Elle a renversé le jeu, et son adversaire n'a pu que constater les dégâts !", gagnantSet: true },
     { r: "d", t: "Un très beau geste technique, que peu maîtrisent aussi bien que lui.", f: "Un très beau geste technique, que peu maîtrisent aussi bien qu'elle." },
-    { r: "c", t: "Oh, voyez avec quelle virtuosité il contrecarre la main adverse !", f: "Oh, voyez avec quelle virtuosité elle contrecarre la main adverse !" },
-    { r: "c", t: "Son adversaire mord à l'hameçon, et il n'a plus qu'à remonter la prise !", f: "Son adversaire mord à l'hameçon, et elle n'a plus qu'à remonter la prise !" },
-    { r: "d", t: "Peu auraient choisi de jouer ainsi, mais c'est bien le signe fort qui lui donne le point." },
+    { r: "c", t: "Oh, voyez avec quelle virtuosité il a contrecarré la main adverse !", f: "Oh, voyez avec quelle virtuosité elle a contrecarré la main adverse !" },
+    { r: "c", t: "Son adversaire a mordu à l'hameçon, et il n'a plus eu qu'à remonter la prise !", f: "Son adversaire a mordu à l'hameçon, et elle n'a plus eu qu'à remonter la prise !" },
+    { r: "d", t: "Peu auraient choisi de jouer ainsi, mais c'est bien le signe fort qui lui a donné le point." },
     { r: "d", t: "Bonne alternance sur deux signes avant de convertir la séquence.", signes: "alterne" },
-    { r: "d", t: "Une prime à l'audace sur cet enchaînement, qui laisse son adversaire impuissant." },
-    { r: "c", t: "Il attire la main adverse sur un signe pour mieux la prendre à contre-pied !", f: "Elle attire la main adverse sur un signe pour mieux la prendre à contre-pied !" },
+    { r: "d", t: "Une prime à l'audace sur cet enchaînement, qui a laissé son adversaire impuissant." },
+    { r: "c", t: "Il a attiré la main adverse sur un signe pour mieux la prendre à contre-pied !", f: "Elle a attiré la main adverse sur un signe pour mieux la prendre à contre-pied !" },
     { r: "c", t: "Oula ! Il l'a littéralement fusillé à bout portant !", f: "Oula ! Elle l'a littéralement fusillé à bout portant !" },
   ],
   // Le replay d'une balle de set ou de match sauvée, du côté de celui qui l'a ratée (« il » ; 19 novembre, commentaires d'un testeur)
   replay_balle_ratee: [
-    { r: "d", t: "Une faute de main au plus mauvais moment, qui lui coûte très cher." },
-    { r: "d", t: "Il ne respecte pas le jeu, et l'adversaire n'a plus qu'à conclure dans un fauteuil.", f: "Elle ne respecte pas le jeu, et l'adversaire n'a plus qu'à conclure dans un fauteuil." },
-    { r: "c", t: "Oh, une main en forme de prière… mais les dieux du HandSlam restent sourds à son appel !" },
+    { r: "d", t: "Une faute de main au plus mauvais moment, qui lui a coûté très cher." },
+    { r: "d", t: "Il n'a pas respecté le jeu, et l'adversaire n'a plus eu qu'à conclure dans un fauteuil.", f: "Elle n'a pas respecté le jeu, et l'adversaire n'a plus eu qu'à conclure dans un fauteuil." },
+    { r: "c", t: "Oh, une main en forme de prière… mais les dieux du HandSlam sont restés sourds à son appel !" },
     { r: "c", t: "Le geste du désespoir, contré sans pitié par la main adverse !" },
   ],
   // Le replay d'un smash gagnant, selon son signe (seul : 0 Pierre, 1 Ciseaux, 2 Feuille ; 19 novembre, commentaires d'un testeur)
   replay_smash_signe: [
-    { r: "c", t: "Il voit la main adverse se tendre, et il tranche dans le vif !", f: "Elle voit la main adverse se tendre, et elle tranche dans le vif !", seul: 1 },
-    { r: "c", t: "Ah ! Il anticipe un déploiement, et n'hésite pas à lui couper la feuille sous le pied !", f: "Ah ! Elle anticipe un déploiement, et n'hésite pas à lui couper la feuille sous le pied !", seul: 1 },
-    { r: "d", t: "La main adverse se détend… et se fait hacher menu.", seul: 1 },
-    { r: "d", t: "Son adversaire avait anticipé une feuille, mais il finit avec des ciseaux en piteux état.", seul: 0 },
-    { r: "c", t: "Les ciseaux adverses viennent se casser les dents sur une pierre jouée avec une grande assurance !", seul: 0 },
-    { r: "c", t: "Regardez cette action : l'adversaire se recroqueville sur la pierre, et reçoit immédiatement la sanction redoutée !", seul: 2 },
-    { r: "c", t: "Oh, un plat de la main cinglant, qui vient ébrécher une pierre très hasardeuse !", seul: 2 },
+    { r: "c", t: "Il a vu la main adverse se tendre, et il a tranché dans le vif !", f: "Elle a vu la main adverse se tendre, et elle a tranché dans le vif !", seul: 1 },
+    { r: "c", t: "Ah ! Il a anticipé un déploiement, et n'a pas hésité à lui couper la feuille sous le pied !", f: "Ah ! Elle a anticipé un déploiement, et n'a pas hésité à lui couper la feuille sous le pied !", seul: 1 },
+    { r: "d", t: "La main adverse s'est détendue… et s'est fait hacher menu.", seul: 1 },
+    { r: "d", t: "Son adversaire avait anticipé une feuille, mais il a fini avec des ciseaux en piteux état.", seul: 0 },
+    { r: "c", t: "Les ciseaux adverses sont venus se casser les dents sur une pierre jouée avec une grande assurance !", seul: 0 },
+    { r: "c", t: "Regardez cette action : l'adversaire s'est recroquevillé sur la pierre, et a reçu immédiatement la sanction redoutée !", seul: 2 },
+    { r: "c", t: "Oh, un plat de la main cinglant, qui est venu ébrécher une pierre très hasardeuse !", seul: 2 },
     { r: "d", t: "Ces enveloppements, toujours risqués, restent très impressionnants.", seul: 2 },
   ],
   // Le replay d'un double smash qui a un vainqueur (« il » ; 19 novembre, commentaires d'un testeur)
   replay_double: [
-    { r: "c", t: "Les deux mains s'engagent dans le choc, mais l'une d'elles en fait les frais !" },
-    { r: "d", t: "Un fort engagement de part et d'autre, mais une main reste au tapis." },
-    { r: "c", t: "Il assène un coup au moral de son adversaire, totalement déséquilibré par l'impact !", f: "Elle assène un coup au moral de son adversaire, totalement déséquilibré par l'impact !", gagnantSet: true },
+    { r: "c", t: "Les deux mains se sont engagées dans le choc, mais l'une d'elles en a fait les frais !" },
+    { r: "d", t: "Un fort engagement de part et d'autre, mais une main est restée au tapis." },
+    { r: "c", t: "Il a asséné un coup au moral de son adversaire, totalement déséquilibré par l'impact !", f: "Elle a asséné un coup au moral de son adversaire, totalement déséquilibré par l'impact !", gagnantSet: true },
   ],
   // Les commentaires génériques du replay (21 novembre, choisis par le porteur du projet, en attendant le grand tri des
   // commentaires du replay) : ils passent pour n'importe quel point (« il » : celui qui a marqué le point).
