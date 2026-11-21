@@ -83,9 +83,9 @@ export function notesDe(P) {
   ];
 }
 
-// La note générale (21 novembre, choix du porteur du projet) : la moyenne des six notes, avec des coefficients (total 10) ;
+// La note générale (21 novembre, choix du porteur du projet) : la moyenne des six notes, avec des coefficients (total 9) ;
 // une note pas encore calculée (« – ») compte 70, le hasard. Aucune note du tout (pas de match contre un joueur) : null.
-export const COEFS = { IMP: 2, PUN: 3, POL: 1, SGF: 1, FLA: 2, "RÉS": 1 };
+export const COEFS = { IMP: 2, PUN: 2, POL: 1, SGF: 1, FLA: 2, "RÉS": 1 };
 export function generale(notes) {
   const nb = n => (Number.isFinite(Number(n.valeur)) && n.valeur !== "" ? Number(n.valeur) : null);
   if (!notes.some(n => nb(n) !== null)) return null;
@@ -93,7 +93,7 @@ export function generale(notes) {
   for (const n of notes) { const k = COEFS[n.code] ?? 1; s += k * (nb(n) ?? 70); t += k; }
   return Math.round(s / t);
 }
-export const texteCoefs = () => "Punch ×3 · Imprévisibilité ×2 · Flair ×2 · Polyvalence, Sang-froid, Résistance ×1";
+export const texteCoefs = () => "Punch, Imprévisibilité et Flair ×2 · Polyvalence, Sang-froid et Résistance ×1";
 
 // Comparer deux cartes (21 novembre, demande du porteur du projet) : notes de A et de B (notesDe). → { lignes : [{ code, nom, a, b,
 // mieux : 0 (A), 1 (B) ou null }], generales : [a, b], gagnees, perdues, egalites } (vu de A ; une note « – » ne compte pour personne).
