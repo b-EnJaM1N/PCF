@@ -37,3 +37,12 @@ test("où en est le rendez-vous, et le forfait", () => {
   assert.ok(!forfaitPossible({ statut: "fixe", rdv, moi_la: rdv, adv_la: rdv }, maintenant), "il était là aussi");
   assert.ok(!forfaitPossible({ statut: "fixe", rdv: new Date(2026, 10, 20, 15).toISOString(), moi_la: rdv }, maintenant), "pas encore 15 minutes");
 });
+
+test("les heures proposées vont de quart d'heure en quart d'heure (21 novembre)", async () => {
+  const { HEURES, texteHeure, plage } = await import("../app/js/creneaux.js");
+  assert.equal(HEURES.length, 96);
+  assert.deepEqual(HEURES.slice(68, 72), ["17:00", "17:15", "17:30", "17:45"]);
+  assert.equal(texteHeure("17:45"), "17 h 45");
+  const p = plage("2026-11-25", "17:15", "18:45");
+  assert.equal((new Date(p.fin) - new Date(p.debut)) / 60e3, 90);
+});

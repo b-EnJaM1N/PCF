@@ -32,8 +32,9 @@ export function joursPossibles(echeance, maintenant = new Date()) {
   }
   return r;
 }
-// Les heures d'une journée, de demi-heure en demi-heure : ["00:00", "00:30", … "23:30"].
-export const HEURES = Array.from({ length: 48 }, (_, i) => `${String(Math.floor(i / 2)).padStart(2, "0")}:${i % 2 ? "30" : "00"}`);
+// Les heures d'une journée, de quart d'heure en quart d'heure : ["00:00", "00:15", "00:30", "00:45", … "23:45"]
+// (21 novembre, demande du porteur du projet : la demi-heure laissait trop d'écart).
+export const HEURES = Array.from({ length: 96 }, (_, i) => `${String(Math.floor(i / 4)).padStart(2, "0")}:${String((i % 4) * 15).padStart(2, "0")}`);
 export const texteHeure = hh => { const [h, m] = hh.split(":"); return `${Number(h)} h${m === "00" ? "" : ` ${m}`}`; };
 
 // Une plage d'après le jour et les heures choisis (« 24:00 » ou une fin avant le début : jusqu'au lendemain).
