@@ -96,7 +96,15 @@ export function situationsDuSet(points, n, w) {
 // À la fin d'un set : chaque moment du set reçoit sa situation (« situation »), et la bascule et la relance deviennent des moments
 // (ou prennent la place d'un moment moins fort). tous : les moments de tous les points du set (type « point » compris), dans
 // l'ordre ; moments : ceux gardés pour le replay (complétés ici) ; decisif : le set décisif (sa bascule est celle du match).
-export function marquerSet(moments, tous, n, w, decisif = false) {
+// vainqueur : à la fin du match, son vainqueur (sinon null).
+// (21 novembre, règle du porteur du projet) Une balle de set sauvée n'est gardée que si celui qui l'a sauvée a gagné le set ; une
+// balle de match sauvée, que s'il a gagné le match (sinon, elle n'a servi à rien : 10-6, deux balles sauvées, et le set perdu).
+export function marquerSet(moments, tous, n, w, decisif = false, vainqueur = null) {
+  const set = tous[0]?.set;
+  for (let k = moments.length - 1; k >= 0; k--) {
+    const m = moments[k], inutile = (m.type === "sauvee_set" || m.type === "sauvee_match") && m.set === set && m.gagnant !== w;
+    if (inutile || (m.type === "sauvee_match" && vainqueur !== null && m.gagnant !== vainqueur)) moments.splice(k, 1);
+  }
   const { bascule, relance, situations } = situationsDuSet(tous, n, w);
   tous.forEach((p, i) => {
     const nouveau = i === bascule ? (decisif ? "bascule_match" : "bascule") : i === relance ? "relance" : null;
