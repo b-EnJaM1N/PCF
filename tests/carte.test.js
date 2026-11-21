@@ -61,11 +61,11 @@ test("le niveau officiel remplace le niveau d'entraînement quand il est connu",
   assert.equal(c.niveau, 1264); assert.equal(c.typeNiveau, "NIVEAU OFFICIEL");
 });
 
-test("la note générale : coefficients (Punch ×3, Imprévisibilité et Flair ×2, les autres ×1), une note « – » compte 70", () => {
+test("la note générale : coefficients (Punch, Imprévisibilité et Flair ×2, les autres ×1), une note « – » compte 70", () => {
   const n = v => [["IMP", v[0]], ["PUN", v[1]], ["POL", v[2]], ["SGF", v[3]], ["FLA", v[4]], ["RÉS", v[5]]].map(([code, valeur]) => ({ code, nom: code, valeur: String(valeur) }));
-  // (2×70 + 3×88 + 95 + 80 + 2×75 + 72) ÷ 10 = 80,1
-  assert.equal(generale(n([70, 88, 95, 80, 75, 72])), 80);
-  assert.equal(generale(n([90, 90, 90, 90, "–", "–"])), 84, "(2×90 + 3×90 + 90 + 90 + 2×70 + 70) ÷ 10 = 84");
+  // (2×70 + 2×88 + 95 + 80 + 2×75 + 72) ÷ 9 = 79,2
+  assert.equal(generale(n([70, 88, 95, 80, 75, 72])), 79);
+  assert.equal(generale(n([90, 90, 90, 90, "–", "–"])), 83, "(2×90 + 2×90 + 90 + 90 + 2×70 + 70) ÷ 9 = 83,3");
   assert.equal(generale(n(["–", "–", "–", "–", "–", "–"])), null, "aucun match contre un joueur");
   assert.equal(carteDe(profilParDefaut()).generale, null);
   // la comparaison, vue de A : une note « – » ne compte pour personne
