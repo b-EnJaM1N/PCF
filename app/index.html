@@ -745,6 +745,7 @@
       <p class="hint" id="carteMsg" role="status"></p>
       <button class="btn" id="cartePartager">Partager ma carte</button>
       <a class="btn alt" id="carteEnregistrer" download="ma-carte.png" href="#">Enregistrer l'image</a>
+      <button class="btn alt" id="carteComparer">⚖️ Comparer avec un joueur</button>
       </details>
     </section>
     <details class="card edit pli" id="cSurnom">
@@ -998,9 +999,28 @@
     <img id="uneImg" alt="">
     <p class="hint" id="uneMsg" role="status"></p>
     <button class="btn" id="unePartager">Partager</button>
+    <button class="btn alt" id="uneComparer" hidden>⚖️ Comparer avec moi</button>
     <button class="btn alt" id="unePublier" hidden>📰 Publier dans le fil du cercle</button>
     <a class="btn alt" id="uneEnregistrer" download="la-une.png" href="#">Enregistrer l'image</a>
     <button class="btn alt" id="uneFermer">Fermer</button>
+  </div>
+</div>
+
+<!-- (21 novembre, demande du porteur du projet) Comparer deux cartes de joueur : comparer-cartes.js -->
+<div class="inter" id="comparer" role="dialog" aria-modal="true" aria-labelledby="cmpTitre">
+  <div class="panel cmp-panel">
+    <h2 id="cmpTitre">⚖️ Comparer les cartes</h2>
+    <div id="cmpChoix">
+      <p class="hint">Avec un ami :</p>
+      <div id="cmpAmis" class="cmp-liste"></div>
+      <p class="hint">Ou un autre joueur :</p>
+      <input id="cmpPseudo" type="search" placeholder="Son pseudo" autocomplete="off" aria-label="Pseudo du joueur">
+      <div id="cmpResultats" class="cmp-liste"></div>
+    </div>
+    <div id="cmpResultat" hidden></div>
+    <p class="hint" id="cmpMsg" role="status"></p>
+    <button class="btn alt" id="cmpAutre" hidden>Comparer avec un autre joueur</button>
+    <button class="btn alt" id="cmpFermer">Fermer</button>
   </div>
 </div>
 

@@ -102,7 +102,11 @@ export async function dessinerCarte(canvas, c, j) {
   ctx.fillRect(135, 322, 160, 4);
   ctx.font = `800 46px ${COND}`; ctx.fillText(c.signe === null ? "—" : SIGNES[c.signe], 215, 384);
   ctx.font = `500 26px ${COND}`; ctx.fillText("SIGNE FAVORI", 215, 416);
-  if (j.drapeau) { ctx.font = `90px ${TEXTE}`; ctx.fillText(j.drapeau, 215, 530); }
+  // (21 novembre, choix du porteur du projet) La note générale : la moyenne des six notes, avec leurs coefficients
+  ctx.fillRect(175, 446, 80, 4);
+  ctx.font = `800 110px ${COND}`; ctx.fillText(c.generale === null || c.generale === undefined ? "–" : String(c.generale), 215, 552);
+  ctx.font = `700 30px ${COND}`; ctx.fillText("GÉNÉRAL", 215, 590);
+  if (j.drapeau) { ctx.font = `64px ${TEXTE}`; ctx.fillText(j.drapeau, 215, 672); }
 
   // L'avatar
   const av = await image(j.av), cx = 680, cy = 400, r = 270;
