@@ -881,7 +881,7 @@ body[data-decouverte="3"] [data-palier="5"] { display: none !important; }
 .msg-smileys { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 8px; }
 .msg-smileys button { font-size: 1.6rem; line-height: 1; padding: 8px 0; background: var(--panel); border: 1px solid rgba(255, 255, 255, .25); border-radius: 14px; cursor: pointer; }
 .msg-smileys button:disabled { opacity: .5; }
-.fenetre-msg .msg-puces button { border-radius: 14px; font-size: .95rem; padding: 9px 8px; line-height: 1.2; text-align: center; overflow-wrap: anywhere; }
+.fenetre-msg .msg-puces button { border-radius: 14px; font-size: .95rem; padding: 9px 8px; line-height: 1.2; text-align: center; overflow-wrap: break-word; }
 .msg-libre { display: flex; gap: 8px; }
 .msg-libre input { flex: 1; min-width: 0; font: inherit; font-size: 1rem; padding: 9px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .3); background: var(--panel); color: var(--line); }
 .msg-libre .btn { width: auto; margin: 0; padding: 0 16px; }
@@ -1085,7 +1085,7 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .fil-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
 .fil-item:last-child { border-bottom: 0; }
 .fil-ic { font-size: 1.2rem; line-height: 1.4; flex: none; }
-.fil-corps { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; overflow-wrap: anywhere; }
+.fil-corps { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; overflow-wrap: break-word; }
 .fil-fort .fil-corps { font-weight: 600; }
 .fil-quand { flex: none; color: var(--muted); font-size: .75rem; line-height: 1.9; white-space: nowrap; }
 .fil-score { color: var(--muted); font-size: .85rem; white-space: nowrap; }
@@ -1312,3 +1312,24 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .rdv-prop .btn { width: 100%; margin-top: 6px; }
 .rdv-prop.passee { opacity: .55; }
 .rdv-reponse .rdv-actions { flex-direction: column; } .rdv-reponse .rdv-actions .btn { width: 100%; margin: 0; }
+
+/* Comparer deux cartes (21 novembre) */
+.cmp-panel { max-height: 90vh; overflow-y: auto; }
+.cmp-panel h2 { margin: 0 0 8px; }
+.cmp-liste { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.cmp-liste .btn { margin: 0; text-align: left; }
+.cmp-liste small { color: var(--muted); }
+#cmpPseudo { width: 100%; font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .25); background: var(--panel); color: var(--line); margin-bottom: 8px; }
+.cmp-generales { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; text-align: center; }
+.cmp-joueur span { display: block; font-size: .9rem; color: var(--muted); overflow-wrap: break-word; }
+.cmp-gen { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 3.4rem; line-height: 1; }
+.cmp-joueur.mieux .cmp-gen { color: var(--me); }
+.cmp-vs { font-family: "Barlow Condensed", sans-serif; font-weight: 700; color: var(--muted); font-size: .9rem; }
+.cmp-niv { text-align: center; margin: 4px 0 10px; }
+.cmp-table { width: 100%; border-collapse: collapse; }
+.cmp-table th { font-size: .85rem; color: var(--muted); font-weight: 600; padding: 4px; overflow-wrap: break-word; }
+.cmp-table td { padding: 6px 4px; border-top: 1px solid rgba(255, 255, 255, .1); text-align: center; }
+.cmp-n { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.6rem; width: 28%; }
+.cmp-n.mieux { color: var(--me); font-weight: 800; }
+.cmp-code small { display: block; color: var(--muted); font-size: .78rem; }
+.cmp-score { text-align: center; margin: 12px 0 4px; }

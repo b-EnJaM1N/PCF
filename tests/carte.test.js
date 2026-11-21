@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { notesDe, rangDe, texteRang, carteDe, RANGS, diversification, noteBareme, BAREMES, avecPreuves } from "../app/js/carte-logique.js";
+import { notesDe, rangDe, texteRang, carteDe, RANGS, diversification, noteBareme, BAREMES, avecPreuves, generale, comparer } from "../app/js/carte-logique.js";
 import { profilParDefaut } from "../app/js/profil.js";
 
 const note = (P, code) => notesDe(P).find(n => n.code === code).valeur;
@@ -59,4 +59,18 @@ test("les 10 rangs : on monte en jouant, puis avec le niveau officiel", () => {
 test("le niveau officiel remplace le niveau d'entraînement quand il est connu", () => {
   const c = carteDe(profilParDefaut(), { niveauOfficiel: 1264 });
   assert.equal(c.niveau, 1264); assert.equal(c.typeNiveau, "NIVEAU OFFICIEL");
+});
+
+test("la note générale : coefficients (Punch, Imprévisibilité et Flair ×2, les autres ×1), une note « – » compte 70", () => {
+  const n = v => [["IMP", v[0]], ["PUN", v[1]], ["POL", v[2]], ["SGF", v[3]], ["FLA", v[4]], ["RÉS", v[5]]].map(([code, valeur]) => ({ code, nom: code, valeur: String(valeur) }));
+  // (2×70 + 2×88 + 95 + 80 + 2×75 + 72) ÷ 9 = 79,2
+  assert.equal(generale(n([70, 88, 95, 80, 75, 72])), 79);
+  assert.equal(generale(n([90, 90, 90, 90, "–", "–"])), 83, "(2×90 + 2×90 + 90 + 90 + 2×70 + 70) ÷ 9 = 83,3");
+  assert.equal(generale(n(["–", "–", "–", "–", "–", "–"])), null, "aucun match contre un joueur");
+  assert.equal(carteDe(profilParDefaut()).generale, null);
+  // la comparaison, vue de A : une note « – » ne compte pour personne
+  const r = comparer(n([80, 88, 95, 70, "–", 72]), n([75, 90, 95, 60, 80, 70]));
+  assert.deepEqual(r.lignes.map(l => l.mieux), [0, 1, null, 0, null, 0]);
+  assert.deepEqual([r.gagnees, r.perdues, r.egalites], [3, 1, 1]);
+  assert.deepEqual(r.generales, [generale(n([80, 88, 95, 70, "–", 72])), generale(n([75, 90, 95, 60, 80, 70]))]);
 });
