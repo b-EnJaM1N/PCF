@@ -88,6 +88,8 @@ export const creerChampionnat = (nom, cercle, points, sets, jours, allerRetour, 
     ...(options ? { p_options: options } : {}) });   // → { id, code }
 // (étape 87) L'organisateur avance ou recule la date limite des poules (p_jours : de -30 à 30). → le tournoi (comme voirTournoi)
 export const decalerCalendrier = (id, jours) => rpc("decaler_calendrier", { p_id: id, p_jours: jours });
+// (étape 88) L'organisateur disqualifie un joueur de son championnat. → le tournoi (comme voirTournoi)
+export const disqualifierJoueur = (id, joueur) => rpc("disqualifier_joueur", { p_id: id, p_joueur: joueur });
 export const arreterSerie = id => rpc("arreter_serie", { p_id: id });
 export const effacerEnjeuTournoi = id => rpc("effacer_enjeu_tournoi", { p_id: id });
 

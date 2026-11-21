@@ -78,6 +78,12 @@ export function message(evenement: string, duel: any, adv: { pseudo: string; num
     texte: `${adv.pseudo}#${adv.numero}, l'organisateur, l'a fixée ${quand ? jourHeureParis(quand) : "à une autre date"}.`,
     url: "./?ouvrir=tournois", tag: `echeance-${tournoi?.nom || ""}`,
   };
+  // (étape 88) l'organisateur (adv) a disqualifié le joueur
+  if (evenement === "disqualifie") return {
+    titre: `❌ Tu es disqualifié de ${tournoi?.nom || "ce championnat"}`,
+    texte: `Décision de l'organisateur, ${adv.pseudo}#${adv.numero}. Tes matchs pas encore joués sont perdus par forfait.`,
+    url: "./?ouvrir=tournois", tag: `echeance-${tournoi?.nom || ""}`,
+  };
   const qui = `${adv.pseudo}#${adv.numero}`;
   // Programmer un match de tournoi (étape 84, 20 novembre).
   const du = tournoi?.nom ? ` (${tournoi.nom})` : "";

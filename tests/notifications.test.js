@@ -80,3 +80,9 @@ test("le calendrier d'un championnat : le rappel 24 h avant, et la nouvelle date
   assert.match(c.texte, /^Benja#7, l'organisateur, l'a fixée .+ à /);
   assert.equal(c.url, "./?ouvrir=tournois");
 });
+
+test("le joueur disqualifié est prévenu (étape 88)", () => {
+  const r = message("disqualifie", null, { pseudo: "Benja", numero: 7 }, { nom: "La ligue du Fiac", mode: "championnat" });
+  assert.equal(r.titre, "❌ Tu es disqualifié de La ligue du Fiac");
+  assert.match(r.texte, /^Décision de l'organisateur, Benja#7\. Tes matchs pas encore joués sont perdus par forfait\.$/);
+});
