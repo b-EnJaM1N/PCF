@@ -107,3 +107,31 @@ test("les temps forts du match : surtout le vainqueur, une action du perdant au 
   assert.deepEqual(tempsFortsMatch([m(1, 1, 9), m(2, 1, 8), m(6, 0, 10)], 0).map(x => x.coup), [1, 2, 6]);
   assert.deepEqual(tempsFortsMatch(ms, null).map(x => x.coup), tempsForts(ms).map(x => x.coup));
 });
+
+test("le score du point : bascule, relance, fin serrée, avance, début (21 novembre)", async () => {
+  const { situationsDuSet, marquerSet } = await import("../app/js/replay.js");
+  // une suite de gagnants (0 ou 1) → les points avec leur score
+  const suite = gs => { const sc = [0, 0]; return gs.map((g, i) => { sc[g]++; return { gagnant: g, score: [...sc], coup: i, set: 0 }; }); };
+  // 0-3, puis 0 revient et gagne 11-8 : la relance au plus fort du retard (0-3), la bascule à 9-8 (après 8-8)
+  const pts = suite([1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0]);
+  const r = situationsDuSet(pts, 11, 0);
+  assert.equal(r.relance, 3, "le premier point marqué à 0-3");
+  assert.deepEqual(pts[r.bascule].score, [9, 8]);
+  assert.equal(r.situations[0], "debut");
+  assert.equal(r.situations[1], "debut");
+  assert.equal(r.situations[14], "mene_perd", "1 marque à 8-6 : mené de 2, il perd le set");
+  // 7-7 → 8-7 (le gagnant du set) : fin serrée
+  const serre = suite([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0]);
+  const s2 = situationsDuSet(serre, 11, 0);
+  assert.equal(s2.situations[16], "bascule", "8-8 → 9-8");
+  assert.equal(s2.situations[12], "serre", "6-6 → 7-6");
+  // une large avance : 6-2 → 7-2, il gagne
+  const av = suite([0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0]);
+  assert.equal(situationsDuSet(av, 11, 0).situations[8], "avance");
+  assert.equal(situationsDuSet(av, 11, 0).bascule, null, "il a mené de bout en bout");
+  // marquerSet : la bascule devient un moment, et la bascule du set décisif est celle du match
+  const moments = [{ ...pts[18], type: "set", priorite: 6 }];
+  marquerSet(moments, pts.map(p => ({ ...p, type: "point", priorite: 0 })), 11, 0, true);
+  assert.ok(moments.some(m => m.type === "bascule_match" && m.score[0] === 9 && m.score[1] === 8));
+  assert.ok(moments.some(m => m.type === "relance"));
+});

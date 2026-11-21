@@ -57,7 +57,7 @@ import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, NOMS as NOMS_SIGNES, compteVide, compterMatch, additionner, dossier, dossierDetaille } from "./lecture-adversaire.js";
 import { modeleFantome } from "./fantome.js";
 import { ouvert, proposerAvis } from "./nouveautes.js";   // (les nouveautés : sur la version de test, puis ouvertes à tous une par une)
-import { replayVisible, momentDuCoup, tempsFortsMatch, momentDuSet, TITRES as TITRES_REPLAY, VERDICTS, texteHabitude } from "./replay.js";
+import { replayVisible, momentDuCoup, tempsFortsMatch, momentDuSet, marquerSet, TITRES as TITRES_REPLAY, VERDICTS, texteHabitude } from "./replay.js";
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder, titresSerie, prochainPalier } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
@@ -486,8 +486,19 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   // Le replay (replay.js) : on garde les actions marquantes du match.
   if (replayVisible()) {
     const mo = momentDuCoup(evt, m.coups, { smash, smashGagne: issueSmash(smash, evt.gagnant) === "gagne", serie: series(m.coups).serie,
-      set: m.scoresSets.length - (evt.finSet ? 1 : 0), score: m.points });
-    if (mo) (S.moments ||= []).push({ ...mo, degatsAvant, degatsApres: copieDegats(), marque, feuAvant, feuApres: [0, 1].map(j => feuDe(S.feu, j)) });
+      set: m.scoresSets.length - (evt.finSet ? 1 : 0), score: m.points, tous: true });
+    // (21 novembre) Tous les points du set sont gardés (S.pointsSet) : à la fin du set, le score de chacun donne sa situation, et la
+    // bascule et la relance du set deviennent des moments (replay.js, marquerSet).
+    if (mo) {
+      const plein = { ...mo, degatsAvant, degatsApres: copieDegats(), marque, feuAvant, feuApres: [0, 1].map(j => feuDe(S.feu, j)) };
+      (S.pointsSet ||= []).push(plein);
+      if (mo.type !== "point") (S.moments ||= []).push(plein);
+    }
+    if (evt.finSet) {
+      const sg = m.format.setsGagnants, decisif = evt.finMatch && (sg === 1 || m.scoresSets.length === 2 * sg - 1);
+      marquerSet(S.moments ||= [], S.pointsSet || [], m.format.pointsParSet, evt.gagnant, decisif);
+      S.pointsSet = [];
+    }
   }
   S.suivi.enregistrer(signe, evt.gagnant === null ? "e" : evt.gagnant === 0 ? "g" : "p");
   suivreCoup(S.stats, m, evt);
@@ -582,7 +593,10 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
 // ---------------------------------------------------------------- le replay (replay.js)
 // Chaque action : les deux poings se secouent au ralenti, puis les signes s'ouvrent ; le score du moment et le bandeau REPLAY.
 // Les répliques du replay (replay_intro, replay_sauvee…) : une au hasard parmi celles qui sont enregistrées.
-const POOL_REPLAY = { match: "replay_set", set: "replay_set", sauvee_match: "replay_sauvee", sauvee_set: "replay_sauvee", smash: "replay_smash", piege: "replay_serie", serie: "replay_serie", egalites: "replay_serie" };
+const POOL_REPLAY = { match: "replay_set", set: "replay_set", sauvee_match: "replay_sauvee", sauvee_set: "replay_sauvee", smash: "replay_smash", piege: "replay_serie", serie: "replay_serie", egalites: "replay_serie",
+  bascule: "replay_sit_bascule", relance: "replay_sit_relance", bascule_match: "replay_sit_bascule_match", point: "replay_generique" };
+// (21 novembre) Le score du point (replay.js, situationsDuSet) : les situations où l'on peut parler de tournant du set.
+const SIT_TOURNANT = ["serre", "bascule", "relance"];
 // role : seulement Roland (« commentateur ») quand la palette suit : c'est Monique qui donne le verdict.
 // type : le temps fort rejoué (une réplique marquée « type » n'est dite que pour lui : « Cinq points d'affilée », pas pour des égalités)
 function ligneReplay(pool, genre = "m", role = null, type = null) {
@@ -621,9 +635,11 @@ function lignePalette(pa, mo) { return auHasard(lignesPalette(`replay_palette_${
 // enregistré ; ou null.
 // (21 novembre, en attendant le grand tri des commentaires du replay : les dialogues qui jugent la suite du set, « C'est ici que
 // tout a basculé ! », sont mis de côté ; ceux-ci restent)
+// (21 novembre, avec le score du point : ils reviennent quand le point est vraiment un tournant, voir SIT_TOURNANT ; tous : tous permis)
 const DIALOGUES_REPLAY_GARDES = { replay_moment: [1, 5, 7] };
-function dialogueReplay(nom, genre = "m") {
-  const ids = DIALOGUES_IDS[nom] || [], ok = ids.map((_, k) => k).filter(k => ids[k].every(id => voix.fichiers.has(id)) && (!DIALOGUES_REPLAY_GARDES[nom] || DIALOGUES_REPLAY_GARDES[nom].includes(k)));
+function dialogueReplay(nom, genre = "m", tous = false) {
+  const garde = tous ? null : DIALOGUES_REPLAY_GARDES[nom];
+  const ids = DIALOGUES_IDS[nom] || [], ok = ids.map((_, k) => k).filter(k => ids[k].every(id => voix.fichiers.has(id)) && (!garde || garde.includes(k)));
   if (!ok.length) return null;
   const dits = S ? (S.replayDits ||= new Set()) : new Set(), neufs = ok.filter(k => !dits.has(`${nom}:${k}`)), g = neufs.length ? neufs : ok;
   if (!neufs.length && nom.startsWith("tf_")) return null;   // (un dialogue d'action déjà dit dans ce match : pas deux fois ; 19 novembre)
@@ -727,14 +743,26 @@ function jouerReplay(liste, apres = () => {}) {
     const sc = S?.match?.scoresSets?.[mo.set], gagnantSet = sc && sc[0] !== sc[1] ? (sc[0] > sc[1] ? 0 : 1) : null;
     const reference = plusieurs ? (perdantMatch === null ? null : 1 - perdantMatch) : gagnantSet;
     const duPerdant = reference !== null && mo.gagnant !== reference;
+    // (21 novembre, choix du porteur du projet) Le score du point : mo.situation (replay.js, situationsDuSet). La bascule, la relance
+    // et la bascule du match sont commentées d'après le score ; un tournant (fin serrée, bascule, relance) gagné par le gagnant du
+    // set permet de nouveau les dialogues « C'est ici que tout a basculé ! ».
+    const sit = mo.situation || null, tournant = !duPerdant && SIT_TOURNANT.includes(sit);
+    const forcerSit = ["bascule", "relance", "bascule_match"].includes(mo.type);
+    const poolSit = mo.type === "bascule_match" ? "replay_sit_bascule_match" : sit ? `replay_sit_${sit}` : null;
     const candidats = duPerdant ? (plusieurs && (mo.type === "sauvee_match" || mo.type === "sauvee_set") && Math.random() < 0.4 ? ["tf_defense"] : [])
       : !plusieurs ? (Math.random() < 1 / 3 ? ["replay_moment"] : [])
-      : Math.random() < 0.4 ? [i === 2 && "tf_deuxieme", dernier && mo.type === "match" && "tf_balle"].filter(Boolean) : [];
-    const dlgNom = candidats[Math.floor(Math.random() * candidats.length)], dlg = dlgNom ? dialogueReplay(dlgNom, genre) : null;
+      : Math.random() < 0.4 ? [i === 2 && "tf_deuxieme", dernier && mo.type === "match" && "tf_balle", mo.type === "bascule_match" && "tf_tournant"].filter(Boolean) : [];
+    const dlgNom = candidats[Math.floor(Math.random() * candidats.length)], dlg = dlgNom ? dialogueReplay(dlgNom, genre, tournant) : null;
     const pa0 = mo.palette && !(dlg && !plusieurs) ? paletteDuReplay(mo.palette, mo) : null, lp = pa0 ? lignePalette(pa0, mo) : null, pa = lp ? pa0 : null;
-    // (le mot de Monique sur le perdant ou le gagnant : Roland parle d'abord)
-    const motFin = dlg ? null : duPerdant ? ligneReplay(plusieurs ? "replay_perdant_match" : "replay_perdant_set", genre, "commentatrice")
-      : !pa && reference !== null && Math.random() < 0.5 ? ligneReplay(plusieurs ? "replay_gagnant_match" : "replay_gagnant_set", genre, "commentatrice") : null;
+    // (le mot de Monique : sur le perdant (son smash, son retard, ou « il n'a pas démérité »), ou sur le gagnant (le score du point,
+    // ou « il a été le plus solide ») ; Roland parle d'abord)
+    const smashPerdant = duPerdant && !!mo.smash?.[mo.gagnant];
+    const motFin = dlg ? null
+      : duPerdant ? (smashPerdant && ligneReplay(plusieurs ? "replay_smash_perdant_match" : "replay_smash_perdant_set", genre, "commentatrice"))
+        || (sit === "mene_perd" && ligneReplay("replay_sit_mene_perd", genre, "commentatrice"))
+        || ligneReplay(plusieurs ? "replay_perdant_match" : "replay_perdant_set", genre, "commentatrice")
+      : (poolSit && (forcerSit || (!pa && Math.random() < 0.7)) && ligneReplay(poolSit, genre, "commentatrice"))
+        || (!pa && reference !== null && Math.random() < 0.5 ? ligneReplay(plusieurs ? "replay_gagnant_match" : "replay_gagnant_set", genre, "commentatrice") : null);
     const roland = pa || dlg || motFin ? "commentateur" : null;
     if (pa) montrerPalette(pa, mo);   // (la palette arrive avec le replay)
     // (les marques du smash et le feu de la main : ceux du moment rejoué, pas ceux de la fin du match ; 18 novembre)
@@ -798,7 +826,11 @@ function jouerReplay(liste, apres = () => {}) {
         : pa && ["pertinent", "propre", "piege"].includes(pa.verdict) && Math.random() < 0.35 ? piocher("replay_reussite", genre) : null;
       // (21 novembre : une fois sur deux, sans la palette, un commentaire générique, qui passe pour n'importe quel point)
       const generique = !dlg && !variante && !pa && Math.random() < 0.5 ? ligneReplay("replay_generique", genre, roland) : null;
-      const c = dlg ? dlg[0] : variante || (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || generique || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
+      // (21 novembre) Roland, d'après le score : toujours pour la bascule et la relance, sinon une fois sur deux sans la palette
+      const parScore = !dlg && poolSit && (forcerSit || (!pa && !variante && Math.random() < 0.5)) ? ligneReplay(poolSit, genre, "commentateur") : null;
+      // (« Tout s'est joué là », sur la balle de set : seulement si le set s'est vraiment joué là, sinon un commentaire générique)
+      const poolType = (mo.type === "set" || mo.type === "match") && !SIT_TOURNANT.includes(sit) ? "replay_generique" : POOL_REPLAY[mo.type];
+      const c = dlg ? dlg[0] : parScore || variante || (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || generique || ligneReplay(poolType, genre, roland, mo.type) || ligneReplay("replay_generique", genre, roland);
       // (le temps de regarder, même sans le son : 3 secondes au moins, 6 avec la palette)
       // (19 novembre : un peu plus rapide entre deux actions ; 1,5 s, 6,5 s et 3,2 s avant)
       const suite = () => { t = setTimeout(montrer, Math.max(vite ? 600 : 800, (pa ? 5000 : 2600) - (Date.now() - devoile))); };
@@ -1010,7 +1042,7 @@ function apresPoint(evt, a, cel, rp) {
     // demande du porteur du projet : on le voyait passer furtivement avant le replay).
     // (18 novembre, demande du porteur du projet) En duel aussi : la pause dure 15 secondes de plus pour le replay (étape SQL 81),
     // qui passe s'il reste au moins 20 secondes ; si le set repart pendant le replay, il s'arrête net.
-    const moSet = replayVisible() ? momentDuSet(S.moments || [], n - 1, g) : null, seanceSet = S;
+    const moSet = replayVisible() ? momentDuSet(S.moments || [], n - 1, g, { smashPerdant: Math.random() < 0.25 }) : null, seanceSet = S;
     const ouvrirPause = () => {
       if (S !== seanceSet) return;
       // (après le replay : l'annonce du set décisif par Roland ou Monique, quand les commentaires sont finis)
