@@ -67,7 +67,7 @@ export const momentDuSet = (moments, set, gagnant = null) => {
 //   pas_la    : le perdant a pris la mauvaise décision (rien d'autre ne l'explique : « Le jeu n'était pas là »).
 export const TAILLE_PALETTE = 5;
 export const VERDICTS = {
-  pertinent: "Tactiquement pertinent", propre: "Techniquement très propre", mauvais: "Mauvais choix", pas_la: "Le jeu n'était pas là",
+  pertinent: "Tactiquement pertinent", propre: "Techniquement très propre", mauvais: "Mauvais choix", pas_la: "Erreur tactique",   // (21 novembre, demande du porteur du projet : « Le jeu n'était pas là » avant)
   piege: "Le piège parfait", smash: "Un smash qui fait mal", smash_subi: "Un smash qui laisse des traces",
 };
 // (18 novembre, idées et répliques choisies par le porteur du projet)
