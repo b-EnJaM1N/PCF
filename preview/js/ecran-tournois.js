@@ -187,7 +187,7 @@ export function installerTournois(ctx) {
   async function ouvrir(id, message = "") {
     ouvert = id; detail = null;
     $("tNom").textContent = "…"; $("tInfo").textContent = ""; $("tEtat").textContent = "";
-    ["tMonMatch", "tInscriptions", "tTableauCarte", "tClassementCarte", "tEnjeuCarte", "tSerieCarte", "tRecordsCarte", "tCalendrier"].forEach(x => { $(x).hidden = true; });
+    ["tMonMatch", "tInscriptions", "tTableauCarte", "tClassementCarte", "tEnjeuCarte", "tSerieCarte", "tRecordsCarte", "tCalendrier", "tAnnulerEnCours"].forEach(x => { $(x).hidden = true; });
     $("tCalMsg").textContent = "";
     $("tRecordsCarte").open = false; $("tRecordsListe").innerHTML = ""; $("tRecordsMsg").textContent = ""; recordsDe = null;
     dire(message);
@@ -214,6 +214,15 @@ export function installerTournois(ctx) {
   }
   $("tRecordsCarte").addEventListener("toggle", () => { if ($("tRecordsCarte").open) chargerRecords(); });
   $("tRetour").addEventListener("click", () => { fermer(); ctx.retour(); });
+  $("tAnnulerEnCours").addEventListener("click", async () => {
+    if (!detail) return;
+    const id = ouvert;
+    if (!confirm(`Annuler « ${detail.nom} » ? Les matchs déjà joués restent, mais il n'y aura pas de champion${detail.enjeu ? " et personne ne s'y collera" : ""}. Les joueurs seront prévenus. C'est définitif.`)) return;
+    $("tAnnulerEnCours").disabled = true;
+    try { await social.annulerTournoi(id); ctx.apresChangement(); if (ouvert === id) { await charger(); dire("Championnat annulé : les joueurs sont prévenus."); } }
+    catch (err) { dire(err.message, true); }
+    $("tAnnulerEnCours").disabled = false;
+  });
   // (étape 88) Disqualifier un joueur (l'organisateur, depuis le classement)
   $("tClassement").addEventListener("click", async e => {
     const b = e.target.closest("button[data-disq]"); if (!b || !detail) return;
@@ -288,6 +297,8 @@ export function installerTournois(ctx) {
       : t.phase === "en_cours" ? (direct ? `${nomTour(t.tour, t.nb_tours)} · en direct` : `${nomTour(t.tour, t.nb_tours)} · ${reste ? `date limite dans ${reste}` : "date limite passée, résultats en cours"}`)
       : t.phase === "termine" ? (t.vainqueur ? `🏆 Vainqueur : ${t.vainqueur.pseudo}#${t.vainqueur.numero}` : "Tournoi terminé") : "Tournoi annulé";
 
+    // (21 novembre, étape 88) L'organisateur peut annuler un championnat en cours.
+    $("tAnnulerEnCours").hidden = !(ch && t.phase === "en_cours" && t.organise);
     // (21 novembre, étape 87) L'organisateur avance ou recule la date limite des poules (ou de la saison, sans playoffs).
     const cal = ch && t.createur && t.phase === "en_cours" && t.tour === 1 && !t.serie;
     $("tCalendrier").hidden = !cal;
