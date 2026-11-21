@@ -173,6 +173,19 @@ function reflexe(coupsVus) {
 }
 const suit = (prevu, s) => (Array.isArray(prevu) ? prevu.includes(s) : prevu === s);
 
+// (21 novembre, remarque du porteur du projet : « il a rejoué le même signe », alors que l'historique dit le contraire) Une réplique
+// qui parle des signes joués n'est dite que si l'historique la confirme. cond : "meme", "change", "trois" ou "alterne" (voir
+// repliques.js) ; avant : les coups d'avant ({ a, b }) ; point : le coup rejoué ({ a, b }) ; joueur : celui dont parle la réplique.
+export function signesOK(cond, avant, point, joueur) {
+  if (!cond) return true;
+  const s = c => (joueur === 0 ? c.a : c.b), l = (avant || []).map(s), x = s(point);
+  if (cond === "meme") return l.length >= 1 && l.at(-1) === x;
+  if (cond === "change") return l.length >= 1 && l.at(-1) !== x;
+  if (cond === "trois") return l.length >= 2 && l.at(-1) === x && l.at(-2) === x;
+  if (cond === "alterne") { const [p, q, r, t] = l.slice(-4); return l.length >= 4 && p !== q && r === p && t === q; }
+  return false;
+}
+
 // Le piège du dernier coup : son gagnant avait joué n fois de suite le même signe (au moins PIEGE_MIN, égalités comprises),
 // et il en change pour marquer. → { joueur, n, repete, signe } ou null.
 export function piegeDuPoint(coups) {
