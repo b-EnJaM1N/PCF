@@ -3441,6 +3441,7 @@ $("revanche").addEventListener("click", async () => {
 
 duelsUI = installerDuels({
   compte: compteUI,
+  apresDefis: () => cerclesUI?.majDefiAmi?.(),   // (21 novembre : le bouton de la page d'un ami dit l'horaire du défi programmé)
   signaler,
   lancerDuel,
   duelEnCours: duelOccupe,
@@ -3455,6 +3456,7 @@ cerclesUI = installerCercles({
   ouvrirOnglet,
   defier: (p, o) => duelsUI.defier(p, o),
   dejaDefie: id => !!duelsUI?.dejaDefie(id),
+  texteDefiProgramme: id => duelsUI?.texteDefiProgramme?.(id) || "",
   annulerDefi: id => duelsUI.annulerDefi(id),
   voirCarte: id => voirCarteDe(id),
   ongletsJoueur: (el, uid, nom, o) => ongletsJoueur(el, uid, nom, o),
