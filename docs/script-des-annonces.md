@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1345 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1349 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1109,6 +1109,10 @@ restent lus par la voix de synthèse.
 | `commentateur_replay_double_01.mp3` | Les deux mains s'engagent dans le choc, mais l'une d'elles en fait les frais ! |
 | `commentateur_replay_double_02.mp3` | Il assène un coup au moral de son adversaire, totalement déséquilibré par l'impact ! |
 | `commentateur_replay_double_02_f.mp3` | Elle assène un coup au moral de son adversaire, totalement déséquilibré par l'impact ! |
+| `commentateur_replay_generique_01.mp3` | Revoyons ce point au ralenti ! |
+| `commentateur_replay_generique_02.mp3` | Regardez bien les deux mains ! |
+| `commentateur_replay_generique_03.mp3` | Voilà un point bien construit ! |
+| `commentateur_replay_generique_04.mp3` | Admirez le geste ! |
 | `commentateur_fin_trois_sets_01.mp3` | Au bout du suspense, ce match a trouvé un vainqueur ! Les mains ont beaucoup donné et sont épuisées : séance de manucure demain, en prévision du prochain match ! |
 | `commentateur_fin_trois_sets_02.mp3` | Les supporters peuvent libérer leur joie : leur champion a su trouver le chemin de la victoire ! Le kop adverse peine à cacher sa déception : ils y ont cru jusqu'au bout ! |
 | `commentateur_fin_trois_sets_02_f.mp3` | Les supporters peuvent libérer leur joie : leur championne a su trouver le chemin de la victoire ! Le kop adverse peine à cacher sa déception : ils y ont cru jusqu'au bout ! |
@@ -1468,7 +1472,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_accueil_troisieme_01_f.mp3` | Troisième match ! Mesdames et messieurs, une habituée est en train de naître ! |
 | `commentateur_dialogue_accueil_fin_troisieme_01.mp3` | Trois matchs ! Les jetons, les défis du jour et la boutique sont ouverts ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (1111 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (1133 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -2160,6 +2164,28 @@ restent lus par la voix de synthèse.
 | `commentatrice_replay_smash_signe_02.mp3` | Son adversaire avait anticipé une feuille, mais il finit avec des ciseaux en piteux état. |
 | `commentatrice_replay_smash_signe_03.mp3` | Ces enveloppements, toujours risqués, restent très impressionnants. |
 | `commentatrice_replay_double_01.mp3` | Un fort engagement de part et d'autre, mais une main reste au tapis. |
+| `commentatrice_replay_generique_01.mp3` | On voit toute la concentration des deux joueurs. |
+| `commentatrice_replay_generique_02.mp3` | À ce niveau, chaque point se mérite. |
+| `commentatrice_replay_generique_03.mp3` | Une séquence intéressante, à revoir calmement. |
+| `commentatrice_replay_perdant_set_01.mp3` | Il n'a pas démérité sur ce set, comme le montre ce point… mais ça n'a pas suffi pour le remporter. |
+| `commentatrice_replay_perdant_set_01_f.mp3` | Elle n'a pas démérité sur ce set, comme le montre ce point… mais ça n'a pas suffi pour le remporter. |
+| `commentatrice_replay_perdant_set_02.mp3` | Un beau point de sa part. Malheureusement pour lui, le set lui a échappé. |
+| `commentatrice_replay_perdant_set_02_f.mp3` | Un beau point de sa part. Malheureusement pour elle, le set lui a échappé. |
+| `commentatrice_replay_perdant_set_03.mp3` | Il a montré de belles choses. Il lui a juste manqué un petit quelque chose pour prendre ce set. |
+| `commentatrice_replay_perdant_set_03_f.mp3` | Elle a montré de belles choses. Il lui a juste manqué un petit quelque chose pour prendre ce set. |
+| `commentatrice_replay_perdant_match_01.mp3` | Il n'a pas démérité. Mais ça n'a pas suffi pour remporter le match. |
+| `commentatrice_replay_perdant_match_01_f.mp3` | Elle n'a pas démérité. Mais ça n'a pas suffi pour remporter le match. |
+| `commentatrice_replay_perdant_match_02.mp3` | Il a eu ses moments, comme celui-ci. Il lui a manqué un peu de réussite pour aller au bout. |
+| `commentatrice_replay_perdant_match_02_f.mp3` | Elle a eu ses moments, comme celui-ci. Il lui a manqué un peu de réussite pour aller au bout. |
+| `commentatrice_replay_perdant_match_03.mp3` | Une très belle action… qui n'a malheureusement pas suffi à faire basculer le match. |
+| `commentatrice_replay_gagnant_set_01.mp3` | Il a été le plus solide dans ce set, et ce point le montre bien. |
+| `commentatrice_replay_gagnant_set_01_f.mp3` | Elle a été la plus solide dans ce set, et ce point le montre bien. |
+| `commentatrice_replay_gagnant_set_02.mp3` | Il a su faire la différence quand il le fallait. |
+| `commentatrice_replay_gagnant_set_02_f.mp3` | Elle a su faire la différence quand il le fallait. |
+| `commentatrice_replay_gagnant_match_01.mp3` | Ce point montre bien pourquoi il a remporté ce match. |
+| `commentatrice_replay_gagnant_match_01_f.mp3` | Ce point montre bien pourquoi elle a remporté ce match. |
+| `commentatrice_replay_gagnant_match_02.mp3` | Il a su faire la différence quand il le fallait. |
+| `commentatrice_replay_gagnant_match_02_f.mp3` | Elle a su faire la différence quand il le fallait. |
 | `commentatrice_fin_trois_sets_01.mp3` | Nous avons assisté à une belle rencontre, et les deux mains ont su se hisser à la hauteur de l'événement. Rendez-vous est pris pour une revanche qui s'annonce palpitante. |
 | `commentatrice_fin_trois_sets_02.mp3` | L'arbitre siffle la fin de la rencontre sur cet ultime point. On peut se satisfaire du spectacle proposé par les deux mains, dans cette passe d'armes aux allures de chassé-croisé. |
 | `commentatrice_accueil_point_perdu_01.mp3` | Un point pour Bambi. Ce n'est rien : on apprend en perdant. |

@@ -1703,6 +1703,38 @@ export const MOMENTS = {
     { r: "d", t: "Un fort engagement de part et d'autre, mais une main reste au tapis." },
     { r: "c", t: "Il assène un coup au moral de son adversaire, totalement déséquilibré par l'impact !", f: "Elle assène un coup au moral de son adversaire, totalement déséquilibré par l'impact !" },
   ],
+  // Les commentaires génériques du replay (21 novembre, choisis par le porteur du projet, en attendant le grand tri des
+  // commentaires du replay) : ils passent pour n'importe quel point (« il » : celui qui a marqué le point).
+  replay_generique: [
+    { r: "c", t: "Revoyons ce point au ralenti !" },
+    { r: "c", t: "Regardez bien les deux mains !" },
+    { r: "c", t: "Voilà un point bien construit !" },
+    { r: "c", t: "Admirez le geste !" },
+    { r: "d", t: "On voit toute la concentration des deux joueurs." },
+    { r: "d", t: "À ce niveau, chaque point se mérite." },
+    { r: "d", t: "Une séquence intéressante, à revoir calmement." },
+  ],
+  // Un point du perdant du set, rejoué entre les sets (« il » : lui ; 21 novembre, choisis par le porteur du projet)
+  replay_perdant_set: [
+    { r: "d", t: "Il n'a pas démérité sur ce set, comme le montre ce point… mais ça n'a pas suffi pour le remporter.", f: "Elle n'a pas démérité sur ce set, comme le montre ce point… mais ça n'a pas suffi pour le remporter." },
+    { r: "d", t: "Un beau point de sa part. Malheureusement pour lui, le set lui a échappé.", f: "Un beau point de sa part. Malheureusement pour elle, le set lui a échappé." },
+    { r: "d", t: "Il a montré de belles choses. Il lui a juste manqué un petit quelque chose pour prendre ce set.", f: "Elle a montré de belles choses. Il lui a juste manqué un petit quelque chose pour prendre ce set." },
+  ],
+  // Un point du perdant du match, aux temps forts (« il » : lui)
+  replay_perdant_match: [
+    { r: "d", t: "Il n'a pas démérité. Mais ça n'a pas suffi pour remporter le match.", f: "Elle n'a pas démérité. Mais ça n'a pas suffi pour remporter le match." },
+    { r: "d", t: "Il a eu ses moments, comme celui-ci. Il lui a manqué un peu de réussite pour aller au bout.", f: "Elle a eu ses moments, comme celui-ci. Il lui a manqué un peu de réussite pour aller au bout." },
+    { r: "d", t: "Une très belle action… qui n'a malheureusement pas suffi à faire basculer le match." },
+  ],
+  // Un point du gagnant du set (entre les sets) ou du match (aux temps forts) (« il » : lui)
+  replay_gagnant_set: [
+    { r: "d", t: "Il a été le plus solide dans ce set, et ce point le montre bien.", f: "Elle a été la plus solide dans ce set, et ce point le montre bien." },
+    { r: "d", t: "Il a su faire la différence quand il le fallait.", f: "Elle a su faire la différence quand il le fallait." },
+  ],
+  replay_gagnant_match: [
+    { r: "d", t: "Ce point montre bien pourquoi il a remporté ce match.", f: "Ce point montre bien pourquoi elle a remporté ce match." },
+    { r: "d", t: "Il a su faire la différence quand il le fallait.", f: "Elle a su faire la différence quand il le fallait." },
+  ],
   // Un match en trois sets, à la fin (19 novembre, commentaires d'un testeur) : « gagne » seulement si je gagne
   fin_trois_sets: [
     { r: "c", t: "Au bout du suspense, ce match a trouvé un vainqueur ! Les mains ont beaucoup donné et sont épuisées : séance de manucure demain, en prévision du prochain match !" },

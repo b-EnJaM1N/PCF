@@ -36,6 +36,21 @@ export function momentDuCoup(evt, coups, { smash = [false, false], smashGagne = 
 export function tempsForts(moments, n = 3) {
   return [...moments].sort((x, y) => y.priorite - x.priorite || y.coup - x.coup).slice(0, n).sort((x, y) => x.coup - y.coup);
 }
+// Les temps forts de fin de match (21 novembre, règle du porteur du projet) : surtout des actions du vainqueur du match ;
+// au plus une du perdant (avec un commentaire « il n'a pas démérité »), sauf si le vainqueur n'en a pas assez.
+export function tempsFortsMatch(moments, vainqueur, n = 3) {
+  if (vainqueur !== 0 && vainqueur !== 1) return tempsForts(moments, n);
+  const tries = [...moments].sort((x, y) => y.priorite - x.priorite || y.coup - x.coup), garde = [];
+  let duPerdant = 0;
+  for (const m of tries) {
+    if (garde.length >= n) break;
+    if (m.gagnant === vainqueur) garde.push(m);
+    else if (duPerdant < 1) { garde.push(m); duPerdant++; }
+  }
+  // (le vainqueur n'a pas assez d'actions marquantes : on complète avec celles du perdant)
+  for (const m of tries) { if (garde.length >= n) break; if (!garde.includes(m)) garde.push(m); }
+  return garde.sort((x, y) => x.coup - y.coup);
+}
 // L'action marquante d'un set (la plus forte), ou null.
 // (19 novembre, remarque du porteur du projet : on revoyait un point du perdant du set, qui n'avait rien changé) gagnant : celui qui
 // a gagné le set ; on rejoue d'abord une de ses actions, celle du perdant seulement s'il n'en a aucune.

@@ -57,7 +57,7 @@ import { annonceEnjeu } from "./enjeux.js";
 import { repartition, habitudes, piste, lecturesReussies, EMOJIS, NOMS as NOMS_SIGNES, compteVide, compterMatch, additionner, dossier, dossierDetaille } from "./lecture-adversaire.js";
 import { modeleFantome } from "./fantome.js";
 import { ouvert, proposerAvis } from "./nouveautes.js";   // (les nouveautés : sur la version de test, puis ouvertes à tous une par une)
-import { replayVisible, momentDuCoup, tempsForts, momentDuSet, TITRES as TITRES_REPLAY, VERDICTS, texteHabitude } from "./replay.js";
+import { replayVisible, momentDuCoup, tempsFortsMatch, momentDuSet, TITRES as TITRES_REPLAY, VERDICTS, texteHabitude } from "./replay.js";
 import { FORMAT_DU_JOUR, jourParis, matchDuJour, hasardGraine, grille, serie, texteAPartager, garder, titresSerie, prochainPalier } from "./match-du-jour.js";
 import { installerDefis } from "./ecran-defis.js";
 import { installerBoutique } from "./ecran-boutique.js";
@@ -619,8 +619,11 @@ function lignePalette(pa, mo) { return auHasard(lignesPalette(`replay_palette_${
 // Pas de texte des commentaires : seulement les titres (18 novembre, demande du porteur du projet).
 // Un dialogue du replay (19 novembre, bibliothèque du porteur du projet) : un pas encore dit dans les replays de ce match, et
 // enregistré ; ou null.
+// (21 novembre, en attendant le grand tri des commentaires du replay : les dialogues qui jugent la suite du set, « C'est ici que
+// tout a basculé ! », sont mis de côté ; ceux-ci restent)
+const DIALOGUES_REPLAY_GARDES = { replay_moment: [1, 5, 7] };
 function dialogueReplay(nom, genre = "m") {
-  const ids = DIALOGUES_IDS[nom] || [], ok = ids.map((_, k) => k).filter(k => ids[k].every(id => voix.fichiers.has(id)));
+  const ids = DIALOGUES_IDS[nom] || [], ok = ids.map((_, k) => k).filter(k => ids[k].every(id => voix.fichiers.has(id)) && (!DIALOGUES_REPLAY_GARDES[nom] || DIALOGUES_REPLAY_GARDES[nom].includes(k)));
   if (!ok.length) return null;
   const dits = S ? (S.replayDits ||= new Set()) : new Set(), neufs = ok.filter(k => !dits.has(`${nom}:${k}`)), g = neufs.length ? neufs : ok;
   if (!neufs.length && nom.startsWith("tf_")) return null;   // (un dialogue d'action déjà dit dans ce match : pas deux fois ; 19 novembre)
@@ -718,11 +721,21 @@ function jouerReplay(liste, apres = () => {}) {
     // perdant du match, une action perdue, ou le tournant), la palette restant à l'écran.
     const plusieurs = liste.length > 1, dernier = i === liste.length, genre = genreJoueur(mo.gagnant);
     const perdantMatch = S?.match?.vainqueur === 0 || S?.match?.vainqueur === 1 ? 1 - S.match.vainqueur : null;
-    const candidats = !plusieurs ? (Math.random() < 1 / 3 ? ["replay_moment"] : [])
-      : Math.random() < 0.4 ? [i === 1 && mo.set === 0 && "tf_premier", i === 2 && "tf_deuxieme", dernier && mo.type === "match" && "tf_balle",
-        (mo.type === "sauvee_match" || mo.type === "sauvee_set") && mo.gagnant === perdantMatch && "tf_defense", mo.gagnant === 1 && "tf_cher", "tf_tournant"].filter(Boolean) : [];
+    // (21 novembre, règle du porteur du projet) Le point rejoué est-il du perdant du set (entre les sets) ou du match (temps forts) ?
+    // Alors Monique le dit : « Il n'a pas démérité… mais ça n'a pas suffi ». Les dialogues qui jugent la suite (le tournant, le
+    // premier coup qui a fait mal, l'action qui a coûté cher) sont mis de côté en attendant le grand tri des commentaires.
+    const sc = S?.match?.scoresSets?.[mo.set], gagnantSet = sc && sc[0] !== sc[1] ? (sc[0] > sc[1] ? 0 : 1) : null;
+    const reference = plusieurs ? (perdantMatch === null ? null : 1 - perdantMatch) : gagnantSet;
+    const duPerdant = reference !== null && mo.gagnant !== reference;
+    const candidats = duPerdant ? (plusieurs && (mo.type === "sauvee_match" || mo.type === "sauvee_set") && Math.random() < 0.4 ? ["tf_defense"] : [])
+      : !plusieurs ? (Math.random() < 1 / 3 ? ["replay_moment"] : [])
+      : Math.random() < 0.4 ? [i === 2 && "tf_deuxieme", dernier && mo.type === "match" && "tf_balle"].filter(Boolean) : [];
     const dlgNom = candidats[Math.floor(Math.random() * candidats.length)], dlg = dlgNom ? dialogueReplay(dlgNom, genre) : null;
-    const pa0 = mo.palette && !(dlg && !plusieurs) ? paletteDuReplay(mo.palette, mo) : null, lp = pa0 ? lignePalette(pa0, mo) : null, pa = lp ? pa0 : null, roland = pa || dlg ? "commentateur" : null;
+    const pa0 = mo.palette && !(dlg && !plusieurs) ? paletteDuReplay(mo.palette, mo) : null, lp = pa0 ? lignePalette(pa0, mo) : null, pa = lp ? pa0 : null;
+    // (le mot de Monique sur le perdant ou le gagnant : Roland parle d'abord)
+    const motFin = dlg ? null : duPerdant ? ligneReplay(plusieurs ? "replay_perdant_match" : "replay_perdant_set", genre, "commentatrice")
+      : !pa && reference !== null && Math.random() < 0.5 ? ligneReplay(plusieurs ? "replay_gagnant_match" : "replay_gagnant_set", genre, "commentatrice") : null;
+    const roland = pa || dlg || motFin ? "commentateur" : null;
     if (pa) montrerPalette(pa, mo);   // (la palette arrive avec le replay)
     // (les marques du smash et le feu de la main : ceux du moment rejoué, pas ceux de la fin du match ; 18 novembre)
     const dAvant = mo.degatsAvant || [null, null], dApres = mo.degatsApres || [null, null], fAvant = mo.feuAvant || [0, 0], fApres = mo.feuApres || [0, 0];
@@ -783,11 +796,13 @@ function jouerReplay(liste, apres = () => {}) {
         : mo.type === "smash" && Math.random() < 0.5 ? piocher("replay_smash_signe", genre, it => it.seul === signeG)
         : sauvee && Math.random() < 0.5 ? piocher("replay_balle_ratee", genreJoueur(1 - mo.gagnant))
         : pa && ["pertinent", "propre", "piege"].includes(pa.verdict) && Math.random() < 0.35 ? piocher("replay_reussite", genre) : null;
-      const c = dlg ? dlg[0] : variante || (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
+      // (21 novembre : une fois sur deux, sans la palette, un commentaire générique, qui passe pour n'importe quel point)
+      const generique = !dlg && !variante && !pa && Math.random() < 0.5 ? ligneReplay("replay_generique", genre, roland) : null;
+      const c = dlg ? dlg[0] : variante || (pa && auHasard(lignesPalette(`replay_r_${pa.verdict}`, pa, mo, "commentateur"))) || generique || ligneReplay(POOL_REPLAY[mo.type], genre, roland, mo.type);
       // (le temps de regarder, même sans le son : 3 secondes au moins, 6 avec la palette)
       // (19 novembre : un peu plus rapide entre deux actions ; 1,5 s, 6,5 s et 3,2 s avant)
       const suite = () => { t = setTimeout(montrer, Math.max(vite ? 600 : 800, (pa ? 5000 : 2600) - (Date.now() - devoile))); };
-      const reponse = dlg ? dlg[1] : pa ? lp : null;
+      const reponse = dlg ? dlg[1] : motFin || (pa ? lp : null);
       parler(c, () => (reponse ? parler(reponse, suite) : suite()));
     }, vite ? 300 : 2000);
   };
@@ -799,7 +814,7 @@ function jouerReplay(liste, apres = () => {}) {
 $("btnTempsForts").addEventListener("click", () => {
   if (!S?.moments?.length) return;
   const seance = S;
-  jouerReplay(tempsForts(S.moments), () => {
+  jouerReplay(tempsFortsMatch(S.moments, S.match?.vainqueur), () => {
     if (S !== seance) return;
     const versFin = () => { if (S === seance && !$("end").hidden) $("end").scrollIntoView({ behavior: reduitMouvement() ? "auto" : "smooth", block: "start" }); };
     try { montrerStatsFin(versFin, { silencieux: true }); } catch { versFin(); }
