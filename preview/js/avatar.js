@@ -29,7 +29,7 @@ export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc"
   // Le gant de Comète, le renne (24 novembre, demande du porteur du projet) : pelage brun, une comète dorée sur la main, et le
   // collier rouge à grelots des rennes du traîneau.
   renne: ["Gant de Comète, le renne", "#9A6738", "linear-gradient(#9A6738 68%,#C8102E 68%)"],
-  // Le gant du Bonhomme de neige (24 novembre, demande du porteur du projet) : blanc neige, trois boutons de charbon, et l'écharpe
+  // Le gant du Bonhomme de neige (24 novembre, demande du porteur du projet) : blanc neige, son visage (charbon et carotte), et l'écharpe
   // tricotée rouge à franges en guise de poignet.
   neige: ["Gant du Bonhomme de neige", "#F7FAFD", "linear-gradient(#F7FAFD 68%,#D7263D 68%)"],
   lutin: ["Gant du Lutin", "#1E9E48", "repeating-linear-gradient(-55deg,#1E9E48 0 6px,#E3122F 6px 9px,#FAFAF7 9px 10px)"] };
@@ -314,8 +314,12 @@ const NEIGE = `<path d="M60 78 L68.5 79.5 L67.5 88.5 L61 87.8 Z" fill="#D7263D" 
   + `<path d="M61.8 88.2 v2.6 M63.5 88.4 v2.6 M65.2 88.5 v2.6 M66.8 88.6 v2.6" stroke="#D7263D" stroke-width="1.1" stroke-linecap="round"/>`
   + `<rect x="36" y="72" width="28" height="15" rx="4" fill="#D7263D" stroke="#8E0B20" stroke-width="1.4"/>`
   + `<rect x="36.7" y="76" width="26.6" height="2" fill="#FAFAF7"/><rect x="36.7" y="81" width="26.6" height="2" fill="#FAFAF7"/>` + maille(73.6) + maille(84);
-// Les trois boutons de charbon du Bonhomme de neige, en colonne sur la main.
-const charbons = (x, y, r) => [-1, 0, 1].map(i => `<circle cx="${x}" cy="${(y + i * r * .62).toFixed(1)}" r="${(r * .2).toFixed(2)}" fill="#26282C"/><circle cx="${(x - r * .06).toFixed(2)}" cy="${(y + i * r * .62 - r * .07).toFixed(2)}" r="${(r * .06).toFixed(2)}" fill="#6B7078"/>`).join("");
+// Le visage du Bonhomme de neige sur la main (24 novembre, essai demandé par le porteur du projet) : deux yeux et un sourire de
+// charbon, le nez en carotte (le chapeau essayé aussi, retiré à sa demande).
+const visageNeige = (x, y, r) => { const k = r / 10; return `<g transform="translate(${x} ${y}) scale(${k.toFixed(3)})">`
+  + [[-3.6, -4.5], [3.6, -4.5]].map(([dx, dy]) => `<circle cx="${dx}" cy="${dy}" r="1.7" fill="#26282C"/>`).join("")
+  + `<path d="M-1 -1.6 L12 1 L-1 2.2 Z" fill="#F28C28" stroke="#B85F0E" stroke-width=".7" stroke-linejoin="round"/><path d="M2.5 -.8 l.6 1.4 M6 .1 l.5 1" stroke="#B85F0E" stroke-width=".6"/>`
+  + [[-5, 4.6], [-2.6, 6.2], [0.2, 6.8], [3, 6.2]].map(([dx, dy]) => `<circle cx="${dx}" cy="${dy}" r=".95" fill="#26282C"/>`).join("") + `</g>`; };
 // Les bois de Comète, derrière la main : deux ramures qui sortent du haut de la main, de chaque côté (24 novembre, demande du
 // porteur du projet).
 const RAMURE = `<path d="M0 0 C-3 -8 -6 -14 -12 -20 M-4 -9 C-9 -10 -13 -9 -16 -6 M-7 -14 C-7 -19 -5 -23 -2 -26 M-10 -18 C-15 -19 -19 -18 -21 -15"`
@@ -399,7 +403,7 @@ export function avatarSVG(a) {
   if (A_DOSSARD.has(a.gant)) deco = (PRESTIGE.reflet ? `<g opacity=".38" style="mix-blend-mode:screen">${main(a.symbole, `url(#${id}r)`, "none")}</g>` : "")
     + dossardSVG(...(PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
-  if (a.gant === "neige") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = charbons(x, y - r * .2, r); }
+  if (a.gant === "neige") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = visageNeige(x, y - r * .1, r); }
   if (a.gant === "renne") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = comete(x + 1, y - 1, r); }
   if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
   if (gm === "bandeau") deco = `<rect x="28" y="64" width="44" height="7" rx="2" fill="#E0B12A" stroke="${ink}" stroke-width="1.5"/><rect x="28" y="67" width="44" height="1.4" fill="rgba(255,255,255,.7)"/>`;
