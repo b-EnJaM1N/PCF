@@ -28,7 +28,7 @@ import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup, statsDuMatch } from "./stats-match.js";
 import { estFiac } from "./profil.js";
 import { jouerRoutine } from "./routines.js";
-import { TITRES, FAMILLES, accorderTitres, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, reserveAuTenant, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash, jeuVide } from "./profil.js";
+import { TITRES, FAMILLES, accorderTitres, compterMatchNoel, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, reserveAuTenant, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash, jeuVide } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
@@ -1276,6 +1276,8 @@ function finir() {
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("coach").hidden = true;
   if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
+  // (24 novembre) les matchs joués pendant les fêtes : « Esprit de Noël » au 12e
+  if (n && noelActif()) { const t = accorderTitres(P, compterMatchNoel(P)); nouveaux.push(...t); sauverP(); }
   // Le calendrier de l'Avent (ecran-avent.js) : ce match ouvre-t-il une case ?
   if (n && noelActif()) aventUI?.apresMatch({ match: m, adv: OPP.id, botNoel: !!OPP.noel, duel: !!S.duel, smashsReussis: S.stats.smashsReussis || 0,
     meilleureSerie: S.stats.meilleureSerie || 0, matchDuJour: !!S.matchJour, rattrapage: S.aventRattrapage || null, abandon: !!special });
@@ -2443,7 +2445,7 @@ function noterMatchDuJour(r) {
 function renderMatchDuJour() {
   const jour = jourParis(), m = matchDuJour(jour), b = botParId(m.bot), res = resultatsDuJour(), r = res[jour], s = serie(res, jour);
   $("mdjAv").innerHTML = avatarSVG(b.av);
-  $("mdjTitre").textContent = `📅 Match du jour n° ${m.numero}`;
+  $("mdjTitre").textContent = m.noel ? `🎅 Match du jour de Noël` : `📅 Match du jour n° ${m.numero}`;   // (le 25 décembre : le Père Noël)
   $("mdjJouer").hidden = !!r; $("mdjPartager").hidden = !r;
   const enValeur = ouvert("serie");   // (la série mise en valeur)
   const feu = !enValeur && s > 1 ? ` · 🔥 ${s} jours` : "";
@@ -3770,7 +3772,7 @@ $("btnTestNotif").addEventListener("click", async () => {
   finally { b.disabled = false; }
 });
 // Ouvrir l'appli depuis une notification : ?ouvrir=duels ou ?ouvrir=tournois (ou message du service worker si elle est déjà ouverte).
-const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); else if (cible === "invitations") { aller("viewJouer"); cerclesUI?.proposerInvitation(); }
+const ouvrirDepuisNotification = cible => { if (cible === "avent") aller("viewAvent"); /* (étape 90 : le calendrier de l'Avent est ouvert) */ else if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); else if (cible === "invitations") { aller("viewJouer"); cerclesUI?.proposerInvitation(); }
   else if (cible === "amis") { aller("viewCercles"); cerclesUI?.montrerDemandes(); } /* (étape 79 : demandes d'ami, invitations dans un cercle) */ else if (cible === "freeroll" || cible === "programmes") aller("viewFreeroll"); };
 {
   const cible = new URLSearchParams(location.search).get("ouvrir");
