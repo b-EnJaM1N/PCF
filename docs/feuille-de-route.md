@@ -6,6 +6,10 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 l'entonnoir d'entrée seront regardés à l'ouverture au public ; la seule vraie inconnue restante : des groupes qui ne connaissent pas
 le porteur du projet jouent-ils entre eux dans la durée ?
 
+**Idée notée pour l'ouverture au public (24 novembre)** : des notes de carte selon le rang parmi les joueurs (70 = le joueur du
+milieu, 60 = 25 % des joueurs font moins bien, 80 = 75 %, 90 et plus = le haut du classement). Juste et calibré tout seul, mais il
+faut beaucoup de joueurs ; en attendant, on garde le barème actuel (plancher à 50, décidé le 24 novembre).
+
 ## Pour reprendre (session du 10 novembre au soir)
 
 Test fermé prolongé de 14 jours (refus de Google du 10 novembre) : **nouvelle demande d'accès à la production vers le 24 novembre**,
