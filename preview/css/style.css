@@ -1372,9 +1372,10 @@ body.noel .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
 /* Les bots de Noël dans la liste du mode solo, et leurs pouvoirs (noel.js) */
 .opps-noel { grid-column: 1 / -1; margin: 6px 0 0; font-weight: 700; color: #ffe08a; }
 .opp.opp-noel { border-color: rgba(244, 197, 66, .45); }
-#hMe { position: relative; }
-.noel-pouvoir-gant { position: absolute; inset: 8%; pointer-events: none; animation: noel-pouvoir-gant .35s ease-out; }
+#hMe, #hMe .poing-av { position: relative; }
+.noel-pouvoir-gant { position: absolute; inset: 0; pointer-events: none; animation: noel-pouvoir-gant .35s ease-out; }
 .noel-pouvoir-gant svg { width: 100%; height: 100%; display: block; }
+#hMe .noel-pouvoir-gant svg { transform: rotate(90deg); }   /* (la main du joueur est tournée vers l'adversaire) */
 @keyframes noel-pouvoir-gant { from { transform: scale(1.6); opacity: 0; } }
 .noel-pouvoir { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 4; }
 .noel-pouvoir i { position: absolute; top: -40px; font-size: 30px; font-style: normal; animation: noel-pouvoir-pluie 1.8s ease-in forwards; }

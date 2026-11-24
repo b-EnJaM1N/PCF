@@ -44,16 +44,19 @@ export function installerNoel(doc = document) {
 // ---------------------------------------------------------------- les pouvoirs des bots de Noël (24 novembre, idée du porteur du projet)
 // Quand un bot de Noël réussit son smash, le joueur est sonné comme d'habitude (4 secondes), avec l'effet du bot : sur l'écran, et
 // sur le gant du joueur. Le Lutin, en plus, mélange les trois boutons pour le coup suivant (sa farce).
-const RUBAN = `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M44 0 H56 V100 H44 Z M0 52 H100 V64 H0 Z" fill="#D7263D" opacity=".92"/>`
-  + `<path d="M50 50 C38 30 22 34 26 46 C29 56 44 54 50 50 Z M50 50 C62 30 78 34 74 46 C71 56 56 54 50 50 Z" fill="#E8384F" stroke="#9E0C24" stroke-width="2"/>`
-  + `<circle cx="50" cy="50" r="6" fill="#B80D27"/><path d="M48 54 L40 72 M52 54 L60 72" stroke="#D7263D" stroke-width="5" stroke-linecap="round"/></svg>`;
-const PEINTURE = `<svg viewBox="0 0 100 100" aria-hidden="true">${[[30, 34, 13, "#E3122F"], [66, 42, 11, "#1E9E48"], [44, 66, 12, "#1E9E48"], [70, 70, 9, "#E3122F"], [24, 60, 7, "#E3122F"]]
-  .map(([x, y, r, c]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity=".85"/><circle cx="${x + r}" cy="${y - r * .6}" r="${r * .3}" fill="${c}" opacity=".85"/><circle cx="${x - r * .9}" cy="${y + r * .7}" r="${r * .25}" fill="${c}" opacity=".85"/>`).join("")}</svg>`;
-const SABOT = `<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="#3B2412" opacity=".8"><path d="M30 40 C24 54 26 70 40 74 C46 72 46 60 44 50 C42 42 36 36 30 40 Z"/>`
-  + `<path d="M70 40 C76 54 74 70 60 74 C54 72 54 60 56 50 C58 42 64 36 70 40 Z"/></g></svg>`;
-const GIVRE = `<svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="30" fill="#BFE6FF" opacity=".55"/>`
-  + `${[18, 34, 50, 66, 82].map((x, i) => `<path d="M${x - 5} 88 L${x} ${100 - (i % 2 ? 22 : 32)} L${x + 5} 88 Z" fill="#E8F7FF" stroke="#8CC8EE" stroke-width="1.2"/>`).join("")}`
-  + `${[[26, 26], [72, 30], [50, 50], [30, 66], [70, 62]].map(([x, y]) => `<text x="${x}" y="${y}" font-size="14" text-anchor="middle" fill="#fff">❄</text>`).join("")}</svg>`;
+// (dessinés dans les coordonnées de la main, vue de dos : le dos de la main est centré en 50, 60 ; 24 novembre, demande du porteur
+// du projet : le ruban et le sabot centrés sur le dos de la main)
+const RUBAN = `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M46.5 44 H53.5 V77 H46.5 Z M30 56.5 H70 V63.5 H30 Z" fill="#D7263D" stroke="#9E0C24" stroke-width=".8"/>`
+  + `<path d="M50 60 C42 47 32 50 34 57 C36 63 45 62 50 60 Z M50 60 C58 47 68 50 66 57 C64 63 55 62 50 60 Z" fill="#E8384F" stroke="#9E0C24" stroke-width="1.2"/>`
+  + `<circle cx="50" cy="60" r="3.6" fill="#B80D27"/><path d="M48.5 62.5 L44 72 M51.5 62.5 L56 72" stroke="#D7263D" stroke-width="3" stroke-linecap="round"/></svg>`;
+const PEINTURE = `<svg viewBox="0 0 100 100" aria-hidden="true">${[[40, 52, 7, "#E3122F"], [60, 58, 6.5, "#1E9E48"], [48, 68, 6, "#1E9E48"], [62, 70, 4.5, "#E3122F"], [44, 34, 4.5, "#E3122F"], [58, 40, 4, "#1E9E48"]]
+  .map(([x, y, r, c]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity=".88"/><circle cx="${x + r}" cy="${y - r * .6}" r="${r * .3}" fill="${c}" opacity=".88"/><circle cx="${x - r * .9}" cy="${y + r * .7}" r="${r * .25}" fill="${c}" opacity=".88"/>`).join("")}</svg>`;
+const SABOT = `<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="#3B2412" opacity=".82"><path d="M47 49 C40 49 37 58 39 66 C40.5 71 46 72 48 69 C49.5 64 49.5 54 47 49 Z"/>`
+  + `<path d="M53 49 C60 49 63 58 61 66 C59.5 71 54 72 52 69 C50.5 64 50.5 54 53 49 Z"/></g></svg>`;
+// (le givre : les glaçons pendent vers le bas de l'écran, c'est-à-dire vers la droite du dessin, la main étant tournée)
+const GIVRE = `<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="28" y="22" width="44" height="58" rx="11" fill="#BFE6FF" opacity=".5"/>`
+  + `${[32, 42, 52, 62, 72].map((y, i) => `<path d="M71 ${y - 3} L${71 + (i % 2 ? 6 : 9)} ${y} L71 ${y + 3} Z" fill="#E8F7FF" stroke="#8CC8EE" stroke-width=".8"/>`).join("")}`
+  + `${[[38, 32], [60, 34], [50, 52], [38, 68], [62, 66]].map(([x, y]) => `<text x="${x}" y="${y}" font-size="8" text-anchor="middle" fill="#fff">❄</text>`).join("")}</svg>`;
 export const POUVOIRS_NOEL = {
   perenoel: { nom: "Avalanche de cadeaux", gant: RUBAN, pluie: "🎁" },
   lutin: { nom: "La farce du Lutin : tes boutons sont mélangés", gant: PEINTURE, pluie: "🎨", melange: true },
@@ -80,7 +83,7 @@ export function pouvoirNoel(botId, ms, doc = document) {
   const p = POUVOIRS_NOEL[botId]; if (!p) return null;
   const main = doc.getElementById("hMe"), vue = doc.getElementById("viewMatch");
   const poser = (parent, html) => { if (!parent) return; parent.insertAdjacentHTML("beforeend", html); const el = parent.lastElementChild; setTimeout(() => el.remove(), ms); };
-  poser(main, `<span class="noel-pouvoir-gant">${p.gant}</span>`);
+  poser(main?.querySelector(".poing-av") || main, `<span class="noel-pouvoir-gant">${p.gant}</span>`);   // (sur la main, tournée comme elle)
   const pluie = Array.from({ length: 10 }, (_, i) => `<i style="left:${(i * 37 + 7) % 92}%;animation-delay:${(i % 5) * 0.18}s">${p.pluie}</i>`).join("");
   poser(vue, `<div class="noel-pouvoir${p.comete ? " comete" : ""}" aria-hidden="true">${p.comete ? `<i class="trainee">☄️</i>` : pluie}</div>`);
   if (p.melange) melangerBoutons(doc);
