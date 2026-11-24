@@ -1358,13 +1358,13 @@ body.noel #viewMatch { position: relative; }
 @keyframes noel-clignote { 50% { filter: brightness(1.6) saturate(1.3); } }
 @media (prefers-reduced-motion: reduce) { .noel-guirlande { animation: none; } }
 /* Le houx touffu aux quatre coins */
-.noel-houx { position: absolute; width: 64px; height: 64px; pointer-events: none; z-index: 2; }
-.noel-houx.hg { left: -24px; top: -26px; transform: rotate(-35deg); }
-.noel-houx.hd { right: -24px; top: -26px; transform: rotate(35deg); }
-.noel-houx.bg { left: -24px; bottom: -26px; transform: rotate(-145deg); }
-.noel-houx.bd { right: -24px; bottom: -26px; transform: rotate(145deg); }
+.noel-houx { position: absolute; width: 74px; height: 74px; pointer-events: none; z-index: 2; }
+.noel-houx.hg { left: -28px; top: -30px; transform: rotate(-35deg); }
+.noel-houx.hd { right: -28px; top: -30px; transform: rotate(35deg); }
+.noel-houx.bg { left: -28px; bottom: -30px; transform: rotate(-145deg); }
+.noel-houx.bd { right: -28px; bottom: -30px; transform: rotate(145deg); }
 .noel-houx svg { width: 100%; height: 100%; }
 /* Les couleurs de Noël (24 novembre, demande du porteur du projet) : le fond rouge, le tableau de score vert sapin */
 body.noel { --court: #7c1020; --court-deep: #0f4228; background: radial-gradient(ellipse at 50% 0%, #a4182c, #7c1020 45%, #4d0812); background-attachment: fixed; }
-.noel #viewMatch .arena::before { content: "🎄"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 110px; opacity: .2; pointer-events: none; }
+.noel #viewMatch .arena::before { content: "🎄"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 110px; opacity: .42; pointer-events: none; }   /* (24 novembre : un peu plus visible) */
 body.noel .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
