@@ -10,6 +10,15 @@ export function noelActif(maintenant = new Date(), loc = typeof location !== "un
   return mois === 11 || (mois === 0 && jour <= 6);
 }
 
+// Les grands jours (24 novembre au soir, choix du porteur du projet) : le réveillon et Noël, le 24 et le 25 décembre, le court
+// rouge et le grand sapin derrière « contre ». Les autres jours des fêtes, le court bleu habituel, avec la guirlande, le houx et
+// les flocons. Sur la version de test : quand le jour simulé du calendrier de l'Avent (ecran-avent.js) est le 24 ou le 25.
+export function noelGrandJour(maintenant = new Date(), loc = typeof location !== "undefined" ? location : null) {
+  if (versionDeTest(loc)) { try { return [24, 25].includes(JSON.parse(localStorage.getItem("pcf:aventEssai"))?.jourSimule); } catch { return false; } }
+  return maintenant.getMonth() === 11 && [24, 25].includes(maintenant.getDate());
+}
+export const majGrandJour = (doc = document) => doc.body.classList.toggle("noel-fete", noelActif() && noelGrandJour());
+
 // Le houx, bien touffu (24 novembre, demande du porteur du projet) : cinq feuilles en éventail et une grappe de baies (dessin).
 const FEUILLE = (r, c) => `<path transform="rotate(${r} 40 40)" d="M40 40 C34 28 32 14 40 2 C42 8 48 8 47 14 C52 15 52 21 48 23 C53 26 51 32 46 32 C47 36 44 39 40 40Z" fill="${c}" stroke="#0b3d1b" stroke-width="1.6"/>`;
 // (24 novembre, encore plus touffu : neuf feuilles sur deux rangs, et une grosse grappe de baies)
@@ -24,6 +33,7 @@ const HOUX = `<svg viewBox="0 0 80 80" aria-hidden="true">${[-100, -60, -20, 20,
 export function installerNoel(doc = document) {
   if (!noelActif() || doc.body.classList.contains("noel")) return;
   doc.body.classList.add("noel");
+  majGrandJour(doc);
   const board = doc.querySelector("#viewMatch .board");
   if (board) {
     // (24 novembre, demande du porteur du projet : la guirlande tout autour du cadre, le houx touffu aux quatre coins)
