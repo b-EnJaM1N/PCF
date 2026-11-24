@@ -19,7 +19,7 @@ const HOUX = `<svg viewBox="0 0 80 80" aria-hidden="true">${[-100, -60, -20, 20,
   + `<circle cx="40" cy="49" r="5.5" fill="#b80d27"/><circle cx="31" cy="33" r="5" fill="#d7263d"/><circle cx="49" cy="33" r="5" fill="#c8102e"/>`
   + `<circle cx="38" cy="33" r="1.7" fill="#fff" opacity=".75"/><circle cx="31" cy="41" r="1.5" fill="#fff" opacity=".6"/><circle cx="47" cy="31" r="1.4" fill="#fff" opacity=".6"/></svg>`;
 
-// Pose le décor sur l'écran du match (une seule fois) : la guirlande lumineuse et le houx sur le tableau de score, le sapin au fond
+// Pose le décor (une seule fois) : le bonnet sur le logo ; sur l'écran du match, la guirlande lumineuse et le houx sur le tableau de score, le sapin au fond
 // du court, les flocons qui tombent (pas avec « mouvements réduits » : voir le style).
 export function installerNoel(doc = document) {
   if (!noelActif() || doc.body.classList.contains("noel")) return;
@@ -31,6 +31,13 @@ export function installerNoel(doc = document) {
     const houx = ["hg", "hd", "bg", "bd"].map(c => `<span class="noel-houx ${c}" aria-hidden="true">${HOUX}</span>`).join("");
     board.insertAdjacentHTML("afterbegin", guirlandes + houx);
   }
+  // (24 novembre au soir, choix du porteur du projet) le bonnet de Noël sur le logo, en haut de l'écran
+  const marque = doc.querySelector(".marque");
+  if (marque) marque.insertAdjacentHTML("afterbegin", `<svg class="noel-bonnet" viewBox="0 0 60 46" aria-hidden="true">`
+    + `<path d="M8 36 C12 18 26 4 44 6 C52 7 56 14 54 22 C50 16 44 14 40 18 C36 24 38 32 40 36 Z" fill="#D7192E" stroke="#8E0B20" stroke-width="1.4" stroke-linejoin="round"/>`
+    + `<path d="M24 14 C30 9 38 8 44 10" fill="none" stroke="#fff" stroke-width="1.6" opacity=".35" stroke-linecap="round"/>`
+    + `<rect x="4" y="32" width="40" height="11" rx="5.5" fill="#fff" stroke="#DADDE2" stroke-width="1"/>`
+    + `<circle cx="54" cy="24" r="6" fill="#fff" stroke="#DADDE2" stroke-width="1"/></svg>`);
   const vue = doc.getElementById("viewMatch");
   if (vue) {
     const flocons = Array.from({ length: 22 }, (_, i) => {
@@ -69,6 +76,13 @@ const ORDRE_BOUTONS = ["0", "2", "1"];   // (Pierre, Feuille, Ciseaux : l'ordre 
 // L'effet du pouvoir, pendant ms (le temps où le joueur est sonné). Renvoie le texte du pouvoir (pour le verdict), ou null.
 export function pouvoirNoel(botId, ms, doc = document) {
   const p = POUVOIRS_NOEL[botId]; if (!p) return null;
+  // (24 novembre au soir, choix du porteur du projet) le bonnet de Noël sur le logo, en haut de l'écran
+  const marque = doc.querySelector(".marque");
+  if (marque) marque.insertAdjacentHTML("afterbegin", `<svg class="noel-bonnet" viewBox="0 0 60 46" aria-hidden="true">`
+    + `<path d="M8 36 C12 18 26 4 44 6 C52 7 56 14 54 22 C50 16 44 14 40 18 C36 24 38 32 40 36 Z" fill="#D7192E" stroke="#8E0B20" stroke-width="1.4" stroke-linejoin="round"/>`
+    + `<path d="M24 14 C30 9 38 8 44 10" fill="none" stroke="#fff" stroke-width="1.6" opacity=".35" stroke-linecap="round"/>`
+    + `<rect x="4" y="32" width="40" height="11" rx="5.5" fill="#fff" stroke="#DADDE2" stroke-width="1"/>`
+    + `<circle cx="54" cy="24" r="6" fill="#fff" stroke="#DADDE2" stroke-width="1"/></svg>`);
   const vue = doc.getElementById("viewMatch");
   const poser = (parent, html) => { if (!parent) return; parent.insertAdjacentHTML("beforeend", html); const el = parent.lastElementChild; setTimeout(() => el.remove(), ms); };
   const pluie = Array.from({ length: 10 }, (_, i) => `<i style="left:${(i * 37 + 7) % 92}%;animation-delay:${(i % 5) * 0.18}s">${p.pluie}</i>`).join("");
