@@ -25,8 +25,8 @@ export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc"
   // Le gant du Père Noël (24 novembre, événement de Noël : noel.js) : rouge velours, bord en fourrure blanche (le gant du bot).
   perenoel: ["Gant du Père Noël", "#E3122F", "linear-gradient(#E3122F 68%,#FAFAF7 68%)"],
   // Le gant du Lutin (24 novembre, demande du porteur du projet : un lutin farceur, rouge, vert, blanc) : vert sapin, poignet
-  // en pointes rayé rouge et blanc comme un sucre d'orge, et un grelot doré.
-  lutin: ["Gant du Lutin", "#1E9E48", "linear-gradient(#1E9E48 68%,#E3122F 68% 78%,#FAFAF7 78% 88%,#E3122F 88%)"] };
+  // vert rayé de rouge (un filet blanc), poignet rouge en pointes avec une rayure blanche, et un grelot doré.
+  lutin: ["Gant du Lutin", "#1E9E48", "repeating-linear-gradient(-55deg,#1E9E48 0 6px,#E3122F 6px 9px,#FAFAF7 9px 10px)"] };
 // Les gants à dossard (le dossard épinglé, les coutures d'or) ; le poignet du gant du FIAC Club.
 const A_DOSSARD = new Set(["dossard", "fiac"]);
 export const POIGNET_FIAC = "#1B2140";
@@ -289,11 +289,10 @@ const touffe = (pts, r0) => pts.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" 
   + pts.map(([x, y, r]) => `<circle cx="${x - r * .3}" cy="${y - r * .35}" r="${r0}" fill="#fff"/>`).join("");
 const FOURRURE = `<g><path d="M68 76 Q73 76.5 74.5 80" fill="none" stroke="#E9ECF1" stroke-width="1.6" stroke-linecap="round"/>${touffe(BOSSES, 1.6)}${touffe(POMPON, 1.3)}</g>`;
 
-// Le poignet du Lutin : rayé rouge et blanc en biais (sucre d'orge), évasé, le bas en pointes de lutin, un liseré vert, et un
-// grelot doré au bout de la dernière pointe.
-const LUTIN = `<defs><pattern id="sucreOrge" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><rect width="6" height="6" fill="#FAFAF7"/><rect width="3" height="6" fill="#E3122F"/></pattern></defs>`
-  + `<path d="M36 71 H64 L68 84 L66 90.5 L61.5 85.5 L57 92 L52.5 86 L48 92.5 L43.5 86 L39 92 L34.5 85.5 L32 90 L32 83 Z" fill="url(#sucreOrge)" stroke="#8E0B20" stroke-width="1.3" stroke-linejoin="round"/>`
-  + `<path d="M34.8 78.5 H65.4" stroke="#1E9E48" stroke-width="2.6"/>`
+// Le poignet du Lutin (24 novembre, retouché à la demande du porteur du projet) : rouge, la couleur opposée au gant, avec une
+// rayure blanche ; évasé, le bas en pointes de lutin, et un grelot doré au bout de la dernière pointe.
+const LUTIN = `<path d="M36 71 H64 L68 84 L66 90.5 L61.5 85.5 L57 92 L52.5 86 L48 92.5 L43.5 86 L39 92 L34.5 85.5 L32 90 L32 83 Z" fill="#E3122F" stroke="#8E0B20" stroke-width="1.3" stroke-linejoin="round"/>`
+  + `<path d="M34.6 78.5 H65.4" stroke="#FAFAF7" stroke-width="3"/>`
   + `<circle cx="68.8" cy="91.4" r="3.2" fill="#F4C542" stroke="#A87A10" stroke-width=".9"/>`
   + `<circle cx="67.9" cy="90.4" r=".9" fill="#fff" opacity=".8"/><path d="M67.6 92.8 H70" stroke="#7A5A08" stroke-width=".8" stroke-linecap="round"/>`;
 
@@ -327,7 +326,7 @@ export function avatarSVG(a) {
     club: `<pattern id="${id}g" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#14533A"/></pattern>`,
   }[gm] || (a.gant === "elite" ? `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3358"/><stop offset="1" stop-color="#14121F"/></linearGradient>`
     // (le gant du FIAC Club : de l'or métallique, clair en haut, avec un reflet, plus sombre en bas)
-    : a.gant === "lutin" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="30" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#3CC768"/><stop offset=".5" stop-color="#1E9E48"/><stop offset="1" stop-color="#127535"/></linearGradient>`
+    : a.gant === "lutin" ? `<pattern id="${id}g" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="12" height="12" fill="#1E9E48"/><rect x="0" width="4" height="12" fill="#E3122F"/><rect x="4" width="1.3" height="12" fill="#FAFAF7"/></pattern>`
     : a.gant === "perenoel" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="30" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#FF3B4E"/><stop offset=".5" stop-color="#E3122F"/><stop offset="1" stop-color="#B00C25"/></linearGradient>`
     : a.gant === "fiac" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="25" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#FFF3B0"/><stop offset=".3" stop-color="#F2C744"/><stop offset=".55" stop-color="#FFE27A"/><stop offset=".8" stop-color="#D9A21E"/><stop offset="1" stop-color="#A8770F"/></linearGradient>` : "");
   // Poignets et fonds spéciaux (boutique).
