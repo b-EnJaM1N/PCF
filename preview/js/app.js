@@ -2714,7 +2714,7 @@ function aller(vue) {
   if (vue === "viewCercles" || vue === "viewTournois") cerclesUI?.rafraichir();
   if (vue === "viewSng") sngUI?.rafraichir();
   if (vue !== "viewMatch") jetonsUI?.rafraichir();   // le solde, en haut de l'écran, reste à jour (achats, gains)
-  if (vue === "viewJouer") { defisUI?.rafraichir(); renderMatchDuJour(); $("hubAvent").hidden = !noelActif(); }
+  if (vue === "viewJouer") { defisUI?.rafraichir(); renderMatchDuJour(); aventUI?.ligne(); }
   if (vue === "viewAvent") aventUI?.rafraichir();   // (le calendrier de l'Avent, 24 novembre)
   if (vue === "viewFreeroll") { freerollUI?.rafraichir(); programmesUI?.rafraichir(); }
   if (vue === "viewBoutique") boutiqueUI?.rafraichir();
@@ -3630,9 +3630,8 @@ jetonsUI = installerJetons({ compte: compteUI });
 defisUI = installerDefis({ compte: compteUI, jetons: () => jetonsUI?.rafraichir() });
 boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, nouveautes: cle => ouvert(cle || "club"), jetons: () => jetonsUI?.rafraichir(),
   apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); } });
-// Le calendrier de l'Avent (24 novembre ; ecran-avent.js) : le bouton du menu pendant les fêtes ; un rattrapage contre le gardien
+// Le calendrier de l'Avent (24 novembre ; ecran-avent.js) : sa ligne sous les défis du jour, pendant les fêtes ; un rattrapage contre le gardien
 // de la case (un set de 7 points) ; un défi contre un bot de Noël (il est choisi dans l'entraînement).
-$("hubAvent").hidden = !noelActif();
 function jouerGardien(num, botId) {
   if (D && !D.fini) return;
   voix.arreter(); arreterMinuteur(); if (S) clearTimeout(S.decompte);
@@ -3655,6 +3654,7 @@ aventUI = installerAvent({ compte: compteUI, lireP: () => P, sauverP, aller,
   jouerContre: botId => { amicalId = botId; ecrire("adversaire", amicalId); OPP = botParId(amicalId); renderAdversaires(); rafraichirAvatars(); aller("viewMatch"); },
   titres: ids => { const t = accorderTitres(P, ids); if (t.length) { sauverP(); renderFiche(); } },
 });
+aventUI.ligne();
 // Au départ d'un Sit & Go, du freeroll ou d'un tournoi programmé, la page du tournoi s'ouvre… sauf si mon premier match
 // est déjà lancé : elle passait sous la présentation du match, et « Passer » faisait alors quitter le match.
 const ouvrirTournoiSiLibre = id => { if (!duelOccupe()) cerclesUI.ouvrirTournoi(id); };

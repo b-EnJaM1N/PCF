@@ -5,6 +5,7 @@ import * as social from "./social-serveur.js";
 import { avatarSVG, GANTS, FONDS, POIGNETS } from "./avatar.js";
 import { CELEBRATIONS, CADRES } from "./catalogue.js";
 import { versionDeTest } from "./nouveautes.js";
+import { noelActif } from "./noel.js";
 import { jourParis } from "./match-du-jour.js";
 import { NB_CASES, cadeauDe, defiDe, DEFI_DU_JOUR, gardienDe, jourAvent, statutCase, rattrapagesRestants, nbOuvertes, calendrierComplet,
   resultatAvent, casesGagnees, compterMatchDuJour, RATTRAPAGES_PAR_JOUR } from "./avent-logique.js";
@@ -27,23 +28,66 @@ export function decrireCadeau(c) {
   return { nom: c.id, apercu: "🎁" };
 }
 
-// Le grand sapin : sept rangées de portes (1, 2, 3, 4, 4, 5, 5), dans un ordre mélangé comme un vrai calendrier.
+// Le grand sapin (24 novembre, choix du porteur du projet) : 24 boules de Noël accrochées, qui font office de cases : couleurs, formes
+// et tailles variées (petites en haut, plus grosses en bas), dans un ordre mélangé comme un vrai calendrier ; une guirlande dorée,
+// de la neige sur les branches, l'étoile au sommet et des cadeaux au pied.
 const RANGEES = [1, 2, 3, 4, 4, 5, 5];
 const ORDRE = [24, 7, 15, 3, 19, 11, 22, 1, 9, 17, 5, 13, 20, 2, 16, 8, 23, 12, 4, 18, 10, 21, 6, 14];
-const ETAGES = [[5, 17, 30], [15, 29, 50], [32, 40, 70], [50, 49, 91]];   // (sommet, demi-largeur à la base, base) : les étages du sapin
+const COULEURS = [["#D7192E", "#fff"], ["#E9B92F", "#6B4A05"], ["#1B3A8C", "#FFE27A"], ["#7B3FB8", "#fff"], ["#C9D1DC", "#2B3240"],
+  ["#5BBF3A", "#123D0A"], ["#F06AA8", "#fff"], ["#1FA9A0", "#fff"]];
+const FORMES = ["ronde", "ovale", "goutte", "toupie", "cotes"];
 function places() {
   const res = []; let k = 0;
   RANGEES.forEach((n, r) => {
-    const y = 19 + r * 10.6;
-    for (let i = 0; i < n; i++) res.push({ num: ORDRE[k++], x: 50 + (i - (n - 1) / 2) * 14.5, y });
+    const y = 13 + r * 9.4;
+    for (let i = 0; i < n; i++) {
+      const num = ORDRE[k++], decale = ((num * 7) % 5 - 2) * 0.7;
+      res.push({ num, x: 50 + (i - (n - 1) / 2) * 14.2 + decale, y: y + (i % 2 ? 1.6 : -0.6), taille: 10 + r * 0.55 + ((num * 3) % 3) * 0.7,
+        forme: FORMES[(num * 3) % FORMES.length], couleur: COULEURS[(num * 5) % COULEURS.length] });
+    }
   });
   return res;
 }
-const SAPIN = `<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-  <rect x="45" y="88" width="10" height="10" fill="#6B3E22"/>
-  ${ETAGES.map(([y, l, b]) => `<path d="M50 ${y} L${50 + l} ${b} H${50 - l} Z" fill="#1E8C3A" stroke="#0F5A24" stroke-width=".6"/>`).join("")}
-  <path d="M50 1 L51.6 4.4 L55.2 4.6 L52.4 6.8 L53.3 10.3 L50 8.4 L46.7 10.3 L47.6 6.8 L44.8 4.6 L48.4 4.4 Z" fill="#F4C542"/>
+// Une boule (dessin 40 × 50 : l'attache en haut, la boule dessous), avec son numéro et un reflet.
+function boule(p, ouverte) {
+  const [c, t] = p.couleur, f = p.forme;
+  const corps = f === "ovale" ? `<ellipse cx="20" cy="30" rx="13" ry="17" fill="${c}"/>`
+    : f === "goutte" ? `<path d="M20 11 C29 21 35 28 35 34 A15 13 0 0 1 5 34 C5 28 11 21 20 11 Z" fill="${c}"/>`
+    : f === "toupie" ? `<path d="M20 12 C32 18 36 25 36 29 C36 35 27 41 20 49 C13 41 4 35 4 29 C4 25 8 18 20 12 Z" fill="${c}"/>`
+    : f === "cotes" ? `<circle cx="20" cy="30" r="16" fill="${c}"/><path d="M20 14 V46 M12 16 C8 26 8 34 12 44 M28 16 C32 26 32 34 28 44" stroke="rgba(255,255,255,.35)" stroke-width="1.4" fill="none"/>`
+    : `<circle cx="20" cy="30" r="16" fill="${c}"/>`;
+  return `<svg viewBox="0 0 40 52" aria-hidden="true"><path d="M20 1 a3 3 0 1 1 -.01 0" fill="none" stroke="#C9A24A" stroke-width="1.4"/>`
+    + `<rect x="15" y="7" width="10" height="6" rx="1.5" fill="#E9C046" stroke="#9A7410" stroke-width=".8"/>${corps}`
+    + `<ellipse cx="13" cy="23" rx="4" ry="6" fill="#fff" opacity=".45" transform="rotate(25 13 23)"/>`
+    + `<text x="20" y="${f === "toupie" ? 33 : 35}" text-anchor="middle" font-size="13" font-weight="800" fill="${t}" font-family="inherit">${p.num}</text>${ouverte ? `<text x="33" y="20" font-size="11" text-anchor="middle">✨</text>` : ""}</svg>`;
+}
+// Le sapin lui-même (dessin 300 × 400 : 3 × 4, comme sa boîte).
+const ETAGES = [[18, 112, 58], [62, 178, 92], [118, 248, 122], [178, 318, 146]];   // (sommet, base, demi-largeur) : les étages
+const festons = (y, l) => { let d = `L${150 + l} ${y}`; const n = 6; for (let i = n; i > 0; i--) { const x1 = 150 - l + (2 * l * i) / n, x0 = 150 - l + (2 * l * (i - 1)) / n; d += ` Q${(x1 + x0) / 2} ${y + 10} ${x0} ${y}`; } return d; };
+const SAPIN = `<svg viewBox="0 0 300 400" aria-hidden="true">
+  <rect x="134" y="312" width="32" height="40" rx="3" fill="#6B3E22"/>
+  ${ETAGES.map(([h, b, l], i) => `<path d="M150 ${h} ${festons(b, l)} Z" fill="${i % 2 ? "#1E8C3A" : "#22994A"}" stroke="#0F5A24" stroke-width="2"/>`
+    + `<path d="M${150 - l + 8} ${b - 2} ${Array.from({ length: 6 }, (_, k) => { const x = 150 - l + (2 * l * (k + .5)) / 6; return `Q${x} ${b + 9} ${x + l / 6} ${b - 1}`; }).join(" ")}" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".9"/>`).join("")}
+  ${[[108, 92, 192, 86], [86, 160, 216, 150], [66, 226, 238, 214], [48, 292, 258, 282]].map(([x1, y1, x2, y2]) => `<path d="M${x1} ${y1} Q150 ${y1 + 26} ${x2} ${y2}" fill="none" stroke="#E9C046" stroke-width="2.6" stroke-dasharray="1 7" stroke-linecap="round"/><path d="M${x1} ${y1} Q150 ${y1 + 26} ${x2} ${y2}" fill="none" stroke="#C9A24A" stroke-width=".9" opacity=".8"/>`).join("")}
+  <path d="M150 0 L156 14 L171 15 L159 24 L163 39 L150 31 L137 39 L141 24 L129 15 L144 14 Z" fill="#F4C542" stroke="#C99A1E" stroke-width="1.5"/>
+  <rect x="62" y="330" width="56" height="44" rx="4" fill="#D7192E"/><rect x="86" y="330" width="8" height="44" fill="#F4C542"/><rect x="62" y="346" width="56" height="8" fill="#F4C542"/>
+  <path d="M90 330 C80 318 70 322 76 330 Z M90 330 C100 318 110 322 104 330 Z" fill="#F4C542"/>
+  <rect x="182" y="338" width="48" height="36" rx="4" fill="#1B3A8C"/><rect x="202" y="338" width="8" height="36" fill="#fff"/><rect x="182" y="352" width="48" height="7" fill="#fff"/>
+  <rect x="122" y="350" width="34" height="26" rx="3" fill="#5BBF3A"/><rect x="136" y="350" width="6" height="26" fill="#D7192E"/>
 </svg>`;
+
+// Le texte de la ligne du calendrier, sous les défis du jour.
+export function texteLigne(etat) {
+  const t = "🎄 Calendrier de l'Avent";
+  if (!etat) return `${t} ›`;
+  const j = etat.jour;
+  if (!j) return `${t} : il s'ouvre le 1er décembre ›`;
+  let ratt = 0; for (let n = 1; n <= Math.min(j, NB_CASES); n++) if (statutCase(etat, n) === "rattrapage") ratt++;
+  const r = ratt && rattrapagesRestants(etat) ? ` · ${ratt} à rattraper` : "";
+  if (j <= NB_CASES && statutCase(etat, j) === "aujourdhui") return `${t} · Case ${j} à ouvrir aujourd'hui${r} ›`;
+  if (calendrierComplet(etat)) return `${t} · 🏅 Complet ! ›`;
+  return j <= NB_CASES ? `${t} · ✓ Case du jour ouverte${r} ›` : `${t}${r || " · Rattrapages jusqu'au 31 décembre"} ›`;
+}
 
 // ctx : { compte, lireP, sauverP, apresChangement, jouerGardien(num), jouerContre(botId), aller(vue), titres(P) }
 export function installerAvent(ctx) {
@@ -91,9 +135,8 @@ export function installerAvent(ctx) {
       : `${nbOuvertes(etat)} case${nbOuvertes(etat) > 1 ? "s" : ""} ouverte${nbOuvertes(etat) > 1 ? "s" : ""} sur ${NB_CASES}${j > NB_CASES ? " · Les cases ratées se rattrapent jusqu'au 31 décembre." : ""} · Rattrapages aujourd'hui : ${rattrapagesRestants(etat)} sur ${RATTRAPAGES_PAR_JOUR}`
       + (calendrierComplet(etat) ? " · 🏅 Calendrier complet !" : "");
     zone.innerHTML = SAPIN + places().map(p => {
-      const st = statutCase(etat, p.num), c = cadeauDe(p.num);
-      const dedans = st === "ouverte" ? (c.type === "jetons" ? "🪙" : c.type === "gant" ? "🧤" : "🎁") : p.num;
-      return `<button class="avent-porte ${st}${choisie === p.num ? " choisie" : ""}" data-n="${p.num}" style="left:${p.x}%;top:${p.y}%" aria-label="Case ${p.num}, ${libelle(st)}">${dedans}</button>`;
+      const st = statutCase(etat, p.num);
+      return `<button class="avent-porte ${st}${choisie === p.num ? " choisie" : ""}" data-n="${p.num}" style="left:${p.x}%;top:${p.y}%;width:${p.taille}%" aria-label="Case ${p.num}, ${libelle(st)}">${boule(p, st === "ouverte")}</button>`;
     }).join("");
     zone.querySelectorAll(".avent-porte").forEach(b => b.addEventListener("click", () => { choisie = Number(b.dataset.n); render(); $("aventCase").scrollIntoView?.({ block: "nearest", behavior: "smooth" }); }));
     if (!choisie && j) choisie = Math.min(j, NB_CASES);
@@ -168,5 +211,14 @@ export function installerAvent(ctx) {
   $("aventEffacer")?.addEventListener("click", () => { ecrireEssai(null); const P = ctx.lireP(); P.aventEssai = []; ctx.sauverP(); ctx.apresChangement(); etat = etatEssai(); choisie = null; render(); });
   if ($("aventJourSimule")) $("aventJourSimule").innerHTML = Array.from({ length: 31 }, (_, i) => `<option value="${i + 1}">${i + 1} décembre</option>`).join("");
 
-  return { rafraichir: charger, apresMatch };
+  // La ligne sous les défis du jour (24 novembre, choix du porteur du projet) : ce qui attend dans le calendrier.
+  let ligneChargee = false;
+  function ligne() {
+    const el = $("aventLigne"); if (!el) return;
+    el.hidden = !noelActif();
+    if (el.hidden) return;
+    if (!ligneChargee && !etat) { ligneChargee = true; charger().then(ligne); }
+    el.textContent = texteLigne(etat);
+  }
+  return { rafraichir: () => charger().then(ligne), apresMatch: async i => { await apresMatch(i); ligne(); }, ligne };
 }
