@@ -118,7 +118,8 @@ function choisir(etat, moment, ctx = {}, rng = Math.random) {
   let valides = pool.filter(e => !etat.dits.has(e.base) && (!e.si || CONDITIONS[e.si]?.(ctx, etat)) && (e.seul === undefined || e.seul === ctx.signe) && (!e.quand || e.quand === ctx.quand) && (e.clin !== "cine" || !etat.cine)
     // (une série : les répliques écrites pour sa longueur, 8 voulant dire « 8 ou plus » ; un set gagné de 5 points : seulement « net »)
     && (e.long === undefined || e.long === ctx.longueur || (e.long === 8 && ctx.longueur >= 8)) && (!ctx.net5 || e.net)
-    && (!ctx.smashAdv || !e.deMoi));   // (le smash de l'adversaire : pas les phrases qui parlent du smasheur comme de moi)
+    && (!ctx.smashAdv || !e.deMoi)   // (le smash de l'adversaire : pas les phrases qui parlent du smasheur comme de moi)
+    && (!e.huit || ctx.huitPartout));   // (« Huit partout » : seulement à 8-8, pas à 5-5 dans un set de 7 ; 24 novembre)
   // Seulement ce qu'on peut entendre : une réplique enregistrée (etat.audible) et, pendant l'échange (ctx.court), assez courte
   // pour être dite (voir REPLIQUE_COURTE dans app.js) ; sinon, une autre réplique plutôt qu'un silence.
   const ligne = e => ligneMoment(e, { genre: etat.genre, signe: ctx.signe ?? 0, signeAdv: ctx.signeAdv ?? 0 });
@@ -329,7 +330,7 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
       } else if (g === 0 && a - b >= 6 && !etat.dejaSet.has("lecon") && peutCommenter(3) && rng() < 0.6) {
         moment = "lecon"; etat.dejaSet.add("lecon");   // (6 points d'avance ou plus dans le set : 17 novembre)
       } else if (seuilMT && a === b && a === seuilMT && !etat.dejaSet.has("money_time") && peutCommenter(2, 0.5) && rng() < 0.7) {
-        moment = "money_time"; etat.dejaSet.add("money_time");
+        moment = "money_time"; etat.dejaSet.add("money_time"); ctx.huitPartout = a === 8;
       } else if (seuilMT && g === 1 && a === seuilMT && b === seuilMT + 1 && peutCommenter(2, 0.5) && rng() < 0.6) {
         moment = "rate_money_time";
       } else if (g === 0 && serieAvant.joueur === 1 && serieAvant.n >= 3 && peutCommenter(3) && rng() < 0.3) {

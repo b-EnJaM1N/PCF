@@ -837,3 +837,19 @@ test("les bots de Noël : présentation, pouvoir du smash réussi, fin du match 
   assert.ok(pouvoirs >= smashs * 0.6, `pouvoir dit ${pouvoirs} fois sur ${smashs} smashs réussis`);
   assert.ok(ambiances > 5, `ambiance de Noël : ${ambiances}`);
 });
+
+// (24 novembre, remarque du porteur du projet : « Huit partout » dit à 5-5 dans un set de 7)
+test("« Huit partout » : seulement à 8-8, jamais à 5-5 dans un set de 7", () => {
+  const huit = new Set(POOLS.money_time.filter(e => e.huit).map(e => e.base));
+  assert.equal(huit.size, 2);
+  const dits = pts => {
+    const rng = rngFixe(pts), vus = [];
+    for (let k = 0; k < 150; k++) {
+      const m = nouveauMatch({ pointsParSet: pts, setsGagnants: 1 }), etat = nouvelEtatAnnonces();
+      while (!m.termine) { const e = jouerCoup(m, Math.floor(rng() * 3), Math.floor(rng() * 3)); vus.push(...annoncerCoup(m, e, etat, {}, rng).lignes.map(l => l.id)); }
+    }
+    return vus.filter(id => [...huit].some(b => id.startsWith(b)));
+  };
+  assert.equal(dits(7).length, 0, "set de 7 : jamais");
+  assert.ok(dits(11).length > 0, "set de 11 : oui, à 8-8");
+});
