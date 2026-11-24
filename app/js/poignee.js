@@ -6,7 +6,11 @@ export const STYLES = {
   normale: { nom: "Normale", icone: "🤝", chaleur: 2 },
   legere: { nom: "Légère", icone: "🤏", chaleur: 1 },
   froide: { nom: "Froide", icone: "🧊", chaleur: 0 },
+  // (24 novembre, calendrier de l'Avent : avent.js) une poignée normale, couverte de givre ; pour le serveur, les trophées et
+  // les commentaires, c'est une poignée normale (normaleDe).
+  givree: { nom: "Givrée", icone: "❄️", chaleur: 2 },
 };
+export const normaleDe = s => (s === "givree" ? "normale" : s);
 // (5 secondes depuis le 15 novembre, suggestion d'un testeur : 3 secondes, c'était trop court)
 export const DELAI_CHOIX_MS = 5000;
 export const styleValide = s => (STYLES[s] ? s : "normale");
@@ -27,7 +31,7 @@ export function styleDuBot(botId, monStyle, rng = Math.random) {
 // Deux franches : « franche » ; une franche contre une légère ou froide : « contraste » ; deux froides, ou une froide et une
 // légère : « froide » ; une légère ou une froide avec une normale, deux légères : « legere ».
 export function situationPoignee(moi, lui) {
-  const a = styleValide(moi), b = styleValide(lui), paire = new Set([a, b]);
+  const a = normaleDe(styleValide(moi)), b = normaleDe(styleValide(lui)), paire = new Set([a, b]);
   if (a === "franche" && b === "franche") return "poignee_franche";
   if (paire.has("franche") && (paire.has("legere") || paire.has("froide"))) return "poignee_contraste";
   if (paire.has("froide") && !paire.has("normale")) return "poignee_froide";
@@ -51,7 +55,7 @@ export function rencontre(moi, lui) {
 // defaite : le match vient d'être perdu (une poignée chaleureuse compte alors comme « main tendue »).
 export function compterPoignee(P, style, defaite = false) {
   P.poignees = { franche: 0, normale: 0, legere: 0, froide: 0, ...(P.poignees || {}) };
-  const s = styleValide(style);
+  const s = normaleDe(styleValide(style));
   P.poignees[s]++;
   if (defaite && (s === "franche" || s === "normale")) P.mainsTendues = (P.mainsTendues || 0) + 1;
 }

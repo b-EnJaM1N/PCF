@@ -19,8 +19,11 @@ export const FAMILLES = [
   { id: "cercles", nom: "Cercles", icone: "👥" },
   { id: "duels", nom: "Duels", icone: "⚔️" },
   { id: "carriere", nom: "Carrière", icone: "🏅" },
+  { id: "noel", nom: "Noël", icone: "🎄" },   // (24 novembre : l'événement de Noël, noel.js ; visible pendant les fêtes, ou une fois obtenu)
 ];
 export const TITRES = [
+  // (24 novembre) le calendrier de l'Avent complet (avent-logique.js)
+  { id: "avent_complet", famille: "noel", noel: true, nom: "Calendrier complet", desc: "Ouvrir les 24 cases du calendrier de l'Avent." },
   { id: "gentleman", famille: "fairplay", nom: "Gentleman", desc: "Serrer la main franchement ou normalement 10 fois.", debloque: "le geste du check à l'adversaire", objet: ["geste", "check"] },
   { id: "main_tendue", famille: "fairplay", nom: "Main tendue", desc: "Serrer chaleureusement la main après 10 défaites." },
   { id: "glacon", famille: "fairplay", nom: "Glaçon", desc: "Serrer la main froidement 10 fois. Monique approuve." },

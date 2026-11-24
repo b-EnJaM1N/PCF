@@ -17,8 +17,10 @@ import { carteDe, notesDe, texteRang, rangDe, texteCoefs, partBots, HUMAINS_POUR
 import { dessinerCarte } from "./carte.js";
 import { installerComparaison } from "./comparer-cartes.js";
 import { installerNoel, noelActif, pouvoirNoel, remettreBoutons } from "./noel.js";
-import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee, situationPoignee } from "./poignee.js";
+import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee, situationPoignee, normaleDe } from "./poignee.js";
 import { installerRapide } from "./ecran-rapide.js";
+import { installerAvent } from "./ecran-avent.js";
+import { FORMAT_GARDIEN } from "./avent-logique.js";
 import { installerSignalement } from "./ecran-signaler.js";
 import { etatNotifications, activerNotifications, desactiverNotifications, rattacherAbonnement, testerNotification, texteTest } from "./notifications.js";
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
@@ -31,7 +33,7 @@ import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } f
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
-import { avatarSVG, SYMBOLES, FONDS, GANTS, GANTS_PULLS, POIGNETS, MOTIFS, MOTIFS_GANT, MOTIF_COULEURS, MOTIFS_COLORABLES, BRACELETS_COLORABLES, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
+import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, MOTIF_COULEURS, MOTIFS_COLORABLES, BRACELETS_COLORABLES, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS, POOLS, ligneMoment } from "./voix/script.js";
 import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint, intensiteMatch, series } from "./ambiance.js";
@@ -135,7 +137,7 @@ if (migrerCarriere(C)) { P.carriere = C; sauverLocal(); }   // (une saison d'Ama
 const sauverC = () => { P.carriere = C; sauverP(); };
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
-let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, programmesUI = null, defisUI = null, boutiqueUI = null;
+let aventUI = null, duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, programmesUI = null, defisUI = null, boutiqueUI = null;
 let monClassement = null, mesDuelsOfficiels = 0, maDivision = null;
 // « Niveau officiel : 1232 ? · provisoire, encore 9 duels de calibrage »
 const texteNiveauFiche = (points, joues, division = null) => `Niveau officiel : ${texteNiveau(points, joues)}` + (LANCEMENT.actif ? "" : ` · ${texteDivision(division ?? divisionDe(points))}`) +
@@ -1271,6 +1273,9 @@ function finir() {
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("coach").hidden = true;
   if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
+  // Le calendrier de l'Avent (ecran-avent.js) : ce match ouvre-t-il une case ?
+  if (n && noelActif()) aventUI?.apresMatch({ match: m, adv: OPP.id, botNoel: !!OPP.noel, duel: !!S.duel, smashsReussis: S.stats.smashsReussis || 0,
+    meilleureSerie: S.stats.meilleureSerie || 0, matchDuJour: !!S.matchJour, rattrapage: S.aventRattrapage || null, abandon: !!special });
   // La série de jours (match-du-jour.js) : ses paliers donnent un trophée et un objet (nouveautes.js : « serie »).
   const serieFin = S.matchJour && n && ouvert("serie") ? serie(resultatsDuJour(), jourParis()) : 0;
   if (serieFin) { nouveaux.push(...accorderTitres(P, titresSerie(serieFin))); sauverP(); }
@@ -1439,6 +1444,8 @@ function poigneeDeMain(apres) {
   $("pmMoi").innerHTML = avatarSVG(avMoi()); $("pmAdv").innerHTML = avatarSVG(avAdv());
   $("pmStyleMoi").textContent = ""; $("pmStyleAdv").textContent = "";
   scene.className = "pm-scene"; choix.hidden = false; $("pmTemps").hidden = false;
+  choix.querySelector('[data-s="givree"]').hidden = !possede(P, "poignee", "givree");   // (la poignée givrée : calendrier de l'Avent)
+  choix.classList.toggle("cinq", possede(P, "poignee", "givree"));
   choix.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === P.poignee)));
   const barre = $("pmTemps"); barre.classList.remove("court"); void barre.offsetWidth; barre.classList.add("court");
   ov.classList.add("show");
@@ -1449,7 +1456,7 @@ function poigneeDeMain(apres) {
     if (fait) return; fait = true; clearTimeout(minuterie);
     style = styleValide(style);
     choix.hidden = true; $("pmTemps").hidden = true;
-    compterPoignee(P, style, S.match.vainqueur === 1); sauverP(); defisUI?.poignee(style);
+    compterPoignee(P, style, S.match.vainqueur === 1); sauverP(); defisUI?.poignee(normaleDe(style));
     let adv;
     if (S.duel && D) adv = await styleAdversaire(style, debut);
     else adv = styleDuBot(OPP.id, style);
@@ -1481,7 +1488,7 @@ async function styleAdversaire(moi, debut = Date.now()) {
   const id = D.id, sa = D.moi === 0 ? "poignee1" : "poignee0";
   const habituel = styleValide(OPP.fiche?.poignee);
   try {
-    let d = await serveur.serrerLaMain(id, moi);
+    let d = await serveur.serrerLaMain(id, normaleDe(moi));   // (la givrée : une normale pour le serveur)
     const jusqua = Math.max(Date.now() + 2100, debut + DELAI_CHOIX_MS + 700);
     while (!d?.[sa] && Date.now() < jusqua) { await new Promise(ok => setTimeout(ok, 700)); d = await serveur.lireDuel(id); }
     return d?.[sa] ? styleValide(d[sa]) : habituel;
@@ -1975,7 +1982,7 @@ function renderCarte() {
     const jeton = ++carteJeton;
     const c = carteDe(P, { niveauOfficiel: monClassement, provisoire: monClassement !== null && provisoire(mesDuelsOfficiels), surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
     if (ouvert("serie")) c.serie = serie(resultatsDuJour(), jourParis());   // (ma série de jours, au pied de ma carte)
-    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(avMoi()), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur, cadreFlammes: CADRES[P.cadre]?.flammes });
+    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(avMoi()), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur, cadreFlammes: CADRES[P.cadre]?.flammes, cadreGuirlande: CADRES[P.cadre]?.guirlande });
     if (jeton !== carteJeton) return;
     $("carteRarete").textContent = texteRang(c.rang);
     const notes = notesDe(P);
@@ -2011,7 +2018,7 @@ async function voirCarteDe(uid) {
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
   $("uneComparer").hidden = uid === compteUI?.session()?.user?.id; $("uneComparer").dataset.uid = uid;   // (21 novembre : « ⚖️ Comparer avec moi »)
   $("une").classList.add("show");
-  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG({ ...J.av, brode: clePseudo(ligne.pseudo, ligne.numero) }), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur, cadreFlammes: CADRES[J.cadre]?.flammes });
+  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG({ ...J.av, brode: clePseudo(ligne.pseudo, ligne.numero) }), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur, cadreFlammes: CADRES[J.cadre]?.flammes, cadreGuirlande: CADRES[J.cadre]?.guirlande });
   await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
     fichier: "carte-de-joueur.png", alt: `Carte de joueur de ${nom} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
   return null;
@@ -2593,11 +2600,12 @@ function renderFiche() {
     }).join("");
   }
   // Le palmarès : les trophées, famille par famille.
-  const visibles = TITRES.filter(t => !t.bientot || ouvert(t.bientot));   // (les trophées des nouveautés pas encore ouvertes : version de test seulement)
+  const visibles = TITRES.filter(t => (!t.bientot || ouvert(t.bientot)) && (!t.noel || noelActif() || P.titres[t.id]));   // (Noël : pendant les fêtes, ou obtenu)   // (les trophées des nouveautés pas encore ouvertes : version de test seulement)
   const obtenus = visibles.filter(t => P.titres[t.id]).length;
   $("palmaresCompte").textContent = `${obtenus} trophée${obtenus > 1 ? "s" : ""} sur ${visibles.length}`;
   $("badges").innerHTML = FAMILLES.map(f => {
     const liste = visibles.filter(t => t.famille === f.id), n = liste.filter(t => P.titres[t.id]).length;
+    if (!liste.length) return "";   // (une famille sans trophée visible : Noël, hors des fêtes)
     return `<h3 class="famille">${f.icone} ${f.nom} <small>${n} / ${liste.length}</small></h3>` + liste.map(t => {
       const on = !!P.titres[t.id];
       return `<div class="badge ${on ? "on" : "off"}"><div class="bn">${on ? "🏅" : "🔒"} ${t.nom}</div><div class="bd">${t.desc}</div>${texteDeblocage(t) ? `<div class="bu">Débloque ${esc(texteDeblocage(t))}</div>` : ""}</div>`;
@@ -2610,7 +2618,9 @@ function renderEditeur() {
   $("avApercu").innerHTML = avatarSVG(avMoi());             // l'aperçu reste visible pendant qu'on fait défiler les choix
   const mk = (el, type, table, texte) => {
     // (les objets « bientôt » : seulement sur la version de test, sauf s'il les a déjà)
-    el.innerHTML = Object.keys(table).filter(k => !(type === "gant" && k === "fiac" && !P.tenantFiac && P.av.gant !== "fiac") && !(type === "gant" && ["perenoel", "lutin", "renne", "neige", "pullmoche", ...GANTS_PULLS].includes(k) && P.av.gant !== k)).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
+    el.innerHTML = Object.keys(table).filter(k => !(type === "gant" && k === "fiac" && !P.tenantFiac && P.av.gant !== "fiac") && !(type === "gant" && ["lutin", "renne", "neige"].includes(k) && P.av.gant !== k)
+      // (les cadeaux du calendrier de l'Avent : visibles, avec un cadenas, pendant les fêtes ; sinon seulement s'il les a)
+      && !(articleDe(type, k)?.avent && !noelActif() && !possede(P, type, k) && P.av[type] !== k)).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
       return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
     }).join("");
@@ -2621,6 +2631,7 @@ function renderEditeur() {
         $("lockNote").innerHTML = gantAttendPremierMatch(P, type, k) ? "🧤 Les gants se débloquent après ton premier match. En attendant : la main nue !"
           : reserveAuTenant(P, type, k) && k === "fiac" ? "🏆 Le gant en or du FIAC Club se porte seulement quand tu es tenant du titre du FIAC Club : gagne son prochain tournoi !"
           : reserveAuTenant(P, type, k) ? "🟨 Le Dossard 1 se porte seulement quand tu es tenant du titre d'un de tes cercles : gagne le prochain tournoi de ton cercle, il est à toi jusqu'au tournoi suivant !"
+          : x?.avent ? `🎄 « ${esc(x.nom || (type === "gant" ? GANTS[k][0] : k))} » est à gagner dans le calendrier de l'Avent. <button class="linkbtn" data-aller="viewAvent">Voir le calendrier</button>`
           : t ? `Verrouillé. Obtiens le titre « ${esc(t.nom)} » : ${esc(t.desc.charAt(0).toLowerCase() + t.desc.slice(1))}`
           : `🛍️ « ${esc(x.nom)} » est en vente à la boutique : ${x.prix} jetons. <button class="linkbtn" data-aller="viewBoutique">Voir la boutique</button>`;
         return;
@@ -2681,8 +2692,8 @@ $("resetProfile").addEventListener("click", () => {
 // ---------------------------------------------------------------- navigation
 // Trois onglets (Jouer, Cercles, Ma fiche) et la roue des Options. L'onglet « Jouer » est un menu
 // qui mène aux pages Partie rapide, Défier un ami, Tournois (Programmés, Sit & Go, Mes tournois) et Entraînement.
-const VUES = ["viewJouer", "viewCompet", "viewCarriere", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewBoutique", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
-const ONGLET_DE = { viewJouer: "jouer", viewCompet: "jouer", viewCarriere: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewBoutique: "profile", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
+const VUES = ["viewJouer", "viewCompet", "viewCarriere", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewBoutique", "viewAvent", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
+const ONGLET_DE = { viewJouer: "jouer", viewCompet: "jouer", viewCarriere: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewBoutique: "profile", viewAvent: "jouer", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
 let vueCourante = "viewJouer", avantOptions = "viewJouer", parHistorique = false;
 function aller(vue) {
   if (!VUES.includes(vue)) return;
@@ -2703,7 +2714,8 @@ function aller(vue) {
   if (vue === "viewCercles" || vue === "viewTournois") cerclesUI?.rafraichir();
   if (vue === "viewSng") sngUI?.rafraichir();
   if (vue !== "viewMatch") jetonsUI?.rafraichir();   // le solde, en haut de l'écran, reste à jour (achats, gains)
-  if (vue === "viewJouer") { defisUI?.rafraichir(); renderMatchDuJour(); }
+  if (vue === "viewJouer") { defisUI?.rafraichir(); renderMatchDuJour(); $("hubAvent").hidden = !noelActif(); }
+  if (vue === "viewAvent") aventUI?.rafraichir();   // (le calendrier de l'Avent, 24 novembre)
   if (vue === "viewFreeroll") { freerollUI?.rafraichir(); programmesUI?.rafraichir(); }
   if (vue === "viewBoutique") boutiqueUI?.rafraichir();
   window.scrollTo(0, 0);
@@ -3618,6 +3630,31 @@ jetonsUI = installerJetons({ compte: compteUI });
 defisUI = installerDefis({ compte: compteUI, jetons: () => jetonsUI?.rafraichir() });
 boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, nouveautes: cle => ouvert(cle || "club"), jetons: () => jetonsUI?.rafraichir(),
   apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); } });
+// Le calendrier de l'Avent (24 novembre ; ecran-avent.js) : le bouton du menu pendant les fêtes ; un rattrapage contre le gardien
+// de la case (un set de 7 points) ; un défi contre un bot de Noël (il est choisi dans l'entraînement).
+$("hubAvent").hidden = !noelActif();
+function jouerGardien(num, botId) {
+  if (D && !D.fini) return;
+  voix.arreter(); arreterMinuteur(); if (S) clearTimeout(S.decompte);
+  OPP = botParId(botId); WIN = FORMAT_GARDIEN.setsGagnants;
+  S = {
+    match: nouveauMatch({ ...FORMAT_GARDIEN }),
+    stats: nouvellesStats(), annonces: avecAudible(nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre })), suivi: new Suivi(),
+    tour: null, occupe: false, enJeu: false, aventRattrapage: num,
+  };
+  preparerEcranMatch();
+  $("startCard").hidden = true; $("tourCard").hidden = true;
+  $("ruleTxt").textContent = `🎄 Calendrier de l'Avent : rattrapage de la case ${num} contre ${OPP.nom} · ${texteFormat(S.match.format)}`;
+  rafraichirAvatars(); render();
+  aller("viewMatch");
+  ouvrirFaceAFace();
+}
+aventUI = installerAvent({ compte: compteUI, lireP: () => P, sauverP, aller,
+  apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); },
+  jouerGardien,
+  jouerContre: botId => { amicalId = botId; ecrire("adversaire", amicalId); OPP = botParId(amicalId); renderAdversaires(); rafraichirAvatars(); aller("viewMatch"); },
+  titres: ids => { const t = accorderTitres(P, ids); if (t.length) { sauverP(); renderFiche(); } },
+});
 // Au départ d'un Sit & Go, du freeroll ou d'un tournoi programmé, la page du tournoi s'ouvre… sauf si mon premier match
 // est déjà lancé : elle passait sous la présentation du match, et « Passer » faisait alors quitter le match.
 const ouvrirTournoiSiLibre = id => { if (!duelOccupe()) cerclesUI.ouvrirTournoi(id); };

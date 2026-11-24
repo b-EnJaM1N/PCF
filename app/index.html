@@ -82,6 +82,7 @@
       <span class="jetons-msg" id="jetonsMsg" role="status"></span>
     </div>
     <button class="hub alerte" id="hubHors" data-palier="1" hidden><span class="hub-i">🔑</span><span><b>Créer mon compte</b><small>Gratuit, sans mot de passe : défie tes amis, joue en ligne et garde ta fiche</small></span></button>
+    <button class="hub hub-noel" id="hubAvent" data-aller="viewAvent" hidden><span class="hub-i">🎄</span><span><b>Calendrier de l'Avent</b><small>Une case par jour, un défi, un cadeau : pulls moches, jetons et le Gant du Père Noël</small></span></button>
     <button class="hub" data-aller="viewRapide" data-palier="1"><span class="hub-i">⚡</span><span><b>Partie rapide</b><small>Un adversaire de ton niveau, en un clic</small></span></button>
     <button class="hub" data-aller="viewDuel"><span class="hub-i">🤝</span><span><b>Défier un ami</b><small>Un duel en direct, par pseudo ou par lien</small></span></button>
     <button class="hub cache-lancement" data-aller="viewCompet" data-palier="5"><span class="hub-i">🏆</span><span><b>Tournois</b><small class="cache-lancement">Sit &amp; Go, freeroll du soir, Grand Chelem du dimanche, tournois entre amis</small><small class="seul-lancement">Le freeroll gratuit de 20 h, heads-up et Sit &amp; Go, tournois entre amis</small></span></button>
@@ -500,6 +501,19 @@
       <p class="hint" id="classementMoi"></p>
     </details>
     <section class="card" id="freeHors" hidden><p class="hint">Les tournois programmés et le freeroll se jouent en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
+  </div>
+
+  <!-- Le calendrier de l'Avent (24 novembre ; ecran-avent.js) -->
+  <div class="view" id="viewAvent" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Retour</button></p>
+    <section class="card avent-carte">
+      <h2>🎄 Calendrier de l'Avent</h2>
+      <p class="hint">Du 1er au 24 décembre, une case par jour : réussis le défi du jour pour l'ouvrir. Une case ratée se rattrape jusqu'au 31 décembre en battant le bot de Noël qui la garde (deux rattrapages par jour).</p>
+      <p class="hint" id="aventEssai" hidden>🧪 Version de test : essai sur ce téléphone, rien n'est enregistré. Jour simulé : <select id="aventJourSimule"></select> <button class="linkbtn" id="aventEffacer">Tout effacer</button></p>
+      <p class="avent-msg" id="aventMsg" role="status"></p>
+      <div class="avent-sapin" id="aventSapin"></div>
+      <div class="avent-case" id="aventCase" hidden></div>
+    </section>
   </div>
 
   <div class="view" id="viewBoutique" hidden>
@@ -955,8 +969,18 @@
       <div class="pm-main" id="pmMain" aria-hidden="true">🤝</div>
       <div class="pm-j"><div class="pm-av adv" id="pmAdv"></div><div class="pm-style" id="pmStyleAdv"></div></div>
     </div>
-    <div class="pm-choix" id="pmChoix"><button data-s="franche">💪<br>Franche</button><button data-s="normale">🤝<br>Normale</button><button data-s="legere">🤏<br>Légère</button><button data-s="froide">🧊<br>Froide</button></div>
+    <div class="pm-choix" id="pmChoix"><button data-s="givree" hidden>❄️<br>Givrée</button><button data-s="franche">💪<br>Franche</button><button data-s="normale">🤝<br>Normale</button><button data-s="legere">🤏<br>Légère</button><button data-s="froide">🧊<br>Froide</button></div>
     <div class="pm-temps" id="pmTemps"><div id="pmBarre"></div></div>
+  </div>
+</div>
+
+<!-- Le calendrier de l'Avent : la porte s'ouvre, le cadeau apparaît (ecran-avent.js) -->
+<div class="avent-ouverture" id="aventOuverture" role="dialog" aria-modal="true" aria-labelledby="aventOuvTitre" hidden>
+  <div class="panel">
+    <h2 id="aventOuvTitre"></h2>
+    <div class="avent-cadeau" id="aventOuvCadeau"></div>
+    <p id="aventOuvTexte"></p>
+    <button class="btn" id="aventOuvOk">Super !</button>
   </div>
 </div>
 

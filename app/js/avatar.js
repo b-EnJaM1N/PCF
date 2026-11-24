@@ -8,7 +8,9 @@ import { BRODERIES, broderieSVG } from "./gants-brodes.js";
 export const FONDS = { court: ["Court", "#1F5FA8"], gazon: ["Gazon", "#2E8B57"], terre: ["Terre battue", "#C8643B"], violet: ["Violet", "#6A4C93"], ardoise: ["Ardoise", "#3B4556"], or: ["Or", "#C9971C"], minuit: ["Minuit", "#1B2140"], rubis: ["Rubis", "#9B1B30"], tribunes: ["Tribunes", "#22304D", "radial-gradient(circle at 30% 30%,#E8574A 12%,transparent 14%),radial-gradient(circle at 70% 40%,#F4C542 12%,transparent 14%),radial-gradient(circle at 45% 70%,#F5F7FA 12%,transparent 14%),#22304D"],
   roland: ["Terre de Roland", "#C8643B"], londres: ["Gazon de Londres", "#3E9B4F", "repeating-linear-gradient(90deg,#3E9B4F 0 6px,#358A44 6px 12px)"],
   neon: ["Néon", "#1A0B33", "radial-gradient(circle,#1A0B33 55%,#FF3EA5 60%,#22D3EE 70%)"], coucher: ["Coucher de soleil", "#F2784B", "linear-gradient(#FFB347,#F2784B,#8E3B8E)"],
-  stade: ["Stade de nuit", "#0B1B33", "radial-gradient(circle at 50% 0,#FFF6C8,#0B1B33 60%)"], galaxie: ["Galaxie", "#120A2A", "radial-gradient(circle at 30% 30%,#5B2A86,#120A2A 70%)"] };
+  stade: ["Stade de nuit", "#0B1B33", "radial-gradient(circle at 50% 0,#FFF6C8,#0B1B33 60%)"], galaxie: ["Galaxie", "#120A2A", "radial-gradient(circle at 30% 30%,#5B2A86,#120A2A 70%)"],
+  // (24 novembre, calendrier de l'Avent : avent.js) la nuit de Noël, le ciel étoilé et la neige au sol
+  nuitnoel: ["Nuit de Noël", "#14204A", "radial-gradient(circle at 30% 25%,#fff 3%,transparent 5%),radial-gradient(circle at 70% 35%,#fff 2%,transparent 4%),linear-gradient(#14204A 70%,#F5F7FA 70%)"] };
 // La main nue (« nu ») prend la couleur de peau choisie ; c'est la main des nouveaux joueurs, jusqu'à leur premier gant.
 // « Sans » (main nue, sans vernis, sans bracelet, sans bague) : un rond barré d'une croix (25 octobre, demande du porteur du projet :
 // les rayures et le rond multicolore ne disaient pas assez qu'on enlève l'accessoire).
@@ -67,7 +69,10 @@ export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], bronze: ["Bronze", "#C27A
   // Les objets du club (9 novembre, choix du porteur du projet) : le poignet Club (boutique), le poignet « Fondé en 2026 » (trophée).
   club: ["Club", "#14533A", "linear-gradient(#14533A 28%,#E9C046 28% 38%,#14533A 38% 62%,#E9C046 62% 72%,#14533A 72%)"],
   an2026: ["Fondé en 2026", "#E0B12A", "radial-gradient(circle,#5A3E06 22%,#E0B12A 26%)"],
-  braise: ["Braise", "#E8572A", "linear-gradient(90deg,#7A1F12,#E8572A,#F4A93B,#E8572A,#7A1F12)"] };   // (série de jours : trophée « Le rendez-vous »)
+  braise: ["Braise", "#E8572A", "linear-gradient(90deg,#7A1F12,#E8572A,#F4A93B,#E8572A,#7A1F12)"],
+  // (24 novembre, calendrier de l'Avent : avent.js)
+  sucreorge: ["Sucre d'orge", "#F5F7FA", "repeating-linear-gradient(-45deg,#E3122F 0 5px,#F5F7FA 5px 10px)"],
+  fourrure: ["Fourrure", "#FAFAF7", "radial-gradient(circle at 30% 40%,#fff 25%,transparent 27%),radial-gradient(circle at 70% 60%,#fff 25%,transparent 27%),#E6EAF0"] };   // (série de jours : trophée « Le rendez-vous »)
 // Les couleurs de peau de la main nue : toutes gratuites, toujours.
 export const PEAUX = { neutre: ["Neutre (comme les emojis)", "#FFCC4D"], claire: ["Claire", "#F7D9C4"], rosee: ["Rosée", "#EDB894"], doree: ["Dorée", "#D49A6A"],
   mate: ["Mate", "#A86B42"], brune: ["Brune", "#7A4A2A"], ebene: ["Ébène", "#4A2C1A"] };
@@ -480,12 +485,15 @@ export function avatarSVG(a) {
     dalmatien: `<pattern id="${id}p" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="#FAFAF7"/><circle cx="3" cy="3" r="1.6" fill="#1E1E22"/><circle cx="10" cy="5" r="1.1" fill="#1E1E22"/><circle cx="6" cy="10.5" r="1.4" fill="#1E1E22"/><circle cx="12.5" cy="12" r=".8" fill="#1E1E22"/><circle cx="1" cy="8" r=".7" fill="#1E1E22"/></pattern>`,
     vache: `<pattern id="${id}p" width="44" height="44" patternUnits="userSpaceOnUse" patternTransform="translate(33 70) scale(.6)"><rect width="44" height="44" fill="#FAFAF7"/><path d="M3 4 C9 -1 19 2 20 8 C21 14 15 19 9 17 C5 16 6 12 2 11 C-1 9 0 6 3 4 Z" fill="#1E1E22"/><path d="M27 22 C33 18 43 21 44 28 C45 35 38 41 31 38 C27 36 29 32 25 30 C22 28 23 24 27 22 Z" fill="#1E1E22"/><path d="M4 29 C8 26 14 28 14 33 C14 37 9 40 5 38 C2 37 1 32 4 29 Z" fill="#1E1E22"/><path d="M30 2 C34 0 38 2 37 6 C36 9 32 10 30 8 C28 6 28 4 30 2 Z" fill="#1E1E22"/></pattern>`,
     girafe: `<pattern id="${id}p" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="scale(1.6)"><rect width="12" height="12" fill="#F3DFAF"/><path d="M.8 1 L4.6 .6 L5.8 3 L5 5.4 L1.2 5.6 L.4 3.4 Z" fill="#B8692A"/><path d="M6.8 .8 L11 1.2 L11.6 3.6 L10.4 5.6 L7.2 5.2 L6.4 3 Z" fill="#A55A22"/><path d="M.8 6.8 L4.6 6.6 L5.8 9 L5 11.4 L1.2 11.4 L.4 9.4 Z" fill="#A55A22"/><path d="M6.8 6.8 L11 7 L11.6 9.4 L10.6 11.4 L7.2 11.2 L6.4 9 Z" fill="#B8692A"/></pattern>`,
+    sucreorge: `<pattern id="${id}p" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-40)"><rect width="6" height="6" fill="#F5F7FA"/><rect width="3" height="6" fill="#E3122F"/></pattern>`,
+    fourrure: `<pattern id="${id}p" width="7" height="6" patternUnits="userSpaceOnUse"><rect width="7" height="6" fill="#E6EAF0"/><circle cx="2" cy="2" r="2.4" fill="#fff"/><circle cx="5.5" cy="4.5" r="2.4" fill="#FAFBFD"/><circle cx="6" cy="1" r="1.2" fill="#fff"/></pattern>`,
     braise: `<linearGradient id="${id}p" x1="0" x2="1"><stop offset="0" stop-color="#7A1F12"/><stop offset=".3" stop-color="#E8572A"/><stop offset=".5" stop-color="#F4A93B"/><stop offset=".7" stop-color="#E8572A"/><stop offset="1" stop-color="#7A1F12"/></linearGradient>`,
   }[cle] || "";
   const fillPoignet = a.gant === "fiac" ? POIGNET_FIAC : poignetDef ? `url(#${id}p)` : poignet;
   const fondDef = {
     coucher: `<linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB347"/><stop offset=".55" stop-color="#F2784B"/><stop offset="1" stop-color="#8E3B8E"/></linearGradient>`,
     stade: `<radialGradient id="${id}f" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#FFF6C8"/><stop offset=".35" stop-color="#2A4A7A"/><stop offset="1" stop-color="#0B1B33"/></radialGradient>`,
+    nuitnoel: `<linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0B1433"/><stop offset=".7" stop-color="#1E3270"/></linearGradient>`,
     galaxie: `<radialGradient id="${id}f" cx=".3" cy=".3" r=".9"><stop offset="0" stop-color="#5B2A86"/><stop offset=".6" stop-color="#1E1240"/><stop offset="1" stop-color="#0A0618"/></radialGradient>`,
   }[a.fond] || "";
   const fillFond = fondDef ? `url(#${id}f)` : fond;
@@ -494,6 +502,10 @@ export function avatarSVG(a) {
   const centrer = !a.sansFond && !nue && (!a.symbole || a.symbole === "pierre");
   let decorFond = "";
   if (a.fond === "galaxie") decorFond = [[22, 30], [70, 20], [80, 55], [30, 70], [55, 82], [15, 52], [62, 40]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? 0.9 : 1.5}" fill="#fff" opacity=".85"/>`).join("");
+  // (la nuit de Noël : des étoiles, la lune, et la neige au sol)
+  if (a.fond === "nuitnoel") decorFond = `<g clip-path="url(#${id})">${[[22, 22], [40, 12], [74, 20], [84, 42], [14, 44], [58, 30], [30, 34]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? .9 : 1.5}" fill="#fff" opacity=".9"/>`).join("")}`
+    + `<circle cx="78" cy="16" r="6" fill="#FFF6C8"/><circle cx="81" cy="14" r="5.4" fill="#0F1A40"/><path d="M0 80 C20 72 34 78 50 74 C66 70 80 78 100 72 V100 H0 Z" fill="#F5F7FA"/>`
+    + `${[[12, 58], [30, 66], [64, 60], [88, 66], [46, 54]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.2" fill="#fff" opacity=".85"/>`).join("")}</g>`;
   if (a.fond === "neon") decorFond = `<circle cx="50" cy="50" r="42" fill="none" stroke="#FF3EA5" stroke-width="2.5" opacity=".9"/><circle cx="50" cy="50" r="38" fill="none" stroke="#22D3EE" stroke-width="1.5" opacity=".8"/>`;
   if (a.fond === "roland") decorFond = `<g clip-path="url(#${id})" stroke="#fff" stroke-width="2" opacity=".6" fill="none"><path d="M18 0 V100 M82 0 V100 M0 50 H100"/></g>`;
   if (a.fond === "londres") decorFond = `<g clip-path="url(#${id})" opacity=".18">${[...Array(7)].map((_, i) => `<rect x="${i * 16}" y="0" width="8" height="100" fill="#fff"/>`).join("")}</g>`;

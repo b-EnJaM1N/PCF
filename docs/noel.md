@@ -16,6 +16,14 @@ toujours, sur handslam.fr du 1er décembre au 6 janvier (`app/js/noel.js`). Cade
   fissure ; les lames tordues restent (choix du porteur du projet). Leurs répliques (31, dont celles des pouvoirs et
   l'ambiance des fêtes, validées le 24 novembre) sont branchées comme les répliques personnalisées d'un joueur, plus le smash.
 
+- **Calendrier de l'Avent (24 nov.)** : le grand sapin et ses 24 portes (`app/js/ecran-avent.js`, règles dans
+  `app/js/avent-logique.js`, serveur : étape SQL 89). Défi du jour pour ouvrir la case ; rattrapage jusqu'au 31 décembre en
+  battant le gardien de la case en un set de 7 (Bonhomme de neige 1-8, Comète 9-16, Lutin 17-23, Père Noël 24 : l'affronter
+  suffit), deux par jour. Cadeaux : les 12 pulls moches, 5 fois des jetons (100 à 300), célébration « Boule de neige »,
+  poignée de main givrée, cadre « Guirlande », fond « Nuit de Noël », poignets « Sucre d'orge » et « Fourrure », et le 24 le
+  Gant du Père Noël. Les 24 cases : trophée « Calendrier complet ». Sur la version de test avant décembre : un essai sur le
+  téléphone, avec un jour simulé.
+
 ## Textes validés le 24 novembre (à créer après le test du décor)
 
 ### Les bots

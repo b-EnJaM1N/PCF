@@ -543,6 +543,14 @@ en ligne compte toujours les siens.
    accepte le défi, gardé jusqu'à une heure après l'heure prévue (pas de forfait : ensuite, annulé sans vainqueur).
 2. **Mettre à jour la fonction « Notifier »** (même manipulation) : une notification de défi programmé ouvre « Défis »
 
+## 1 octogies nono. Le calendrier de l'Avent (étape 89)
+
+1. Même manipulation que d'habitude avec [`etape-89-calendrier-avent.sql`](etape-89-calendrier-avent.sql), **après** l'étape 88
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-89-calendrier-avent.sql).
+   Du 1er au 24 décembre, une case par jour (le défi du jour, vérifié par l'appli) ; une case ratée se rattrape jusqu'au
+   31 décembre, deux par jour au plus. Les cadeaux : des jetons, ou un objet de Noël enregistré comme un achat à 0 jeton
+   (pulls moches, Gant du Père Noël…), pas en vente à la boutique. À coller avant le 1er décembre.
+
 ## 1 octogies octavo. Disqualifier un joueur du championnat (étape 88)
 
 1. Même manipulation que d'habitude avec [`etape-88-disqualifier.sql`](etape-88-disqualifier.sql), **après** l'étape 87

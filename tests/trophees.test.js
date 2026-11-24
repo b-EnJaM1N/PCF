@@ -18,14 +18,14 @@ function match(suite) {
 }
 const fin = (P, suite, extra = {}) => enregistrerMatch(P, { ...match(suite), devines: 0, lisibles: 0, adversaire: { id: "rocky", elo: 850, nom: "Rocky" }, date: 1, ...extra }).map(t => t.id);
 
-test("48 trophées en 8 familles, chaque élément à débloquer existe dans l'avatar", () => {
-  assert.equal(TITRES.length, 48);
-  assert.equal(new Set(TITRES.map(t => t.id)).size, 48);
+test("49 trophées en 9 familles (Noël : le calendrier de l'Avent complet), chaque élément à débloquer existe dans l'avatar", () => {
+  assert.equal(TITRES.length, 49);
+  assert.equal(new Set(TITRES.map(t => t.id)).size, 49);
   for (const t of TITRES) assert.ok(FAMILLES.some(f => f.id === t.famille), t.id);
   for (const t of TITRES.filter(x => x.objet)) assert.ok(TABLES[t.objet[0]]?.[t.objet[1]], `${t.id} : ${t.objet}`);
   for (const t of TITRES.filter(x => x.objet2)) assert.ok(TABLES[t.objet2[0]]?.[t.objet2[1]], `${t.id} : ${t.objet2}`);
   // chaque famille a au moins un trophée qui débloque quelque chose
-  for (const f of FAMILLES) assert.ok(TITRES.some(t => t.famille === f.id && t.objet), f.id);
+  for (const f of FAMILLES.filter(x => x.id !== "noel")) assert.ok(TITRES.some(t => t.famille === f.id && t.objet), f.id);   // (Noël : ses cadeaux sont dans le calendrier)
 });
 
 test("les nouveaux motifs de gant se dessinent, et les plus rares sont verrouillés", () => {

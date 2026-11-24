@@ -66,14 +66,26 @@ export const ARTICLES = [
   ...[["shadow", "rare"], ["pianiste", "rare"], ["claque", "rare"], ["trois", "rare"], ["craquer", "rare"], ["vague", "rare"], ["montre", "rare"],
     ["viens", "epique"], ["chut", "epique"]].map(([k, r]) => a("routine", k, ROUTINES[k].nom, r, "routine", "routines")),
 ];
+// Les cadeaux du calendrier de l'Avent (24 novembre ; avent.js) : pas en vente, gagnés en ouvrant les cases (le serveur les
+// enregistre comme des achats à 0 jeton : supabase/etape-89-calendrier-avent.sql).
+const cadeau = (type, cle, nom) => ({ id: `${type}:${cle}`, type, cle, nom, avent: true });
+export const CADEAUX_AVENT = [
+  ...["pullmoche", "pullsapin", "pullneige", "pullrenne", "pullpere", "pullcadeau", "pullsucre", "pullpingouin", "pullchaussette", "pullboule", "pullpain", "pullhandslam"]
+    .map(k => cadeau("gant", k, k === "pullmoche" ? "Pull moche" : null)),
+  cadeau("celebration", "neige", "Célébration « Boule de neige »"), cadeau("poignee", "givree", "Poignée de main givrée"),
+  cadeau("cadre", "guirlande", "Cadre « Guirlande »"), cadeau("fond", "nuitnoel", "Fond « Nuit de Noël »"),
+  cadeau("poignet", "sucreorge", "Poignet « Sucre d'orge »"), cadeau("poignet", "fourrure", "Poignet « Fourrure »"),
+  cadeau("gant", "perenoel", "Gant du Père Noël"),
+];
 // Les articles retirés de la vente (ils restent à ceux qui les ont achetés) : le pouce levé (12 novembre, décision du porteur
 // du projet : le dessin n'était pas assez beau). Plus dans la boutique ni dans la vitrine du jour (étape SQL 73).
 export const RETIRES = new Set(["geste:pouce_leve"]);
-const PAR_ID = new Map(ARTICLES.map(x => [x.id, x]));
+const PAR_ID = new Map([...ARTICLES, ...CADEAUX_AVENT].map(x => [x.id, x]));
 export const article = id => PAR_ID.get(id) || null;
 export const articleDe = (type, cle) => PAR_ID.get(`${type}:${cle}`) || null;
 // Un élément gratuit (pas dans la boutique) ou acheté.
-export const possede = (P, type, cle) => { const x = articleDe(type, cle); return !x || (P.achats || []).includes(x.id); };
+// (les cadeaux du calendrier de l'Avent : aussi ceux gagnés en essai, sur la version de test avant décembre : P.aventEssai)
+export const possede = (P, type, cle) => { const x = articleDe(type, cle); return !x || (P.achats || []).includes(x.id) || (!!x.avent && (P.aventEssai || []).includes(x.id)); };
 
 // La vitrine du jour : 3 articles à −30 %, les mêmes pour tous (même tirage que le serveur, voir prixDuJour).
 export const REMISE = 0.3;
@@ -108,13 +120,15 @@ export const CELEBRATIONS = {
   feu: { nom: "Feu d'artifice", formes: ["✦", "✸", "•"], couleurs: ["#FF3EA5", "#22D3EE", "#FFD34D", "#6BD49A"] },
   or: { nom: "Pluie d'or", formes: ["●", "◆"], couleurs: ["#FFD34D", "#E0B12A", "#FFF1B8"] },
   flammes: { nom: "Pluie de flammes", formes: ["🔥"], couleurs: ["#FF7A1A", "#FFD34D", "#E8572A"] },   // (série de jours : trophée « Une semaine sans faute »)
+  neige: { nom: "Boule de neige", formes: ["❄", "●", "❅"], couleurs: ["#FFFFFF", "#DDEFFF", "#BFE6FF"] },   // (calendrier de l'Avent : avent.js)
 };
 export const celebrationValide = c => (CELEBRATIONS[c] ? c : "confettis");
 
 // Les cadres de la carte de joueur : la couleur du liseré.
 export const CADRES = { aucun: { nom: "Selon le rang" }, bronze: { nom: "Bronze", couleur: "#C27A3A" }, argent: { nom: "Argent", couleur: "#D3D9E2" }, neon: { nom: "Néon", couleur: "#FF3EA5" }, or: { nom: "Or", couleur: "#FFD34D" },
   elite: { nom: "Élite (or et noir)", couleur: "#E9C046", interieur: "#14121F" },   // (carrière : trophée « Élite »)
-  feu_sacre: { nom: "Feu sacré", couleur: "#F4A93B", interieur: "#C2361C", flammes: true } };   // (série de jours : trophée « Le feu sacré »)
+  feu_sacre: { nom: "Feu sacré", couleur: "#F4A93B", interieur: "#C2361C", flammes: true },   // (série de jours : trophée « Le feu sacré »)
+  guirlande: { nom: "Guirlande", couleur: "#1E8C3A", interieur: "#0F5A24", guirlande: true } };   // (calendrier de l'Avent : avent.js)   // (série de jours : trophée « Le feu sacré »)
 export const cadreValide = c => (CADRES[c] ? c : "aucun");
 export { ROUTINES };
 export const routineChoisie = r => (ROUTINES[r] ? r : "salut");
