@@ -45,3 +45,19 @@ test("la farce du Lutin : les trois boutons mélangés, puis remis dans l'ordre"
   remettreBoutons(doc);
   assert.deepEqual(moves.children.map(b => b.dataset.m), ["0", "2", "1"], "remis en place");
 });
+
+test("le smash d'un bot de Noël : sa marque à lui jusqu'à la fin du set, au lieu de l'accroc et de la fissure ; les lames tordues restent", async () => {
+  const { nouveauxDegats, noterDegats, degatsDe } = await import("../app/js/degats.js");
+  const e = nouveauxDegats();
+  // Ciseaux (1) du bot contre Feuille (2) : d'habitude l'accroc ; ici, le ruban du Père Noël
+  assert.deepEqual(noterDegats(e, { set: 0, gagnant: 1, signes: [2, 1], smashGagnant: true, noel: "perenoel" }), { joueur: 0, marque: "noel" });
+  assert.deepEqual(degatsDe(e, 0, 0), { noel: "perenoel" });
+  // Pierre (0) du bot contre Ciseaux (1) : les lames tordues, en plus
+  assert.deepEqual(noterDegats(e, { set: 0, gagnant: 1, signes: [1, 0], smashGagnant: true, noel: "perenoel" }), { joueur: 0, marque: "tordu" });
+  assert.deepEqual(degatsDe(e, 0, 0), { noel: "perenoel", tordu: 1 });
+  // le set suivant : réparé
+  noterDegats(e, { set: 1, gagnant: 0, signes: [0, 1], smashGagnant: false, noel: "perenoel" });
+  assert.equal(degatsDe(e, 0, 1), null);
+  // le smash du joueur sur le bot de Noël : les marques habituelles
+  assert.deepEqual(noterDegats(e, { set: 1, gagnant: 0, signes: [1, 2], smashGagnant: true, noel: "perenoel" }), { joueur: 1, marque: "dechire" });
+});

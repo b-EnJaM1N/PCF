@@ -482,7 +482,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   // (celles d'avant le coup, gardées pour le replay : on y revoit la main s'abîmer ; 18 novembre)
   const copieDegats = () => [0, 1].map(j => { const d = degatsDe(S.degats, j, setDuCoup); return d ? { ...d } : null; });
   const degatsAvant = copieDegats();
-  const marque = noterDegats(S.degats ||= nouveauxDegats(), { set: setDuCoup, gagnant: evt.gagnant, signes: [signe, signeAdv], smashGagnant: issueSmash(smash, evt.gagnant) === "gagne" });
+  const marque = noterDegats(S.degats ||= nouveauxDegats(), { set: setDuCoup, gagnant: evt.gagnant, signes: [signe, signeAdv], smashGagnant: issueSmash(smash, evt.gagnant) === "gagne",
+    noel: !S.duel && !S.carriere && OPP?.noel ? OPP.id : null });   // (un bot de Noël : sa marque à lui ; noel.js)
   // La main en feu (effets.js) : 4, 6, 8 points de suite ; une égalité baisse le feu, un point perdu l'éteint.
   const feuAvant = [0, 1].map(j => feuDe(S.feu, j));   // (pour le replay : le feu au moment précis du point ; 18 novembre)
   const feuChg = noterFeu(S.feu ||= nouveauFeu(), evt.gagnant);

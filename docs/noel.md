@@ -12,7 +12,8 @@ toujours, sur handslam.fr du 1er décembre au 6 janvier (`app/js/noel.js`). Cade
   bots), leur façon de jouer, et le pouvoir de leur smash réussi (le joueur sonné 4 secondes, comme d'habitude, avec l'effet du
   bot) : Avalanche de cadeaux (gant emballé d'un ruban), La farce (gant barbouillé, et les trois boutons mélangés pour le coup
   suivant), Coup de sabot (une comète traverse l'écran, l'empreinte du sabot sur le gant), Gelé (le gant givré). Dans la liste du
-  mode solo seulement pendant les fêtes, ni en carrière ni en tournoi. Leurs répliques restent à enregistrer.
+  mode solo seulement pendant les fêtes, ni en carrière ni en tournoi. Leur marque (ruban, peinture, sabot, givre) reste sur le gant du joueur jusqu'à la fin du set, au lieu de l'accroc et de la
+  fissure ; les lames tordues restent (choix du porteur du projet). Leurs répliques restent à enregistrer.
 
 ## Textes validés le 24 novembre (à créer après le test du décor)
 
