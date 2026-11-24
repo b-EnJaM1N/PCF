@@ -439,7 +439,8 @@ function jouer(signe, auto = false, smash = false) {
   if (!m.coups.length && !P.matchs) { compterEtapePremier(envoyerParcours, "premier_lance"); compterEtapePremier(envoyerParcours, "premier_coup"); }
   smash = !!smash && peutSmasher(m, 0);
   // Le bot smashe lui aussi, une fois par set au plus, de temps en temps.
-  const smashBot = peutSmasher(m, 1) && Math.random() < 0.1;
+  // (24 novembre au soir, choix du porteur du projet : les bots de Noël smashent deux fois plus souvent, pour qu'on voie leur pouvoir)
+  const smashBot = peutSmasher(m, 1) && Math.random() < (OPP?.noel ? 0.2 : 0.1);
   // Le bot choisit sans connaître le coup du joueur.
   const histBot = m.coups.map(c => ({ moi: c.b, adv: c.a, res: c.gagnant === null ? "e" : c.gagnant === 1 ? "g" : "p" }));
   const signeBot = (S.carriere ? coupCarriere : choisirCoup)(OPP, histBot, S.hasard || Math.random, contexteBot(m));   // (carrière : les bots faibles renforcés)   // (match du jour : le même tirage pour tout le monde)
