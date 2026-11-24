@@ -1346,10 +1346,13 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 
 /* L'événement de Noël (noel.js) : la guirlande et le houx sur le tableau de score, le sapin au fond du court, les flocons */
 body.noel #viewMatch { position: relative; }
-.noel-flocons { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; }
+.noel-flocons { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; display: none; }
+/* (24 novembre au soir, choix du porteur du projet : le court rouge, le sapin et les flocons pour les matchs de Noël, contre un
+   bot de Noël, et pour tous les matchs les 24 et 25 décembre ; les autres matchs : le court bleu, la guirlande et le houx) */
+body.noel-fete .noel-flocons, body.noel.match-noel .noel-flocons { display: block; }
 .noel-flocons i { position: absolute; top: -20px; color: #fff; opacity: .75; font-style: normal; animation: noel-neige linear infinite; }
 @keyframes noel-neige { from { transform: translate(0, -20px) rotate(0deg); } 50% { transform: translate(14px, 50vh) rotate(180deg); } to { transform: translate(-6px, 105vh) rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .noel-flocons { display: none; } }
+@media (prefers-reduced-motion: reduce) { .noel-flocons { display: none !important; } }
 .noel .board { border-color: #f4c542; box-shadow: 0 0 0 2px rgba(215, 38, 61, .55), 0 0 18px rgba(244, 197, 66, .25); }
 /* La guirlande tout autour du cadre (24 novembre) : des ampoules rouges, dorées et vertes, qui clignotent */
 .noel-guirlande { position: absolute; pointer-events: none; animation: noel-clignote 1.6s steps(2) infinite;
@@ -1372,10 +1375,10 @@ body.noel #viewMatch { position: relative; }
 /* Les couleurs de Noël (24 novembre, demande du porteur du projet) : le fond rouge, le tableau de score vert sapin */
 /* (24 novembre au soir, choix du porteur du projet : l'appli garde son visuel de base ; le fond rouge, seulement pendant le match) */
 /* (24 novembre au soir, choix du porteur du projet : le court rouge et le grand sapin, seulement les 24 et 25 décembre) */
-body.noel-fete.en-match { --court: #7c1020; --court-deep: #0f4228; background: radial-gradient(ellipse at 50% 0%, #a4182c, #7c1020 45%, #4d0812); background-attachment: fixed; }
-.noel-fete #viewMatch .arena::before { content: "🎄"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 110px; opacity: .42; pointer-events: none; }   /* (24 novembre : un peu plus visible) */
-body.noel-fete .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
-.noel-fete #viewMatch .vs { position: relative; z-index: 1; color: #fff; text-shadow: 0 0 4px #4d0812, 0 0 8px #4d0812, 0 1px 2px #000; }   /* (24 novembre : « contre » lisible sur le sapin) */
+body.noel-fete.en-match, body.noel.match-noel.en-match { --court: #7c1020; --court-deep: #0f4228; background: radial-gradient(ellipse at 50% 0%, #a4182c, #7c1020 45%, #4d0812); background-attachment: fixed; }
+.noel-fete #viewMatch .arena::before, .noel.match-noel #viewMatch .arena::before { content: "🎄"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 110px; opacity: .42; pointer-events: none; }   /* (24 novembre : un peu plus visible) */
+body.noel-fete .reserve-temps, body.noel.match-noel .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
+.noel-fete #viewMatch .vs, .noel.match-noel #viewMatch .vs { position: relative; z-index: 1; color: #fff; text-shadow: 0 0 4px #4d0812, 0 0 8px #4d0812, 0 1px 2px #000; }   /* (24 novembre : « contre » lisible sur le sapin) */
 /* Les bots de Noël dans la liste du mode solo, et leurs pouvoirs (noel.js) */
 .opp.opp-noel { border-color: rgba(244, 197, 66, .45); }
 .noel-pouvoir { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 4; }
