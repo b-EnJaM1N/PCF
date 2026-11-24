@@ -12,9 +12,12 @@ export function noelActif(maintenant = new Date(), loc = typeof location !== "un
 
 // Le houx, bien touffu (24 novembre, demande du porteur du projet) : cinq feuilles en éventail et une grappe de baies (dessin).
 const FEUILLE = (r, c) => `<path transform="rotate(${r} 40 40)" d="M40 40 C34 28 32 14 40 2 C42 8 48 8 47 14 C52 15 52 21 48 23 C53 26 51 32 46 32 C47 36 44 39 40 40Z" fill="${c}" stroke="#0b3d1b" stroke-width="1.6"/>`;
-const HOUX = `<svg viewBox="0 0 80 80" aria-hidden="true">${FEUILLE(-80, "#1f7a3a")}${FEUILLE(-40, "#2a8f47")}${FEUILLE(0, "#1f7a3a")}${FEUILLE(40, "#2a8f47")}${FEUILLE(80, "#1f7a3a")}`
-  + `<circle cx="34" cy="42" r="6" fill="#c8102e"/><circle cx="46" cy="42" r="6" fill="#d7263d"/><circle cx="40" cy="34" r="6" fill="#e8384f"/><circle cx="40" cy="48" r="5.5" fill="#b80d27"/>`
-  + `<circle cx="38" cy="32" r="1.7" fill="#fff" opacity=".75"/><circle cx="32" cy="40" r="1.5" fill="#fff" opacity=".6"/></svg>`;
+// (24 novembre, encore plus touffu : neuf feuilles sur deux rangs, et une grosse grappe de baies)
+const HOUX = `<svg viewBox="0 0 80 80" aria-hidden="true">${[-100, -60, -20, 20, 60, 100].map((r, i) => FEUILLE(r, i % 2 ? "#2a8f47" : "#1f7a3a")).join("")}`
+  + `${[-80, -40, 0, 40, 80].map((r, i) => `<g transform="translate(40 40) scale(.78) translate(-40 -40)">${FEUILLE(r + 20, i % 2 ? "#36a557" : "#2a8f47")}</g>`).join("")}`
+  + `<circle cx="33" cy="43" r="6" fill="#c8102e"/><circle cx="47" cy="43" r="6" fill="#d7263d"/><circle cx="40" cy="35" r="6" fill="#e8384f"/>`
+  + `<circle cx="40" cy="49" r="5.5" fill="#b80d27"/><circle cx="31" cy="33" r="5" fill="#d7263d"/><circle cx="49" cy="33" r="5" fill="#c8102e"/>`
+  + `<circle cx="38" cy="33" r="1.7" fill="#fff" opacity=".75"/><circle cx="31" cy="41" r="1.5" fill="#fff" opacity=".6"/><circle cx="47" cy="31" r="1.4" fill="#fff" opacity=".6"/></svg>`;
 
 // Pose le décor sur l'écran du match (une seule fois) : la guirlande lumineuse et le houx sur le tableau de score, le sapin au fond
 // du court, les flocons qui tombent (pas avec « mouvements réduits » : voir le style).
