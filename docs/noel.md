@@ -24,6 +24,10 @@ toujours, sur handslam.fr du 1er décembre au 6 janvier (`app/js/noel.js`). Cade
   Gant du Père Noël. Les 24 cases : trophée « Calendrier complet ». Sur la version de test avant décembre : un essai sur le
   téléphone, avec un jour simulé.
 
+- **Décor revu (24 nov. au soir)** : l'appli garde son visuel de base (sortie prévue vers le 1er décembre) ; un bonnet de
+  Noël sur le logo ; en match, la guirlande, le houx et les flocons sur le court bleu ; le court rouge et le grand sapin
+  seulement les 24 et 25 décembre.
+
 ## Textes validés le 24 novembre (à créer après le test du décor)
 
 ### Les bots

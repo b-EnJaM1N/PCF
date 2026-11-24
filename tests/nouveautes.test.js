@@ -41,3 +41,12 @@ test("Noël : sur la version de test toujours ; sur handslam.fr du 1er décembre
   assert.equal(noelActif(new Date(2027, 0, 7), officielle), false, "7 janvier : fini");
   assert.equal(noelActif(new Date(2026, 6, 14), test), true, "la version de test : toujours");
 });
+
+test("Noël : le court rouge seulement les 24 et 25 décembre (24 novembre au soir)", async () => {
+  const { noelGrandJour } = await import("../app/js/noel.js");
+  const officielle = { pathname: "/", hostname: "handslam.fr" };
+  assert.equal(noelGrandJour(new Date(2026, 11, 23), officielle), false);
+  assert.equal(noelGrandJour(new Date(2026, 11, 24), officielle), true);
+  assert.equal(noelGrandJour(new Date(2026, 11, 25), officielle), true);
+  assert.equal(noelGrandJour(new Date(2026, 11, 26), officielle), false);
+});

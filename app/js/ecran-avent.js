@@ -5,7 +5,7 @@ import * as social from "./social-serveur.js";
 import { avatarSVG, GANTS, FONDS, POIGNETS } from "./avatar.js";
 import { CELEBRATIONS, CADRES } from "./catalogue.js";
 import { versionDeTest } from "./nouveautes.js";
-import { noelActif } from "./noel.js";
+import { noelActif, majGrandJour } from "./noel.js";
 import { jourParis } from "./match-du-jour.js";
 import { NB_CASES, cadeauDe, defiDe, DEFI_DU_JOUR, gardienDe, jourAvent, statutCase, rattrapagesRestants, nbOuvertes, calendrierComplet,
   resultatAvent, casesGagnees, compterMatchDuJour, RATTRAPAGES_PAR_JOUR } from "./avent-logique.js";
@@ -230,8 +230,8 @@ export function installerAvent(ctx) {
   $("aventOuvOk")?.addEventListener("click", () => { $("aventOuverture").hidden = true; });
 
   // L'essai (version de test, avant décembre) : choisir le jour simulé, tout effacer.
-  $("aventJourSimule")?.addEventListener("change", e => { const x = lireEssai(); x.jourSimule = Number(e.target.value); ecrireEssai(x); etat = etatEssai(); choisie = null; render(); });
-  $("aventEffacer")?.addEventListener("click", () => { ecrireEssai(null); const P = ctx.lireP(); P.aventEssai = []; ctx.sauverP(); ctx.apresChangement(); etat = etatEssai(); choisie = null; render(); });
+  $("aventJourSimule")?.addEventListener("change", e => { const x = lireEssai(); x.jourSimule = Number(e.target.value); ecrireEssai(x); majGrandJour(); etat = etatEssai(); choisie = null; render(); });
+  $("aventEffacer")?.addEventListener("click", () => { ecrireEssai(null); majGrandJour(); const P = ctx.lireP(); P.aventEssai = []; ctx.sauverP(); ctx.apresChangement(); etat = etatEssai(); choisie = null; render(); });
   if ($("aventJourSimule")) $("aventJourSimule").innerHTML = Array.from({ length: 31 }, (_, i) => `<option value="${i + 1}">${i + 1} décembre</option>`).join("");
 
   // La ligne sous les défis du jour (24 novembre, choix du porteur du projet) : ce qui attend dans le calendrier.
