@@ -23,7 +23,7 @@ export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc"
   // poignet sombre ; réservé au tenant du titre du FIAC Club (voir CERCLE_FIAC dans profil.js).
   fiac: ["Dossard 1 du FIAC Club (tenant du titre)", "#FFD34D", "radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 30%),linear-gradient(135deg,#FFE88A,#E0A81E)"],
   // Le gant du Père Noël (24 novembre, événement de Noël : noel.js) : rouge velours, bord en fourrure blanche (le gant du bot).
-  perenoel: ["Gant du Père Noël", "#C8102E", "linear-gradient(#C8102E 68%,#FAFAF7 68%)"] };
+  perenoel: ["Gant du Père Noël", "#E3122F", "linear-gradient(#E3122F 68%,#FAFAF7 68%)"] };
 // Les gants à dossard (le dossard épinglé, les coutures d'or) ; le poignet du gant du FIAC Club.
 const A_DOSSARD = new Set(["dossard", "fiac"]);
 export const POIGNET_FIAC = "#1B2140";
@@ -275,13 +275,16 @@ export function cousu(svg, couleur) {
 
 // sansFond : seulement le gant et le poignet (le poing qui se secoue pendant un coup).
 // sansMain : seulement le fond (sous la routine d'entrée, qui dessine la main par-dessus ; 15 novembre).
-// Le bord fourré du gant du Père Noël : une bande blanche toute en bosses (des ronds qui se chevauchent), un peu d'ombre dessous.
-const FOURRURE = `<g>${[[35, 74, 4.2], [41, 72.6, 4.6], [47.5, 72.2, 4.8], [54, 72.4, 4.6], [60, 73, 4.4], [65, 74.5, 4], [35.5, 80.5, 4.6], [41.5, 81.5, 5], [48, 82, 5],
-  [54.5, 81.6, 5], [60.5, 81, 4.8], [65, 80, 4.3], [38, 86, 4], [44.5, 87, 4.3], [51, 87.2, 4.3], [57.5, 86.8, 4.2], [63, 85.6, 3.8]]
-  .map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r + .9}" fill="#C9CFD8"/>`).join("")}${[[35, 74, 4.2], [41, 72.6, 4.6], [47.5, 72.2, 4.8], [54, 72.4, 4.6], [60, 73, 4.4], [65, 74.5, 4],
-  [35.5, 80.5, 4.6], [41.5, 81.5, 5], [48, 82, 5], [54.5, 81.6, 5], [60.5, 81, 4.8], [65, 80, 4.3], [38, 86, 4], [44.5, 87, 4.3], [51, 87.2, 4.3], [57.5, 86.8, 4.2], [63, 85.6, 3.8]]
-  .map(([x, y, r], i) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${i % 3 ? "#FAFAF7" : "#F1F3F6"}"/>`).join("")}`
-  + `${[[38, 72], [45, 70.5], [52, 70.6], [59, 71.2], [42, 79.5], [50, 80], [57, 79.6], [47, 85.5], [55, 85.2]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.4" fill="#fff"/>`).join("")}</g>`;
+// Le bord fourré du gant du Père Noël : une bande blanche toute en bosses (des ronds qui se chevauchent, un peu d'ombre dessous),
+// et un pompon qui pend sur le côté (24 novembre, demande du porteur du projet : plus touffu, avec un pompon).
+const BOSSES = [[33.5, 74.5, 4.6], [39.5, 72.2, 5.2], [46.5, 71.4, 5.4], [53.5, 71.6, 5.3], [60.5, 72.4, 5], [66.5, 74.6, 4.5],
+  [32.5, 81, 5], [39, 81.5, 5.6], [46, 82, 5.6], [53.5, 81.8, 5.6], [60.5, 81.4, 5.4], [67, 80.5, 4.8],
+  [35.5, 87.2, 4.6], [42.5, 88.4, 4.9], [50, 88.8, 5], [57.5, 88.4, 4.8], [64.5, 87, 4.4]];
+const POMPON = [[74.5, 82, 4], [71.5, 84.5, 3.6], [77.5, 85, 3.4], [74.5, 87.5, 3.2], [74.5, 84.5, 4.2]];
+const touffe = (pts, r0) => pts.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r + 1}" fill="#C3CAD4"/>`).join("")
+  + pts.map(([x, y, r], i) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${i % 3 ? "#FFFFFF" : "#EEF1F5"}"/>`).join("")
+  + pts.map(([x, y, r]) => `<circle cx="${x - r * .3}" cy="${y - r * .35}" r="${r0}" fill="#fff"/>`).join("");
+const FOURRURE = `<g><path d="M68 76 Q73 76.5 74.5 80" fill="none" stroke="#E9ECF1" stroke-width="1.6" stroke-linecap="round"/>${touffe(BOSSES, 1.6)}${touffe(POMPON, 1.3)}</g>`;
 
 export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
@@ -313,7 +316,7 @@ export function avatarSVG(a) {
     club: `<pattern id="${id}g" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#14533A"/></pattern>`,
   }[gm] || (a.gant === "elite" ? `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3358"/><stop offset="1" stop-color="#14121F"/></linearGradient>`
     // (le gant du FIAC Club : de l'or métallique, clair en haut, avec un reflet, plus sombre en bas)
-    : a.gant === "perenoel" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="30" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#E8283F"/><stop offset=".5" stop-color="#C8102E"/><stop offset="1" stop-color="#8E0B20"/></linearGradient>`
+    : a.gant === "perenoel" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="30" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#FF3B4E"/><stop offset=".5" stop-color="#E3122F"/><stop offset="1" stop-color="#B00C25"/></linearGradient>`
     : a.gant === "fiac" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="25" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#FFF3B0"/><stop offset=".3" stop-color="#F2C744"/><stop offset=".55" stop-color="#FFE27A"/><stop offset=".8" stop-color="#D9A21E"/><stop offset="1" stop-color="#A8770F"/></linearGradient>` : "");
   // Poignets et fonds spéciaux (boutique).
   const poignetDef = {
