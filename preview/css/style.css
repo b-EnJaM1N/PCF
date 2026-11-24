@@ -1346,15 +1346,25 @@ body.noel #viewMatch { position: relative; }
 @keyframes noel-neige { from { transform: translate(0, -20px) rotate(0deg); } 50% { transform: translate(14px, 50vh) rotate(180deg); } to { transform: translate(-6px, 105vh) rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .noel-flocons { display: none; } }
 .noel .board { border-color: #f4c542; box-shadow: 0 0 0 2px rgba(215, 38, 61, .55), 0 0 18px rgba(244, 197, 66, .25); }
-.noel-guirlande { position: absolute; left: 22px; right: 22px; top: -7px; height: 12px; pointer-events: none;
-  background: radial-gradient(circle, #ff4d5e 0 3.5px, transparent 4px) 0 50% / 36px 12px repeat-x,
-              radial-gradient(circle, #ffd54a 0 3.5px, transparent 4px) 12px 50% / 36px 12px repeat-x,
-              radial-gradient(circle, #46d17a 0 3.5px, transparent 4px) 24px 50% / 36px 12px repeat-x;
-  animation: noel-clignote 1.6s steps(2) infinite; }
+/* La guirlande tout autour du cadre (24 novembre) : des ampoules rouges, dorées et vertes, qui clignotent */
+.noel-guirlande { position: absolute; pointer-events: none; animation: noel-clignote 1.6s steps(2) infinite;
+  --ampoules: radial-gradient(circle, #ff4d5e 0 3.5px, transparent 4px), radial-gradient(circle, #ffd54a 0 3.5px, transparent 4px), radial-gradient(circle, #46d17a 0 3.5px, transparent 4px); }
+.noel-guirlande.haut, .noel-guirlande.bas { left: 18px; right: 18px; height: 12px; background: var(--ampoules);
+  background-size: 36px 12px; background-repeat: repeat-x; background-position: 0 50%, 12px 50%, 24px 50%; }
+.noel-guirlande.haut { top: -7px; } .noel-guirlande.bas { bottom: -7px; }
+.noel-guirlande.gauche, .noel-guirlande.droite { top: 18px; bottom: 18px; width: 12px; background: var(--ampoules);
+  background-size: 12px 36px; background-repeat: repeat-y; background-position: 50% 0, 50% 12px, 50% 24px; }
+.noel-guirlande.gauche { left: -7px; } .noel-guirlande.droite { right: -7px; }
 @keyframes noel-clignote { 50% { filter: brightness(1.6) saturate(1.3); } }
 @media (prefers-reduced-motion: reduce) { .noel-guirlande { animation: none; } }
-.noel-houx { position: absolute; top: -16px; width: 52px; height: 32px; pointer-events: none; z-index: 2; }
-.noel-houx.g { left: -12px; transform: rotate(-18deg); }
-.noel-houx.d { right: -12px; transform: rotate(18deg) scaleX(-1); }
+/* Le houx touffu aux quatre coins */
+.noel-houx { position: absolute; width: 64px; height: 64px; pointer-events: none; z-index: 2; }
+.noel-houx.hg { left: -24px; top: -26px; transform: rotate(-35deg); }
+.noel-houx.hd { right: -24px; top: -26px; transform: rotate(35deg); }
+.noel-houx.bg { left: -24px; bottom: -26px; transform: rotate(-145deg); }
+.noel-houx.bd { right: -24px; bottom: -26px; transform: rotate(145deg); }
 .noel-houx svg { width: 100%; height: 100%; }
+/* Les couleurs de Noël (24 novembre, demande du porteur du projet) : le fond rouge, le tableau de score vert sapin */
+body.noel { --court: #7c1020; --court-deep: #0f4228; background: radial-gradient(ellipse at 50% 0%, #a4182c, #7c1020 45%, #4d0812); background-attachment: fixed; }
 .noel #viewMatch .arena::before { content: "🎄"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 110px; opacity: .2; pointer-events: none; }
+body.noel .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
