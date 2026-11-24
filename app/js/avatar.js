@@ -55,6 +55,9 @@ const PULLS = {
 };
 for (const [k, p] of Object.entries(PULLS)) GANTS[k] = [p.nom, p.f, `radial-gradient(circle,#fff 18%,transparent 20%),repeating-linear-gradient(${p.b} 0 5px,${p.z1} 5px 7px,${p.f} 7px 13px)`];
 export const GANTS_PULLS = Object.keys(PULLS);
+// Les gants tout dessinés (Noël : 24 novembre) : le motif de gant choisi ne s'y applique pas (les pois cachaient le tricot du pull,
+// remarque du porteur du projet), et l'éditeur ne le propose pas.
+export const GANTS_DESSINES = new Set(["perenoel", "lutin", "renne", "neige", "pullmoche", ...GANTS_PULLS]);
 // Les gants à dossard (le dossard épinglé, les coutures d'or) ; le poignet du gant du FIAC Club.
 const A_DOSSARD = new Set(["dossard", "fiac"]);
 export const POIGNET_FIAC = "#1B2140";
@@ -441,7 +444,7 @@ const comete = (x, y, r) => { const k = r / 10; return `<g transform="translate(
 export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
   const cle = a.poignet in POIGNETS ? a.poignet : "rouge";
-  const id = "av" + (++n), ink = "rgba(0,0,0,.22)", gm = nue ? "uni" : a.gantMotif;
+  const id = "av" + (++n), ink = "rgba(0,0,0,.22)", gm = nue || GANTS_DESSINES.has(a.gant) ? "uni" : a.gantMotif;   // (un gant tout dessiné : pas de motif par-dessus)
   const mc = (MOTIF_COULEURS[a.gantMotifCouleur] || [])[1] || null;   // la couleur du motif choisie (sinon : la couleur habituelle)
   const brode = !nue && BRODERIES[a.gant === "fiac" ? "@fiac" : a.brode];   // (le pseudo brodé sur le poignet : gants-brodes.js ; pas sur la main nue)   // (pas de motif de gant sur la peau)
   // Gant rayé, à pois ou bicolore : on le remplit avec un motif SVG.
