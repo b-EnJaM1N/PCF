@@ -1369,3 +1369,18 @@ body.noel { --court: #7c1020; --court-deep: #0f4228; background: radial-gradient
 .noel #viewMatch .arena::before { content: "🎄"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 110px; opacity: .42; pointer-events: none; }   /* (24 novembre : un peu plus visible) */
 body.noel .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
 .noel #viewMatch .vs { position: relative; z-index: 1; color: #fff; text-shadow: 0 0 4px #4d0812, 0 0 8px #4d0812, 0 1px 2px #000; }   /* (24 novembre : « contre » lisible sur le sapin) */
+/* Les bots de Noël dans la liste du mode solo, et leurs pouvoirs (noel.js) */
+.opps-noel { grid-column: 1 / -1; margin: 6px 0 0; font-weight: 700; color: #ffe08a; }
+.opp.opp-noel { border-color: rgba(244, 197, 66, .45); }
+#hMe { position: relative; }
+.noel-pouvoir-gant { position: absolute; inset: 8%; pointer-events: none; animation: noel-pouvoir-gant .35s ease-out; }
+.noel-pouvoir-gant svg { width: 100%; height: 100%; display: block; }
+@keyframes noel-pouvoir-gant { from { transform: scale(1.6); opacity: 0; } }
+.noel-pouvoir { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 4; }
+.noel-pouvoir i { position: absolute; top: -40px; font-size: 30px; font-style: normal; animation: noel-pouvoir-pluie 1.8s ease-in forwards; }
+@keyframes noel-pouvoir-pluie { to { transform: translateY(75vh) rotate(200deg); opacity: .2; } }
+.noel-pouvoir.comete .trainee { top: 30%; left: -20%; font-size: 52px; animation: noel-pouvoir-comete 1.2s ease-out forwards; filter: drop-shadow(0 0 10px #ffe27a); }
+@keyframes noel-pouvoir-comete { to { transform: translate(140vw, 18vh); } }
+#moves.melange button { animation: noel-melange .4s ease-out; }
+@keyframes noel-melange { from { transform: rotate(-12deg) scale(.85); } }
+@media (prefers-reduced-motion: reduce) { .noel-pouvoir, .noel-pouvoir-gant, #moves.melange button { animation: none; } .noel-pouvoir { display: none; } }
