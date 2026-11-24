@@ -1420,5 +1420,5 @@ body.noel-fete .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond roug
 .avent-ligne[hidden] { display: none; }
 /* Le bonnet de Noël sur le logo (24 novembre au soir, choix du porteur du projet : à l'accueil, seulement des touches discrètes) */
 .noel .marque { position: relative; }
-.noel-bonnet { position: absolute; left: -8px; top: -9px; width: 52px; height: 40px; pointer-events: none; transform: rotate(-22deg); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .35)); }
-@media (max-width: 420px) { .noel-bonnet { width: 44px; height: 34px; left: -6px; top: -7px; } }
+.noel-bonnet { position: absolute; left: -17px; top: -8px; width: 42px; height: 32px; pointer-events: none; transform: rotate(-34deg); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .35)); }
+@media (max-width: 420px) { .noel-bonnet { width: 36px; height: 28px; left: -14px; top: -6px; } }
