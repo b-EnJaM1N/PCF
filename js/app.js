@@ -33,7 +33,7 @@ import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } f
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
-import { avatarSVG, SYMBOLES, FONDS, GANTS, POIGNETS, MOTIFS, MOTIFS_GANT, MOTIF_COULEURS, MOTIFS_COLORABLES, BRACELETS_COLORABLES, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
+import { avatarSVG, SYMBOLES, FONDS, GANTS, GANTS_DESSINES, POIGNETS, MOTIFS, MOTIFS_GANT, MOTIF_COULEURS, MOTIFS_COLORABLES, BRACELETS_COLORABLES, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS, POOLS, ligneMoment } from "./voix/script.js";
 import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint, intensiteMatch, series } from "./ambiance.js";
@@ -2657,9 +2657,10 @@ function renderEditeur() {
     }));
   };
   mk($("swSymbole"), "symbole", SYMBOLES, true); mk($("swBg"), "fond", FONDS); mk($("swGlove"), "gant", GANTS); mk($("swWrist"), "poignet", POIGNETS); mk($("swMotif"), "motif", MOTIFS, true); mk($("swGantMotif"), "gantMotif", MOTIFS_GANT, true);
-  if ($("swMotifCouleur")) { mk($("swMotifCouleur"), "gantMotifCouleur", MOTIF_COULEURS); $("choixMotifCouleur").hidden = P.av.gant === "nu" || !MOTIFS_COLORABLES.has(P.av.gantMotif); }   // (seulement pour les motifs qui ont une couleur)
+  if ($("swMotifCouleur")) { mk($("swMotifCouleur"), "gantMotifCouleur", MOTIF_COULEURS); $("choixMotifCouleur").hidden = P.av.gant === "nu" || GANTS_DESSINES.has(P.av.gant) || !MOTIFS_COLORABLES.has(P.av.gantMotif); }   // (seulement pour les motifs qui ont une couleur)
   $("choixPoignet").hidden = P.av.gant === "nu";   // pas de bandeau sur la main nue
-  for (const [id, nue] of [["choixGantMotif", false], ["choixPeau", true], ["choixOngles", true]]) if ($(id)) $(id).hidden = (P.av.gant === "nu") !== nue;   // (la peau et le vernis : main nue ; le motif : avec un gant)
+  for (const [id, nue] of [["choixGantMotif", false], ["choixPeau", true], ["choixOngles", true]]) if ($(id)) $(id).hidden = (P.av.gant === "nu") !== nue;
+  if ($("choixGantMotif") && GANTS_DESSINES.has(P.av.gant)) $("choixGantMotif").hidden = true;   // (un pull moche, un gant de Noël : tout dessiné)   // (la peau et le vernis : main nue ; le motif : avec un gant)
   mk($("swPeau"), "peau", PEAUX); mk($("swOngles"), "ongles", ONGLES); mk($("swBracelet"), "bracelet", BRACELETS); mk($("swBague"), "bague", BAGUES);
   if ($("swBraceletCouleur")) { mk($("swBraceletCouleur"), "braceletCouleur", MOTIF_COULEURS); $("choixBraceletCouleur").hidden = !BRACELETS_COLORABLES.has(P.av.bracelet); }   // (cuir et perles : la couleur au choix)
 }
