@@ -1377,7 +1377,6 @@ body.noel-fete.en-match { --court: #7c1020; --court-deep: #0f4228; background: r
 body.noel-fete .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
 .noel-fete #viewMatch .vs { position: relative; z-index: 1; color: #fff; text-shadow: 0 0 4px #4d0812, 0 0 8px #4d0812, 0 1px 2px #000; }   /* (24 novembre : « contre » lisible sur le sapin) */
 /* Les bots de Noël dans la liste du mode solo, et leurs pouvoirs (noel.js) */
-.opps-noel { grid-column: 1 / -1; margin: 6px 0 0; font-weight: 700; color: #ffe08a; }
 .opp.opp-noel { border-color: rgba(244, 197, 66, .45); }
 .noel-pouvoir { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 4; }
 .noel-pouvoir i { position: absolute; top: -40px; font-size: 30px; font-style: normal; animation: noel-pouvoir-pluie 1.8s ease-in forwards; }
@@ -1422,3 +1421,10 @@ body.noel-fete .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond roug
 .noel .marque { position: relative; }
 .noel-bonnet { position: absolute; left: -17px; top: -8px; width: 42px; height: 32px; pointer-events: none; transform: rotate(-34deg); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .35)); }
 @media (max-width: 420px) { .noel-bonnet { width: 36px; height: 28px; left: -14px; top: -6px; } }
+/* Les adversaires de l'entraînement (24 novembre au soir) : les derniers affrontés, puis les catégories repliées */
+.opps-titre { margin: 2px 0 6px; font-size: .85rem; font-weight: 700; color: var(--muted); }
+.opps-cat { margin: 0 0 8px; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .12); border-radius: 12px; }
+.opps-cat > summary { cursor: pointer; padding: 10px 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.opps-cat > summary small { margin-left: auto; font-weight: 500; color: var(--muted); font-size: .8rem; }
+.opps-cat > .opps { padding: 0 8px 8px; margin: 0; }
+.opp.verrou { opacity: .45; filter: grayscale(.85); }

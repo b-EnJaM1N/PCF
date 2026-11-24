@@ -1,6 +1,6 @@
 // Écran principal : relie les règles, les bots, les annonces, le son et la fiche joueur.
 import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, SONNE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, recupererSmash, issueSmash, gagnantCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
-import { BOTS, BOTS_NOEL, botParId, choisirCoup, contexteBot } from "./bots.js";
+import { BOTS, BOTS_NOEL, TOUS_LES_BOTS, CATEGORIES_BOTS, categorieDe, botDisponible, derniersBots, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement, commentaireStats } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
@@ -116,10 +116,12 @@ if (!POINTS_PAR_SET.includes(fmt.len)) fmt.len = 11;
 if (![1, 2, 3].includes(fmt.win)) fmt.win = 2;
 const lenTournoi = () => (fmt.len >= 7 ? fmt.len : 11);   // le tournoi se joue en sets de 11 ou de 7 points
 let WIN = fmt.win;                               // sets gagnants du match en cours (le tournoi l'impose)
-let amicalId = botParId(lire("adversaire")) && (!botParId(lire("adversaire")).noel || noelActif()) ? lire("adversaire") : "tictac";   // un adversaire proche du niveau de départ (1200)
-let OPP = botParId(amicalId);
+
 const premiereFois = lire("profil") === null;   // (pour le compteur de visites : un téléphone qui découvre HandSlam)
 let P = normaliserProfil(lire("profil"));
+// (un bot de Noël : pendant les fêtes ; un bot de la carrière : une fois battu)
+let amicalId = botParId(lire("adversaire")) && (!botParId(lire("adversaire")).noel || noelActif()) && botDisponible(botParId(lire("adversaire")), P.faceAFace || {}) ? lire("adversaire") : "tictac";   // un adversaire proche du niveau de départ (1200)
+let OPP = botParId(amicalId);
 let T = lire("tournoi");
 const sauverLocal = () => ecrire("profil", P);
 // Pas encore de surnom (ou un surnom de l'ancienne liste) : un surnom de départ tiré au hasard, à changer dans « Ma fiche ».
@@ -2785,13 +2787,31 @@ $("quitterSolo").addEventListener("click", () => {
 });
 
 // ---------------------------------------------------------------- choix de l'adversaire
+// (24 novembre au soir, choix du porteur du projet) en haut, les 3 derniers bots affrontés ; dessous, les bots par catégorie
+// (Débutants, Confirmés, Experts ; pendant les fêtes, les bots de Noël), repliées ; ceux de la carrière pas encore battus,
+// grisés avec un cadenas.
+const categoriesOuvertes = new Set();
 function renderAdversaires() {
-  // (pendant les fêtes, les bots de Noël en plus, à la fin : noel.js)
-  const bouton = b => `<button class="opp${b.noel ? " opp-noel" : ""}" data-id="${b.id}" aria-pressed="${b.id === amicalId}"><span class="oa">${avatarSVG(b.av)}</span><span class="on">${b.nom}</span><span class="ol">Niveau ${b.elo}</span></button>`;
-  $("opps").innerHTML = BOTS.map(bouton).join("") + (noelActif() ? `<p class="opps-noel">🎄 Les bots de Noël</p>` + BOTS_NOEL.map(bouton).join("") : "");
-  $("opps").querySelectorAll("button").forEach(x => x.addEventListener("click", () => {
-    amicalId = x.dataset.id; ecrire("adversaire", amicalId);
-    OPP = botParId(amicalId); renderAdversaires(); rafraichirAvatars();
+  const ff = P.faceAFace || {};
+  const bouton = b => {
+    const libre = botDisponible(b, ff);
+    return `<button class="opp${b.noel ? " opp-noel" : ""}${libre ? "" : " verrou"}" data-id="${b.id}" aria-pressed="${b.id === amicalId}"${libre ? "" : ` aria-label="${b.nom}, à débloquer en carrière"`}><span class="oa">${avatarSVG(b.av)}</span><span class="on">${libre ? "" : "🔒 "}${b.nom}</span><span class="ol">Niveau ${b.elo}</span></button>`;
+  };
+  // (le bot choisi y est toujours, en premier s'il n'a pas été affronté récemment : on le voit même catégories repliées)
+  const choisi = botParId(amicalId), recents = derniersBots(P.derniers, ff);
+  const derniers = (choisi && !recents.includes(choisi) ? [choisi, ...recents] : recents).slice(0, 3);
+  const tous = [...TOUS_LES_BOTS].sort((x, y) => x.elo - y.elo);
+  const categorie = (id, titre, liste, compte) => `<details class="opps-cat" data-cat="${id}"${categoriesOuvertes.has(id) ? " open" : ""}><summary>${titre}<small>${compte}</small></summary><div class="opps">${liste.map(bouton).join("")}</div></details>`;
+  $("opps").innerHTML = (derniers.length ? `<p class="opps-titre">Ton adversaire et tes derniers</p><div class="opps">${derniers.map(bouton).join("")}</div>` : "")
+    + CATEGORIES_BOTS.map(c => { const l = tous.filter(b => categorieDe(b) === c), n = l.filter(b => botDisponible(b, ff)).length;
+      return categorie(c.id, `${c.icone} ${c.nom}`, l, `${n} / ${l.length} débloqués`); }).join("")
+    + (noelActif() ? categorie("noel", "🎄 Les bots de Noël", BOTS_NOEL, `${BOTS_NOEL.length} bots`) : "");
+  $("opps").querySelectorAll("details").forEach(d => d.addEventListener("toggle", () => { d.open ? categoriesOuvertes.add(d.dataset.cat) : categoriesOuvertes.delete(d.dataset.cat); }));
+  $("opps").querySelectorAll("button.opp").forEach(x => x.addEventListener("click", () => {
+    const b = botParId(x.dataset.id);
+    if (!botDisponible(b, P.faceAFace || {})) { $("oppDesc").textContent = `🔒 ${b.nom} (niveau ${b.elo}) : bats-le en carrière pour le débloquer à l'entraînement.`; return; }
+    amicalId = b.id; ecrire("adversaire", amicalId);
+    OPP = b; renderAdversaires(); rafraichirAvatars();
     if (!matchEnCours()) renderHistoriqueVide();
   }));
   const b = botParId(amicalId); $("oppDesc").textContent = `${b.nom}, ${b.style.toLowerCase()} : ${b.desc}`;
