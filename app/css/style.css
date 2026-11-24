@@ -1386,20 +1386,21 @@ body.noel .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
 @keyframes noel-melange { from { transform: rotate(-12deg) scale(.85); } }
 @media (prefers-reduced-motion: reduce) { .noel-pouvoir, #moves.melange button { animation: none; } .noel-pouvoir { display: none; } }
 /* Le calendrier de l'Avent (24 novembre ; ecran-avent.js) : le grand sapin et ses 24 portes */
-.hub.hub-noel { border-color: rgba(244, 197, 66, .6); background: linear-gradient(135deg, rgba(30, 140, 58, .35), rgba(215, 25, 46, .3)); }
 .avent-msg { font-weight: 600; text-align: center; margin: 8px 0; }
 .avent-sapin { position: relative; width: 100%; max-width: 380px; aspect-ratio: 3 / 4; margin: 6px auto 12px; }
 .avent-sapin > svg { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .35)); }
-.avent-porte { position: absolute; transform: translate(-50%, -50%); width: 12.5%; aspect-ratio: 1; border-radius: 8px; font: 700 .95rem/1 inherit; font-family: inherit;
-  color: #fff; background: #C8102E; border: 2px solid #F4C542; box-shadow: 0 2px 6px rgba(0, 0, 0, .4); cursor: pointer; display: grid; place-items: center; padding: 0; }
-.avent-porte.ouverte { background: #FFF4DC; color: #14533A; border-color: #fff; font-size: 1.1rem; }
-.avent-porte.aujourdhui { background: #F4C542; color: #7A0A1C; animation: avent-brille 1.4s ease-in-out infinite; }
-.avent-porte.rattrapage { background: #4D6BB3; border-color: #BFE6FF; }
-.avent-porte.rattrapage::after { content: "⏳"; position: absolute; right: -6px; top: -8px; font-size: .7rem; }
-.avent-porte.fermee { background: #7A1F2E; color: rgba(255, 255, 255, .55); border-color: rgba(244, 197, 66, .4); }
-.avent-porte.perdue { background: #555; color: #aaa; border-color: #777; }
-.avent-porte.choisie { outline: 3px solid #fff; outline-offset: 2px; }
-@keyframes avent-brille { 50% { box-shadow: 0 0 16px 4px #FFE27A; transform: translate(-50%, -50%) scale(1.08); } }
+.avent-sapin { background: radial-gradient(ellipse at 50% 92%, rgba(255, 255, 255, .25), transparent 45%); border-radius: 12px; }
+.avent-porte { position: absolute; transform: translate(-50%, -25%); padding: 0; border: 0; background: none; cursor: pointer; transform-origin: 50% 0; }
+.avent-porte svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .45)); }
+.avent-porte.ouverte svg { filter: drop-shadow(0 0 6px #FFF3B0) drop-shadow(0 0 12px rgba(255, 230, 120, .8)) brightness(1.12); }
+.avent-porte.aujourdhui { animation: avent-balance 2.4s ease-in-out infinite; }
+.avent-porte.aujourdhui svg { filter: drop-shadow(0 0 8px #FFE27A) drop-shadow(0 2px 3px rgba(0, 0, 0, .45)); animation: avent-scintille 1.2s ease-in-out infinite; }
+.avent-porte.rattrapage::after { content: "⏳"; position: absolute; right: -10%; top: 20%; font-size: .8rem; }
+.avent-porte.fermee svg { filter: saturate(.75) brightness(.9) drop-shadow(0 2px 3px rgba(0, 0, 0, .45)); opacity: .9; }
+.avent-porte.perdue svg { filter: grayscale(1) brightness(.6); }
+.avent-porte.choisie svg { outline: 2px dashed rgba(255, 255, 255, .8); outline-offset: 1px; border-radius: 40%; }
+@keyframes avent-balance { 0%, 100% { transform: translate(-50%, -25%) rotate(-6deg); } 50% { transform: translate(-50%, -25%) rotate(6deg); } }
+@keyframes avent-scintille { 50% { filter: drop-shadow(0 0 14px #FFF3B0) drop-shadow(0 2px 3px rgba(0, 0, 0, .45)) brightness(1.2); } }
 .avent-case { background: rgba(0, 0, 0, .25); border-radius: 12px; padding: 12px; text-align: center; }
 .avent-case h3 { margin: 0 0 6px; }
 .avent-cadeau { width: 110px; height: 110px; margin: 6px auto; display: grid; place-items: center; font-size: 3.4rem; }
@@ -1411,4 +1412,7 @@ body.noel .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
 .avent-ouverture .panel { max-width: 360px; text-align: center; }
 .avent-ouverture.ouvre .avent-cadeau { animation: avent-ouvre .7s cubic-bezier(.2, 1.6, .4, 1); }
 @keyframes avent-ouvre { from { transform: scale(.2) rotate(-25deg); opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .avent-porte.aujourdhui, .avent-ouverture.ouvre .avent-cadeau { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .avent-porte.aujourdhui, .avent-porte.aujourdhui svg, .avent-ouverture.ouvre .avent-cadeau { animation: none; } }
+.avent-ligne { display: block; width: 100%; margin-top: 8px; padding: 8px 10px; font: inherit; font-weight: 600; text-align: left; color: #FFE08A;
+  background: rgba(0, 0, 0, .2); border: 1px dashed rgba(244, 197, 66, .55); border-radius: 10px; cursor: pointer; }
+.avent-ligne[hidden] { display: none; }
