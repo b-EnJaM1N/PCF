@@ -1368,3 +1368,4 @@ body.noel #viewMatch { position: relative; }
 body.noel { --court: #7c1020; --court-deep: #0f4228; background: radial-gradient(ellipse at 50% 0%, #a4182c, #7c1020 45%, #4d0812); background-attachment: fixed; }
 .noel #viewMatch .arena::before { content: "🎄"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 110px; opacity: .42; pointer-events: none; }   /* (24 novembre : un peu plus visible) */
 body.noel .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
+.noel #viewMatch .vs { position: relative; z-index: 1; color: #fff; text-shadow: 0 0 4px #4d0812, 0 0 8px #4d0812, 0 1px 2px #000; }   /* (24 novembre : « contre » lisible sur le sapin) */
