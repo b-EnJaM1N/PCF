@@ -49,3 +49,10 @@ test("la série de jours joués, et on garde 60 jours", () => {
   const vieux = garder({ "2026-01-01": {} }, "2026-10-05", {});
   assert.deepEqual(Object.keys(vieux), ["2026-10-05"]);
 });
+
+test("le jour de Noël, le match du jour est contre le Père Noël (24 novembre)", async () => {
+  const { matchDuJour } = await import("../app/js/match-du-jour.js");
+  assert.equal(matchDuJour("2026-12-25").bot, "perenoel");
+  assert.equal(matchDuJour("2026-12-25").noel, true);
+  assert.notEqual(matchDuJour("2026-12-24").bot, "perenoel");
+});

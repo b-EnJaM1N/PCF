@@ -89,3 +89,7 @@ Après le test prolongé (refus du 10 novembre) ; examen annoncé en « sept jou
 - Modifications : « Bouton Retour plus visible ; historique des coups en couleurs ; 5 s pour la poignée de main ; solde visible dans la boutique ; défis programmés à l'heure choisie ; replays fidèles au score ; premier match plus disputé ; championnats au calendrier réglable. »
 - Tests supplémentaires (nouvelle question : « Qu'avez-vous fait différemment cette fois-ci ? ») : « Test prolongé avec les mêmes testeurs, mieux suivis : questionnaire envoyé, bouton d'avis dans l'appli, journal des retours. 4 mises à jour publiées, chacune avec ses notes, pour corriger ce qu'ils signalaient. Duels en ligne et championnat entre testeurs : plus de 200 duels en un mois. »
 - Si c'est refusé : lire le motif, prolonger le test de 14 jours (viser 15 à 20 testeurs actifs, des avis écrits, une version 6 au milieu), refaire la demande ; le jeu reste ouvert à tous sur handslam.fr en attendant.
+
+## Réponse du 24 novembre 2026 (soir) : refusée
+« More testing required » (même motif que le 10 novembre : testeurs pas assez engagés, retours pas assez suivis par des mises à
+jour). Google demande 14 jours de test fermé de plus avant une nouvelle demande : **pas avant le 8 décembre**.

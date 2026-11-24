@@ -92,3 +92,9 @@ test("les joueurs sont prévenus quand l'organisateur annule le championnat (ét
   assert.equal(r.titre, "🚫 Championnat annulé : La ligue du Fiac");
   assert.match(r.texte, /^Décision de l'organisateur, Benja#7\./);
 });
+
+test("le 1er décembre : le calendrier de l'Avent est ouvert (étape 90)", () => {
+  const m = message("avent", null, { pseudo: "Un joueur", numero: 0 });
+  assert.match(m.titre, /calendrier de l'Avent est ouvert/);
+  assert.equal(m.url, "./?ouvrir=avent");
+});

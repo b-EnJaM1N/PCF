@@ -1,6 +1,6 @@
 // Écran principal : relie les règles, les bots, les annonces, le son et la fiche joueur.
 import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, SONNE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, recupererSmash, issueSmash, gagnantCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
-import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
+import { BOTS, BOTS_NOEL, TOUS_LES_BOTS, CATEGORIES_BOTS, categorieDe, botDisponible, derniersBots, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement, commentaireStats } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
@@ -16,8 +16,11 @@ import { dessinerStats } from "./image-stats.js";
 import { carteDe, notesDe, texteRang, rangDe, texteCoefs, partBots, HUMAINS_POUR_CARTE } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
 import { installerComparaison } from "./comparer-cartes.js";
-import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee, situationPoignee } from "./poignee.js";
+import { installerNoel, noelActif, pouvoirNoel, remettreBoutons, jourDeNoel } from "./noel.js";
+import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee, situationPoignee, normaleDe } from "./poignee.js";
 import { installerRapide } from "./ecran-rapide.js";
+import { installerAvent } from "./ecran-avent.js";
+import { FORMAT_GARDIEN } from "./avent-logique.js";
 import { installerSignalement } from "./ecran-signaler.js";
 import { etatNotifications, activerNotifications, desactiverNotifications, rattacherAbonnement, testerNotification, texteTest } from "./notifications.js";
 import { FORMATS_RAPIDES, botProche } from "./rapide-logique.js";
@@ -25,7 +28,7 @@ import { MARQUE } from "./marque.js";
 import { nouvellesStats, suivreCoup, statsDuMatch } from "./stats-match.js";
 import { estFiac } from "./profil.js";
 import { jouerRoutine } from "./routines.js";
-import { TITRES, FAMILLES, accorderTitres, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, reserveAuTenant, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash, jeuVide } from "./profil.js";
+import { TITRES, FAMILLES, accorderTitres, compterMatchNoel, titresAnnee, titresEnLigne, normaliserProfil, enregistrerMatch, remettreAZero, verrouDe, estVerrouille, gantAttendPremierMatch, reserveAuTenant, nomAffiche, titresObtenus, dernierTitre, signeFavori, tauxSmash, jeuVide } from "./profil.js";
 import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } from "./tournoi.js";
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
@@ -113,10 +116,12 @@ if (!POINTS_PAR_SET.includes(fmt.len)) fmt.len = 11;
 if (![1, 2, 3].includes(fmt.win)) fmt.win = 2;
 const lenTournoi = () => (fmt.len >= 7 ? fmt.len : 11);   // le tournoi se joue en sets de 11 ou de 7 points
 let WIN = fmt.win;                               // sets gagnants du match en cours (le tournoi l'impose)
-let amicalId = botParId(lire("adversaire")) ? lire("adversaire") : "tictac";   // un adversaire proche du niveau de départ (1200)
-let OPP = botParId(amicalId);
+
 const premiereFois = lire("profil") === null;   // (pour le compteur de visites : un téléphone qui découvre HandSlam)
 let P = normaliserProfil(lire("profil"));
+// (un bot de Noël : pendant les fêtes ; un bot de la carrière : une fois battu)
+let amicalId = botParId(lire("adversaire")) && (!botParId(lire("adversaire")).noel || noelActif()) && botDisponible(botParId(lire("adversaire")), P.faceAFace || {}) ? lire("adversaire") : "tictac";   // un adversaire proche du niveau de départ (1200)
+let OPP = botParId(amicalId);
 let T = lire("tournoi");
 const sauverLocal = () => ecrire("profil", P);
 // Pas encore de surnom (ou un surnom de l'ancienne liste) : un surnom de départ tiré au hasard, à changer dans « Ma fiche ».
@@ -134,7 +139,7 @@ if (migrerCarriere(C)) { P.carriere = C; sauverLocal(); }   // (une saison d'Ama
 const sauverC = () => { P.carriere = C; sauverP(); };
 let S;              // la séance de match en cours
 let D = null;       // le duel en ligne en cours (null en solo)
-let duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, programmesUI = null, defisUI = null, boutiqueUI = null;
+let aventUI = null, duelsUI = null, cerclesUI = null, sngUI = null, rapideUI = null, jetonsUI = null, freerollUI = null, programmesUI = null, defisUI = null, boutiqueUI = null;
 let monClassement = null, mesDuelsOfficiels = 0, maDivision = null;
 // « Niveau officiel : 1232 ? · provisoire, encore 9 duels de calibrage »
 const texteNiveauFiche = (points, joues, division = null) => `Niveau officiel : ${texteNiveau(points, joues)}` + (LANCEMENT.actif ? "" : ` · ${texteDivision(division ?? divisionDe(points))}`) +
@@ -194,6 +199,18 @@ document.addEventListener("pointerdown", jouerIntroHymne, { once: true, capture:
   el.addEventListener("click", entrer);
   el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") entrer(); });
 })();
+// Le 25 décembre (24 novembre, répliques choisies par le porteur du projet) : au premier toucher de la journée, Roland et Monique
+// souhaitent un joyeux Noël, une fois par an (après l'hymne de l'écran titre, s'il joue).
+document.addEventListener("pointerdown", () => {
+  const annee = new Date().getFullYear();
+  if (!jourDeNoel() || lire("noel25Dit", null) === annee) return;
+  ecrire("noel25Dit", annee);
+  setTimeout(() => {
+    if (S?.enJeu || voix.occupe) return;
+    const l = (POOLS.noel_25 || []).map(it => ligneMoment(it, { genre: P.genre })).filter(x => x && voix.fichiers.has(x.id));
+    if (l.length) voix.dire(l);
+  }, 3500);
+}, { once: true, capture: true });
 // (La voix de synthèse du téléphone, robotique, n'est plus proposée : les répliques sont enregistrées.)
 voix.synthese = false;
 $("snd").checked = sonActif;
@@ -305,7 +322,11 @@ function lancerMinuteur() {
   const reserveDebut = m.reserve[0];
   afficherReserve(reserveDebut);
   // Sonné par le smash réussi du bot : 4 secondes sans pouvoir jouer (la barre, elle, avance).
-  if (S.sonne) { S.sonne = false; sonner(SONNE_MS, () => { if (S?.match === m && !S.occupe && !m.termine) boutons(true); }); }
+  if (S.sonne) {
+    S.sonne = false; sonner(SONNE_MS, () => { if (S?.match === m && !S.occupe && !m.termine) boutons(true); });
+    // (le smash d'un bot de Noël : son pouvoir ; noel.js)
+    if (OPP?.noel && !S.carriere) { const nom = pouvoirNoel(OPP.id, SONNE_MS); if (nom) $("verdict").textContent = `💫 ${nom} ! Encore un instant…`; }
+  }
   const tick = t => {
     const ecoule = t - tDebut;
     if (ecoule < DUREE_COUP_MS) {
@@ -424,13 +445,14 @@ function jouer(signe, auto = false, smash = false) {
   if (S && !S.duel && !auto && tDebut && S.enJeu && !S.occupe) (S.tempsReponse ||= []).push(performance.now() - tDebut);
   if (S && S.duel) return jouerDuel(signe, smash);
   if (!S || !S.enJeu || S.occupe || S.match.termine || panneauOuvert || faceAFaceOuvert) return;
-  S.occupe = true; arreterMinuteur(); boutons(false);
+  S.occupe = true; arreterMinuteur(); boutons(false); remettreBoutons();   // (la farce du Lutin ne dure qu'un coup)
   const m = S.match;
   // (le parcours des nouveaux, anonyme : un premier coup joué ; « lancé » aussi, s'il est venu par un autre chemin)
   if (!m.coups.length && !P.matchs) { compterEtapePremier(envoyerParcours, "premier_lance"); compterEtapePremier(envoyerParcours, "premier_coup"); }
   smash = !!smash && peutSmasher(m, 0);
   // Le bot smashe lui aussi, une fois par set au plus, de temps en temps.
-  const smashBot = peutSmasher(m, 1) && Math.random() < 0.1;
+  // (24 novembre au soir, choix du porteur du projet : les bots de Noël smashent deux fois plus souvent, pour qu'on voie leur pouvoir)
+  const smashBot = peutSmasher(m, 1) && Math.random() < (OPP?.noel ? 0.2 : 0.1);
   // Le bot choisit sans connaître le coup du joueur.
   const histBot = m.coups.map(c => ({ moi: c.b, adv: c.a, res: c.gagnant === null ? "e" : c.gagnant === 1 ? "g" : "p" }));
   const signeBot = (S.carriere ? coupCarriere : choisirCoup)(OPP, histBot, S.hasard || Math.random, contexteBot(m));   // (carrière : les bots faibles renforcés)   // (match du jour : le même tirage pour tout le monde)
@@ -477,7 +499,8 @@ function afficherCoup(signe, signeAdv, auto, { silencieux = false, smash = [fals
   // (celles d'avant le coup, gardées pour le replay : on y revoit la main s'abîmer ; 18 novembre)
   const copieDegats = () => [0, 1].map(j => { const d = degatsDe(S.degats, j, setDuCoup); return d ? { ...d } : null; });
   const degatsAvant = copieDegats();
-  const marque = noterDegats(S.degats ||= nouveauxDegats(), { set: setDuCoup, gagnant: evt.gagnant, signes: [signe, signeAdv], smashGagnant: issueSmash(smash, evt.gagnant) === "gagne" });
+  const marque = noterDegats(S.degats ||= nouveauxDegats(), { set: setDuCoup, gagnant: evt.gagnant, signes: [signe, signeAdv], smashGagnant: issueSmash(smash, evt.gagnant) === "gagne",
+    noel: !S.duel && !S.carriere && OPP?.noel ? OPP.id : null });   // (un bot de Noël : sa marque à lui ; noel.js)
   // La main en feu (effets.js) : 4, 6, 8 points de suite ; une égalité baisse le feu, un point perdu l'éteint.
   const feuAvant = [0, 1].map(j => feuDe(S.feu, j));   // (pour le replay : le feu au moment précis du point ; 18 novembre)
   const feuChg = noterFeu(S.feu ||= nouveauFeu(), evt.gagnant);
@@ -1265,6 +1288,11 @@ function finir() {
   sauverP(); rafraichirAvatars(); afficherBilan();
   $("coach").hidden = true;
   if (S.matchJour && n) noterMatchDuJour({ gagne, score: m.scoresSets[0] || [0, 0], grille: grille(c) });
+  // (24 novembre) les matchs joués pendant les fêtes : « Esprit de Noël » au 12e
+  if (n && noelActif()) { const t = accorderTitres(P, compterMatchNoel(P)); nouveaux.push(...t); sauverP(); }
+  // Le calendrier de l'Avent (ecran-avent.js) : ce match ouvre-t-il une case ?
+  if (n && noelActif()) aventUI?.apresMatch({ match: m, adv: OPP.id, botNoel: !!OPP.noel, duel: !!S.duel, smashsReussis: S.stats.smashsReussis || 0,
+    meilleureSerie: S.stats.meilleureSerie || 0, matchDuJour: !!S.matchJour, rattrapage: S.aventRattrapage || null, abandon: !!special });
   // La série de jours (match-du-jour.js) : ses paliers donnent un trophée et un objet (nouveautes.js : « serie »).
   const serieFin = S.matchJour && n && ouvert("serie") ? serie(resultatsDuJour(), jourParis()) : 0;
   if (serieFin) { nouveaux.push(...accorderTitres(P, titresSerie(serieFin))); sauverP(); }
@@ -1433,6 +1461,8 @@ function poigneeDeMain(apres) {
   $("pmMoi").innerHTML = avatarSVG(avMoi()); $("pmAdv").innerHTML = avatarSVG(avAdv());
   $("pmStyleMoi").textContent = ""; $("pmStyleAdv").textContent = "";
   scene.className = "pm-scene"; choix.hidden = false; $("pmTemps").hidden = false;
+  choix.querySelector('[data-s="givree"]').hidden = !possede(P, "poignee", "givree");   // (la poignée givrée : calendrier de l'Avent)
+  choix.classList.toggle("cinq", possede(P, "poignee", "givree"));
   choix.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === P.poignee)));
   const barre = $("pmTemps"); barre.classList.remove("court"); void barre.offsetWidth; barre.classList.add("court");
   ov.classList.add("show");
@@ -1443,7 +1473,7 @@ function poigneeDeMain(apres) {
     if (fait) return; fait = true; clearTimeout(minuterie);
     style = styleValide(style);
     choix.hidden = true; $("pmTemps").hidden = true;
-    compterPoignee(P, style, S.match.vainqueur === 1); sauverP(); defisUI?.poignee(style);
+    compterPoignee(P, style, S.match.vainqueur === 1); sauverP(); defisUI?.poignee(normaleDe(style));
     let adv;
     if (S.duel && D) adv = await styleAdversaire(style, debut);
     else adv = styleDuBot(OPP.id, style);
@@ -1475,7 +1505,7 @@ async function styleAdversaire(moi, debut = Date.now()) {
   const id = D.id, sa = D.moi === 0 ? "poignee1" : "poignee0";
   const habituel = styleValide(OPP.fiche?.poignee);
   try {
-    let d = await serveur.serrerLaMain(id, moi);
+    let d = await serveur.serrerLaMain(id, normaleDe(moi));   // (la givrée : une normale pour le serveur)
     const jusqua = Math.max(Date.now() + 2100, debut + DELAI_CHOIX_MS + 700);
     while (!d?.[sa] && Date.now() < jusqua) { await new Promise(ok => setTimeout(ok, 700)); d = await serveur.lireDuel(id); }
     return d?.[sa] ? styleValide(d[sa]) : habituel;
@@ -1969,7 +1999,7 @@ function renderCarte() {
     const jeton = ++carteJeton;
     const c = carteDe(P, { niveauOfficiel: monClassement, provisoire: monClassement !== null && provisoire(mesDuelsOfficiels), surnom: surnomDe(P).texte, titre: P.matchs ? dernierTitre(P) : "" });
     if (ouvert("serie")) c.serie = serie(resultatsDuJour(), jourParis());   // (ma série de jours, au pied de ma carte)
-    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(avMoi()), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur, cadreFlammes: CADRES[P.cadre]?.flammes });
+    const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: nomAffiche(P), numero: P.numero, drapeau: P.drapeau, av: avatarSVG(avMoi()), cadre: CADRES[P.cadre]?.couleur, cadreInterieur: CADRES[P.cadre]?.interieur, cadreFlammes: CADRES[P.cadre]?.flammes, cadreGuirlande: CADRES[P.cadre]?.guirlande });
     if (jeton !== carteJeton) return;
     $("carteRarete").textContent = texteRang(c.rang);
     const notes = notesDe(P);
@@ -2005,7 +2035,7 @@ async function voirCarteDe(uid) {
   $("uneMsg").textContent = "Impression en cours…"; $("uneImg").removeAttribute("src");
   $("uneComparer").hidden = uid === compteUI?.session()?.user?.id; $("uneComparer").dataset.uid = uid;   // (21 novembre : « ⚖️ Comparer avec moi »)
   $("une").classList.add("show");
-  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG({ ...J.av, brode: clePseudo(ligne.pseudo, ligne.numero) }), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur, cadreFlammes: CADRES[J.cadre]?.flammes });
+  const canvas = await dessinerCarte(document.createElement("canvas"), c, { nom: ligne.pseudo, numero: ligne.numero, drapeau: ligne.drapeau, av: avatarSVG({ ...J.av, brode: clePseudo(ligne.pseudo, ligne.numero) }), cadre: CADRES[J.cadre]?.couleur, cadreInterieur: CADRES[J.cadre]?.interieur, cadreFlammes: CADRES[J.cadre]?.flammes, cadreGuirlande: CADRES[J.cadre]?.guirlande });
   await preparerPartage(canvas, { img: $("uneImg"), partager: $("unePartager"), enregistrer: $("uneEnregistrer"), msg: $("uneMsg"),
     fichier: "carte-de-joueur.png", alt: `Carte de joueur de ${nom} : ${c.typeNiveau.toLowerCase()} ${c.niveau}, ${c.notes.map(n => `${n.nom} ${n.valeur}`).join(", ")}.`, titre: MARQUE.nom });
   return null;
@@ -2240,7 +2270,9 @@ function presenterSpeaker() {
   if (S.annonces) S.annonces.outsider = Math.abs(niveauMoi - niveauAdv) >= 200 ? (niveauMoi < niveauAdv ? 0 : 1) : null;
   // (18 novembre) le joueur du match qui a ses répliques personnalisées (« Le Chiromancien ») ; en duel, l'adversaire compte
   // une fois qu'on sait que c'est un ami (voir plus bas, attendreAmi)
-  const persoCom = persoCommente(...joueursDuMatch());
+  // (24 novembre) un bot de Noël a ses répliques, comme un joueur (noel.js) ; et pendant les fêtes, l'ambiance de Noël
+  const persoCom = persoCommente(...joueursDuMatch()) || (!S.duel && OPP?.noel ? { nom: OPP.id, joueur: 1, bot: true } : null);
+  if (S.annonces) S.annonces.noel = noelActif();
   // (en duel, le tirage commun aux deux téléphones pour ces répliques : le numéro du duel et le moment ; 18 novembre)
   const tirageCommun = S.duel && D?.duel?.id ? cle => tirageDuel(`com:${cle}`) / 4294967296 : null;
   if (S.annonces) { S.annonces.perso = persoCom; S.annonces.tirage = tirageCommun; }
@@ -2425,7 +2457,7 @@ function noterMatchDuJour(r) {
 function renderMatchDuJour() {
   const jour = jourParis(), m = matchDuJour(jour), b = botParId(m.bot), res = resultatsDuJour(), r = res[jour], s = serie(res, jour);
   $("mdjAv").innerHTML = avatarSVG(b.av);
-  $("mdjTitre").textContent = `📅 Match du jour n° ${m.numero}`;
+  $("mdjTitre").textContent = m.noel ? `🎅 Match du jour de Noël` : `📅 Match du jour n° ${m.numero}`;   // (le 25 décembre : le Père Noël)
   $("mdjJouer").hidden = !!r; $("mdjPartager").hidden = !r;
   const enValeur = ouvert("serie");   // (la série mise en valeur)
   const feu = !enValeur && s > 1 ? ` · 🔥 ${s} jours` : "";
@@ -2585,11 +2617,12 @@ function renderFiche() {
     }).join("");
   }
   // Le palmarès : les trophées, famille par famille.
-  const visibles = TITRES.filter(t => !t.bientot || ouvert(t.bientot));   // (les trophées des nouveautés pas encore ouvertes : version de test seulement)
+  const visibles = TITRES.filter(t => (!t.bientot || ouvert(t.bientot)) && (!t.noel || noelActif() || P.titres[t.id]));   // (Noël : pendant les fêtes, ou obtenu)   // (les trophées des nouveautés pas encore ouvertes : version de test seulement)
   const obtenus = visibles.filter(t => P.titres[t.id]).length;
   $("palmaresCompte").textContent = `${obtenus} trophée${obtenus > 1 ? "s" : ""} sur ${visibles.length}`;
   $("badges").innerHTML = FAMILLES.map(f => {
     const liste = visibles.filter(t => t.famille === f.id), n = liste.filter(t => P.titres[t.id]).length;
+    if (!liste.length) return "";   // (une famille sans trophée visible : Noël, hors des fêtes)
     return `<h3 class="famille">${f.icone} ${f.nom} <small>${n} / ${liste.length}</small></h3>` + liste.map(t => {
       const on = !!P.titres[t.id];
       return `<div class="badge ${on ? "on" : "off"}"><div class="bn">${on ? "🏅" : "🔒"} ${t.nom}</div><div class="bd">${t.desc}</div>${texteDeblocage(t) ? `<div class="bu">Débloque ${esc(texteDeblocage(t))}</div>` : ""}</div>`;
@@ -2602,7 +2635,9 @@ function renderEditeur() {
   $("avApercu").innerHTML = avatarSVG(avMoi());             // l'aperçu reste visible pendant qu'on fait défiler les choix
   const mk = (el, type, table, texte) => {
     // (les objets « bientôt » : seulement sur la version de test, sauf s'il les a déjà)
-    el.innerHTML = Object.keys(table).filter(k => !(type === "gant" && k === "fiac" && !P.tenantFiac && P.av.gant !== "fiac")).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
+    el.innerHTML = Object.keys(table).filter(k => !(type === "gant" && k === "fiac" && !P.tenantFiac && P.av.gant !== "fiac") && !(type === "gant" && ["lutin", "renne", "neige"].includes(k) && P.av.gant !== k)
+      // (les cadeaux du calendrier de l'Avent : visibles, avec un cadenas, pendant les fêtes ; sinon seulement s'il les a)
+      && !(articleDe(type, k)?.avent && !noelActif() && !possede(P, type, k) && P.av[type] !== k)).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
       return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
     }).join("");
@@ -2613,6 +2648,7 @@ function renderEditeur() {
         $("lockNote").innerHTML = gantAttendPremierMatch(P, type, k) ? "🧤 Les gants se débloquent après ton premier match. En attendant : la main nue !"
           : reserveAuTenant(P, type, k) && k === "fiac" ? "🏆 Le gant en or du FIAC Club se porte seulement quand tu es tenant du titre du FIAC Club : gagne son prochain tournoi !"
           : reserveAuTenant(P, type, k) ? "🟨 Le Dossard 1 se porte seulement quand tu es tenant du titre d'un de tes cercles : gagne le prochain tournoi de ton cercle, il est à toi jusqu'au tournoi suivant !"
+          : x?.avent ? `🎄 « ${esc(x.nom || (type === "gant" ? GANTS[k][0] : k))} » est à gagner dans le calendrier de l'Avent. <button class="linkbtn" data-aller="viewAvent">Voir le calendrier</button>`
           : t ? `Verrouillé. Obtiens le titre « ${esc(t.nom)} » : ${esc(t.desc.charAt(0).toLowerCase() + t.desc.slice(1))}`
           : `🛍️ « ${esc(x.nom)} » est en vente à la boutique : ${x.prix} jetons. <button class="linkbtn" data-aller="viewBoutique">Voir la boutique</button>`;
         return;
@@ -2673,8 +2709,8 @@ $("resetProfile").addEventListener("click", () => {
 // ---------------------------------------------------------------- navigation
 // Trois onglets (Jouer, Cercles, Ma fiche) et la roue des Options. L'onglet « Jouer » est un menu
 // qui mène aux pages Partie rapide, Défier un ami, Tournois (Programmés, Sit & Go, Mes tournois) et Entraînement.
-const VUES = ["viewJouer", "viewCompet", "viewCarriere", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewBoutique", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
-const ONGLET_DE = { viewJouer: "jouer", viewCompet: "jouer", viewCarriere: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewBoutique: "profile", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
+const VUES = ["viewJouer", "viewCompet", "viewCarriere", "viewRapide", "viewMatch", "viewDuel", "viewSng", "viewFreeroll", "viewBoutique", "viewAvent", "viewTournois", "socTournoi", "socTournoiNouveau", "viewCercles", "viewProfile", "viewOptions"];
+const ONGLET_DE = { viewJouer: "jouer", viewCompet: "jouer", viewCarriere: "jouer", viewRapide: "jouer", viewMatch: "jouer", viewDuel: "jouer", viewSng: "jouer", viewFreeroll: "jouer", viewBoutique: "profile", viewAvent: "jouer", viewTournois: "jouer", viewCercles: "cercles", viewProfile: "profile" };
 let vueCourante = "viewJouer", avantOptions = "viewJouer", parHistorique = false;
 function aller(vue) {
   if (!VUES.includes(vue)) return;
@@ -2695,7 +2731,8 @@ function aller(vue) {
   if (vue === "viewCercles" || vue === "viewTournois") cerclesUI?.rafraichir();
   if (vue === "viewSng") sngUI?.rafraichir();
   if (vue !== "viewMatch") jetonsUI?.rafraichir();   // le solde, en haut de l'écran, reste à jour (achats, gains)
-  if (vue === "viewJouer") { defisUI?.rafraichir(); renderMatchDuJour(); }
+  if (vue === "viewJouer") { defisUI?.rafraichir(); renderMatchDuJour(); aventUI?.ligne(); }
+  if (vue === "viewAvent") aventUI?.rafraichir();   // (le calendrier de l'Avent, 24 novembre)
   if (vue === "viewFreeroll") { freerollUI?.rafraichir(); programmesUI?.rafraichir(); }
   if (vue === "viewBoutique") boutiqueUI?.rafraichir();
   window.scrollTo(0, 0);
@@ -2753,6 +2790,7 @@ $("hubAlertes").addEventListener("click", e => { const b = e.target.closest("[da
 function majModeMatch() {
   const enMatch = !!(S && S.enJeu && (!S.match.termine || S.pauseFin));
   document.body.classList.toggle("en-match", enMatch);
+  document.body.classList.toggle("match-noel", enMatch && !S.duel && !!OPP?.noel);   // (un match contre un bot de Noël : le court rouge, le sapin, les flocons)
   ambiance.fond(enMatch);                                  // le murmure du public, pendant tout le match
   if (!enMatch) majCoeur();                                // (le cœur s'arrête quand on quitte le match)
   $("quitterSoloZone").hidden = !enMatch || !!S.duel;
@@ -2765,11 +2803,31 @@ $("quitterSolo").addEventListener("click", () => {
 });
 
 // ---------------------------------------------------------------- choix de l'adversaire
+// (24 novembre au soir, choix du porteur du projet) en haut, les 3 derniers bots affrontés ; dessous, les bots par catégorie
+// (Débutants, Confirmés, Experts ; pendant les fêtes, les bots de Noël), repliées ; ceux de la carrière pas encore battus,
+// grisés avec un cadenas.
+const categoriesOuvertes = new Set();
 function renderAdversaires() {
-  $("opps").innerHTML = BOTS.map(b => `<button class="opp" data-id="${b.id}" aria-pressed="${b.id === amicalId}"><span class="oa">${avatarSVG(b.av)}</span><span class="on">${b.nom}</span><span class="ol">Niveau ${b.elo}</span></button>`).join("");
-  $("opps").querySelectorAll("button").forEach(x => x.addEventListener("click", () => {
-    amicalId = x.dataset.id; ecrire("adversaire", amicalId);
-    OPP = botParId(amicalId); renderAdversaires(); rafraichirAvatars();
+  const ff = P.faceAFace || {};
+  const bouton = b => {
+    const libre = botDisponible(b, ff);
+    return `<button class="opp${b.noel ? " opp-noel" : ""}${libre ? "" : " verrou"}" data-id="${b.id}" aria-pressed="${b.id === amicalId}"${libre ? "" : ` aria-label="${b.nom}, à débloquer en carrière"`}><span class="oa">${avatarSVG(b.av)}</span><span class="on">${libre ? "" : "🔒 "}${b.nom}</span><span class="ol">Niveau ${b.elo}</span></button>`;
+  };
+  // (le bot choisi y est toujours, en premier s'il n'a pas été affronté récemment : on le voit même catégories repliées)
+  const choisi = botParId(amicalId), recents = derniersBots(P.derniers, ff);
+  const derniers = (choisi && !recents.includes(choisi) ? [choisi, ...recents] : recents).slice(0, 3);
+  const tous = [...TOUS_LES_BOTS].sort((x, y) => x.elo - y.elo);
+  const categorie = (id, titre, liste, compte) => `<details class="opps-cat" data-cat="${id}"${categoriesOuvertes.has(id) ? " open" : ""}><summary>${titre}<small>${compte}</small></summary><div class="opps">${liste.map(bouton).join("")}</div></details>`;
+  $("opps").innerHTML = (derniers.length ? `<p class="opps-titre">Ton adversaire et tes derniers</p><div class="opps">${derniers.map(bouton).join("")}</div>` : "")
+    + CATEGORIES_BOTS.map(c => { const l = tous.filter(b => categorieDe(b) === c), n = l.filter(b => botDisponible(b, ff)).length;
+      return categorie(c.id, `${c.icone} ${c.nom}`, l, `${n} / ${l.length} débloqués`); }).join("")
+    + (noelActif() ? categorie("noel", "🎄 Les bots de Noël", BOTS_NOEL, `${BOTS_NOEL.length} bots`) : "");
+  $("opps").querySelectorAll("details").forEach(d => d.addEventListener("toggle", () => { d.open ? categoriesOuvertes.add(d.dataset.cat) : categoriesOuvertes.delete(d.dataset.cat); }));
+  $("opps").querySelectorAll("button.opp").forEach(x => x.addEventListener("click", () => {
+    const b = botParId(x.dataset.id);
+    if (!botDisponible(b, P.faceAFace || {})) { $("oppDesc").textContent = `🔒 ${b.nom} (niveau ${b.elo}) : bats-le en carrière pour le débloquer à l'entraînement.`; return; }
+    amicalId = b.id; ecrire("adversaire", amicalId);
+    OPP = b; renderAdversaires(); rafraichirAvatars();
     if (!matchEnCours()) renderHistoriqueVide();
   }));
   const b = botParId(amicalId); $("oppDesc").textContent = `${b.nom}, ${b.style.toLowerCase()} : ${b.desc}`;
@@ -3167,7 +3225,10 @@ function lancerDuel(duel, ligneAdv) {
   ouvrirOnglet("match");
   if (duel.tournoi_id) reperesTournoi(duel);
   D.arret = serveur.ecouter("duel", `id=eq.${duel.id}`, majDuel);
-  D.boucle = setInterval(battement, 1000);
+  // (24 novembre, avant l'ouverture au public ; décision du 13 novembre) Un signe de vie toutes les 3 secondes au lieu de chaque
+  // seconde : l'écoute en direct apporte les coups de l'adversaire tout de suite, et un signe de vie part aussi pile à la fin de
+  // chaque délai (voir prevoirEcheance), pour que le serveur l'applique sans attendre.
+  D.boucle = setInterval(battement, BATTEMENT_MS);
   verifierAmi();
   majDuel(duel); battement();
 }
@@ -3198,6 +3259,17 @@ async function reperesTournoi(duel) {
 }
 
 // Signe de vie + application des délais par le serveur ; donne aussi l'heure du serveur.
+const BATTEMENT_MS = 3000;
+// Un signe de vie juste après la fin du délai en cours (coup, pause entre les sets, présentation…), pour que le serveur l'applique
+// tout de suite, sans attendre le prochain signe de vie régulier.
+function prevoirEcheance(duel) {
+  if (!D) return;
+  clearTimeout(D.echeanceT);
+  const fin = duel?.echeance ? Date.parse(duel.echeance) : NaN;
+  if (!Number.isFinite(fin)) return;
+  const ms = fin - (Date.now() + (D.decalage || 0)) + 300;
+  if (ms > 0 && ms < 10 * 60e3) D.echeanceT = setTimeout(battement, ms);
+}
 async function battement() {
   if (!D || D.fini) return;
   const id = D.id, t0 = Date.now();
@@ -3221,6 +3293,7 @@ function majDuel(duel) {
     return;
   }
   D.duel = duel;
+  prevoirEcheance(duel);
   afficherMessages(duel);
   const m = S.match, ev = evenementsDuel(duel, D.moi), n = ev.length;
   // Un avertissement pour dépassement de temps, depuis la dernière fois (pas ceux d'avant mon arrivée dans le match).
@@ -3394,7 +3467,7 @@ const duelOccupe = () => !!D && (!D.fini || (!D.finVue && vueCourante === "viewM
 function terminerDuel(duel) {
   if (D.fini) return;
   D.fini = true;
-  D.arret?.(); clearInterval(D.boucle); clearTimeout(D.decompte); arreterMinuteur(); boutons(false);
+  D.arret?.(); clearInterval(D.boucle); clearTimeout(D.echeanceT); clearTimeout(D.decompte); arreterMinuteur(); boutons(false);
   if (faceAFaceOuvert) fermerFaceAFace();
   if (panneauOuvert) fermerPanneau();
   let cl = texteClassementFin(duel, D.moi);
@@ -3411,7 +3484,7 @@ function terminerDuel(duel) {
 
 function quitterDuel({ solo = true } = {}) {
   if (!D) return;
-  D.arret?.(); clearInterval(D.boucle); clearInterval(D.guetteFin); clearTimeout(D.decompte); arreterMinuteur();
+  D.arret?.(); clearInterval(D.boucle); clearTimeout(D.echeanceT); clearInterval(D.guetteFin); clearTimeout(D.decompte); arreterMinuteur();
   if (faceAFaceOuvert) fermerFaceAFace();
   if (panneauOuvert) fermerPanneau();
   D = null;
@@ -3439,6 +3512,7 @@ $("revanche").addEventListener("click", async () => {
   } catch (e) { $("revanche").disabled = false; $("verdict").textContent = e.message; }
 });
 
+try { installerNoel(); } catch { /* sans décor de Noël */ }   // (24 novembre : le court de Noël, noel.js)
 duelsUI = installerDuels({
   compte: compteUI,
   apresDefis: () => cerclesUI?.majDefiAmi?.(),   // (21 novembre : le bouton de la page d'un ami dit l'horaire du défi programmé)
@@ -3592,6 +3666,31 @@ jetonsUI = installerJetons({ compte: compteUI });
 defisUI = installerDefis({ compte: compteUI, jetons: () => jetonsUI?.rafraichir() });
 boutiqueUI = installerBoutique({ compte: compteUI, lireP: () => P, sauverP, nouveautes: cle => ouvert(cle || "club"), jetons: () => jetonsUI?.rafraichir(),
   apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); } });
+// Le calendrier de l'Avent (24 novembre ; ecran-avent.js) : sa ligne sous les défis du jour, pendant les fêtes ; un rattrapage contre le gardien
+// de la case (un set de 7 points) ; un défi contre un bot de Noël (il est choisi dans l'entraînement).
+function jouerGardien(num, botId) {
+  if (D && !D.fini) return;
+  voix.arreter(); arreterMinuteur(); if (S) clearTimeout(S.decompte);
+  OPP = botParId(botId); WIN = FORMAT_GARDIEN.setsGagnants;
+  S = {
+    match: nouveauMatch({ ...FORMAT_GARDIEN }),
+    stats: nouvellesStats(), annonces: avecAudible(nouvelEtatAnnonces({ anciens: commentairesRecents(), genre: P.genre })), suivi: new Suivi(),
+    tour: null, occupe: false, enJeu: false, aventRattrapage: num,
+  };
+  preparerEcranMatch();
+  $("startCard").hidden = true; $("tourCard").hidden = true;
+  $("ruleTxt").textContent = `🎄 Calendrier de l'Avent : rattrapage de la case ${num} contre ${OPP.nom} · ${texteFormat(S.match.format)}`;
+  rafraichirAvatars(); render();
+  aller("viewMatch");
+  ouvrirFaceAFace();
+}
+aventUI = installerAvent({ compte: compteUI, lireP: () => P, sauverP, aller,
+  apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); },
+  jouerGardien,
+  jouerContre: botId => { amicalId = botId; ecrire("adversaire", amicalId); OPP = botParId(amicalId); renderAdversaires(); rafraichirAvatars(); aller("viewMatch"); },
+  titres: ids => { const t = accorderTitres(P, ids); if (t.length) { sauverP(); renderFiche(); } },
+});
+aventUI.ligne();
 // Au départ d'un Sit & Go, du freeroll ou d'un tournoi programmé, la page du tournoi s'ouvre… sauf si mon premier match
 // est déjà lancé : elle passait sous la présentation du match, et « Passer » faisait alors quitter le match.
 const ouvrirTournoiSiLibre = id => { if (!duelOccupe()) cerclesUI.ouvrirTournoi(id); };
@@ -3685,7 +3784,7 @@ $("btnTestNotif").addEventListener("click", async () => {
   finally { b.disabled = false; }
 });
 // Ouvrir l'appli depuis une notification : ?ouvrir=duels ou ?ouvrir=tournois (ou message du service worker si elle est déjà ouverte).
-const ouvrirDepuisNotification = cible => { if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); else if (cible === "invitations") { aller("viewJouer"); cerclesUI?.proposerInvitation(); }
+const ouvrirDepuisNotification = cible => { if (cible === "avent") aller("viewAvent"); /* (étape 90 : le calendrier de l'Avent est ouvert) */ else if (cible === "duels") aller("viewDuel"); else if (cible === "tournois") aller("viewTournois"); else if (cible === "invitations") { aller("viewJouer"); cerclesUI?.proposerInvitation(); }
   else if (cible === "amis") { aller("viewCercles"); cerclesUI?.montrerDemandes(); } /* (étape 79 : demandes d'ami, invitations dans un cercle) */ else if (cible === "freeroll" || cible === "programmes") aller("viewFreeroll"); };
 {
   const cible = new URLSearchParams(location.search).get("ouvrir");

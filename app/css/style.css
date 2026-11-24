@@ -634,6 +634,11 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 .pm-scene.go.froide::after { content: "❄️ ❄️ ❄️"; position: absolute; inset: -18px 0 auto; text-align: center; font-size: 1.1rem; letter-spacing: 10px; opacity: 0; animation: pm-givre 1s .8s forwards; }
 .pm-scene.go.froide .pm-av svg { transition: filter 1s .6s; filter: saturate(.4) hue-rotate(180deg) brightness(1.1); }
 @keyframes pm-givre { to { opacity: .9; } }
+/* La poignée givrée (calendrier de l'Avent) : une normale, avec du givre qui scintille autour (24 novembre) */
+.pm-choix.cinq { grid-template-columns: repeat(5, 1fr); }
+.pm-scene.go.givree .pm-main { animation: pm-apparait .3s .4s ease-out forwards, pm-secoue .3s .7s ease-in-out 2 alternate; filter: drop-shadow(0 0 8px #BFE6FF); }
+.pm-scene.go.givree::after { content: "❄️ ✨ ❅ ✨ ❄️"; position: absolute; inset: -20px 0 auto; text-align: center; font-size: 1.1rem; letter-spacing: 6px; opacity: 0; animation: pm-givre .8s .5s ease-out forwards; }
+.pm-scene.go.givree .pm-av svg { box-shadow: 0 0 0 4px #BFE6FF, 0 0 16px #BFE6FF; }
 @media (prefers-reduced-motion: reduce) { .pm-scene.go * , .pm-scene.go::after { animation-duration: .01s !important; animation-delay: 0s !important; } .pm-scene.go .pm-main { opacity: 1; transform: none; } }
 
 /* Signaler un joueur */
@@ -1338,3 +1343,92 @@ details.perso > summary { cursor: pointer; color: var(--muted); font-size: .88re
 .cl-forfaits { display: block; color: var(--muted); font-size: .75rem; }
 .cl-disq td { opacity: .55; }
 .cl-disq-b { margin-left: 6px; padding: 2px 6px; font-size: .75rem; vertical-align: middle; }
+
+/* L'événement de Noël (noel.js) : la guirlande et le houx sur le tableau de score, le sapin au fond du court, les flocons */
+body.noel #viewMatch { position: relative; }
+.noel-flocons { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; display: none; }
+/* (24 novembre au soir, choix du porteur du projet : le court rouge, le sapin et les flocons pour les matchs de Noël, contre un
+   bot de Noël, et pour tous les matchs les 24 et 25 décembre ; les autres matchs : le court bleu, la guirlande et le houx) */
+body.noel-fete .noel-flocons, body.noel.match-noel .noel-flocons { display: block; }
+.noel-flocons i { position: absolute; top: -20px; color: #fff; opacity: .75; font-style: normal; animation: noel-neige linear infinite; }
+@keyframes noel-neige { from { transform: translate(0, -20px) rotate(0deg); } 50% { transform: translate(14px, 50vh) rotate(180deg); } to { transform: translate(-6px, 105vh) rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .noel-flocons { display: none !important; } }
+.noel .board { border-color: #f4c542; box-shadow: 0 0 0 2px rgba(215, 38, 61, .55), 0 0 18px rgba(244, 197, 66, .25); }
+/* La guirlande tout autour du cadre (24 novembre) : des ampoules rouges, dorées et vertes, qui clignotent */
+.noel-guirlande { position: absolute; pointer-events: none; animation: noel-clignote 1.6s steps(2) infinite;
+  --ampoules: radial-gradient(circle, #ff4d5e 0 3.5px, transparent 4px), radial-gradient(circle, #ffd54a 0 3.5px, transparent 4px), radial-gradient(circle, #46d17a 0 3.5px, transparent 4px); }
+.noel-guirlande.haut, .noel-guirlande.bas { left: 18px; right: 18px; height: 12px; background: var(--ampoules);
+  background-size: 36px 12px; background-repeat: repeat-x; background-position: 0 50%, 12px 50%, 24px 50%; }
+.noel-guirlande.haut { top: -7px; } .noel-guirlande.bas { bottom: -7px; }
+.noel-guirlande.gauche, .noel-guirlande.droite { top: 18px; bottom: 18px; width: 12px; background: var(--ampoules);
+  background-size: 12px 36px; background-repeat: repeat-y; background-position: 50% 0, 50% 12px, 50% 24px; }
+.noel-guirlande.gauche { left: -7px; } .noel-guirlande.droite { right: -7px; }
+@keyframes noel-clignote { 50% { filter: brightness(1.6) saturate(1.3); } }
+@media (prefers-reduced-motion: reduce) { .noel-guirlande { animation: none; } }
+/* Le houx touffu aux quatre coins */
+.noel-houx { position: absolute; width: 74px; height: 74px; pointer-events: none; z-index: 2; }
+.noel-houx.hg { left: -28px; top: -30px; transform: rotate(-35deg); }
+.noel-houx.hd { right: -28px; top: -30px; transform: rotate(35deg); }
+.noel-houx.bg { left: -28px; bottom: -30px; transform: rotate(-145deg); }
+.noel-houx.bd { right: -28px; bottom: -30px; transform: rotate(145deg); }
+.noel-houx svg { width: 100%; height: 100%; }
+/* Les couleurs de Noël (24 novembre, demande du porteur du projet) : le fond rouge, le tableau de score vert sapin */
+/* (24 novembre au soir, choix du porteur du projet : l'appli garde son visuel de base ; le fond rouge, seulement pendant le match) */
+/* (24 novembre au soir, choix du porteur du projet : le court rouge et le grand sapin, seulement les 24 et 25 décembre) */
+body.noel-fete.en-match, body.noel.match-noel.en-match { --court: #7c1020; --court-deep: #0f4228; background: radial-gradient(ellipse at 50% 0%, #a4182c, #7c1020 45%, #4d0812); background-attachment: fixed; }
+.noel-fete #viewMatch .arena::before, .noel.match-noel #viewMatch .arena::before { content: "🎄"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 110px; opacity: .42; pointer-events: none; }   /* (24 novembre : un peu plus visible) */
+body.noel-fete .reserve-temps, body.noel.match-noel .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
+.noel-fete #viewMatch .vs, .noel.match-noel #viewMatch .vs { position: relative; z-index: 1; color: #fff; text-shadow: 0 0 4px #4d0812, 0 0 8px #4d0812, 0 1px 2px #000; }   /* (24 novembre : « contre » lisible sur le sapin) */
+/* Les bots de Noël dans la liste du mode solo, et leurs pouvoirs (noel.js) */
+.opp.opp-noel { border-color: rgba(244, 197, 66, .45); }
+.noel-pouvoir { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 4; }
+.noel-pouvoir i { position: absolute; top: -40px; font-size: 30px; font-style: normal; animation: noel-pouvoir-pluie 1.8s ease-in forwards; }
+@keyframes noel-pouvoir-pluie { to { transform: translateY(75vh) rotate(200deg); opacity: .2; } }
+.noel-pouvoir.comete .trainee { top: 30%; left: -20%; font-size: 52px; animation: noel-pouvoir-comete 1.2s ease-out forwards; filter: drop-shadow(0 0 10px #ffe27a); }
+@keyframes noel-pouvoir-comete { to { transform: translate(140vw, 18vh); } }
+#moves.melange button { animation: noel-melange .4s ease-out; }
+@keyframes noel-melange { from { transform: rotate(-12deg) scale(.85); } }
+@media (prefers-reduced-motion: reduce) { .noel-pouvoir, #moves.melange button { animation: none; } .noel-pouvoir { display: none; } }
+/* Le calendrier de l'Avent (24 novembre ; ecran-avent.js) : le grand sapin et ses 24 portes */
+.avent-msg { font-weight: 600; text-align: center; margin: 8px 0; }
+.avent-sapin { position: relative; width: 100%; max-width: 380px; aspect-ratio: 3 / 4; margin: 6px auto 12px; }
+.avent-sapin > svg { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .35)); }
+.avent-sapin { background: radial-gradient(ellipse at 50% 92%, rgba(255, 255, 255, .25), transparent 45%); border-radius: 12px; }
+.avent-porte { position: absolute; transform: translate(-50%, -25%); padding: 0; border: 0; background: none; cursor: pointer; transform-origin: 50% 0; }
+.avent-porte svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .45)); }
+.avent-porte.ouverte svg { filter: drop-shadow(0 0 6px #FFF3B0) drop-shadow(0 0 12px rgba(255, 230, 120, .8)) brightness(1.12); }
+.avent-porte.aujourdhui { animation: avent-balance 2.4s ease-in-out infinite; }
+.avent-porte.aujourdhui svg { filter: drop-shadow(0 0 8px #FFE27A) drop-shadow(0 2px 3px rgba(0, 0, 0, .45)); animation: avent-scintille 1.2s ease-in-out infinite; }
+.avent-porte.rattrapage::after { content: "⏳"; position: absolute; right: -10%; top: 20%; font-size: .8rem; }
+.avent-porte.fermee svg { filter: saturate(.75) brightness(.9) drop-shadow(0 2px 3px rgba(0, 0, 0, .45)); opacity: .9; }
+.avent-porte.perdue svg { filter: grayscale(1) brightness(.6); }
+.avent-porte.choisie svg { outline: 2px dashed rgba(255, 255, 255, .8); outline-offset: 1px; border-radius: 40%; }
+@keyframes avent-balance { 0%, 100% { transform: translate(-50%, -25%) rotate(-6deg); } 50% { transform: translate(-50%, -25%) rotate(6deg); } }
+@keyframes avent-scintille { 50% { filter: drop-shadow(0 0 14px #FFF3B0) drop-shadow(0 2px 3px rgba(0, 0, 0, .45)) brightness(1.2); } }
+.avent-case { background: rgba(0, 0, 0, .25); border-radius: 12px; padding: 12px; text-align: center; }
+.avent-case h3 { margin: 0 0 6px; }
+.avent-cadeau { width: 110px; height: 110px; margin: 6px auto; display: grid; place-items: center; font-size: 3.4rem; }
+.avent-cadeau svg { width: 110px; height: 110px; }
+.avent-cadeau.mystere { font-size: 3.4rem; }
+.avent-gros { font-size: 3.4rem; }
+.avent-ouverture { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: rgba(0, 0, 0, .65); padding: 16px; }
+.avent-ouverture[hidden] { display: none; }
+.avent-ouverture .panel { max-width: 360px; text-align: center; }
+.avent-ouverture.ouvre .avent-cadeau { animation: avent-ouvre .7s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes avent-ouvre { from { transform: scale(.2) rotate(-25deg); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .avent-porte.aujourdhui, .avent-porte.aujourdhui svg, .avent-ouverture.ouvre .avent-cadeau { animation: none; } }
+.avent-ligne { display: block; width: 100%; margin-top: 8px; padding: 8px 10px; font: inherit; font-weight: 600; text-align: left; color: #FFE08A;
+  background: rgba(0, 0, 0, .2); border: 1px dashed rgba(244, 197, 66, .55); border-radius: 10px; cursor: pointer; }
+.avent-ligne[hidden] { display: none; }
+/* Le bonnet de Noël sur le logo (24 novembre au soir, choix du porteur du projet : à l'accueil, seulement des touches discrètes) */
+.noel .marque { position: relative; }
+/* (le dessin déborde du logo : 132 unités pour un logo de 100, décalé de 14 à gauche et de 34 en haut) */
+.noel-bonnet { position: absolute; left: -8.7px; top: 50%; width: 81.8px; height: 81.8px; margin-top: -52.1px; overflow: visible; pointer-events: none; z-index: 2; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .35)); }
+@media (max-width: 380px) { .noel-bonnet { left: -7px; width: 66px; height: 66px; margin-top: -42px; } }
+/* Les adversaires de l'entraînement (24 novembre au soir) : les derniers affrontés, puis les catégories repliées */
+.opps-titre { margin: 2px 0 6px; font-size: .85rem; font-weight: 700; color: var(--muted); }
+.opps-cat { margin: 0 0 8px; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .12); border-radius: 12px; }
+.opps-cat > summary { cursor: pointer; padding: 10px 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.opps-cat > summary small { margin-left: auto; font-weight: 500; color: var(--muted); font-size: .8rem; }
+.opps-cat > .opps { padding: 0 8px 8px; margin: 0; }
+.opp.verrou { opacity: .45; filter: grayscale(.85); }

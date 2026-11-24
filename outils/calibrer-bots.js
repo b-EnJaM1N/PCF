@@ -2,7 +2,7 @@
 // Lancer avec : node outils/calibrer-bots.js
 // Chaque bot joue des centaines de matchs (sets de 11, 2 sets gagnants) contre quatre profils de joueurs ;
 // son taux de victoire donne un niveau estimé (50 % de victoires = 1200).
-import { BOTS, choisirCoup, contexteBot, inverse } from "../app/js/bots.js";
+import { BOTS, BOTS_NOEL, choisirCoup, contexteBot, inverse } from "../app/js/bots.js";
 import { nouveauMatch, jouerCoup, contre, signeAuHasard, PIERRE } from "../app/js/regles.js";
 import { Lecteur } from "../app/js/analyse.js";
 
@@ -40,7 +40,7 @@ function match(bot, joueur, r) {
 }
 
 export function calibrer(n = 300) {
-  return BOTS.map(bot => {
+  return [...BOTS, ...BOTS_NOEL].map(bot => {
     let v = 0, total = 0;
     for (const [k, joueur] of Object.entries(JOUEURS)) {
       const r = rng(k.length * 7919 + bot.id.length);

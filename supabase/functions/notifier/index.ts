@@ -57,6 +57,12 @@ export function message(evenement: string, duel: any, adv: { pseudo: string; num
   if (evenement === "test") return {
     titre: "🔔 Notification de test", texte: "Si tu lis ceci, les notifications marchent sur ce téléphone !", url: "./", tag: "test",
   };
+  // (étape 90, 24 novembre) le 1er décembre : le calendrier de l'Avent est ouvert
+  if (evenement === "avent") return {
+    titre: "🎄 Le calendrier de l'Avent est ouvert !",
+    texte: "Une case par jour jusqu'au 24 : réussis le défi du jour pour gagner les pulls moches, des jetons… et le Gant du Père Noël.",
+    url: "./?ouvrir=avent", tag: "avent",
+  };
   if (evenement === "freeroll") return {
     titre: "🌙 Le freeroll commence dans 10 minutes",
     texte: "Ouvre HandSlam et garde l'appli ouverte : le tournoi démarre à 20 h avec les inscrits présents.",

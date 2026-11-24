@@ -806,3 +806,50 @@ test("l'accueil du nouveau joueur : la bienvenue avant le 1er match, ses premier
   // le 4e match : plus rien de l'accueil
   assert.ok(!annoncesAvantMatch({ accueil: 0 }, rngFixe(4)).commentaires.some(l => /accueil/.test(l.id)));
 });
+
+// (24 novembre) les bots de Noël : leurs répliques comme un joueur, plus leur pouvoir sur leur smash réussi ; l'ambiance des fêtes
+test("les bots de Noël : présentation, pouvoir du smash réussi, fin du match ; l'ambiance de Noël une fois par match au plus", () => {
+  for (const nom of ["perenoel", "lutin", "renne", "neige"]) {
+    assert.ok(POOLS[`perso_${nom}_presentation`]?.length && POOLS[`perso_${nom}_smash`]?.length, nom);
+    let presente = 0;
+    for (let k = 0; k < 50; k++) if (annoncesAvantMatch({ perso: { nom, joueur: 1, bot: true } }, rngFixe(k)).commentaires.some(l => l.id.includes(`_perso_${nom}_presentation_`))) presente++;
+    assert.ok(presente >= 35, `${nom} : présenté ${presente} fois sur 50`);
+  }
+  const rng = rngFixe(11);
+  let smashs = 0, pouvoirs = 0, ambiances = 0;
+  for (let k = 0; k < 40; k++) {
+    const m = nouveauMatch({ pointsParSet: 11, setsGagnants: 2 }), etat = nouvelEtatAnnonces();
+    Object.assign(etat, { perso: { nom: "lutin", joueur: 1, bot: true }, noel: true });
+    let ambianceMatch = 0;
+    while (!m.termine) {
+      const smash = [false, rng() < 0.08];
+      const e = jouerCoup(m, Math.floor(rng() * 3), Math.floor(rng() * 3));
+      const a = annoncerCoup(m, e, etat, { smash }, rng);
+      const gagne = smash[1] && e.gagnant === 1 && !e.finMatch;
+      if (gagne) smashs++;
+      for (const l of a.lignes) {
+        if (l.id.includes("_perso_lutin_smash_")) { assert.ok(gagne, `${l.id} : seulement sur son smash réussi`); pouvoirs++; }
+        if (l.id.includes("_noel_ambiance_")) ambianceMatch++;
+      }
+    }
+    assert.ok(ambianceMatch <= 1, "l'ambiance de Noël : une fois par match au plus"); ambiances += ambianceMatch;
+  }
+  assert.ok(pouvoirs >= smashs * 0.6, `pouvoir dit ${pouvoirs} fois sur ${smashs} smashs réussis`);
+  assert.ok(ambiances > 5, `ambiance de Noël : ${ambiances}`);
+});
+
+// (24 novembre, remarque du porteur du projet : « Huit partout » dit à 5-5 dans un set de 7)
+test("« Huit partout » : seulement à 8-8, jamais à 5-5 dans un set de 7", () => {
+  const huit = new Set(POOLS.money_time.filter(e => e.huit).map(e => e.base));
+  assert.equal(huit.size, 2);
+  const dits = pts => {
+    const rng = rngFixe(pts), vus = [];
+    for (let k = 0; k < 150; k++) {
+      const m = nouveauMatch({ pointsParSet: pts, setsGagnants: 1 }), etat = nouvelEtatAnnonces();
+      while (!m.termine) { const e = jouerCoup(m, Math.floor(rng() * 3), Math.floor(rng() * 3)); vus.push(...annoncerCoup(m, e, etat, {}, rng).lignes.map(l => l.id)); }
+    }
+    return vus.filter(id => [...huit].some(b => id.startsWith(b)));
+  };
+  assert.equal(dits(7).length, 0, "set de 7 : jamais");
+  assert.ok(dits(11).length > 0, "set de 11 : oui, à 8-8");
+});

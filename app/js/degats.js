@@ -14,12 +14,19 @@ export const nouveauxDegats = () => ({ set: 0, mains: [{}, {}] });
 
 // Après un coup. set : le set où il a été joué (avant le point marqué) ; gagnant : 0, 1 ou null ; signes : [a, b] ;
 // smashGagnant : le smash a gagné le point (issueSmash « gagne »). Renvoie la marque ajoutée ({ joueur, marque }) ou null.
-export function noterDegats(etat, { set, gagnant, signes, smashGagnant }) {
+// noel : le bot de Noël qui joue de l'autre côté (côté 1), s'il y en a un (noel.js, 24 novembre, choix du porteur du projet) : son
+// smash laisse sa marque à lui (le ruban, la peinture, le sabot, le givre) au lieu de l'accroc et de la fissure ; les lames
+// tordues restent.
+export function noterDegats(etat, { set, gagnant, signes, smashGagnant, noel = null }) {
   if (etat.set !== set) { etat.set = set; etat.mains = [{}, {}]; }   // nouveau set : les mains sont réparées
   if (!smashGagnant || (gagnant !== 0 && gagnant !== 1)) return null;
   const perdant = 1 - gagnant, marque = MARQUE_DU_SIGNE[signes[gagnant]];
   if (!marque) return null;
   const m = etat.mains[perdant];
+  if (noel && gagnant === 1) {
+    m.noel = noel;
+    if (marque !== "tordu") return { joueur: perdant, marque: "noel" };
+  }
   m[marque] = Math.min(MAX_MARQUE, (m[marque] || 0) + 1);
   return { joueur: perdant, marque };
 }

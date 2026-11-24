@@ -37,9 +37,10 @@ test("les stats de la carte : seulement contre les joueurs, en pourcentages", ()
   // le barème façon FIFA : 50 = le hasard, 99 au repère, 1 autant en dessous
   // les trois paliers : 70 = la moyenne (le hasard), 90 = excellent, 99 = hors norme
   assert.equal(noteBareme(100 / 3, BAREMES.PUN), 70); assert.equal(noteBareme(40, BAREMES.PUN), 90); assert.equal(noteBareme(45, BAREMES.PUN), 99);
-  assert.equal(noteBareme(60, BAREMES.PUN), 99); assert.equal(noteBareme(15, BAREMES.PUN), 1); assert.equal(noteBareme(20, BAREMES.RES), 1);
+  assert.equal(noteBareme(60, BAREMES.PUN), 99); assert.equal(noteBareme(15, BAREMES.PUN), 50); assert.equal(noteBareme(20, BAREMES.RES), 50);   // (24 novembre : le plus bas, 50)
+  assert.equal(noteBareme(0, BAREMES.PUN), 50, "jamais moins de 50");
   // l'imprévisibilité (la part de coups devinés) : 1 sur 3 = 90 (choix du porteur du projet), 99 seulement à 20 %
-  assert.deepEqual([20, 100 / 3, 45, 50, 60].map(p => noteBareme(p, BAREMES.IMP)), [99, 90, 70, 60, 35]);
+  assert.deepEqual([20, 100 / 3, 45, 50, 60, 70, 90].map(p => noteBareme(p, BAREMES.IMP)), [99, 90, 70, 67, 60, 50, 50]);
 });
 
 test("les 10 rangs : on monte en jouant, puis avec le niveau officiel", () => {
@@ -82,7 +83,7 @@ test("sans assez de matchs contre des joueurs, la carte compte aussi les bots, d
   P.parAdv = { humains: jeuVide(), bots };
   assert.equal(partBots(P), 1);
   assert.deepEqual(jeuPourCarte(P).signes, [60, 20, 20], "aucun match contre un joueur : les bots seuls");
-  assert.equal(note(P, "POL"), "47", "la Polyvalence d'après les bots : 60 / 20 / 20 (note 1), sur 100 coups (un tiers des preuves) : 70 - 69 / 3");
+  assert.equal(note(P, "POL"), "63", "la Polyvalence d'après les bots : 60 / 20 / 20 (note 50, le plus bas), sur 100 coups (un tiers des preuves) : 70 - 20 / 3");
   P.parAdv.humains = { ...jeuVide(), matchs: HUMAINS_POUR_CARTE / 2, signes: [10, 10, 10], egalites: 4 };
   assert.equal(partBots(P), 0.5);
   assert.deepEqual(jeuPourCarte(P).signes, [40, 20, 20], "à mi-chemin : les bots comptent pour moitié");

@@ -854,6 +854,71 @@ export const MOMENTS = {
   perso_chiromancien_defaite: [
     { r: "d", t: "Sa boule de cristal était embuée ce soir." },
   ],
+  // Les bots de Noël (noel.js ; 24 novembre, répliques validées par le porteur du projet) : comme les répliques personnalisées d'un
+  // joueur (présentation, points, fin du match), plus le smash réussi du bot (son pouvoir).
+  perso_perenoel_presentation: [
+    { r: "c", t: "Ho ho ho ! Le Père Noël en personne descend sur le court central !" },
+    { r: "d", t: "Il a vérifié sa liste. Deux fois. Son adversaire est sur la mauvaise." },
+  ],
+  perso_perenoel_lecture: [   // il enchaîne les points
+    { r: "c", t: "Ho ho ho ! Le Père Noël est en pleine distribution !" },
+    { r: "d", t: "Le traîneau est chargé, et il n'a pas l'intention de repartir à vide." },
+  ],
+  perso_perenoel_perd: [   // il perd plusieurs points de suite
+    { r: "d", t: "Quelqu'un vient de se faire rayer de la liste des enfants sages." },
+  ],
+  perso_perenoel_smash: [   // son smash réussi (Avalanche de cadeaux : le gant emballé)
+    { r: "c", t: "Et un gros smash au visage… Joyeux Noël !" },
+    { r: "c", t: "Et en cadeau, un gros smash bien senti !" },
+    { r: "d", t: "Il distribue des cadeaux. Pas ceux qu'on attendait." },
+    { r: "c", t: "Le gant est emballé, il ne manque plus que l'étiquette !" },
+    { r: "d", t: "Joli paquet. On l'ouvre à la fin du set." },
+  ],
+  perso_perenoel_victoire: [
+    { r: "c", t: "Le Père Noël l'emporte ! Il a été très sage cette année !" },
+    { r: "d", t: "Il faudra écrire une lettre plus convaincante l'an prochain." },
+  ],
+  perso_perenoel_defaite: [
+    { r: "c", t: "Incroyable ! Le Père Noël est battu ! Il repart en traîneau, la hotte vide !" },
+    { r: "d", t: "Il y aura du charbon dans certaines chaussettes cette année." },
+  ],
+  perso_lutin_presentation: [
+    { r: "c", t: "Le Lutin entre sur le court… méfiez-vous, il adore les farces !" },
+    { r: "d", t: "Il a l'air innocent. C'est justement ça, le problème." },
+  ],
+  perso_lutin_smash: [   // La farce : les boutons mélangés
+    { r: "c", t: "Oh, le coquin ! Il a mélangé tous les boutons !" },
+    { r: "c", t: "Une farce du Lutin ! Attention où vous mettez les doigts !" },
+    { r: "d", t: "Pierre, Feuille, Ciseaux… mais plus dans le même ordre." },
+  ],
+  perso_renne_presentation: [
+    { r: "c", t: "Attention, voici Comète, le renne le plus rapide du Pôle Nord !" },
+    { r: "d", t: "Il paraît qu'il ne connaît pas la marche arrière. Enfin… sauf quand on l'a repéré." },
+  ],
+  perso_renne_smash: [   // Coup de sabot
+    { r: "c", t: "Un coup de sabot à la vitesse de la lumière !" },
+    { r: "c", t: "Une comète vient de traverser le court central !" },
+    { r: "d", t: "Ça laisse une trace. Au sens propre." },
+  ],
+  perso_neige_presentation: [
+    { r: "c", t: "Le Bonhomme de neige entre sur le court… et il a l'air de fondre de trac !" },
+    { r: "d", t: "Il ne bouge pas beaucoup. C'est souvent le cas des bonshommes de neige." },
+  ],
+  perso_neige_smash: [   // Gelé
+    { r: "c", t: "Brrr ! Le gant est complètement gelé !" },
+    { r: "c", t: "Un smash glacial du Bonhomme de neige !" },
+    { r: "d", t: "Il fallait prévoir des moufles." },
+  ],
+  // Le 25 décembre au matin (24 novembre, répliques choisies par le porteur du projet) : à la première ouverture de l'appli, une fois.
+  noel_25: [
+    { r: "c", t: "Joyeux Noël, mesdames et messieurs ! Bienvenue sur le court central, même aujourd'hui !" },
+    { r: "d", t: "Joyeux Noël. J'espère que vous avez été sages. Le Père Noël, lui, vous attend pour le match du jour." },
+  ],
+  // L'ambiance des matchs pendant les fêtes (noel.js), de temps en temps, une fois par match au plus.
+  noel_ambiance: [
+    { r: "c", t: "Les flocons tombent sur le court central, quelle ambiance !" },
+    { r: "d", t: "Même en décembre, le chifoumi ne prend pas de vacances." },
+  ],
   // Le replay (replay.js ; 6 novembre, répliques validées par le porteur du projet) : pour lancer le replay, puis selon l'action
   // (« il » : le joueur qui a fait l'action).
   replay_intro: [
@@ -1237,10 +1302,10 @@ export const MOMENTS = {
     { r: "c", t: "On entre dans le money time, chaque main compte !" },
     { r: "c", t: "Ils sont à la lutte, au coude à coude !" },   // (17 novembre, écrite par le porteur du projet)
     { r: "c", t: "On arrive dans le dur ! Chaque point vaut de l'or !" },   // (18 novembre, gros lot 1, choisie par le porteur du projet)
-    { r: "c", t: "Huit partout ! Le set entre dans sa dernière ligne droite !" },
+    { r: "c", t: "Huit partout ! Le set entre dans sa dernière ligne droite !", huit: true },   // (24 novembre, remarque du porteur du projet : elle était dite à 5-5 dans un set de 7)
     { r: "d", t: "C'est maintenant que les jambes tremblent. Enfin, les mains." },
     { r: "c", t: "Oh, ça se resserre ! Plus personne ne peut se permettre la moindre erreur !" },
-    { r: "d", t: "Huit partout. Les calculatrices sont rangées, place au caractère." },
+    { r: "d", t: "Huit partout. Les calculatrices sont rangées, place au caractère.", huit: true },
     { r: "c", t: "Le money time, mesdames et messieurs ! Accrochez-vous !" },
     { r: "c", t: "Attention ! Ça peut basculer à tout moment !" },   // (19 novembre, bibliothèque du porteur du projet)
   ],
