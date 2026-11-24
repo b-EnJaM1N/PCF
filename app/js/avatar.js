@@ -304,6 +304,11 @@ const grelot = (x, y) => `<circle cx="${x}" cy="${y}" r="3.1" fill="#F4C542" str
 const RENNE = `<rect x="36" y="72" width="28" height="16" rx="3" fill="#C8102E" stroke="#7A0A1C" stroke-width="1.5"/>`
   + `<path d="M36.5 75 H63.5 M36.5 85 H63.5" stroke="#F1C9A0" stroke-width=".8" stroke-dasharray="1.6 1.4" opacity=".8"/>`
   + `<rect x="36.5" y="78" width="27" height="4" fill="#9E0C24"/>` + grelot(41, 86.5) + grelot(50, 87.5) + grelot(59, 86.5);
+// Les bois de Comète, derrière la main : deux ramures qui sortent du haut de la main, de chaque côté (24 novembre, demande du
+// porteur du projet).
+const RAMURE = `<path d="M0 0 C-3 -8 -6 -14 -12 -20 M-4 -9 C-9 -10 -13 -9 -16 -6 M-7 -14 C-7 -19 -5 -23 -2 -26 M-10 -18 C-15 -19 -19 -18 -21 -15"`
+  + ` fill="none" stroke-linecap="round" stroke-linejoin="round"`;
+const BOIS = [`translate(31 53) scale(.8)`, `translate(69 53) scale(-.8 .8)`].map(t => `<g transform="${t}">${RAMURE} stroke="#5A3A1E" stroke-width="5.4"/>${RAMURE} stroke="#E8D3A8" stroke-width="3.4"/></g>`).join("");
 // La comète dorée sur la main de Comète : une étoile et sa traînée.
 const comete = (x, y, r) => { const k = r / 10; return `<g transform="translate(${x} ${y}) scale(${k.toFixed(3)})"><path d="M-2 2 L-15 13 M-1 4 L-12 16 M1 3 L-7 17" stroke="#FFE27A" stroke-width="2.2" stroke-linecap="round" opacity=".85"/>`
   + `<path d="M0 -7 L2 -2 L7.5 -2 L3.2 1.2 L4.8 6.5 L0 3.4 L-4.8 6.5 L-3.2 1.2 L-7.5 -2 L-2 -2 Z" fill="#F4C542" stroke="#A87A10" stroke-width="1"/></g>`; };
@@ -396,7 +401,7 @@ export function avatarSVG(a) {
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : a.gant === "perenoel" ? FOURRURE : a.gant === "lutin" ? LUTIN : a.gant === "renne" ? RENNE : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
-    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}${centrer ? "</g>" : ""}`}
+    ${a.gant === "renne" ? BOIS : ""}${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}${centrer ? "</g>" : ""}`}
   </svg>`;
 }
 
