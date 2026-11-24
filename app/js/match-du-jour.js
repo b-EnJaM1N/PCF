@@ -46,7 +46,9 @@ export function hasardGraine(graine) {
 // Le match d'un jour : son numéro, son adversaire, sa graine.
 export function matchDuJour(jour) {
   const iso = new Date(`${jour}T12:00:00Z`).getUTCDay() || 7, liste = ADVERSAIRES[iso], graine = hachage(`handslam-${jour}`);
-  return { jour, numero: ecartJours(PREMIER_JOUR, jour) + 1, bot: liste[graine % liste.length], graine };
+  // (24 novembre, événement de Noël : noel.js) le jour de Noël, tout le monde affronte le Père Noël
+  const noel = jour.slice(5) === "12-25";
+  return { jour, numero: ecartJours(PREMIER_JOUR, jour) + 1, bot: noel ? "perenoel" : liste[graine % liste.length], graine, noel };
 }
 
 // La grille à partager : une case par coup, du point de vue du joueur (gagnant : 0 = moi, 1 = le bot, null = égalité).
