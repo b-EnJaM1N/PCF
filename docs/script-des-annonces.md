@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1369 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1386 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -632,6 +632,23 @@ restent lus par la voix de synthèse.
 | `commentateur_perso_chiromancien_victoire_01.mp3` | Le Chiromancien l'avait prédit ! Victoire ! |
 | `commentateur_perso_chiromancien_victoire_02.mp3` | Le Chiromancien est un vrai magicien ! |
 | `commentateur_perso_chiromancien_feu_01.mp3` | Mesdames et mesdames, le Chiromancien est en feu ! |
+| `commentateur_perso_perenoel_presentation_01.mp3` | Ho ho ho ! Le Père Noël en personne descend sur le court central ! |
+| `commentateur_perso_perenoel_lecture_01.mp3` | Ho ho ho ! Le Père Noël est en pleine distribution ! |
+| `commentateur_perso_perenoel_smash_01.mp3` | Et un gros smash au visage… Joyeux Noël ! |
+| `commentateur_perso_perenoel_smash_02.mp3` | Et en cadeau, un gros smash bien senti ! |
+| `commentateur_perso_perenoel_smash_03.mp3` | Le gant est emballé, il ne manque plus que l'étiquette ! |
+| `commentateur_perso_perenoel_victoire_01.mp3` | Le Père Noël l'emporte ! Il a été très sage cette année ! |
+| `commentateur_perso_perenoel_defaite_01.mp3` | Incroyable ! Le Père Noël est battu ! Il repart en traîneau, la hotte vide ! |
+| `commentateur_perso_lutin_presentation_01.mp3` | Le Lutin entre sur le court… méfiez-vous, il adore les farces ! |
+| `commentateur_perso_lutin_smash_01.mp3` | Oh, le coquin ! Il a mélangé tous les boutons ! |
+| `commentateur_perso_lutin_smash_02.mp3` | Une farce du Lutin ! Attention où vous mettez les doigts ! |
+| `commentateur_perso_renne_presentation_01.mp3` | Attention, voici Comète, le renne le plus rapide du Pôle Nord ! |
+| `commentateur_perso_renne_smash_01.mp3` | Un coup de sabot à la vitesse de la lumière ! |
+| `commentateur_perso_renne_smash_02.mp3` | Une comète vient de traverser le court central ! |
+| `commentateur_perso_neige_presentation_01.mp3` | Le Bonhomme de neige entre sur le court… et il a l'air de fondre de trac ! |
+| `commentateur_perso_neige_smash_01.mp3` | Brrr ! Le gant est complètement gelé ! |
+| `commentateur_perso_neige_smash_02.mp3` | Un smash glacial du Bonhomme de neige ! |
+| `commentateur_noel_ambiance_01.mp3` | Les flocons tombent sur le court central, quelle ambiance ! |
 | `commentateur_replay_intro_01.mp3` | Revoyons ça ! |
 | `commentateur_replay_intro_02.mp3` | On le revoit au ralenti… Regardez-moi ça ! |
 | `commentateur_replay_intro_03.mp3` | Attention, on revoit l'action ! |
@@ -1492,7 +1509,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_accueil_troisieme_01_f.mp3` | Troisième match ! Mesdames et messieurs, une habituée est en train de naître ! |
 | `commentateur_dialogue_accueil_fin_troisieme_01.mp3` | Trois matchs ! Les jetons, les défis du jour et la boutique sont ouverts ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (1174 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (1188 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1859,6 +1876,20 @@ restent lus par la voix de synthèse.
 | `commentatrice_perso_chiromancien_perd_01.mp3` | Même les voyants ont des jours sans. |
 | `commentatrice_perso_chiromancien_victoire_01.mp3` | Il savait comment ça finirait. Nous, on a dû attendre. |
 | `commentatrice_perso_chiromancien_defaite_01.mp3` | Sa boule de cristal était embuée ce soir. |
+| `commentatrice_perso_perenoel_presentation_01.mp3` | Il a vérifié sa liste. Deux fois. Son adversaire est sur la mauvaise. |
+| `commentatrice_perso_perenoel_lecture_01.mp3` | Le traîneau est chargé, et il n'a pas l'intention de repartir à vide. |
+| `commentatrice_perso_perenoel_perd_01.mp3` | Quelqu'un vient de se faire rayer de la liste des enfants sages. |
+| `commentatrice_perso_perenoel_smash_01.mp3` | Il distribue des cadeaux. Pas ceux qu'on attendait. |
+| `commentatrice_perso_perenoel_smash_02.mp3` | Joli paquet. On l'ouvre à la fin du set. |
+| `commentatrice_perso_perenoel_victoire_01.mp3` | Il faudra écrire une lettre plus convaincante l'an prochain. |
+| `commentatrice_perso_perenoel_defaite_01.mp3` | Il y aura du charbon dans certaines chaussettes cette année. |
+| `commentatrice_perso_lutin_presentation_01.mp3` | Il a l'air innocent. C'est justement ça, le problème. |
+| `commentatrice_perso_lutin_smash_01.mp3` | Pierre, Feuille, Ciseaux… mais plus dans le même ordre. |
+| `commentatrice_perso_renne_presentation_01.mp3` | Il paraît qu'il ne connaît pas la marche arrière. Enfin… sauf quand on l'a repéré. |
+| `commentatrice_perso_renne_smash_01.mp3` | Ça laisse une trace. Au sens propre. |
+| `commentatrice_perso_neige_presentation_01.mp3` | Il ne bouge pas beaucoup. C'est souvent le cas des bonshommes de neige. |
+| `commentatrice_perso_neige_smash_01.mp3` | Il fallait prévoir des moufles. |
+| `commentatrice_noel_ambiance_01.mp3` | Même en décembre, le chifoumi ne prend pas de vacances. |
 | `commentatrice_replay_intro_01.mp3` | Revoyons les images. Calmement. |
 | `commentatrice_replay_intro_02.mp3` | Au ralenti, c'est encore plus clair. |
 | `commentatrice_replay_intro_03.mp3` | Une séquence riche en enseignements techniques. |

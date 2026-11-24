@@ -13,7 +13,8 @@ toujours, sur handslam.fr du 1er décembre au 6 janvier (`app/js/noel.js`). Cade
   bot) : Avalanche de cadeaux (gant emballé d'un ruban), La farce (gant barbouillé, et les trois boutons mélangés pour le coup
   suivant), Coup de sabot (une comète traverse l'écran, l'empreinte du sabot sur le gant), Gelé (le gant givré). Dans la liste du
   mode solo seulement pendant les fêtes, ni en carrière ni en tournoi. Leur marque (ruban, peinture, sabot, givre) reste sur le gant du joueur jusqu'à la fin du set, au lieu de l'accroc et de la
-  fissure ; les lames tordues restent (choix du porteur du projet). Leurs répliques restent à enregistrer.
+  fissure ; les lames tordues restent (choix du porteur du projet). Leurs répliques (31, dont celles des pouvoirs et
+  l'ambiance des fêtes, validées le 24 novembre) sont branchées comme les répliques personnalisées d'un joueur, plus le smash.
 
 ## Textes validés le 24 novembre (à créer après le test du décor)
 
@@ -45,6 +46,10 @@ toujours, sur handslam.fr du 1er décembre au 6 janvier (`app/js/noel.js`). Cade
 ### Aussi gardés (idées du 24 novembre)
 Calendrier de l'Avent (défis du jour de Noël, du 1er au 24 décembre), match du jour du 25 décembre contre le Père Noël, grand
 tournoi de Noël (cadeau virtuel).
+
+### Répliques ajoutées le 24 novembre (validées)
+- Pouvoirs : Lutin R « Oh, le coquin ! Il a mélangé tous les boutons ! », R « Une farce du Lutin ! Attention où vous mettez les doigts ! », M « Pierre, Feuille, Ciseaux… mais plus dans le même ordre. » ; Comète R « Un coup de sabot à la vitesse de la lumière ! », R « Une comète vient de traverser le court central ! », M « Ça laisse une trace. Au sens propre. » ; Bonhomme de neige R « Brrr ! Le gant est complètement gelé ! », R « Un smash glacial du Bonhomme de neige ! », M « Il fallait prévoir des moufles. » ; Père Noël R « Le gant est emballé, il ne manque plus que l'étiquette ! », M « Joli paquet. On l'ouvre à la fin du set. »
+- Présentations (Monique) : Lutin « Il a l'air innocent. C'est justement ça, le problème. » ; Comète « Il paraît qu'il ne connaît pas la marche arrière. Enfin… sauf quand on l'a repéré. »
 
 ### Plus tard
 Le chant de supporters de Noël (sur l'air de *Jingle Bells*, proposé le 24 novembre, à revoir).
