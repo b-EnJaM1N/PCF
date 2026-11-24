@@ -6,6 +6,10 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 l'entonnoir d'entrée seront regardés à l'ouverture au public ; la seule vraie inconnue restante : des groupes qui ne connaissent pas
 le porteur du projet jouent-ils entre eux dans la durée ?
 
+**À faire après la réponse de Google sur la production (décision du 24 novembre)** : un paquet Android 6 (PWABuilder, comme
+d'habitude), pour la petite icône des notifications (le V de l'appli, `app/icons/icon-monochrome-512.png`, « purpose: monochrome »
+dans le manifeste) : aujourd'hui, l'appli du Play Store montre un carré blanc.
+
 **Entraînement (24 novembre au soir, amélioration demandée par le porteur du projet)** : les bots rangés en Débutants, Confirmés,
 Experts (catégories repliées), le bot choisi et les derniers affrontés en haut ; les bots de la carrière se débloquent à
 l'entraînement une fois battus (rétroactif), les autres sont grisés avec un cadenas.
