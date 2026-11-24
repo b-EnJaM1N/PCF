@@ -1297,10 +1297,10 @@ export const MOMENTS = {
     { r: "c", t: "On entre dans le money time, chaque main compte !" },
     { r: "c", t: "Ils sont à la lutte, au coude à coude !" },   // (17 novembre, écrite par le porteur du projet)
     { r: "c", t: "On arrive dans le dur ! Chaque point vaut de l'or !" },   // (18 novembre, gros lot 1, choisie par le porteur du projet)
-    { r: "c", t: "Huit partout ! Le set entre dans sa dernière ligne droite !" },
+    { r: "c", t: "Huit partout ! Le set entre dans sa dernière ligne droite !", huit: true },   // (24 novembre, remarque du porteur du projet : elle était dite à 5-5 dans un set de 7)
     { r: "d", t: "C'est maintenant que les jambes tremblent. Enfin, les mains." },
     { r: "c", t: "Oh, ça se resserre ! Plus personne ne peut se permettre la moindre erreur !" },
-    { r: "d", t: "Huit partout. Les calculatrices sont rangées, place au caractère." },
+    { r: "d", t: "Huit partout. Les calculatrices sont rangées, place au caractère.", huit: true },
     { r: "c", t: "Le money time, mesdames et messieurs ! Accrochez-vous !" },
     { r: "c", t: "Attention ! Ça peut basculer à tout moment !" },   // (19 novembre, bibliothèque du porteur du projet)
   ],
