@@ -2775,6 +2775,7 @@ $("hubAlertes").addEventListener("click", e => { const b = e.target.closest("[da
 function majModeMatch() {
   const enMatch = !!(S && S.enJeu && (!S.match.termine || S.pauseFin));
   document.body.classList.toggle("en-match", enMatch);
+  document.body.classList.toggle("match-noel", enMatch && !S.duel && !!OPP?.noel);   // (un match contre un bot de Noël : le court rouge, le sapin, les flocons)
   ambiance.fond(enMatch);                                  // le murmure du public, pendant tout le match
   if (!enMatch) majCoeur();                                // (le cœur s'arrête quand on quitte le match)
   $("quitterSoloZone").hidden = !enMatch || !!S.duel;
