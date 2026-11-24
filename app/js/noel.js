@@ -10,8 +10,11 @@ export function noelActif(maintenant = new Date(), loc = typeof location !== "un
   return mois === 11 || (mois === 0 && jour <= 6);
 }
 
-// Le houx : deux feuilles et trois baies (dessin).
-const HOUX = `<svg viewBox="0 0 64 40" aria-hidden="true"><path d="M30 22 C22 6 8 6 2 10 C8 12 6 18 10 20 C6 24 10 30 14 28 C16 34 24 30 30 22Z" fill="#1f7a3a" stroke="#0f4d22" stroke-width="1.5"/><path d="M34 22 C42 6 56 6 62 10 C56 12 58 18 54 20 C58 24 54 30 50 28 C48 34 40 30 34 22Z" fill="#2a8f47" stroke="#0f4d22" stroke-width="1.5"/><circle cx="28" cy="25" r="5" fill="#d7263d"/><circle cx="36" cy="25" r="5" fill="#d7263d"/><circle cx="32" cy="18" r="5" fill="#e8384f"/><circle cx="30.5" cy="16.5" r="1.4" fill="#fff" opacity=".7"/></svg>`;
+// Le houx, bien touffu (24 novembre, demande du porteur du projet) : cinq feuilles en éventail et une grappe de baies (dessin).
+const FEUILLE = (r, c) => `<path transform="rotate(${r} 40 40)" d="M40 40 C34 28 32 14 40 2 C42 8 48 8 47 14 C52 15 52 21 48 23 C53 26 51 32 46 32 C47 36 44 39 40 40Z" fill="${c}" stroke="#0b3d1b" stroke-width="1.6"/>`;
+const HOUX = `<svg viewBox="0 0 80 80" aria-hidden="true">${FEUILLE(-80, "#1f7a3a")}${FEUILLE(-40, "#2a8f47")}${FEUILLE(0, "#1f7a3a")}${FEUILLE(40, "#2a8f47")}${FEUILLE(80, "#1f7a3a")}`
+  + `<circle cx="34" cy="42" r="6" fill="#c8102e"/><circle cx="46" cy="42" r="6" fill="#d7263d"/><circle cx="40" cy="34" r="6" fill="#e8384f"/><circle cx="40" cy="48" r="5.5" fill="#b80d27"/>`
+  + `<circle cx="38" cy="32" r="1.7" fill="#fff" opacity=".75"/><circle cx="32" cy="40" r="1.5" fill="#fff" opacity=".6"/></svg>`;
 
 // Pose le décor sur l'écran du match (une seule fois) : la guirlande lumineuse et le houx sur le tableau de score, le sapin au fond
 // du court, les flocons qui tombent (pas avec « mouvements réduits » : voir le style).
@@ -20,7 +23,10 @@ export function installerNoel(doc = document) {
   doc.body.classList.add("noel");
   const board = doc.querySelector("#viewMatch .board");
   if (board) {
-    board.insertAdjacentHTML("afterbegin", `<span class="noel-guirlande" aria-hidden="true"></span><span class="noel-houx g" aria-hidden="true">${HOUX}</span><span class="noel-houx d" aria-hidden="true">${HOUX}</span>`);
+    // (24 novembre, demande du porteur du projet : la guirlande tout autour du cadre, le houx touffu aux quatre coins)
+    const guirlandes = ["haut", "bas", "gauche", "droite"].map(c => `<span class="noel-guirlande ${c}" aria-hidden="true"></span>`).join("");
+    const houx = ["hg", "hd", "bg", "bd"].map(c => `<span class="noel-houx ${c}" aria-hidden="true">${HOUX}</span>`).join("");
+    board.insertAdjacentHTML("afterbegin", guirlandes + houx);
   }
   const vue = doc.getElementById("viewMatch");
   if (vue) {
