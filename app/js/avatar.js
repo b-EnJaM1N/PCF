@@ -35,6 +35,11 @@ export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc"
   // Le gant « Pull moche » (24 novembre, événement de Noël, texte validé par le porteur du projet) : tricoté, rennes et flocons,
   // couleurs criardes ; poignet en côtes.
   pullmoche: ["Pull moche", "#D7192E", "repeating-linear-gradient(#D7192E 0 6px,#F5F7FA 6px 8px,#1E8C3A 8px 14px,#F4C542 14px 16px)"],
+  // Les pulls moches à motif (24 novembre, demande du porteur du projet) : le même tricot, sans la rangée de rennes, et un grand
+  // motif tricoté sur le dos de la main.
+  pullsapin: ["Pull moche Sapin", "#D7192E", "radial-gradient(circle,#1E8C3A 30%,#FFF4DC 32% 45%,transparent 47%),repeating-linear-gradient(#D7192E 0 6px,#F5F7FA 6px 8px,#1E8C3A 8px 14px)"],
+  pullneige: ["Pull moche Bonhomme de neige", "#D7192E", "radial-gradient(circle,#fff 30%,#1B3A6B 32% 45%,transparent 47%),repeating-linear-gradient(#D7192E 0 6px,#F5F7FA 6px 8px,#1E8C3A 8px 14px)"],
+  pullrenne: ["Pull moche Renne", "#D7192E", "radial-gradient(circle,#8A5A32 30%,#FFF4DC 32% 45%,transparent 47%),repeating-linear-gradient(#D7192E 0 6px,#F5F7FA 6px 8px,#1E8C3A 8px 14px)"],
   lutin: ["Gant du Lutin", "#1E9E48", "repeating-linear-gradient(-55deg,#1E9E48 0 6px,#E3122F 6px 9px,#FAFAF7 9px 10px)"] };
 // Les gants à dossard (le dossard épinglé, les coutures d'or) ; le poignet du gant du FIAC Club.
 const A_DOSSARD = new Set(["dossard", "fiac"]);
@@ -335,11 +340,28 @@ const zigzag = (y, c) => `<path d="M0 ${y + 4} L2 ${y} L4 ${y + 4} L6 ${y} L8 ${
 const flocon = (x, y) => `<path d="M${x} ${y - 3} V${y + 3} M${x - 3} ${y} H${x + 3} M${x - 2} ${y - 2} L${x + 2} ${y + 2} M${x + 2} ${y - 2} L${x - 2} ${y + 2}" stroke="#fff" stroke-width=".9" stroke-linecap="round"/>`;
 const renne = (x, y) => `<g fill="#fff"><rect x="${x}" y="${y + 2}" width="7" height="3"/><rect x="${x + 6}" y="${y}" width="2.4" height="2.6"/><rect x="${x + 6.6}" y="${y - 2}" width="1" height="2"/>`
   + `<rect x="${x + 8}" y="${y - 1.6}" width="1" height="1.4"/><rect x="${x + .4}" y="${y + 5}" width="1" height="3"/><rect x="${x + 5.4}" y="${y + 5}" width="1" height="3"/></g>`;
-const PULL_MOCHE = id => `<pattern id="${id}g" width="16" height="100" patternUnits="userSpaceOnUse"><rect width="16" height="100" fill="#D7192E"/>`
+const PULL_MOCHE = (id, rennes = true) => `<pattern id="${id}g" width="16" height="100" patternUnits="userSpaceOnUse"><rect width="16" height="100" fill="#D7192E"/>`
   + `<rect y="0" width="16" height="13" fill="#1E8C3A"/>${flocon(8, 6.5)}${zigzag(13, "#F4C542")}`
   + `<rect y="21" width="16" height="13" fill="#1E8C3A"/>${flocon(4, 27.5)}${flocon(12, 27.5)}${zigzag(34, "#fff")}`
-  + `${renne(4, 42)}${zigzag(53, "#F4C542")}<rect y="57" width="16" height="12" fill="#1E8C3A"/>${flocon(8, 63)}${zigzag(69, "#fff")}${renne(4, 77)}`
+  + `${rennes ? renne(4, 42) : flocon(4, 45) + flocon(12, 45)}${zigzag(53, "#F4C542")}<rect y="57" width="16" height="12" fill="#1E8C3A"/>${flocon(8, 63)}${zigzag(69, "#fff")}${rennes ? renne(4, 77) : flocon(8, 80)}`
   + `${[...Array(25)].map((_, i) => `<path d="M${(i % 4) * 4 + .6} ${Math.floor(i / 4) * 16 + 1} l1.4 1.6 l1.4 -1.6" fill="none" stroke="rgba(0,0,0,.18)" stroke-width=".5"/>`).join("")}</pattern>`;
+// Les grands motifs des pulls moches, tricotés sur un écusson (dessinés autour de 0, 0, dans une case de 24 × 24).
+const PULLS_MOTIF = new Set(["pullsapin", "pullneige", "pullrenne"]);
+const ECUSSON = (fond) => `<rect x="-12" y="-12" width="24" height="24" rx="5" fill="${fond}" stroke="#fff" stroke-width="1.6"/><rect x="-10.4" y="-10.4" width="20.8" height="20.8" rx="4" fill="none" stroke="#D7192E" stroke-width=".9" stroke-dasharray="1.6 1.2"/>`;
+const MOTIFS_PULL = {
+  pullsapin: ECUSSON("#FFF4DC") + `<rect x="-1.6" y="6" width="3.2" height="3.4" fill="#7A4A22"/><path d="M0 -8 L5 -2 H2.6 L7 3.4 H3.6 L8 7.4 H-8 L-3.6 3.4 H-7 L-2.6 -2 H-5 Z" fill="#1E8C3A" stroke="#0F5A24" stroke-width=".7" stroke-linejoin="round"/>`
+    + `<path d="M0 -11.2 L1 -9 L3.2 -8.8 L1.5 -7.4 L2 -5.2 L0 -6.4 L-2 -5.2 L-1.5 -7.4 L-3.2 -8.8 L-1 -9 Z" fill="#F4C542"/>`
+    + [[-2, 0, "#D7192E"], [3, 1.6, "#F4C542"], [-4, 5, "#F4C542"], [1.4, 5.4, "#D7192E"], [5, 5.6, "#fff"], [1, -3.2, "#fff"]].map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="1.1" fill="${c}"/>`).join(""),
+  pullneige: ECUSSON("#1B3A6B") + `<circle cx="0" cy="4.6" r="5.6" fill="#fff"/><circle cx="0" cy="-3.8" r="4" fill="#fff"/><rect x="-4.6" y="-10.4" width="9.2" height="1.4" rx=".6" fill="#23262B"/><rect x="-3" y="-15" width="6" height="5" rx=".6" fill="#23262B" transform="translate(0 2.4)"/>`
+    + `<rect x="-3" y="-7.9" width="6" height="1.1" fill="#D7192E"/><circle cx="-1.4" cy="-4.4" r=".7" fill="#23262B"/><circle cx="1.4" cy="-4.4" r=".7" fill="#23262B"/><path d="M0 -3.4 L3.6 -2.6 L0 -2.2 Z" fill="#F28C28"/>`
+    + `<path d="M-4 .2 Q0 2.2 4 .2 L4.6 1.6 Q0 3.6 -4.6 1.6 Z" fill="#D7192E"/><path d="M2.6 1.6 l1.6 4 l1.6 -.6 l-1 -3.6 Z" fill="#D7192E"/>`
+    + [3.4, 6.2].map(y => `<circle cx="0" cy="${y}" r=".75" fill="#23262B"/>`).join("") + [[-8, -7], [7.4, -6], [-7.6, 7], [8, 8.4]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r=".8" fill="#fff"/>`).join(""),
+  pullrenne: ECUSSON("#FFF4DC") + `<path d="M-4.6 -6 C-7 -8 -7.6 -11 -6 -12 M-6.4 -9.4 L-8.8 -9.6 M4.6 -6 C7 -8 7.6 -11 6 -12 M6.4 -9.4 L8.8 -9.6" fill="none" stroke="#7A4A22" stroke-width="1.5" stroke-linecap="round"/>`
+    + `<ellipse cx="-5.6" cy="-4.6" rx="2.4" ry="1.3" fill="#8A5A32" transform="rotate(-25 -5.6 -4.6)"/><ellipse cx="5.6" cy="-4.6" rx="2.4" ry="1.3" fill="#8A5A32" transform="rotate(25 5.6 -4.6)"/>`
+    + `<path d="M-4.4 -5.4 C-4.6 -1 -3.4 6 0 7.6 C3.4 6 4.6 -1 4.4 -5.4 C2 -7.4 -2 -7.4 -4.4 -5.4 Z" fill="#9A6738" stroke="#6E4524" stroke-width=".7"/>`
+    + `<circle cx="-1.8" cy="-2.4" r=".9" fill="#23262B"/><circle cx="1.8" cy="-2.4" r=".9" fill="#23262B"/><circle cx="0" cy="5.6" r="2.4" fill="#E3122F"/><circle cx="-.7" cy="4.9" r=".7" fill="#fff" opacity=".8"/>`,
+};
+const motifPull = (gant, x, y, r) => `<g transform="translate(${x} ${y}) scale(${(Math.max(r, 8.4) / 10).toFixed(3)})">${MOTIFS_PULL[gant]}</g>`;
 // Le poignet en côtes du Pull moche : vert, rayé de fines côtes, un liseré blanc et rouge.
 const COTES = `<rect x="36" y="72" width="28" height="16" rx="3" fill="#1E8C3A" stroke="#0F5A24" stroke-width="1.4"/>`
   + [...Array(9)].map((_, i) => `<rect x="${38 + i * 3}" y="73" width="1.2" height="14" fill="#16702E"/>`).join("")
@@ -396,7 +418,7 @@ export function avatarSVG(a) {
     club: `<pattern id="${id}g" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#14533A"/></pattern>`,
   }[gm] || (a.gant === "elite" ? `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3358"/><stop offset="1" stop-color="#14121F"/></linearGradient>`
     // (le gant du FIAC Club : de l'or métallique, clair en haut, avec un reflet, plus sombre en bas)
-    : a.gant === "pullmoche" ? PULL_MOCHE(id)
+    : a.gant === "pullmoche" ? PULL_MOCHE(id) : PULLS_MOTIF.has(a.gant) ? PULL_MOCHE(id, false)
     : a.gant === "neige" ? `<radialGradient id="${id}g" gradientUnits="userSpaceOnUse" cx="42" cy="30" r="55"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#F1F6FB"/><stop offset="1" stop-color="#C9DAEA"/></radialGradient>`
     : a.gant === "renne" ? `<pattern id="${id}g" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-15)"><rect width="9" height="9" fill="#9A6738"/><path d="M1.5 2 l.8 1.8 M6 5.5 l.8 1.8" stroke="#86572E" stroke-width=".7" stroke-linecap="round"/><path d="M5.5 1 l.7 1.5" stroke="#B07E50" stroke-width=".6" stroke-linecap="round"/></pattern>`
     : a.gant === "lutin" ? `<pattern id="${id}g" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="12" height="12" fill="#1E9E48"/><rect x="0" width="4" height="12" fill="#E3122F"/><rect x="4" width="1.3" height="12" fill="#FAFAF7"/></pattern>`
@@ -441,6 +463,7 @@ export function avatarSVG(a) {
   if (A_DOSSARD.has(a.gant)) deco = (PRESTIGE.reflet ? `<g opacity=".38" style="mix-blend-mode:screen">${main(a.symbole, `url(#${id}r)`, "none")}</g>` : "")
     + dossardSVG(...(PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
+  if (PULLS_MOTIF.has(a.gant)) { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = motifPull(a.gant, x, y - r * .15, r); }
   if (a.gant === "neige") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = visageNeige(x, y - r * .1, r); }
   if (a.gant === "renne") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = comete(x + 1, y - 1, r); }
   if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
@@ -455,7 +478,7 @@ export function avatarSVG(a) {
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
     ${a.sansMain ? "" : `${centrer ? '<g transform="translate(2 -8)">' : ""}
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
-    <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : a.gant === "perenoel" ? FOURRURE : a.gant === "lutin" ? LUTIN : a.gant === "renne" ? RENNE : a.gant === "neige" ? NEIGE : a.gant === "pullmoche" ? COTES : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
+    <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : a.gant === "perenoel" ? FOURRURE : a.gant === "lutin" ? LUTIN : a.gant === "renne" ? RENNE : a.gant === "neige" ? NEIGE : a.gant === "pullmoche" || PULLS_MOTIF.has(a.gant) ? COTES : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
     ${a.gant === "renne" ? BOIS : ""}${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}${centrer ? "</g>" : ""}`}
   </svg>`;
