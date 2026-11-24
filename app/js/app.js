@@ -1,6 +1,6 @@
 // Écran principal : relie les règles, les bots, les annonces, le son et la fiche joueur.
 import { EMOJI, NOM, DUREE_COUP_MS, RESERVE_MS, SONNE_MS, nouveauMatch, jouerCoup, penaliser, depassement, peutSmasher, noterSmash, recupererSmash, issueSmash, gagnantCoup, balle, egaliteFinDeSet, pointDecisif, setDecisif, texteFormat, POINTS_PAR_SET } from "./regles.js";
-import { BOTS, botParId, choisirCoup, contexteBot } from "./bots.js";
+import { BOTS, BOTS_NOEL, botParId, choisirCoup, contexteBot } from "./bots.js";
 import { Suivi, indiceImprevisibilite } from "./analyse.js";
 import { nouvelEtatAnnonces, annoncerCoup, annonceDebutSet, annoncesAvantMatch, interview, etiquetteDe, situationsDuMatch, niveauEnjeu, contexteJeu, baseDe, silenceAvantBalle, choisirSilence, commentaireMemoire, commentaireMemeOuverture, annoncerPenalite, annonceAvertissement, commentaireStats } from "./annonces.js";
 import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, aDebloquer, monterRang, surnomAuHasard, surnomValide, texteDeblocage } from "./surnoms.js";
@@ -16,7 +16,7 @@ import { dessinerStats } from "./image-stats.js";
 import { carteDe, notesDe, texteRang, rangDe, texteCoefs, partBots, HUMAINS_POUR_CARTE } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
 import { installerComparaison } from "./comparer-cartes.js";
-import { installerNoel } from "./noel.js";
+import { installerNoel, noelActif, pouvoirNoel, remettreBoutons } from "./noel.js";
 import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee, situationPoignee } from "./poignee.js";
 import { installerRapide } from "./ecran-rapide.js";
 import { installerSignalement } from "./ecran-signaler.js";
@@ -114,7 +114,7 @@ if (!POINTS_PAR_SET.includes(fmt.len)) fmt.len = 11;
 if (![1, 2, 3].includes(fmt.win)) fmt.win = 2;
 const lenTournoi = () => (fmt.len >= 7 ? fmt.len : 11);   // le tournoi se joue en sets de 11 ou de 7 points
 let WIN = fmt.win;                               // sets gagnants du match en cours (le tournoi l'impose)
-let amicalId = botParId(lire("adversaire")) ? lire("adversaire") : "tictac";   // un adversaire proche du niveau de départ (1200)
+let amicalId = botParId(lire("adversaire")) && (!botParId(lire("adversaire")).noel || noelActif()) ? lire("adversaire") : "tictac";   // un adversaire proche du niveau de départ (1200)
 let OPP = botParId(amicalId);
 const premiereFois = lire("profil") === null;   // (pour le compteur de visites : un téléphone qui découvre HandSlam)
 let P = normaliserProfil(lire("profil"));
@@ -306,7 +306,11 @@ function lancerMinuteur() {
   const reserveDebut = m.reserve[0];
   afficherReserve(reserveDebut);
   // Sonné par le smash réussi du bot : 4 secondes sans pouvoir jouer (la barre, elle, avance).
-  if (S.sonne) { S.sonne = false; sonner(SONNE_MS, () => { if (S?.match === m && !S.occupe && !m.termine) boutons(true); }); }
+  if (S.sonne) {
+    S.sonne = false; sonner(SONNE_MS, () => { if (S?.match === m && !S.occupe && !m.termine) boutons(true); });
+    // (le smash d'un bot de Noël : son pouvoir ; noel.js)
+    if (OPP?.noel && !S.carriere) { const nom = pouvoirNoel(OPP.id, SONNE_MS); if (nom) $("verdict").textContent = `💫 ${nom} ! Encore un instant…`; }
+  }
   const tick = t => {
     const ecoule = t - tDebut;
     if (ecoule < DUREE_COUP_MS) {
@@ -425,7 +429,7 @@ function jouer(signe, auto = false, smash = false) {
   if (S && !S.duel && !auto && tDebut && S.enJeu && !S.occupe) (S.tempsReponse ||= []).push(performance.now() - tDebut);
   if (S && S.duel) return jouerDuel(signe, smash);
   if (!S || !S.enJeu || S.occupe || S.match.termine || panneauOuvert || faceAFaceOuvert) return;
-  S.occupe = true; arreterMinuteur(); boutons(false);
+  S.occupe = true; arreterMinuteur(); boutons(false); remettreBoutons();   // (la farce du Lutin ne dure qu'un coup)
   const m = S.match;
   // (le parcours des nouveaux, anonyme : un premier coup joué ; « lancé » aussi, s'il est venu par un autre chemin)
   if (!m.coups.length && !P.matchs) { compterEtapePremier(envoyerParcours, "premier_lance"); compterEtapePremier(envoyerParcours, "premier_coup"); }
@@ -2767,7 +2771,9 @@ $("quitterSolo").addEventListener("click", () => {
 
 // ---------------------------------------------------------------- choix de l'adversaire
 function renderAdversaires() {
-  $("opps").innerHTML = BOTS.map(b => `<button class="opp" data-id="${b.id}" aria-pressed="${b.id === amicalId}"><span class="oa">${avatarSVG(b.av)}</span><span class="on">${b.nom}</span><span class="ol">Niveau ${b.elo}</span></button>`).join("");
+  // (pendant les fêtes, les bots de Noël en plus, à la fin : noel.js)
+  const bouton = b => `<button class="opp${b.noel ? " opp-noel" : ""}" data-id="${b.id}" aria-pressed="${b.id === amicalId}"><span class="oa">${avatarSVG(b.av)}</span><span class="on">${b.nom}</span><span class="ol">Niveau ${b.elo}</span></button>`;
+  $("opps").innerHTML = BOTS.map(bouton).join("") + (noelActif() ? `<p class="opps-noel">🎄 Les bots de Noël</p>` + BOTS_NOEL.map(bouton).join("") : "");
   $("opps").querySelectorAll("button").forEach(x => x.addEventListener("click", () => {
     amicalId = x.dataset.id; ecrire("adversaire", amicalId);
     OPP = botParId(amicalId); renderAdversaires(); rafraichirAvatars();

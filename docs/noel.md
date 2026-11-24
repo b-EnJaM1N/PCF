@@ -7,15 +7,25 @@ toujours, sur handslam.fr du 1er décembre au 6 janvier (`app/js/noel.js`). Cade
 - **Lot 1 (24 nov.)** : le court décoré (guirlande lumineuse et houx sur le tableau de score, sapin en fond du court) et les
   flocons. **En attente du test du porteur du projet** avant la suite.
 
+- **Lot 3, les quatre bots (24 nov.)** : leurs gants (dessinés et validés un par un), leurs niveaux (Père Noël 2000, Lutin 1800,
+  Comète 1400, Bonhomme de neige 1100 ; force vérifiée par `outils/calibrer-bots.js` : le Père Noël est le plus fort de tous les
+  bots), leur façon de jouer, et le pouvoir de leur smash réussi (le joueur sonné 4 secondes, comme d'habitude, avec l'effet du
+  bot) : Avalanche de cadeaux (gant emballé d'un ruban), La farce (gant barbouillé, et les trois boutons mélangés pour le coup
+  suivant), Coup de sabot (une comète traverse l'écran, l'empreinte du sabot sur le gant), Gelé (le gant givré). Dans la liste du
+  mode solo seulement pendant les fêtes, ni en carrière ni en tournoi. Leurs répliques restent à enregistrer.
+
 ## Textes validés le 24 novembre (à créer après le test du décor)
 
 ### Les bots
 | Bot | Style | Habitude | Niveau |
 |---|---|---|---|
-| Le Père Noël 🎅 | Le généreux | « Emballe tout dans la Feuille, comme un cadeau. Mais quand il est mené, il sort le charbon : la Pierre. » | 1 250 |
-| Le Lutin 🧝 | L'espiègle | « Imite ton dernier coup pour te faire une farce. » | 1 000 |
-| Comète, le renne 🦌 | Le fonceur | « Tourne en boucle à toute allure : Pierre, Feuille, Ciseaux. » | 1 100 |
-| Le Bonhomme de neige ⛄ | Le figé | « Ne quitte presque jamais sa boule de neige : la Pierre. » | 900 |
+| Le Père Noël 🎅 | Le généreux | « Il sait si tu as été sage : il lit tout ce que tu joues. Il emballe volontiers tout dans du papier cadeau, et sort le charbon quand il est mené. » | 2 000 |
+| Le Lutin 🧝 | L'espiègle | « Imite tes coups pour t'endormir… puis te fait une farce au moment où tu t'y attends le moins. » | 1 800 |
+| Comète, le renne 🦌 | Le fonceur | « Tourne en boucle à toute allure : Pierre, Feuille, Ciseaux… et change de sens dès que tu l'as repéré. » | 1 400 |
+| Le Bonhomme de neige ⛄ | Le figé | « Tient à sa boule de neige, mais fond et change de signe quand tu l'as trop bien lu. » | 1 100 |
+
+(Niveaux et phrases revus le 24 novembre à la demande du porteur du projet ; il garde le nom « Comète » pour le renne, affiché
+« Comète, le renne » pour ne pas le confondre avec Comète, la filante.)
 
 ### Les répliques (R = Roland, M = Monique) — environ 1 300 crédits
 - Présentation contre le Père Noël : R « Ho ho ho ! Le Père Noël en personne descend sur le court central ! » ; M « Il a vérifié sa liste. Deux fois. Son adversaire est sur la mauvaise. »

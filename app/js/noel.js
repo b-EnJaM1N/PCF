@@ -40,3 +40,49 @@ export function installerNoel(doc = document) {
     vue.insertAdjacentHTML("afterbegin", `<div class="noel-flocons" aria-hidden="true">${flocons}</div>`);
   }
 }
+
+// ---------------------------------------------------------------- les pouvoirs des bots de Noël (24 novembre, idée du porteur du projet)
+// Quand un bot de Noël réussit son smash, le joueur est sonné comme d'habitude (4 secondes), avec l'effet du bot : sur l'écran, et
+// sur le gant du joueur. Le Lutin, en plus, mélange les trois boutons pour le coup suivant (sa farce).
+const RUBAN = `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M44 0 H56 V100 H44 Z M0 52 H100 V64 H0 Z" fill="#D7263D" opacity=".92"/>`
+  + `<path d="M50 50 C38 30 22 34 26 46 C29 56 44 54 50 50 Z M50 50 C62 30 78 34 74 46 C71 56 56 54 50 50 Z" fill="#E8384F" stroke="#9E0C24" stroke-width="2"/>`
+  + `<circle cx="50" cy="50" r="6" fill="#B80D27"/><path d="M48 54 L40 72 M52 54 L60 72" stroke="#D7263D" stroke-width="5" stroke-linecap="round"/></svg>`;
+const PEINTURE = `<svg viewBox="0 0 100 100" aria-hidden="true">${[[30, 34, 13, "#E3122F"], [66, 42, 11, "#1E9E48"], [44, 66, 12, "#1E9E48"], [70, 70, 9, "#E3122F"], [24, 60, 7, "#E3122F"]]
+  .map(([x, y, r, c]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity=".85"/><circle cx="${x + r}" cy="${y - r * .6}" r="${r * .3}" fill="${c}" opacity=".85"/><circle cx="${x - r * .9}" cy="${y + r * .7}" r="${r * .25}" fill="${c}" opacity=".85"/>`).join("")}</svg>`;
+const SABOT = `<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="#3B2412" opacity=".8"><path d="M30 40 C24 54 26 70 40 74 C46 72 46 60 44 50 C42 42 36 36 30 40 Z"/>`
+  + `<path d="M70 40 C76 54 74 70 60 74 C54 72 54 60 56 50 C58 42 64 36 70 40 Z"/></g></svg>`;
+const GIVRE = `<svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="30" fill="#BFE6FF" opacity=".55"/>`
+  + `${[18, 34, 50, 66, 82].map((x, i) => `<path d="M${x - 5} 88 L${x} ${100 - (i % 2 ? 22 : 32)} L${x + 5} 88 Z" fill="#E8F7FF" stroke="#8CC8EE" stroke-width="1.2"/>`).join("")}`
+  + `${[[26, 26], [72, 30], [50, 50], [30, 66], [70, 62]].map(([x, y]) => `<text x="${x}" y="${y}" font-size="14" text-anchor="middle" fill="#fff">❄</text>`).join("")}</svg>`;
+export const POUVOIRS_NOEL = {
+  perenoel: { nom: "Avalanche de cadeaux", gant: RUBAN, pluie: "🎁" },
+  lutin: { nom: "La farce du Lutin : tes boutons sont mélangés", gant: PEINTURE, pluie: "🎨", melange: true },
+  renne: { nom: "Coup de sabot", gant: SABOT, pluie: "⭐", comete: true },
+  neige: { nom: "Gelé", gant: GIVRE, pluie: "❄️" },
+};
+
+// Mélange les trois boutons (jamais dans le même ordre) ; remis en place par remettreBoutons.
+export function melangerBoutons(doc = document, rng = Math.random) {
+  const moves = doc.getElementById("moves"); if (!moves) return;
+  const b = [...moves.children], ordres = [[1, 0, 2], [0, 2, 1], [2, 1, 0], [1, 2, 0], [2, 0, 1]];
+  ordres[Math.floor(rng() * ordres.length)].forEach(i => moves.appendChild(b[i]));
+  moves.classList.add("melange");
+}
+export function remettreBoutons(doc = document) {
+  const moves = doc.getElementById("moves"); if (!moves || !moves.classList.contains("melange")) return;
+  [...moves.children].sort((x, y) => ORDRE_BOUTONS.indexOf(x.dataset.m) - ORDRE_BOUTONS.indexOf(y.dataset.m)).forEach(b => moves.appendChild(b));
+  moves.classList.remove("melange");
+}
+const ORDRE_BOUTONS = ["0", "2", "1"];   // (Pierre, Feuille, Ciseaux : l'ordre d'index.html)
+
+// L'effet du pouvoir, pendant ms (le temps où le joueur est sonné). Renvoie le texte du pouvoir (pour le verdict), ou null.
+export function pouvoirNoel(botId, ms, doc = document) {
+  const p = POUVOIRS_NOEL[botId]; if (!p) return null;
+  const main = doc.getElementById("hMe"), vue = doc.getElementById("viewMatch");
+  const poser = (parent, html) => { if (!parent) return; parent.insertAdjacentHTML("beforeend", html); const el = parent.lastElementChild; setTimeout(() => el.remove(), ms); };
+  poser(main, `<span class="noel-pouvoir-gant">${p.gant}</span>`);
+  const pluie = Array.from({ length: 10 }, (_, i) => `<i style="left:${(i * 37 + 7) % 92}%;animation-delay:${(i % 5) * 0.18}s">${p.pluie}</i>`).join("");
+  poser(vue, `<div class="noel-pouvoir${p.comete ? " comete" : ""}" aria-hidden="true">${p.comete ? `<i class="trainee">☄️</i>` : pluie}</div>`);
+  if (p.melange) melangerBoutons(doc);
+  return p.nom;
+}

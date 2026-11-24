@@ -78,7 +78,16 @@ export const AUTRES_BOTS = [
 ];
 export const TOUS_LES_BOTS = [...BOTS, ...AUTRES_BOTS];
 
-export const botParId = id => TOUS_LES_BOTS.find(b => b.id === id) || null;
+// Les bots de Noël (24 novembre, textes et niveaux choisis par le porteur du projet ; noel.js) : dans la liste du mode solo
+// seulement pendant les fêtes, ni en carrière ni en tournoi. Leur smash réussi a un pouvoir (noel.js).
+export const BOTS_NOEL = [
+  { id: "perenoel", nom: "Le Père Noël", style: "Le généreux", desc: "il sait si tu as été sage : il lit tout ce que tu joues. Il emballe volontiers tout dans du papier cadeau, et sort le charbon quand il est mené.", elo: 2000, specialite: "La lecture", imprevisibilite: 97, noel: true, av: { symbole: "feuille", fond: "rubis", gant: "perenoel", poignet: "blanc", motif: "etoile" } },
+  { id: "lutin", nom: "Le Lutin", style: "L'espiègle", desc: "imite tes coups pour t'endormir… puis te fait une farce au moment où tu t'y attends le moins.", elo: 1800, specialite: "La farce", imprevisibilite: 90, noel: true, av: { symbole: "ciseaux", fond: "gazon", gant: "lutin", poignet: "rouge", motif: "uni" } },
+  { id: "renne", nom: "Comète, le renne", style: "Le fonceur", desc: "tourne en boucle à toute allure : Pierre, Feuille, Ciseaux… et change de sens dès que tu l'as repéré.", elo: 1400, specialite: "La boucle", imprevisibilite: 70, noel: true, av: { symbole: "pierre", fond: "minuit", gant: "renne", poignet: "rouge", motif: "uni" } },
+  { id: "neige", nom: "Le Bonhomme de neige", style: "Le figé", desc: "tient à sa boule de neige, mais fond et change de signe quand tu l'as trop bien lu.", elo: 1100, specialite: "La boule de neige", imprevisibilite: 35, noel: true, av: { symbole: "pierre", fond: "court", gant: "neige", poignet: "rouge", motif: "uni" } },
+];
+
+export const botParId = id => TOUS_LES_BOTS.find(b => b.id === id) || BOTS_NOEL.find(b => b.id === id) || null;
 
 // Cycle de Cyclo : Pierre, Feuille, Ciseaux.
 const CYCLE = [PIERRE, FEUILLE, CISEAUX];
@@ -119,6 +128,34 @@ function adaptatif(hist, bruit, rng) {
   if (p === null || score <= essais * 0.4) return signeAuHasard(rng);
   return contre(p);
 }
+// Le boss : il rejoue en pensée les derniers coups avec chacune de ses méthodes (lire tes habitudes, s'adapter, jouer au
+// hasard) et garde celle qui aurait le mieux marché contre toi. (repli : son coup quand aucune méthode ne marche ; le hasard,
+// imprenable, sauf pour le Père Noël ; bruit : sa part de hasard en lisant)
+function titan(hist, rng, ctx, repli = () => signeAuHasard(rng), bruit = 0.03) {
+  const n = hist.length;
+  if (n < 6) return repli();
+  const gains = { lecteur: 0, adaptatif: 0 };
+  for (let i = Math.max(4, n - 12); i < n; i++) {
+    const passe = hist.slice(0, i), vrai = hist[i].adv;
+    const l = new Lecteur(); passe.forEach(h => l.apprendre(h.adv, inverse(h.res)));
+    const pl = l.predire(); if (pl !== null) gains.lecteur += pl === vrai ? 1 : contre(pl) === vrai ? -1 : 0;
+    const pa = adaptatif(passe, 0, () => 0.5); gains.adaptatif += contre(pa) === vrai ? -1 : contre(vrai) === pa ? 1 : 0;
+  }
+  const [meilleur, g] = Object.entries(gains).sort((x, y) => y[1] - x[1])[0];
+  if (g <= 0) return repli();
+  return meilleur === "lecteur" ? lecteur(hist, finDeSet(ctx) ? 0 : bruit, rng) : adaptatif(hist, bruit * 2 / 3, rng);
+}
+// Le sens de la boucle de Comète, le renne : à l'endroit au départ ; il change à chaque fois qu'il se voit repéré (deux points
+// perdus sur les trois derniers, après ne pas l'avoir été).
+function sensRenne(hist) {
+  let sens = 1, avant = false;
+  for (let i = 3; i <= hist.length; i++) {
+    const repere = hist.slice(i - 3, i).filter(h => h.res === "p").length >= 2;
+    if (repere && !avant) sens = -sens;
+    avant = repere;
+  }
+  return sens;
+}
 // Fin de set : le prochain point peut être décisif (balle de set, ou score serré près de la fin).
 // Le score vu par le bot (côté 1 du match), pour choisirCoup.
 export const contexteBot = m => ({ points: [m.points[1], m.points[0]], pointsParSet: m.format.pointsParSet, set: m.scoresSets.length, balle: !!balleDe(m) });
@@ -152,21 +189,7 @@ export function choisirCoup(bot, hist, rng = Math.random, ctx = null) {
     }
     case "mante": return finDeSet(ctx) || (ctx && Math.max(...ctx.points) >= ctx.pointsParSet / 2) ? lecteur(hist, 0.03, rng) : signeAuHasard(rng);
     case "nemesis": return adaptatif(hist, 0.06, rng);
-    case "titan": {
-      // Le boss : il rejoue en pensée les derniers coups avec chacune de ses méthodes (lire tes habitudes,
-      // s'adapter, jouer au hasard) et garde celle qui aurait le mieux marché contre toi.
-      if (n < 6) return signeAuHasard(rng);
-      const gains = { lecteur: 0, adaptatif: 0 };
-      for (let i = Math.max(4, n - 12); i < n; i++) {
-        const passe = hist.slice(0, i), vrai = hist[i].adv;
-        const l = new Lecteur(); passe.forEach(h => l.apprendre(h.adv, inverse(h.res)));
-        const pl = l.predire(); if (pl !== null) gains.lecteur += pl === vrai ? 1 : contre(pl) === vrai ? -1 : 0;
-        const pa = adaptatif(passe, 0, () => 0.5); gains.adaptatif += contre(pa) === vrai ? -1 : contre(vrai) === pa ? 1 : 0;
-      }
-      const [meilleur, g] = Object.entries(gains).sort((x, y) => y[1] - x[1])[0];
-      if (g <= 0) return signeAuHasard(rng);                 // aucune méthode ne marche : le hasard, imprenable
-      return meilleur === "lecteur" ? lecteur(hist, finDeSet(ctx) ? 0 : 0.03, rng) : adaptatif(hist, 0.02, rng);
-    }
+    case "titan": return titan(hist, rng, ctx);
     case "rocky": return R < 0.5 ? PIERRE : signeAuHasard(rng);
     case "miroir": return n && R < 0.75 ? dernier.adv : signeAuHasard(rng);
     case "cyclo": {
@@ -178,6 +201,34 @@ export function choisirCoup(bot, hist, rng = Math.random, ctx = null) {
       return dernier.res === "g" ? dernier.moi : contre(dernier.adv);
     }
     case "chaos": return signeAuHasard(rng);
+    // Les bots de Noël.
+    case "neige": {
+      // Sa boule de neige (la Pierre) ; mais après deux points perdus de suite, il fond : il joue ce qui bat ton dernier signe.
+      if (n >= 2 && hist[n - 1].res === "p" && hist[n - 2].res === "p") return contre(dernier.adv);
+      return R < 0.5 ? PIERRE : R < 0.65 && n >= 3 ? lecteur(hist, 0.3, rng) : signeAuHasard(rng);
+    }
+    case "renne": {
+      // La boucle Pierre, Feuille, Ciseaux, à l'endroit ou à l'envers : repéré, il change de sens. Entre deux tours, il lit ton jeu.
+      if (!n || R < 0.06) return signeAuHasard(rng);
+      if (R > 0.6) return lecteur(hist, 0.08, rng);
+      return CYCLE[(CYCLE.indexOf(dernier.moi) + 3 + sensRenne(hist)) % 3];
+    }
+    case "lutin": {
+      // Il copie ton dernier signe pour t'endormir ; dès que tu en profites (tu joues ce qui bat ta copie), la farce : il joue ce qui
+      // bat ta parade. Sinon, il lit ton jeu.
+      if (n < 2) return n ? dernier.adv : signeAuHasard(rng);
+      const profite = hist.slice(-4).filter((h, i, t) => i && h.adv === contre(t[i - 1].adv)).length;
+      if (profite >= 2 || (finDeSet(ctx) && profite)) return R < 0.85 ? contre(contre(dernier.adv)) : signeAuHasard(rng);
+      return R < 0.35 ? dernier.adv : titan(hist, rng, ctx, () => signeAuHasard(rng), 0.02);
+    }
+    case "perenoel": {
+      // Le plus fort : il garde la meilleure de ses lectures, sans hasard ; quand aucune ne marche, il emballe dans la Feuille (le
+      // papier cadeau), ou sort le charbon (la Pierre) quand il est mené.
+      const mene = ctx && ctx.points[0] < ctx.points[1];
+      const habitude = () => (rng() < 0.15 ? (mene ? PIERRE : FEUILLE) : signeAuHasard(rng));
+      const moitie = ctx && (finDeSet(ctx) || Math.max(...ctx.points) >= ctx.pointsParSet / 2);
+      return moitie || !ctx ? titan(hist, rng, ctx, habitude, 0.01) : habitude();
+    }
     case "stratege": return lecteur(hist, 0.12, rng);
     case "professeur": return lecteur(hist, 0.04, rng);
   }
