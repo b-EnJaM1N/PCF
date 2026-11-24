@@ -82,6 +82,32 @@ export async function dessinerCarte(canvas, c, j) {
     for (let y = 130; y <= H - 130; y += 56) { flamme(34, y, Math.PI / 2, haut(k++)); flamme(L - 34, y, -Math.PI / 2, haut(k++)); }
     ctx.restore();
   }
+  // Le cadre « Guirlande » (calendrier de l'Avent, 24 novembre) : un fil vert tout autour, des ampoules de couleur, et du houx
+  // aux quatre coins.
+  if (j.cadreGuirlande) {
+    ctx.save();
+    const couleurs = ["#E3122F", "#F4C542", "#3CC768", "#4DA3FF", "#FF7AC6"];
+    let k = 0;
+    const ampoule = (x, y, ang) => {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+      const c = couleurs[k++ % couleurs.length];
+      ctx.shadowColor = c; ctx.shadowBlur = 22; ctx.fillStyle = c;
+      ctx.beginPath(); ctx.ellipse(0, 16, 10, 15, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0; ctx.fillStyle = "#1F2A24"; ctx.fillRect(-6, -2, 12, 8);
+      ctx.fillStyle = "rgba(255,255,255,.55)"; ctx.beginPath(); ctx.ellipse(-3, 11, 3, 5, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    };
+    for (let x = 100; x <= L - 100; x += 62) { ampoule(x, 36, 0); ampoule(x + 31, H - 36, Math.PI); }
+    for (let y = 120; y <= H - 120; y += 62) { ampoule(36, y, -Math.PI / 2); ampoule(L - 36, y + 31, Math.PI / 2); }
+    const houx = (x, y, rot) => {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+      for (const a of [-0.5, 0.5]) { ctx.save(); ctx.rotate(a); ctx.fillStyle = "#1E8C3A"; ctx.beginPath(); ctx.ellipse(0, -30, 13, 30, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+      ctx.fillStyle = "#E3122F"; for (const [bx, by] of [[-8, 0], [8, 0], [0, -10]]) { ctx.beginPath(); ctx.arc(bx, by, 9, 0, Math.PI * 2); ctx.fill(); }
+      ctx.restore();
+    };
+    houx(48, 48, -Math.PI / 4); houx(L - 48, 48, Math.PI / 4); houx(48, H - 48, -3 * Math.PI / 4); houx(L - 48, H - 48, 3 * Math.PI / 4);
+    ctx.restore();
+  }
   if (T.eclat) {
     // Des étincelles, toujours au même endroit (la carte ne change pas d'un affichage à l'autre).
     let graine = 7; const hasard = () => ((graine = (graine * 16807) % 2147483647) / 2147483647);

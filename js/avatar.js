@@ -8,7 +8,9 @@ import { BRODERIES, broderieSVG } from "./gants-brodes.js";
 export const FONDS = { court: ["Court", "#1F5FA8"], gazon: ["Gazon", "#2E8B57"], terre: ["Terre battue", "#C8643B"], violet: ["Violet", "#6A4C93"], ardoise: ["Ardoise", "#3B4556"], or: ["Or", "#C9971C"], minuit: ["Minuit", "#1B2140"], rubis: ["Rubis", "#9B1B30"], tribunes: ["Tribunes", "#22304D", "radial-gradient(circle at 30% 30%,#E8574A 12%,transparent 14%),radial-gradient(circle at 70% 40%,#F4C542 12%,transparent 14%),radial-gradient(circle at 45% 70%,#F5F7FA 12%,transparent 14%),#22304D"],
   roland: ["Terre de Roland", "#C8643B"], londres: ["Gazon de Londres", "#3E9B4F", "repeating-linear-gradient(90deg,#3E9B4F 0 6px,#358A44 6px 12px)"],
   neon: ["Néon", "#1A0B33", "radial-gradient(circle,#1A0B33 55%,#FF3EA5 60%,#22D3EE 70%)"], coucher: ["Coucher de soleil", "#F2784B", "linear-gradient(#FFB347,#F2784B,#8E3B8E)"],
-  stade: ["Stade de nuit", "#0B1B33", "radial-gradient(circle at 50% 0,#FFF6C8,#0B1B33 60%)"], galaxie: ["Galaxie", "#120A2A", "radial-gradient(circle at 30% 30%,#5B2A86,#120A2A 70%)"] };
+  stade: ["Stade de nuit", "#0B1B33", "radial-gradient(circle at 50% 0,#FFF6C8,#0B1B33 60%)"], galaxie: ["Galaxie", "#120A2A", "radial-gradient(circle at 30% 30%,#5B2A86,#120A2A 70%)"],
+  // (24 novembre, calendrier de l'Avent : avent.js) la nuit de Noël, le ciel étoilé et la neige au sol
+  nuitnoel: ["Nuit de Noël", "#14204A", "radial-gradient(circle at 30% 25%,#fff 3%,transparent 5%),radial-gradient(circle at 70% 35%,#fff 2%,transparent 4%),linear-gradient(#14204A 70%,#F5F7FA 70%)"] };
 // La main nue (« nu ») prend la couleur de peau choisie ; c'est la main des nouveaux joueurs, jusqu'à leur premier gant.
 // « Sans » (main nue, sans vernis, sans bracelet, sans bague) : un rond barré d'une croix (25 octobre, demande du porteur du projet :
 // les rayures et le rond multicolore ne disaient pas assez qu'on enlève l'accessoire).
@@ -21,7 +23,38 @@ export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc"
   dossard: ["Dossard 1 (tenant du titre de ton cercle)", "#F4C542", "radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 30%),#F4C542"],
   // Le Dossard 1 du FIAC Club (14 novembre, demande du porteur du projet) : le même, en or, avec « Fiac Club » brodé en or sur un
   // poignet sombre ; réservé au tenant du titre du FIAC Club (voir CERCLE_FIAC dans profil.js).
-  fiac: ["Dossard 1 du FIAC Club (tenant du titre)", "#FFD34D", "radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 30%),linear-gradient(135deg,#FFE88A,#E0A81E)"] };
+  fiac: ["Dossard 1 du FIAC Club (tenant du titre)", "#FFD34D", "radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 30%),linear-gradient(135deg,#FFE88A,#E0A81E)"],
+  // Le gant du Père Noël (24 novembre, événement de Noël : noel.js) : rouge velours, bord en fourrure blanche (le gant du bot).
+  perenoel: ["Gant du Père Noël", "#E3122F", "linear-gradient(#E3122F 68%,#FAFAF7 68%)"],
+  // Le gant du Lutin (24 novembre, demande du porteur du projet : un lutin farceur, rouge, vert, blanc) : vert sapin, poignet
+  // vert rayé de rouge (un filet blanc), poignet rouge en pointes avec une rayure blanche, et un grelot doré.
+  // Le gant de Comète, le renne (24 novembre, demande du porteur du projet) : pelage brun, une comète dorée sur la main, et le
+  // collier rouge à grelots des rennes du traîneau.
+  renne: ["Gant de Comète, le renne", "#9A6738", "linear-gradient(#9A6738 68%,#C8102E 68%)"],
+  // Le gant du Bonhomme de neige (24 novembre, demande du porteur du projet) : blanc neige, son visage (charbon et carotte), et l'écharpe
+  // tricotée rouge à franges en guise de poignet.
+  neige: ["Gant du Bonhomme de neige", "#F7FAFD", "linear-gradient(#F7FAFD 68%,#D7263D 68%)"],
+  // Le gant « Pull moche » (24 novembre, événement de Noël, texte validé par le porteur du projet) : tricoté, rennes et flocons,
+  // couleurs criardes ; poignet en côtes.
+  pullmoche: ["Pull moche", "#D7192E", "repeating-linear-gradient(#D7192E 0 6px,#F5F7FA 6px 8px,#1E8C3A 8px 14px,#F4C542 14px 16px)"],
+  lutin: ["Gant du Lutin", "#1E9E48", "repeating-linear-gradient(-55deg,#1E9E48 0 6px,#E3122F 6px 9px,#FAFAF7 9px 10px)"] };
+// Les pulls moches à motif (24 novembre, demande du porteur du projet) : chacun ses couleurs (f le fond, b les bandes, fl les flocons,
+// z1 et z2 les zigzags), et un grand motif tricoté à même le dos de la main (voir MOTIFS_PULL).
+const PULLS = {
+  pullsapin: { nom: "Pull moche Sapin", f: "#1B3A6B", b: "#1E8C3A", fl: "#fff", z1: "#F4C542", z2: "#fff" },
+  pullneige: { nom: "Pull moche Bonhomme de neige", f: "#3E8EDB", b: "#1B2F5E", fl: "#fff", z1: "#fff", z2: "#E3122F" },
+  pullrenne: { nom: "Pull moche Renne", f: "#1E7A3A", b: "#C8102E", fl: "#fff", z1: "#FFF4DC", z2: "#F4C542" },
+  pullpere: { nom: "Pull moche Père Noël", f: "#2C5CC5", b: "#D7192E", fl: "#fff", z1: "#fff", z2: "#F4C542" },
+  pullcadeau: { nom: "Pull moche Cadeau", f: "#6A3D9A", b: "#E85A9B", fl: "#fff", z1: "#F4C542", z2: "#fff" },
+  pullsucre: { nom: "Pull moche Sucre d'orge", f: "#22A99C", b: "#D7192E", fl: "#fff", z1: "#fff", z2: "#F4C542" },
+  pullpingouin: { nom: "Pull moche Pingouin", f: "#D7192E", b: "#1B2F5E", fl: "#fff", z1: "#fff", z2: "#3CC768" },
+  pullchaussette: { nom: "Pull moche Chaussette", f: "#1B2140", b: "#2E9E5B", fl: "#F4C542", z1: "#E3122F", z2: "#fff" },
+  pullboule: { nom: "Pull moche Boule de Noël", f: "#0F5A3A", b: "#B8860B", fl: "#FFE27A", z1: "#E3122F", z2: "#FFE27A" },
+  pullpain: { nom: "Pull moche Pain d'épices", f: "#9B1B30", b: "#F5E6C8", fl: "#9B1B30", z1: "#3CC768", z2: "#F5E6C8" },
+  pullhandslam: { nom: "Pull moche HandSlam", f: "#14533A", b: "#E9C046", fl: "#14533A", z1: "#D7192E", z2: "#fff" },
+};
+for (const [k, p] of Object.entries(PULLS)) GANTS[k] = [p.nom, p.f, `radial-gradient(circle,#fff 18%,transparent 20%),repeating-linear-gradient(${p.b} 0 5px,${p.z1} 5px 7px,${p.f} 7px 13px)`];
+export const GANTS_PULLS = Object.keys(PULLS);
 // Les gants à dossard (le dossard épinglé, les coutures d'or) ; le poignet du gant du FIAC Club.
 const A_DOSSARD = new Set(["dossard", "fiac"]);
 export const POIGNET_FIAC = "#1B2140";
@@ -36,7 +69,10 @@ export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], bronze: ["Bronze", "#C27A
   // Les objets du club (9 novembre, choix du porteur du projet) : le poignet Club (boutique), le poignet « Fondé en 2026 » (trophée).
   club: ["Club", "#14533A", "linear-gradient(#14533A 28%,#E9C046 28% 38%,#14533A 38% 62%,#E9C046 62% 72%,#14533A 72%)"],
   an2026: ["Fondé en 2026", "#E0B12A", "radial-gradient(circle,#5A3E06 22%,#E0B12A 26%)"],
-  braise: ["Braise", "#E8572A", "linear-gradient(90deg,#7A1F12,#E8572A,#F4A93B,#E8572A,#7A1F12)"] };   // (série de jours : trophée « Le rendez-vous »)
+  braise: ["Braise", "#E8572A", "linear-gradient(90deg,#7A1F12,#E8572A,#F4A93B,#E8572A,#7A1F12)"],
+  // (24 novembre, calendrier de l'Avent : avent.js)
+  sucreorge: ["Sucre d'orge", "#F5F7FA", "repeating-linear-gradient(-45deg,#E3122F 0 5px,#F5F7FA 5px 10px)"],
+  fourrure: ["Fourrure", "#FAFAF7", "radial-gradient(circle at 30% 40%,#fff 25%,transparent 27%),radial-gradient(circle at 70% 60%,#fff 25%,transparent 27%),#E6EAF0"] };   // (série de jours : trophée « Le rendez-vous »)
 // Les couleurs de peau de la main nue : toutes gratuites, toujours.
 export const PEAUX = { neutre: ["Neutre (comme les emojis)", "#FFCC4D"], claire: ["Claire", "#F7D9C4"], rosee: ["Rosée", "#EDB894"], doree: ["Dorée", "#D49A6A"],
   mate: ["Mate", "#A86B42"], brune: ["Brune", "#7A4A2A"], ebene: ["Ébène", "#4A2C1A"] };
@@ -139,9 +175,28 @@ const ACCROC = [
   "M41 57 L44.5 53 L47.5 56.5 L51 51.5 L54 55.5 L58.5 53 L57.5 58 L60 61 L55.5 60.5 L51.5 64 L48 60 L43.5 62.5 Z",
   "M53 45 L56 42.5 L58.5 45.5 L62 43 L63.5 47 L61 49.5 L57.5 48.5 L54.5 50 Z",
 ];
+// Les marques des bots de Noël (24 novembre ; degats.js), jusqu'à la fin du set : dessinées autour du dos de la main (50, 60), puis
+// déplacées au centre du dos de la main du signe montré.
+const MARQUES_NOEL = {
+  perenoel: `<path d="M46.5 44 H53.5 V77 H46.5 Z M30 56.5 H70 V63.5 H30 Z" fill="#D7263D" stroke="#9E0C24" stroke-width=".8"/>`
+    + `<path d="M50 60 C42 47 32 50 34 57 C36 63 45 62 50 60 Z M50 60 C58 47 68 50 66 57 C64 63 55 62 50 60 Z" fill="#E8384F" stroke="#9E0C24" stroke-width="1.2"/>`
+    + `<circle cx="50" cy="60" r="3.6" fill="#B80D27"/><path d="M48.5 62.5 L44 72 M51.5 62.5 L56 72" stroke="#D7263D" stroke-width="3" stroke-linecap="round"/>`,
+  lutin: [[40, 52, 7, "#E3122F"], [60, 58, 6.5, "#1E9E48"], [48, 68, 6, "#1E9E48"], [62, 70, 4.5, "#E3122F"], [44, 40, 4.5, "#E3122F"], [58, 44, 4, "#1E9E48"]]
+    .map(([x, y, r, c]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity=".88"/><circle cx="${x + r}" cy="${y - r * .6}" r="${r * .3}" fill="${c}" opacity=".88"/><circle cx="${x - r * .9}" cy="${y + r * .7}" r="${r * .25}" fill="${c}" opacity=".88"/>`).join(""),
+  renne: `<g fill="#3B2412" opacity=".82"><path d="M47 49 C40 49 37 58 39 66 C40.5 71 46 72 48 69 C49.5 64 49.5 54 47 49 Z"/><path d="M53 49 C60 49 63 58 61 66 C59.5 71 54 72 52 69 C50.5 64 50.5 54 53 49 Z"/></g>`,
+  // (le givre : les glaçons pendent vers le bas de l'écran, c'est-à-dire vers la droite du dessin, la main du joueur étant tournée)
+  neige: `<rect x="29" y="40" width="42" height="38" rx="11" fill="#BFE6FF" opacity=".55"/>`
+    + [44, 52, 60, 68].map((y, i) => `<path d="M70 ${y - 3} L${70 + (i % 2 ? 6 : 9)} ${y} L70 ${y + 3} Z" fill="#E8F7FF" stroke="#8CC8EE" stroke-width=".8"/>`).join("")
+    + [[38, 50], [60, 52], [48, 64], [62, 72], [38, 72]].map(([x, y]) => `<text x="${x}" y="${y}" font-size="8" text-anchor="middle" fill="#fff">❄</text>`).join(""),
+};
+function marqueNoel(symbole, bot) {
+  const d = MARQUES_NOEL[bot]; if (!d) return "";
+  const [x, y] = PLACE_MEDAILLON[symbole] || PLACE_MEDAILLON.dos;
+  return `<g transform="translate(${x - 50} ${y - 60})">${d}</g>`;
+}
 export function marquesSVG(symbole, degats, nue, gant = "#E8574A", ink = "rgba(30,15,10,.8)") {
   if (!degats) return "";
-  let s = "";
+  let s = degats.noel && !nue ? marqueNoel(symbole, degats.noel) : "";
   const d = Math.min(2, degats.dechire || 0);
   if (d && nue) {   // la main nue : un pansement (deux en croix au 2e smash)
     s += [-18, 22].slice(0, d).map(rot => `<g transform="rotate(${rot} 50 60)"><rect x="38" y="56" width="24" height="8" rx="3.5" fill="#F1CF9E" stroke="rgba(90,55,20,.45)" stroke-width=".9"/>
@@ -273,6 +328,116 @@ export function cousu(svg, couleur) {
 
 // sansFond : seulement le gant et le poignet (le poing qui se secoue pendant un coup).
 // sansMain : seulement le fond (sous la routine d'entrée, qui dessine la main par-dessus ; 15 novembre).
+// Le bord fourré du gant du Père Noël : une bande blanche toute en bosses (des ronds qui se chevauchent, un peu d'ombre dessous),
+// et un pompon qui pend sur le côté (24 novembre, demande du porteur du projet : plus touffu, avec un pompon).
+const BOSSES = [[33.5, 74.5, 4.6], [39.5, 72.2, 5.2], [46.5, 71.4, 5.4], [53.5, 71.6, 5.3], [60.5, 72.4, 5], [66.5, 74.6, 4.5],
+  [32.5, 81, 5], [39, 81.5, 5.6], [46, 82, 5.6], [53.5, 81.8, 5.6], [60.5, 81.4, 5.4], [67, 80.5, 4.8],
+  [35.5, 87.2, 4.6], [42.5, 88.4, 4.9], [50, 88.8, 5], [57.5, 88.4, 4.8], [64.5, 87, 4.4]];
+const POMPON = [[74.5, 82, 4], [71.5, 84.5, 3.6], [77.5, 85, 3.4], [74.5, 87.5, 3.2], [74.5, 84.5, 4.2]];
+const touffe = (pts, r0) => pts.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r + 1}" fill="#C3CAD4"/>`).join("")
+  + pts.map(([x, y, r], i) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${i % 3 ? "#FFFFFF" : "#EEF1F5"}"/>`).join("")
+  + pts.map(([x, y, r]) => `<circle cx="${x - r * .3}" cy="${y - r * .35}" r="${r0}" fill="#fff"/>`).join("");
+const FOURRURE = `<g><path d="M68 76 Q73 76.5 74.5 80" fill="none" stroke="#E9ECF1" stroke-width="1.6" stroke-linecap="round"/>${touffe(BOSSES, 1.6)}${touffe(POMPON, 1.3)}</g>`;
+
+// Le poignet du Lutin (24 novembre, retouché à la demande du porteur du projet) : rouge, la couleur opposée au gant, avec une
+// rayure blanche ; évasé, le bas en pointes de lutin, et un grelot doré au bout de la dernière pointe.
+const LUTIN = `<path d="M36 71 H64 L68 84 L66 90.5 L61.5 85.5 L57 92 L52.5 86 L48 92.5 L43.5 86 L39 92 L34.5 85.5 L32 90 L32 83 Z" fill="#E3122F" stroke="#8E0B20" stroke-width="1.3" stroke-linejoin="round"/>`
+  + `<path d="M34.6 78.5 H65.4" stroke="#FAFAF7" stroke-width="3"/>`
+  + `<circle cx="68.8" cy="91.4" r="3.2" fill="#F4C542" stroke="#A87A10" stroke-width=".9"/>`
+  + `<circle cx="67.9" cy="90.4" r=".9" fill="#fff" opacity=".8"/><path d="M67.6 92.8 H70" stroke="#7A5A08" stroke-width=".8" stroke-linecap="round"/>`;
+
+// Le collier de Comète : une sangle de cuir rouge, une boucle dorée et trois grelots.
+const grelot = (x, y) => `<circle cx="${x}" cy="${y}" r="3.1" fill="#F4C542" stroke="#A87A10" stroke-width=".9"/><circle cx="${x - .9}" cy="${y - 1}" r=".85" fill="#fff" opacity=".8"/><path d="M${x - 1.2} ${y + 1.3} H${x + 1.2}" stroke="#7A5A08" stroke-width=".8" stroke-linecap="round"/>`;
+const RENNE = `<rect x="36" y="72" width="28" height="16" rx="3" fill="#C8102E" stroke="#7A0A1C" stroke-width="1.5"/>`
+  + `<path d="M36.5 75 H63.5 M36.5 85 H63.5" stroke="#F1C9A0" stroke-width=".8" stroke-dasharray="1.6 1.4" opacity=".8"/>`
+  + `<rect x="36.5" y="78" width="27" height="4" fill="#9E0C24"/>` + grelot(41, 86.5) + grelot(50, 87.5) + grelot(59, 86.5);
+// Le tricot du Pull moche : des bandes (zigzags blancs et jaunes), une rangée de flocons sur du vert, une rangée de rennes sur du
+// rouge, et les mailles (des petits V) par-dessus. Le dessin fait toute la hauteur de la main ; il se répète en largeur.
+const zigzag = (y, c) => `<path d="M0 ${y + 4} L2 ${y} L4 ${y + 4} L6 ${y} L8 ${y + 4} L10 ${y} L12 ${y + 4} L14 ${y} L16 ${y + 4} Z" fill="${c}"/>`;
+const flocon = (x, y, c = "#fff") => `<path d="M${x} ${y - 3} V${y + 3} M${x - 3} ${y} H${x + 3} M${x - 2} ${y - 2} L${x + 2} ${y + 2} M${x + 2} ${y - 2} L${x - 2} ${y + 2}" stroke="${c}" stroke-width=".9" stroke-linecap="round"/>`;
+const renne = (x, y) => `<g fill="#fff"><rect x="${x}" y="${y + 2}" width="7" height="3"/><rect x="${x + 6}" y="${y}" width="2.4" height="2.6"/><rect x="${x + 6.6}" y="${y - 2}" width="1" height="2"/>`
+  + `<rect x="${x + 8}" y="${y - 1.6}" width="1" height="1.4"/><rect x="${x + .4}" y="${y + 5}" width="1" height="3"/><rect x="${x + 5.4}" y="${y + 5}" width="1" height="3"/></g>`;
+const PULL_MOCHE = (id, rennes = true) => `<pattern id="${id}g" width="16" height="100" patternUnits="userSpaceOnUse"><rect width="16" height="100" fill="#D7192E"/>`
+  + `<rect y="0" width="16" height="13" fill="#1E8C3A"/>${flocon(8, 6.5)}${zigzag(13, "#F4C542")}`
+  + `<rect y="21" width="16" height="13" fill="#1E8C3A"/>${flocon(4, 27.5)}${flocon(12, 27.5)}${zigzag(34, "#fff")}`
+  + `${rennes ? renne(4, 42) : flocon(4, 45) + flocon(12, 45)}${zigzag(53, "#F4C542")}<rect y="57" width="16" height="12" fill="#1E8C3A"/>${flocon(8, 63)}${zigzag(69, "#fff")}${rennes ? renne(4, 77) : flocon(8, 80)}`
+  + `${MAILLES}</pattern>`;
+// Les mailles du tricot (des petits V), toutes les 4 unités ; le même dessin par-dessus les motifs, pour qu'ils soient tricotés aussi.
+const MAILLES = [...Array(100)].map((_, i) => `<path d="M${(i % 4) * 4 + .6} ${Math.floor(i / 4) * 4 + 1} l1.4 1.6 l1.4 -1.6" fill="none" stroke="rgba(0,0,0,.16)" stroke-width=".5"/>`).join("");
+// Le tricot d'un pull moche à motif : des bandes en haut (sur les doigts) et en bas, et au milieu, un grand espace du fond où le
+// motif est tricoté, avec quelques flocons épars.
+const PULL_MOTIF = (id, p) => `<pattern id="${id}g" width="16" height="100" patternUnits="userSpaceOnUse"><rect width="16" height="100" fill="${p.f}"/>`
+  + `<rect y="0" width="16" height="13" fill="${p.b}"/>${flocon(8, 6.5, p.fl)}${zigzag(13, p.z1)}`
+  + `<rect y="21" width="16" height="12" fill="${p.b}"/>${flocon(4, 27, p.fl)}${flocon(12, 27, p.fl)}${zigzag(33, p.z2)}`
+  + `<circle cx="3" cy="44" r=".7" fill="${p.z2}"/><circle cx="11" cy="50" r=".7" fill="${p.z2}"/>`
+  + `${zigzag(80, p.z1)}<rect y="84" width="16" height="16" fill="${p.b}"/>${MAILLES}</pattern>`
+  + `<pattern id="${id}m" width="16" height="100" patternUnits="userSpaceOnUse">${MAILLES}</pattern>`;
+// Les grands motifs des pulls moches, tricotés à même le fond (dessinés autour de 0, 0, sur environ 24 × 24), avec les mailles
+// par-dessus.
+const MOTIFS_PULL = {
+  pullsapin: `<rect x="-1.8" y="7" width="3.6" height="3.6" fill="#7A4A22"/><path d="M0 -8.6 L5.4 -2 H2.8 L7.6 3.6 H4 L9 8 H-9 L-4 3.6 H-7.6 L-2.8 -2 H-5.4 Z" fill="#2EAF55" stroke="#fff" stroke-width=".8" stroke-linejoin="round"/>`
+    + `<path d="M0 -12.4 L1.1 -10 L3.6 -9.8 L1.7 -8.2 L2.3 -5.8 L0 -7.1 L-2.3 -5.8 L-1.7 -8.2 L-3.6 -9.8 L-1.1 -10 Z" fill="#F4C542"/>`
+    + [[-2.2, 0, "#E3122F"], [3.2, 1.8, "#F4C542"], [-4.4, 5.4, "#F4C542"], [1.6, 5.8, "#E3122F"], [5.6, 6, "#fff"], [1, -3.4, "#fff"]].map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="1.2" fill="${c}"/>`).join(""),
+  pullneige: `<circle cx="0" cy="5" r="6.2" fill="#fff"/><circle cx="0" cy="-4" r="4.4" fill="#fff"/><rect x="-5" y="-8.6" width="10" height="1.5" rx=".6" fill="#23262B"/><rect x="-3.2" y="-13.4" width="6.4" height="5" rx=".6" fill="#23262B"/>`
+    + `<rect x="-3.2" y="-9.2" width="6.4" height="1.1" fill="#E3122F"/><circle cx="-1.5" cy="-4.6" r=".75" fill="#23262B"/><circle cx="1.5" cy="-4.6" r=".75" fill="#23262B"/><path d="M0 -3.6 L4 -2.8 L0 -2.3 Z" fill="#F28C28"/>`
+    + `<path d="M-4.4 .2 Q0 2.4 4.4 .2 L5 1.7 Q0 3.9 -5 1.7 Z" fill="#E3122F"/><path d="M2.8 1.7 l1.8 4.4 l1.7 -.6 l-1.1 -3.9 Z" fill="#E3122F"/>`
+    + [3.6, 6.6].map(y => `<circle cx="0" cy="${y}" r=".8" fill="#23262B"/>`).join(""),
+  pullrenne: `<path d="M-4.8 -6 C-7.4 -8.4 -8 -11.4 -6.2 -12.6 M-6.8 -9.8 L-9.4 -10 M4.8 -6 C7.4 -8.4 8 -11.4 6.2 -12.6 M6.8 -9.8 L9.4 -10" fill="none" stroke="#F5E6C8" stroke-width="1.7" stroke-linecap="round"/>`
+    + `<ellipse cx="-6" cy="-4.8" rx="2.6" ry="1.4" fill="#9A6738" transform="rotate(-25 -6 -4.8)"/><ellipse cx="6" cy="-4.8" rx="2.6" ry="1.4" fill="#9A6738" transform="rotate(25 6 -4.8)"/>`
+    + `<path d="M-4.6 -5.6 C-4.8 -1 -3.6 6.4 0 8 C3.6 6.4 4.8 -1 4.6 -5.6 C2.2 -7.8 -2.2 -7.8 -4.6 -5.6 Z" fill="#A8744A"/>`
+    + `<circle cx="-1.9" cy="-2.5" r=".95" fill="#23262B"/><circle cx="1.9" cy="-2.5" r=".95" fill="#23262B"/><circle cx="0" cy="5.8" r="2.6" fill="#E3122F"/><circle cx="-.8" cy="5" r=".7" fill="#fff" opacity=".8"/>`,
+  pullpere: `<path d="M-7 -3 C-9 4 -5 11 0 11.6 C5 11 9 4 7 -3 Z" fill="#fff"/><circle cx="0" cy="-2" r="5" fill="#F4C7A1"/>`
+    + `<path d="M-6.4 -4.4 C-5 -11 4 -13 8.6 -8 L6 -6.6 C4 -8.6 -1 -8.8 -2 -5 Z" fill="#E3122F"/><circle cx="9" cy="-8" r="1.8" fill="#fff"/><rect x="-7" y="-5.6" width="13.6" height="2.8" rx="1.4" fill="#fff"/>`
+    + `<circle cx="-1.8" cy="-1.6" r=".75" fill="#23262B"/><circle cx="1.8" cy="-1.6" r=".75" fill="#23262B"/><circle cx="-3" cy=".4" r="1" fill="#F28DB2" opacity=".8"/><circle cx="3" cy=".4" r="1" fill="#F28DB2" opacity=".8"/>`
+    + `<path d="M-3.6 2.6 C-2 1.2 -.6 1.6 0 2.4 C.6 1.6 2 1.2 3.6 2.6 C2 3.4 .8 3 0 2.8 C-.8 3 -2 3.4 -3.6 2.6 Z" fill="#fff" stroke="#DADDE2" stroke-width=".3"/><circle cx="0" cy=".9" r="1" fill="#E89A7A"/>`,
+  pullcadeau: `<rect x="-8" y="-3" width="16" height="12" rx="1" fill="#E3122F"/><rect x="-9" y="-6.4" width="18" height="4.2" rx="1" fill="#C8102E"/>`
+    + `<rect x="-1.6" y="-6.4" width="3.2" height="15.4" fill="#F4C542"/><path d="M0 -6.4 C-3 -12 -9 -11 -7 -7.4 C-5.6 -5.6 -2 -6 0 -6.4 Z M0 -6.4 C3 -12 9 -11 7 -7.4 C5.6 -5.6 2 -6 0 -6.4 Z" fill="#F4C542" stroke="#B8860B" stroke-width=".5"/>`,
+  pullsucre: `<path d="M3.4 10 V-5 C3.4 -11 -5.4 -11 -5.4 -5 V-3" fill="none" stroke="#fff" stroke-width="4.4" stroke-linecap="round"/>`
+    + `<path d="M3.4 10 V-5 C3.4 -11 -5.4 -11 -5.4 -5 V-3" fill="none" stroke="#E3122F" stroke-width="4.4" stroke-dasharray="2 2.2"/>`,
+  pullpingouin: `<ellipse cx="0" cy="2" rx="7" ry="9.4" fill="#1E2024"/><ellipse cx="0" cy="3.6" rx="4.6" ry="7" fill="#fff"/><circle cx="-1.8" cy="-4" r=".9" fill="#fff"/><circle cx="1.8" cy="-4" r=".9" fill="#fff"/>`
+    + `<circle cx="-1.8" cy="-4" r=".45" fill="#1E2024"/><circle cx="1.8" cy="-4" r=".45" fill="#1E2024"/><path d="M-1.4 -2.4 L1.4 -2.4 L0 -.6 Z" fill="#F28C28"/>`
+    + `<path d="M-6 -.6 Q0 2 6 -.6 L6.4 1.2 Q0 3.8 -6.4 1.2 Z" fill="#F4C542"/><path d="M3.4 1.6 l1.6 4.4 l1.7 -.5 l-1 -4.2 Z" fill="#F4C542"/>`
+    + `<ellipse cx="-3" cy="11.2" rx="2.2" ry="1" fill="#F28C28"/><ellipse cx="3" cy="11.2" rx="2.2" ry="1" fill="#F28C28"/>`,
+  pullchaussette: `<path d="M-3.6 -9 H4.4 V3 C4.4 6 6 7 8.6 7.6 C11 8.2 11 11.8 8 11.8 H-1 C-4 11.8 -3.6 8 -3.6 5 Z" fill="#E3122F"/>`
+    + `<rect x="-4.6" y="-11.4" width="10" height="4.6" rx="1.4" fill="#fff"/><path d="M5.6 11.8 C7.6 11.8 9 11 8.6 7.6 C10.6 8 11.4 9.4 10.6 10.8 C10 11.6 9 11.8 8 11.8 Z" fill="#2E9E5B"/>`
+    + `<path d="M-3.6 7.6 C-3.6 10 -2.6 11.8 -1 11.8 H1 C-.6 11 -1 9 -1 7.6 Z" fill="#2E9E5B"/>${[-7, 0].map(y => `<circle cx="0" cy="${y}" r=".7" fill="#F4C542"/>`).join("")}`,
+  pullboule: `<rect x="-2.4" y="-10.6" width="4.8" height="3" rx=".6" fill="#F4C542"/><path d="M0 -12.6 a1.6 1.6 0 1 1 .01 0" fill="none" stroke="#F4C542" stroke-width=".9"/><circle cx="0" cy="1" r="8.4" fill="#E3122F"/>`
+    + `<path d="M-8.2 -.4 L-5.4 -2.6 L-2.6 -.4 L0 -2.6 L2.6 -.4 L5.4 -2.6 L8.2 -.4 L8.3 2.2 L5.4 0 L2.6 2.2 L0 0 L-2.6 2.2 L-5.4 0 L-8.3 2.2 Z" fill="#F4C542"/>`
+    + `<ellipse cx="-3.4" cy="-3.6" rx="2.2" ry="1.2" fill="#fff" opacity=".7" transform="rotate(-30 -3.4 -3.6)"/>${[-4, 0, 4].map(x => `<circle cx="${x}" cy="5.4" r=".8" fill="#fff"/>`).join("")}`,
+  pullpain: `<path d="M0 -11 C3 -11 4 -8 3.2 -6 L7.6 -4.4 C9.4 -3.6 8.6 -1 6.8 -1.4 L3.4 -2 L4.2 4 L7 9.4 C7.8 11 5.6 12.2 4.6 10.8 L0 5 L-4.6 10.8 C-5.6 12.2 -7.8 11 -7 9.4 L-4.2 4 L-3.4 -2 L-6.8 -1.4 C-8.6 -1 -9.4 -3.6 -7.6 -4.4 L-3.2 -6 C-4 -8 -3 -11 0 -11 Z" fill="#B8733A"/>`
+    + `<circle cx="-1.2" cy="-8.4" r=".6" fill="#fff"/><circle cx="1.2" cy="-8.4" r=".6" fill="#fff"/><path d="M-1.4 -7 Q0 -6 1.4 -7" fill="none" stroke="#fff" stroke-width=".5"/>`
+    + `${[-2.6, .2, 3].map(y => `<circle cx="0" cy="${y}" r=".8" fill="#E3122F"/>`).join("")}<path d="M-7.2 -3.8 l1 .8 l1 -.8 M5.2 -3.8 l1 .8 l1 -.8 M-6.4 9.2 l1 -.6 l.6 1 M4.8 8.6 l.6 1 l1 -.6" fill="none" stroke="#fff" stroke-width=".5"/>`,
+  pullhandslam: symboleHandSlam(0, 1.6, 9.6) + `<g transform="rotate(18 4 -8)"><path d="M-4 -5.4 C-3 -12 5 -14 10 -9 L7 -7.6 C5 -9.6 0 -10 -.6 -6.4 Z" fill="#E3122F"/><circle cx="10.4" cy="-9" r="1.7" fill="#fff"/><rect x="-5" y="-7" width="11" height="2.6" rx="1.3" fill="#fff"/></g>`,
+};
+const motifPull = (id, gant, x, y, r) => { const k = (Math.max(r, 8.4) / 10).toFixed(3);
+  return `<g transform="translate(${x} ${y}) scale(${k})">${MOTIFS_PULL[gant]}</g><circle cx="${x}" cy="${y}" r="${(13 * k).toFixed(1)}" fill="url(#${id}m)"/>`; };
+// Le poignet en côtes du Pull moche : vert, rayé de fines côtes, un liseré blanc et rouge.
+const cotes = (c = "#1E8C3A", liseres = ["#fff", "#D7192E"]) => `<rect x="36" y="72" width="28" height="16" rx="3" fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="1.4"/>`
+  + [...Array(9)].map((_, i) => `<rect x="${38 + i * 3}" y="73" width="1.2" height="14" fill="rgba(0,0,0,.18)"/>`).join("")
+  + `<rect x="36.6" y="74.5" width="26.8" height="1.6" fill="${liseres[0]}"/><rect x="36.6" y="76.3" width="26.8" height="1.4" fill="${liseres[1]}"/>`;
+const COTES = cotes();
+// L'écharpe du Bonhomme de neige : rouge tricotée, deux rayures blanches, un pan qui pend avec ses franges.
+const maille = (y) => [...Array(8)].map((_, i) => `<path d="M${37.5 + i * 3.3} ${y} l1.2 1.4 l1.2 -1.4" fill="none" stroke="#A3132A" stroke-width=".6"/>`).join("");
+const NEIGE = `<path d="M60 78 L68.5 79.5 L67.5 88.5 L61 87.8 Z" fill="#D7263D" stroke="#8E0B20" stroke-width="1.2" stroke-linejoin="round"/>`
+  + `<path d="M60.8 82 L68 83.2 M60.9 85 L67.8 85.9" stroke="#FAFAF7" stroke-width="1.4"/>`
+  + `<path d="M61.8 88.2 v2.6 M63.5 88.4 v2.6 M65.2 88.5 v2.6 M66.8 88.6 v2.6" stroke="#D7263D" stroke-width="1.1" stroke-linecap="round"/>`
+  + `<rect x="36" y="72" width="28" height="15" rx="4" fill="#D7263D" stroke="#8E0B20" stroke-width="1.4"/>`
+  + `<rect x="36.7" y="76" width="26.6" height="2" fill="#FAFAF7"/><rect x="36.7" y="81" width="26.6" height="2" fill="#FAFAF7"/>` + maille(73.6) + maille(84);
+// Le visage du Bonhomme de neige sur la main (24 novembre, essai demandé par le porteur du projet) : deux yeux et un sourire de
+// charbon, le nez en carotte (le chapeau essayé aussi, retiré à sa demande).
+const visageNeige = (x, y, r) => { const k = r / 10; return `<g transform="translate(${x} ${y}) scale(${k.toFixed(3)})">`
+  + [[-3.6, -4.5], [3.6, -4.5]].map(([dx, dy]) => `<circle cx="${dx}" cy="${dy}" r="1.7" fill="#26282C"/>`).join("")
+  + `<path d="M-1 -1.6 L12 1 L-1 2.2 Z" fill="#F28C28" stroke="#B85F0E" stroke-width=".7" stroke-linejoin="round"/><path d="M2.5 -.8 l.6 1.4 M6 .1 l.5 1" stroke="#B85F0E" stroke-width=".6"/>`
+  + [[-5, 4.6], [-2.6, 6.2], [0.2, 6.8], [3, 6.2]].map(([dx, dy]) => `<circle cx="${dx}" cy="${dy}" r=".95" fill="#26282C"/>`).join("") + `</g>`; };
+// Les bois de Comète, derrière la main : deux ramures qui sortent du haut de la main, de chaque côté (24 novembre, demande du
+// porteur du projet).
+const RAMURE = `<path d="M0 0 C-3 -8 -6 -14 -12 -20 M-4 -9 C-9 -10 -13 -9 -16 -6 M-7 -14 C-7 -19 -5 -23 -2 -26 M-10 -18 C-15 -19 -19 -18 -21 -15"`
+  + ` fill="none" stroke-linecap="round" stroke-linejoin="round"`;
+const BOIS = [`translate(31 53) scale(.8)`, `translate(69 53) scale(-.8 .8)`].map(t => `<g transform="${t}">${RAMURE} stroke="#5A3A1E" stroke-width="5.4"/>${RAMURE} stroke="#E8D3A8" stroke-width="3.4"/></g>`).join("");
+// La comète dorée sur la main de Comète : une étoile et sa traînée.
+const comete = (x, y, r) => { const k = r / 10; return `<g transform="translate(${x} ${y}) scale(${k.toFixed(3)})"><path d="M-2 2 L-15 13 M-1 4 L-12 16 M1 3 L-7 17" stroke="#FFE27A" stroke-width="2.2" stroke-linecap="round" opacity=".85"/>`
+  + `<path d="M0 -7 L2 -2 L7.5 -2 L3.2 1.2 L4.8 6.5 L0 3.4 L-4.8 6.5 L-3.2 1.2 L-7.5 -2 L-2 -2 Z" fill="#F4C542" stroke="#A87A10" stroke-width="1"/></g>`; };
+
 export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
   const cle = a.poignet in POIGNETS ? a.poignet : "rouge";
@@ -303,6 +468,11 @@ export function avatarSVG(a) {
     club: `<pattern id="${id}g" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#14533A"/></pattern>`,
   }[gm] || (a.gant === "elite" ? `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3358"/><stop offset="1" stop-color="#14121F"/></linearGradient>`
     // (le gant du FIAC Club : de l'or métallique, clair en haut, avec un reflet, plus sombre en bas)
+    : a.gant === "pullmoche" ? PULL_MOCHE(id) : PULLS[a.gant] ? PULL_MOTIF(id, PULLS[a.gant])
+    : a.gant === "neige" ? `<radialGradient id="${id}g" gradientUnits="userSpaceOnUse" cx="42" cy="30" r="55"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#F1F6FB"/><stop offset="1" stop-color="#C9DAEA"/></radialGradient>`
+    : a.gant === "renne" ? `<pattern id="${id}g" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-15)"><rect width="9" height="9" fill="#9A6738"/><path d="M1.5 2 l.8 1.8 M6 5.5 l.8 1.8" stroke="#86572E" stroke-width=".7" stroke-linecap="round"/><path d="M5.5 1 l.7 1.5" stroke="#B07E50" stroke-width=".6" stroke-linecap="round"/></pattern>`
+    : a.gant === "lutin" ? `<pattern id="${id}g" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="12" height="12" fill="#1E9E48"/><rect x="0" width="4" height="12" fill="#E3122F"/><rect x="4" width="1.3" height="12" fill="#FAFAF7"/></pattern>`
+    : a.gant === "perenoel" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="30" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#FF3B4E"/><stop offset=".5" stop-color="#E3122F"/><stop offset="1" stop-color="#B00C25"/></linearGradient>`
     : a.gant === "fiac" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="25" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#FFF3B0"/><stop offset=".3" stop-color="#F2C744"/><stop offset=".55" stop-color="#FFE27A"/><stop offset=".8" stop-color="#D9A21E"/><stop offset="1" stop-color="#A8770F"/></linearGradient>` : "");
   // Poignets et fonds spéciaux (boutique).
   const poignetDef = {
@@ -315,12 +485,15 @@ export function avatarSVG(a) {
     dalmatien: `<pattern id="${id}p" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="#FAFAF7"/><circle cx="3" cy="3" r="1.6" fill="#1E1E22"/><circle cx="10" cy="5" r="1.1" fill="#1E1E22"/><circle cx="6" cy="10.5" r="1.4" fill="#1E1E22"/><circle cx="12.5" cy="12" r=".8" fill="#1E1E22"/><circle cx="1" cy="8" r=".7" fill="#1E1E22"/></pattern>`,
     vache: `<pattern id="${id}p" width="44" height="44" patternUnits="userSpaceOnUse" patternTransform="translate(33 70) scale(.6)"><rect width="44" height="44" fill="#FAFAF7"/><path d="M3 4 C9 -1 19 2 20 8 C21 14 15 19 9 17 C5 16 6 12 2 11 C-1 9 0 6 3 4 Z" fill="#1E1E22"/><path d="M27 22 C33 18 43 21 44 28 C45 35 38 41 31 38 C27 36 29 32 25 30 C22 28 23 24 27 22 Z" fill="#1E1E22"/><path d="M4 29 C8 26 14 28 14 33 C14 37 9 40 5 38 C2 37 1 32 4 29 Z" fill="#1E1E22"/><path d="M30 2 C34 0 38 2 37 6 C36 9 32 10 30 8 C28 6 28 4 30 2 Z" fill="#1E1E22"/></pattern>`,
     girafe: `<pattern id="${id}p" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="scale(1.6)"><rect width="12" height="12" fill="#F3DFAF"/><path d="M.8 1 L4.6 .6 L5.8 3 L5 5.4 L1.2 5.6 L.4 3.4 Z" fill="#B8692A"/><path d="M6.8 .8 L11 1.2 L11.6 3.6 L10.4 5.6 L7.2 5.2 L6.4 3 Z" fill="#A55A22"/><path d="M.8 6.8 L4.6 6.6 L5.8 9 L5 11.4 L1.2 11.4 L.4 9.4 Z" fill="#A55A22"/><path d="M6.8 6.8 L11 7 L11.6 9.4 L10.6 11.4 L7.2 11.2 L6.4 9 Z" fill="#B8692A"/></pattern>`,
+    sucreorge: `<pattern id="${id}p" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-40)"><rect width="6" height="6" fill="#F5F7FA"/><rect width="3" height="6" fill="#E3122F"/></pattern>`,
+    fourrure: `<pattern id="${id}p" width="7" height="6" patternUnits="userSpaceOnUse"><rect width="7" height="6" fill="#E6EAF0"/><circle cx="2" cy="2" r="2.4" fill="#fff"/><circle cx="5.5" cy="4.5" r="2.4" fill="#FAFBFD"/><circle cx="6" cy="1" r="1.2" fill="#fff"/></pattern>`,
     braise: `<linearGradient id="${id}p" x1="0" x2="1"><stop offset="0" stop-color="#7A1F12"/><stop offset=".3" stop-color="#E8572A"/><stop offset=".5" stop-color="#F4A93B"/><stop offset=".7" stop-color="#E8572A"/><stop offset="1" stop-color="#7A1F12"/></linearGradient>`,
   }[cle] || "";
   const fillPoignet = a.gant === "fiac" ? POIGNET_FIAC : poignetDef ? `url(#${id}p)` : poignet;
   const fondDef = {
     coucher: `<linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB347"/><stop offset=".55" stop-color="#F2784B"/><stop offset="1" stop-color="#8E3B8E"/></linearGradient>`,
     stade: `<radialGradient id="${id}f" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#FFF6C8"/><stop offset=".35" stop-color="#2A4A7A"/><stop offset="1" stop-color="#0B1B33"/></radialGradient>`,
+    nuitnoel: `<linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0B1433"/><stop offset=".7" stop-color="#1E3270"/></linearGradient>`,
     galaxie: `<radialGradient id="${id}f" cx=".3" cy=".3" r=".9"><stop offset="0" stop-color="#5B2A86"/><stop offset=".6" stop-color="#1E1240"/><stop offset="1" stop-color="#0A0618"/></radialGradient>`,
   }[a.fond] || "";
   const fillFond = fondDef ? `url(#${id}f)` : fond;
@@ -329,6 +502,10 @@ export function avatarSVG(a) {
   const centrer = !a.sansFond && !nue && (!a.symbole || a.symbole === "pierre");
   let decorFond = "";
   if (a.fond === "galaxie") decorFond = [[22, 30], [70, 20], [80, 55], [30, 70], [55, 82], [15, 52], [62, 40]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? 0.9 : 1.5}" fill="#fff" opacity=".85"/>`).join("");
+  // (la nuit de Noël : des étoiles, la lune, et la neige au sol)
+  if (a.fond === "nuitnoel") decorFond = `<g clip-path="url(#${id})">${[[22, 22], [40, 12], [74, 20], [84, 42], [14, 44], [58, 30], [30, 34]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? .9 : 1.5}" fill="#fff" opacity=".9"/>`).join("")}`
+    + `<circle cx="78" cy="16" r="6" fill="#FFF6C8"/><circle cx="81" cy="14" r="5.4" fill="#0F1A40"/><path d="M0 80 C20 72 34 78 50 74 C66 70 80 78 100 72 V100 H0 Z" fill="#F5F7FA"/>`
+    + `${[[12, 58], [30, 66], [64, 60], [88, 66], [46, 54]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.2" fill="#fff" opacity=".85"/>`).join("")}</g>`;
   if (a.fond === "neon") decorFond = `<circle cx="50" cy="50" r="42" fill="none" stroke="#FF3EA5" stroke-width="2.5" opacity=".9"/><circle cx="50" cy="50" r="38" fill="none" stroke="#22D3EE" stroke-width="1.5" opacity=".8"/>`;
   if (a.fond === "roland") decorFond = `<g clip-path="url(#${id})" stroke="#fff" stroke-width="2" opacity=".6" fill="none"><path d="M18 0 V100 M82 0 V100 M0 50 H100"/></g>`;
   if (a.fond === "londres") decorFond = `<g clip-path="url(#${id})" opacity=".18">${[...Array(7)].map((_, i) => `<rect x="${i * 16}" y="0" width="8" height="100" fill="#fff"/>`).join("")}</g>`;
@@ -343,6 +520,9 @@ export function avatarSVG(a) {
   if (A_DOSSARD.has(a.gant)) deco = (PRESTIGE.reflet ? `<g opacity=".38" style="mix-blend-mode:screen">${main(a.symbole, `url(#${id}r)`, "none")}</g>` : "")
     + dossardSVG(...(PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
+  if (PULLS[a.gant]) { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = motifPull(id, a.gant, x, y - r * .15, r); }
+  if (a.gant === "neige") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = visageNeige(x, y - r * .1, r); }
+  if (a.gant === "renne") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = comete(x + 1, y - 1, r); }
   if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
   if (gm === "bandeau") deco = `<rect x="28" y="64" width="44" height="7" rx="2" fill="#E0B12A" stroke="${ink}" stroke-width="1.5"/><rect x="28" y="67" width="44" height="1.4" fill="rgba(255,255,255,.7)"/>`;
   let motif = "";
@@ -355,9 +535,9 @@ export function avatarSVG(a) {
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
     ${a.sansMain ? "" : `${centrer ? '<g transform="translate(2 -8)">' : ""}
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
-    <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
+    <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : a.gant === "perenoel" ? FOURRURE : a.gant === "lutin" ? LUTIN : a.gant === "renne" ? RENNE : a.gant === "neige" ? NEIGE : a.gant === "pullmoche" ? COTES : PULLS[a.gant] ? cotes(PULLS[a.gant].b, [PULLS[a.gant].z1, PULLS[a.gant].f]) : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
-    ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}${centrer ? "</g>" : ""}`}
+    ${a.gant === "renne" ? BOIS : ""}${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}${centrer ? "</g>" : ""}`}
   </svg>`;
 }
 

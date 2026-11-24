@@ -52,6 +52,9 @@ const FICHIERS = [
   "js/carte.js",
   "js/carte-logique.js",
   "js/comparer-cartes.js",
+  "js/noel.js",
+  "js/avent-logique.js",
+  "js/ecran-avent.js",
   "js/config.js",
   "js/compte.js",
   "js/synchro.js",
@@ -115,6 +118,7 @@ const FICHIERS = [
   "icons/logo.svg",
   "icons/icon-192.png",
   "icons/apple-touch-icon.png",
+  "icons/notification-96.png",
 ];
 
 self.addEventListener("install", e => {
@@ -133,7 +137,7 @@ self.addEventListener("push", e => {
     const visibles = fenetres.filter(c => c.visibilityState === "visible" && c.url.startsWith(self.registration.scope));
     if (visibles.length) { visibles.forEach(c => c.postMessage({ rafraichir: true })); return; }
     await self.registration.showNotification(m.titre || "HandSlam", {
-      body: m.texte || "", icon: "icons/icon-192.png", badge: "icons/icon-192.png",
+      body: m.texte || "", icon: "icons/icon-192.png", badge: "icons/notification-96.png",   // (le V de l'appli, en blanc sur fond transparent : 24 novembre)
       tag: m.tag, renotify: !!m.tag, data: { url: m.url || "./" },
     });
   })());

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="version" content="fcc6378 du 24/11/2026">
+<meta name="version" content="3c29891 du 24/11/2026">
 <!-- (15 novembre, choix du porteur du projet : le titre et la description montrés par Google et dans les aperçus de partage) -->
 <title>HandSlam – Pierre-Feuille-Ciseaux devient un sport</title>
 <meta name="description" content="Le Pierre-Feuille-Ciseaux comme un vrai sport : duels entre amis, tournois, classement et gants à collectionner. Gratuit, sans publicité.">
@@ -75,6 +75,7 @@
         <ul class="defis-liste" id="defisListe"></ul>
         <p class="hint" id="defisMsg" role="status"></p>
       </details>
+      <button class="avent-ligne" id="aventLigne" data-aller="viewAvent" hidden>🎄 Calendrier de l'Avent ›</button>
     </section>
     <div class="jetons-barre" id="jetonsCarte" data-palier="3" hidden>
       <span id="jetonsDedans"><button class="jetons-puce" id="jetonsBonus" hidden></button><button class="jetons-puce" id="jetonsRenfl" hidden title="Renflouement : moins de 100 jetons, une fois par jour">🛟 +200 jetons</button></span>
@@ -121,7 +122,7 @@
       <div class="seg" id="segMode"><button data-v="amical" aria-pressed="true">Match amical</button><button data-v="tournoi" aria-pressed="false" class="cache-lancement">Tournoi</button></div>
       <div id="amicalBox">
         <span class="fmt-lbl">Adversaire</span>
-        <div class="opps" id="opps"></div>
+        <div class="opps-bloc" id="opps"></div>
         <p class="hint" id="oppDesc" style="margin:0 0 8px"></p>
         <p style="margin:0 0 14px"><button class="linkbtn" id="oppFiche">📊 Notre face-à-face et son dossier</button></p>
         <span class="fmt-lbl">Points par set</span>
@@ -502,6 +503,19 @@
     <section class="card" id="freeHors" hidden><p class="hint">Les tournois programmés et le freeroll se jouent en ligne : il faut un compte gratuit, sans mot de passe.</p><button class="btn" data-aller="viewProfile" style="margin-top:12px">Créer mon compte ou me connecter</button></section>
   </div>
 
+  <!-- Le calendrier de l'Avent (24 novembre ; ecran-avent.js) -->
+  <div class="view" id="viewAvent" hidden>
+    <p class="retour-hub"><button class="linkbtn" data-aller="viewJouer">← Retour</button></p>
+    <section class="card avent-carte">
+      <h2>🎄 Calendrier de l'Avent</h2>
+      <p class="hint">Du 1er au 24 décembre, une case par jour : réussis le défi du jour pour l'ouvrir. Une case ratée se rattrape jusqu'au 31 décembre en battant le bot de Noël qui la garde (deux rattrapages par jour).</p>
+      <p class="hint" id="aventEssai" hidden>🧪 Version de test : essai sur ce téléphone, rien n'est enregistré. Jour simulé : <select id="aventJourSimule"></select> <button class="linkbtn" id="aventEffacer">Tout effacer</button></p>
+      <p class="avent-msg" id="aventMsg" role="status"></p>
+      <div class="avent-sapin" id="aventSapin"></div>
+      <div class="avent-case" id="aventCase" hidden></div>
+    </section>
+  </div>
+
   <div class="view" id="viewBoutique" hidden>
     <!-- (15 novembre, suggestion d'un testeur : le solde reste visible ; épinglé en haut de l'écran dès qu'on a fait défiler) -->
     <span class="boutique-solde-fixe" id="boutiqueSoldeFixe" hidden></span>
@@ -749,7 +763,7 @@
       <summary><img id="carteImg" class="carte-img" alt="Ma carte de joueur"><span class="carte-toucher">🃏 Ma carte de joueur<small>Touche pour l'agrandir et la partager</small></span></summary>
       <p class="hint" id="carteRarete"></p>
       <details class="carte-aide"><summary>Comment sont calculées les notes ?</summary>
-        <p class="hint">Chaque note va de 1 à 99. 70, c'est la moyenne : le niveau d'un joueur qui jouerait au hasard. 90, c'est excellent ; 99, c'est hors norme. Ce sont tes matchs contre de vrais joueurs qui comptent. Tant que tu en as joué moins de 20, tes matchs contre les bots comptent aussi, de moins en moins à chaque match contre un joueur. Au début, les notes restent proches de 70 : elles s'en éloignent au fil des matchs, quand il y a assez de preuves.</p>
+        <p class="hint">Chaque note va de 50 à 99. 50, c'est le plus bas ; 70, c'est la moyenne : le niveau d'un joueur qui jouerait au hasard ; 90, c'est excellent ; au-delà, c'est hors norme. Ce sont tes matchs contre de vrais joueurs qui comptent. Tant que tu en as joué moins de 20, tes matchs contre les bots comptent aussi, de moins en moins à chaque match contre un joueur. Au début, les notes restent proches de 70 : elles s'en éloignent au fil des matchs, quand il y a assez de preuves.</p>
         <ul id="carteNotes"></ul>
         <details class="carte-aide"><summary>Le détail du calcul</summary><ul class="hint" id="carteCalcul"></ul></details>
       </details>
@@ -955,8 +969,18 @@
       <div class="pm-main" id="pmMain" aria-hidden="true">🤝</div>
       <div class="pm-j"><div class="pm-av adv" id="pmAdv"></div><div class="pm-style" id="pmStyleAdv"></div></div>
     </div>
-    <div class="pm-choix" id="pmChoix"><button data-s="franche">💪<br>Franche</button><button data-s="normale">🤝<br>Normale</button><button data-s="legere">🤏<br>Légère</button><button data-s="froide">🧊<br>Froide</button></div>
+    <div class="pm-choix" id="pmChoix"><button data-s="givree" hidden>❄️<br>Givrée</button><button data-s="franche">💪<br>Franche</button><button data-s="normale">🤝<br>Normale</button><button data-s="legere">🤏<br>Légère</button><button data-s="froide">🧊<br>Froide</button></div>
     <div class="pm-temps" id="pmTemps"><div id="pmBarre"></div></div>
+  </div>
+</div>
+
+<!-- Le calendrier de l'Avent : la porte s'ouvre, le cadeau apparaît (ecran-avent.js) -->
+<div class="avent-ouverture" id="aventOuverture" role="dialog" aria-modal="true" aria-labelledby="aventOuvTitre" hidden>
+  <div class="panel">
+    <h2 id="aventOuvTitre"></h2>
+    <div class="avent-cadeau" id="aventOuvCadeau"></div>
+    <p id="aventOuvTexte"></p>
+    <button class="btn" id="aventOuvOk">Super !</button>
   </div>
 </div>
 

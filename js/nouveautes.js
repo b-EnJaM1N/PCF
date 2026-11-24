@@ -21,6 +21,7 @@
 //     coup de vent, étincelles) (13 novembre, effets.js ; la fissure agrandie, elle, est pour tous).
 //   recordsFaceAFace : « 🏅 Nos records » sous le bilan d'un face-à-face entre joueurs (17 novembre, records-face-a-face.js).
 //   coeur : le cœur qui bat aux balles de match du set décisif, à partir de 10 partout (16 novembre, effets.js).
+// (24 novembre, choix du porteur du projet : hymne, club et coeur ouverts à tous pour le lancement.)
 //   dossard : le Dossard 1, gant jaune du tenant du titre d'un cercle, son annonce dans le fil, le trophée de la coupe (12 novembre, étape SQL 71).
 // (13 novembre, comme validé par le porteur du projet le 11 : le fantôme, le fil du cercle, le championnat avec poules, la carte
 // « Ton avis ? » et la fiche d'un joueur ouverts à tous ; le Dossard 1 reste en test, décision du 12 novembre.)
@@ -32,7 +33,7 @@
 // (17 novembre au soir : les records des face-à-face ouverts à tous, accord du porteur du projet.)
 // (18 novembre au soir : le replay, avec la palette et les temps forts, ouvert à tous, accord du porteur du projet.)
 // (19 novembre : le volet ouvert à tous, pour avoir l'avis des testeurs, accord du porteur du projet.)
-export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets", "dossard", "invitations", "classementCercle", "pageCercle", "records", "routines", "recordsFaceAFace", "replay", "volet", "creneaux"]);
+export const OUVERTES = new Set(["serie", "fantome", "fil", "poules", "avis", "fiche", "effets", "dossard", "invitations", "classementCercle", "pageCercle", "records", "routines", "recordsFaceAFace", "replay", "volet", "creneaux", "hymne", "coeur", "club"]);
 
 export function versionDeTest(loc = typeof location !== "undefined" ? location : null) {
   if (!loc) return false;

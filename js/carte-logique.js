@@ -10,23 +10,25 @@ import { jeuMoins } from "./stats-passees.js";
 // le sang-froid s'écrit SGF ; le flair devient le pourcentage de lectures réussies.)
 const pc = (a, b) => (b ? `${Math.round((100 * a) / b)}` : "–");
 // (20 novembre, barème validé par le porteur du projet) Les notes de 1 à 99, en trois paliers : 70 = la moyenne (le hasard), 90 = excellent,
-// 99 = hors norme (très difficile à atteindre). Entre deux repères, une règle de trois ; en dessous du hasard, jusqu'à 1.
+// 99 = hors norme (très difficile à atteindre). Entre deux repères, une règle de trois ; en dessous du hasard, jusqu'à 50
+// (24 novembre, choix du porteur du projet : le plus bas à 50 et non plus à 1 ; les valeurs sous 70 resserrées en proportion).
 // Chaque barème : [[pourcentage, note], …], dans l'ordre. Les repères se changent ici (à caler sur les vrais chiffres des joueurs).
 export const BAREMES = {
   // (20 novembre au soir, choix du porteur du projet : 70 = la moyenne, le niveau du hasard ; 90 = excellent ; 99 = hors norme)
   // le Punch : la part de TOUS les coups (égalités comprises) qui marquent le point ; au hasard, 1 sur 3
-  PUN: [[15, 1], [100 / 3, 70], [40, 90], [45, 99]],
-  SGF: [[20, 1], [50, 70], [60, 90], [70, 99]],
-  FLA: [[20, 1], [50, 70], [60, 90], [75, 99]],
+  PUN: [[15, 50], [100 / 3, 70], [40, 90], [45, 99]],
+  SGF: [[20, 50], [50, 70], [60, 90], [70, 99]],
+  FLA: [[20, 50], [50, 70], [60, 90], [75, 99]],
   // la Résistance : quand on ne marque pas, la part d'égalités (plutôt que de points perdus) ; au hasard, la moitié
-  RES: [[20, 1], [50, 70], [60, 90], [66.7, 99]],
+  RES: [[20, 50], [50, 70], [60, 90], [66.7, 99]],
   // l'imprévisibilité : la part de tes coups que l'analyse devine (moins, c'est mieux) ; 1 sur 3 (le hasard) = 90, choix du porteur du projet
-  IMP: [[20, 99], [100 / 3, 90], [45, 70], [50, 60], [60, 35], [70, 1]],
+  IMP: [[20, 99], [100 / 3, 90], [45, 70], [50, 67], [60, 60], [70, 50]],
   // la diversification (son score de 0 à 100, voir diversification) : 40 / 30 / 30 = 70 ; 35 / 33 / 32 = 90 ; un tiers chacun = 99
-  DIV: [[0, 1], [75, 70], [93.75, 90], [99, 98], [100, 99]],
+  DIV: [[0, 50], [75, 70], [93.75, 90], [99, 98], [100, 99]],
 };
 // Assez de preuves pour une note (sinon « – ») : 30 lectures tentées pour le Flair, 50 coups non gagnés pour la Résistance.
 export const MINIMUM = { FLA: 30, RES: 50 };
+export const NOTE_MIN = 50;   // (24 novembre) la note la plus basse
 export function noteBareme(p, bareme) {
   if (p === null || p === undefined || Number.isNaN(p)) return null;
   const b = bareme;
@@ -34,7 +36,7 @@ export function noteBareme(p, bareme) {
   if (p <= b[0][0]) n = b[0][1];
   else if (p >= b.at(-1)[0]) n = b.at(-1)[1];
   else for (let k = 1; k < b.length; k++) if (p <= b[k][0]) { const [x0, y0] = b[k - 1], [x1, y1] = b[k]; n = y0 + ((p - x0) * (y1 - y0)) / (x1 - x0); break; }
-  return Math.max(1, Math.min(99, Math.round(n)));
+  return Math.max(NOTE_MIN, Math.min(99, Math.round(n)));
 }
 // Le poids des preuves (20 novembre, validé par le porteur du projet) : la note part de 70 et ne rejoint sa vraie valeur qu'avec
 // assez de situations (sinon, un joueur chanceux sur peu de matchs aurait 90) : on garde n ÷ PREUVES de l'écart à 70.
@@ -91,11 +93,11 @@ export function notesDe(P) {
   // (20 novembre : une phrase courte par note ; le calcul, à déplier à part ; textes validés par le porteur du projet)
   return [
     { code: "IMP", nom: "Imprévisibilité", valeur: imp === null ? rien : `${avecPreuves(noteBareme(imp, BAREMES.IMP), h.lisibles, PREUVES.IMP)}`, aide: "ton jeu est-il difficile à deviner ?",
-      calcul: "l'appli essaie de deviner ton prochain coup à partir de tes habitudes. Moins elle y arrive, mieux c'est. Deviné 1 coup sur 2 → 60 · un peu moins d'1 sur 2 → 70 · 1 sur 3 (comme le hasard) → 90 · 1 sur 5 → 99" },
+      calcul: "l'appli essaie de deviner ton prochain coup à partir de tes habitudes. Moins elle y arrive, mieux c'est. Deviné 7 coups sur 10 ou plus → 50 · 1 sur 2 → 67 · un peu moins d'1 sur 2 → 70 · 1 sur 3 (comme le hasard) → 90 · 1 sur 5 → 99" },
     { code: "PUN", nom: "Punch", valeur: notePc(...points, BAREMES.PUN, PREUVES.PUN), aide: "combien de tes coups marquent le point",
       calcul: "sur tous tes coups, égalités comprises, combien marquent le point. 1 sur 3 (le hasard) → 70 · 4 sur 10 → 90 · 45 sur 100 → 99" },
     { code: "POL", nom: "Polyvalence", valeur: div === null ? rien : `${avecPreuves(noteBareme(div, BAREMES.DIV), h.signes.reduce((x, y) => x + y, 0), PREUVES.POL)}`, aide: "l'équilibre entre tes trois signes",
-      calcul: "tes trois signes sont-ils joués autant les uns que les autres ? 40 % / 30 % / 30 % → 70 · 35 / 33 / 32 → 90 · exactement un tiers chacun → 99 · un signe joué 60 % du temps ou plus → 1" },
+      calcul: "tes trois signes sont-ils joués autant les uns que les autres ? 40 % / 30 % / 30 % → 70 · 35 / 33 / 32 → 90 · exactement un tiers chacun → 99 · un signe joué 60 % du temps ou plus → 50" },
     { code: "SGF", nom: "Sang-froid", valeur: notePc(...sgf, BAREMES.SGF, PREUVES.SGF), aide: "les moments décisifs que tu remportes",
       calcul: "dans les moments décisifs (tes balles de set et de match, celles de ton adversaire, les sets décisifs), combien tu en remportes. La moitié → 70 · 6 sur 10 → 90 · 7 sur 10 → 99" },
     { code: "FLA", nom: "Flair", valeur: notePc(...lectures, BAREMES.FLA, PREUVES.FLA), aide: "les habitudes de ton adversaire que tu punis",
