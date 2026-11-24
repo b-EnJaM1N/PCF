@@ -28,12 +28,30 @@ const HOUX = `<svg viewBox="0 0 80 80" aria-hidden="true">${[-100, -60, -20, 20,
   + `<circle cx="40" cy="49" r="5.5" fill="#b80d27"/><circle cx="31" cy="33" r="5" fill="#d7263d"/><circle cx="49" cy="33" r="5" fill="#c8102e"/>`
   + `<circle cx="38" cy="33" r="1.7" fill="#fff" opacity=".75"/><circle cx="31" cy="41" r="1.5" fill="#fff" opacity=".6"/><circle cx="47" cy="31" r="1.4" fill="#fff" opacity=".6"/></svg>`;
 
+// Le bonnet du logo (dessiné dans les coordonnées du logo : le rond de 0 à 100, le bonnet déborde au-dessus et à droite) : la
+// bande de fourrure blanche posée en arc sur le haut du rond, le bonnet rouge qui retombe sur la droite, le pompon sur le côté.
+const BONNET = `<svg class="noel-bonnet" viewBox="-14 -34 132 132" aria-hidden="true"><defs>`
+  + `<linearGradient id="bonnetRouge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0393F"/><stop offset=".55" stop-color="#D7192E"/><stop offset="1" stop-color="#9E0C1E"/></linearGradient>`
+  + `<radialGradient id="bonnetFourrure" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#fff"/><stop offset=".75" stop-color="#F1F3F7"/><stop offset="1" stop-color="#D3D9E1"/></radialGradient>`
+  + `<filter id="bonnetDuvet" x="-15%" y="-30%" width="130%" height="160%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="4" result="bruit"/><feDisplacementMap in="SourceGraphic" in2="bruit" scale="4.5" xChannelSelector="R" yChannelSelector="G"/></filter></defs>`
+  // le bonnet rouge : du haut de la bande, il part vers la droite et retombe le long du rond
+  + `<path d="M-4 34 C8 4 36 -12 66 -12 C94 -12 110 6 110 28 C110 44 105 56 99 64 C97 46 93 32 86 22 C74 6 52 2 30 6 C14 10 2 22 -4 34 Z" fill="url(#bonnetRouge)" stroke="#8E0B20" stroke-width="1.2" stroke-linejoin="round"/>`
+  + `<path d="M34 -4 C56 -11 82 -8 96 6 M80 -6 C94 2 104 16 106 32" fill="none" stroke="#fff" stroke-width="1.6" opacity=".2" stroke-linecap="round"/>`
+  // la bande de fourrure : un arc épais au-dessus des doigts ; ses bords rendus duveteux par un filtre (du bruit qui les ébouriffe)
+  + `<g filter="url(#bonnetDuvet)"><path d="M-6 44 Q26 -10 90 14" fill="none" stroke="#C9D1DC" stroke-width="17" stroke-linecap="round"/>`
+  + `<path d="M-6 41 Q26 -13 90 11" fill="none" stroke="url(#bonnetFourrure)" stroke-width="14" stroke-linecap="round"/>`
+  + `<path d="M-2 36 Q26 -12 86 6" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".9"/>`
+  // le pompon
+  + `<circle cx="101" cy="70" r="9" fill="#C9D1DC"/><circle cx="100" cy="69" r="8" fill="url(#bonnetFourrure)"/><circle cx="97.5" cy="66.5" r="3.2" fill="#fff"/></g></svg>`;
+
 // Pose le décor (une seule fois) : le bonnet sur le logo ; sur l'écran du match, la guirlande lumineuse et le houx sur le tableau de score, le sapin au fond
 // du court, les flocons qui tombent (pas avec « mouvements réduits » : voir le style).
 export function installerNoel(doc = document) {
   if (!noelActif() || doc.body.classList.contains("noel")) return;
   doc.body.classList.add("noel");
   majGrandJour(doc);
+  // (24 novembre au soir, d'après l'image du porteur du projet) le bonnet de Noël posé sur le logo, en haut de l'écran
+  doc.querySelector(".marque")?.insertAdjacentHTML("afterbegin", BONNET);
   const board = doc.querySelector("#viewMatch .board");
   if (board) {
     // (24 novembre, demande du porteur du projet : la guirlande tout autour du cadre, le houx touffu aux quatre coins)
@@ -41,13 +59,6 @@ export function installerNoel(doc = document) {
     const houx = ["hg", "hd", "bg", "bd"].map(c => `<span class="noel-houx ${c}" aria-hidden="true">${HOUX}</span>`).join("");
     board.insertAdjacentHTML("afterbegin", guirlandes + houx);
   }
-  // (24 novembre au soir, choix du porteur du projet) le bonnet de Noël sur le logo, en haut de l'écran
-  const marque = doc.querySelector(".marque");
-  if (marque) marque.insertAdjacentHTML("afterbegin", `<svg class="noel-bonnet" viewBox="0 0 60 46" aria-hidden="true">`
-    + `<path d="M8 36 C12 18 26 4 44 6 C52 7 56 14 54 22 C50 16 44 14 40 18 C36 24 38 32 40 36 Z" fill="#D7192E" stroke="#8E0B20" stroke-width="1.4" stroke-linejoin="round"/>`
-    + `<path d="M24 14 C30 9 38 8 44 10" fill="none" stroke="#fff" stroke-width="1.6" opacity=".35" stroke-linecap="round"/>`
-    + `<rect x="4" y="32" width="40" height="11" rx="5.5" fill="#fff" stroke="#DADDE2" stroke-width="1"/>`
-    + `<circle cx="54" cy="24" r="6" fill="#fff" stroke="#DADDE2" stroke-width="1"/></svg>`);
   const vue = doc.getElementById("viewMatch");
   if (vue) {
     const flocons = Array.from({ length: 22 }, (_, i) => {
@@ -86,13 +97,6 @@ const ORDRE_BOUTONS = ["0", "2", "1"];   // (Pierre, Feuille, Ciseaux : l'ordre 
 // L'effet du pouvoir, pendant ms (le temps où le joueur est sonné). Renvoie le texte du pouvoir (pour le verdict), ou null.
 export function pouvoirNoel(botId, ms, doc = document) {
   const p = POUVOIRS_NOEL[botId]; if (!p) return null;
-  // (24 novembre au soir, choix du porteur du projet) le bonnet de Noël sur le logo, en haut de l'écran
-  const marque = doc.querySelector(".marque");
-  if (marque) marque.insertAdjacentHTML("afterbegin", `<svg class="noel-bonnet" viewBox="0 0 60 46" aria-hidden="true">`
-    + `<path d="M8 36 C12 18 26 4 44 6 C52 7 56 14 54 22 C50 16 44 14 40 18 C36 24 38 32 40 36 Z" fill="#D7192E" stroke="#8E0B20" stroke-width="1.4" stroke-linejoin="round"/>`
-    + `<path d="M24 14 C30 9 38 8 44 10" fill="none" stroke="#fff" stroke-width="1.6" opacity=".35" stroke-linecap="round"/>`
-    + `<rect x="4" y="32" width="40" height="11" rx="5.5" fill="#fff" stroke="#DADDE2" stroke-width="1"/>`
-    + `<circle cx="54" cy="24" r="6" fill="#fff" stroke="#DADDE2" stroke-width="1"/></svg>`);
   const vue = doc.getElementById("viewMatch");
   const poser = (parent, html) => { if (!parent) return; parent.insertAdjacentHTML("beforeend", html); const el = parent.lastElementChild; setTimeout(() => el.remove(), ms); };
   const pluie = Array.from({ length: 10 }, (_, i) => `<i style="left:${(i * 37 + 7) % 92}%;animation-delay:${(i % 5) * 0.18}s">${p.pluie}</i>`).join("");

@@ -1419,8 +1419,9 @@ body.noel-fete .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond roug
 .avent-ligne[hidden] { display: none; }
 /* Le bonnet de Noël sur le logo (24 novembre au soir, choix du porteur du projet : à l'accueil, seulement des touches discrètes) */
 .noel .marque { position: relative; }
-.noel-bonnet { position: absolute; left: -17px; top: -8px; width: 42px; height: 32px; pointer-events: none; transform: rotate(-34deg); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .35)); }
-@media (max-width: 420px) { .noel-bonnet { width: 36px; height: 28px; left: -14px; top: -6px; } }
+/* (le dessin déborde du logo : 132 unités pour un logo de 100, décalé de 14 à gauche et de 34 en haut) */
+.noel-bonnet { position: absolute; left: -8.7px; top: 50%; width: 81.8px; height: 81.8px; margin-top: -52.1px; overflow: visible; pointer-events: none; z-index: 2; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .35)); }
+@media (max-width: 380px) { .noel-bonnet { left: -7px; width: 66px; height: 66px; margin-top: -42px; } }
 /* Les adversaires de l'entraînement (24 novembre au soir) : les derniers affrontés, puis les catégories repliées */
 .opps-titre { margin: 2px 0 6px; font-size: .85rem; font-weight: 700; color: var(--muted); }
 .opps-cat { margin: 0 0 8px; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .12); border-radius: 12px; }
