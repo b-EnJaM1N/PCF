@@ -22,7 +22,8 @@ test("la carte « Ton avis ? » : une seule fois, à partir du 5e match, si l'av
 test("13 novembre : le fantôme, le fil, les poules, la carte « Ton avis ? » et la fiche ouverts à tous ; le Dossard 1 reste en test", () => {
   const officielle = { pathname: "/", hostname: "handslam.fr" };
   for (const nom of ["serie", "fantome", "fil", "poules", "avis", "fiche"]) assert.ok(ouvert(nom, officielle), nom);
-  for (const nom of ["hymne", "club", "coeur"]) assert.ok(!ouvert(nom, officielle), nom);
+  // (24 novembre, choix du porteur du projet : l'hymne, le club et le cœur ouverts à tous pour le lancement)
+  for (const nom of ["hymne", "club", "coeur"]) assert.ok(ouvert(nom, officielle), nom);
   assert.ok(ouvert("replay", officielle), "le replay, ouvert à tous le 18 novembre");
 });
 

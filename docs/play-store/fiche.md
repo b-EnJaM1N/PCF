@@ -69,7 +69,9 @@ Tout ce qu'il faut copier dans la Play Console (Croissance › Présence sur le 
 |---|---|
 | Icône de l'appli (512 × 512) | `icone-512.png` |
 | Image de présentation (1 024 × 500) | `banniere-1024x500.png` |
-| Captures d'écran du téléphone (dans cet ordre) | `capture-1-match.png`, `capture-2-lire.png`, `capture-3-une.png`, `capture-4-carte.png`, `capture-5-carriere.png`, `capture-6-amis.png` |
+| Captures d'écran du téléphone (dans cet ordre) | `capture-1-match.png`, `capture-2-lire.png`, `capture-3-une.png`, `capture-4-carte.png`, `capture-5-carriere.png`, `capture-6-amis.png`, `capture-7-comparer.png` |
+
+**24 novembre** : `capture-4-carte.png` refaite (la carte d'aujourd'hui : 6 notes et la note générale) et `capture-7-comparer.png` ajoutée (la comparaison des cartes) ; dans la Play Console, remplacer la n° 4 et ajouter la n° 7.
 
 Captures refaites le 6 novembre 2026 dans l'appli (version de lancement), en 1 080 × 1 920 : le match, le dossier de l'adversaire, la Une, la carte de joueur, la Carrière solo (à la place des tournois), le menu Jouer. Dans la Play Console, remplacer les 6 anciennes captures par celles-ci (supprimer l'ancienne n° 5, « Des tournois chaque jour »).
 
