@@ -634,6 +634,11 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 .pm-scene.go.froide::after { content: "❄️ ❄️ ❄️"; position: absolute; inset: -18px 0 auto; text-align: center; font-size: 1.1rem; letter-spacing: 10px; opacity: 0; animation: pm-givre 1s .8s forwards; }
 .pm-scene.go.froide .pm-av svg { transition: filter 1s .6s; filter: saturate(.4) hue-rotate(180deg) brightness(1.1); }
 @keyframes pm-givre { to { opacity: .9; } }
+/* La poignée givrée (calendrier de l'Avent) : une normale, avec du givre qui scintille autour (24 novembre) */
+.pm-choix.cinq { grid-template-columns: repeat(5, 1fr); }
+.pm-scene.go.givree .pm-main { animation: pm-apparait .3s .4s ease-out forwards, pm-secoue .3s .7s ease-in-out 2 alternate; filter: drop-shadow(0 0 8px #BFE6FF); }
+.pm-scene.go.givree::after { content: "❄️ ✨ ❅ ✨ ❄️"; position: absolute; inset: -20px 0 auto; text-align: center; font-size: 1.1rem; letter-spacing: 6px; opacity: 0; animation: pm-givre .8s .5s ease-out forwards; }
+.pm-scene.go.givree .pm-av svg { box-shadow: 0 0 0 4px #BFE6FF, 0 0 16px #BFE6FF; }
 @media (prefers-reduced-motion: reduce) { .pm-scene.go * , .pm-scene.go::after { animation-duration: .01s !important; animation-delay: 0s !important; } .pm-scene.go .pm-main { opacity: 1; transform: none; } }
 
 /* Signaler un joueur */
@@ -1380,3 +1385,30 @@ body.noel .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
 #moves.melange button { animation: noel-melange .4s ease-out; }
 @keyframes noel-melange { from { transform: rotate(-12deg) scale(.85); } }
 @media (prefers-reduced-motion: reduce) { .noel-pouvoir, #moves.melange button { animation: none; } .noel-pouvoir { display: none; } }
+/* Le calendrier de l'Avent (24 novembre ; ecran-avent.js) : le grand sapin et ses 24 portes */
+.hub.hub-noel { border-color: rgba(244, 197, 66, .6); background: linear-gradient(135deg, rgba(30, 140, 58, .35), rgba(215, 25, 46, .3)); }
+.avent-msg { font-weight: 600; text-align: center; margin: 8px 0; }
+.avent-sapin { position: relative; width: 100%; max-width: 380px; aspect-ratio: 3 / 4; margin: 6px auto 12px; }
+.avent-sapin > svg { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .35)); }
+.avent-porte { position: absolute; transform: translate(-50%, -50%); width: 12.5%; aspect-ratio: 1; border-radius: 8px; font: 700 .95rem/1 inherit; font-family: inherit;
+  color: #fff; background: #C8102E; border: 2px solid #F4C542; box-shadow: 0 2px 6px rgba(0, 0, 0, .4); cursor: pointer; display: grid; place-items: center; padding: 0; }
+.avent-porte.ouverte { background: #FFF4DC; color: #14533A; border-color: #fff; font-size: 1.1rem; }
+.avent-porte.aujourdhui { background: #F4C542; color: #7A0A1C; animation: avent-brille 1.4s ease-in-out infinite; }
+.avent-porte.rattrapage { background: #4D6BB3; border-color: #BFE6FF; }
+.avent-porte.rattrapage::after { content: "⏳"; position: absolute; right: -6px; top: -8px; font-size: .7rem; }
+.avent-porte.fermee { background: #7A1F2E; color: rgba(255, 255, 255, .55); border-color: rgba(244, 197, 66, .4); }
+.avent-porte.perdue { background: #555; color: #aaa; border-color: #777; }
+.avent-porte.choisie { outline: 3px solid #fff; outline-offset: 2px; }
+@keyframes avent-brille { 50% { box-shadow: 0 0 16px 4px #FFE27A; transform: translate(-50%, -50%) scale(1.08); } }
+.avent-case { background: rgba(0, 0, 0, .25); border-radius: 12px; padding: 12px; text-align: center; }
+.avent-case h3 { margin: 0 0 6px; }
+.avent-cadeau { width: 110px; height: 110px; margin: 6px auto; display: grid; place-items: center; font-size: 3.4rem; }
+.avent-cadeau svg { width: 110px; height: 110px; }
+.avent-cadeau.mystere { font-size: 3.4rem; }
+.avent-gros { font-size: 3.4rem; }
+.avent-ouverture { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: rgba(0, 0, 0, .65); padding: 16px; }
+.avent-ouverture[hidden] { display: none; }
+.avent-ouverture .panel { max-width: 360px; text-align: center; }
+.avent-ouverture.ouvre .avent-cadeau { animation: avent-ouvre .7s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes avent-ouvre { from { transform: scale(.2) rotate(-25deg); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .avent-porte.aujourdhui, .avent-ouverture.ouvre .avent-cadeau { animation: none; } }

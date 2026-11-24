@@ -125,3 +125,7 @@ export const desinscrireProgramme = cle => rpc("desinscrire_programme", { p_cle:
 // La boutique (supabase/etape-17-boutique.sql) : { achats, vitrine, solde } ; acheter → la même chose, avec l'article acheté.
 export const boutique = () => rpc("boutique");
 export const acheter = id => rpc("acheter", { p_article: id });
+// Le calendrier de l'Avent (supabase/etape-89-calendrier-avent.sql) : { jour, cases, rattrapages_du_jour, achats, solde } ;
+// ouvrir une case → la même chose, avec la case ouverte et son cadeau.
+export const monAvent = () => rpc("mon_avent");
+export const ouvrirCaseAvent = (num, via) => rpc("ouvrir_case_avent", { p_num: num, p_via: via });
