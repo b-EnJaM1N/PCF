@@ -16,6 +16,7 @@ import { dessinerStats } from "./image-stats.js";
 import { carteDe, notesDe, texteRang, rangDe, texteCoefs, partBots, HUMAINS_POUR_CARTE } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
 import { installerComparaison } from "./comparer-cartes.js";
+import { installerNoel } from "./noel.js";
 import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee, situationPoignee } from "./poignee.js";
 import { installerRapide } from "./ecran-rapide.js";
 import { installerSignalement } from "./ecran-signaler.js";
@@ -3454,6 +3455,7 @@ $("revanche").addEventListener("click", async () => {
   } catch (e) { $("revanche").disabled = false; $("verdict").textContent = e.message; }
 });
 
+try { installerNoel(); } catch { /* sans décor de Noël */ }   // (24 novembre : le court de Noël, noel.js)
 duelsUI = installerDuels({
   compte: compteUI,
   apresDefis: () => cerclesUI?.majDefiAmi?.(),   // (21 novembre : le bouton de la page d'un ami dit l'horaire du défi programmé)
