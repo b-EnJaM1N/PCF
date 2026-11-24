@@ -26,6 +26,9 @@ export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc"
   perenoel: ["Gant du Père Noël", "#E3122F", "linear-gradient(#E3122F 68%,#FAFAF7 68%)"],
   // Le gant du Lutin (24 novembre, demande du porteur du projet : un lutin farceur, rouge, vert, blanc) : vert sapin, poignet
   // vert rayé de rouge (un filet blanc), poignet rouge en pointes avec une rayure blanche, et un grelot doré.
+  // Le gant de Comète, le renne (24 novembre, demande du porteur du projet) : pelage brun, une comète dorée sur la main, et le
+  // collier rouge à grelots des rennes du traîneau.
+  renne: ["Gant de Comète, le renne", "#9A6738", "linear-gradient(#9A6738 68%,#C8102E 68%)"],
   lutin: ["Gant du Lutin", "#1E9E48", "repeating-linear-gradient(-55deg,#1E9E48 0 6px,#E3122F 6px 9px,#FAFAF7 9px 10px)"] };
 // Les gants à dossard (le dossard épinglé, les coutures d'or) ; le poignet du gant du FIAC Club.
 const A_DOSSARD = new Set(["dossard", "fiac"]);
@@ -296,6 +299,15 @@ const LUTIN = `<path d="M36 71 H64 L68 84 L66 90.5 L61.5 85.5 L57 92 L52.5 86 L4
   + `<circle cx="68.8" cy="91.4" r="3.2" fill="#F4C542" stroke="#A87A10" stroke-width=".9"/>`
   + `<circle cx="67.9" cy="90.4" r=".9" fill="#fff" opacity=".8"/><path d="M67.6 92.8 H70" stroke="#7A5A08" stroke-width=".8" stroke-linecap="round"/>`;
 
+// Le collier de Comète : une sangle de cuir rouge, une boucle dorée et trois grelots.
+const grelot = (x, y) => `<circle cx="${x}" cy="${y}" r="3.1" fill="#F4C542" stroke="#A87A10" stroke-width=".9"/><circle cx="${x - .9}" cy="${y - 1}" r=".85" fill="#fff" opacity=".8"/><path d="M${x - 1.2} ${y + 1.3} H${x + 1.2}" stroke="#7A5A08" stroke-width=".8" stroke-linecap="round"/>`;
+const RENNE = `<rect x="36" y="72" width="28" height="16" rx="3" fill="#C8102E" stroke="#7A0A1C" stroke-width="1.5"/>`
+  + `<path d="M36.5 75 H63.5 M36.5 85 H63.5" stroke="#F1C9A0" stroke-width=".8" stroke-dasharray="1.6 1.4" opacity=".8"/>`
+  + `<rect x="36.5" y="78" width="27" height="4" fill="#9E0C24"/>` + grelot(41, 86.5) + grelot(50, 87.5) + grelot(59, 86.5);
+// La comète dorée sur la main de Comète : une étoile et sa traînée.
+const comete = (x, y, r) => { const k = r / 10; return `<g transform="translate(${x} ${y}) scale(${k.toFixed(3)})"><path d="M-2 2 L-15 13 M-1 4 L-12 16 M1 3 L-7 17" stroke="#FFE27A" stroke-width="2.2" stroke-linecap="round" opacity=".85"/>`
+  + `<path d="M0 -7 L2 -2 L7.5 -2 L3.2 1.2 L4.8 6.5 L0 3.4 L-4.8 6.5 L-3.2 1.2 L-7.5 -2 L-2 -2 Z" fill="#F4C542" stroke="#A87A10" stroke-width="1"/></g>`; };
+
 export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
   const cle = a.poignet in POIGNETS ? a.poignet : "rouge";
@@ -326,6 +338,7 @@ export function avatarSVG(a) {
     club: `<pattern id="${id}g" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#14533A"/></pattern>`,
   }[gm] || (a.gant === "elite" ? `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3358"/><stop offset="1" stop-color="#14121F"/></linearGradient>`
     // (le gant du FIAC Club : de l'or métallique, clair en haut, avec un reflet, plus sombre en bas)
+    : a.gant === "renne" ? `<pattern id="${id}g" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-15)"><rect width="9" height="9" fill="#9A6738"/><path d="M1.5 2 l.8 1.8 M6 5.5 l.8 1.8" stroke="#86572E" stroke-width=".7" stroke-linecap="round"/><path d="M5.5 1 l.7 1.5" stroke="#B07E50" stroke-width=".6" stroke-linecap="round"/></pattern>`
     : a.gant === "lutin" ? `<pattern id="${id}g" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="12" height="12" fill="#1E9E48"/><rect x="0" width="4" height="12" fill="#E3122F"/><rect x="4" width="1.3" height="12" fill="#FAFAF7"/></pattern>`
     : a.gant === "perenoel" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="30" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#FF3B4E"/><stop offset=".5" stop-color="#E3122F"/><stop offset="1" stop-color="#B00C25"/></linearGradient>`
     : a.gant === "fiac" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="25" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#FFF3B0"/><stop offset=".3" stop-color="#F2C744"/><stop offset=".55" stop-color="#FFE27A"/><stop offset=".8" stop-color="#D9A21E"/><stop offset="1" stop-color="#A8770F"/></linearGradient>` : "");
@@ -368,6 +381,7 @@ export function avatarSVG(a) {
   if (A_DOSSARD.has(a.gant)) deco = (PRESTIGE.reflet ? `<g opacity=".38" style="mix-blend-mode:screen">${main(a.symbole, `url(#${id}r)`, "none")}</g>` : "")
     + dossardSVG(...(PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
+  if (a.gant === "renne") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = comete(x + 1, y - 1, r); }
   if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
   if (gm === "bandeau") deco = `<rect x="28" y="64" width="44" height="7" rx="2" fill="#E0B12A" stroke="${ink}" stroke-width="1.5"/><rect x="28" y="67" width="44" height="1.4" fill="rgba(255,255,255,.7)"/>`;
   let motif = "";
@@ -380,7 +394,7 @@ export function avatarSVG(a) {
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
     ${a.sansMain ? "" : `${centrer ? '<g transform="translate(2 -8)">' : ""}
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
-    <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : a.gant === "perenoel" ? FOURRURE : a.gant === "lutin" ? LUTIN : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
+    <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : a.gant === "perenoel" ? FOURRURE : a.gant === "lutin" ? LUTIN : a.gant === "renne" ? RENNE : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
     ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}${centrer ? "</g>" : ""}`}
   </svg>`;
