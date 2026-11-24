@@ -87,6 +87,21 @@ export const BOTS_NOEL = [
   { id: "neige", nom: "Le Bonhomme de neige", style: "Le figé", desc: "tient à sa boule de neige, mais fond et change de signe quand tu l'as trop bien lu.", elo: 1100, specialite: "La boule de neige", imprevisibilite: 35, noel: true, av: { symbole: "pierre", fond: "court", gant: "neige", poignet: "rouge", motif: "uni" } },
 ];
 
+// L'entraînement (24 novembre au soir, choix du porteur du projet) : les bots rangés en trois catégories ; les 15 bots de base,
+// toujours disponibles ; ceux de la carrière, débloqués dès qu'on les a battus une fois (c'est rétroactif : le bilan face à face,
+// P.faceAFace, est déjà gardé). Les autres sont grisés, avec un cadenas.
+export const CATEGORIES_BOTS = [
+  { id: "debutants", nom: "Débutants", icone: "🌱", max: 1100 },
+  { id: "confirmes", nom: "Confirmés", icone: "⚔️", max: 1400 },
+  { id: "experts", nom: "Experts", icone: "🏆", max: Infinity },
+];
+export const categorieDe = b => CATEGORIES_BOTS.find(c => b.elo < c.max);
+const DE_BASE = new Set(BOTS.map(b => b.id));
+export const botDisponible = (b, faceAFace = {}) => DE_BASE.has(b.id) || !!b.noel || (faceAFace[b.id]?.v || 0) > 0;
+// Les derniers bots affrontés (disponibles), du plus récent au plus ancien. derniers : P.derniers ({ adv }).
+export const derniersBots = (derniers = [], faceAFace = {}, n = 3) =>
+  [...new Set(derniers.map(d => d.adv))].map(id => botParId(id)).filter(b => b && !b.modele && botDisponible(b, faceAFace)).slice(0, n);
+
 export const botParId = id => TOUS_LES_BOTS.find(b => b.id === id) || BOTS_NOEL.find(b => b.id === id) || null;
 
 // Cycle de Cyclo : Pierre, Feuille, Ciseaux.

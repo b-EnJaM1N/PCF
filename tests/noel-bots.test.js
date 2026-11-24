@@ -61,3 +61,18 @@ test("le smash d'un bot de Noël : sa marque à lui jusqu'à la fin du set, au l
   // le smash du joueur sur le bot de Noël : les marques habituelles
   assert.deepEqual(noterDegats(e, { set: 1, gagnant: 0, signes: [1, 2], smashGagnant: true, noel: "perenoel" }), { joueur: 1, marque: "dechire" });
 });
+
+test("l'entraînement : trois catégories ; les bots de la carrière débloqués une fois battus ; les derniers adversaires", async () => {
+  const { CATEGORIES_BOTS, categorieDe, botDisponible, derniersBots, AUTRES_BOTS } = await import("../app/js/bots.js");
+  assert.deepEqual(CATEGORIES_BOTS.map(c => c.nom), ["Débutants", "Confirmés", "Experts"]);
+  assert.equal(categorieDe(botParId("rocky")).id, "debutants");
+  assert.equal(categorieDe(botParId("tictac")).id, "confirmes");
+  assert.equal(categorieDe(botParId("titan")).id, "experts");
+  for (const b of BOTS) assert.ok(botDisponible(b, {}), `${b.id} : de base`);
+  const p = AUTRES_BOTS[0];
+  assert.equal(botDisponible(p, {}), false, "pas encore battu");
+  assert.equal(botDisponible(p, { [p.id]: { v: 0, d: 3 } }), false, "seulement perdu");
+  assert.equal(botDisponible(p, { [p.id]: { v: 1, d: 0 } }), true, "battu une fois");
+  assert.deepEqual(derniersBots([{ adv: "rocky" }, { adv: "h:x" }, { adv: p.id }, { adv: "rocky" }, { adv: "chaos" }, { adv: "bambi" }]).map(b => b.id), ["rocky", "chaos", "bambi"],
+    "les humains, les doublons et les bots verrouillés ne comptent pas");
+});
