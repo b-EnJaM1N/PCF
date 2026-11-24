@@ -17,6 +17,11 @@ export function noelGrandJour(maintenant = new Date(), loc = typeof location !==
   if (versionDeTest(loc)) { try { return [24, 25].includes(JSON.parse(localStorage.getItem("pcf:aventEssai"))?.jourSimule); } catch { return false; } }
   return maintenant.getMonth() === 11 && [24, 25].includes(maintenant.getDate());
 }
+// Le jour de Noël (le message de Roland et Monique à l'ouverture ; sur la version de test : le jour simulé 25 du calendrier).
+export function jourDeNoel(maintenant = new Date(), loc = typeof location !== "undefined" ? location : null) {
+  if (versionDeTest(loc)) { try { return JSON.parse(localStorage.getItem("pcf:aventEssai"))?.jourSimule === 25; } catch { return false; } }
+  return maintenant.getMonth() === 11 && maintenant.getDate() === 25;
+}
 export const majGrandJour = (doc = document) => doc.body.classList.toggle("noel-fete", noelActif() && noelGrandJour());
 
 // Le houx, bien touffu (24 novembre, demande du porteur du projet) : cinq feuilles en éventail et une grappe de baies (dessin).
