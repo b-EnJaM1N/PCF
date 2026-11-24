@@ -21,7 +21,9 @@ export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc"
   dossard: ["Dossard 1 (tenant du titre de ton cercle)", "#F4C542", "radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 30%),#F4C542"],
   // Le Dossard 1 du FIAC Club (14 novembre, demande du porteur du projet) : le même, en or, avec « Fiac Club » brodé en or sur un
   // poignet sombre ; réservé au tenant du titre du FIAC Club (voir CERCLE_FIAC dans profil.js).
-  fiac: ["Dossard 1 du FIAC Club (tenant du titre)", "#FFD34D", "radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 30%),linear-gradient(135deg,#FFE88A,#E0A81E)"] };
+  fiac: ["Dossard 1 du FIAC Club (tenant du titre)", "#FFD34D", "radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 30%),linear-gradient(135deg,#FFE88A,#E0A81E)"],
+  // Le gant du Père Noël (24 novembre, événement de Noël : noel.js) : rouge velours, bord en fourrure blanche (le gant du bot).
+  perenoel: ["Gant du Père Noël", "#C8102E", "linear-gradient(#C8102E 68%,#FAFAF7 68%)"] };
 // Les gants à dossard (le dossard épinglé, les coutures d'or) ; le poignet du gant du FIAC Club.
 const A_DOSSARD = new Set(["dossard", "fiac"]);
 export const POIGNET_FIAC = "#1B2140";
@@ -273,6 +275,14 @@ export function cousu(svg, couleur) {
 
 // sansFond : seulement le gant et le poignet (le poing qui se secoue pendant un coup).
 // sansMain : seulement le fond (sous la routine d'entrée, qui dessine la main par-dessus ; 15 novembre).
+// Le bord fourré du gant du Père Noël : une bande blanche toute en bosses (des ronds qui se chevauchent), un peu d'ombre dessous.
+const FOURRURE = `<g>${[[35, 74, 4.2], [41, 72.6, 4.6], [47.5, 72.2, 4.8], [54, 72.4, 4.6], [60, 73, 4.4], [65, 74.5, 4], [35.5, 80.5, 4.6], [41.5, 81.5, 5], [48, 82, 5],
+  [54.5, 81.6, 5], [60.5, 81, 4.8], [65, 80, 4.3], [38, 86, 4], [44.5, 87, 4.3], [51, 87.2, 4.3], [57.5, 86.8, 4.2], [63, 85.6, 3.8]]
+  .map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r + .9}" fill="#C9CFD8"/>`).join("")}${[[35, 74, 4.2], [41, 72.6, 4.6], [47.5, 72.2, 4.8], [54, 72.4, 4.6], [60, 73, 4.4], [65, 74.5, 4],
+  [35.5, 80.5, 4.6], [41.5, 81.5, 5], [48, 82, 5], [54.5, 81.6, 5], [60.5, 81, 4.8], [65, 80, 4.3], [38, 86, 4], [44.5, 87, 4.3], [51, 87.2, 4.3], [57.5, 86.8, 4.2], [63, 85.6, 3.8]]
+  .map(([x, y, r], i) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${i % 3 ? "#FAFAF7" : "#F1F3F6"}"/>`).join("")}`
+  + `${[[38, 72], [45, 70.5], [52, 70.6], [59, 71.2], [42, 79.5], [50, 80], [57, 79.6], [47, 85.5], [55, 85.2]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.4" fill="#fff"/>`).join("")}</g>`;
+
 export function avatarSVG(a) {
   const fond = (FONDS[a.fond] || FONDS.court)[1], nue = a.gant === "nu", gant = couleurMain(a), poignet = (POIGNETS[a.poignet] || POIGNETS.rouge)[1];
   const cle = a.poignet in POIGNETS ? a.poignet : "rouge";
@@ -303,6 +313,7 @@ export function avatarSVG(a) {
     club: `<pattern id="${id}g" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#14533A"/></pattern>`,
   }[gm] || (a.gant === "elite" ? `<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3358"/><stop offset="1" stop-color="#14121F"/></linearGradient>`
     // (le gant du FIAC Club : de l'or métallique, clair en haut, avec un reflet, plus sombre en bas)
+    : a.gant === "perenoel" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="30" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#E8283F"/><stop offset=".5" stop-color="#C8102E"/><stop offset="1" stop-color="#8E0B20"/></linearGradient>`
     : a.gant === "fiac" ? `<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="25" y1="10" x2="70" y2="80"><stop offset="0" stop-color="#FFF3B0"/><stop offset=".3" stop-color="#F2C744"/><stop offset=".55" stop-color="#FFE27A"/><stop offset=".8" stop-color="#D9A21E"/><stop offset="1" stop-color="#A8770F"/></linearGradient>` : "");
   // Poignets et fonds spéciaux (boutique).
   const poignetDef = {
@@ -355,7 +366,7 @@ export function avatarSVG(a) {
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
     ${a.sansMain ? "" : `${centrer ? '<g transform="translate(2 -8)">' : ""}
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
-    <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
+    <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : a.gant === "perenoel" ? FOURRURE : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
     ${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}${centrer ? "</g>" : ""}`}
   </svg>`;
