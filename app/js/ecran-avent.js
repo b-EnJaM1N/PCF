@@ -64,16 +64,37 @@ function boule(p, ouverte) {
 // Le sapin lui-même (dessin 300 × 400 : 3 × 4, comme sa boîte).
 const ETAGES = [[18, 112, 58], [62, 178, 92], [118, 248, 122], [178, 318, 146]];   // (sommet, base, demi-largeur) : les étages
 const festons = (y, l) => { let d = `L${150 + l} ${y}`; const n = 6; for (let i = n; i > 0; i--) { const x1 = 150 - l + (2 * l * i) / n, x0 = 150 - l + (2 * l * (i - 1)) / n; d += ` Q${(x1 + x0) / 2} ${y + 10} ${x0} ${y}`; } return d; };
+// Les cadeaux au pied du sapin (24 novembre, idée du porteur du projet) : ils apparaissent le 25 décembre, plus ou moins nombreux
+// selon les cases ouvertes (un cadeau pour 3 cases, 8 au plus). Chacun son papier : à pois, rayé, étoilé, à flocons, à carreaux…
+const PAPIERS = [
+  ["#D7192E", `<circle cx="3" cy="3" r="1.6" fill="#F4C542"/>`, "#F4C542"],                     // rouge à pois dorés
+  ["#1E8C3A", `<rect width="3" height="6" fill="#fff" opacity=".8"/>`, "#D7192E"],              // vert rayé de blanc
+  ["#7B3FB8", `<path d="M3 .8 L3.7 2.4 L5.4 2.5 L4.1 3.6 L4.5 5.2 L3 4.3 L1.5 5.2 L1.9 3.6 L.6 2.5 L2.3 2.4 Z" fill="#FFE27A"/>`, "#FFE27A"],   // violet étoilé
+  ["#1B3A8C", `<path d="M3 1 V5 M1 3 H5 M1.6 1.6 L4.4 4.4 M4.4 1.6 L1.6 4.4" stroke="#fff" stroke-width=".5"/>`, "#C9D1DC"],   // bleu à flocons
+  ["#E9B92F", `<rect width="3" height="3" fill="#D7192E" opacity=".55"/><rect x="3" y="3" width="3" height="3" fill="#D7192E" opacity=".55"/>`, "#1E8C3A"],   // or à carreaux rouges
+  ["#F06AA8", `<circle cx="1.5" cy="1.5" r=".9" fill="#fff"/><circle cx="4.5" cy="4.5" r=".9" fill="#fff"/>`, "#fff"],                  // rose à pois blancs
+  ["#C9D1DC", `<path d="M0 6 L6 0" stroke="#D7192E" stroke-width="1.2"/>`, "#D7192E"],         // argent, rayures rouges en biais
+  ["#1FA9A0", `<path d="M0 3 Q1.5 1.5 3 3 T6 3" fill="none" stroke="#fff" stroke-width=".7"/>`, "#F4C542"],   // turquoise à vagues
+];
+// (x, y, largeur, hauteur) : derrière d'abord, devant ensuite
+const PLACES_CADEAUX = [[96, 318, 44, 36], [168, 316, 46, 38], [56, 334, 40, 32], [212, 336, 42, 32], [118, 344, 50, 40], [176, 350, 40, 32], [26, 352, 36, 30], [244, 354, 38, 30]];
+function cadeauxAuPied(n) {
+  return PLACES_CADEAUX.slice(0, n).map(([x, y, l, h], i) => {
+    const [fond, motif, ruban] = PAPIERS[i % PAPIERS.length], m = l / 2;
+    return `<defs><pattern id="papier${i}" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="${fond}"/>${motif}</pattern></defs>`
+      + `<rect x="${x}" y="${y}" width="${l}" height="${h}" rx="3" fill="url(#papier${i})" stroke="rgba(0,0,0,.25)" stroke-width="1"/>`
+      + `<rect x="${x + m - 3.5}" y="${y}" width="7" height="${h}" fill="${ruban}"/>`
+      + `<path d="M${x + m} ${y} C${x + m - 12} ${y - 14} ${x + m - 18} ${y - 4} ${x + m} ${y} C${x + m + 12} ${y - 14} ${x + m + 18} ${y - 4} ${x + m} ${y} Z" fill="${ruban}" stroke="rgba(0,0,0,.2)" stroke-width=".8"/>`;
+  }).join("");
+}
+const sapin = (nCadeaux = 0) => SAPIN.replace("<!--cadeaux-->", cadeauxAuPied(nCadeaux));
 const SAPIN = `<svg viewBox="0 0 300 400" aria-hidden="true">
   <rect x="134" y="312" width="32" height="40" rx="3" fill="#6B3E22"/>
   ${ETAGES.map(([h, b, l], i) => `<path d="M150 ${h} ${festons(b, l)} Z" fill="${i % 2 ? "#1E8C3A" : "#22994A"}" stroke="#0F5A24" stroke-width="2"/>`
     + `<path d="M${150 - l + 8} ${b - 2} ${Array.from({ length: 6 }, (_, k) => { const x = 150 - l + (2 * l * (k + .5)) / 6; return `Q${x} ${b + 9} ${x + l / 6} ${b - 1}`; }).join(" ")}" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".9"/>`).join("")}
   ${[[108, 92, 192, 86], [86, 160, 216, 150], [66, 226, 238, 214], [48, 292, 258, 282]].map(([x1, y1, x2, y2]) => `<path d="M${x1} ${y1} Q150 ${y1 + 26} ${x2} ${y2}" fill="none" stroke="#E9C046" stroke-width="2.6" stroke-dasharray="1 7" stroke-linecap="round"/><path d="M${x1} ${y1} Q150 ${y1 + 26} ${x2} ${y2}" fill="none" stroke="#C9A24A" stroke-width=".9" opacity=".8"/>`).join("")}
   <path d="M150 0 L156 14 L171 15 L159 24 L163 39 L150 31 L137 39 L141 24 L129 15 L144 14 Z" fill="#F4C542" stroke="#C99A1E" stroke-width="1.5"/>
-  <rect x="62" y="330" width="56" height="44" rx="4" fill="#D7192E"/><rect x="86" y="330" width="8" height="44" fill="#F4C542"/><rect x="62" y="346" width="56" height="8" fill="#F4C542"/>
-  <path d="M90 330 C80 318 70 322 76 330 Z M90 330 C100 318 110 322 104 330 Z" fill="#F4C542"/>
-  <rect x="182" y="338" width="48" height="36" rx="4" fill="#1B3A8C"/><rect x="202" y="338" width="8" height="36" fill="#fff"/><rect x="182" y="352" width="48" height="7" fill="#fff"/>
-  <rect x="122" y="350" width="34" height="26" rx="3" fill="#5BBF3A"/><rect x="136" y="350" width="6" height="26" fill="#D7192E"/>
+  <!--cadeaux-->
 </svg>`;
 
 // Le texte de la ligne du calendrier, sous les défis du jour.
@@ -126,15 +147,17 @@ export function installerAvent(ctx) {
     $("aventEssai").hidden = !essai();
     if (essai()) $("aventJourSimule").value = String(lireEssai().jourSimule);
     if (!etat) {
-      zone.innerHTML = SAPIN; $("aventCase").hidden = true;
+      zone.innerHTML = sapin(); $("aventCase").hidden = true;
       msg.textContent = !charge ? "Chargement du calendrier…" : !uid ? "Crée ton compte (gratuit, sans mot de passe) pour ouvrir le calendrier : tes cadeaux seront gardés." : "Le calendrier n'est pas joignable pour l'instant. Réessaie dans un moment.";
       return;
     }
     const j = etat.jour;
     msg.textContent = !j ? "Le calendrier s'ouvre le 1er décembre. Une case par jour jusqu'au 24 !"
       : `${nbOuvertes(etat)} case${nbOuvertes(etat) > 1 ? "s" : ""} ouverte${nbOuvertes(etat) > 1 ? "s" : ""} sur ${NB_CASES}${j > NB_CASES ? " · Les cases ratées se rattrapent jusqu'au 31 décembre." : ""} · Rattrapages aujourd'hui : ${rattrapagesRestants(etat)} sur ${RATTRAPAGES_PAR_JOUR}`
-      + (calendrierComplet(etat) ? " · 🏅 Calendrier complet !" : "");
-    zone.innerHTML = SAPIN + places().map(p => {
+      + (calendrierComplet(etat) ? " · 🏅 Calendrier complet !" : "")
+      + (j >= 25 ? ` · 🎁 Joyeux Noël ! ${Math.min(PLACES_CADEAUX.length, Math.ceil(nbOuvertes(etat) / 3)) || "Aucun"} cadeau${Math.ceil(nbOuvertes(etat) / 3) > 1 ? "x" : ""} sous le sapin` : "");
+    // (le 25 décembre et après : les cadeaux au pied du sapin, un pour 3 cases ouvertes)
+    zone.innerHTML = sapin(j >= 25 ? Math.min(PLACES_CADEAUX.length, Math.ceil(nbOuvertes(etat) / 3)) : 0) + places().map(p => {
       const st = statutCase(etat, p.num);
       return `<button class="avent-porte ${st}${choisie === p.num ? " choisie" : ""}" data-n="${p.num}" style="left:${p.x}%;top:${p.y}%;width:${p.taille}%" aria-label="Case ${p.num}, ${libelle(st)}">${boule(p, st === "ouverte")}</button>`;
     }).join("");
