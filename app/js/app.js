@@ -3167,7 +3167,10 @@ function lancerDuel(duel, ligneAdv) {
   ouvrirOnglet("match");
   if (duel.tournoi_id) reperesTournoi(duel);
   D.arret = serveur.ecouter("duel", `id=eq.${duel.id}`, majDuel);
-  D.boucle = setInterval(battement, 1000);
+  // (24 novembre, avant l'ouverture au public ; décision du 13 novembre) Un signe de vie toutes les 3 secondes au lieu de chaque
+  // seconde : l'écoute en direct apporte les coups de l'adversaire tout de suite, et un signe de vie part aussi pile à la fin de
+  // chaque délai (voir prevoirEcheance), pour que le serveur l'applique sans attendre.
+  D.boucle = setInterval(battement, BATTEMENT_MS);
   verifierAmi();
   majDuel(duel); battement();
 }
@@ -3198,6 +3201,17 @@ async function reperesTournoi(duel) {
 }
 
 // Signe de vie + application des délais par le serveur ; donne aussi l'heure du serveur.
+const BATTEMENT_MS = 3000;
+// Un signe de vie juste après la fin du délai en cours (coup, pause entre les sets, présentation…), pour que le serveur l'applique
+// tout de suite, sans attendre le prochain signe de vie régulier.
+function prevoirEcheance(duel) {
+  if (!D) return;
+  clearTimeout(D.echeanceT);
+  const fin = duel?.echeance ? Date.parse(duel.echeance) : NaN;
+  if (!Number.isFinite(fin)) return;
+  const ms = fin - (Date.now() + (D.decalage || 0)) + 300;
+  if (ms > 0 && ms < 10 * 60e3) D.echeanceT = setTimeout(battement, ms);
+}
 async function battement() {
   if (!D || D.fini) return;
   const id = D.id, t0 = Date.now();
@@ -3221,6 +3235,7 @@ function majDuel(duel) {
     return;
   }
   D.duel = duel;
+  prevoirEcheance(duel);
   afficherMessages(duel);
   const m = S.match, ev = evenementsDuel(duel, D.moi), n = ev.length;
   // Un avertissement pour dépassement de temps, depuis la dernière fois (pas ceux d'avant mon arrivée dans le match).
@@ -3394,7 +3409,7 @@ const duelOccupe = () => !!D && (!D.fini || (!D.finVue && vueCourante === "viewM
 function terminerDuel(duel) {
   if (D.fini) return;
   D.fini = true;
-  D.arret?.(); clearInterval(D.boucle); clearTimeout(D.decompte); arreterMinuteur(); boutons(false);
+  D.arret?.(); clearInterval(D.boucle); clearTimeout(D.echeanceT); clearTimeout(D.decompte); arreterMinuteur(); boutons(false);
   if (faceAFaceOuvert) fermerFaceAFace();
   if (panneauOuvert) fermerPanneau();
   let cl = texteClassementFin(duel, D.moi);
@@ -3411,7 +3426,7 @@ function terminerDuel(duel) {
 
 function quitterDuel({ solo = true } = {}) {
   if (!D) return;
-  D.arret?.(); clearInterval(D.boucle); clearInterval(D.guetteFin); clearTimeout(D.decompte); arreterMinuteur();
+  D.arret?.(); clearInterval(D.boucle); clearTimeout(D.echeanceT); clearInterval(D.guetteFin); clearTimeout(D.decompte); arreterMinuteur();
   if (faceAFaceOuvert) fermerFaceAFace();
   if (panneauOuvert) fermerPanneau();
   D = null;
