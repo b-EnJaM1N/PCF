@@ -35,6 +35,11 @@ jour qui suivent leurs avis »). On note chaque avis reçu (par message, dans l'
 - 17 nov. (soir) : nouvelle version Android dans le test fermé, 4 (1.0.0.3), envoyée à l'examen de Google, avec la note : routines
   d'entrée, historique des coups en couleurs, 5 secondes pour la poignée de main, solde visible dans la boutique (ces quatre-là :
   idées des testeurs), notifications des demandes d'ami et des invitations de cercle, nouveaux poignets et gant dalmatien.
+- 23 nov. : nouvelle version Android dans le test fermé, 5 (1.0.0.4), acceptée par Google le jour même (18 h 08), avec la note :
+  défis programmés, carte de joueur (6 notes sur 99, note générale, comparaison partageable), replays plus justes, calendrier
+  des championnats de cercle (disqualifier, annuler), premier match contre Boomerang. (Le jour d'une mise à jour, le compteur
+  compte des « nouveaux » côté Android qui sont en fait les testeurs habituels.)
+- 24 nov. (matin) : deuxième demande d'accès en production envoyée (réponses dans `demande-production.md`).
 - 17 nov. : handslam.fr déclaré dans la Google Search Console (validation par fichier, plan du site envoyé, indexation demandée).
 - 11 nov. : les messages rapides réorganisés (idée de Shishyo, voir le tableau).
 - 12 nov. : sons du smash (déchirure des Ciseaux, claque de la Feuille, smash bloqué et raté), marques du smash sur la main adverse, smash récupéré, pseudo définitif, gants vache, girafe et léopard, bouton « ← Retour » et touche retour du téléphone (suggestion des testeurs, voir le tableau), robots retirés du compteur de visites.

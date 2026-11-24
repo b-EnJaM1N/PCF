@@ -79,3 +79,13 @@ Demande d'accès en production envoyée ; examen annoncé en « sept jours ou mo
 - Installations la première année : entre 0 et 10 000.
 - Modifications : « Temps de jeu porté de 5 à 8 s ; aide retirée pendant le match ; commentaires revus (finales réservées aux vrais enjeux, répliques ajoutées) ; tournois de cercle corrigés ; ambiance de stade enrichie ; menus simplifiés ; carrière rééquilibrée ; bug en match corrigé le soir même. »
 - Prêt : « Tous les retours bloquants ont été corrigés et revérifiés avec les testeurs. Plus de 300 tests automatiques et un robot qui joue deux vrais matchs vérifient chaque mise en ligne. Aucun bug bloquant depuis le 4 novembre, et 4 à 6 testeurs jouent chaque jour. »
+
+## Deuxième demande, envoyée le 24 novembre 2026 au matin
+Après le test prolongé (refus du 10 novembre) ; examen annoncé en « sept jours ou moins ».
+- Recrutement : « Testeurs recrutés parmi mes proches (famille, amis, collègues) par WhatsApp, sans service payant. Après le premier examen, j'ai prolongé le test avec les mêmes testeurs, en leur envoyant un questionnaire et 4 mises à jour successives tenant compte de leurs avis. »
+- Engagement : « Pendant le test prolongé : 6 à 9 personnes par jour sur l'appli, dont 4 à 6 fidèles qui reviennent chaque jour ; 200 à 240 matchs par semaine, dont plus de 200 duels en ligne entre testeurs en un mois, et un championnat entre testeurs en cours. »
+- Retours : « Recueillis par WhatsApp, de vive voix, par e-mail, par un questionnaire et par le bouton « Ton avis » de l'appli, notés dans un journal. Principaux retours : bouton Retour peu visible, replays mal commentés, besoin de programmer les défis, premier match trop facile. »
+- Public et spécificités : les mêmes réponses que le 8 novembre ; installations la première année : entre 0 et 10 000.
+- Modifications : « Bouton Retour plus visible ; historique des coups en couleurs ; 5 s pour la poignée de main ; solde visible dans la boutique ; défis programmés à l'heure choisie ; replays fidèles au score ; premier match plus disputé ; championnats au calendrier réglable. »
+- Tests supplémentaires (nouvelle question : « Qu'avez-vous fait différemment cette fois-ci ? ») : « Test prolongé avec les mêmes testeurs, mieux suivis : questionnaire envoyé, bouton d'avis dans l'appli, journal des retours. 4 mises à jour publiées, chacune avec ses notes, pour corriger ce qu'ils signalaient. Duels en ligne et championnat entre testeurs : plus de 200 duels en un mois. »
+- Si c'est refusé : lire le motif, prolonger le test de 14 jours (viser 15 à 20 testeurs actifs, des avis écrits, une version 6 au milieu), refaire la demande ; le jeu reste ouvert à tous sur handslam.fr en attendant.
