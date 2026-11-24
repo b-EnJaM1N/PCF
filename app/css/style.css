@@ -1370,7 +1370,8 @@ body.noel #viewMatch { position: relative; }
 .noel-houx.bd { right: -28px; bottom: -30px; transform: rotate(145deg); }
 .noel-houx svg { width: 100%; height: 100%; }
 /* Les couleurs de Noël (24 novembre, demande du porteur du projet) : le fond rouge, le tableau de score vert sapin */
-body.noel { --court: #7c1020; --court-deep: #0f4228; background: radial-gradient(ellipse at 50% 0%, #a4182c, #7c1020 45%, #4d0812); background-attachment: fixed; }
+/* (24 novembre au soir, choix du porteur du projet : l'appli garde son visuel de base ; le fond rouge, seulement pendant le match) */
+body.noel.en-match { --court: #7c1020; --court-deep: #0f4228; background: radial-gradient(ellipse at 50% 0%, #a4182c, #7c1020 45%, #4d0812); background-attachment: fixed; }
 .noel #viewMatch .arena::before { content: "🎄"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 110px; opacity: .42; pointer-events: none; }   /* (24 novembre : un peu plus visible) */
 body.noel .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
 .noel #viewMatch .vs { position: relative; z-index: 1; color: #fff; text-shadow: 0 0 4px #4d0812, 0 0 8px #4d0812, 0 1px 2px #000; }   /* (24 novembre : « contre » lisible sur le sapin) */
@@ -1416,3 +1417,7 @@ body.noel .reserve-temps { color: #ffe08a; }   /* (lisible sur le fond rouge) */
 .avent-ligne { display: block; width: 100%; margin-top: 8px; padding: 8px 10px; font: inherit; font-weight: 600; text-align: left; color: #FFE08A;
   background: rgba(0, 0, 0, .2); border: 1px dashed rgba(244, 197, 66, .55); border-radius: 10px; cursor: pointer; }
 .avent-ligne[hidden] { display: none; }
+/* Le bonnet de Noël sur le logo (24 novembre au soir, choix du porteur du projet : à l'accueil, seulement des touches discrètes) */
+.noel .marque { position: relative; }
+.noel-bonnet { position: absolute; left: -8px; top: -9px; width: 52px; height: 40px; pointer-events: none; transform: rotate(-22deg); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .35)); }
+@media (max-width: 420px) { .noel-bonnet { width: 44px; height: 34px; left: -6px; top: -7px; } }
