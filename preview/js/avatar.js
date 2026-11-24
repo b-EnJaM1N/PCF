@@ -150,9 +150,28 @@ const ACCROC = [
   "M41 57 L44.5 53 L47.5 56.5 L51 51.5 L54 55.5 L58.5 53 L57.5 58 L60 61 L55.5 60.5 L51.5 64 L48 60 L43.5 62.5 Z",
   "M53 45 L56 42.5 L58.5 45.5 L62 43 L63.5 47 L61 49.5 L57.5 48.5 L54.5 50 Z",
 ];
+// Les marques des bots de Noël (24 novembre ; degats.js), jusqu'à la fin du set : dessinées autour du dos de la main (50, 60), puis
+// déplacées au centre du dos de la main du signe montré.
+const MARQUES_NOEL = {
+  perenoel: `<path d="M46.5 44 H53.5 V77 H46.5 Z M30 56.5 H70 V63.5 H30 Z" fill="#D7263D" stroke="#9E0C24" stroke-width=".8"/>`
+    + `<path d="M50 60 C42 47 32 50 34 57 C36 63 45 62 50 60 Z M50 60 C58 47 68 50 66 57 C64 63 55 62 50 60 Z" fill="#E8384F" stroke="#9E0C24" stroke-width="1.2"/>`
+    + `<circle cx="50" cy="60" r="3.6" fill="#B80D27"/><path d="M48.5 62.5 L44 72 M51.5 62.5 L56 72" stroke="#D7263D" stroke-width="3" stroke-linecap="round"/>`,
+  lutin: [[40, 52, 7, "#E3122F"], [60, 58, 6.5, "#1E9E48"], [48, 68, 6, "#1E9E48"], [62, 70, 4.5, "#E3122F"], [44, 40, 4.5, "#E3122F"], [58, 44, 4, "#1E9E48"]]
+    .map(([x, y, r, c]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity=".88"/><circle cx="${x + r}" cy="${y - r * .6}" r="${r * .3}" fill="${c}" opacity=".88"/><circle cx="${x - r * .9}" cy="${y + r * .7}" r="${r * .25}" fill="${c}" opacity=".88"/>`).join(""),
+  renne: `<g fill="#3B2412" opacity=".82"><path d="M47 49 C40 49 37 58 39 66 C40.5 71 46 72 48 69 C49.5 64 49.5 54 47 49 Z"/><path d="M53 49 C60 49 63 58 61 66 C59.5 71 54 72 52 69 C50.5 64 50.5 54 53 49 Z"/></g>`,
+  // (le givre : les glaçons pendent vers le bas de l'écran, c'est-à-dire vers la droite du dessin, la main du joueur étant tournée)
+  neige: `<rect x="29" y="40" width="42" height="38" rx="11" fill="#BFE6FF" opacity=".55"/>`
+    + [44, 52, 60, 68].map((y, i) => `<path d="M70 ${y - 3} L${70 + (i % 2 ? 6 : 9)} ${y} L70 ${y + 3} Z" fill="#E8F7FF" stroke="#8CC8EE" stroke-width=".8"/>`).join("")
+    + [[38, 50], [60, 52], [48, 64], [62, 72], [38, 72]].map(([x, y]) => `<text x="${x}" y="${y}" font-size="8" text-anchor="middle" fill="#fff">❄</text>`).join(""),
+};
+function marqueNoel(symbole, bot) {
+  const d = MARQUES_NOEL[bot]; if (!d) return "";
+  const [x, y] = PLACE_MEDAILLON[symbole] || PLACE_MEDAILLON.dos;
+  return `<g transform="translate(${x - 50} ${y - 60})">${d}</g>`;
+}
 export function marquesSVG(symbole, degats, nue, gant = "#E8574A", ink = "rgba(30,15,10,.8)") {
   if (!degats) return "";
-  let s = "";
+  let s = degats.noel && !nue ? marqueNoel(symbole, degats.noel) : "";
   const d = Math.min(2, degats.dechire || 0);
   if (d && nue) {   // la main nue : un pansement (deux en croix au 2e smash)
     s += [-18, 22].slice(0, d).map(rot => `<g transform="rotate(${rot} 50 60)"><rect x="38" y="56" width="24" height="8" rx="3.5" fill="#F1CF9E" stroke="rgba(90,55,20,.45)" stroke-width=".9"/>
