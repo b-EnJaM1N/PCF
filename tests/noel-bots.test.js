@@ -76,3 +76,10 @@ test("l'entraînement : trois catégories ; les bots de la carrière débloqués
   assert.deepEqual(derniersBots([{ adv: "rocky" }, { adv: "h:x" }, { adv: p.id }, { adv: "rocky" }, { adv: "chaos" }, { adv: "bambi" }]).map(b => b.id), ["rocky", "chaos", "bambi"],
     "les humains, les doublons et les bots verrouillés ne comptent pas");
 });
+
+test("un pull moche garde son tricot, même avec un motif de gant choisi (remarque du 24 novembre)", async () => {
+  const { avatarSVG } = await import("../app/js/avatar.js");
+  const sans = avatarSVG({ symbole: "feuille", gant: "pullcadeau", fond: "court" }).replace(/av\d+/g, "x");
+  const avec = avatarSVG({ symbole: "feuille", gant: "pullcadeau", fond: "court", gantMotif: "pois", gantMotifCouleur: "vert" }).replace(/av\d+/g, "x");
+  assert.equal(avec, sans);
+});
