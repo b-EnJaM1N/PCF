@@ -2246,7 +2246,9 @@ function presenterSpeaker() {
   if (S.annonces) S.annonces.outsider = Math.abs(niveauMoi - niveauAdv) >= 200 ? (niveauMoi < niveauAdv ? 0 : 1) : null;
   // (18 novembre) le joueur du match qui a ses répliques personnalisées (« Le Chiromancien ») ; en duel, l'adversaire compte
   // une fois qu'on sait que c'est un ami (voir plus bas, attendreAmi)
-  const persoCom = persoCommente(...joueursDuMatch());
+  // (24 novembre) un bot de Noël a ses répliques, comme un joueur (noel.js) ; et pendant les fêtes, l'ambiance de Noël
+  const persoCom = persoCommente(...joueursDuMatch()) || (!S.duel && OPP?.noel ? { nom: OPP.id, joueur: 1, bot: true } : null);
+  if (S.annonces) S.annonces.noel = noelActif();
   // (en duel, le tirage commun aux deux téléphones pour ces répliques : le numéro du duel et le moment ; 18 novembre)
   const tirageCommun = S.duel && D?.duel?.id ? cle => tirageDuel(`com:${cle}`) / 4294967296 : null;
   if (S.annonces) { S.annonces.perso = persoCom; S.annonces.tirage = tirageCommun; }

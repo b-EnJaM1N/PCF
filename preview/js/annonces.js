@@ -43,6 +43,7 @@ export function nouvelEtatAnnonces({ humain = false, genre = "m", finale = false
     beauSet: 0,                   // « beaux coups » commentés dans ce set (3 au plus)
     dernierMoment: null,          // le dernier moment commenté (un « beau coup » jamais deux fois de suite)
     troisPierres: false,          // « Pierre qui roule… » : une fois par match
+    noel: false,                  // (24 novembre) pendant les fêtes : l'ambiance de Noël (noel.js)
     perso: null,                  // (18 novembre) le joueur du match qui a ses répliques : { nom, joueur } (persoCommente, chants-perso.js)
     accueil: 0,                   // (19 novembre) les 3 premiers matchs d'un nouveau joueur : 1, 2 ou 3 (0 ensuite)
     accueilDit: new Set(),        // ce que Roland et Monique lui ont déjà expliqué pendant ce match
@@ -407,14 +408,20 @@ export function annoncerCoup(match, evt, etat, { recents = [], auto = false, sma
   // soir : le Chiromancien entendait ses répliques, son adversaire non ; chaque téléphone tirait de son côté).
   const pe = etat.perso, tire = cle => (etat.tirage ? etat.tirage(cle) : rng());
   const calme = pe && !evt.egalite && !evt.finSet && !evt.finMatch && !issue && !evt.balleAvant && !evt.balleApres && !pointDecisif(match);
-  const persoPool = !calme ? null : etat.persoFeuIci && tire(`perso_feu:${n}`) < 0.8 ? `perso_${pe.nom}_feu`
-    : etat.serie.n >= 3 && !etat.dejaSet.has("perso") && tire(`perso:${n}`) < 0.3 ? `perso_${pe.nom}_${etat.serie.joueur === pe.joueur ? "lecture" : "perd"}` : null;
-  if (persoPool && !persoPool.endsWith("_feu")) etat.dejaSet.add("perso");
+  // (24 novembre) le smash réussi d'un bot de Noël : son pouvoir, 85 fois sur 100, à la place du commentaire du smash
+  const persoSmash = pe?.bot && issue === "gagne" && evt.gagnant === pe.joueur && !evt.finMatch && POOLS[`perso_${pe.nom}_smash`]
+    && tire(`perso_smash:${n}`) < 0.85 ? `perso_${pe.nom}_smash` : null;
+  const persoPool = persoSmash || (!calme ? null : etat.persoFeuIci && tire(`perso_feu:${n}`) < 0.8 ? `perso_${pe.nom}_feu`
+    : etat.serie.n >= 3 && !etat.dejaSet.has("perso") && tire(`perso:${n}`) < 0.3 ? `perso_${pe.nom}_${etat.serie.joueur === pe.joueur ? "lecture" : "perd"}` : null);
+  if (persoPool && !persoPool.endsWith("_feu") && !persoSmash) etat.dejaSet.add("perso");
   const perso = persoPool && choisirPerso(etat, persoPool, ctx, rng);
   if (perso) { moment = persoPool; dialogueFin = []; }
   // L'accueil du nouveau joueur (19 novembre), pendant son premier match : son premier point gagné, perdu, sa première égalité,
   // vers le 5e coup « lire l'adversaire », vers le 8e le smash ; avant tout le reste (pas en fin de set). Les phrases longues
   // passent aussi pendant l'échange (l'appli les laisse dire, voir annoncer dans app.js).
+  // L'ambiance des fêtes (noel.js ; 24 novembre) : une fois par match au plus, sur un point tranquille, de temps en temps.
+  if (etat.noel && !etat.noelDit && !perso && n >= 6 && !evt.egalite && !evt.finSet && !evt.finMatch && !issue && !evt.balleAvant
+    && !evt.balleApres && !pointDecisif(match) && rng() < 0.12) { moment = "noel_ambiance"; etat.noelDit = true; dialogueFin = []; }
   let accueilL = null;
   if (etat.accueil === 1 && !evt.finSet && !evt.finMatch) {
     const fait = k => etat.accueilDit.has(k);
@@ -582,7 +589,7 @@ function finDeMatch(match, evt, etat, ctx, rng) {
   }
   // Le joueur qui a ses répliques personnalisées (18 novembre) : sa victoire ou sa défaite, 4 fois sur 10.
   const pe = etat.perso;
-  if (pe && (etat.tirage ? etat.tirage("perso_fin") : rng()) < 0.4) {
+  if (pe && (etat.tirage ? etat.tirage("perso_fin") : rng()) < (pe.bot ? 0.8 : 0.4)) {   // (un bot de Noël : 8 fois sur 10)
     const x = choisirPerso(etat, `perso_${pe.nom}_${evt.gagnant === pe.joueur ? "victoire" : "defaite"}`, ctx, rng);
     if (x) return [x];
   }
@@ -777,7 +784,7 @@ export function annoncesAvantMatch({ moi = {}, adv = {}, tour = null, sng = fals
   if (accueil === 2 || accueil === 3) { const d = dialogue(etat, accueil === 2 ? "accueil_deuxieme" : "accueil_troisieme", rng); if (d) return finAvant(d); }
   // Le joueur qui a ses répliques personnalisées (perso : { nom, joueur } ; 18 novembre) : 4 fois sur 10, sa présentation (une
   // réplique) ou, une fois sur trois, un dialogue sur lui ; en évitant ce qui a été entendu aux derniers matchs.
-  if (perso && (tirage ? tirage("perso_avant") : rng()) < 0.4) {   // (tirage : en duel, le même sur les deux téléphones)
+  if (perso && (tirage ? tirage("perso_avant") : rng()) < (perso.bot ? 0.9 : 0.4)) {   // (un bot de Noël : 9 fois sur 10)   // (tirage : en duel, le même sur les deux téléphones)
     const e2 = { ...etat, anciens: new Set(recents.map(baseDe)), dialoguesDits: new Set(etat.dialoguesDits) };
     const d = DIALOGUES_IDS[`perso_${perso.nom}_avant`] && rng() < 0.35 && dialogue(e2, `perso_${perso.nom}_avant`, rng);
     const l = !d && choisir(e2, `perso_${perso.nom}_presentation`, {}, rng);
