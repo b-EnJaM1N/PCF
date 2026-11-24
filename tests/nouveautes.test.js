@@ -31,3 +31,13 @@ test("14 novembre : le Dossard 1 (et le gant du FIAC Club) et les invitations ou
   const officielle = { pathname: "/", hostname: "handslam.fr" };
   for (const nom of ["dossard", "invitations", "classementCercle", "pageCercle", "records"]) assert.ok(ouvert(nom, officielle), nom);
 });
+
+test("Noël : sur la version de test toujours ; sur handslam.fr du 1er décembre au 6 janvier (24 novembre)", async () => {
+  const { noelActif } = await import("../app/js/noel.js");
+  const officielle = { pathname: "/", hostname: "handslam.fr" }, test = { pathname: "/preview/", hostname: "handslam.fr" };
+  assert.equal(noelActif(new Date(2026, 10, 30), officielle), false, "30 novembre : pas encore");
+  assert.equal(noelActif(new Date(2026, 11, 1), officielle), true, "1er décembre");
+  assert.equal(noelActif(new Date(2027, 0, 6), officielle), true, "6 janvier : encore");
+  assert.equal(noelActif(new Date(2027, 0, 7), officielle), false, "7 janvier : fini");
+  assert.equal(noelActif(new Date(2026, 6, 14), test), true, "la version de test : toujours");
+});
