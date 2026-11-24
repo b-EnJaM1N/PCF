@@ -16,7 +16,7 @@ import { dessinerStats } from "./image-stats.js";
 import { carteDe, notesDe, texteRang, rangDe, texteCoefs, partBots, HUMAINS_POUR_CARTE } from "./carte-logique.js";
 import { dessinerCarte } from "./carte.js";
 import { installerComparaison } from "./comparer-cartes.js";
-import { installerNoel, noelActif, pouvoirNoel, remettreBoutons } from "./noel.js";
+import { installerNoel, noelActif, pouvoirNoel, remettreBoutons, jourDeNoel } from "./noel.js";
 import { STYLES, DELAI_CHOIX_MS, styleValide, styleDuBot, rencontre, compterPoignee, situationPoignee, normaleDe } from "./poignee.js";
 import { installerRapide } from "./ecran-rapide.js";
 import { installerAvent } from "./ecran-avent.js";
@@ -199,6 +199,18 @@ document.addEventListener("pointerdown", jouerIntroHymne, { once: true, capture:
   el.addEventListener("click", entrer);
   el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") entrer(); });
 })();
+// Le 25 décembre (24 novembre, répliques choisies par le porteur du projet) : au premier toucher de la journée, Roland et Monique
+// souhaitent un joyeux Noël, une fois par an (après l'hymne de l'écran titre, s'il joue).
+document.addEventListener("pointerdown", () => {
+  const annee = new Date().getFullYear();
+  if (!jourDeNoel() || lire("noel25Dit", null) === annee) return;
+  ecrire("noel25Dit", annee);
+  setTimeout(() => {
+    if (S?.enJeu || voix.occupe) return;
+    const l = (POOLS.noel_25 || []).map(it => ligneMoment(it, { genre: P.genre })).filter(x => x && voix.fichiers.has(x.id));
+    if (l.length) voix.dire(l);
+  }, 3500);
+}, { once: true, capture: true });
 // (La voix de synthèse du téléphone, robotique, n'est plus proposée : les répliques sont enregistrées.)
 voix.synthese = false;
 $("snd").checked = sonActif;

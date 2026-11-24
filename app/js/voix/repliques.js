@@ -909,6 +909,11 @@ export const MOMENTS = {
     { r: "c", t: "Un smash glacial du Bonhomme de neige !" },
     { r: "d", t: "Il fallait prévoir des moufles." },
   ],
+  // Le 25 décembre au matin (24 novembre, répliques choisies par le porteur du projet) : à la première ouverture de l'appli, une fois.
+  noel_25: [
+    { r: "c", t: "Joyeux Noël, mesdames et messieurs ! Bienvenue sur le court central, même aujourd'hui !" },
+    { r: "d", t: "Joyeux Noël. J'espère que vous avez été sages. Le Père Noël, lui, vous attend pour le match du jour." },
+  ],
   // L'ambiance des matchs pendant les fêtes (noel.js), de temps en temps, une fois par match au plus.
   noel_ambiance: [
     { r: "c", t: "Les flocons tombent sur le court central, quelle ambiance !" },

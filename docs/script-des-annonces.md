@@ -118,7 +118,7 @@ restent lus par la voix de synthèse.
 | `arbitre_partout_dix_neuf_01.mp3` | Dix-neuf partout. Deux points d'écart. |
 | `arbitre_partout_vingt_01.mp3` | Vingt partout. Deux points d'écart. |
 
-## Commentateur — vif, enthousiaste, plein de références (1386 répliques)
+## Commentateur — vif, enthousiaste, plein de références (1387 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -648,6 +648,7 @@ restent lus par la voix de synthèse.
 | `commentateur_perso_neige_presentation_01.mp3` | Le Bonhomme de neige entre sur le court… et il a l'air de fondre de trac ! |
 | `commentateur_perso_neige_smash_01.mp3` | Brrr ! Le gant est complètement gelé ! |
 | `commentateur_perso_neige_smash_02.mp3` | Un smash glacial du Bonhomme de neige ! |
+| `commentateur_noel_25_01.mp3` | Joyeux Noël, mesdames et messieurs ! Bienvenue sur le court central, même aujourd'hui ! |
 | `commentateur_noel_ambiance_01.mp3` | Les flocons tombent sur le court central, quelle ambiance ! |
 | `commentateur_replay_intro_01.mp3` | Revoyons ça ! |
 | `commentateur_replay_intro_02.mp3` | On le revoit au ralenti… Regardez-moi ça ! |
@@ -1509,7 +1510,7 @@ restent lus par la voix de synthèse.
 | `commentateur_dialogue_accueil_troisieme_01_f.mp3` | Troisième match ! Mesdames et messieurs, une habituée est en train de naître ! |
 | `commentateur_dialogue_accueil_fin_troisieme_01.mp3` | Trois matchs ! Les jetons, les défis du jour et la boutique sont ouverts ! |
 
-## Commentatrice — glaciale, cinglante, jamais impressionnée (1188 répliques)
+## Commentatrice — glaciale, cinglante, jamais impressionnée (1189 répliques)
 
 | Fichier | Texte |
 |---|---|
@@ -1889,6 +1890,7 @@ restent lus par la voix de synthèse.
 | `commentatrice_perso_renne_smash_01.mp3` | Ça laisse une trace. Au sens propre. |
 | `commentatrice_perso_neige_presentation_01.mp3` | Il ne bouge pas beaucoup. C'est souvent le cas des bonshommes de neige. |
 | `commentatrice_perso_neige_smash_01.mp3` | Il fallait prévoir des moufles. |
+| `commentatrice_noel_25_01.mp3` | Joyeux Noël. J'espère que vous avez été sages. Le Père Noël, lui, vous attend pour le match du jour. |
 | `commentatrice_noel_ambiance_01.mp3` | Même en décembre, le chifoumi ne prend pas de vacances. |
 | `commentatrice_replay_intro_01.mp3` | Revoyons les images. Calmement. |
 | `commentatrice_replay_intro_02.mp3` | Au ralenti, c'est encore plus clair. |
