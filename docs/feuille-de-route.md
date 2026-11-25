@@ -6,6 +6,12 @@ Appli : https://handslam.fr/ · version de test : https://handslam.fr/preview/ �
 l'entonnoir d'entrée seront regardés à l'ouverture au public ; la seule vraie inconnue restante : des groupes qui ne connaissent pas
 le porteur du projet jouent-ils entre eux dans la durée ?
 
+**Où on en est (25 novembre, pour la session suivante)** :
+- Demande de fusion **#430** (les pulls moches gardent leur tricot avec un motif de gant choisi) : fusionnée et en ligne le 24 au soir. Étapes SQL 89 et 90 collées, « Notifier » à jour (calendrier de l'Avent et annonce du 1er décembre).
+- **Les Cahiers** : l'entretien croisé Panzerfaust – La Main Baladeuse (Master d'Ankara, chroniques du court central) mis en
+  page le 25 novembre (`app/revue-entretien-panzerfaust-main-baladeuse.html`, images dans `app/revue/`), texte du document fourni.
+- **Play Store** : deuxième refus le 24 novembre ; la suite est à décider avec le porteur du projet.
+
 **À faire après la réponse de Google sur la production (décision du 24 novembre)** : un paquet Android 6 (PWABuilder, comme
 d'habitude), pour la petite icône des notifications (le V de l'appli, `app/icons/icon-monochrome-512.png`, « purpose: monochrome »
 dans le manifeste) : aujourd'hui, l'appli du Play Store montre un carré blanc.
