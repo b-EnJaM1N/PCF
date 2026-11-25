@@ -7,10 +7,9 @@ l'entonnoir d'entrée seront regardés à l'ouverture au public ; la seule vraie
 le porteur du projet jouent-ils entre eux dans la durée ?
 
 **Où on en est (25 novembre, pour la session suivante)** :
-- Demande de fusion **#430** ouverte (les pulls moches gardent leur tricot avec un motif de gant choisi) : à fusionner avant le
-  1er décembre. Étapes SQL 89 et 90 collées, « Notifier » à jour (calendrier de l'Avent et annonce du 1er décembre).
-- **Les Cahiers** : un entretien croisé (chronique du court central) est prêt chez le porteur du projet ; on attend les
-  retouches éventuelles d'un des deux joueurs, puis on le publie dans la revue.
+- Demande de fusion **#430** (les pulls moches gardent leur tricot avec un motif de gant choisi) : fusionnée et en ligne le 24 au soir. Étapes SQL 89 et 90 collées, « Notifier » à jour (calendrier de l'Avent et annonce du 1er décembre).
+- **Les Cahiers** : l'entretien croisé Panzerfaust – La Main Baladeuse (Master d'Ankara, chroniques du court central) mis en
+  page le 25 novembre (`app/revue-entretien-panzerfaust-main-baladeuse.html`, images dans `app/revue/`), texte du document fourni.
 - **Play Store** : deuxième refus le 24 novembre ; la suite est à décider avec le porteur du projet.
 
 **À faire après la réponse de Google sur la production (décision du 24 novembre)** : un paquet Android 6 (PWABuilder, comme
