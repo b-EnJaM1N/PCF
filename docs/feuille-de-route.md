@@ -11,6 +11,11 @@ le porteur du projet jouent-ils entre eux dans la durée ?
 - **Les Cahiers** : l'entretien croisé Panzerfaust – La Main Baladeuse (Master d'Ankara, chroniques du court central) mis en
   page le 25 novembre (`app/revue-entretien-panzerfaust-main-baladeuse.html`, images dans `app/revue/`), texte du document fourni.
 - **Play Store** : deuxième refus le 24 novembre ; la suite est à décider avec le porteur du projet.
+  **Diagnostic du 25 novembre** : nos chiffres (table `visites`, 25 octobre - 24 novembre) : 716 matchs dans l'appli du Play Store
+  contre 7 sur le site. Play Console › Statistiques : 11 à 15 testeurs ayant l'appli installée, aucune désinstallation (« Perte
+  d'utilisateurs » à 0), mais seulement **2 à 6 appareils actifs par jour** vus par Google. Google voit donc bien l'activité de la
+  TWA ; ce qui coince, c'est le peu de testeurs qui ouvrent l'appli chaque jour. Pistes : 15 à 20 testeurs actifs chaque jour
+  (service payant acceptant les TWA, à l'étude), question posée sur le forum d'aide Google Play.
 
 **À faire après la réponse de Google sur la production (décision du 24 novembre)** : un paquet Android 6 (PWABuilder, comme
 d'habitude), pour la petite icône des notifications (le V de l'appli, `app/icons/icon-monochrome-512.png`, « purpose: monochrome »
