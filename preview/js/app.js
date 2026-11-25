@@ -47,6 +47,7 @@ import { installerDuels } from "./ecran-duel.js";
 import { installerCercles, renderFaceAFace } from "./ecran-cercles.js";
 import { duelsAvec, profils as profilsEnLigne, mesDuelsTermines, chercher as chercherJoueurs } from "./duel-serveur.js";
 import { jeuDepuisDuels, jeuMoins, estBotEnLigne } from "./stats-passees.js";
+import { ajouterOuvertures } from "./ouvertures.js";
 import { profilDepuisLigne, etatPseudo, pseudoValide } from "./synchro.js";
 import { installerSng } from "./ecran-sng.js";
 import { installerJetons } from "./ecran-jetons.js";
@@ -1661,7 +1662,7 @@ try { vueJeu = localStorage.getItem("hs_vue_jeu") || "humains"; } catch { /* rie
 let recupEnCours = false;
 async function recupererJeuPasse() {
   const uid = compteUI?.session()?.user?.id;
-  if (P.parAdvVersion >= 6 || recupEnCours || !uid) return;
+  if (P.parAdvVersion >= 7 || recupEnCours || !uid) return;
   recupEnCours = true;
   try {
     const duels = [];
@@ -1673,18 +1674,18 @@ async function recupererJeuPasse() {
     const advs = [...new Set(duels.map(d => (d.j0 === uid ? d.j1 : d.j0)).filter(Boolean))], bots = new Set();
     for (let i = 0; i < advs.length; i += 150) for (const p of await profilsEnLigne(advs.slice(i, i + 150))) if (estBotEnLigne(p.pseudo)) bots.add(p.id);
     const h = jeuDepuisDuels(duels, uid, bots);
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 6;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair ; 6 : l'Endurance, les égalités)
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 7;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair ; 6 : l'Endurance, les égalités ; 7 : les ouvertures)
     sauverP();
   } catch (e) { console.warn("Mon jeu : matchs passés", e); }
   recupEnCours = false;
   if (!$("viewProfile").hidden) renderMonJeu();
 }
 function renderMonJeu() {
-  if (!(P.parAdvVersion >= 6) && compteUI?.session()?.user) recupererJeuPasse();
+  if (!(P.parAdvVersion >= 7) && compteUI?.session()?.user) recupererJeuPasse();
   // (sans compte et sans duel joué : tous les matchs passés étaient contre des bots)
-  else if (!(P.parAdvVersion >= 6) && !compteUI?.session()?.user && !P.duelsFinis) {
+  else if (!(P.parAdvVersion >= 7) && !compteUI?.session()?.user && !P.duelsFinis) {
     const h = P.parAdv?.humains || jeuVide();
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 6; sauverP();
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 7; sauverP();
   }
   $("gameBody").innerHTML = htmlJeu(P, vueJeu, { enCours: recupEnCours, connecte: !!compteUI?.session()?.user });
   $("gameBody").querySelectorAll(".jeu-vue").forEach(b => b.addEventListener("click", () => {
@@ -1719,10 +1720,23 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
         <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
       </div>
       <p class="hint">Un joueur parfaitement imprévisible rejoue le même signe environ 33 % du temps.</p>
+      ${htmlOuvertures(vue === "total" ? (Q.parAdv ? ajouterOuvertures(Q.parAdv.humains?.ouvertures, Q.parAdv.bots?.ouvertures) : null) : V.ouvertures, vue)}
       <h2 style="margin-top:16px">Indice d'imprévisibilité</h2>
       <div class="big">${ind}<span style="font-size:1rem;color:var(--muted)"> / 100</span></div>
       <div class="gauge"><div style="width:${ind}%"></div></div>
       <p class="hint">L'analyse a deviné <b>${V.devines} coups sur ${V.lisibles}</b>, soit ${(taux * 100).toFixed(1).replace(".", ",")} %. Le hasard pur donnerait 33 % : 100 sur 100, 40 % : 80, 50 % : 50, 60 % : 20.</p>`;
+}
+// Les ouvertures (25 novembre, exception validée par le porteur du projet) : le 1er coup de chaque set, gagné, à égalité ou perdu.
+// Contre les joueurs, retrouvées dans tous les duels passés ; contre les bots, comptées depuis le 25 novembre (ouvertures.js).
+function htmlOuvertures(o, vue) {
+  const t = (o?.[0] || 0) + (o?.[1] || 0) + (o?.[2] || 0);
+  return `<h2 style="margin-top:16px">Ouvertures</h2>
+      <p class="hint">Le premier coup de chaque set.</p>
+      <div class="lines">
+        <div class="ln"><span>Gagnées</span><span>${pcRatio(o?.[0] || 0, t)}</span></div>
+        <div class="ln"><span>À égalité</span><span>${pcRatio(o?.[1] || 0, t)}</span></div>
+        <div class="ln"><span>Perdues</span><span>${pcRatio(o?.[2] || 0, t)}</span></div>
+      </div>${vue === "humains" ? "" : `<p class="hint">Contre les bots, les ouvertures sont comptées depuis le 25 novembre 2026.</p>`}`;
 }
 // Les points gagnés et joués (sans les égalités) d'une fiche, exacts : après chaque point, on sait s'il était gagné (apresVictoire,
 // apresDefaite) ; seul manque le dernier point de chaque match, toujours gagné par le vainqueur du match (20 novembre).
