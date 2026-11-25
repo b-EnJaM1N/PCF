@@ -8,8 +8,10 @@ import { lire, ecrire } from "./stockage.js";
 import { jourParis } from "./match-du-jour.js";
 
 // D'où vient la visite : l'appli Android du Play Store, l'appli installée depuis le navigateur, ou le site.
-export function origineVisite({ referrer = "", standalone = false, androidVu = false } = {}) {
-  if (androidVu || referrer.startsWith("android-app://")) return "android";
+// L'appli du Play Store se reconnaît à « HandSlamApp » dans la carte d'identité du navigateur (version WebView, 25 novembre),
+// ou, pour l'ancienne version TWA, à son adresse de provenance « android-app:// ».
+export function origineVisite({ referrer = "", standalone = false, androidVu = false, agent = "" } = {}) {
+  if (androidVu || referrer.startsWith("android-app://") || / HandSlamApp\//.test(agent)) return "android";
   return standalone ? "installee" : "site";
 }
 
@@ -51,7 +53,7 @@ export function retoursParcours({ arrivee, jour, retour7Fait = false }) {
 // D'où vient ce téléphone (on se souvient de l'appli Android, qui ne l'indique qu'à la première page).
 export function origineIci() {
   if (document.referrer.startsWith("android-app://")) ecrire("visiteAndroid", true);
-  return origineVisite({ referrer: document.referrer, standalone: matchMedia("(display-mode: standalone)").matches, androidVu: !!lire("visiteAndroid", false) });
+  return origineVisite({ referrer: document.referrer, standalone: matchMedia("(display-mode: standalone)").matches, androidVu: !!lire("visiteAndroid", false), agent: navigator.userAgent });
 }
 
 // envoyer(origine, nouveau, revenu) : l'appel au serveur ; premiereFois : aucune fiche sur ce téléphone au démarrage ;
