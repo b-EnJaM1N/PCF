@@ -1715,29 +1715,20 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
       <div class="lines">
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
         <div class="ln"><span>Taux de réussite</span><span>${(() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })()}</span></div>
+        <div class="ln"><span>Ouvertures gagnées</span><span>${(() => { const o = ouverturesDe(Q, vue, V) || []; return pcRatio(o[0] || 0, (o[0] || 0) + (o[1] || 0) + (o[2] || 0)); })()}</span></div>
         <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
         <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
       </div>
       <p class="hint">Un joueur parfaitement imprévisible rejoue le même signe environ 33 % du temps.</p>
-      ${htmlOuvertures(vue === "total" ? (Q.parAdv ? ajouterOuvertures(Q.parAdv.humains?.ouvertures, Q.parAdv.bots?.ouvertures) : null) : V.ouvertures, vue)}
       <h2 style="margin-top:16px">Indice d'imprévisibilité</h2>
       <div class="big">${ind}<span style="font-size:1rem;color:var(--muted)"> / 100</span></div>
       <div class="gauge"><div style="width:${ind}%"></div></div>
       <p class="hint">L'analyse a deviné <b>${V.devines} coups sur ${V.lisibles}</b>, soit ${(taux * 100).toFixed(1).replace(".", ",")} %. Le hasard pur donnerait 33 % : 100 sur 100, 40 % : 80, 50 % : 50, 60 % : 20.</p>`;
 }
-// Les ouvertures (25 novembre, exception validée par le porteur du projet) : le 1er coup de chaque set, gagné, à égalité ou perdu.
-// Contre les joueurs, retrouvées dans tous les duels passés ; contre les bots, comptées depuis le 25 novembre (ouvertures.js).
-function htmlOuvertures(o, vue) {
-  const t = (o?.[0] || 0) + (o?.[1] || 0) + (o?.[2] || 0);
-  return `<h2 style="margin-top:16px">Ouvertures</h2>
-      <p class="hint">Le premier coup de chaque set.</p>
-      <div class="lines">
-        <div class="ln"><span>Gagnées</span><span>${pcRatio(o?.[0] || 0, t)}</span></div>
-        <div class="ln"><span>À égalité</span><span>${pcRatio(o?.[1] || 0, t)}</span></div>
-        <div class="ln"><span>Perdues</span><span>${pcRatio(o?.[2] || 0, t)}</span></div>
-      </div>${vue === "humains" ? "" : `<p class="hint">Contre les bots, les ouvertures sont comptées depuis le 25 novembre 2026.</p>`}`;
-}
+// Les ouvertures (25 novembre, exception validée par le porteur du projet) : le 1er coup de chaque set ; « Mon jeu » montre la part
+// gagnée. Contre les joueurs, retrouvées dans tous les duels passés ; contre les bots, comptées depuis le 25 novembre (ouvertures.js).
+const ouverturesDe = (Q, vue, V) => (vue === "total" ? (Q.parAdv ? ajouterOuvertures(Q.parAdv.humains?.ouvertures, Q.parAdv.bots?.ouvertures) : null) : V.ouvertures);
 // Les points gagnés et joués (sans les égalités) d'une fiche, exacts : après chaque point, on sait s'il était gagné (apresVictoire,
 // apresDefaite) ; seul manque le dernier point de chaque match, toujours gagné par le vainqueur du match (20 novembre).
 const pointsDe = V => [(V.apresVictoire || 0) + (V.victoires || 0), (V.apresVictoire || 0) + (V.apresDefaite || 0) + (V.matchs || 0)];
