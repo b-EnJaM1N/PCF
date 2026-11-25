@@ -1945,6 +1945,8 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
       <div class="ln"><span>${toi ? "Tu joues" : elle ? "Elle joue" : "Il joue"} le plus souvent</span><span>${s(d.egalite.favori, d.egalite.favoriPct)}</span></div></div>` : "";
   const ouverture = d.ouverture ? `<h3 class="ff-titre">🎬 ${ses} ouvertures</h3>`
     + `<p class="dossier-signes">${d.ouverture.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
+    // (25 novembre, demande du porteur du projet) le résultat de ces ouvertures
+    + (d.ouverture.resultats ? `<p class="dossier-signes">${["✅ gagnées", "🟰 égalité", "❌ perdues"].map((t, k) => `<span>${d.ouverture.resultats[k]} % ${t}</span>`).join("")}</p>` : "")
     + `<p class="hint">L'ouverture, c'est le premier coup ${d.ouverture.sets ? "de chaque set" : "du match"}. D'après ${d.ouverture.vus} ouvertures.</p>` : "";
   const smash = d.smash ? `<h3 class="ff-titre">💥 ${ses} smashs</h3><div class="lines">
       <div class="ln"><span>Smashs joués</span><span>${d.smash.total}, dont ${d.smash.gagnes} gagnant${d.smash.gagnes > 1 ? "s" : ""}</span></div>

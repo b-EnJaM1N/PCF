@@ -178,7 +178,7 @@ export function dossierDetaille(matchs, { elle = false, toi = false } = {}) {
   // Après une égalité : il garde son signe ou il change, et ce qu'il joue.
   let apresEg = 0, gardeEg = 0; const signeEg = [0, 0, 0];
   // Ses smashs, ses débuts de set (sinon de match).
-  const smashs = [0, 0, 0], smashsGagnes = [0, 0, 0], debuts = [0, 0, 0];
+  const smashs = [0, 0, 0], smashsGagnes = [0, 0, 0], debuts = [0, 0, 0], resultatsDeb = [0, 0, 0];   // (25 novembre) [gagnées, égalités, perdues]
   let avecFormat = false;
   for (const m of liste) {
     const c = coupsDe(m);
@@ -187,11 +187,12 @@ export function dossierDetaille(matchs, { elle = false, toi = false } = {}) {
     const f = m[0]?.p ? { pointsParSet: m[0].p, setsGagnants: m[0].n || 2 } : null;
     let idx = [0];
     if (f) { try { idx = debutsDeSet(c, f); avecFormat = true; } catch { idx = [0]; } }
-    for (const i of idx) if (c[i]) debuts[c[i].b]++;
+    for (const i of idx) if (c[i]) { debuts[c[i].b]++; resultatsDeb[c[i].gagnant === 1 ? 0 : c[i].gagnant === 0 ? 2 : 1]++; }
   }
   const favEg = signeEg.indexOf(Math.max(...signeEg)), totDeb = debuts[0] + debuts[1] + debuts[2], favDeb = debuts.indexOf(Math.max(...debuts));
   const egalite = apresEg >= 6 ? { vus: apresEg, garde: P(gardeEg, apresEg), favori: favEg, favoriPct: P(signeEg[favEg], apresEg) } : null;
-  const ouverture = totDeb >= 4 ? { vus: totDeb, sets: avecFormat, repartition: debuts.map(x => P(x, totDeb)), favori: favDeb, favoriPct: P(debuts[favDeb], totDeb) } : null;
+  const ouverture = totDeb >= 4 ? { vus: totDeb, sets: avecFormat, repartition: debuts.map(x => P(x, totDeb)), favori: favDeb, favoriPct: P(debuts[favDeb], totDeb),
+    resultats: resultatsDeb.map(x => P(x, totDeb)) } : null;
   const totSmash = smashs[0] + smashs[1] + smashs[2];
   const smash = totSmash ? { total: totSmash, gagnes: smashsGagnes.reduce((a, b) => a + b, 0), parSigne: smashs, favori: smashs.indexOf(Math.max(...smashs)) } : null;
   // Sa forme récente : ses 10 derniers matchs comparés aux précédents.
