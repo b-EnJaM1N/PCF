@@ -1756,7 +1756,7 @@ const pcRatio = (a, b, vide = "–") => (b ? `<b>${Math.round((100 * a) / b)} %<
 function htmlMental(Q) {
   const pc = (a, b) => pcRatio(a, b, "Aucune pour l'instant");
   return `
-      <div class="ln"><span>Balles de set et de match converties</span><span>${pc(Q.ballesConverties, Q.ballesObtenues)}</span></div>
+      ${lnInfo("Finition", pc(Q.ballesConverties, Q.ballesObtenues), "Les balles de set et de match converties : quand on peut conclure le set ou le match, combien de fois on le fait.")}
       <div class="ln"><span>Balles adverses sauvées</span><span>${pc(Q.ballesSauvees, Q.ballesSubies)}</span></div>
       <div class="ln"><span>Sets décisifs gagnés</span><span>${pcRatio(Q.decisifsGagnes, Q.decisifsJoues, "Aucun joué")}</span></div>
       <div class="ln"><span>Matchs gagnés après avoir perdu le 1er set</span><span>${Q.remontadas}</span></div>`;
