@@ -27,6 +27,10 @@
   .texte-revue .signature { font-size: .85rem; color: var(--muted); margin: 0 0 22px; padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, .15); }
   .texte-revue p { font-size: 1rem; line-height: 1.7; margin: 0 0 14px; }
   .texte-revue .jouer { margin: 18px 0 0; }
+  .texte-revue .jouer .btn { display: block; text-align: center; box-sizing: border-box; }
+  .texte-revue .jouer .btn + .btn { margin-top: 10px; }
+  .texte-revue .jouer .btn.alt { color: var(--line); }
+  .texte-revue .partage-msg { font-size: .9rem; color: var(--muted); text-align: center; margin: 10px 0 0; word-break: break-all; }
   .texte-revue a.btn { color: var(--court-deep); }
   .texte-revue > .fin img { display: inline-block; }
   .texte-revue > .fin { text-align: center; color: var(--muted); margin: 28px 0 0; letter-spacing: .4em; }
@@ -45,7 +49,9 @@
   <p>C'est dans cet écart avec le hasard parfait de la machine que réside même la condition de possibilité du chi fou mi : le joueur est assuré qu'il affronte une stratégie humaine, trop humaine, et le défi est alors de la contrer.</p>
   <p>Pierre-ciseaux-feuille, c'est ainsi l'homme qui reconnaît dans la main tendue de son adversaire le visage de son frère d'humanité. Survivance d'un monde d'hier, d'un monde sans la machine, c'est aussi, nous en sommes convaincus, l'espoir du monde de demain.</p>
   <p class="fin"><img src="icons/logo.svg" alt="HandSlam, club de Pierre · Feuille · Ciseaux" width="110" height="110"></p>
-  <p class="jouer"><a class="btn" href="./">✊ Jouer sur HandSlam</a></p>
+  <p class="jouer"><button class="btn alt" type="button" id="partagerArticle">📤 Partager l'article</button><a class="btn" href="./">✊ Jouer sur HandSlam</a></p>
+  <p class="partage-msg" id="partageMsg" role="status" hidden></p>
 </main>
+<script src="js/partage-revue.js"></script>
 </body>
 </html>
