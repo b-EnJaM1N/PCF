@@ -144,18 +144,19 @@ export async function dessinerCarte(canvas, c, j) {
   ctx.fillStyle = T.encre; ajuster(ctx, MAJ(j.nom), L - 200, 800, 140, 70);
   ctx.fillText(MAJ(j.nom), L / 2, y);
   if (j.numero) { ctx.font = `500 34px ${COND}`; ctx.globalAlpha = 0.75; ctx.fillText(`#${j.numero}`, L / 2, y + 44); ctx.globalAlpha = 1; }
-  if (c.surnom) { ajuster(ctx, c.surnom, L - 200, "italic 400", 44, 28, TEXTE); ctx.fillText(c.surnom, L / 2, y + 100); }
-  y += 140; ctx.fillRect(140, y, L - 280, 4);
+  // (26 novembre, demande du porteur du projet : sans le surnom, pour laisser plus de place aux notes)
+  y += 76; ctx.fillRect(140, y, L - 280, 4);
 
   // Les notes, en deux colonnes (26 novembre : huit notes sur quatre lignes, un peu plus serrées)
-  const cols = [260, 690], pas = c.notes.length > 6 ? 84 : 110, tailles = c.notes.length > 6 ? [66, 44] : [76, 50];
+  // (26 novembre : sans le surnom, des notes plus grandes)
+  const cols = [260, 690], pas = c.notes.length > 6 ? 104 : 120, tailles = c.notes.length > 6 ? [84, 54] : [90, 58];
   c.notes.forEach((n, i) => {
-    const x = cols[i % 2], yy = y + (pas === 110 ? 110 : 92) + Math.floor(i / 2) * pas;
+    const x = cols[i % 2], yy = y + 104 + Math.floor(i / 2) * pas;
     // (20 novembre : de vrais pourcentages, plus larges que les notes sur 99)
     ctx.textAlign = "right"; ctx.font = `800 ${tailles[0]}px ${COND}`; ctx.fillText(String(n.valeur), x + 70, yy);
     ctx.textAlign = "left"; ctx.font = `700 ${tailles[1]}px ${COND}`; ctx.fillText(n.code, x + 96, yy);
   });
-  ctx.fillRect(L / 2 - 2, y + 30, 4, pas === 110 ? 320 : 330);
+  ctx.fillRect(L / 2 - 2, y + 30, 4, c.notes.length > 6 ? 400 : 330);
 
   // Le pied de carte : rareté, titres, marque
   ctx.textAlign = "center"; ctx.font = `700 34px ${COND}`;
