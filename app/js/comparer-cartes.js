@@ -44,15 +44,16 @@ export async function dessinerComparaison(canvas, moi, lui) {
   ecrire(lui.nom.toLocaleUpperCase("fr-FR"), xb, 400, `700 50px ${COND}`, BLANC, "center", 420);
   ecrire(`${moi.typeNiveau.toLowerCase()} ${moi.niveau}`, xa, 445, `500 30px ${TXT}`, GRIS, "center", 420);
   ecrire(`${lui.typeNiveau.toLowerCase()} ${lui.niveau}`, xb, 445, `500 30px ${TXT}`, GRIS, "center", 420);
-  // Les six notes
+  // Les notes (26 novembre : huit notes, des lignes plus serrées pour tenir dans l'image)
   let y = 520;
+  const serre = r.lignes.length > 6, pas = serre ? 88 : 115;
   r.lignes.forEach(l => {
     ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.fillRect(110, y, L - 220, 2);
-    ecrire(String(l.a), xa, y + 88, `800 80px ${COND}`, l.mieux === 0 ? OR : BLANC);
-    ecrire(String(l.b), xb, y + 88, `800 80px ${COND}`, l.mieux === 1 ? OR : BLANC);
-    ecrire(l.code, L / 2, y + 62, `700 46px ${COND}`, BLANC);
-    ecrire(l.nom, L / 2, y + 100, `500 28px ${TXT}`, GRIS);
-    y += 115;
+    ecrire(String(l.a), xa, y + (serre ? 70 : 88), `800 ${serre ? 66 : 80}px ${COND}`, l.mieux === 0 ? OR : BLANC);
+    ecrire(String(l.b), xb, y + (serre ? 70 : 88), `800 ${serre ? 66 : 80}px ${COND}`, l.mieux === 1 ? OR : BLANC);
+    ecrire(l.code, L / 2, y + (serre ? 48 : 62), `700 ${serre ? 40 : 46}px ${COND}`, BLANC);
+    ecrire(l.nom, L / 2, y + (serre ? 78 : 100), `500 ${serre ? 24 : 28}px ${TXT}`, GRIS);
+    y += pas;
   });
   ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.fillRect(110, y, L - 220, 2);
   ecrire(MARQUE.nom.toLocaleUpperCase("fr-FR"), L / 2, H - 56, `800 34px ${COND}`, OR);

@@ -12,7 +12,8 @@ test("le Flair : seulement une habitude déjà confirmée dans le match", () => 
   c.push(coup(0, 1));
   const r = flairEtEndurance(c);
   assert.ok(r.tentees >= 1 && r.reussies >= 1, JSON.stringify(r));
-  assert.deepEqual(flairEtEndurance(c.slice(0, 3)), { tentees: 0, reussies: 0, chaines: 0, gagnees: 0 }, "pas encore d'habitude confirmée");
+  assert.ok(r.occasions >= 1 && r.points >= 1 && r.points <= r.occasions, "le nouveau Flair : des occasions, des points marqués");
+  assert.deepEqual(flairEtEndurance(c.slice(0, 3)), { occasions: 0, points: 0, tentees: 0, reussies: 0, chaines: 0, gagnees: 0 }, "pas encore d'habitude confirmée");
 });
 
 test("l'Endurance : le point qui suit 2 égalités ou plus", () => {

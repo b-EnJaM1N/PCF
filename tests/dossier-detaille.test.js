@@ -29,6 +29,7 @@ test("le dossier détaillé : réflexes chiffrés, égalités, débuts, smashs, 
   assert.equal(d.smash.favori, 2); assert.equal(d.smash.total, 16);
   assert.deepEqual(d.smash.repartition, [0, 0, 100]); assert.equal(d.smash.resultats.reduce((a, b) => a + b, 0), 100);
   assert.ok(d.forme);
+  assert.equal(d.sangFroid.length, 3); assert.ok(d.sangFroid.every(([p, n]) => p <= n));
   assert.ok(d.conseils.length >= 1 && d.conseils.length <= 3);
   assert.ok(d.conseils.some(t => /vient de gagner/.test(t)));
   assert.match(dossierDetaille([...Array(16)].map(unMatch), { elle: true }).conseils.join(" "), /\belle\b/);
@@ -41,4 +42,14 @@ test("mon propre dossier : au « tu », avec mes failles", () => {
   const d = dossierDetaille([...Array(5)].map(m), { toi: true });
   assert.ok(d.reflexes.every(r => /\btu\b|\bTu\b/.test(r.texte)), "les réflexes au « tu »");
   assert.ok(d.conseils.length && d.conseils.every(t => typeof t === "string" && /\btu\b|\bTu\b/.test(t)), d.conseils.join(" | "));
+});
+
+test("le sang-froid du dossier : après 2, 3, 4 points perdus ou plus, les égalités ignorées (26 novembre)", () => {
+  // g : 1 = il marque, 0 = il perd, null = égalité (ignorée).
+  // perdu, perdu, marqué ; perdu ×4, marqué ; perdu, égalité, perdu, égalité, marqué ; perdu, perdu, perdu
+  const g = [0, 0, 1, 0, 0, 0, 0, 1, 0, null, 0, null, 1, 0, 0, 0];
+  const m = g.map(x => ({ a: 0, b: x === 1 ? 0 : x === 0 ? 1 : 0, g: x }));
+  const d = dossierDetaille([m]);
+  // après 2 : marqué (coup 2), perdu (coup 5), marqué (coup 12, malgré les égalités), perdu (coup 15) ; après 3 : perdu (coup 6) ; après 4 : marqué (coup 7)
+  assert.deepEqual(d.sangFroid, [[2, 4], [0, 1], [1, 1]]);
 });

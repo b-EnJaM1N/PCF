@@ -1665,7 +1665,7 @@ try { vueJeu = localStorage.getItem("hs_vue_jeu") || "humains"; } catch { /* rie
 let recupEnCours = false;
 async function recupererJeuPasse() {
   const uid = compteUI?.session()?.user?.id;
-  if (P.parAdvVersion >= 7 || recupEnCours || !uid) return;
+  if (P.parAdvVersion >= 10 || recupEnCours || !uid) return;
   recupEnCours = true;
   try {
     const duels = [];
@@ -1677,18 +1677,21 @@ async function recupererJeuPasse() {
     const advs = [...new Set(duels.map(d => (d.j0 === uid ? d.j1 : d.j0)).filter(Boolean))], bots = new Set();
     for (let i = 0; i < advs.length; i += 150) for (const p of await profilsEnLigne(advs.slice(i, i + 150))) if (estBotEnLigne(p.pseudo)) bots.add(p.id);
     const h = jeuDepuisDuels(duels, uid, bots);
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 7;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair ; 6 : l'Endurance, les égalités ; 7 : les ouvertures)
+    // (27 novembre) le Sang-froid sans les égalités : celui compté contre les bots avec l'ancienne règle repart de zéro
+    if (!(P.parAdvVersion >= 10) && P.parAdv?.bots) { P.parAdv.bots.calmeOccasions = 0; P.parAdv.bots.calmePoints = 0; }
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 10;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair ; 6 : l'Endurance, les égalités ; 7 : les ouvertures ; 8 : le nouveau Flair ; 9 : le Sang-froid ; 10 : le Sang-froid sans les égalités)
     sauverP();
   } catch (e) { console.warn("Mon jeu : matchs passés", e); }
   recupEnCours = false;
   if (!$("viewProfile").hidden) renderMonJeu();
 }
 function renderMonJeu() {
-  if (!(P.parAdvVersion >= 7) && compteUI?.session()?.user) recupererJeuPasse();
+  if (!(P.parAdvVersion >= 10) && compteUI?.session()?.user) recupererJeuPasse();
   // (sans compte et sans duel joué : tous les matchs passés étaient contre des bots)
-  else if (!(P.parAdvVersion >= 7) && !compteUI?.session()?.user && !P.duelsFinis) {
+  else if (!(P.parAdvVersion >= 10) && !compteUI?.session()?.user && !P.duelsFinis) {
+    if (P.parAdv?.bots) { P.parAdv.bots.calmeOccasions = 0; P.parAdv.bots.calmePoints = 0; }
     const h = P.parAdv?.humains || jeuVide();
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 7; sauverP();
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 10; sauverP();
   }
   $("gameBody").innerHTML = htmlJeu(P, vueJeu, { enCours: recupEnCours, connecte: !!compteUI?.session()?.user });
   $("gameBody").querySelectorAll(".jeu-vue").forEach(b => b.addEventListener("click", () => {
@@ -1719,6 +1722,7 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
         ${lnInfo("Taux de réussite", (() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })(), "Les points gagnés sur les points joués, sans compter les égalités. Au hasard : 50 % (autant de points gagnés que perdus).")}
         ${lnInfo("Punch", (() => { const [g, t] = pointsDe(V); return V.egalites === undefined ? "–" : pcRatio(g, t + V.egalites, "–"); })(), "Les points marqués sur tous les coups joués : ni égalité, ni point perdu. Au hasard : 33 %.")}
+        ${lnInfo("Sang-froid", (() => { const c = calmeDe(Q, vue, V); return pcRatio(c[0], c[1], "–"); })(), "Après deux points perdus d'affilée, le point suivant gagné quand même (beaucoup paniquent et deviennent prévisibles). Les égalités ne comptent pas. Au hasard : 50 %. Contre les bots, compté depuis le 27 novembre 2026.")}
         <div class="ln"><span>Ouvertures gagnées</span><span>${(() => { const o = ouverturesDe(Q, vue, V) || []; return pcRatio(o[0] || 0, (o[0] || 0) + (o[1] || 0) + (o[2] || 0)); })()}</span></div>
         <div class="ln"><span>Smashs gagnants</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
@@ -1732,6 +1736,10 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
 }
 // Les ouvertures (25 novembre, exception validée par le porteur du projet) : le 1er coup de chaque set ; « Mon jeu » montre la part
 // gagnée. Contre les joueurs, retrouvées dans tous les duels passés ; contre les bots, comptées depuis le 25 novembre (ouvertures.js).
+// (26 novembre) le Sang-froid : [points marqués, occasions] après deux points perdus d'affilée ; « Tout » = joueurs + bots.
+const calmeDe = (Q, vue, V) => (vue === "total"
+  ? ["calmePoints", "calmeOccasions"].map(k => (Q.parAdv?.humains?.[k] || 0) + (Q.parAdv?.bots?.[k] || 0))
+  : [V.calmePoints || 0, V.calmeOccasions || 0]);
 const ouverturesDe = (Q, vue, V) => (vue === "total" ? (Q.parAdv ? ajouterOuvertures(Q.parAdv.humains?.ouvertures, Q.parAdv.bots?.ouvertures) : null) : V.ouvertures);
 // Une ligne de stat qui s'explique quand on la touche (26 novembre, demande du porteur du projet : les explications entre
 // parenthèses brouillaient la lecture).
@@ -1967,8 +1975,13 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
   const pcR = (x, n) => `<b>${Math.round((100 * x) / n)} %</b> <span class="ratio">(${x}/${n})</span>`;
   const fl = d.flair, en = d.endurance;
   const flairEnd = `<h3 class="ff-titre">🔍 ${toi ? "Ton" : "Son"} flair et ${toi ? "ta" : "sa"} résistance</h3><div class="lines">
-      <div class="ln"><span>Lectures réussies (une habitude de l'adversaire punie)</span><span>${fl && fl.tentees >= 30 ? pcR(fl.reussies, fl.tentees) : `pas encore assez (${fl?.tentees || 0} sur 30)`}</span></div>
+      <div class="ln"><span>Points marqués quand l'adversaire a une habitude installée</span><span>${fl && fl.occasions >= 50 ? pcR(fl.points, fl.occasions) : `pas encore assez (${fl?.occasions || 0} sur 50)`}</span></div>
       <div class="ln"><span>Quand ${toi ? "tu ne gagnes" : elle ? "elle ne gagne" : "il ne gagne"} pas le point : égalité plutôt que point perdu</span><span>${en && en.nonGagnes >= 50 ? pcR(en.egalites, en.nonGagnes) : `pas encore assez (${en?.nonGagnes || 0} coups sur 50)`}</span></div></div>`;
+  // (26 novembre, demande du porteur du projet) le sang-froid en détail : le point qui suit une série de points perdus
+  const sf = d.sangFroid, sfTot = sf ? sf.reduce((a, x) => a + x[1], 0) : 0;
+  const sangFroid = sf && sfTot ? `<h3 class="ff-titre">🧊 ${toi ? "Ton" : "Son"} sang-froid</h3><div class="lines">${["2 points perdus d'affilée", "3 points perdus d'affilée", "4 points perdus d'affilée ou plus"]
+    .map((t, k) => `<div class="ln"><span>Après ${t}</span><span>${sf[k][1] ? pcR(sf[k][0], sf[k][1]) : "–"}</span></div>`).join("")}</div>`
+    + `<p class="hint">Le point suivant gagné quand même. Les égalités ne comptent pas. Au hasard : 50 %.</p>` : "";
   const f = d.forme;
   const forme = f ? `<h3 class="ff-titre">📈 ${sa} forme récente</h3><p class="hint">${Math.abs(f.ecart) >= 6
     ? `Sur ${ses_} 10 derniers matchs, ${il} ${toi ? "joues" : "joue"} ${f.ecart > 0 ? "plus" : "moins"} ${NOMS_SIGNES[f.signe] === "Ciseaux" ? "les Ciseaux" : `la ${NOMS_SIGNES[f.signe]}`} : ${f.recent[f.signe]} % contre ${f.avant[f.signe]} % avant.`
@@ -1976,7 +1989,7 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
   return `<h3 class="ff-titre">🎯 ${toi ? "Tes failles" : `Pour ${elle ? "la" : "le"} battre`}</h3>${conseils}`
     + `<p class="dossier-source">D'après ${ses_} ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).${toi ? " C'est ce que tes adversaires voient de toi." : ""}</p>`
     + `<p class="dossier-signes">${d.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
-    + `<h3 class="ff-titre">🧠 ${ses} réflexes</h3>${reflexes}${egalite}${ouverture}${smash}${flairEnd}${forme}`;
+    + `<h3 class="ff-titre">🧠 ${ses} réflexes</h3>${reflexes}${egalite}${ouverture}${smash}${flairEnd}${sangFroid}${forme}`;
 }
 // Mon dossier (Ma fiche › Stats ; 20 novembre, demande du porteur du projet) : avec un compte, d'après mes 50 derniers matchs en
 // ligne, ce que voient mes adversaires. Chargé à l'ouverture de la carte, puis gardé jusqu'au prochain match.
@@ -2024,7 +2037,7 @@ function renderCarte() {
     // (21 novembre) la part des bots dans les notes, tant que le joueur a moins de 20 matchs contre de vrais joueurs
     const kb = partBots(P), nh = P.parAdv?.humains?.matchs || 0;
     $("carteNotes").innerHTML = (kb > 0 && c.generale !== null ? `<li>🤖 Tes matchs contre les bots comptent encore pour ${Math.round(100 * kb)} % (${nh} match${nh > 1 ? "s" : ""} contre des joueurs sur ${HUMAINS_POUR_CARTE}).</li>` : "")
-      + `<li><b>GÉNÉRAL ${c.generale ?? "–"}</b> · la moyenne de tes six notes (${esc(texteCoefs())} ; une note pas encore calculée compte 70)</li>`
+      + `<li><b>GÉNÉRAL ${c.generale ?? "–"}</b> · la moyenne de tes huit notes (${esc(texteCoefs())} ; une note pas encore calculée compte 70)</li>`
       + notes.map(n => `<li><b>${n.code} ${n.valeur}</b> · ${esc(n.nom)} : ${esc(n.aide)}</li>`).join("");
     $("carteCalcul").innerHTML = notes.map(n => `<li><b>${esc(n.nom)}</b> : ${esc(n.calcul)}</li>`).join("");   // (« Le détail du calcul »)
     await preparerPartage(canvas, { img: $("carteImg"), partager: $("cartePartager"), enregistrer: $("carteEnregistrer"), msg: $("carteMsg"),
