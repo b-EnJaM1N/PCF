@@ -358,6 +358,8 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .fo-dossier ul { padding-left: 1.1em; }
 .dossier-source { color: var(--line); font-size: .8rem; }
 .dossier-signes { display: flex; gap: 14px; flex-wrap: wrap; font-weight: 600; }
+/* (25 novembre) les ouvertures du dossier : les signes, puis le résultat, chacun sur une ligne, centrés */
+.dossier-ouv { justify-content: center; flex-wrap: nowrap; white-space: nowrap; gap: 18px; }
 .intro.show .fo-dossier { animation: fade .45s var(--fin, 3.2s) both; }
 .fo-key { font-size: .9rem; color: var(--line); text-align: center; line-height: 1.4; margin: 10px 0 12px; }
 .fo-key b { color: var(--me); }

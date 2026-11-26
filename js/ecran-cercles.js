@@ -62,6 +62,9 @@ function corpsFaceAFace(r, nom, officiels = false) {
   const part = (t, k) => { const tot = t[0] + t[1] + t[2]; return tot ? `${Math.round(100 * t[k] / tot)} %` : "–"; };
   const signes = [0, 1, 2].map(k => ligne(part(r.mesSignes, k), `${EMOJI[k]} ${NOM[k]}`, part(r.sesSignes, k))).join("");
   const taux = (x, k) => (x.total ? `${Math.round(100 * x[k] / x.total)} %` : "–");
+  // (25 novembre) Les ouvertures, le 1er coup de chaque set : gagnées de chaque côté (mes perdues sont ses gagnées), et à égalité.
+  const ouv = o => { const t = (o?.[0] || 0) + (o?.[1] || 0) + (o?.[2] || 0), p = x => (t ? `${Math.round(100 * x / t)} %` : "–");
+    return ligne(p(o?.[0] || 0), "Ouvertures gagnées (1er coup d'un set)", p(o?.[2] || 0)) + ligne(p(o?.[1] || 0), "Ouvertures à égalité", p(o?.[1] || 0)); };
   const serie = r.serie.n >= 2 ? `<p class="hint">🔥 ${r.serie.n} ${r.serie.gagne ? "victoires" : "défaites"} de suite ${r.serie.gagne ? "pour toi" : `face à ${n}`}.</p>` : "";
   const date = d => new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
   const duelLigne = m => `<li>${m.gagne ? "✅ Victoire" : "❌ Défaite"}${m.scores.length ? ` · ${m.scores.map(([x, y]) => `${x}–${y}`).join(", ")}` : ""}${m.fin === "forfait" ? " · forfait" : m.fin === "abandon" ? " · abandon" : ""} · ${m.type} · ${date(m.date)}</li>`;
@@ -74,6 +77,7 @@ function corpsFaceAFace(r, nom, officiels = false) {
     ${forme(r.derniers)}
     ${ligne(r.sets[0], "Sets gagnés", r.sets[1])}
     ${ligne(r.points[0], "Points gagnés", r.points[1])}
+    ${ouv(r.ouvertures)}
     <h3 class="ff-titre">Signes joués</h3>
     ${signes}
     ${ligne(taux(r.rejoueApresVictoire[0], "meme"), "Rejoue le même signe après un point gagné", taux(r.rejoueApresVictoire[1], "meme"))}

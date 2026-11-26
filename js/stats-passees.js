@@ -6,6 +6,7 @@ import { jeuVide } from "./profil.js";
 import { nouveauMatch, jouerCoup } from "./regles.js";
 import { nouvellesStats, suivreCoup } from "./stats-match.js";
 import { flairEtEndurance } from "./flair.js";
+import { ouverturesDuel, ajouterOuvertures } from "./ouvertures.js";
 
 export const estBotEnLigne = pseudo => String(pseudo || "").includes("🤖");
 
@@ -35,6 +36,7 @@ export function jeuDepuisDuels(duels, uid, bots = new Set()) {
     // (20 novembre) le Flair et l'Endurance, vus de mon côté
     const fe = flairEtEndurance(coups.map(c => ({ a: moi === 0 ? c.a : c.b, b: moi === 0 ? c.b : c.a, gagnant: c.g === null || c.g === undefined ? null : c.g === moi ? 0 : 1 })));
     j.egalites += coups.filter(c => c.g === null || c.g === undefined).length;
+    j.ouvertures = ajouterOuvertures(j.ouvertures, ouverturesDuel(d, moi));   // (25 novembre : le 1er coup de chaque set)
     j.flairTentees += fe.tentees; j.flairReussies += fe.reussies; j.endChaines += fe.chaines; j.endGagnees += fe.gagnees;
     // (20 novembre) Les balles de set et de match, les sets décisifs et les lectures réussies : on rejoue le score du match.
     if (d.points_par_set) {
@@ -56,8 +58,10 @@ export function jeuDepuisDuels(duels, uid, bots = new Set()) {
 }
 
 // Contre les bots : le total moins ce qui a été joué contre les joueurs (jamais en dessous de zéro).
+// Les ouvertures (25 novembre) n'ont pas de total : celles contre les bots, comptées depuis ce jour-là, sont gardées telles quelles.
 export function jeuMoins(P, h) {
   const b = jeuVide(), pos = x => Math.max(0, x);
+  if (Array.isArray(P.parAdv?.bots?.ouvertures)) b.ouvertures = [...P.parAdv.bots.ouvertures];
   b.matchs = pos(P.matchs - h.matchs); b.victoires = pos((P.victoires || 0) - (h.victoires || 0));
   b.signes = P.signes.map((x, i) => pos(x - h.signes[i]));
   for (const k of ["smashsTentes", "smashsReussis", "apresVictoire", "memeApresVictoire", "apresDefaite", "memeApresDefaite", "devines", "lisibles",
