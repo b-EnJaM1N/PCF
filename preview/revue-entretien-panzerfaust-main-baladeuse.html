@@ -34,6 +34,10 @@
   .texte-revue figcaption { font-size: .82rem; font-style: italic; color: var(--muted); text-align: center; margin-top: 6px; }
   .texte-revue blockquote { margin: 20px 0; padding: 4px 0 4px 16px; border-left: 3px solid var(--me); font-style: italic; font-size: 1.05rem; line-height: 1.6; }
   .texte-revue .jouer { margin: 18px 0 0; }
+  .texte-revue .jouer .btn { display: block; text-align: center; box-sizing: border-box; }
+  .texte-revue .jouer .btn + .btn { margin-top: 10px; }
+  .texte-revue .jouer .btn.alt { color: var(--line); }
+  .texte-revue .partage-msg { font-size: .9rem; color: var(--muted); text-align: center; margin: 10px 0 0; word-break: break-all; }
   .texte-revue a.btn { color: var(--court-deep); }
   .texte-revue > .fin img { display: inline-block; }
   .texte-revue > .fin { text-align: center; color: var(--muted); margin: 28px 0 0; letter-spacing: .4em; }
@@ -85,7 +89,9 @@
   <blockquote>« Au chifoumi, chaque match écrit sa propre histoire. Elle n'est ni le prolongement de la précédente, ni l'annonce de la suivante. Le véritable talent consiste à savoir lire l'instant. »</blockquote>
   <p>C'est une philosophie que je m'efforce de garder à l'esprit.</p>
   <p class="fin"><img src="icons/logo.svg" alt="HandSlam, club de Pierre · Feuille · Ciseaux" width="110" height="110"></p>
-  <p class="jouer"><a class="btn" href="./">✊ Jouer sur HandSlam</a></p>
+  <p class="jouer"><button class="btn alt" type="button" id="partagerArticle">📤 Partager l'article</button><a class="btn" href="./">✊ Jouer sur HandSlam</a></p>
+  <p class="partage-msg" id="partageMsg" role="status" hidden></p>
 </main>
+<script src="js/partage-revue.js"></script>
 </body>
 </html>
