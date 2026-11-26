@@ -1719,6 +1719,7 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
         ${lnInfo("Taux de réussite", (() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })(), "Les points gagnés sur les points joués, sans compter les égalités. Au hasard : 50 % (autant de points gagnés que perdus).")}
         ${lnInfo("Punch", (() => { const [g, t] = pointsDe(V); return V.egalites === undefined ? "–" : pcRatio(g, t + V.egalites, "–"); })(), "Les points marqués sur tous les coups joués : ni égalité, ni point perdu. Au hasard : 33 %.")}
+        ${lnInfo("Sang-froid", (() => { const c = calmeDe(Q, vue, V); return pcRatio(c[0], c[1], "–"); })(), "Juste après deux points perdus d'affilée, le point suivant marqué quand même (beaucoup paniquent et deviennent prévisibles). Au hasard : 33 %. Contre les bots, compté depuis le 26 novembre 2026.")}
         <div class="ln"><span>Ouvertures gagnées</span><span>${(() => { const o = ouverturesDe(Q, vue, V) || []; return pcRatio(o[0] || 0, (o[0] || 0) + (o[1] || 0) + (o[2] || 0)); })()}</span></div>
         <div class="ln"><span>Smashs gagnants</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
@@ -1732,6 +1733,10 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
 }
 // Les ouvertures (25 novembre, exception validée par le porteur du projet) : le 1er coup de chaque set ; « Mon jeu » montre la part
 // gagnée. Contre les joueurs, retrouvées dans tous les duels passés ; contre les bots, comptées depuis le 25 novembre (ouvertures.js).
+// (26 novembre) le Sang-froid : [points marqués, occasions] après deux points perdus d'affilée ; « Tout » = joueurs + bots.
+const calmeDe = (Q, vue, V) => (vue === "total"
+  ? ["calmePoints", "calmeOccasions"].map(k => (Q.parAdv?.humains?.[k] || 0) + (Q.parAdv?.bots?.[k] || 0))
+  : [V.calmePoints || 0, V.calmeOccasions || 0]);
 const ouverturesDe = (Q, vue, V) => (vue === "total" ? (Q.parAdv ? ajouterOuvertures(Q.parAdv.humains?.ouvertures, Q.parAdv.bots?.ouvertures) : null) : V.ouvertures);
 // Une ligne de stat qui s'explique quand on la touche (26 novembre, demande du porteur du projet : les explications entre
 // parenthèses brouillaient la lecture).
