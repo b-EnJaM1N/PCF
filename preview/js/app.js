@@ -1727,7 +1727,7 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
         <div class="ln"><span>Smashs gagnants</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
         <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
-        ${lnInfo("Entêtement", (() => { const [c, n] = vue === "total" ? ["coupsSeries", "seriesSignes"].map(k => (Q.parAdv?.humains?.[k] || 0) + (Q.parAdv?.bots?.[k] || 0)) : [V.coupsSeries || 0, V.seriesSignes || 0]; return n ? `<b>${(c / n).toFixed(1).replace(".", ",")} coup${c / n >= 2 ? "s" : ""}</b>` : "–"; })(), "Combien de coups d'affilée tu restes sur le même signe, en moyenne. Au hasard : 1,5. Le détail par signe et ta plus longue série sont dans ton dossier. Contre les bots, compté depuis le 27 novembre 2026.")}
+        ${lnInfo("Ténacité", (() => { const [c, n] = vue === "total" ? ["coupsSeries", "seriesSignes"].map(k => (Q.parAdv?.humains?.[k] || 0) + (Q.parAdv?.bots?.[k] || 0)) : [V.coupsSeries || 0, V.seriesSignes || 0]; return n ? `<b>${(c / n).toFixed(1).replace(".", ",")} coup${c / n >= 2 ? "s" : ""}</b>` : "–"; })(), "Combien de coups d'affilée tu restes sur le même signe, en moyenne. Au hasard : 1,5. Le détail par signe et ta plus longue série sont dans ton dossier. Contre les bots, compté depuis le 27 novembre 2026.")}
       </div>
       <p class="hint">Un joueur parfaitement imprévisible rejoue le même signe environ 33 % du temps. Touche ⓘ pour l'explication d'une stat.</p>
       <h2 style="margin-top:16px">Indice d'imprévisibilité</h2>
@@ -1983,9 +1983,9 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
   const sangFroid = sf && sfTot ? `<h3 class="ff-titre">🧊 ${toi ? "Ton" : "Son"} sang-froid</h3><div class="lines">${["2 points perdus d'affilée", "3 points perdus d'affilée", "4 points perdus d'affilée ou plus"]
     .map((t, k) => `<div class="ln"><span>Après ${t}</span><span>${sf[k][1] ? pcR(sf[k][0], sf[k][1]) : "–"}</span></div>`).join("")}</div>`
     + `<p class="hint">Le point suivant gagné quand même. Les égalités ne comptent pas. Au hasard : 50 %.</p>` : "";
-  // (27 novembre, demande du porteur du projet) l'entêtement : combien de coups d'affilée sur le même signe, en moyenne
+  // (27 novembre, demande du porteur du projet) la ténacité (d'abord appelée entêtement) : combien de coups d'affilée sur le même signe, en moyenne
   const en2 = d.entetement, virgule = x => x.toFixed(1).replace(".", ",");
-  const entete = en2 ? `<h3 class="ff-titre">🪨 ${toi ? "Ton" : "Son"} entêtement</h3><div class="lines">`
+  const entete = en2 ? `<h3 class="ff-titre">🪨 ${toi ? "Ta" : "Sa"} ténacité</h3><div class="lines">`
     + `<div class="ln"><span>${toi ? "Tu restes" : elle ? "Elle reste" : "Il reste"} sur le même signe, en moyenne</span><span><b>${virgule(en2.moyenne)} coup${en2.moyenne >= 2 ? "s" : ""}</b></span></div>`
     + `<div class="ln"><span>Plus longue série</span><span>${en2.record.n} × ${EMOJIS[en2.record.signe]} ${NOMS_SIGNES[en2.record.signe]}</span></div></div>`
     + `<p class="dossier-signes dossier-ouv">${en2.parSigne.map((x, k) => `<span>${EMOJIS[k]} ${x === null ? "–" : virgule(x)}</span>`).join("")}</p>`
