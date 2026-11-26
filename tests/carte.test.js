@@ -10,7 +10,7 @@ test("un nouveau joueur : carte en bois, des tirets, niveau d'entraînement", ()
   assert.equal(c.rarete, "bois");
   assert.equal(c.niveau, 1200); assert.equal(c.typeNiveau, "NIVEAU");
   assert.equal(c.signe, null);
-  assert.deepEqual(c.notes.map(n => n.code), ["IMP", "PUN", "POL", "SGF", "FLA", "RÉS"]);
+  assert.deepEqual(c.notes.map(n => n.code), ["IMP", "PUN", "POL", "SGF", "FLA", "RÉS", "ENT", "VIC"]);
   assert.ok(c.notes.every(n => n.valeur === "–"), "pas de match contre des joueurs : des tirets");
 });
 
@@ -90,4 +90,15 @@ test("sans assez de matchs contre des joueurs, la carte compte aussi les bots, d
   assert.equal(jeuPourCarte(P).egalites, 19);
   P.parAdv.humains.matchs = HUMAINS_POUR_CARTE;
   assert.deepEqual(jeuPourCarte(P).signes, [10, 10, 10], "assez de matchs contre des joueurs : les bots ne comptent plus");
+});
+
+test("l'Entame et les Victoires (26 novembre) : 0 % = 50, la moyenne = 70, excellent = 90", async () => {
+  const { noteBareme, BAREMES } = await import("../app/js/carte-logique.js");
+  assert.equal(noteBareme(0, BAREMES.ENT), 50); assert.equal(noteBareme(100 / 3, BAREMES.ENT), 70); assert.equal(noteBareme(40, BAREMES.ENT), 90); assert.equal(noteBareme(60, BAREMES.ENT), 99);
+  assert.equal(noteBareme(0, BAREMES.VIC), 50); assert.equal(noteBareme(50, BAREMES.VIC), 70); assert.equal(noteBareme(60, BAREMES.VIC), 90); assert.equal(noteBareme(70, BAREMES.VIC), 99);
+  const P = profilParDefaut();
+  P.parAdv = { humains: { ...jeuVide(), matchs: 100, victoires: 60, ouvertures: [40, 30, 30], egalites: 0 }, bots: jeuVide() };
+  const n = Object.fromEntries(carteDe(P).notes.map(x => [x.code, x.valeur]));
+  assert.equal(n.VIC, "90", "60 % de victoires sur 100 matchs");
+  assert.equal(n.ENT, "90", "40 % d'ouvertures gagnées sur 100");
 });
