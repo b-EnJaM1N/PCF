@@ -543,6 +543,13 @@ en ligne compte toujours les siens.
    accepte le défi, gardé jusqu'à une heure après l'heure prévue (pas de forfait : ensuite, annulé sans vainqueur).
 2. **Mettre à jour la fonction « Notifier »** (même manipulation) : une notification de défi programmé ouvre « Défis »
 
+## 1 nonagies unus. Les réactions sous les articles des Cahiers (étape 91)
+
+1. Même manipulation que d'habitude avec [`etape-91-reactions-revue.sql`](etape-91-reactions-revue.sql), **après** l'étape 90
+   (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-91-reactions-revue.sql).
+   Sous chaque article : 👍 👎 😂 🔥 👏, pour tout le monde, même sans compte (une réaction de chaque sorte par navigateur ;
+   👍 et 👎 s'excluent). Seuls les compteurs se lisent.
+
 ## 1 nonagies. L'annonce du calendrier de l'Avent (étape 90)
 
 1. Même manipulation que d'habitude avec [`etape-90-annonce-avent.sql`](etape-90-annonce-avent.sql), **après** l'étape 89
