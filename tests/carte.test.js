@@ -10,7 +10,7 @@ test("un nouveau joueur : carte en bois, des tirets, niveau d'entraînement", ()
   assert.equal(c.rarete, "bois");
   assert.equal(c.niveau, 1200); assert.equal(c.typeNiveau, "NIVEAU");
   assert.equal(c.signe, null);
-  assert.deepEqual(c.notes.map(n => n.code), ["IMP", "PUN", "POL", "SGF", "FLA", "RÉS", "ENT", "VIC"]);
+  assert.deepEqual(c.notes.map(n => n.code), ["IMP", "PUN", "POL", "MEN", "FLA", "RÉS", "SGF", "VIC"]);
   assert.ok(c.notes.every(n => n.valeur === "–"), "pas de match contre des joueurs : des tirets");
 });
 
@@ -21,7 +21,7 @@ test("les stats de la carte : seulement contre les joueurs, en pourcentages", ()
     ballesObtenues: 10, ballesConverties: 5, ballesSubies: 8, ballesSauvees: 3, decisifsJoues: 2, decisifsGagnes: 2, flairOccasions: 100, flairPoints: 40, endChaines: 6, endGagnees: 5 },
     bots: jeuVide() };   // (aucun match contre les bots : la carte ne compte que les joueurs)
   assert.equal(note(P, "POL"), "70");              // 40 / 30 / 30
-  assert.equal(note(P, "SGF"), "70");              // (5 + 3 + 2) / (10 + 8 + 2) = 50 % : la moyenne
+  assert.equal(note(P, "MEN"), "70");              // (5 + 3 + 2) / (10 + 8 + 2) = 50 % : la moyenne (le Mental)
   assert.equal(note(P, "FLA"), "80");              // 40 points sur 100 occasions = 40 % (90), 100 occasions sur 200 : 70 + 20 × 0,5
   assert.equal(note(P, "RÉS"), "–", "les égalités pas encore comptées : pas de note");
   assert.equal(note(P, "PUN"), "–", "le Punch aussi a besoin des égalités");
@@ -64,7 +64,7 @@ test("le niveau officiel remplace le niveau d'entraînement quand il est connu",
 });
 
 test("la note générale : coefficients (Punch ×3 ; Imprévisibilité, Flair, Victoires ×2 ; les autres ×1), une note « – » compte 70", () => {
-  const n = v => [["IMP", v[0]], ["PUN", v[1]], ["POL", v[2]], ["SGF", v[3]], ["FLA", v[4]], ["RÉS", v[5]]].map(([code, valeur]) => ({ code, nom: code, valeur: String(valeur) }));
+  const n = v => [["IMP", v[0]], ["PUN", v[1]], ["POL", v[2]], ["MEN", v[3]], ["FLA", v[4]], ["RÉS", v[5]]].map(([code, valeur]) => ({ code, nom: code, valeur: String(valeur) }));
   // (2×70 + 3×88 + 95 + 80 + 2×75 + 72) ÷ 10 = 80,1
   assert.equal(generale(n([70, 88, 95, 80, 75, 72])), 80);
   assert.equal(generale(n([90, 90, 90, 90, "–", "–"])), 84, "(2×90 + 3×90 + 90 + 90 + 2×70 + 70) ÷ 10 = 84");
@@ -92,13 +92,18 @@ test("sans assez de matchs contre des joueurs, la carte compte aussi les bots, d
   assert.deepEqual(jeuPourCarte(P).signes, [10, 10, 10], "assez de matchs contre des joueurs : les bots ne comptent plus");
 });
 
-test("l'Entame et les Victoires (26 novembre) : 0 % = 50, la moyenne = 70, excellent = 90", async () => {
+test("les Victoires et le Sang-froid (26 novembre) : 0 % = 50, la moyenne = 70, excellent = 90", async () => {
   const { noteBareme, BAREMES } = await import("../app/js/carte-logique.js");
-  assert.equal(noteBareme(0, BAREMES.ENT), 50); assert.equal(noteBareme(100 / 3, BAREMES.ENT), 70); assert.equal(noteBareme(40, BAREMES.ENT), 90); assert.equal(noteBareme(60, BAREMES.ENT), 99);
+  const { calmeApres2 } = await import("../app/js/profil.js");
   assert.equal(noteBareme(0, BAREMES.VIC), 50); assert.equal(noteBareme(50, BAREMES.VIC), 70); assert.equal(noteBareme(60, BAREMES.VIC), 90); assert.equal(noteBareme(70, BAREMES.VIC), 99);
+  assert.equal(noteBareme(100 / 3, BAREMES.SGF), 70); assert.equal(noteBareme(40, BAREMES.SGF), 90);
+  // deux points perdus, puis marqué ; deux perdus, puis égalité ; un seul perdu : pas une occasion
+  const g = x => ({ gagnant: x });
+  assert.deepEqual(calmeApres2([g(1), g(1), g(0), g(1), g(1), g(null), g(1), g(0)]), [1, 2]);
   const P = profilParDefaut();
-  P.parAdv = { humains: { ...jeuVide(), matchs: 100, victoires: 60, ouvertures: [40, 30, 30], egalites: 0 }, bots: jeuVide() };
+  P.parAdv = { humains: { ...jeuVide(), matchs: 100, victoires: 60, calmeOccasions: 200, calmePoints: 80, egalites: 0 }, bots: jeuVide() };
   const n = Object.fromEntries(carteDe(P).notes.map(x => [x.code, x.valeur]));
   assert.equal(n.VIC, "90", "60 % de victoires sur 100 matchs");
-  assert.equal(n.ENT, "90", "40 % d'ouvertures gagnées sur 100");
+  assert.equal(n.SGF, "90", "40 % après deux points perdus, sur 200 occasions");
+  assert.equal(n.ENT, undefined, "l'Entame n'est plus sur la carte");
 });
