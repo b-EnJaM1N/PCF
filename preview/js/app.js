@@ -1665,7 +1665,7 @@ try { vueJeu = localStorage.getItem("hs_vue_jeu") || "humains"; } catch { /* rie
 let recupEnCours = false;
 async function recupererJeuPasse() {
   const uid = compteUI?.session()?.user?.id;
-  if (P.parAdvVersion >= 9 || recupEnCours || !uid) return;
+  if (P.parAdvVersion >= 10 || recupEnCours || !uid) return;
   recupEnCours = true;
   try {
     const duels = [];
@@ -1677,18 +1677,21 @@ async function recupererJeuPasse() {
     const advs = [...new Set(duels.map(d => (d.j0 === uid ? d.j1 : d.j0)).filter(Boolean))], bots = new Set();
     for (let i = 0; i < advs.length; i += 150) for (const p of await profilsEnLigne(advs.slice(i, i + 150))) if (estBotEnLigne(p.pseudo)) bots.add(p.id);
     const h = jeuDepuisDuels(duels, uid, bots);
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 9;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair ; 6 : l'Endurance, les égalités ; 7 : les ouvertures ; 8 : le nouveau Flair ; 9 : le Sang-froid)
+    // (27 novembre) le Sang-froid sans les égalités : celui compté contre les bots avec l'ancienne règle repart de zéro
+    if (!(P.parAdvVersion >= 10) && P.parAdv?.bots) { P.parAdv.bots.calmeOccasions = 0; P.parAdv.bots.calmePoints = 0; }
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 10;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair ; 6 : l'Endurance, les égalités ; 7 : les ouvertures ; 8 : le nouveau Flair ; 9 : le Sang-froid ; 10 : le Sang-froid sans les égalités)
     sauverP();
   } catch (e) { console.warn("Mon jeu : matchs passés", e); }
   recupEnCours = false;
   if (!$("viewProfile").hidden) renderMonJeu();
 }
 function renderMonJeu() {
-  if (!(P.parAdvVersion >= 9) && compteUI?.session()?.user) recupererJeuPasse();
+  if (!(P.parAdvVersion >= 10) && compteUI?.session()?.user) recupererJeuPasse();
   // (sans compte et sans duel joué : tous les matchs passés étaient contre des bots)
-  else if (!(P.parAdvVersion >= 9) && !compteUI?.session()?.user && !P.duelsFinis) {
+  else if (!(P.parAdvVersion >= 10) && !compteUI?.session()?.user && !P.duelsFinis) {
+    if (P.parAdv?.bots) { P.parAdv.bots.calmeOccasions = 0; P.parAdv.bots.calmePoints = 0; }
     const h = P.parAdv?.humains || jeuVide();
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 9; sauverP();
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 10; sauverP();
   }
   $("gameBody").innerHTML = htmlJeu(P, vueJeu, { enCours: recupEnCours, connecte: !!compteUI?.session()?.user });
   $("gameBody").querySelectorAll(".jeu-vue").forEach(b => b.addEventListener("click", () => {
@@ -1719,7 +1722,7 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
         ${lnInfo("Taux de réussite", (() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })(), "Les points gagnés sur les points joués, sans compter les égalités. Au hasard : 50 % (autant de points gagnés que perdus).")}
         ${lnInfo("Punch", (() => { const [g, t] = pointsDe(V); return V.egalites === undefined ? "–" : pcRatio(g, t + V.egalites, "–"); })(), "Les points marqués sur tous les coups joués : ni égalité, ni point perdu. Au hasard : 33 %.")}
-        ${lnInfo("Sang-froid", (() => { const c = calmeDe(Q, vue, V); return pcRatio(c[0], c[1], "–"); })(), "Juste après deux points perdus d'affilée, le point suivant marqué quand même (beaucoup paniquent et deviennent prévisibles). Au hasard : 33 %. Contre les bots, compté depuis le 26 novembre 2026.")}
+        ${lnInfo("Sang-froid", (() => { const c = calmeDe(Q, vue, V); return pcRatio(c[0], c[1], "–"); })(), "Après deux points perdus d'affilée, le point suivant gagné quand même (beaucoup paniquent et deviennent prévisibles). Les égalités ne comptent pas. Au hasard : 50 %. Contre les bots, compté depuis le 27 novembre 2026.")}
         <div class="ln"><span>Ouvertures gagnées</span><span>${(() => { const o = ouverturesDe(Q, vue, V) || []; return pcRatio(o[0] || 0, (o[0] || 0) + (o[1] || 0) + (o[2] || 0)); })()}</span></div>
         <div class="ln"><span>Smashs gagnants</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
@@ -1978,7 +1981,7 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
   const sf = d.sangFroid, sfTot = sf ? sf.reduce((a, x) => a + x[1], 0) : 0;
   const sangFroid = sf && sfTot ? `<h3 class="ff-titre">🧊 ${toi ? "Ton" : "Son"} sang-froid</h3><div class="lines">${["2 points perdus d'affilée", "3 points perdus d'affilée", "4 points perdus d'affilée ou plus"]
     .map((t, k) => `<div class="ln"><span>Après ${t}</span><span>${sf[k][1] ? pcR(sf[k][0], sf[k][1]) : "–"}</span></div>`).join("")}</div>`
-    + `<p class="hint">Le point suivant marqué quand même. Au hasard : 33 %. Une égalité arrête la série.</p>` : "";
+    + `<p class="hint">Le point suivant gagné quand même. Les égalités ne comptent pas. Au hasard : 50 %.</p>` : "";
   const f = d.forme;
   const forme = f ? `<h3 class="ff-titre">📈 ${sa} forme récente</h3><p class="hint">${Math.abs(f.ecart) >= 6
     ? `Sur ${ses_} 10 derniers matchs, ${il} ${toi ? "joues" : "joue"} ${f.ecart > 0 ? "plus" : "moins"} ${NOMS_SIGNES[f.signe] === "Ciseaux" ? "les Ciseaux" : `la ${NOMS_SIGNES[f.signe]}`} : ${f.recent[f.signe]} % contre ${f.avant[f.signe]} % avant.`

@@ -19,8 +19,8 @@ export const BAREMES = {
   PUN: [[15, 50], [100 / 3, 70], [40, 90], [45, 99]],
   // le Mental (ex-Sang-froid jusqu'au 26 novembre) : les moments décisifs remportés ; la moitié = 70
   MEN: [[20, 50], [50, 70], [60, 90], [70, 99]],
-  // (26 novembre) le Sang-froid : le coup qui suit deux points perdus d'affilée, marqué quand même ; au hasard, 1 sur 3
-  SGF: [[0, 50], [100 / 3, 70], [40, 90], [45, 99]],
+  // (26 novembre) le Sang-froid : après deux points perdus d'affilée, le point suivant gagné (les égalités ignorées) ; au hasard, la moitié
+  SGF: [[0, 50], [50, 70], [60, 90], [70, 99]],
   // (26 novembre) le Flair : les points marqués quand l'adversaire a une habitude installée ; au hasard, 1 sur 3 (meilleurs bots : 45 %)
   FLA: [[0, 50], [100 / 3, 70], [40, 90], [46, 99]],
   // la Résistance : quand on ne marque pas, la part d'égalités (plutôt que de points perdus) ; au hasard, la moitié
@@ -118,7 +118,7 @@ export function notesDe(P) {
     { code: "RÉS", nom: "Résistance", valeur: notePc(...resistance, BAREMES.RES, PREUVES.RES), aide: "éviter de perdre le point quand tu ne le marques pas",
       calcul: `quand tu ne marques pas le point, combien de fois tu évites de le perdre (une égalité plutôt qu'un point perdu). La moitié (le hasard) → 70 · 6 sur 10 → 90 · 2 sur 3 → 99 · à partir de ${MINIMUM.RES} coups` },
     { code: "SGF", nom: "Sang-froid", valeur: notePc(...calme, BAREMES.SGF, PREUVES.SGF), aide: "garder ton calme après deux points perdus d'affilée",
-      calcul: `juste après avoir perdu deux points d'affilée, combien de fois tu marques quand même le point suivant (beaucoup paniquent et deviennent prévisibles). 1 sur 3 (le hasard) → 70 · 4 sur 10 → 90 · 45 sur 100 → 99 · à partir de ${MINIMUM.SGF} occasions` },
+      calcul: `après deux points perdus d'affilée (les égalités ne comptent pas), combien de fois tu gagnes le point suivant (beaucoup paniquent et deviennent prévisibles). La moitié (le hasard) → 70 · 6 sur 10 → 90 · 7 sur 10 → 99 · à partir de ${MINIMUM.SGF} occasions` },
     { code: "VIC", nom: "Victoires", valeur: notePc(...vic, BAREMES.VIC, PREUVES.VIC), aide: "les matchs que tu gagnes",
       calcul: "sur tous tes matchs, combien tu en gagnes. Aucun → 50 · la moitié → 70 · 6 sur 10 → 90 · 7 sur 10 → 99" },
   ];
