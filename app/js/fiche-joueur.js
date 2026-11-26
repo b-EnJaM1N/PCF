@@ -20,7 +20,7 @@ export function lignesStats(s) {
     ["Sets", `${s.sets_g} gagnés, ${s.sets_p} perdus`],
     ["Série en cours", s.serie ? `${s.serie} victoire${s.serie > 1 ? "s" : ""} d'affilée` : "—"],
     ["Meilleure série", `${s.meilleure_serie} victoire${s.meilleure_serie > 1 ? "s" : ""}`],
-    ["Smashs réussis", s.smashs ? `${pct(s.smashs_reussis, s.smashs)} %` : "aucun smash", s.smashs ? `${s.smashs_reussis}/${s.smashs}` : null],
+    ["Smashs gagnants", s.smashs ? `${pct(s.smashs_reussis, s.smashs)} %` : "aucun smash", s.smashs ? `${s.smashs_reussis}/${s.smashs}` : null],
   ];
 }
 

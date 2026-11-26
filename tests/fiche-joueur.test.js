@@ -13,7 +13,7 @@ test("la fiche d'un joueur : les stats en lignes", () => {
   const l = Object.fromEntries(lignesStats(f.stats).map(([k, v, x]) => [k, x ? `${v} (${x})` : v]));
   assert.equal(l["Victoires"], "75 % (3 – 1)");
   assert.equal(l["Duels officiels"], "67 % (2 – 1)");
-  assert.equal(l["Smashs réussis"], "50 % (1/2)");
+  assert.equal(l["Smashs gagnants"], "50 % (1/2)");
   assert.deepEqual(lignesStats({ joues: 0 }), []);
 });
 

@@ -1407,7 +1407,8 @@ function montrerStatsFin(apres, { silencieux = false } = {}) {
   const favSigne = j => st.signes[j].indexOf(Math.max(...st.signes[j])), fav = j => (nb(j) ? st.signes[j][favSigne(j)] / nb(j) : 0);
   const prefere = j => (nb(j) ? `${EMOJI[favSigne(j)]} ${pc(st.signes[j][favSigne(j)], nb(j))}` : "–");
   // (19 novembre, choix du porteur du projet : sans « Points gagnés », qui doublait le score ; le % de réussite sans les égalités)
-  $("sfLignes").innerHTML = ligne("Taux de réussite", pc(...st.reussite[0]), pc(...st.reussite[1]), st.reussite[0][0], st.reussite[1][0], { rg: sur(st.reussite[0]), rd: sur(st.reussite[1]) })
+  // (26 novembre, demande du porteur du projet) le punch : les points marqués sur tous les coups, égalités comprises
+  $("sfLignes").innerHTML = ligne("Punch", pc(st.points[0], st.coups), pc(st.points[1], st.coups), st.points[0], st.points[1], { rg: sur([st.points[0], st.coups]), rd: sur([st.points[1], st.coups]) })
     + ligne("Imprévisibilité", imp(0), imp(1), st.imprevisibilite[0] || 0, st.imprevisibilite[1] || 0)
     // (19 novembre, le porteur du projet trouvait le panneau trop chargé : 7 lignes ; le signe préféré sur une seule ligne, sans
     // « Change de signe après une égalité » ni « Meilleure série », que Monique commente quand ils comptent)
@@ -1716,13 +1717,14 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
   return `${entete}${nbMatchs}<div class="bars">${barres(V.signes, tot)}</div>
       <div class="lines">
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
-        <div class="ln"><span>Taux de réussite</span><span>${(() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })()}</span></div>
+        ${lnInfo("Taux de réussite", (() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })(), "Les points gagnés sur les points joués, sans compter les égalités. Au hasard : 50 % (autant de points gagnés que perdus).")}
+        ${lnInfo("Punch", (() => { const [g, t] = pointsDe(V); return V.egalites === undefined ? "–" : pcRatio(g, t + V.egalites, "–"); })(), "Les points marqués sur tous les coups joués : ni égalité, ni point perdu. Au hasard : 33 %.")}
         <div class="ln"><span>Ouvertures gagnées</span><span>${(() => { const o = ouverturesDe(Q, vue, V) || []; return pcRatio(o[0] || 0, (o[0] || 0) + (o[1] || 0) + (o[2] || 0)); })()}</span></div>
-        <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
+        <div class="ln"><span>Smashs gagnants</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
         <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
       </div>
-      <p class="hint">Un joueur parfaitement imprévisible rejoue le même signe environ 33 % du temps.</p>
+      <p class="hint">Un joueur parfaitement imprévisible rejoue le même signe environ 33 % du temps. Touche ⓘ pour l'explication d'une stat.</p>
       <h2 style="margin-top:16px">Indice d'imprévisibilité</h2>
       <div class="big">${ind}<span style="font-size:1rem;color:var(--muted)"> / 100</span></div>
       <div class="gauge"><div style="width:${ind}%"></div></div>
@@ -1731,6 +1733,11 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
 // Les ouvertures (25 novembre, exception validée par le porteur du projet) : le 1er coup de chaque set ; « Mon jeu » montre la part
 // gagnée. Contre les joueurs, retrouvées dans tous les duels passés ; contre les bots, comptées depuis le 25 novembre (ouvertures.js).
 const ouverturesDe = (Q, vue, V) => (vue === "total" ? (Q.parAdv ? ajouterOuvertures(Q.parAdv.humains?.ouvertures, Q.parAdv.bots?.ouvertures) : null) : V.ouvertures);
+// Une ligne de stat qui s'explique quand on la touche (26 novembre, demande du porteur du projet : les explications entre
+// parenthèses brouillaient la lecture).
+const lnInfo = (titre, valeur, explication) => `<details class="ln-info"><summary class="ln"><span>${titre} <i class="ln-i" aria-hidden="true">ⓘ</i></span><span>${valeur}</span></summary><p class="ln-explication">${explication}</p></details>`;
+// Le punch (26 novembre, demande du porteur du projet) : les points marqués sur tous les coups joués, égalités comprises
+// (au hasard : 33 %) ; avant, le « taux de réussite » ne comptait pas les égalités (au hasard : 50 %).
 // Les points gagnés et joués (sans les égalités) d'une fiche, exacts : après chaque point, on sait s'il était gagné (apresVictoire,
 // apresDefaite) ; seul manque le dernier point de chaque match, toujours gagné par le vainqueur du match (20 novembre).
 const pointsDe = V => [(V.apresVictoire || 0) + (V.victoires || 0), (V.apresVictoire || 0) + (V.apresDefaite || 0) + (V.matchs || 0)];
@@ -1950,9 +1957,11 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
     // (25 novembre, demande du porteur du projet) le résultat de ces ouvertures, sur une ligne, centré
     + (d.ouverture.resultats ? `<p class="dossier-signes dossier-ouv">${["✅", "🟰", "❌"].map((e, k) => `<span>${e} ${d.ouverture.resultats[k]} %</span>`).join("")}</p>` : "")
     + `<p class="hint">L'ouverture, c'est le premier coup ${d.ouverture.sets ? "de chaque set" : "du match"}${d.ouverture.resultats ? " : ✅ gagnée, 🟰 égalité, ❌ perdue" : ""}. D'après ${d.ouverture.vus} ouvertures.</p>` : "";
-  const smash = d.smash ? `<h3 class="ff-titre">💥 ${ses} smashs</h3><div class="lines">
-      <div class="ln"><span>Smashs joués</span><span>${d.smash.total}, dont ${d.smash.gagnes} gagnant${d.smash.gagnes > 1 ? "s" : ""}</span></div>
-      <div class="ln"><span>${toi ? "Tu smashes" : elle ? "Elle smashe" : "Il smashe"} surtout avec</span><span>${s(d.smash.favori)}</span></div></div>`
+  // (26 novembre, demande du porteur du projet) les smashs comme les ouvertures : les signes, puis le résultat, centrés
+  const smash = d.smash ? `<h3 class="ff-titre">💥 ${ses} smashs</h3>`
+    + `<p class="dossier-signes dossier-ouv">${d.smash.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
+    + `<p class="dossier-signes dossier-ouv">${["✅", "🟰", "❌"].map((e, k) => `<span>${e} ${d.smash.resultats[k]} %</span>`).join("")}</p>`
+    + `<p class="hint">Le signe de chaque smash et son résultat : ✅ gagnant, 🟰 égalité, ❌ perdant. D'après ${d.smash.total} smash${d.smash.total > 1 ? "s" : ""}.</p>`
     : `<h3 class="ff-titre">💥 ${ses} smashs</h3><p class="hint">Pas de smash dans ${ses_} derniers matchs (ou pas encore enregistré).</p>`;
   // (20 novembre) Le flair et l'endurance, comme sur la carte (assez de preuves, sinon on le dit).
   const pcR = (x, n) => `<b>${Math.round((100 * x) / n)} %</b> <span class="ratio">(${x}/${n})</span>`;

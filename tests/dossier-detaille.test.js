@@ -27,6 +27,7 @@ test("le dossier détaillé : réflexes chiffrés, égalités, débuts, smashs, 
   assert.equal(d.ouverture.favori, 0); assert.ok(d.ouverture.sets);
   assert.deepEqual(d.ouverture.resultats, [100, 0, 0], "ses ouvertures (Pierre contre Ciseaux) : toutes gagnées");
   assert.equal(d.smash.favori, 2); assert.equal(d.smash.total, 16);
+  assert.deepEqual(d.smash.repartition, [0, 0, 100]); assert.equal(d.smash.resultats.reduce((a, b) => a + b, 0), 100);
   assert.ok(d.forme);
   assert.ok(d.conseils.length >= 1 && d.conseils.length <= 3);
   assert.ok(d.conseils.some(t => /vient de gagner/.test(t)));

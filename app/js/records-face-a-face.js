@@ -68,7 +68,7 @@ export function recordsFaceAFace(duels, uid) {
   for (const j of [0, 1]) if (tentes[j] >= SMASHS_MIN) max[j].taux = { v: Math.round(100 * reussis[j] / tentes[j]), t: `${Math.round(100 * reussis[j] / tentes[j])} % (${reussis[j]}/${tentes[j]})` };
   const TITRES = [["points", "Le plus de points dans un match"], ["serie", "La plus longue série de points (égalités comprises)"], ["serie_nette", "La plus longue série de points sans égalité"], ["seche", "La victoire la plus sèche"],
     ["remontee", "La plus grosse remontée dans un set"], ["balles", "Le plus de balles de match sauvées"], ["smashs", "Le plus de smashs réussis dans un match"],
-    ["taux", `Smashs réussis contre l'autre (dès ${SMASHS_MIN} tentés)`], ["victoires", "La plus longue série de victoires"],
+    ["taux", `Smashs gagnants contre l'autre (dès ${SMASHS_MIN} tentés)`], ["victoires", "La plus longue série de victoires"],
     ["bulle", "Sets gagnés sans concéder un point"], ["decisifs", "Sets gagnés au point décisif"], ["renversements", "Matchs gagnés après avoir perdu le 1er set"]];
   const lignes = TITRES.map(([cle, titre]) => {
     const valeurs = [max[0][cle]?.v ?? null, max[1][cle]?.v ?? null], textes = [max[0][cle]?.t ?? "–", max[1][cle]?.t ?? "–"];
