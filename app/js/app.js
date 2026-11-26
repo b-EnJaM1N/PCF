@@ -1974,6 +1974,11 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
   const flairEnd = `<h3 class="ff-titre">🔍 ${toi ? "Ton" : "Son"} flair et ${toi ? "ta" : "sa"} résistance</h3><div class="lines">
       <div class="ln"><span>Points marqués quand l'adversaire a une habitude installée</span><span>${fl && fl.occasions >= 50 ? pcR(fl.points, fl.occasions) : `pas encore assez (${fl?.occasions || 0} sur 50)`}</span></div>
       <div class="ln"><span>Quand ${toi ? "tu ne gagnes" : elle ? "elle ne gagne" : "il ne gagne"} pas le point : égalité plutôt que point perdu</span><span>${en && en.nonGagnes >= 50 ? pcR(en.egalites, en.nonGagnes) : `pas encore assez (${en?.nonGagnes || 0} coups sur 50)`}</span></div></div>`;
+  // (26 novembre, demande du porteur du projet) le sang-froid en détail : le point qui suit une série de points perdus
+  const sf = d.sangFroid, sfTot = sf ? sf.reduce((a, x) => a + x[1], 0) : 0;
+  const sangFroid = sf && sfTot ? `<h3 class="ff-titre">🧊 ${toi ? "Ton" : "Son"} sang-froid</h3><div class="lines">${["2 points perdus d'affilée", "3 points perdus d'affilée", "4 points perdus d'affilée ou plus"]
+    .map((t, k) => `<div class="ln"><span>Après ${t}</span><span>${sf[k][1] ? pcR(sf[k][0], sf[k][1]) : "–"}</span></div>`).join("")}</div>`
+    + `<p class="hint">Le point suivant marqué quand même. Au hasard : 33 %. Une égalité arrête la série.</p>` : "";
   const f = d.forme;
   const forme = f ? `<h3 class="ff-titre">📈 ${sa} forme récente</h3><p class="hint">${Math.abs(f.ecart) >= 6
     ? `Sur ${ses_} 10 derniers matchs, ${il} ${toi ? "joues" : "joue"} ${f.ecart > 0 ? "plus" : "moins"} ${NOMS_SIGNES[f.signe] === "Ciseaux" ? "les Ciseaux" : `la ${NOMS_SIGNES[f.signe]}`} : ${f.recent[f.signe]} % contre ${f.avant[f.signe]} % avant.`
@@ -1981,7 +1986,7 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
   return `<h3 class="ff-titre">🎯 ${toi ? "Tes failles" : `Pour ${elle ? "la" : "le"} battre`}</h3>${conseils}`
     + `<p class="dossier-source">D'après ${ses_} ${d.matchs} dernier${d.matchs > 1 ? "s" : ""} match${d.matchs > 1 ? "s" : ""} en ligne (${d.coups} coups).${toi ? " C'est ce que tes adversaires voient de toi." : ""}</p>`
     + `<p class="dossier-signes">${d.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
-    + `<h3 class="ff-titre">🧠 ${ses} réflexes</h3>${reflexes}${egalite}${ouverture}${smash}${flairEnd}${forme}`;
+    + `<h3 class="ff-titre">🧠 ${ses} réflexes</h3>${reflexes}${egalite}${ouverture}${smash}${flairEnd}${sangFroid}${forme}`;
 }
 // Mon dossier (Ma fiche › Stats ; 20 novembre, demande du porteur du projet) : avec un compte, d'après mes 50 derniers matchs en
 // ligne, ce que voient mes adversaires. Chargé à l'ouverture de la carte, puis gardé jusqu'au prochain match.
