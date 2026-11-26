@@ -53,3 +53,12 @@ test("le sang-froid du dossier : après 2, 3, 4 points perdus ou plus, les égal
   // après 2 : marqué (coup 2), perdu (coup 5), marqué (coup 12, malgré les égalités), perdu (coup 15) ; après 3 : perdu (coup 6) ; après 4 : marqué (coup 7)
   assert.deepEqual(d.sangFroid, [[2, 4], [0, 1], [1, 1]]);
 });
+
+test("l'entêtement du dossier : combien de coups d'affilée sur le même signe (27 novembre)", () => {
+  // ses signes : Pierre ×3, Feuille, Pierre, Ciseaux ×2, Feuille ×2, Pierre ×2  → séries 3, 1, 1, 2, 2, 2 = 11 coups en 6 séries
+  const b = [0, 0, 0, 2, 0, 1, 1, 2, 2, 0, 0];
+  const d = dossierDetaille([b.map(x => ({ b: x, a: (x + 1) % 3, g: 1 }))]);
+  assert.equal(d.entetement.moyenne.toFixed(3), (11 / 6).toFixed(3));
+  assert.deepEqual(d.entetement.parSigne.map(x => x.toFixed(2)), [(6 / 3).toFixed(2), "2.00", "1.50"]);
+  assert.deepEqual(d.entetement.record, { n: 3, signe: 0 });
+});
