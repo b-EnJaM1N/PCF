@@ -231,7 +231,7 @@ export function dossierDetaille(matchs, { elle = false, toi = false } = {}) {
   if (ouverture && ouverture.vus >= 8 && ouverture.favoriPct >= 42) ajouter(ouverture.favoriPct - 33, `En ouverture, il joue souvent ${NOMS_LE[ouverture.favori]} : commence par ${NOMS_LE[quiBat(ouverture.favori)]}.`,
     `En ouverture, tu joues souvent ${NOMS_LE[ouverture.favori]} : un adversaire attentif commencera par ${NOMS_LE[quiBat(ouverture.favori)]}.`);
   // (20 novembre) Son flair et son endurance : les coups vus de son côté (a = lui, gagnant 0 = lui).
-  const fe = { tentees: 0, reussies: 0, chaines: 0, gagnees: 0 };
+  const fe = { occasions: 0, points: 0, tentees: 0, reussies: 0, chaines: 0, gagnees: 0 };
   for (const m of liste) {
     const x = flairEtEndurance(m.map(c => ({ a: c.b, b: c.a, gagnant: c.g === null || c.g === undefined ? null : c.g === 1 ? 0 : 1 })));
     for (const k of Object.keys(fe)) fe[k] += x[k];
@@ -239,7 +239,7 @@ export function dossierDetaille(matchs, { elle = false, toi = false } = {}) {
   return {
     matchs: liste.length, coups: n, repartition: rep, reflexes, egalite, ouverture, smash, forme,
     // (l'endurance : ne pas perdre le point quand on ne le gagne pas, égalités ÷ (égalités + points perdus))
-    flair: { tentees: fe.tentees, reussies: fe.reussies },
+    flair: { occasions: fe.occasions, points: fe.points },   // (26 novembre : le nouveau Flair, flair.js)
     endurance: (() => { let e = 0, p = 0; for (const m of liste) for (const c of m) { if (c.g === null || c.g === undefined) e++; else if (c.g === 0) p++; } return { egalites: e, nonGagnes: e + p }; })(),
     conseils: conseils.sort((x, y) => y.force - x.force).slice(0, 3).map(c => c.texte),
   };
