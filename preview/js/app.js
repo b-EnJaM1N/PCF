@@ -1957,9 +1957,11 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
     // (25 novembre, demande du porteur du projet) le résultat de ces ouvertures, sur une ligne, centré
     + (d.ouverture.resultats ? `<p class="dossier-signes dossier-ouv">${["✅", "🟰", "❌"].map((e, k) => `<span>${e} ${d.ouverture.resultats[k]} %</span>`).join("")}</p>` : "")
     + `<p class="hint">L'ouverture, c'est le premier coup ${d.ouverture.sets ? "de chaque set" : "du match"}${d.ouverture.resultats ? " : ✅ gagnée, 🟰 égalité, ❌ perdue" : ""}. D'après ${d.ouverture.vus} ouvertures.</p>` : "";
-  const smash = d.smash ? `<h3 class="ff-titre">💥 ${ses} smashs</h3><div class="lines">
-      <div class="ln"><span>Smashs joués</span><span>${d.smash.total}, dont ${d.smash.gagnes} gagnant${d.smash.gagnes > 1 ? "s" : ""}</span></div>
-      <div class="ln"><span>${toi ? "Tu smashes" : elle ? "Elle smashe" : "Il smashe"} surtout avec</span><span>${s(d.smash.favori)}</span></div></div>`
+  // (26 novembre, demande du porteur du projet) les smashs comme les ouvertures : les signes, puis le résultat, centrés
+  const smash = d.smash ? `<h3 class="ff-titre">💥 ${ses} smashs</h3>`
+    + `<p class="dossier-signes dossier-ouv">${d.smash.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
+    + `<p class="dossier-signes dossier-ouv">${["✅", "🟰", "❌"].map((e, k) => `<span>${e} ${d.smash.resultats[k]} %</span>`).join("")}</p>`
+    + `<p class="hint">Le signe de chaque smash et son résultat : ✅ gagnant, 🟰 égalité, ❌ perdant. D'après ${d.smash.total} smash${d.smash.total > 1 ? "s" : ""}.</p>`
     : `<h3 class="ff-titre">💥 ${ses} smashs</h3><p class="hint">Pas de smash dans ${ses_} derniers matchs (ou pas encore enregistré).</p>`;
   // (20 novembre) Le flair et l'endurance, comme sur la carte (assez de preuves, sinon on le dit).
   const pcR = (x, n) => `<b>${Math.round((100 * x) / n)} %</b> <span class="ratio">(${x}/${n})</span>`;
