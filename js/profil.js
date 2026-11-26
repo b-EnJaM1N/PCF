@@ -186,13 +186,27 @@ export function nouvelElo(elo, eloAdv, gagne, k = K_ELO) {
 }
 
 export const nomAffiche = P => P.pseudo || "Toi";
+// Le Sang-froid (26 novembre, après la simulation entre bots) : après deux points perdus d'affilée, le point suivant est-il gagné ?
+// Les égalités sont ignorées (choix du porteur du projet) : perdu, égalité, perdu = deux points perdus d'affilée, et c'est le
+// point suivant (pas une égalité) qui compte. coups : vus de mon côté (gagnant 0 = moi). → [points gagnés, occasions]. Au hasard : 1 sur 2.
+export function calmeApres2(coups) {
+  let p = 0, n = 0, perdus = 0;
+  for (const c of coups || []) {
+    if (c.gagnant !== 0 && c.gagnant !== 1) continue;   // (une égalité : ignorée)
+    if (perdus >= 2) { n++; if (c.gagnant === 0) p++; }
+    perdus = c.gagnant === 1 ? perdus + 1 : 0;
+  }
+  return [p, n];
+}
 // Mon jeu, contre les joueurs et contre les bots (19 novembre, demande du porteur du projet) : les mêmes compteurs que le total,
 // tenus à part à partir de cette date (avant, rien ne les distinguait).
 export const jeuVide = () => ({ matchs: 0, victoires: 0, signes: [0, 0, 0], smashsTentes: 0, smashsReussis: 0, apresVictoire: 0, memeApresVictoire: 0,
   apresDefaite: 0, memeApresDefaite: 0, devines: 0, lisibles: 0,
   // (20 novembre : pour la carte, le sang-froid et le flair)
   ballesObtenues: 0, ballesConverties: 0, ballesSubies: 0, ballesSauvees: 0, decisifsJoues: 0, decisifsGagnes: 0, lecturesReussies: 0, lecturesRatees: 0,
-  flairTentees: 0, flairReussies: 0, endChaines: 0, endGagnees: 0, egalites: 0,   // (20 novembre : le Flair et l'Endurance, flair.js)
+  flairTentees: 0, flairReussies: 0, endChaines: 0, endGagnees: 0, egalites: 0,
+  flairOccasions: 0, flairPoints: 0,   // (26 novembre : le nouveau Flair, flair.js)
+  calmeOccasions: 0, calmePoints: 0,   // (26 novembre : le Sang-froid, le coup qui suit deux points perdus d'affilée ; calmeApres2)   // (20 novembre : le Flair et l'Endurance, flair.js)
   ouvertures: ouverturesVides() });   // (25 novembre : le 1er coup de chaque set, gagné, à égalité ou perdu ; ouvertures.js)
 // Le pourcentage de smashs réussis (qui ont gagné le point), ou null si aucun smash joué.
 export const tauxSmash = P => (P.smashsTentes ? Math.round(100 * P.smashsReussis / P.smashsTentes) : null);
@@ -244,6 +258,8 @@ export function enregistrerMatch(P, r) {
   j.egalites = (j.egalites || 0) + c.filter(x => x.gagnant === null).length;   // (l'Endurance)
   j.ouvertures = ajouterOuvertures(j.ouvertures, compterOuvertures(c, match.debutsSet));   // (25 novembre)
   j.flairTentees = (j.flairTentees || 0) + fe.tentees; j.flairReussies = (j.flairReussies || 0) + fe.reussies;
+  j.flairOccasions = (j.flairOccasions || 0) + fe.occasions; j.flairPoints = (j.flairPoints || 0) + fe.points;
+  const ca = calmeApres2(c); j.calmeOccasions = (j.calmeOccasions || 0) + ca[1]; j.calmePoints = (j.calmePoints || 0) + ca[0];
   j.endChaines = (j.endChaines || 0) + fe.chaines; j.endGagnees = (j.endGagnees || 0) + fe.gagnees;
   if (match.format.setsGagnants > 1 && match.scoresSets.length === 2 * match.format.setsGagnants - 1) { j.decisifsJoues = (j.decisifsJoues || 0) + 1; if (gagne) j.decisifsGagnes = (j.decisifsGagnes || 0) + 1; }
   P.ballesObtenues += stats.ballesObtenues; P.ballesConverties += stats.ballesConverties;

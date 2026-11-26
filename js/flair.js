@@ -8,6 +8,10 @@
 // copier le dernier signe d'en face, jouer ce qui battait le dernier signe d'en face. Une lecture : je joue ce qui bat ce que son
 // habitude annonce (pour « il change », le signe qui ne peut pas perdre) ; réussie si je gagne le point, ratée si je le perds.
 //
+// (26 novembre, après une simulation de 8 000 matchs entre bots, choix du porteur du projet) Le Flair de la carte devient : les
+// points marqués quand l'adversaire a une habitude installée (occasions), quoi qu'on joue ; au hasard, 1 sur 3. L'ancien calcul
+// (les lectures réussies) donnait 62 à 71 % à tous les bots, forts ou faibles : il mesurait surtout si l'adversaire était prévisible.
+//
 // L'Endurance : dans les égalités en chaîne (2 ou plus d'affilée), qui gagne le point qui suit.
 const quiBat = x => (x + 2) % 3;          // le signe qui bat x
 const battu = x => (x + 1) % 3;           // le signe que x bat
@@ -27,10 +31,10 @@ function habitudes(c) {
   ];
 }
 
-// → { tentees, reussies } (le Flair), { chaines, gagnees } (l'Endurance).
+// → { occasions, points } (le Flair), { tentees, reussies } (les lectures, l'ancien calcul), { chaines, gagnees } (l'Endurance).
 export function flairEtEndurance(coups) {
   const c = (coups || []).filter(x => x && x.a !== undefined && x.b !== undefined);
-  const r = { tentees: 0, reussies: 0, chaines: 0, gagnees: 0 };
+  const r = { occasions: 0, points: 0, tentees: 0, reussies: 0, chaines: 0, gagnees: 0 };
   const hs = habitudes(c), vus = hs.map(() => 0), oui = hs.map(() => 0);
   let egalites = 0;
   for (let i = 0; i < c.length; i++) {
@@ -45,6 +49,7 @@ export function flairEtEndurance(coups) {
       const p = oui[k] / vus[k];
       if (p >= MIN_PART && p > part) { meilleure = k; part = p; }
     });
+    if (meilleure >= 0) { r.occasions++; if (c[i].gagnant === 0) r.points++; }
     if (meilleure >= 0 && c[i].a === hs[meilleure].jouer(i) && c[i].gagnant !== null && c[i].gagnant !== undefined) {
       r.tentees++; if (c[i].gagnant === 0) r.reussies++;
     }
