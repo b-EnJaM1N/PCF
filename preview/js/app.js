@@ -1720,7 +1720,7 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
         ${lnInfo("Taux de réussite", (() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })(), "Les points gagnés sur les points joués, sans compter les égalités. Au hasard : 50 % (autant de points gagnés que perdus).")}
         ${lnInfo("Punch", (() => { const [g, t] = pointsDe(V); return V.egalites === undefined ? "–" : pcRatio(g, t + V.egalites, "–"); })(), "Les points marqués sur tous les coups joués : ni égalité, ni point perdu. Au hasard : 33 %.")}
         <div class="ln"><span>Ouvertures gagnées</span><span>${(() => { const o = ouverturesDe(Q, vue, V) || []; return pcRatio(o[0] || 0, (o[0] || 0) + (o[1] || 0) + (o[2] || 0)); })()}</span></div>
-        <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
+        <div class="ln"><span>Smashs gagnants</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
         <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
       </div>

@@ -34,7 +34,7 @@ export function presentation(P, bot, { tour = null, pointsParSet = 11, setsGagna
     { label: "Arme favorite", g: fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`, d: bot.specialite, avantage: null },
     nombre("Imprévisibilité", imp, bot.imprevisibilite, "/100"),
     bot.humain ? nombre("Titres", titres, bot.titres) : { label: "Titres", g: String(titres), d: bot.id === "professeur" ? "Légende" : "–", avantage: null },
-    nombre("Smashs réussis", tauxSmash(P), bot.humain ? bot.smash ?? null : null, " %"),
+    nombre("Smashs gagnants", tauxSmash(P), bot.humain ? bot.smash ?? null : null, " %"),
   ];
   const pct = pourcent(P.victoires, P.matchs);
   return {
