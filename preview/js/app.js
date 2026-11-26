@@ -1717,14 +1717,14 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
   return `${entete}${nbMatchs}<div class="bars">${barres(V.signes, tot)}</div>
       <div class="lines">
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
-        <div class="ln"><span>Punch (point marqué, ni égalité ni point perdu)</span><span>${(() => { const [g, t] = pointsDe(V); return V.egalites === undefined ? "–" : pcRatio(g, t + V.egalites, "–"); })()}</span></div>
         <div class="ln"><span>Taux de réussite (sans les égalités)</span><span>${(() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })()}</span></div>
+        <div class="ln"><span>Punch (point marqué, ni égalité ni point perdu)</span><span>${(() => { const [g, t] = pointsDe(V); return V.egalites === undefined ? "–" : pcRatio(g, t + V.egalites, "–"); })()}</span></div>
         <div class="ln"><span>Ouvertures gagnées</span><span>${(() => { const o = ouverturesDe(Q, vue, V) || []; return pcRatio(o[0] || 0, (o[0] || 0) + (o[1] || 0) + (o[2] || 0)); })()}</span></div>
         <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
         <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
       </div>
-      <p class="hint">Au hasard : 33 % de punch, 50 % de réussite (autant de points gagnés que perdus), et le même signe rejoué environ 33 % du temps.</p>
+      <p class="hint">Au hasard : 50 % de réussite (autant de points gagnés que perdus), 33 % de punch, et le même signe rejoué environ 33 % du temps.</p>
       <h2 style="margin-top:16px">Indice d'imprévisibilité</h2>
       <div class="big">${ind}<span style="font-size:1rem;color:var(--muted)"> / 100</span></div>
       <div class="gauge"><div style="width:${ind}%"></div></div>
