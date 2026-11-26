@@ -107,3 +107,9 @@ test("les Victoires et le Sang-froid (26 novembre) : 0 % = 50, la moyenne = 70, 
   assert.equal(n.SGF, "90", "60 % après deux points perdus, sur 200 occasions");
   assert.equal(n.ENT, undefined, "l'Entame n'est plus sur la carte");
 });
+
+test("l'entêtement de Mon jeu : le nombre de séries sur le même signe (27 novembre)", async () => {
+  const { seriesDe } = await import("../app/js/profil.js");
+  assert.equal(seriesDe([0, 0, 2, 2, 2, 1]), 3);
+  assert.equal(seriesDe([]), 0);
+});
