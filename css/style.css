@@ -272,6 +272,12 @@ h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1
 .lines { display: grid; gap: 8px; }
 .ln { display: flex; justify-content: space-between; gap: 12px; font-size: .95rem; border-bottom: 1px solid rgba(255, 255, 255, .08); padding-bottom: 7px; }
 .ln:last-child { border-bottom: 0; padding-bottom: 0; }
+/* une ligne de stat qui s'explique quand on la touche (26 novembre) */
+.ln-info > summary { list-style: none; cursor: pointer; }
+.ln-info > summary::-webkit-details-marker { display: none; }
+.ln-i { font-style: normal; font-size: .8em; color: var(--me); }
+.ln-info[open] .ln-i { opacity: .6; }
+.ln-explication { font-size: .85rem; color: var(--muted); margin: 6px 0 0; padding: 8px 10px; background: rgba(255, 255, 255, .05); border-radius: 8px; }
 .ln span:first-child { color: var(--muted); }
 .ln span:last-child { font-weight: 600; text-align: right; }
 .gauge { height: 12px; background: var(--panel); border-radius: 6px; overflow: hidden; margin: 8px 0 6px; }
