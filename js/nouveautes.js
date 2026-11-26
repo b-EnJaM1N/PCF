@@ -22,6 +22,7 @@
 //   recordsFaceAFace : « 🏅 Nos records » sous le bilan d'un face-à-face entre joueurs (17 novembre, records-face-a-face.js).
 //   coeur : le cœur qui bat aux balles de match du set décisif, à partir de 10 partout (16 novembre, effets.js).
 // (24 novembre, choix du porteur du projet : hymne, club et coeur ouverts à tous pour le lancement.)
+//   enLigne : la bulle « 🟢 N en ligne » en haut à droite (26 novembre, en-ligne.js).
 //   dossard : le Dossard 1, gant jaune du tenant du titre d'un cercle, son annonce dans le fil, le trophée de la coupe (12 novembre, étape SQL 71).
 // (13 novembre, comme validé par le porteur du projet le 11 : le fantôme, le fil du cercle, le championnat avec poules, la carte
 // « Ton avis ? » et la fiche d'un joueur ouverts à tous ; le Dossard 1 reste en test, décision du 12 novembre.)
