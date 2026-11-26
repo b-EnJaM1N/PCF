@@ -1665,7 +1665,7 @@ try { vueJeu = localStorage.getItem("hs_vue_jeu") || "humains"; } catch { /* rie
 let recupEnCours = false;
 async function recupererJeuPasse() {
   const uid = compteUI?.session()?.user?.id;
-  if (P.parAdvVersion >= 10 || recupEnCours || !uid) return;
+  if (P.parAdvVersion >= 11 || recupEnCours || !uid) return;
   recupEnCours = true;
   try {
     const duels = [];
@@ -1679,19 +1679,19 @@ async function recupererJeuPasse() {
     const h = jeuDepuisDuels(duels, uid, bots);
     // (27 novembre) le Sang-froid sans les égalités : celui compté contre les bots avec l'ancienne règle repart de zéro
     if (!(P.parAdvVersion >= 10) && P.parAdv?.bots) { P.parAdv.bots.calmeOccasions = 0; P.parAdv.bots.calmePoints = 0; }
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 10;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair ; 6 : l'Endurance, les égalités ; 7 : les ouvertures ; 8 : le nouveau Flair ; 9 : le Sang-froid ; 10 : le Sang-froid sans les égalités)
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 11;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair ; 6 : l'Endurance, les égalités ; 7 : les ouvertures ; 8 : le nouveau Flair ; 9 : le Sang-froid ; 10 : le Sang-froid sans les égalités ; 11 : l'entêtement)
     sauverP();
   } catch (e) { console.warn("Mon jeu : matchs passés", e); }
   recupEnCours = false;
   if (!$("viewProfile").hidden) renderMonJeu();
 }
 function renderMonJeu() {
-  if (!(P.parAdvVersion >= 10) && compteUI?.session()?.user) recupererJeuPasse();
+  if (!(P.parAdvVersion >= 11) && compteUI?.session()?.user) recupererJeuPasse();
   // (sans compte et sans duel joué : tous les matchs passés étaient contre des bots)
-  else if (!(P.parAdvVersion >= 10) && !compteUI?.session()?.user && !P.duelsFinis) {
-    if (P.parAdv?.bots) { P.parAdv.bots.calmeOccasions = 0; P.parAdv.bots.calmePoints = 0; }
+  else if (!(P.parAdvVersion >= 11) && !compteUI?.session()?.user && !P.duelsFinis) {
+    if (!(P.parAdvVersion >= 10) && P.parAdv?.bots) { P.parAdv.bots.calmeOccasions = 0; P.parAdv.bots.calmePoints = 0; }
     const h = P.parAdv?.humains || jeuVide();
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 10; sauverP();
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 11; sauverP();
   }
   $("gameBody").innerHTML = htmlJeu(P, vueJeu, { enCours: recupEnCours, connecte: !!compteUI?.session()?.user });
   $("gameBody").querySelectorAll(".jeu-vue").forEach(b => b.addEventListener("click", () => {
@@ -1727,6 +1727,7 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
         <div class="ln"><span>Smashs gagnants</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
         <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
+        ${lnInfo("Entêtement", (() => { const [c, n] = vue === "total" ? ["coupsSeries", "seriesSignes"].map(k => (Q.parAdv?.humains?.[k] || 0) + (Q.parAdv?.bots?.[k] || 0)) : [V.coupsSeries || 0, V.seriesSignes || 0]; return n ? `<b>${(c / n).toFixed(1).replace(".", ",")} coup${c / n >= 2 ? "s" : ""}</b>` : "–"; })(), "Combien de coups d'affilée tu restes sur le même signe, en moyenne. Au hasard : 1,5. Le détail par signe et ta plus longue série sont dans ton dossier. Contre les bots, compté depuis le 27 novembre 2026.")}
       </div>
       <p class="hint">Un joueur parfaitement imprévisible rejoue le même signe environ 33 % du temps. Touche ⓘ pour l'explication d'une stat.</p>
       <h2 style="margin-top:16px">Indice d'imprévisibilité</h2>
