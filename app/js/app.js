@@ -1407,7 +1407,8 @@ function montrerStatsFin(apres, { silencieux = false } = {}) {
   const favSigne = j => st.signes[j].indexOf(Math.max(...st.signes[j])), fav = j => (nb(j) ? st.signes[j][favSigne(j)] / nb(j) : 0);
   const prefere = j => (nb(j) ? `${EMOJI[favSigne(j)]} ${pc(st.signes[j][favSigne(j)], nb(j))}` : "–");
   // (19 novembre, choix du porteur du projet : sans « Points gagnés », qui doublait le score ; le % de réussite sans les égalités)
-  $("sfLignes").innerHTML = ligne("Taux de réussite", pc(...st.reussite[0]), pc(...st.reussite[1]), st.reussite[0][0], st.reussite[1][0], { rg: sur(st.reussite[0]), rd: sur(st.reussite[1]) })
+  // (26 novembre, demande du porteur du projet) le punch : les points marqués sur tous les coups, égalités comprises
+  $("sfLignes").innerHTML = ligne("Punch", pc(st.points[0], st.coups), pc(st.points[1], st.coups), st.points[0], st.points[1], { rg: sur([st.points[0], st.coups]), rd: sur([st.points[1], st.coups]) })
     + ligne("Imprévisibilité", imp(0), imp(1), st.imprevisibilite[0] || 0, st.imprevisibilite[1] || 0)
     // (19 novembre, le porteur du projet trouvait le panneau trop chargé : 7 lignes ; le signe préféré sur une seule ligne, sans
     // « Change de signe après une égalité » ni « Meilleure série », que Monique commente quand ils comptent)
@@ -1717,12 +1718,13 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
       <div class="lines">
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
         <div class="ln"><span>Punch (point marqué, ni égalité ni point perdu)</span><span>${(() => { const [g, t] = pointsDe(V); return V.egalites === undefined ? "–" : pcRatio(g, t + V.egalites, "–"); })()}</span></div>
+        <div class="ln"><span>Taux de réussite (sans les égalités)</span><span>${(() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })()}</span></div>
         <div class="ln"><span>Ouvertures gagnées</span><span>${(() => { const o = ouverturesDe(Q, vue, V) || []; return pcRatio(o[0] || 0, (o[0] || 0) + (o[1] || 0) + (o[2] || 0)); })()}</span></div>
         <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
         <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
       </div>
-      <p class="hint">Au hasard : 33 % de punch, et le même signe rejoué environ 33 % du temps.</p>
+      <p class="hint">Au hasard : 33 % de punch, 50 % de réussite (autant de points gagnés que perdus), et le même signe rejoué environ 33 % du temps.</p>
       <h2 style="margin-top:16px">Indice d'imprévisibilité</h2>
       <div class="big">${ind}<span style="font-size:1rem;color:var(--muted)"> / 100</span></div>
       <div class="gauge"><div style="width:${ind}%"></div></div>
