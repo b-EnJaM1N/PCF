@@ -6,6 +6,7 @@ import { origineVisite, aCompter, veille, ecartJours, retoursParcours } from "..
 test("origine : appli Android, appli installée, site", () => {
   assert.equal(origineVisite({ referrer: "android-app://fr.handslam.app/" }), "android");
   assert.equal(origineVisite({ androidVu: true, standalone: true }), "android");
+  assert.equal(origineVisite({ agent: "Mozilla/5.0 (Linux; Android 15; wv) Chrome/131.0 Mobile Safari/537.36 HandSlamApp/1.1.0" }), "android");
   assert.equal(origineVisite({ standalone: true }), "installee");
   assert.equal(origineVisite({ referrer: "https://www.google.com/" }), "site");
 });

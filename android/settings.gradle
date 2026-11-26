@@ -1,0 +1,19 @@
+// L'appli Android de HandSlam (version WebView, 25 novembre) : elle affiche https://handslam.fr/ dans sa propre fenêtre,
+// pour que Google compte le temps de jeu (avec la TWA de PWABuilder, il était compté pour Chrome). Construite par GitHub
+// (.github/workflows/android.yml) ; explications dans android/LISEZMOI.md.
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "HandSlam"
+include ":app"

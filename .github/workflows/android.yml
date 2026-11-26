@@ -1,0 +1,59 @@
+# L'appli Android de HandSlam (version WebView, dossier android/) : construite ici, à chaque changement du dossier android/,
+# ou à la main (onglet Actions › « Appli Android » › Run workflow).
+#   - toujours : « handslam-essai » (un .apk), une version d'essai qui s'installe à côté de l'appli du Play Store ;
+#   - quand la clé de signature est dans les secrets du dépôt : « handslam-play-store » (un .aab signé), à déposer dans la
+#     Play Console. Les secrets (Settings › Secrets and variables › Actions) : ANDROID_CLE_BASE64 (le fichier de la clé,
+#     en base64), ANDROID_CLE_MOT_DE_PASSE, ANDROID_CLE_ALIAS, ANDROID_CLE_MOT_DE_PASSE_ALIAS. Voir android/LISEZMOI.md.
+name: Appli Android
+
+on:
+  push:
+    paths:
+      - "android/**"
+      - ".github/workflows/android.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  construire:
+    runs-on: ubuntu-latest
+    env:
+      CLE_B64: ${{ secrets.ANDROID_CLE_BASE64 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14.3"
+
+      - name: Version d'essai (.apk)
+        run: gradle -p android assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: handslam-essai
+          path: android/app/build/outputs/apk/debug/*.apk
+
+      - name: Clé de signature
+        if: env.CLE_B64 != ''
+        run: echo "$CLE_B64" | base64 -d > "$RUNNER_TEMP/cle.jks"
+      - name: Paquet pour le Play Store (.aab signé)
+        if: env.CLE_B64 != ''
+        env:
+          CLE_FICHIER: ${{ runner.temp }}/cle.jks
+          CLE_MOT_DE_PASSE: ${{ secrets.ANDROID_CLE_MOT_DE_PASSE }}
+          CLE_ALIAS: ${{ secrets.ANDROID_CLE_ALIAS }}
+          CLE_MOT_DE_PASSE_ALIAS: ${{ secrets.ANDROID_CLE_MOT_DE_PASSE_ALIAS }}
+        run: gradle -p android bundleRelease --no-daemon
+      - uses: actions/upload-artifact@v4
+        if: env.CLE_B64 != ''
+        with:
+          name: handslam-play-store
+          path: android/app/build/outputs/bundle/release/*.aab
+      - name: Effacer la clé
+        if: always()
+        run: rm -f "$RUNNER_TEMP/cle.jks"

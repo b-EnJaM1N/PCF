@@ -47,6 +47,7 @@ import { installerDuels } from "./ecran-duel.js";
 import { installerCercles, renderFaceAFace } from "./ecran-cercles.js";
 import { duelsAvec, profils as profilsEnLigne, mesDuelsTermines, chercher as chercherJoueurs } from "./duel-serveur.js";
 import { jeuDepuisDuels, jeuMoins, estBotEnLigne } from "./stats-passees.js";
+import { ajouterOuvertures } from "./ouvertures.js";
 import { profilDepuisLigne, etatPseudo, pseudoValide } from "./synchro.js";
 import { installerSng } from "./ecran-sng.js";
 import { installerJetons } from "./ecran-jetons.js";
@@ -1661,7 +1662,7 @@ try { vueJeu = localStorage.getItem("hs_vue_jeu") || "humains"; } catch { /* rie
 let recupEnCours = false;
 async function recupererJeuPasse() {
   const uid = compteUI?.session()?.user?.id;
-  if (P.parAdvVersion >= 6 || recupEnCours || !uid) return;
+  if (P.parAdvVersion >= 7 || recupEnCours || !uid) return;
   recupEnCours = true;
   try {
     const duels = [];
@@ -1673,18 +1674,18 @@ async function recupererJeuPasse() {
     const advs = [...new Set(duels.map(d => (d.j0 === uid ? d.j1 : d.j0)).filter(Boolean))], bots = new Set();
     for (let i = 0; i < advs.length; i += 150) for (const p of await profilsEnLigne(advs.slice(i, i + 150))) if (estBotEnLigne(p.pseudo)) bots.add(p.id);
     const h = jeuDepuisDuels(duels, uid, bots);
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 6;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair ; 6 : l'Endurance, les égalités)
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 7;   // (2 : avec les victoires ; 3 : les balles, les sets décisifs, les lectures ; 4 : les lectures ratées ; 5 : le Flair ; 6 : l'Endurance, les égalités ; 7 : les ouvertures)
     sauverP();
   } catch (e) { console.warn("Mon jeu : matchs passés", e); }
   recupEnCours = false;
   if (!$("viewProfile").hidden) renderMonJeu();
 }
 function renderMonJeu() {
-  if (!(P.parAdvVersion >= 6) && compteUI?.session()?.user) recupererJeuPasse();
+  if (!(P.parAdvVersion >= 7) && compteUI?.session()?.user) recupererJeuPasse();
   // (sans compte et sans duel joué : tous les matchs passés étaient contre des bots)
-  else if (!(P.parAdvVersion >= 6) && !compteUI?.session()?.user && !P.duelsFinis) {
+  else if (!(P.parAdvVersion >= 7) && !compteUI?.session()?.user && !P.duelsFinis) {
     const h = P.parAdv?.humains || jeuVide();
-    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 6; sauverP();
+    P.parAdv = { humains: h, bots: jeuMoins(P, h) }; P.parAdvRecupere = Date.now(); P.parAdvVersion = 7; sauverP();
   }
   $("gameBody").innerHTML = htmlJeu(P, vueJeu, { enCours: recupEnCours, connecte: !!compteUI?.session()?.user });
   $("gameBody").querySelectorAll(".jeu-vue").forEach(b => b.addEventListener("click", () => {
@@ -1714,6 +1715,7 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
       <div class="lines">
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
         <div class="ln"><span>Taux de réussite</span><span>${(() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })()}</span></div>
+        <div class="ln"><span>Ouvertures gagnées</span><span>${(() => { const o = ouverturesDe(Q, vue, V) || []; return pcRatio(o[0] || 0, (o[0] || 0) + (o[1] || 0) + (o[2] || 0)); })()}</span></div>
         <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
         <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
@@ -1724,6 +1726,9 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
       <div class="gauge"><div style="width:${ind}%"></div></div>
       <p class="hint">L'analyse a deviné <b>${V.devines} coups sur ${V.lisibles}</b>, soit ${(taux * 100).toFixed(1).replace(".", ",")} %. Le hasard pur donnerait 33 % : 100 sur 100, 40 % : 80, 50 % : 50, 60 % : 20.</p>`;
 }
+// Les ouvertures (25 novembre, exception validée par le porteur du projet) : le 1er coup de chaque set ; « Mon jeu » montre la part
+// gagnée. Contre les joueurs, retrouvées dans tous les duels passés ; contre les bots, comptées depuis le 25 novembre (ouvertures.js).
+const ouverturesDe = (Q, vue, V) => (vue === "total" ? (Q.parAdv ? ajouterOuvertures(Q.parAdv.humains?.ouvertures, Q.parAdv.bots?.ouvertures) : null) : V.ouvertures);
 // Les points gagnés et joués (sans les égalités) d'une fiche, exacts : après chaque point, on sait s'il était gagné (apresVictoire,
 // apresDefaite) ; seul manque le dernier point de chaque match, toujours gagné par le vainqueur du match (20 novembre).
 const pointsDe = V => [(V.apresVictoire || 0) + (V.victoires || 0), (V.apresVictoire || 0) + (V.apresDefaite || 0) + (V.matchs || 0)];
@@ -1939,8 +1944,10 @@ function htmlDossierDetaille(d, elle, { toi = false } = {}) {
       <div class="ln"><span>${toi ? "Tu gardes" : elle ? "Elle garde" : "Il garde"} le même signe</span><span>${d.egalite.garde} %</span></div>
       <div class="ln"><span>${toi ? "Tu joues" : elle ? "Elle joue" : "Il joue"} le plus souvent</span><span>${s(d.egalite.favori, d.egalite.favoriPct)}</span></div></div>` : "";
   const ouverture = d.ouverture ? `<h3 class="ff-titre">🎬 ${ses} ouvertures</h3>`
-    + `<p class="dossier-signes">${d.ouverture.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
-    + `<p class="hint">L'ouverture, c'est le premier coup ${d.ouverture.sets ? "de chaque set" : "du match"}. D'après ${d.ouverture.vus} ouvertures.</p>` : "";
+    + `<p class="dossier-signes dossier-ouv">${d.ouverture.repartition.map((p, k) => `<span>${EMOJIS[k]} ${p} %</span>`).join("")}</p>`
+    // (25 novembre, demande du porteur du projet) le résultat de ces ouvertures, sur une ligne, centré
+    + (d.ouverture.resultats ? `<p class="dossier-signes dossier-ouv">${["✅", "🟰", "❌"].map((e, k) => `<span>${e} ${d.ouverture.resultats[k]} %</span>`).join("")}</p>` : "")
+    + `<p class="hint">L'ouverture, c'est le premier coup ${d.ouverture.sets ? "de chaque set" : "du match"}${d.ouverture.resultats ? " : ✅ gagnée, 🟰 égalité, ❌ perdue" : ""}. D'après ${d.ouverture.vus} ouvertures.</p>` : "";
   const smash = d.smash ? `<h3 class="ff-titre">💥 ${ses} smashs</h3><div class="lines">
       <div class="ln"><span>Smashs joués</span><span>${d.smash.total}, dont ${d.smash.gagnes} gagnant${d.smash.gagnes > 1 ? "s" : ""}</span></div>
       <div class="ln"><span>${toi ? "Tu smashes" : elle ? "Elle smashe" : "Il smashe"} surtout avec</span><span>${s(d.smash.favori)}</span></div></div>`

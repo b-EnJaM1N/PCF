@@ -1,0 +1,61 @@
+plugins {
+    id "com.android.application"
+}
+
+// La clé de signature n'est jamais dans le dépôt : GitHub la reconstitue à partir de ses secrets (voir android/LISEZMOI.md).
+def cle = System.getenv("CLE_FICHIER")
+
+android {
+    namespace "fr.handslam.app"
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "fr.handslam.app"   // le même nom de paquet que l'appli PWABuilder : une simple mise à jour pour les testeurs
+        minSdk 24
+        targetSdk 36
+        versionCode 6                      // le paquet 5 (1.0.0.4) était le dernier de PWABuilder
+        versionName "1.1.0"
+        manifestPlaceholders = [nomAppli: "HandSlam"]
+    }
+
+    signingConfigs {
+        if (cle) {
+            release {
+                storeFile file(cle)
+                storePassword System.getenv("CLE_MOT_DE_PASSE")
+                keyAlias System.getenv("CLE_ALIAS")
+                keyPassword System.getenv("CLE_MOT_DE_PASSE_ALIAS") ?: System.getenv("CLE_MOT_DE_PASSE")
+            }
+        }
+    }
+
+    buildTypes {
+        // La version d'essai s'installe à côté de l'appli du Play Store, sans la remplacer.
+        debug {
+            applicationIdSuffix ".essai"
+            versionNameSuffix "-essai"
+            manifestPlaceholders = [nomAppli: "HandSlam essai"]
+        }
+        release {
+            minifyEnabled false
+            if (cle) signingConfig signingConfigs.release
+        }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    // Aligne les morceaux de la bibliothèque Kotlin tirés par androidx (sinon : « Duplicate class kotlin… »).
+    implementation platform("org.jetbrains.kotlin:kotlin-bom:1.8.22")
+    implementation "androidx.activity:activity:1.9.3"
+    implementation "androidx.core:core:1.13.1"
+    implementation "androidx.webkit:webkit:1.12.1"
+}

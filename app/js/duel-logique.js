@@ -7,6 +7,7 @@ import { nouveauMatch, jouerCoup, penaliser, noterSmash, recupererSmash, EMOJI, 
 import { indiceImprevisibilite } from "./analyse.js";
 import { normaliserProfil, signeFavori, dernierTitre, titresObtenus, tauxSmash } from "./profil.js";
 import { surnomDe } from "./surnoms.js";
+import { ouverturesDuel, ajouterOuvertures } from "./ouvertures.js";
 
 export const maPlace = (duel, uid) => (duel.j0 === uid ? 0 : duel.j1 === uid ? 1 : null);
 export const adversaireDe = (duel, uid) => (duel.j0 === uid ? duel.j1 : duel.j0);
@@ -120,7 +121,9 @@ export function statsFaceAFace(duels, uid, seulementOfficiels = false) {
     // Après un point gagné, combien de fois chacun rejoue le même signe (moi, lui).
     rejoueApresVictoire: [{ meme: 0, total: 0 }, { meme: 0, total: 0 }],
     // Après un point perdu, combien de fois chacun change de signe (moi, lui).
-    changeApresDefaite: [{ change: 0, total: 0 }, { change: 0, total: 0 }], serie: null, derniers: [] };
+    changeApresDefaite: [{ change: 0, total: 0 }, { change: 0, total: 0 }], serie: null, derniers: [],
+    // (25 novembre) Mes ouvertures, le 1er coup de chaque set : [gagnées, égalités, perdues] (les siennes : l'inverse).
+    ouvertures: [0, 0, 0] };
   const tries = [...duels].filter(x => maPlace(x, uid) !== null && x.vainqueur !== null && x.vainqueur !== undefined)
     .sort((x, y) => Date.parse(y.maj_le) - Date.parse(x.maj_le));
   for (const duel of tries) {
@@ -130,6 +133,7 @@ export function statsFaceAFace(duels, uid, seulementOfficiels = false) {
     const scores = (duel.scores_sets || []).map(s => vuDe(s, moi));
     for (const [a, b] of scores) r.sets[a > b ? 0 : 1]++;
     const coups = (duel.coups || []).map(c => ({ ...coupVuDe(c, moi), g: c.g === null || c.g === undefined ? null : c.g === moi ? 0 : 1 }));
+    r.ouvertures = ajouterOuvertures(r.ouvertures, ouverturesDuel(duel, moi));
     coups.forEach((c, i) => {
       r.mesSignes[c.a]++; r.sesSignes[c.b]++;
       if (c.g === null) r.egalites++; else r.points[c.g]++;
