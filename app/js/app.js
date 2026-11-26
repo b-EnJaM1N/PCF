@@ -1717,14 +1717,14 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
   return `${entete}${nbMatchs}<div class="bars">${barres(V.signes, tot)}</div>
       <div class="lines">
         <div class="ln"><span>Signe favori</span><span>${fav === null ? "–" : `${EMOJI[fav]} ${NOM[fav]}`}</span></div>
-        <div class="ln"><span>Taux de réussite (sans les égalités)</span><span>${(() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })()}</span></div>
-        <div class="ln"><span>Punch (point marqué, ni égalité ni point perdu)</span><span>${(() => { const [g, t] = pointsDe(V); return V.egalites === undefined ? "–" : pcRatio(g, t + V.egalites, "–"); })()}</span></div>
+        ${lnInfo("Taux de réussite", (() => { const [g, t] = pointsDe(V); return pcRatio(g, t, "–"); })(), "Les points gagnés sur les points joués, sans compter les égalités. Au hasard : 50 % (autant de points gagnés que perdus).")}
+        ${lnInfo("Punch", (() => { const [g, t] = pointsDe(V); return V.egalites === undefined ? "–" : pcRatio(g, t + V.egalites, "–"); })(), "Les points marqués sur tous les coups joués : ni égalité, ni point perdu. Au hasard : 33 %.")}
         <div class="ln"><span>Ouvertures gagnées</span><span>${(() => { const o = ouverturesDe(Q, vue, V) || []; return pcRatio(o[0] || 0, (o[0] || 0) + (o[1] || 0) + (o[2] || 0)); })()}</span></div>
         <div class="ln"><span>Smashs réussis (le point gagné)</span><span>${pcRatio(V.smashsReussis, V.smashsTentes, "Aucun pour l'instant")}</span></div>
         <div class="ln"><span>Même signe après une victoire</span><span>${mv === null ? "–" : mv + " %"}</span></div>
         <div class="ln"><span>Même signe après une défaite</span><span>${md === null ? "–" : md + " %"}</span></div>
       </div>
-      <p class="hint">Au hasard : 50 % de réussite (autant de points gagnés que perdus), 33 % de punch, et le même signe rejoué environ 33 % du temps.</p>
+      <p class="hint">Un joueur parfaitement imprévisible rejoue le même signe environ 33 % du temps. Touche ⓘ pour l'explication d'une stat.</p>
       <h2 style="margin-top:16px">Indice d'imprévisibilité</h2>
       <div class="big">${ind}<span style="font-size:1rem;color:var(--muted)"> / 100</span></div>
       <div class="gauge"><div style="width:${ind}%"></div></div>
@@ -1733,6 +1733,9 @@ function htmlJeu(Q, vue, { enCours = false, connecte = true, autre = null } = {}
 // Les ouvertures (25 novembre, exception validée par le porteur du projet) : le 1er coup de chaque set ; « Mon jeu » montre la part
 // gagnée. Contre les joueurs, retrouvées dans tous les duels passés ; contre les bots, comptées depuis le 25 novembre (ouvertures.js).
 const ouverturesDe = (Q, vue, V) => (vue === "total" ? (Q.parAdv ? ajouterOuvertures(Q.parAdv.humains?.ouvertures, Q.parAdv.bots?.ouvertures) : null) : V.ouvertures);
+// Une ligne de stat qui s'explique quand on la touche (26 novembre, demande du porteur du projet : les explications entre
+// parenthèses brouillaient la lecture).
+const lnInfo = (titre, valeur, explication) => `<details class="ln-info"><summary class="ln"><span>${titre} <i class="ln-i" aria-hidden="true">ⓘ</i></span><span>${valeur}</span></summary><p class="ln-explication">${explication}</p></details>`;
 // Le punch (26 novembre, demande du porteur du projet) : les points marqués sur tous les coups joués, égalités comprises
 // (au hasard : 33 %) ; avant, le « taux de réussite » ne comptait pas les égalités (au hasard : 50 %).
 // Les points gagnés et joués (sans les égalités) d'une fiche, exacts : après chaque point, on sait s'il était gagné (apresVictoire,
