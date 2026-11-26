@@ -43,6 +43,8 @@ import { noterMain, mainDuel, mainDossier, htmlMains, MAX_MAINS, memoireDuDernie
 import { messagesPossibles, momentApres, texteMessage, erreurMessageLibre, nettoyerMessage, PREFIXE_LIBRE, MESSAGE_LIBRE_MAX } from "./messages-rapides.js";
 import { VERSION } from "./version.js";
 import { installerCompte } from "./ecran-compte.js";
+import { clientSupabase } from "./compte.js";
+import { suivreEnLigne } from "./en-ligne.js";
 import { installerDuels } from "./ecran-duel.js";
 import { installerCercles, renderFaceAFace } from "./ecran-cercles.js";
 import { duelsAvec, profils as profilsEnLigne, mesDuelsTermines, chercher as chercherJoueurs } from "./duel-serveur.js";
@@ -3730,6 +3732,26 @@ compteUI.surConnexion(session => { placerCompte(!!session?.user); if (session?.u
 // ---------------------------------------------------------------- le compteur de visites (étape 43), anonyme
 compterVisite(envoyerVisite, premiereFois, envoyerParcours);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) compterVisite(envoyerVisite, false, envoyerParcours); });   // (appli restée ouverte jusqu'au lendemain)
+
+// ---------------------------------------------------------------- la bulle « 🟢 N en ligne » (26 novembre ; en-ligne.js)
+// Toutes les versions se signalent ; la bulle ne s'affiche que sur la version de test pour l'instant (nouveautes.js « enLigne »).
+// (pas pour un navigateur piloté par un programme, comme les matchs d'essai du robot de mise en ligne)
+let enLigneN = 0;
+if (!navigator.webdriver) {
+  try {
+    suivreEnLigne(clientSupabase(), n => {
+      enLigneN = n;
+      if (!ouvert("enLigne")) return;
+      $("enLigneN").textContent = n; $("enLigne").hidden = !n;
+      $("enLigne").setAttribute("aria-label", `${n} joueur${n > 1 ? "s" : ""} en ligne`);
+    });
+  } catch { /* hors ligne : pas de bulle */ }
+}
+$("enLigne").addEventListener("click", () => {
+  const t = $("toast");
+  t.textContent = enLigneN > 1 ? `🟢 ${enLigneN} joueurs sur HandSlam en ce moment, toi compris.` : "🟢 Tu es seul sur HandSlam en ce moment. Lance la partie rapide : un bot de ton niveau t'attend !";
+  t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 4000);
+});
 
 // ---------------------------------------------------------------- qui est en ligne (étape 39)
 // Appli ouverte et à l'écran : « je suis là » toutes les minutes (en match ou pas) ; les amis voient 🟢 ou 🟠.
