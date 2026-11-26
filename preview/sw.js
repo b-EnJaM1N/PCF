@@ -59,6 +59,7 @@ const FICHIERS = [
   "js/comparer-cartes.js",
   "js/noel.js",
   "js/ouvertures.js",
+  "js/en-ligne.js",
   "js/partage-revue.js",
   "js/revue-reactions.js",
   "js/avent-logique.js",

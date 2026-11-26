@@ -753,6 +753,9 @@ a.btn { display: block; box-sizing: border-box; text-decoration: none; text-alig
 #jetonsDedans[hidden], #jetonsHors[hidden] { display: none; }
 .jetons-haut { font: inherit; font-size: .9rem; font-weight: 700; color: var(--line); background: var(--panel); border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; padding: 5px 10px; cursor: pointer; white-space: nowrap; }
 .jetons-haut[hidden] { display: none; }
+/* la bulle « 🟢 N en ligne » (26 novembre ; en-ligne.js) */
+.en-ligne { font: inherit; font-size: .85rem; font-weight: 700; color: var(--line); background: var(--panel); border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; padding: 4px 9px; cursor: pointer; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.en-ligne[hidden] { display: none; }
 .jetons-puce { font: inherit; font-size: .8rem; font-weight: 600; color: #1A1A1A; background: var(--me); border: 0; border-radius: 999px; padding: 3px 10px; cursor: pointer; }
 .jetons-puce:disabled { opacity: .6; }
 .jetons-msg { flex-basis: 100%; text-align: center; font-size: .8rem; }
