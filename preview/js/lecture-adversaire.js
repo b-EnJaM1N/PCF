@@ -247,8 +247,24 @@ export function dossierDetaille(matchs, { elle = false, toi = false } = {}) {
       perdus = c.g === 0 ? perdus + 1 : 0;
     }
   }
+  // (27 novembre, demande du porteur du projet) Son entêtement : combien de coups d'affilée il reste sur le même signe, en moyenne
+  // (au hasard : 1,5), en tout et pour chaque signe, et sa plus longue série. → { moyenne, parSigne: [3], record: { n, signe } }.
+  const series = [[0, 0], [0, 0], [0, 0]];   // [coups, séries] par signe
+  let record = { n: 0, signe: null };
+  for (const m of liste) {
+    let i = 0;
+    while (i < m.length) {
+      let j = i;
+      while (j + 1 < m.length && m[j + 1].b === m[i].b) j++;
+      const k = m[i].b, n2 = j - i + 1;
+      if (k >= 0 && k <= 2) { series[k][0] += n2; series[k][1]++; if (n2 > record.n) record = { n: n2, signe: k }; }
+      i = j + 1;
+    }
+  }
+  const nbSeries = series.reduce((a, x) => a + x[1], 0);
+  const entetement = nbSeries ? { moyenne: series.reduce((a, x) => a + x[0], 0) / nbSeries, parSigne: series.map(([c, s]) => (s ? c / s : null)), record } : null;
   return {
-    matchs: liste.length, coups: n, repartition: rep, reflexes, egalite, ouverture, smash, forme, sangFroid,
+    matchs: liste.length, coups: n, repartition: rep, reflexes, egalite, ouverture, smash, forme, sangFroid, entetement,
     // (l'endurance : ne pas perdre le point quand on ne le gagne pas, égalités ÷ (égalités + points perdus))
     flair: { occasions: fe.occasions, points: fe.points },   // (26 novembre : le nouveau Flair, flair.js)
     endurance: (() => { let e = 0, p = 0; for (const m of liste) for (const c of m) { if (c.g === null || c.g === undefined) e++; else if (c.g === 0) p++; } return { egalites: e, nonGagnes: e + p }; })(),
