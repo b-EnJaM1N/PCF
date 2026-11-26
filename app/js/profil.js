@@ -186,11 +186,16 @@ export function nouvelElo(elo, eloAdv, gagne, k = K_ELO) {
 }
 
 export const nomAffiche = P => P.pseudo || "Toi";
-// Le Sang-froid (26 novembre, après la simulation entre bots) : le coup qui suit deux points perdus d'affilée ; marque-t-on quand
-// même ? coups : vus de mon côté (gagnant 0 = moi). → [points marqués, occasions]. Au hasard : 1 sur 3.
+// Le Sang-froid (26 novembre, après la simulation entre bots) : après deux points perdus d'affilée, le point suivant est-il gagné ?
+// Les égalités sont ignorées (choix du porteur du projet) : perdu, égalité, perdu = deux points perdus d'affilée, et c'est le
+// point suivant (pas une égalité) qui compte. coups : vus de mon côté (gagnant 0 = moi). → [points gagnés, occasions]. Au hasard : 1 sur 2.
 export function calmeApres2(coups) {
-  let p = 0, n = 0;
-  for (let i = 2; i < (coups || []).length; i++) if (coups[i - 1].gagnant === 1 && coups[i - 2].gagnant === 1) { n++; if (coups[i].gagnant === 0) p++; }
+  let p = 0, n = 0, perdus = 0;
+  for (const c of coups || []) {
+    if (c.gagnant !== 0 && c.gagnant !== 1) continue;   // (une égalité : ignorée)
+    if (perdus >= 2) { n++; if (c.gagnant === 0) p++; }
+    perdus = c.gagnant === 1 ? perdus + 1 : 0;
+  }
   return [p, n];
 }
 // Mon jeu, contre les joueurs et contre les bots (19 novembre, demande du porteur du projet) : les mêmes compteurs que le total,

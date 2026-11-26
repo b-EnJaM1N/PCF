@@ -96,14 +96,14 @@ test("les Victoires et le Sang-froid (26 novembre) : 0 % = 50, la moyenne = 70, 
   const { noteBareme, BAREMES } = await import("../app/js/carte-logique.js");
   const { calmeApres2 } = await import("../app/js/profil.js");
   assert.equal(noteBareme(0, BAREMES.VIC), 50); assert.equal(noteBareme(50, BAREMES.VIC), 70); assert.equal(noteBareme(60, BAREMES.VIC), 90); assert.equal(noteBareme(70, BAREMES.VIC), 99);
-  assert.equal(noteBareme(100 / 3, BAREMES.SGF), 70); assert.equal(noteBareme(40, BAREMES.SGF), 90);
-  // deux points perdus, puis marqué ; deux perdus, puis égalité ; un seul perdu : pas une occasion
+  assert.equal(noteBareme(50, BAREMES.SGF), 70); assert.equal(noteBareme(60, BAREMES.SGF), 90);
+  // les égalités ignorées : perdu, perdu, gagné (1 sur 1) ; perdu, égalité, perdu, égalité, gagné (2 sur 2) ; perdu, perdu, perdu (2 sur 3)
   const g = x => ({ gagnant: x });
-  assert.deepEqual(calmeApres2([g(1), g(1), g(0), g(1), g(1), g(null), g(1), g(0)]), [1, 2]);
+  assert.deepEqual(calmeApres2([g(1), g(1), g(0), g(1), g(null), g(1), g(null), g(0), g(1), g(1), g(1)]), [2, 3]);
   const P = profilParDefaut();
-  P.parAdv = { humains: { ...jeuVide(), matchs: 100, victoires: 60, calmeOccasions: 200, calmePoints: 80, egalites: 0 }, bots: jeuVide() };
+  P.parAdv = { humains: { ...jeuVide(), matchs: 100, victoires: 60, calmeOccasions: 200, calmePoints: 120, egalites: 0 }, bots: jeuVide() };
   const n = Object.fromEntries(carteDe(P).notes.map(x => [x.code, x.valeur]));
   assert.equal(n.VIC, "90", "60 % de victoires sur 100 matchs");
-  assert.equal(n.SGF, "90", "40 % après deux points perdus, sur 200 occasions");
+  assert.equal(n.SGF, "90", "60 % après deux points perdus, sur 200 occasions");
   assert.equal(n.ENT, undefined, "l'Entame n'est plus sur la carte");
 });

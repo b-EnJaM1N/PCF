@@ -44,11 +44,12 @@ test("mon propre dossier : au « tu », avec mes failles", () => {
   assert.ok(d.conseils.length && d.conseils.every(t => typeof t === "string" && /\btu\b|\bTu\b/.test(t)), d.conseils.join(" | "));
 });
 
-test("le sang-froid du dossier : le point qui suit 2, 3, 4 points perdus ou plus (26 novembre)", () => {
-  // g : 1 = il marque, 0 = il perd, null = égalité. Perdu, perdu, marqué ; perdu ×4, marqué ; perdu, perdu, égalité ; perdu, égalité, perdu, perdu
-  const g = [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, null, 0, null, 0, 0, 1];
+test("le sang-froid du dossier : après 2, 3, 4 points perdus ou plus, les égalités ignorées (26 novembre)", () => {
+  // g : 1 = il marque, 0 = il perd, null = égalité (ignorée).
+  // perdu, perdu, marqué ; perdu ×4, marqué ; perdu, égalité, perdu, égalité, marqué ; perdu, perdu, perdu
+  const g = [0, 0, 1, 0, 0, 0, 0, 1, 0, null, 0, null, 1, 0, 0, 0];
   const m = g.map(x => ({ a: 0, b: x === 1 ? 0 : x === 0 ? 1 : 0, g: x }));
   const d = dossierDetaille([m]);
-  // après 2 : coups 2 (marqué), 5 (perdu), 10 (égalité), 15 (marqué) ; après 3 : coup 6 (perdu) ; après 4 ou plus : coup 7 (marqué)
+  // après 2 : marqué (coup 2), perdu (coup 5), marqué (coup 12, malgré les égalités), perdu (coup 15) ; après 3 : perdu (coup 6) ; après 4 : marqué (coup 7)
   assert.deepEqual(d.sangFroid, [[2, 4], [0, 1], [1, 1]]);
 });

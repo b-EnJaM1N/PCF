@@ -236,12 +236,13 @@ export function dossierDetaille(matchs, { elle = false, toi = false } = {}) {
     const x = flairEtEndurance(m.map(c => ({ a: c.b, b: c.a, gagnant: c.g === null || c.g === undefined ? null : c.g === 1 ? 0 : 1 })));
     for (const k of Object.keys(fe)) fe[k] += x[k];
   }
-  // (26 novembre, demande du porteur du projet) Son sang-froid en détail : le point qui suit 2, 3, 4 points perdus ou plus
-  // d'affilée (une égalité casse la série), marqué quand même ? → [[marqués, occasions] après 2, après 3, après 4 ou plus].
+  // (26 novembre, demande du porteur du projet) Son sang-froid en détail : après 2, 3, 4 points perdus ou plus d'affilée, le point
+  // suivant est-il gagné ? Les égalités sont ignorées. → [[gagnés, occasions] après 2, après 3, après 4 ou plus].
   const sangFroid = [[0, 0], [0, 0], [0, 0]];
   for (const m of liste) {
     let perdus = 0;
     for (const c of m) {
+      if (c.g !== 0 && c.g !== 1) continue;   // (une égalité : ignorée)
       if (perdus >= 2) { const x = sangFroid[Math.min(perdus, 4) - 2]; x[1]++; if (c.g === 1) x[0]++; }
       perdus = c.g === 0 ? perdus + 1 : 0;
     }
