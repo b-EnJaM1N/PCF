@@ -60,6 +60,7 @@ const FICHIERS = [
   "js/noel.js",
   "js/ouvertures.js",
   "js/partage-revue.js",
+  "js/revue-reactions.js",
   "js/avent-logique.js",
   "js/ecran-avent.js",
   "js/config.js",
