@@ -29,6 +29,10 @@
   .texte-revue h2 { font-family: "Barlow Condensed", sans-serif; font-size: 1.3rem; margin: 26px 0 8px; }
   .texte-revue blockquote { margin: 20px 0; padding: 4px 0 4px 16px; border-left: 3px solid var(--me); font-style: italic; font-size: 1.05rem; line-height: 1.6; }
   .texte-revue .jouer { margin: 18px 0 0; }
+  .texte-revue .jouer .btn { display: block; text-align: center; box-sizing: border-box; }
+  .texte-revue .jouer .btn + .btn { margin-top: 10px; }
+  .texte-revue .jouer .btn.alt { color: var(--line); }
+  .texte-revue .partage-msg { font-size: .9rem; color: var(--muted); text-align: center; margin: 10px 0 0; word-break: break-all; }
   .texte-revue a.btn { color: var(--court-deep); }
   .texte-revue > .fin img { display: inline-block; }
   .texte-revue > .fin { text-align: center; color: var(--muted); margin: 28px 0 0; letter-spacing: .4em; }
@@ -62,8 +66,12 @@
   <p>Une rencontre se gagne aussi en amont, dans la phase de pré-ouverture. La pratique du <i>trash talking</i>, importée des playgrounds de HandSlam, y trouve toute sa place, même si les joueurs sont partagés sur le recours à une telle arme, qui fait partie de l'arsenal de l'approche dite « psychologique ». La palette des invectives est pour ainsi dire infinie ; l'objet, dans tous les cas, est de déstabiliser, d'instiller le doute ou d'aiguillonner une confiance excessive chez l'adversaire, avec un même résultat bénéfique.</p>
   <p>Dans ce panorama, les annonces occupent une place particulière. Qu'elles concernent sa propre ouverture (« Je vais jouer Feuille », « Pour moi, Ciseaux ou Pierre ») ou bien celle de l'adversaire (« Je le sais, tu vas jouer Pierre »), il s'agit alors d'enfermer l'opposant dans une alternative réduite à deux options, qui facilite grandement la tâche d'analyse au coup 1.</p>
   <p>Tous ces ressorts s'inscrivent plus largement dans les effets de théâtralité et les efforts pour se construire un personnage, auxquels sont habitués les joueurs rompus à l'exercice. L'ouverture fleuve (voir supra), particulièrement spectaculaire, fait partie de la panoplie. Pour d'évidentes raisons, elle ne peut cependant revêtir un caractère systématique et sera jouée, de préférence, au début du premier set, ou à l'ouverture d'une manche faisant suite à un set victorieux.</p>
+  <section class="reactions" id="reactions" aria-label="Réagir à l'article"><p class="reactions-titre">Ton avis sur cet article</p><div class="reactions-boutons"></div><p class="reactions-msg" role="status" hidden></p></section>
   <p class="fin"><img src="icons/logo.svg" alt="HandSlam, club de Pierre · Feuille · Ciseaux" width="110" height="110"></p>
-  <p class="jouer"><a class="btn" href="./">✊ Jouer sur HandSlam</a></p>
+  <p class="jouer"><button class="btn alt" type="button" id="partagerArticle">📤 Partager l'article</button><a class="btn" href="./">✊ Jouer sur HandSlam</a></p>
+  <p class="partage-msg" id="partageMsg" role="status" hidden></p>
 </main>
+<script src="js/partage-revue.js"></script>
+<script type="module" src="js/revue-reactions.js"></script>
 </body>
 </html>

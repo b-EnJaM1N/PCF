@@ -27,6 +27,10 @@
   .texte-revue h2 { font-family: "Barlow Condensed", sans-serif; font-size: 1.3rem; margin: 26px 0 8px; }
   .texte-revue blockquote { margin: 20px 0; padding: 4px 0 4px 16px; border-left: 3px solid var(--me); font-style: italic; font-size: 1.05rem; line-height: 1.6; }
   .texte-revue .jouer { margin: 18px 0 0; }
+  .texte-revue .jouer .btn { display: block; text-align: center; box-sizing: border-box; }
+  .texte-revue .jouer .btn + .btn { margin-top: 10px; }
+  .texte-revue .jouer .btn.alt { color: var(--line); }
+  .texte-revue .partage-msg { font-size: .9rem; color: var(--muted); text-align: center; margin: 10px 0 0; word-break: break-all; }
   .texte-revue a.btn { color: var(--court-deep); }
   .texte-revue > .fin img { display: inline-block; }
   .texte-revue > .fin { text-align: center; color: var(--muted); margin: 28px 0 0; letter-spacing: .4em; }
@@ -45,8 +49,12 @@
   <p>Un intertitre tous les quatre ou cinq paragraphes aide le lecteur à respirer.</p>
   <blockquote>« Une citation mise en valeur, pour la phrase qu'on voudra partager. »</blockquote>
   <p>Et la conclusion.</p>
+  <section class="reactions" id="reactions" aria-label="Réagir à l'article"><p class="reactions-titre">Ton avis sur cet article</p><div class="reactions-boutons"></div><p class="reactions-msg" role="status" hidden></p></section>
   <p class="fin"><img src="icons/logo.svg" alt="HandSlam, club de Pierre · Feuille · Ciseaux" width="110" height="110"></p>
-  <p class="jouer"><a class="btn" href="./">✊ Jouer sur HandSlam</a></p>
+  <p class="jouer"><button class="btn alt" type="button" id="partagerArticle">📤 Partager l'article</button><a class="btn" href="./">✊ Jouer sur HandSlam</a></p>
+  <p class="partage-msg" id="partageMsg" role="status" hidden></p>
 </main>
+<script src="js/partage-revue.js"></script>
+<script type="module" src="js/revue-reactions.js"></script>
 </body>
 </html>
