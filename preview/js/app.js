@@ -33,7 +33,7 @@ import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } f
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
-import { avatarSVG, SYMBOLES, FONDS, GANTS, GANTS_DESSINES, POIGNETS, MOTIFS, MOTIFS_GANT, MOTIF_COULEURS, MOTIFS_COLORABLES, BRACELETS_COLORABLES, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
+import { avatarSVG, SYMBOLES, FONDS, GANTS, GANTS_DESSINES, POIGNET_ASSORTI, POIGNETS, MOTIFS, MOTIFS_GANT, MOTIF_COULEURS, MOTIFS_COLORABLES, BRACELETS_COLORABLES, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS, POOLS, ligneMoment } from "./voix/script.js";
 import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint, intensiteMatch, series } from "./ambiance.js";
@@ -2679,7 +2679,7 @@ function renderEditeur() {
       // (les cadeaux du calendrier de l'Avent : visibles, avec un cadenas, pendant les fêtes ; sinon seulement s'il les a)
       && !(articleDe(type, k)?.avent && !noelActif() && !possede(P, type, k) && P.av[type] !== k)).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
-      return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
+      return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${choisi(type, k)}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
     }).join("");
     el.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
       const k = b.dataset.k, t = verrouDe(type, k);
@@ -2693,10 +2693,16 @@ function renderEditeur() {
           : `🛍️ « ${esc(x.nom)} » est en vente à la boutique : ${x.prix} jetons. <button class="linkbtn" data-aller="viewBoutique">Voir la boutique</button>`;
         return;
       }
-      $("lockNote").textContent = ""; P.av[type] = k; sauverP(); renderFiche(); rafraichirAvatars();
+      $("lockNote").textContent = "";
+      // (27 novembre) les gants de Noël : « Assorti au gant » en les enfilant ; un autre poignet se met par-dessus le leur
+      if (type === "poignet") { P.av.poignetSurGant = k !== "assorti"; if (k !== "assorti") P.av.poignet = k; }
+      else { if (type === "gant" && GANTS_DESSINES.has(k) && P.av.gant !== k) P.av.poignetSurGant = false; P.av[type] = k; }
+      sauverP(); renderFiche(); rafraichirAvatars();
     }));
   };
-  mk($("swSymbole"), "symbole", SYMBOLES, true); mk($("swBg"), "fond", FONDS); mk($("swGlove"), "gant", GANTS); mk($("swWrist"), "poignet", POIGNETS); mk($("swMotif"), "motif", MOTIFS, true); mk($("swGantMotif"), "gantMotif", MOTIFS_GANT, true);
+  const surGantDessine = GANTS_DESSINES.has(P.av.gant);
+  const choisi = (type, k) => type !== "poignet" || !surGantDessine ? P.av[type] === k : k === "assorti" ? !P.av.poignetSurGant : !!P.av.poignetSurGant && P.av.poignet === k;
+  mk($("swSymbole"), "symbole", SYMBOLES, true); mk($("swBg"), "fond", FONDS); mk($("swGlove"), "gant", GANTS); mk($("swWrist"), "poignet", surGantDessine ? { assorti: POIGNET_ASSORTI, ...POIGNETS } : POIGNETS); mk($("swMotif"), "motif", MOTIFS, true); mk($("swGantMotif"), "gantMotif", MOTIFS_GANT, true);
   if ($("swMotifCouleur")) { mk($("swMotifCouleur"), "gantMotifCouleur", MOTIF_COULEURS); $("choixMotifCouleur").hidden = P.av.gant === "nu" || GANTS_DESSINES.has(P.av.gant) || !MOTIFS_COLORABLES.has(P.av.gantMotif); }   // (seulement pour les motifs qui ont une couleur)
   $("choixPoignet").hidden = P.av.gant === "nu";   // pas de bandeau sur la main nue
   for (const [id, nue] of [["choixGantMotif", false], ["choixPeau", true], ["choixOngles", true]]) if ($(id)) $(id).hidden = (P.av.gant === "nu") !== nue;
