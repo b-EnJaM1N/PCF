@@ -29,7 +29,7 @@ test("chaque article existe vraiment dans l'appli", () => {
 test("un article de la boutique est verrouillé tant qu'il n'est pas acheté", () => {
   const P = profilParDefaut();
   assert.ok(estVerrouille(P, "gant", "rose"));
-  assert.ok(estVerrouille(P, "gant", "rouge") && !estVerrouille(P, "gant", "nu"), "avant le premier match : la main nue seulement");
+  assert.ok(estVerrouille(P, "gant", "rouge") && !estVerrouille(P, "gant", "nu") && !estVerrouille(P, "gant", "debutant"), "avant le premier match : le gant du débutant ou la main nue");
   P.matchs = 1;
   assert.ok(!estVerrouille(P, "gant", "rouge"), "les couleurs de base restent libres (après le premier match)");
   assert.ok(!possede(P, "cri", "qui_le_patron") && possede(P, "cri", "vamos"));
@@ -62,7 +62,8 @@ test("nouveaux gestes : trois à la boutique, deux gagnés avec un trophée", ()
 test("main nue : toutes les peaux et les petits accessoires simples sont gratuits (les bijoux de la boutique et des trophées à part), et se dessinent", async () => {
   const { PEAUX, ONGLES, BRACELETS, BAGUES } = await import("../app/js/avatar.js");
   const P = profilParDefaut();
-  assert.equal(P.av.gant, "nu", "un nouveau joueur commence main nue");
+  assert.equal(P.av.gant, "debutant", "un nouveau joueur commence avec le gant du débutant (27 novembre)");
+  P.av.gant = "nu";
   for (const [type, table] of [["peau", PEAUX], ["ongles", ONGLES], ["bracelet", BRACELETS], ["bague", BAGUES]])
     for (const k of Object.keys(table).filter(k => !articleDe(type, k) && !["capitaine", "champion"].includes(k))) { assert.ok(!estVerrouille(P, type, k), `${type} ${k} : gratuit`); assert.equal(articleDe(type, k), null, `${type} ${k} : pas à la boutique`); }
   for (const symbole of ["pierre", "feuille", "ciseaux", "index", "pouce", "dos", "ciseaux-dos", "feuille-dos"]) {
