@@ -17,6 +17,7 @@ export function equiper(P, x) {
   if (x.categorie !== "avatar") { P[x.type] = x.cle; return; }
   P.av[x.type] = x.cle;
   if (x.type === "gant") P.av.gantMotif = "uni";
+  if (x.type === "gant" && GANTS_DESSINES.has(x.cle)) P.av.poignetSurGant = false;   // (27 novembre : un gant de Noël avec son poignet)
 }
 
 export function apercu(x, av) {

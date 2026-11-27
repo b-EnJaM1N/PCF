@@ -2699,7 +2699,7 @@ function renderEditeur() {
       $("lockNote").textContent = "";
       // (27 novembre) les gants de Noël : « Assorti au gant » en les enfilant ; un autre poignet se met par-dessus le leur
       if (type === "poignet") { P.av.poignetSurGant = k !== "assorti"; if (k !== "assorti") P.av.poignet = k; }
-      else { if (type === "gant" && GANTS_DESSINES.has(k) && P.av.gant !== k) P.av.poignetSurGant = false; P.av[type] = k; }
+      else { if (type === "gant" && GANTS_DESSINES.has(k)) P.av.poignetSurGant = false; P.av[type] = k; }   // (même s'il le portait déjà : le gant complet)
       sauverP(); renderFiche(); rafraichirAvatars();
     }));
   };
