@@ -70,12 +70,13 @@ export const changerVisibilite = (uid, visible) => essayer(async () =>
   verifier(await client().from("profils").update({ visible_recherche: visible }).eq("id", uid).select("visible_recherche").single()));
 
 // Écoute les changements d'un ou plusieurs duels. filtre : « id=eq.… », « j1=eq.… »…
-// Renvoie une fonction pour arrêter l'écoute.
-export function ecouter(nom, filtre, rappel) {
+// Renvoie une fonction pour arrêter l'écoute. surStatut(ok) : (27 novembre) à chaque changement de la connexion en direct
+// (ok : elle marche), pour passer à des signes de vie plus rapprochés quand elle ne marche pas.
+export function ecouter(nom, filtre, rappel, surStatut = null) {
   try {
     const canal = client().channel(`${nom}-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "duels", filter: filtre }, p => { if (p.new && p.new.id) rappel(p.new); })
-      .subscribe();
+      .subscribe(statut => surStatut?.(statut === "SUBSCRIBED"));
     return () => { try { client().removeChannel(canal); } catch { /* rien */ } };
   } catch { return () => {}; }
 }

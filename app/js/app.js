@@ -3264,11 +3264,14 @@ function lancerDuel(duel, ligneAdv) {
   rafraichirAvatars(); render();
   ouvrirOnglet("match");
   if (duel.tournoi_id) reperesTournoi(duel);
-  D.arret = serveur.ecouter("duel", `id=eq.${duel.id}`, majDuel);
+  D.arret = serveur.ecouter("duel", `id=eq.${duel.id}`, majDuel, ok => { if (D) D.enDirect = ok; });
   // (24 novembre, avant l'ouverture au public ; décision du 13 novembre) Un signe de vie toutes les 3 secondes au lieu de chaque
   // seconde : l'écoute en direct apporte les coups de l'adversaire tout de suite, et un signe de vie part aussi pile à la fin de
   // chaque délai (voir prevoirEcheance), pour que le serveur l'applique sans attendre.
-  D.boucle = setInterval(battement, BATTEMENT_MS);
+  // (27 novembre, un testeur trouve que les duels rament) Tant que l'écoute en direct ne marche pas (pas encore branchée, coupée,
+  // bloquée par le réseau), un signe de vie chaque seconde : sinon, le coup de l'adversaire pouvait mettre jusqu'à 3 secondes.
+  let tic = 0;
+  D.boucle = setInterval(() => { tic++; if (!D?.enDirect || tic % (BATTEMENT_MS / 1000) === 0) battement(); }, 1000);
   verifierAmi();
   majDuel(duel); battement();
 }
