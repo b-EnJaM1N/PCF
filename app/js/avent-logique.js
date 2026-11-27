@@ -10,16 +10,21 @@ export const DERNIER_JOUR = 31;            // les rattrapages : jusqu'au 31 déc
 export const RATTRAPAGES_PAR_JOUR = 2;
 export const FORMAT_GARDIEN = { pointsParSet: 7, setsGagnants: 1 };
 
-// Les cadeaux, case par case (« jetons:N », ou un objet « type:clé » du catalogue : catalogue.js, CADEAUX_AVENT).
+// Les cadeaux, case par case (« jetons:N », ou un objet « type:clé » du catalogue : catalogue.js, CADEAUX_AVENT ; « a+b » : une case
+// double, deux cadeaux). (27 novembre, demande du porteur du projet : les cases de jetons remplacées par des breloques et des fonds
+// de Noël, et onze cases doubles avec les autres breloques, fonds et poignets.)
 export const CADEAUX = [null,
-  "gant:pullmoche", "jetons:100", "gant:pullsapin", "poignet:sucreorge", "gant:pullneige", "jetons:150", "gant:pullrenne", "celebration:neige",
-  "gant:pullpere", "jetons:200", "gant:pullcadeau", "fond:nuitnoel", "gant:pullsucre", "jetons:250", "gant:pullpingouin", "poignee:givree",
-  "gant:pullchaussette", "poignet:fourrure", "gant:pullboule", "jetons:300", "gant:pullpain", "cadre:guirlande", "gant:pullhandslam", "gant:perenoel"];
-export function cadeauDe(num) {
-  const c = CADEAUX[num]; if (!c) return null;
-  const [type, cle] = c.split(":");
-  return type === "jetons" ? { type, n: Number(cle), id: c } : { type, cle, id: c };
-}
+  "gant:pullmoche+bracelet:breloque_sucre", "bracelet:breloque_flocon", "gant:pullsapin+bracelet:breloque_sapin", "poignet:sucreorge",
+  "gant:pullneige+poignet:jacquard", "fond:chuteneige", "gant:pullrenne+poignet:rennes", "celebration:neige",
+  "gant:pullpere+bracelet:breloque_cloche", "bracelet:breloque_bonhomme", "gant:pullcadeau+bracelet:breloque_cadeau", "fond:nuitnoel",
+  "gant:pullsucre+fond:papiercadeau", "fond:sapin", "gant:pullpingouin", "poignee:givree+poignet:houx",
+  "gant:pullchaussette", "poignet:fourrure", "gant:pullboule+bracelet:breloque_boule", "fond:guirlandes",
+  "gant:pullpain+poignet:guirlande", "cadre:guirlande", "gant:pullhandslam", "gant:perenoel+bracelet:breloque_etoile"];
+const unCadeau = c => { const [type, cle] = c.split(":"); return type === "jetons" ? { type, n: Number(cle), id: c } : { type, cle, id: c }; };
+// Les cadeaux d'une case (un ou deux).
+export const cadeauxDe = num => (CADEAUX[num] ? CADEAUX[num].split("+").map(unCadeau) : []);
+// Le premier cadeau d'une case.
+export const cadeauDe = num => cadeauxDe(num)[0] || null;
 
 // Les défis du jour. r : le résultat du match qui vient de finir (resultatAvent) ; jour : { matchs } (les matchs joués aujourd'hui).
 export const DEFIS = {

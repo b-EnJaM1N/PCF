@@ -2,12 +2,12 @@
 // Le calendrier vit sur le serveur (supabase/etape-89-calendrier-avent.sql). Sur la version de test, avant décembre, un essai
 // sur le téléphone seulement, avec un jour simulé (rien n'est enregistré sur le serveur, les jetons ne sont pas versés).
 import * as social from "./social-serveur.js";
-import { avatarSVG, GANTS, FONDS, POIGNETS } from "./avatar.js";
+import { avatarSVG, GANTS, FONDS, POIGNETS, BRACELETS } from "./avatar.js";
 import { CELEBRATIONS, CADRES } from "./catalogue.js";
 import { versionDeTest } from "./nouveautes.js";
 import { noelActif, majGrandJour } from "./noel.js";
 import { jourParis } from "./match-du-jour.js";
-import { NB_CASES, cadeauDe, defiDe, DEFI_DU_JOUR, gardienDe, jourAvent, statutCase, rattrapagesRestants, nbOuvertes, calendrierComplet,
+import { NB_CASES, cadeauxDe, defiDe, DEFI_DU_JOUR, gardienDe, jourAvent, statutCase, rattrapagesRestants, nbOuvertes, calendrierComplet,
   resultatAvent, casesGagnees, compterMatchDuJour, RATTRAPAGES_PAR_JOUR } from "./avent-logique.js";
 
 const $ = id => document.getElementById(id);
@@ -25,7 +25,13 @@ export function decrireCadeau(c) {
   if (c.type === "celebration") return { nom: `la célébration « ${CELEBRATIONS[c.cle]?.nom || c.cle} »`, apercu: `<span class="avent-gros">❄️</span>` };
   if (c.type === "cadre") return { nom: `le cadre de carte « ${CADRES[c.cle]?.nom || c.cle} »`, apercu: `<span class="avent-gros">🪪</span>` };
   if (c.type === "poignee") return { nom: "la poignée de main givrée", apercu: `<span class="avent-gros">🤝❄️</span>` };
+  if (c.type === "bracelet") return { nom: `la breloque « ${(BRACELETS[c.cle]?.[0] || c.cle).replace(/^Breloque /, "")} »`, apercu: avatarSVG({ symbole: "pierre", gant: "blanc", bracelet: c.cle, fond: "court" }) };
   return { nom: c.id, apercu: "🎁" };
+}
+// (27 novembre) Les cadeaux d'une case, un ou deux : les noms reliés par « et », les aperçus côte à côte.
+export function decrireCadeaux(cs) {
+  const ds = (cs || []).map(decrireCadeau);
+  return { nom: ds.map(d => d.nom).join(" et "), apercu: ds.length > 1 ? `<span class="avent-double">${ds.map(d => `<span>${d.apercu}</span>`).join("")}</span>` : ds[0]?.apercu || "" };
 }
 
 // Le grand sapin (24 novembre, choix du porteur du projet) : 24 boules de Noël accrochées, qui font office de cases : couleurs, formes
@@ -171,7 +177,7 @@ export function installerAvent(ctx) {
     const el = $("aventCase");
     if (!choisie || !etat) { el.hidden = true; return; }
     el.hidden = false;
-    const n = choisie, st = statutCase(etat, n), c = cadeauDe(n), d = decrireCadeau(c), defi = defiDe(n), g = gardienDe(n);
+    const n = choisie, st = statutCase(etat, n), d = decrireCadeaux(cadeauxDe(n)), defi = defiDe(n), g = gardienDe(n);
     let corps = "";
     if (st === "ouverte") corps = `<div class="avent-cadeau">${d.apercu}</div><p>Ouverte : tu as gagné <b>${esc(d.nom)}</b>.</p>`;
     else if (st === "aujourdhui") {
@@ -205,8 +211,8 @@ export function installerAvent(ctx) {
           const e = lireEssai(); e.cases[num] = { via, le: Date.now() };
           if (via === "rattrapage") (e.rattrapages ||= {})[e.jourSimule] = (e.rattrapages[e.jourSimule] || 0) + 1;
           ecrireEssai(e); etat = etatEssai();
-          const c = cadeauDe(num);
-          if (c.type !== "jetons") { const P = ctx.lireP(); P.aventEssai = [...new Set([...(P.aventEssai || []), c.id])]; ctx.sauverP(); ctx.apresChangement(); }
+          const objets = cadeauxDe(num).filter(c => c.type !== "jetons").map(c => c.id);
+          if (objets.length) { const P = ctx.lireP(); P.aventEssai = [...new Set([...(P.aventEssai || []), ...objets])]; ctx.sauverP(); ctx.apresChangement(); }
         } else {
           const res = await social.ouvrirCaseAvent(num, via);
           etat = { jour: res.jour, cases: res.cases || {}, rattrapagesDuJour: res.rattrapages_du_jour || 0 };
@@ -221,10 +227,10 @@ export function installerAvent(ctx) {
 
   // La porte s'ouvre : le cadeau apparaît.
   function montrerCadeau(num, via) {
-    const d = decrireCadeau(cadeauDe(num)), ov = $("aventOuverture");
+    const d = decrireCadeaux(cadeauxDe(num)), ov = $("aventOuverture");
     $("aventOuvTitre").textContent = `🎄 Case ${num} ouverte !`;
     $("aventOuvCadeau").innerHTML = d.apercu;
-    $("aventOuvTexte").innerHTML = `${via === "rattrapage" ? "Rattrapage réussi ! " : "Défi du jour réussi ! "}Tu gagnes <b>${esc(d.nom)}</b>${etat?.essai && cadeauDe(num).type === "jetons" ? " (essai : pas de jetons versés)" : ""}.`;
+    $("aventOuvTexte").innerHTML = `${via === "rattrapage" ? "Rattrapage réussi ! " : "Défi du jour réussi ! "}Tu gagnes <b>${esc(d.nom)}</b>${etat?.essai && cadeauxDe(num).some(c => c.type === "jetons") ? " (essai : pas de jetons versés)" : ""}.`;
     ov.hidden = false; ov.classList.remove("ouvre"); void ov.offsetWidth; ov.classList.add("ouvre");
   }
   $("aventOuvOk")?.addEventListener("click", () => { $("aventOuverture").hidden = true; });

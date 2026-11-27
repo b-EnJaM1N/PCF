@@ -13,6 +13,18 @@ const ICONES = {
 };
 const icone = (s, cx, cy, taille, c) => `<g transform="translate(${cx - taille / 2} ${cy - taille / 2}) scale(${taille / 10})">${ICONES[s](c)}</g>`;
 const OMBRE = `stroke="rgba(0,0,0,.35)" stroke-width=".8"`;
+// Les breloques de Noël (27 novembre, calendrier de l'Avent) : dessinées autour de (0, 0), environ 10 de haut.
+const TRAIT = `stroke="rgba(0,0,0,.45)" stroke-width=".45"`;
+const BRELOQUES_NOEL = {
+  sucre: `<path d="M1.2 5 V-2.2 A2.1 2.1 0 0 0 -3 -2.2" fill="none" stroke="#F5F7FA" stroke-width="2.2" stroke-linecap="round"/><path d="M1.2 5 V-2.2 A2.1 2.1 0 0 0 -3 -2.2" fill="none" stroke="#E3122F" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1.1 1.1"/>`,
+  sapin: `<path d="M0 -5 L3.6 0 H2 L4.4 3.6 H-4.4 L-2 0 H-3.6 Z" fill="#1E7A3E" ${TRAIT}/><rect x="-.8" y="3.6" width="1.6" height="1.6" fill="#6B3E22"/><circle cx="-1.4" cy="1.6" r=".55" fill="#E3122F"/><circle cx="1.3" cy="-.6" r=".55" fill="#F4C542"/><circle cx="0" cy="-5.2" r=".9" fill="#F4C542"/>`,
+  bonhomme: `<circle cx="0" cy="2.4" r="2.8" fill="#F8FAFC" ${TRAIT}/><circle cx="0" cy="-2" r="2" fill="#F8FAFC" ${TRAIT}/><circle cx="-.7" cy="-2.3" r=".3" fill="#1D2330"/><circle cx=".7" cy="-2.3" r=".3" fill="#1D2330"/><path d="M0 -1.8 L1.6 -1.4 L0 -1.2 Z" fill="#F28C28"/><rect x="-2.2" y="-.3" width="4.4" height=".8" rx=".3" fill="#E3122F"/><rect x="-1.4" y="-4.9" width="2.8" height="1.3" fill="#1D2330"/><rect x="-2" y="-3.8" width="4" height=".5" fill="#1D2330"/>`,
+  etoile: `<path d="M0 -5 L1.5 -1.6 L5 -1.5 L2.3 .8 L3.2 4.6 L0 2.5 L-3.2 4.6 L-2.3 .8 L-5 -1.5 L-1.5 -1.6 Z" fill="#F4C542" ${TRAIT}/><path d="M0 -3 L.7 -1.2 L-.4 -1.1 Z" fill="#FFF6C8"/>`,
+  cloche: `<path d="M-3.6 3 C-3 1.8 -3 -.6 -2.6 -2 C-2.1 -3.8 2.1 -3.8 2.6 -2 C3 -.6 3 1.8 3.6 3 Z" fill="#E9C046" ${TRAIT}/><rect x="-4" y="2.8" width="8" height="1.1" rx=".5" fill="#C99A1E"/><circle cx="0" cy="4.5" r=".9" fill="#A9801A"/><path d="M-1.2 -4.2 H1.2" stroke="#2E9E5B" stroke-width="1.1" stroke-linecap="round"/>`,
+  cadeau: `<rect x="-3.6" y="-2" width="7.2" height="6.4" rx=".6" fill="#E3122F" ${TRAIT}/><rect x="-.7" y="-2" width="1.4" height="6.4" fill="#E9C046"/><rect x="-3.6" y=".6" width="7.2" height="1.2" fill="#E9C046"/><path d="M0 -2 C-2.6 -4.6 -3.4 -2.4 0 -2 C2.6 -4.6 3.4 -2.4 0 -2" fill="none" stroke="#E9C046" stroke-width=".9"/>`,
+  flocon: `<g stroke="#F8FBFF" stroke-width="1" stroke-linecap="round"><path d="M0 -4.6 V4.6 M-4 -2.3 L4 2.3 M-4 2.3 L4 -2.3"/><path d="M-.9 -3.6 L0 -2.7 L.9 -3.6 M-.9 3.6 L0 2.7 L.9 3.6" fill="none"/></g><g stroke="#7FB7E8" stroke-width=".35"><path d="M0 -4.6 V4.6 M-4 -2.3 L4 2.3 M-4 2.3 L4 -2.3"/></g>`,
+  boule: `<rect x="-1.1" y="-4.6" width="2.2" height="1.4" rx=".3" fill="#E9C046"/><circle cx="0" cy="0.8" r="3.8" fill="#D7192E" ${TRAIT}/><path d="M-3.7 .2 Q0 1.8 3.7 .2" stroke="#E9C046" stroke-width=".6" fill="none"/><circle cx="-1.3" cy="-.6" r=".9" fill="#fff" opacity=".75"/>`,
+};
 
 // Un bracelet b ({ type, metal, couleur, couleurs, signe }) posé en (x, y), de largeur w (6 de haut). c : la couleur choisie
 // par le joueur (cuir et perles), ou null.
@@ -45,6 +57,11 @@ export function braceletSVG(b, x, y, w, c = null) {
   if (b.type === "breloque") {
     const mx = x + w / 2;
     return `<defs>${degrade(id, M)}</defs><rect x="${x}" y="${y + 1}" width="${w}" height="2.6" rx="1.3" fill="url(#${id})" ${OMBRE}/><circle cx="${mx}" cy="${y + 7.2}" r="4.1" fill="url(#${id})" ${OMBRE}/><circle cx="${mx}" cy="${y + 7.2}" r="3.1" fill="#1D2330"/>${icone(b.signe, mx, y + 7.2, 4.6, M[1])}`;
+  }
+  if (b.type === "breloque_noel") {   // (27 novembre) une chaîne fine, un anneau, et la breloque dessinée qui pend
+    const mx = x + w / 2, cy2 = y + 9.6;
+    return `<defs>${degrade(id, M)}</defs><rect x="${x}" y="${y + 1.2}" width="${w}" height="2" rx="1" fill="url(#${id})" ${OMBRE}/><circle cx="${mx}" cy="${y + 4.4}" r="1.1" fill="none" stroke="url(#${id})" stroke-width=".8"/>`
+      + `<g transform="translate(${mx} ${cy2})">${BRELOQUES_NOEL[b.motif] || ""}</g>`;
   }
   if (b.type === "montre") {   // la montre de sport : un bracelet en caoutchouc et un cadran rond
     const mx = x + w / 2, bande = b.couleur || "#23262B";

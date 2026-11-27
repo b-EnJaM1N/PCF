@@ -1,25 +1,28 @@
 // Le calendrier de l'Avent (24 novembre) : les cadeaux, les défis du jour, les rattrapages (gardiens, deux par jour, jusqu'au 31).
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { CADEAUX, DEFI_DU_JOUR, DEFIS, cadeauDe, gardienDe, jourAvent, statutCase, casesGagnees, resultatAvent, compterMatchDuJour, NB_CASES, FORMAT_GARDIEN } from "../app/js/avent-logique.js";
+import { CADEAUX, DEFI_DU_JOUR, DEFIS, cadeauDe, cadeauxDe, gardienDe, jourAvent, statutCase, casesGagnees, resultatAvent, compterMatchDuJour, NB_CASES, FORMAT_GARDIEN } from "../app/js/avent-logique.js";
 import { CADEAUX_AVENT, articleDe } from "../app/js/catalogue.js";
 import { nouveauMatch, jouerCoup, PIERRE, CISEAUX, FEUILLE } from "../app/js/regles.js";
 import { readFileSync } from "node:fs";
 
-test("24 cases : 12 pulls moches, 5 fois des jetons, les objets de Noël, et le 24 le Gant du Père Noël", () => {
+test("24 cases : 12 pulls moches, les objets de Noël (11 cases doubles), et le 24 le Gant du Père Noël (27 novembre)", () => {
   assert.equal(CADEAUX.length, NB_CASES + 1);
-  const objets = CADEAUX.slice(1).filter(c => !c.startsWith("jetons:"));
-  assert.equal(CADEAUX.slice(1).filter(c => c.startsWith("gant:pull")).length, 12);
-  assert.equal(CADEAUX.slice(1).filter(c => c.startsWith("jetons:")).length, 5);
-  assert.equal(CADEAUX[24], "gant:perenoel");
-  assert.deepEqual(new Set(objets), new Set(CADEAUX_AVENT.map(x => x.id)), "chaque cadeau est dans le catalogue, une seule fois");
-  for (const c of objets) assert.ok(articleDe(...c.split(":"))?.avent, c);
-  assert.deepEqual(cadeauDe(2), { type: "jetons", n: 100, id: "jetons:100" });
+  const tous = CADEAUX.slice(1).flatMap(c => c.split("+"));
+  assert.equal(tous.filter(c => c.startsWith("gant:pull")).length, 12);
+  assert.equal(tous.filter(c => c.startsWith("jetons:")).length, 0, "plus de cases de jetons");
+  assert.equal(CADEAUX.slice(1).filter(c => c.includes("+")).length, 11, "onze cases doubles");
+  assert.equal(CADEAUX[24], "gant:perenoel+bracelet:breloque_etoile");
+  assert.deepEqual(new Set(tous), new Set(CADEAUX_AVENT.map(x => x.id)), "chaque cadeau est dans le catalogue");
+  assert.equal(tous.length, new Set(tous).size, "chaque cadeau une seule fois");
+  for (const c of tous) assert.ok(articleDe(...c.split(":"))?.avent, c);
+  assert.deepEqual(cadeauDe(2), { type: "bracelet", cle: "breloque_flocon", id: "bracelet:breloque_flocon" });
+  assert.deepEqual(cadeauxDe(1).map(c => c.id), ["gant:pullmoche", "bracelet:breloque_sucre"]);
   for (let n = 1; n <= NB_CASES; n++) assert.ok(DEFIS[DEFI_DU_JOUR[n]], `défi de la case ${n}`);
 });
 
-test("les mêmes cadeaux sur le serveur (étape 89)", () => {
-  const sql = readFileSync(new URL("../supabase/etape-89-calendrier-avent.sql", import.meta.url), "utf8");
+test("les mêmes cadeaux sur le serveur (étape 92)", () => {
+  const sql = readFileSync(new URL("../supabase/etape-92-cadeaux-avent.sql", import.meta.url), "utf8");
   for (let n = 1; n <= NB_CASES; n++) assert.ok(sql.includes(`(${n}, '${CADEAUX[n]}')`), `case ${n} : ${CADEAUX[n]}`);
 });
 

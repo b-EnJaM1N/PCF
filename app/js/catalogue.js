@@ -76,6 +76,12 @@ export const CADEAUX_AVENT = [
   cadeau("cadre", "guirlande", "Cadre « Guirlande »"), cadeau("fond", "nuitnoel", "Fond « Nuit de Noël »"),
   cadeau("poignet", "sucreorge", "Poignet « Sucre d'orge »"), cadeau("poignet", "fourrure", "Poignet « Fourrure »"),
   cadeau("gant", "perenoel", "Gant du Père Noël"),
+  // (27 novembre, demande du porteur du projet) les breloques, les fonds et les poignets de Noël
+  ...["sucre", "sapin", "bonhomme", "etoile", "cloche", "cadeau", "flocon", "boule"].map(k => cadeau("bracelet", `breloque_${k}`, null)),
+  cadeau("fond", "sapin", "Fond « Sapin illuminé »"), cadeau("fond", "chuteneige", "Fond « Chute de neige »"),
+  cadeau("fond", "guirlandes", "Fond « Guirlandes »"), cadeau("fond", "papiercadeau", "Fond « Papier cadeau »"),
+  cadeau("poignet", "houx", "Poignet « Houx »"), cadeau("poignet", "jacquard", "Poignet « Jacquard »"),
+  cadeau("poignet", "guirlande", "Poignet « Guirlande »"), cadeau("poignet", "rennes", "Poignet « Rennes »"),
 ];
 // Les articles retirés de la vente (ils restent à ceux qui les ont achetés) : le pouce levé (12 novembre, décision du porteur
 // du projet : le dessin n'était pas assez beau). Plus dans la boutique ni dans la vitrine du jour (étape SQL 73).
