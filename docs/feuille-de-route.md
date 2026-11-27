@@ -77,6 +77,9 @@ redessinés et diversifiés (étape 64) ; vestiaire en trois groupes ; objets du
 2 bis. **Décision du 13 novembre : lancement en français uniquement** (pays francophones au choix dans la Play Console). L'anglais
    plus tard, seulement si le jeu retient bien les joueurs : d'abord les textes de l'appli, puis les voix (réécriture de l'humour
    et nouvel enregistrement, budget à décider avec le porteur du projet).
+   **27 novembre** : version anglaise rediscutée (répliques adaptées sur les mêmes situations, sans références françaises,
+   plus les écrans essentiels). **Décision : on attend la fin du test fermé** ; en cas de nouveau refus, on l'envisagera
+   (commencer par un échantillon d'une cinquantaine de répliques).
 3 bis. **13 novembre : ouverts à tous** (fait le 13 au matin : `OUVERTES` = série, fantôme, fil, poules, avis, fiche ; le Dossard 1 reste en test). **Ouvrir le fantôme à tous** (accord du porteur du projet le 11 novembre ; ajouter « fantome » à `OUVERTES`
    dans `app/js/nouveautes.js`), puis paquet Android 3 (1.0.0.2) avec la note validée :
    `<fr-FR>` « • Nouveau : le fantôme 👻 Sur la page d'un ami, défie son fantôme : un bot qui joue comme lui, d'après ses matchs.
