@@ -1402,6 +1402,8 @@ body.noel-fete .reserve-temps, body.noel.match-noel .reserve-temps { color: #ffe
 @media (prefers-reduced-motion: reduce) { .noel-pouvoir, #moves.melange button { animation: none; } .noel-pouvoir { display: none; } }
 /* Le calendrier de l'Avent (24 novembre ; ecran-avent.js) : le grand sapin et ses 24 portes */
 .avent-msg { font-weight: 600; text-align: center; margin: 8px 0; }
+.avent-serie { text-align: center; font-size: .9rem; margin: 0 0 8px; opacity: .9; }
+.avent-serie:empty { display: none; }
 .avent-sapin { position: relative; width: 100%; max-width: 380px; aspect-ratio: 3 / 4; margin: 6px auto 12px; }
 .avent-sapin > svg { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .35)); }
 .avent-sapin { background: radial-gradient(ellipse at 50% 92%, rgba(255, 255, 255, .25), transparent 45%); border-radius: 12px; }

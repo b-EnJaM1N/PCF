@@ -547,8 +547,9 @@ en ligne compte toujours les siens.
 
 1. Même manipulation que d'habitude avec [`etape-92-cadeaux-avent.sql`](etape-92-cadeaux-avent.sql), **après** l'étape 89
    (version brute : https://raw.githubusercontent.com/b-EnJaM1N/PCF/main/supabase/etape-92-cadeaux-avent.sql).
-   Plus de jetons dans le calendrier : à leur place, des breloques, des fonds et des poignets de Noël ; certaines cases
-   donnent deux cadeaux (un pull et une breloque, par exemple). À coller avant le 1er décembre.
+   Plus de jetons dans le calendrier : à leur place, des breloques, des fonds et des poignets de Noël. Et des cadeaux
+   d'assiduité : la case du jour ouverte le jour même 3, 5, 7… 23 jours de suite donne un cadeau en plus (un rattrapage ne
+   compte pas). À coller avant le 1er décembre.
 
 ## 1 nonagies unus. Les réactions sous les articles des Cahiers (étape 91)
 

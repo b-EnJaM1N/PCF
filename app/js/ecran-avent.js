@@ -8,7 +8,8 @@ import { versionDeTest } from "./nouveautes.js";
 import { noelActif, majGrandJour } from "./noel.js";
 import { jourParis } from "./match-du-jour.js";
 import { NB_CASES, cadeauxDe, defiDe, DEFI_DU_JOUR, gardienDe, jourAvent, statutCase, rattrapagesRestants, nbOuvertes, calendrierComplet,
-  resultatAvent, casesGagnees, compterMatchDuJour, RATTRAPAGES_PAR_JOUR } from "./avent-logique.js";
+  resultatAvent, casesGagnees, compterMatchDuJour, RATTRAPAGES_PAR_JOUR, PALIERS, primeDe, serieEnCours, meilleureSerie, paliersAtteints,
+  prochainPalier } from "./avent-logique.js";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -32,6 +33,15 @@ export function decrireCadeau(c) {
 export function decrireCadeaux(cs) {
   const ds = (cs || []).map(decrireCadeau);
   return { nom: ds.map(d => d.nom).join(" et "), apercu: ds.length > 1 ? `<span class="avent-double">${ds.map(d => `<span>${d.apercu}</span>`).join("")}</span>` : ds[0]?.apercu || "" };
+}
+
+// (27 novembre) La ligne de l'assiduité, sous le message : la série en cours, le prochain cadeau d'assiduité.
+export function texteSerie(etat) {
+  if (!etat?.jour || etat.jour > NB_CASES + 7) return "";
+  const s = serieEnCours(etat), p = prochainPalier(etat), n = paliersAtteints(etat).length;
+  const serie = s ? `🔥 Série : ${s} jour${s > 1 ? "s" : ""} de suite` : "🔥 Ouvre la case du jour chaque jour : des cadeaux en plus à 3, 5, 7… jours de suite";
+  const suite = p ? ` · Prochain cadeau à ${p.palier} jours : ${decrireCadeau(primeDe(p.palier)).nom} (encore ${p.manque} jour${p.manque > 1 ? "s" : ""})` : "";
+  return `${serie}${s ? suite : ""}${n ? ` · Cadeaux d'assiduité : ${n} sur ${PALIERS.length}` : ""}`;
 }
 
 // Le grand sapin (24 novembre, choix du porteur du projet) : 24 boules de Noël accrochées, qui font office de cases : couleurs, formes
@@ -153,7 +163,7 @@ export function installerAvent(ctx) {
     $("aventEssai").hidden = !essai();
     if (essai()) $("aventJourSimule").value = String(lireEssai().jourSimule);
     if (!etat) {
-      zone.innerHTML = sapin(); $("aventCase").hidden = true;
+      zone.innerHTML = sapin(); $("aventCase").hidden = true; if ($("aventSerie")) $("aventSerie").textContent = "";
       msg.textContent = !charge ? "Chargement du calendrier…" : !uid ? "Crée ton compte (gratuit, sans mot de passe) pour ouvrir le calendrier : tes cadeaux seront gardés." : "Le calendrier n'est pas joignable pour l'instant. Réessaie dans un moment.";
       return;
     }
@@ -162,6 +172,7 @@ export function installerAvent(ctx) {
       : `${nbOuvertes(etat)} case${nbOuvertes(etat) > 1 ? "s" : ""} ouverte${nbOuvertes(etat) > 1 ? "s" : ""} sur ${NB_CASES}${j > NB_CASES ? " · Les cases ratées se rattrapent jusqu'au 31 décembre." : ""} · Rattrapages aujourd'hui : ${rattrapagesRestants(etat)} sur ${RATTRAPAGES_PAR_JOUR}`
       + (calendrierComplet(etat) ? " · 🏅 Calendrier complet !" : "")
       + (j >= 25 ? ` · 🎁 Joyeux Noël ! ${Math.min(PLACES_CADEAUX.length, Math.ceil(nbOuvertes(etat) / 3)) || "Aucun"} cadeau${Math.ceil(nbOuvertes(etat) / 3) > 1 ? "x" : ""} sous le sapin` : "");
+    if ($("aventSerie")) $("aventSerie").textContent = texteSerie(etat);
     // (le 25 décembre et après : les cadeaux au pied du sapin, un pour 3 cases ouvertes)
     zone.innerHTML = sapin(j >= 25 ? Math.min(PLACES_CADEAUX.length, Math.ceil(nbOuvertes(etat) / 3)) : 0) + places().map(p => {
       const st = statutCase(etat, p.num);
@@ -206,31 +217,34 @@ export function installerAvent(ctx) {
     const r = resultatAvent(info.match, info.adv, info);
     const gagnees = casesGagnees(etat, r, compteur);
     for (const { num, via } of gagnees) {
+      const avant = meilleureSerie(etat);
       try {
         if (etat.essai) {
           const e = lireEssai(); e.cases[num] = { via, le: Date.now() };
           if (via === "rattrapage") (e.rattrapages ||= {})[e.jourSimule] = (e.rattrapages[e.jourSimule] || 0) + 1;
           ecrireEssai(e); etat = etatEssai();
-          const objets = cadeauxDe(num).filter(c => c.type !== "jetons").map(c => c.id);
+          const objets = [...cadeauxDe(num), ...nouveauxPaliers(avant).map(primeDe)].filter(c => c.type !== "jetons").map(c => c.id);
           if (objets.length) { const P = ctx.lireP(); P.aventEssai = [...new Set([...(P.aventEssai || []), ...objets])]; ctx.sauverP(); ctx.apresChangement(); }
         } else {
           const res = await social.ouvrirCaseAvent(num, via);
           etat = { jour: res.jour, cases: res.cases || {}, rattrapagesDuJour: res.rattrapages_du_jour || 0 };
           recopierAchats(res.achats);
         }
-        montrerCadeau(num, via);
+        montrerCadeau(num, via, nouveauxPaliers(avant));
       } catch { /* déjà ouverte, ou hors ligne : on réessaiera au prochain match */ }
     }
     if (gagnees.length && calendrierComplet(etat)) ctx.titres?.(["avent_complet"]);
     if (gagnees.length) render();
   }
 
-  // La porte s'ouvre : le cadeau apparaît.
-  function montrerCadeau(num, via) {
-    const d = decrireCadeaux(cadeauxDe(num)), ov = $("aventOuverture");
+  // Les paliers d'assiduité atteints par la dernière case ouverte (la meilleure série avant elle : avant).
+  const nouveauxPaliers = avant => PALIERS.filter(p => p > avant && p <= meilleureSerie(etat));
+  // La porte s'ouvre : le cadeau apparaît (et le cadeau d'assiduité, s'il y en a un).
+  function montrerCadeau(num, via, paliers = []) {
+    const d = decrireCadeaux([...cadeauxDe(num), ...paliers.map(primeDe)]), ov = $("aventOuverture");
     $("aventOuvTitre").textContent = `🎄 Case ${num} ouverte !`;
     $("aventOuvCadeau").innerHTML = d.apercu;
-    $("aventOuvTexte").innerHTML = `${via === "rattrapage" ? "Rattrapage réussi ! " : "Défi du jour réussi ! "}Tu gagnes <b>${esc(d.nom)}</b>${etat?.essai && cadeauxDe(num).some(c => c.type === "jetons") ? " (essai : pas de jetons versés)" : ""}.`;
+    $("aventOuvTexte").innerHTML = `${via === "rattrapage" ? "Rattrapage réussi ! " : "Défi du jour réussi ! "}${paliers.length ? `🔥 ${paliers.at(-1)} jours de suite ! ` : ""}Tu gagnes <b>${esc(d.nom)}</b>${etat?.essai && cadeauxDe(num).some(c => c.type === "jetons") ? " (essai : pas de jetons versés)" : ""}.`;
     ov.hidden = false; ov.classList.remove("ouvre"); void ov.offsetWidth; ov.classList.add("ouvre");
   }
   $("aventOuvOk")?.addEventListener("click", () => { $("aventOuverture").hidden = true; });
