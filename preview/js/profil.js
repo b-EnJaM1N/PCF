@@ -126,7 +126,7 @@ export function titresEnLigne({ cercles = [], tournois = [], duelsCercle = 0, cr
 export const verrouDe = (type, cle) => TITRES.find(t => [t.objet, t.objet2].some(o => o && o[0] === type && o[1] === cle));
 // Verrouillé : réservé à un trophée pas encore obtenu, ou article de la boutique pas encore acheté.
 // Les gants : après le premier match (avant, la main nue).
-export const gantAttendPremierMatch = (P, type, cle) => type === "gant" && cle !== "nu" && !(P.matchs > 0);
+export const gantAttendPremierMatch = (P, type, cle) => type === "gant" && cle !== "nu" && cle !== "debutant" && !(P.matchs > 0);
 // Le Dossard 1 : seulement pour le tenant du titre d'un de ses cercles (P.tenantTitre, donné par le serveur ; étape 71).
 // Le Dossard 1 du FIAC Club (gant « fiac », 14 novembre, validé par le porteur du projet) : réservé au tenant du titre du FIAC Club
 // (P.tenantFiac, d'après mes_dossards). CERCLE_FIAC : l'identifiant du cercle (sans lui, le gant reste caché).
@@ -138,7 +138,7 @@ export const estVerrouille = (P, type, cle) => { const t = verrouDe(type, cle); 
 export function profilParDefaut() {
   return {
     v: 1, pseudo: "", drapeau: "🇫🇷",
-    av: { symbole: "pierre", fond: "court", gant: "nu", peau: "neutre", ongles: "aucun", bracelet: "aucun", bague: "aucune", poignet: "rouge", motif: "uni", gantMotif: "uni", gantMotifCouleur: "defaut", braceletCouleur: "defaut" },   // main nue jusqu'au premier gant
+    av: { symbole: "pierre", fond: "court", gant: "debutant", peau: "neutre", ongles: "aucun", bracelet: "aucun", bague: "aucune", poignet: "rouge", motif: "uni", gantMotif: "uni", gantMotifCouleur: "defaut", braceletCouleur: "defaut" },   // (27 novembre) le gant du débutant (le « A ») jusqu'au premier match ; avant : la main nue
     elo: ELO_DEPART, historiqueElo: [ELO_DEPART],
     matchs: 0, victoires: 0, serieEnCours: 0, meilleureSerieVictoires: 0,
     sets: [0, 0], coups: 0, signes: [0, 0, 0], signesAdv: [0, 0, 0],

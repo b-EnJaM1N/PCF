@@ -20,7 +20,9 @@ export const FONDS = { court: ["Court", "#1F5FA8"], gazon: ["Gazon", "#2E8B57"],
 // « Sans » (main nue, sans vernis, sans bracelet, sans bague) : un rond barré d'une croix (25 octobre, demande du porteur du projet :
 // les rayures et le rond multicolore ne disaient pas assez qu'on enlève l'accessoire).
 const SANS = "linear-gradient(45deg,transparent 43%,#E8574A 43% 57%,transparent 57%),linear-gradient(-45deg,transparent 43%,#E8574A 43% 57%,transparent 57%),rgba(255,255,255,.14)";
-export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc", "#F5F7FA"], jaune: ["Jaune", "#F4C542"], rouge: ["Rouge", "#E8574A"], bleu: ["Bleu", "#4DA3FF"], vert: ["Vert", "#6BD49A"], or: ["Or", "#FFD34D"], argent: ["Argent", "#C9CED6"],
+export const GANTS = { nu: ["Main nue (sans gant)", null, SANS], blanc: ["Blanc", "#F5F7FA"],
+  // (27 novembre, idée du porteur du projet) le gant du débutant : blanc, avec le « A » des jeunes conducteurs ; jusqu'au 1er match
+  debutant: ["Débutant (le A)", "#F5F7FA"], jaune: ["Jaune", "#F4C542"], rouge: ["Rouge", "#E8574A"], bleu: ["Bleu", "#4DA3FF"], vert: ["Vert", "#6BD49A"], or: ["Or", "#FFD34D"], argent: ["Argent", "#C9CED6"],
   rose: ["Rose", "#F28DB2"], violet: ["Violet", "#9B6BD6"], noir: ["Noir mat", "#33363D"], turquoise: ["Turquoise", "#2EC4B6"],
   elite: ["Gant de l'Élite (champion de la carrière)", "#1D1A2E", "linear-gradient(135deg,#1D1A2E 0 45%,#E9C046 45% 55%,#1D1A2E 55%)"],
   // Le Dossard 1 (12 novembre, idée du porteur du projet) : le gant jaune du tenant du titre d'un cercle, comme le maillot jaune ;
@@ -301,6 +303,10 @@ const PLACE_BAGUE = { feuille: [50.5, 34], index: [50.5, 39.5], pouce: [35.6, 33
 // Les mains des routines d'entrée (14 novembre, remarque du porteur du projet : la bague sautait d'un doigt à l'autre) : la bague
 // reste sur le même doigt que dans le signe d'origine, et suit ce doigt quand il s'abaisse ou se replie ; le médaillon et le
 // dossard restent à la place du signe d'origine.
+// Le « A » des jeunes conducteurs (gant du débutant) : un rond blanc cerclé de rouge, un grand A rouge.
+const macaronA = (x, y, r) => { const R = Math.max(r, 7.2), f = v => v.toFixed(2);
+  return `<circle cx="${x}" cy="${y}" r="${R}" fill="#fff" stroke="rgba(0,0,0,.25)" stroke-width=".7"/>`
+    + `<path d="M${f(x - R * .42)} ${f(y + R * .5)} L${x} ${f(y - R * .52)} L${f(x + R * .42)} ${f(y + R * .5)} M${f(x - R * .24)} ${f(y + R * .1)} H${f(x + R * .24)}" fill="none" stroke="#D7192E" stroke-width="${f(R * .22)}" stroke-linejoin="miter" stroke-linecap="butt"/>`; };
 const SIGNE_DE_BASE = s => (/^feuille-[pc][0-3]$/.test(s) ? "feuille" : s === "ciseaux-ferme" ? "ciseaux" : s === "index-plie" ? "index" : s);
 function placeBague(symbole) {
   const piano = /^feuille-p([0-3])$/.exec(symbole), craque = /^feuille-c([0-3])$/.exec(symbole);
@@ -565,6 +571,7 @@ export function avatarSVG(a) {
     + dossardSVG(...(PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
   if (PULLS[a.gant]) { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = motifPull(id, a.gant, x, y - r * .15, r); }
+  if (a.gant === "debutant") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = macaronA(x, y, r); }
   if (a.gant === "neige") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = visageNeige(x, y - r * .1, r); }
   if (a.gant === "renne") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = comete(x + 1, y - 1, r); }
   if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
