@@ -126,7 +126,7 @@ export function texteLigne(etat) {
   return j <= NB_CASES ? `${t} · ✓ Case du jour ouverte${r} ›` : `${t}${r || " · Rattrapages jusqu'au 31 décembre"} ›`;
 }
 
-// ctx : { compte, lireP, sauverP, apresChangement, jouerGardien(num), jouerContre(botId), aller(vue), titres(P) }
+// ctx : { compte, lireP, sauverP, apresChangement, jouerGardien(num), jouerContre(botId), aller(vue), titres(P), musiqueCadeau() }
 export function installerAvent(ctx) {
   let uid = null, etat = null, choisie = null, charge = false;
   const essai = () => versionDeTest() && !jourAvent(jourParis());
@@ -246,6 +246,7 @@ export function installerAvent(ctx) {
     $("aventOuvCadeau").innerHTML = d.apercu;
     $("aventOuvTexte").innerHTML = `${via === "rattrapage" ? "Rattrapage réussi ! " : "Défi du jour réussi ! "}${paliers.length ? `🔥 ${paliers.at(-1)} jours de suite ! ` : ""}Tu gagnes <b>${esc(d.nom)}</b>${etat?.essai && cadeauxDe(num).some(c => c.type === "jetons") ? " (essai : pas de jetons versés)" : ""}.`;
     ov.hidden = false; ov.classList.remove("ouvre"); void ov.offsetWidth; ov.classList.add("ouvre");
+    ctx.musiqueCadeau?.();   // (27 novembre) la petite musique du cadeau
   }
   $("aventOuvOk")?.addEventListener("click", () => { $("aventOuverture").hidden = true; });
 
