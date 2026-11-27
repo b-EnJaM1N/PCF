@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="version" content="b0de948 du 27/11/2026 (test)">
+<meta name="version" content="8a31be3 du 27/11/2026 (test)">
 <!-- (15 novembre, choix du porteur du projet : le titre et la description montrés par Google et dans les aperçus de partage) -->
 <title>HandSlam – Pierre-Feuille-Ciseaux devient un sport</title>
 <meta name="description" content="Le Pierre-Feuille-Ciseaux comme un vrai sport : duels entre amis, tournois, classement et gants à collectionner. Gratuit, sans publicité.">
@@ -53,6 +53,8 @@
   </header>
   <p class="sndnote" id="sndNote" hidden></p>
   <nav class="tabs"><button data-v="jouer" aria-pressed="true">🎮 Jouer<span class="pastille" id="pastilleJouer" hidden></span></button><button data-v="cercles" aria-pressed="false">👥 Amis<span class="pastille" id="pastilleCercles" hidden></span></button><button data-v="profile" aria-pressed="false">🧑 Ma fiche</button></nav>
+  <!-- (27 novembre) la recherche de partie rapide continue sur les autres écrans : ecran-rapide.js -->
+  <button class="rapide-bandeau" id="rapideBandeau" hidden>🔎 Recherche d'un adversaire… <span id="rapideBandeauChrono">0:00</span> <small>· le match se lancera tout seul</small></button>
 
   <div class="view" id="viewJouer">
     <div id="hubAlertes"></div>
@@ -429,7 +431,7 @@
     <section class="card" id="rapideCard" hidden>
       <h2>⚡ Partie rapide</h2>
       <div id="rapideChoix">
-        <p class="hint">Choisis ton format : on te trouve un adversaire humain, du niveau le plus proche du tien. Sans mise et amicale : pour le plaisir, sans effet sur ton niveau. Reste sur cet écran pendant la recherche. (Pour jouer des jetons : Sit &amp; Go, dont le heads-up à deux.)</p>
+        <p class="hint">Choisis ton format : on te trouve un adversaire humain, du niveau le plus proche du tien. Sans mise et amicale : pour le plaisir, sans effet sur ton niveau. Pendant la recherche, tu peux te promener dans l'appli : le match se lancera tout seul. (Pour jouer des jetons : Sit &amp; Go, dont le heads-up à deux.)</p>
         <div class="resultats">
           <button class="joueur rapide-choix" data-format="officiel"><span><span class="jn">Classique</span><span class="jd">Sets de 11, 2 sets gagnants · amicale</span></span><span class="rapide-nb" id="rapideNb_officiel"></span></button>
           <button class="joueur rapide-choix" data-format="eclair"><span><span class="jn">Éclair</span><span class="jd">Un set de 7 · amicale</span></span><span class="rapide-nb" id="rapideNb_eclair"></span></button>
