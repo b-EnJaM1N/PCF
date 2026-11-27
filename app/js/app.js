@@ -1403,13 +1403,16 @@ function montrerStatsFin(apres, { silencieux = false } = {}) {
   const ballesAdv = [Math.max(0, (mes.ballesSubies || 0) - (mes.ballesSauvees || 0)), mes.ballesSubies || 0];
   $("sfMoi").textContent = nomAffiche(P); $("sfAdv").textContent = OPP.nom;
   $("sfScore").textContent = m.scoresSets.map(([a, b]) => `${a}–${b}`).join("  ");
-  const imp = j => (st.imprevisibilite[j] === null ? "–" : `${st.imprevisibilite[j]} %`);
   const favSigne = j => st.signes[j].indexOf(Math.max(...st.signes[j])), fav = j => (nb(j) ? st.signes[j][favSigne(j)] / nb(j) : 0);
   const prefere = j => (nb(j) ? `${EMOJI[favSigne(j)]} ${pc(st.signes[j][favSigne(j)], nb(j))}` : "–");
   // (19 novembre, choix du porteur du projet : sans « Points gagnés », qui doublait le score ; le % de réussite sans les égalités)
   // (26 novembre, demande du porteur du projet) le punch : les points marqués sur tous les coups, égalités comprises
   $("sfLignes").innerHTML = ligne("Punch", pc(st.points[0], st.coups), pc(st.points[1], st.coups), st.points[0], st.points[1], { rg: sur([st.points[0], st.coups]), rd: sur([st.points[1], st.coups]) })
-    + ligne("Imprévisibilité", imp(0), imp(1), st.imprevisibilite[0] || 0, st.imprevisibilite[1] || 0)
+    // (27 novembre, demande du porteur du projet : la Résistance à la place de l'Imprévisibilité, souvent proche de 100 sur un seul
+    // match et peu liée à la victoire ; elle reste sur la carte) les égalités plutôt que des points perdus, sur les points non gagnés
+    + ligne("Résistance", pc(st.egalites, st.egalites + st.points[1]), pc(st.egalites, st.egalites + st.points[0]),
+      st.egalites / ((st.egalites + st.points[1]) || 1), st.egalites / ((st.egalites + st.points[0]) || 1),
+      { rg: sur([st.egalites, st.egalites + st.points[1]]), rd: sur([st.egalites, st.egalites + st.points[0]]) })
     // (19 novembre, le porteur du projet trouvait le panneau trop chargé : 7 lignes ; le signe préféré sur une seule ligne, sans
     // « Change de signe après une égalité » ni « Meilleure série », que Monique commente quand ils comptent)
     + ligne("Signe préféré", prefere(0), prefere(1), fav(0), fav(1))
