@@ -3,7 +3,7 @@
 // La raquette et les applaudissements sont fabriqués par le code (sons.js), sauf si un vrai
 // enregistrement portant leur nom est déposé dans app/audio/ (ex. public_ovation_01.mp3).
 // Le murmure de fond, la tension et le « ooh » n'existent qu'en enregistrement : sans fichier, rien.
-import { BPM_COEUR } from "./effets.js";
+import { BPM_COEUR, vibrer as vibrerTelephone } from "./effets.js";
 import { applaudissements, coupDeRaquette, echoStade, FOULES, normaliser, creteDe, debutDuSon, dechirure, claqueFeuille, smashBloque, smashRate, grondement, coupDeVent, cling, pschitt, crepitement, etincelle, battementCoeur, jingleReplay } from "./sons.js";
 import { balle, pointDecisif } from "./regles.js";
 
@@ -480,7 +480,7 @@ export class Ambiance {
       const n = this.coeurNiveau;
       if (!n) return;
       if (this.buf.coeur) this.jouer(this.buf.coeur, VOLUME_COEUR[n], false, { salle: false });
-      try { if (vibrer && document.visibilityState === "visible") navigator.vibrate?.([30, 130, 18]); } catch { /* sans vibration */ }
+      if (vibrer) vibrerTelephone([30, 130, 18]);
       this.coeurMinuterie = setTimeout(battre, 60000 / BPM_COEUR[n]);
     };
     battre();
