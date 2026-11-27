@@ -43,9 +43,9 @@ reset role;
 create temp table t (cle text primary key, val int); grant all on t to public;
 insert into t values ('avant', pg_temp.solde());
 select pg_temp.en_tant_que('00000000-0000-0000-0000-000000000001');
-select pg_temp.verifier((ouvrir_case_avent(2, 'rattrapage')->>'cadeau') = 'jetons:100', 'rattrapage de la case 2 : 100 jetons');
+select pg_temp.verifier((ouvrir_case_avent(2, 'rattrapage')->>'cadeau') = 'bracelet:breloque_flocon', 'rattrapage de la case 2 : la breloque Flocon (étape 92, plus de jetons)');
 reset role;
-select pg_temp.verifier(pg_temp.solde() = (select val from t where cle = 'avant') + 100, '100 jetons crédités');
+select pg_temp.verifier(pg_temp.solde() = (select val from t where cle = 'avant'), 'pas de jetons');
 select pg_temp.en_tant_que('00000000-0000-0000-0000-000000000001');
 select ouvrir_case_avent(1, 'rattrapage');
 select pg_temp.verifier((mon_avent()->>'rattrapages_du_jour')::int = 2, 'deux rattrapages aujourd''hui');
@@ -61,6 +61,19 @@ select pg_temp.verifier((select count(*) from jsonb_object_keys(mon_avent()->'ca
 -- l'autre joueur ne voit pas mes cases
 select pg_temp.en_tant_que('00000000-0000-0000-0000-000000000002');
 select pg_temp.verifier(mon_avent()->'cases' = '{}'::jsonb, 'chacun son calendrier');
+
+-- (étape 92) les cadeaux d'assiduité : la case du jour 3 jours de suite → la breloque Sucre d'orge ; un rattrapage ne compte pas
+select pg_temp.le('2026-12-01'); select ouvrir_case_avent(1, 'jour');
+select pg_temp.le('2026-12-02');
+select pg_temp.verifier((select r->>'serie' = '2' and r->'prime' = 'null'::jsonb from (select ouvrir_case_avent(2, 'jour') r) x), 'série de 2 : pas encore de cadeau');
+select pg_temp.le('2026-12-03');
+select pg_temp.verifier((select r->>'serie' = '3' and r->>'prime' = 'bracelet:breloque_sucre' from (select ouvrir_case_avent(3, 'jour') r) x), 'série de 3 : la breloque Sucre d''orge');
+reset role;
+select pg_temp.verifier((select count(*) = 1 from achats where joueur = '00000000-0000-0000-0000-000000000002' and article = 'bracelet:breloque_sucre' and prix = 0), 'la breloque : un achat à 0 jeton');
+select pg_temp.en_tant_que('00000000-0000-0000-0000-000000000002');
+select pg_temp.le('2026-12-05'); select ouvrir_case_avent(5, 'jour'); select ouvrir_case_avent(4, 'rattrapage');
+select pg_temp.le('2026-12-06');
+select pg_temp.verifier((select r->>'serie' = '2' and r->'prime' = 'null'::jsonb from (select ouvrir_case_avent(6, 'jour') r) x), 'le 4 rattrapé : la série repart de 5 (2 jours)');
 select pg_temp.le('2027-01-01');
 select pg_temp.interdit('select ouvrir_case_avent(1, ''rattrapage'')', 'en janvier : fermé');
 
