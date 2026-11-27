@@ -13,8 +13,8 @@ android {
         applicationId "fr.handslam.app"   // le même nom de paquet que l'appli PWABuilder : une simple mise à jour pour les testeurs
         minSdk 24
         targetSdk 36
-        versionCode 7                      // (le paquet 5 (1.0.0.4) était le dernier de PWABuilder ; 7 : l'icône recentrée, 27 novembre)
-        versionName "1.1.1"
+        versionCode 8                      // (le paquet 5 (1.0.0.4) était le dernier de PWABuilder ; 7 : l'icône recentrée ; 8 : la vibration)
+        versionName "1.1.2"
         manifestPlaceholders = [nomAppli: "HandSlam"]
     }
 
