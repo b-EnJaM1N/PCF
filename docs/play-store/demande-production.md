@@ -93,3 +93,14 @@ Après le test prolongé (refus du 10 novembre) ; examen annoncé en « sept jou
 ## Réponse du 24 novembre 2026 (soir) : refusée
 « More testing required » (même motif que le 10 novembre : testeurs pas assez engagés, retours pas assez suivis par des mises à
 jour). Google demande 14 jours de test fermé de plus avant une nouvelle demande : **pas avant le 8 décembre**.
+
+## Journal du nouveau test (depuis le 26 novembre)
+
+| Date | Testeur | Retour | Ce qu'on a fait |
+|---|---|---|---|
+| 27 nov. | un testeur | Les duels en ligne « rament un peu » | Le coup de l'adversaire est redemandé chaque seconde (au lieu de 3) quand la connexion en direct ne marche pas ; version Android 1.1.1 |
+| 27 nov. | porteur du projet | L'icône de l'appli rognée et comme décentrée depuis la nouvelle appli Android | Icône recentrée, avec une marge (version 1.1.1) |
+| 27 nov. | porteur du projet | La comparaison des cartes manquait d'allure | Présentation en face-à-face : les deux mains, « VS », une barre par note ; même chose dans l'image partagée |
+| 27 nov. | porteur du projet | Les gants de Noël ignoraient le poignet choisi | Tous les poignets se portent par-dessus ; « Assorti au gant » garde l'original |
+| 27 nov. | porteur du projet | L'imprévisibilité de fin de match, souvent proche de 100, n'apprenait rien | Remplacée par la Résistance (égalités plutôt que points perdus) |
+| 27 nov. | porteur du projet | Le calendrier de l'Avent : plus envie d'objets que de jetons, et récompenser l'assiduité | Objets de Noël dans chaque case, cadeaux à 3, 5, 7… jours de suite, case 1 ouverte en jouant un match, petite musique à l'ouverture |
