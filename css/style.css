@@ -1402,6 +1402,8 @@ body.noel-fete .reserve-temps, body.noel.match-noel .reserve-temps { color: #ffe
 @media (prefers-reduced-motion: reduce) { .noel-pouvoir, #moves.melange button { animation: none; } .noel-pouvoir { display: none; } }
 /* Le calendrier de l'Avent (24 novembre ; ecran-avent.js) : le grand sapin et ses 24 portes */
 .avent-msg { font-weight: 600; text-align: center; margin: 8px 0; }
+.avent-serie { text-align: center; font-size: .9rem; margin: 0 0 8px; opacity: .9; }
+.avent-serie:empty { display: none; }
 .avent-sapin { position: relative; width: 100%; max-width: 380px; aspect-ratio: 3 / 4; margin: 6px auto 12px; }
 .avent-sapin > svg { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .35)); }
 .avent-sapin { background: radial-gradient(ellipse at 50% 92%, rgba(255, 255, 255, .25), transparent 45%); border-radius: 12px; }
@@ -1422,6 +1424,11 @@ body.noel-fete .reserve-temps, body.noel.match-noel .reserve-temps { color: #ffe
 .avent-cadeau svg { width: 110px; height: 110px; }
 .avent-cadeau.mystere { font-size: 3.4rem; }
 .avent-gros { font-size: 3.4rem; }
+/* (27 novembre) une case double : les deux cadeaux côte à côte */
+.avent-cadeau:has(.avent-double) { width: auto; }
+.avent-double { display: flex; gap: 10px; justify-content: center; align-items: center; }
+.avent-double > span { display: grid; place-items: center; }
+.avent-double svg { width: 96px; height: 96px; }
 .avent-ouverture { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: rgba(0, 0, 0, .65); padding: 16px; }
 .avent-ouverture[hidden] { display: none; }
 .avent-ouverture .panel { max-width: 360px; text-align: center; }

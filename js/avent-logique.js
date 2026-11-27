@@ -10,19 +10,53 @@ export const DERNIER_JOUR = 31;            // les rattrapages : jusqu'au 31 déc
 export const RATTRAPAGES_PAR_JOUR = 2;
 export const FORMAT_GARDIEN = { pointsParSet: 7, setsGagnants: 1 };
 
-// Les cadeaux, case par case (« jetons:N », ou un objet « type:clé » du catalogue : catalogue.js, CADEAUX_AVENT).
+// Les cadeaux, case par case (« jetons:N », ou un objet « type:clé » du catalogue : catalogue.js, CADEAUX_AVENT ; « a+b » : deux
+// cadeaux, possible mais plus utilisé). (27 novembre, demande du porteur du projet : plus de jetons, des breloques, des fonds et
+// des poignets de Noël à la place ; un cadeau par case, les autres récompensent l'assiduité : SERIES.)
 export const CADEAUX = [null,
-  "gant:pullmoche", "jetons:100", "gant:pullsapin", "poignet:sucreorge", "gant:pullneige", "jetons:150", "gant:pullrenne", "celebration:neige",
-  "gant:pullpere", "jetons:200", "gant:pullcadeau", "fond:nuitnoel", "gant:pullsucre", "jetons:250", "gant:pullpingouin", "poignee:givree",
-  "gant:pullchaussette", "poignet:fourrure", "gant:pullboule", "jetons:300", "gant:pullpain", "cadre:guirlande", "gant:pullhandslam", "gant:perenoel"];
-export function cadeauDe(num) {
-  const c = CADEAUX[num]; if (!c) return null;
-  const [type, cle] = c.split(":");
-  return type === "jetons" ? { type, n: Number(cle), id: c } : { type, cle, id: c };
+  "gant:pullmoche", "bracelet:breloque_flocon", "gant:pullsapin", "poignet:sucreorge",
+  "gant:pullneige", "fond:chuteneige", "gant:pullrenne", "celebration:neige",
+  "gant:pullpere", "bracelet:breloque_bonhomme", "gant:pullcadeau", "fond:nuitnoel",
+  "gant:pullsucre", "fond:sapin", "gant:pullpingouin", "poignee:givree",
+  "gant:pullchaussette", "poignet:fourrure", "gant:pullboule", "fond:guirlandes",
+  "gant:pullpain", "cadre:guirlande", "gant:pullhandslam", "gant:perenoel"];
+// Les cadeaux d'assiduité (27 novembre, demande du porteur du projet) : la case du jour ouverte N jours de suite (le jour même ;
+// un rattrapage ne compte pas, un jour raté casse la série) : un cadeau en plus à 3, 5, 7… 23 jours. Chacun ne se gagne qu'une fois.
+export const SERIES = { 3: "bracelet:breloque_sucre", 5: "poignet:jacquard", 7: "bracelet:breloque_sapin", 9: "poignet:houx",
+  11: "bracelet:breloque_cloche", 13: "poignet:rennes", 15: "bracelet:breloque_cadeau", 17: "fond:papiercadeau",
+  19: "bracelet:breloque_boule", 21: "poignet:guirlande", 23: "bracelet:breloque_etoile" };
+export const PALIERS = Object.keys(SERIES).map(Number);
+const unCadeau = c => { const [type, cle] = c.split(":"); return type === "jetons" ? { type, n: Number(cle), id: c } : { type, cle, id: c }; };
+// Les cadeaux d'une case (un ou deux).
+export const cadeauxDe = num => (CADEAUX[num] ? CADEAUX[num].split("+").map(unCadeau) : []);
+// Le premier cadeau d'une case.
+export const cadeauDe = num => cadeauxDe(num)[0] || null;
+// Le cadeau d'assiduité d'un palier (3, 5, 7…), ou null.
+export const primeDe = palier => (SERIES[palier] ? unCadeau(SERIES[palier]) : null);
+
+// La série qui finit à la case num : les cases du jour (ouvertes le jour même) qui se suivent jusqu'à elle.
+export function serieA(etat, num) { let k = 0; while (num - k >= 1 && etat.cases?.[num - k]?.via === "jour") k++; return k; }
+// La série en cours : jusqu'à aujourd'hui si la case du jour est ouverte, sinon jusqu'à hier (elle peut encore continuer).
+export function serieEnCours(etat) {
+  const j = etat.jour || 0;
+  if (!j || j > NB_CASES) return 0;
+  return etat.cases?.[j]?.via === "jour" ? serieA(etat, j) : serieA(etat, j - 1);
+}
+// La plus longue série (les paliers atteints : ceux qu'elle dépasse ou égale).
+export function meilleureSerie(etat) { let m = 0; for (let n = 1; n <= NB_CASES; n++) m = Math.max(m, serieA(etat, n)); return m; }
+export const paliersAtteints = etat => PALIERS.filter(p => meilleureSerie(etat) >= p);
+// Le prochain cadeau d'assiduité encore possible : { palier, manque } (les jours de suite qui manquent), ou null.
+export function prochainPalier(etat) {
+  const j = etat.jour || 0, s = serieEnCours(etat), m = meilleureSerie(etat);
+  if (!j || j > NB_CASES) return null;
+  const aujourdhuiFait = etat.cases?.[j]?.via === "jour", restants = NB_CASES - j + (aujourdhuiFait ? 0 : 1);
+  const p = PALIERS.find(x => x > m);
+  return p && p - s <= restants ? { palier: p, manque: p - s } : null;
 }
 
 // Les défis du jour. r : le résultat du match qui vient de finir (resultatAvent) ; jour : { matchs } (les matchs joués aujourd'hui).
 export const DEFIS = {
+  un_match: { texte: "Joue un match (gagné ou perdu).", test: () => true },   // (27 novembre, la case 1 : un cadeau sans insister)
   victoire: { texte: "Gagne un match.", test: r => r.gagne },
   bot_noel: { texte: "Gagne un match contre un bot de Noël.", test: r => r.gagne && r.botNoel },
   smash: { texte: "Réussis un smash pendant un match.", test: r => r.smashsReussis >= 1 },
@@ -37,7 +71,7 @@ export const DEFIS = {
   pere_noel: { texte: "Affronte le Père Noël (pas besoin de gagner !).", test: r => r.adv === "perenoel" },
 };
 export const DEFI_DU_JOUR = [null,
-  "victoire", "smash", "bot_noel", "trois_matchs", "battre_neige", "set_net", "match_du_jour", "serie5",
+  "un_match", "smash", "bot_noel", "trois_matchs", "battre_neige", "set_net", "match_du_jour", "serie5",
   "en_ligne", "battre_renne", "smash", "victoire", "bot_noel", "set_net", "trois_matchs", "battre_renne",
   "serie5", "match_du_jour", "battre_lutin", "en_ligne", "bot_noel", "set_net", "battre_lutin", "pere_noel"];
 export const defiDe = num => DEFIS[DEFI_DU_JOUR[num]] || null;
