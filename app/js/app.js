@@ -7,7 +7,7 @@ import { surnomDe, NOMS, QUALIFICATIFS, FAMILLES as FAMILLES_SURNOM, debloques, 
 import { voirTournoi, mesAmis, classements, dossierJoueur, jeSuisLa, reglerPresence, maPresenceVisible, compterVisite as envoyerVisite, compterTroisMatchs as envoyerTroisMatchs, compterMatch as envoyerMatch, compterParcours as envoyerParcours, donnerAvis, publierUne, ficheJoueur, reglerHistorique, monHistoriqueCache, mesDossards } from "./social-serveur.js";
 import { ficheVisible, htmlStatsEnLigne, htmlFacesAutres, htmlHistorique } from "./fiche-joueur.js";
 import { nouveauxDegats, noterDegats, degatsDe } from "./degats.js";
-import { nouveauFeu, noterFeu, feuDe, feuSVG, egalitesDeSuite, trembleDe, EGALITES_ETINCELLE, effetDouble, niveauCoeur, BPM_COEUR } from "./effets.js";
+import { nouveauFeu, noterFeu, feuDe, feuSVG, egalitesDeSuite, trembleDe, EGALITES_ETINCELLE, effetDouble, niveauCoeur, BPM_COEUR, vibrer } from "./effets.js";
 import { compterVisite, compterTroisMatchs, compterMatchJoue, compterPremierMatch, compterEtapePremier, origineIci } from "./visites.js";
 import { histoireDuMatch } from "./une-logique.js";
 import { filVisible, matchDuDuel, hasardFixe, etapeDuDuel } from "./fil-cercle.js";
@@ -379,7 +379,7 @@ function sonner(ms, reprise) {
   boutons(false); $("moves").classList.add("sonne"); flouSonne(ms);
   S.sonneJusqu = performance.now() + ms;
   $("verdict").textContent = "💫 Sonné ! Encore un instant…";
-  try { const n = Math.max(1, Math.round(ms / 500)); navigator.vibrate?.(Array.from({ length: 2 * n - 1 }, (_, i) => (i % 2 ? 300 : 200))); } catch { /* sans vibration */ }
+  { const n = Math.max(1, Math.round(ms / 500)); vibrer(Array.from({ length: 2 * n - 1 }, (_, i) => (i % 2 ? 300 : 200))); }
   clearTimeout(sonneT);
   sonneT = setTimeout(() => {
     $("moves").classList.remove("sonne");
@@ -915,7 +915,7 @@ function effetSmash(smash, gagnant, recup = null) {
   // La vibration seulement quand le smash marque le point (3 novembre, demande du porteur du projet ; plus rien pour un smash
   // raté ou bloqué), plus longue qu'avant.
   if (issue !== "gagne") return;
-  try { if (document.visibilityState === "visible") navigator.vibrate?.(double ? [200, 70, 200, 70, 350] : [250, 80, 400]); } catch { /* sans vibration */ }
+  vibrer(double ? [200, 70, 200, 70, 350] : [250, 80, 400]);
   if (reduitMouvement()) return;
   const arene = document.querySelector(".arena");
   arene?.classList.remove("smash"); void arene?.offsetWidth; arene?.classList.add("smash");
@@ -936,7 +936,7 @@ function effetsDuCoup(evt, feuChg, double, mains) {
     const tableau = document.querySelector(".board");
     if (double === "seisme") {
       relancer(arene, "seisme"); relancer(tableau, "vacille");
-      try { if (document.visibilityState === "visible") navigator.vibrate?.([140, 50, 140, 50, 120, 60, 90, 70, 60]); } catch { /* sans vibration */ }
+      vibrer([140, 50, 140, 50, 120, 60, 90, 70, 60]);
     } else if (double === "vent") {
       relancer(tableau, "bat-au-vent");
       couche("effet-vent", Array.from({ length: 20 }, (_, i) => `<span class="${i % 4 ? "poussiere" : "trait-vent"}" style="top:${8 + ((i * 29) % 84)}%;animation-delay:${(i * 0.07) % 0.9}s"></span>`).join(""));
@@ -3186,7 +3186,7 @@ document.querySelectorAll("#moves button").forEach(b => {
   b.addEventListener("pointerdown", () => {
     clearTimeout(minuterie); long = false; sansClic = false;
     if (b.disabled || !smashPossible()) return;
-    minuterie = setTimeout(() => { long = true; b.classList.add("charge"); try { navigator.vibrate?.(20); } catch { /* rien */ } }, APPUI_LONG_MS);
+    minuterie = setTimeout(() => { long = true; b.classList.add("charge"); vibrer(20); }, APPUI_LONG_MS);
   });
   b.addEventListener("pointerup", () => { clearTimeout(minuterie); if (long) smasher(); });
   b.addEventListener("pointercancel", () => { clearTimeout(minuterie); if (long) smasher(); else b.classList.remove("charge"); });

@@ -3,11 +3,14 @@ package fr.handslam.app;
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -196,6 +199,21 @@ public class MainActivity extends ComponentActivity {
 
     /** Ce que la page peut demander à Android (appelé depuis le JavaScript du site, voir PONT_JS). */
     private class Pont {
+        // (27 novembre : un testeur ne sentait aucune vibration) La vibration du téléphone, pour l'appli (effets.js, vibrer) :
+        // motif « vibre,pause,vibre… » en millisecondes.
+        @JavascriptInterface
+        public void vibrer(String motif) {
+            try {
+                String[] p = motif.split(",");
+                long[] t = new long[p.length + 1];   // (Android commence par une pause : 0)
+                for (int i = 0; i < p.length; i++) t[i + 1] = Math.max(0, Math.min(5000, Long.parseLong(p[i].trim())));
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                if (v == null || !v.hasVibrator()) return;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) v.vibrate(VibrationEffect.createWaveform(t, -1));
+                else v.vibrate(t, -1);
+            } catch (Exception e) { /* sans vibration */ }
+        }
+
         @JavascriptInterface
         public void partagerTexte(String titre, String texte) {
             runOnUiThread(() -> {
