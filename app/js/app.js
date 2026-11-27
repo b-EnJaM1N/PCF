@@ -3738,6 +3738,8 @@ function jouerGardien(num, botId) {
   ouvrirFaceAFace();
 }
 aventUI = installerAvent({ compte: compteUI, lireP: () => P, sauverP, aller,
+  // (27 novembre, choix du porteur du projet : « grelots et glockenspiel ») la petite musique du cadeau, si les bruitages sont allumés
+  musiqueCadeau: () => { if (!sonActif || !bruitagesActifs) return; try { const a = new Audio("audio/noel_cadeau_01.mp3"); a.volume = 0.7; a.play().catch(() => {}); } catch { /* sans son */ } },
   apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); },
   jouerGardien,
   jouerContre: botId => { amicalId = botId; ecrire("adversaire", amicalId); OPP = botParId(amicalId); renderAdversaires(); rafraichirAvatars(); aller("viewMatch"); },
