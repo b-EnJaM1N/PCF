@@ -10,7 +10,12 @@ export const FONDS = { court: ["Court", "#1F5FA8"], gazon: ["Gazon", "#2E8B57"],
   neon: ["Néon", "#1A0B33", "radial-gradient(circle,#1A0B33 55%,#FF3EA5 60%,#22D3EE 70%)"], coucher: ["Coucher de soleil", "#F2784B", "linear-gradient(#FFB347,#F2784B,#8E3B8E)"],
   stade: ["Stade de nuit", "#0B1B33", "radial-gradient(circle at 50% 0,#FFF6C8,#0B1B33 60%)"], galaxie: ["Galaxie", "#120A2A", "radial-gradient(circle at 30% 30%,#5B2A86,#120A2A 70%)"],
   // (24 novembre, calendrier de l'Avent : avent.js) la nuit de Noël, le ciel étoilé et la neige au sol
-  nuitnoel: ["Nuit de Noël", "#14204A", "radial-gradient(circle at 30% 25%,#fff 3%,transparent 5%),radial-gradient(circle at 70% 35%,#fff 2%,transparent 4%),linear-gradient(#14204A 70%,#F5F7FA 70%)"] };
+  nuitnoel: ["Nuit de Noël", "#14204A", "radial-gradient(circle at 30% 25%,#fff 3%,transparent 5%),radial-gradient(circle at 70% 35%,#fff 2%,transparent 4%),linear-gradient(#14204A 70%,#F5F7FA 70%)"],
+  // (27 novembre, calendrier de l'Avent : demande du porteur du projet) quatre fonds de Noël
+  sapin: ["Sapin illuminé", "#0F1B3A", "radial-gradient(circle at 40% 45%,#F4C542 4%,transparent 6%),radial-gradient(circle at 60% 62%,#E3122F 4%,transparent 6%),linear-gradient(transparent 20%,#1E7A3E 20% 85%,transparent 85%),#0F1B3A"],
+  chuteneige: ["Chute de neige", "#9CC4E8", "radial-gradient(circle at 25% 30%,#fff 4%,transparent 6%),radial-gradient(circle at 70% 55%,#fff 3%,transparent 5%),linear-gradient(#5E92C8,#CFE4F6)"],
+  guirlandes: ["Guirlandes", "#1A1530", "radial-gradient(circle at 20% 30%,#F4C542 6%,transparent 8%),radial-gradient(circle at 50% 40%,#E3122F 6%,transparent 8%),radial-gradient(circle at 80% 30%,#4DA3FF 6%,transparent 8%),#1A1530"],
+  papiercadeau: ["Papier cadeau", "#C4142B", "repeating-linear-gradient(45deg,#C4142B 0 8px,#E9C046 8px 11px)"] };
 // La main nue (« nu ») prend la couleur de peau choisie ; c'est la main des nouveaux joueurs, jusqu'à leur premier gant.
 // « Sans » (main nue, sans vernis, sans bracelet, sans bague) : un rond barré d'une croix (25 octobre, demande du porteur du projet :
 // les rayures et le rond multicolore ne disaient pas assez qu'on enlève l'accessoire).
@@ -75,7 +80,12 @@ export const POIGNETS = { rouge: ["Rouge", "#D63A2F"], bronze: ["Bronze", "#C27A
   braise: ["Braise", "#E8572A", "linear-gradient(90deg,#7A1F12,#E8572A,#F4A93B,#E8572A,#7A1F12)"],
   // (24 novembre, calendrier de l'Avent : avent.js)
   sucreorge: ["Sucre d'orge", "#F5F7FA", "repeating-linear-gradient(-45deg,#E3122F 0 5px,#F5F7FA 5px 10px)"],
-  fourrure: ["Fourrure", "#FAFAF7", "radial-gradient(circle at 30% 40%,#fff 25%,transparent 27%),radial-gradient(circle at 70% 60%,#fff 25%,transparent 27%),#E6EAF0"] };   // (série de jours : trophée « Le rendez-vous »)
+  fourrure: ["Fourrure", "#FAFAF7", "radial-gradient(circle at 30% 40%,#fff 25%,transparent 27%),radial-gradient(circle at 70% 60%,#fff 25%,transparent 27%),#E6EAF0"],
+  // (27 novembre, calendrier de l'Avent) quatre poignets de Noël
+  houx: ["Houx", "#1E7A3E", "radial-gradient(circle at 30% 40%,#E3122F 14%,transparent 16%),radial-gradient(circle at 70% 65%,#E3122F 14%,transparent 16%),#1E7A3E"],
+  jacquard: ["Jacquard", "#C4142B", "radial-gradient(circle,#fff 12%,transparent 14%) 0 0/12px 12px,#C4142B"],
+  guirlande: ["Guirlande", "#1D2330", "radial-gradient(circle at 20% 50%,#F4C542 14%,transparent 16%),radial-gradient(circle at 50% 50%,#E3122F 14%,transparent 16%),radial-gradient(circle at 80% 50%,#4DA3FF 14%,transparent 16%),#1D2330"],
+  rennes: ["Rennes", "#8A5A2E", "repeating-linear-gradient(90deg,#8A5A2E 0 6px,#E8D3A8 6px 9px)"] };   // (série de jours : trophée « Le rendez-vous »)
 // Les couleurs de peau de la main nue : toutes gratuites, toujours.
 export const PEAUX = { neutre: ["Neutre (comme les emojis)", "#FFCC4D"], claire: ["Claire", "#F7D9C4"], rosee: ["Rosée", "#EDB894"], doree: ["Dorée", "#D49A6A"],
   mate: ["Mate", "#A86B42"], brune: ["Brune", "#7A4A2A"], ebene: ["Ébène", "#4A2C1A"] };
@@ -106,6 +116,15 @@ export const BRACELETS = { aucun: ["Sans bracelet", null, AUCUN],
   breloque_pierre: ["Breloque Pierre", "#E9C046", "radial-gradient(circle,#1D2330 30%,#E9C046 34%)", { type: "breloque", metal: "or", signe: "pierre" }],
   breloque_feuille: ["Breloque Feuille", "#C9CED6", "radial-gradient(circle,#1D2330 30%,#C9CED6 34%)", { type: "breloque", metal: "argent", signe: "feuille" }],
   breloque_ciseaux: ["Breloque Ciseaux", "#E9C046", "radial-gradient(circle,#1D2330 30%,#E9C046 34%)", { type: "breloque", metal: "or", signe: "ciseaux" }],
+  // (27 novembre, calendrier de l'Avent) les breloques de Noël : une petite breloque dessinée qui pend à une chaîne fine (bijoux.js)
+  breloque_sucre: ["Breloque Sucre d'orge", "#E3122F", "repeating-linear-gradient(-45deg,#E3122F 0 4px,#F5F7FA 4px 8px)", { type: "breloque_noel", metal: "argent", motif: "sucre" }],
+  breloque_sapin: ["Breloque Sapin", "#1E7A3E", "radial-gradient(circle,#F4C542 14%,#1E7A3E 18%)", { type: "breloque_noel", metal: "or", motif: "sapin" }],
+  breloque_bonhomme: ["Breloque Bonhomme de neige", "#F5F7FA", "radial-gradient(circle,#1D2330 8%,#F5F7FA 12%)", { type: "breloque_noel", metal: "argent", motif: "bonhomme" }],
+  breloque_etoile: ["Breloque Étoile", "#F4C542", "radial-gradient(circle,#FFF1B8 20%,#F4C542 40%,#A9801A 70%)", { type: "breloque_noel", metal: "or", motif: "etoile" }],
+  breloque_cloche: ["Breloque Cloche", "#E9C046", "radial-gradient(circle at 50% 80%,#A9801A 12%,#E9C046 16%)", { type: "breloque_noel", metal: "or", motif: "cloche" }],
+  breloque_cadeau: ["Breloque Cadeau", "#E3122F", "linear-gradient(90deg,transparent 42%,#E9C046 42% 58%,transparent 58%),linear-gradient(transparent 42%,#E9C046 42% 58%,transparent 58%),#E3122F", { type: "breloque_noel", metal: "or", motif: "cadeau" }],
+  breloque_flocon: ["Breloque Flocon", "#BFE3FF", "radial-gradient(circle,#fff 18%,#BFE3FF 22% 40%,#2C6FD1 44%)", { type: "breloque_noel", metal: "argent", motif: "flocon" }],
+  breloque_boule: ["Breloque Boule de Noël", "#D7192E", "radial-gradient(circle at 35% 35%,#fff 8%,#D7192E 14%)", { type: "breloque_noel", metal: "or", motif: "boule" }],
   // gagné avec un trophée (profil.js)
   capitaine: ["Brassard de capitaine", "#F4C542", null, { type: "capitaine" }] };
 // Les bracelets dont on choisit la couleur (cuir, perles).
@@ -490,6 +509,11 @@ export function avatarSVG(a) {
     girafe: `<pattern id="${id}p" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="scale(1.6)"><rect width="12" height="12" fill="#F3DFAF"/><path d="M.8 1 L4.6 .6 L5.8 3 L5 5.4 L1.2 5.6 L.4 3.4 Z" fill="#B8692A"/><path d="M6.8 .8 L11 1.2 L11.6 3.6 L10.4 5.6 L7.2 5.2 L6.4 3 Z" fill="#A55A22"/><path d="M.8 6.8 L4.6 6.6 L5.8 9 L5 11.4 L1.2 11.4 L.4 9.4 Z" fill="#A55A22"/><path d="M6.8 6.8 L11 7 L11.6 9.4 L10.6 11.4 L7.2 11.2 L6.4 9 Z" fill="#B8692A"/></pattern>`,
     sucreorge: `<pattern id="${id}p" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-40)"><rect width="6" height="6" fill="#F5F7FA"/><rect width="3" height="6" fill="#E3122F"/></pattern>`,
     fourrure: `<pattern id="${id}p" width="7" height="6" patternUnits="userSpaceOnUse"><rect width="7" height="6" fill="#E6EAF0"/><circle cx="2" cy="2" r="2.4" fill="#fff"/><circle cx="5.5" cy="4.5" r="2.4" fill="#FAFBFD"/><circle cx="6" cy="1" r="1.2" fill="#fff"/></pattern>`,
+    // (27 novembre, calendrier de l'Avent)
+    houx: `<pattern id="${id}p" width="10" height="8" patternUnits="userSpaceOnUse"><rect width="10" height="8" fill="#1E7A3E"/><path d="M1 4 Q2.5 1.5 4 4 Q2.5 6.5 1 4 Z M5.5 4 Q7 1.5 8.5 4 Q7 6.5 5.5 4 Z" fill="#2E9E5B"/><circle cx="4.8" cy="2.6" r=".95" fill="#E3122F"/><circle cx="4.8" cy="5.2" r=".95" fill="#E3122F"/></pattern>`,
+    jacquard: `<pattern id="${id}p" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#C4142B"/><path d="M4 1.6 V6.4 M1.9 2.8 L6.1 5.2 M1.9 5.2 L6.1 2.8" stroke="#FAFAF7" stroke-width=".7" stroke-linecap="round"/></pattern>`,
+    guirlande: `<pattern id="${id}p" width="12" height="8" patternUnits="userSpaceOnUse"><rect width="12" height="8" fill="#1D2330"/><path d="M0 3 Q3 5 6 3 T12 3" stroke="#2E9E5B" stroke-width=".6" fill="none"/><circle cx="2" cy="4.6" r="1.2" fill="#F4C542"/><circle cx="6" cy="3.2" r="1.2" fill="#E3122F"/><circle cx="10" cy="4.6" r="1.2" fill="#4DA3FF"/></pattern>`,
+    rennes: `<pattern id="${id}p" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="#8A5A2E"/><rect x="6" width="3" height="9" fill="#E8D3A8"/></pattern>`,
     braise: `<linearGradient id="${id}p" x1="0" x2="1"><stop offset="0" stop-color="#7A1F12"/><stop offset=".3" stop-color="#E8572A"/><stop offset=".5" stop-color="#F4A93B"/><stop offset=".7" stop-color="#E8572A"/><stop offset="1" stop-color="#7A1F12"/></linearGradient>`,
   }[cle] || "";
   const fillPoignet = a.gant === "fiac" ? POIGNET_FIAC : poignetDef ? `url(#${id}p)` : poignet;
@@ -497,6 +521,11 @@ export function avatarSVG(a) {
     coucher: `<linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB347"/><stop offset=".55" stop-color="#F2784B"/><stop offset="1" stop-color="#8E3B8E"/></linearGradient>`,
     stade: `<radialGradient id="${id}f" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#FFF6C8"/><stop offset=".35" stop-color="#2A4A7A"/><stop offset="1" stop-color="#0B1B33"/></radialGradient>`,
     nuitnoel: `<linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0B1433"/><stop offset=".7" stop-color="#1E3270"/></linearGradient>`,
+    // (27 novembre, calendrier de l'Avent)
+    sapin: `<linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0B1433"/><stop offset="1" stop-color="#1B2A5A"/></linearGradient>`,
+    chuteneige: `<linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5E92C8"/><stop offset="1" stop-color="#CFE4F6"/></linearGradient>`,
+    guirlandes: `<radialGradient id="${id}f" cx=".5" cy=".5" r=".7"><stop offset="0" stop-color="#2A2250"/><stop offset="1" stop-color="#120E24"/></radialGradient>`,
+    papiercadeau: `<pattern id="${id}f" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="14" fill="#C4142B"/><rect x="10" width="4" height="14" fill="#E9C046"/><circle cx="5" cy="7" r="1" fill="#F5D46A"/></pattern>`,
     galaxie: `<radialGradient id="${id}f" cx=".3" cy=".3" r=".9"><stop offset="0" stop-color="#5B2A86"/><stop offset=".6" stop-color="#1E1240"/><stop offset="1" stop-color="#0A0618"/></radialGradient>`,
   }[a.fond] || "";
   const fillFond = fondDef ? `url(#${id}f)` : fond;
@@ -509,6 +538,14 @@ export function avatarSVG(a) {
   if (a.fond === "nuitnoel") decorFond = `<g clip-path="url(#${id})">${[[22, 22], [40, 12], [74, 20], [84, 42], [14, 44], [58, 30], [30, 34]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? .9 : 1.5}" fill="#fff" opacity=".9"/>`).join("")}`
     + `<circle cx="78" cy="16" r="6" fill="#FFF6C8"/><circle cx="81" cy="14" r="5.4" fill="#0F1A40"/><path d="M0 80 C20 72 34 78 50 74 C66 70 80 78 100 72 V100 H0 Z" fill="#F5F7FA"/>`
     + `${[[12, 58], [30, 66], [64, 60], [88, 66], [46, 54]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.2" fill="#fff" opacity=".85"/>`).join("")}</g>`;
+  // (27 novembre, calendrier de l'Avent) le sapin illuminé : un grand sapin derrière la main, ses boules et l'étoile ; la chute de
+  // neige : des flocons ; les guirlandes : deux fils de petites lumières en haut et en bas.
+  if (a.fond === "sapin") decorFond = `<g clip-path="url(#${id})"><path d="M50 8 L80 52 H66 L88 86 H12 L34 52 H20 Z" fill="#1E7A3E"/><path d="M50 8 L80 52 H66 L88 86 H12 L34 52 H20 Z" fill="none" stroke="#14532A" stroke-width="1.2"/><rect x="45" y="86" width="10" height="10" fill="#6B3E22"/>`
+    + `${[[38, 44, "#E3122F"], [62, 40, "#F4C542"], [28, 74, "#4DA3FF"], [72, 72, "#E3122F"], [50, 62, "#F4C542"], [40, 80, "#F06AA8"], [60, 82, "#4DA3FF"]].map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="${c}"/>`).join("")}`
+    + `<path transform="translate(50 9) scale(1.1)" d="M0 -5 L1.5 -1.5 L5 -1.5 L2.2 .8 L3.2 4.5 L0 2.3 L-3.2 4.5 L-2.2 .8 L-5 -1.5 L-1.5 -1.5 Z" fill="#F4C542"/></g>`;
+  if (a.fond === "chuteneige") decorFond = `<g clip-path="url(#${id})" fill="#fff">${[[14, 16, 1.6], [30, 8, 1.1], [46, 20, 1.4], [66, 10, 1.7], [84, 22, 1.2], [20, 38, 1.2], [80, 40, 1.6], [12, 60, 1.5], [88, 62, 1.1], [24, 84, 1.3], [74, 86, 1.6], [50, 92, 1.1], [40, 6, .9], [58, 30, 1]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" opacity=".9"/>`).join("")}<path d="M0 92 C25 86 45 90 60 87 C78 84 90 89 100 86 V100 H0 Z"/></g>`;
+  if (a.fond === "guirlandes") decorFond = `<g clip-path="url(#${id})"><path d="M0 20 Q25 34 50 22 T100 22 M0 84 Q25 70 50 82 T100 80" stroke="#2E7A44" stroke-width="1.2" fill="none"/>`
+    + `${[[8, 23], [20, 29], [33, 29], [46, 23], [58, 19], [72, 22], [86, 26], [10, 81], [24, 75], [38, 78], [52, 82], [66, 80], [80, 77], [92, 79]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="2.4" fill="${["#F4C542", "#E3122F", "#4DA3FF", "#6BD49A", "#F06AA8"][i % 5]}"/><circle cx="${x}" cy="${y}" r="4.4" fill="${["#F4C542", "#E3122F", "#4DA3FF", "#6BD49A", "#F06AA8"][i % 5]}" opacity=".22"/>`).join("")}</g>`;
   if (a.fond === "neon") decorFond = `<circle cx="50" cy="50" r="42" fill="none" stroke="#FF3EA5" stroke-width="2.5" opacity=".9"/><circle cx="50" cy="50" r="38" fill="none" stroke="#22D3EE" stroke-width="1.5" opacity=".8"/>`;
   if (a.fond === "roland") decorFond = `<g clip-path="url(#${id})" stroke="#fff" stroke-width="2" opacity=".6" fill="none"><path d="M18 0 V100 M82 0 V100 M0 50 H100"/></g>`;
   if (a.fond === "londres") decorFond = `<g clip-path="url(#${id})" opacity=".18">${[...Array(7)].map((_, i) => `<rect x="${i * 16}" y="0" width="8" height="100" fill="#fff"/>`).join("")}</g>`;
