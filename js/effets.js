@@ -116,3 +116,15 @@ export function niveauCoeur(m) {
   if (balle(m)?.type !== "match") return 0;
   return bas < len - 1 ? 0 : Math.min(COEUR_MAX - 1, bas - (len - 1) + 1);
 }
+
+// Faire vibrer le téléphone (motif : [vibre, pause, vibre…] en millisecondes), seulement si l'appli est à l'écran.
+// (27 novembre : un testeur ne sentait aucune vibration) Dans l'appli Android, par le pont natif (MainActivity.java, vibrer) :
+// la vibration du navigateur n'y est pas fiable ; ailleurs, l'API du navigateur (jamais sur iPhone).
+export function vibrer(motif) {
+  try {
+    if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
+    const m = Array.isArray(motif) ? motif : [motif];
+    if (typeof window !== "undefined" && window.HandSlamAndroid?.vibrer) { window.HandSlamAndroid.vibrer(m.join(",")); return; }
+    navigator.vibrate?.(m);
+  } catch { /* sans vibration */ }
+}
