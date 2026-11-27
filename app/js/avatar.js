@@ -571,7 +571,8 @@ export function avatarSVG(a) {
     + dossardSVG(...(PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre));
   // Le gant « Club » : le symbole de l'appli cousu au milieu de la paume (ou du dos de la main), à l'écart des doigts et du pouce.
   if (PULLS[a.gant]) { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = motifPull(id, a.gant, x, y - r * .15, r); }
-  if (a.gant === "debutant") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = macaronA(x, y, r); }
+  // (le « A » seulement au dos de la main, comme en match, et centré : demande du porteur du projet)
+  if (a.gant === "debutant" && /dos$/.test(SIGNE_DE_BASE(a.symbole))) { const [, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)]; deco = macaronA(50, y, r); }
   if (a.gant === "neige") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = visageNeige(x, y - r * .1, r); }
   if (a.gant === "renne") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = comete(x + 1, y - 1, r); }
   if (gm === "club") { const [x, y, r] = PLACE_MEDAILLON[SIGNE_DE_BASE(a.symbole)] || PLACE_MEDAILLON.pierre; deco = symboleHandSlam(x, y, r); }
