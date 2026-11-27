@@ -33,7 +33,7 @@ import { tourDe, nouveauTournoi, monMatch, enregistrerMonMatch, terminerTour } f
 import { CIRCUITS, QUALIFIES, BARRAGISTE, FORMULE, deuxMontent, NOMS_TOURS, coupeApres, nouvelleCarriere, prochainMatch, enregistrerMonMatch as enregistrerCarriere, classement as classementCarriere, saisonSuivante, texteBilan, bilanCarriere, resumePalmares, resumeCoupe, vitrine, TOURS_COUPE, texteCoupe, coupesML, titresCarriere, coupCarriere, migrerCarriere } from "./carriere-logique.js";
 import { coupeSVG, bouclierSVG, coupeMLSVG } from "./coupes.js";
 import { presentation, etatPasser } from "./presentation.js";
-import { avatarSVG, SYMBOLES, FONDS, GANTS, GANTS_DESSINES, POIGNETS, MOTIFS, MOTIFS_GANT, MOTIF_COULEURS, MOTIFS_COLORABLES, BRACELETS_COLORABLES, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
+import { avatarSVG, SYMBOLES, FONDS, GANTS, GANTS_DESSINES, POIGNET_ASSORTI, POIGNETS, MOTIFS, MOTIFS_GANT, MOTIF_COULEURS, MOTIFS_COLORABLES, BRACELETS_COLORABLES, PAYS, PEAUX, ONGLES, BRACELETS, BAGUES } from "./avatar.js";
 import { LecteurVoix } from "./voix/lecteur.js";
 import { CATALOGUE, ligneDialogue, nbDialogues, DIALOGUES_IDS, POOLS, ligneMoment } from "./voix/script.js";
 import { Ambiance, reactionsPublic, egalitesAvantDernier, reactionPoint, intensiteMatch, series } from "./ambiance.js";
@@ -1403,13 +1403,16 @@ function montrerStatsFin(apres, { silencieux = false } = {}) {
   const ballesAdv = [Math.max(0, (mes.ballesSubies || 0) - (mes.ballesSauvees || 0)), mes.ballesSubies || 0];
   $("sfMoi").textContent = nomAffiche(P); $("sfAdv").textContent = OPP.nom;
   $("sfScore").textContent = m.scoresSets.map(([a, b]) => `${a}–${b}`).join("  ");
-  const imp = j => (st.imprevisibilite[j] === null ? "–" : `${st.imprevisibilite[j]} %`);
   const favSigne = j => st.signes[j].indexOf(Math.max(...st.signes[j])), fav = j => (nb(j) ? st.signes[j][favSigne(j)] / nb(j) : 0);
   const prefere = j => (nb(j) ? `${EMOJI[favSigne(j)]} ${pc(st.signes[j][favSigne(j)], nb(j))}` : "–");
   // (19 novembre, choix du porteur du projet : sans « Points gagnés », qui doublait le score ; le % de réussite sans les égalités)
   // (26 novembre, demande du porteur du projet) le punch : les points marqués sur tous les coups, égalités comprises
   $("sfLignes").innerHTML = ligne("Punch", pc(st.points[0], st.coups), pc(st.points[1], st.coups), st.points[0], st.points[1], { rg: sur([st.points[0], st.coups]), rd: sur([st.points[1], st.coups]) })
-    + ligne("Imprévisibilité", imp(0), imp(1), st.imprevisibilite[0] || 0, st.imprevisibilite[1] || 0)
+    // (27 novembre, demande du porteur du projet : la Résistance à la place de l'Imprévisibilité, souvent proche de 100 sur un seul
+    // match et peu liée à la victoire ; elle reste sur la carte) les égalités plutôt que des points perdus, sur les points non gagnés
+    + ligne("Résistance", pc(st.egalites, st.egalites + st.points[1]), pc(st.egalites, st.egalites + st.points[0]),
+      st.egalites / ((st.egalites + st.points[1]) || 1), st.egalites / ((st.egalites + st.points[0]) || 1),
+      { rg: sur([st.egalites, st.egalites + st.points[1]]), rd: sur([st.egalites, st.egalites + st.points[0]]) })
     // (19 novembre, le porteur du projet trouvait le panneau trop chargé : 7 lignes ; le signe préféré sur une seule ligne, sans
     // « Change de signe après une égalité » ni « Meilleure série », que Monique commente quand ils comptent)
     + ligne("Signe préféré", prefere(0), prefere(1), fav(0), fav(1))
@@ -2679,7 +2682,7 @@ function renderEditeur() {
       // (les cadeaux du calendrier de l'Avent : visibles, avec un cadenas, pendant les fêtes ; sinon seulement s'il les a)
       && !(articleDe(type, k)?.avent && !noelActif() && !possede(P, type, k) && P.av[type] !== k)).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
-      return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${P.av[type] === k}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
+      return `<button data-k="${k}" class="${texte ? "txt " : ""}${ferme ? "locked" : ""}${articleDe(type, k) ? " boutique" : ""}" aria-pressed="${choisi(type, k)}" aria-label="${label}${ferme ? ", verrouillé" : ""}" title="${label}" ${texte ? "" : `style="background:${table[k][2] || table[k][1]}"`}>${texte ? label : ""}</button>`;
     }).join("");
     el.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
       const k = b.dataset.k, t = verrouDe(type, k);
@@ -2693,10 +2696,16 @@ function renderEditeur() {
           : `🛍️ « ${esc(x.nom)} » est en vente à la boutique : ${x.prix} jetons. <button class="linkbtn" data-aller="viewBoutique">Voir la boutique</button>`;
         return;
       }
-      $("lockNote").textContent = ""; P.av[type] = k; sauverP(); renderFiche(); rafraichirAvatars();
+      $("lockNote").textContent = "";
+      // (27 novembre) les gants de Noël : « Assorti au gant » en les enfilant ; un autre poignet se met par-dessus le leur
+      if (type === "poignet") { P.av.poignetSurGant = k !== "assorti"; if (k !== "assorti") P.av.poignet = k; }
+      else { if (type === "gant" && GANTS_DESSINES.has(k)) P.av.poignetSurGant = false; P.av[type] = k; }   // (même s'il le portait déjà : le gant complet)
+      sauverP(); renderFiche(); rafraichirAvatars();
     }));
   };
-  mk($("swSymbole"), "symbole", SYMBOLES, true); mk($("swBg"), "fond", FONDS); mk($("swGlove"), "gant", GANTS); mk($("swWrist"), "poignet", POIGNETS); mk($("swMotif"), "motif", MOTIFS, true); mk($("swGantMotif"), "gantMotif", MOTIFS_GANT, true);
+  const surGantDessine = GANTS_DESSINES.has(P.av.gant);
+  const choisi = (type, k) => type !== "poignet" || !surGantDessine ? P.av[type] === k : k === "assorti" ? !P.av.poignetSurGant : !!P.av.poignetSurGant && P.av.poignet === k;
+  mk($("swSymbole"), "symbole", SYMBOLES, true); mk($("swBg"), "fond", FONDS); mk($("swGlove"), "gant", GANTS); mk($("swWrist"), "poignet", surGantDessine ? { assorti: POIGNET_ASSORTI, ...POIGNETS } : POIGNETS); mk($("swMotif"), "motif", MOTIFS, true); mk($("swGantMotif"), "gantMotif", MOTIFS_GANT, true);
   if ($("swMotifCouleur")) { mk($("swMotifCouleur"), "gantMotifCouleur", MOTIF_COULEURS); $("choixMotifCouleur").hidden = P.av.gant === "nu" || GANTS_DESSINES.has(P.av.gant) || !MOTIFS_COLORABLES.has(P.av.gantMotif); }   // (seulement pour les motifs qui ont une couleur)
   $("choixPoignet").hidden = P.av.gant === "nu";   // pas de bandeau sur la main nue
   for (const [id, nue] of [["choixGantMotif", false], ["choixPeau", true], ["choixOngles", true]]) if ($(id)) $(id).hidden = (P.av.gant === "nu") !== nue;
@@ -3729,6 +3738,8 @@ function jouerGardien(num, botId) {
   ouvrirFaceAFace();
 }
 aventUI = installerAvent({ compte: compteUI, lireP: () => P, sauverP, aller,
+  // (27 novembre, choix du porteur du projet : « grelots et glockenspiel ») la petite musique du cadeau, si les bruitages sont allumés
+  musiqueCadeau: () => { if (!sonActif || !bruitagesActifs) return; try { const a = new Audio("audio/noel_cadeau_01.mp3"); a.volume = 0.7; a.play().catch(() => {}); } catch { /* sans son */ } },
   apresChangement: () => { rafraichirAvatars(); if (vueCourante === "viewProfile") renderFiche(); },
   jouerGardien,
   jouerContre: botId => { amicalId = botId; ecrire("adversaire", amicalId); OPP = botParId(amicalId); renderAdversaires(); rafraichirAvatars(); aller("viewMatch"); },

@@ -59,6 +59,21 @@
       "groupe": "Réactions",
       "duree": 2.5,
       "texte": "A huge open-air football stadium with 40,000 passionate supporters, evening match under floodlights, wide open-air sound with a distant echo, heard from the TV broadcast microphones, no music, no announcer, no referee whistle. 40,000 football fans react with a huge surprised collective \"ooooh!\" after a near miss, short"
+    },
+    "cadeau_grelots": {
+      "groupe": "Calendrier de l'Avent : le cadeau (27 novembre)",
+      "duree": 4,
+      "texte": "Short festive Christmas reward jingle for a mobile game: sleigh bells shaking and a bright glockenspiel playing a happy rising melody, ending with a sparkling magical shimmer. Cheerful and cozy. No voice, no speech."
+    },
+    "cadeau_boite": {
+      "groupe": "Calendrier de l'Avent : le cadeau (27 novembre)",
+      "duree": 4,
+      "texte": "Short Christmas music box melody, celesta and soft bells, warm and magical, the feeling of unwrapping a gift, ending with a gentle twinkle. No voice, no speech."
+    },
+    "cadeau_fanfare": {
+      "groupe": "Calendrier de l'Avent : le cadeau (27 novembre)",
+      "duree": 4,
+      "texte": "Short joyful Christmas fanfare for winning a prize in a mobile game: playful brass with sleigh bells, bright and happy, ending with a magical chime. No voice, no speech."
     }
   }
 }

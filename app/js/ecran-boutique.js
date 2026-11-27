@@ -2,7 +2,7 @@
 // Un achat est définitif (ni remboursement, ni cadeau) ; la vitrine du jour propose 3 articles à −30 %.
 import * as social from "./social-serveur.js";
 import { ARTICLES, CATEGORIES, RARETES, RETIRES, article, GESTES, CELEBRATIONS, CADRES } from "./catalogue.js";
-import { avatarSVG } from "./avatar.js";
+import { avatarSVG, GANTS_DESSINES } from "./avatar.js";
 import { texteJetons } from "./jetons-logique.js";
 import { texteCri } from "./celebrations.js";
 import { jouerRoutine } from "./routines.js";
@@ -17,6 +17,7 @@ export function equiper(P, x) {
   if (x.categorie !== "avatar") { P[x.type] = x.cle; return; }
   P.av[x.type] = x.cle;
   if (x.type === "gant") P.av.gantMotif = "uni";
+  if (x.type === "gant" && GANTS_DESSINES.has(x.cle)) P.av.poignetSurGant = false;   // (27 novembre : un gant de Noël avec son poignet)
 }
 
 export function apercu(x, av) {
