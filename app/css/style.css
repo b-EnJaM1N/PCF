@@ -1469,3 +1469,10 @@ body.noel-fete .reserve-temps, body.noel.match-noel .reserve-temps { color: #ffe
 .reaction.on { border-color: var(--me); background: rgba(242, 193, 78, .15); }
 .reaction:focus-visible { outline: 3px solid var(--me); outline-offset: 2px; }
 .reactions-msg { font-size: .85rem; color: var(--muted); margin: 8px 0 0; }
+
+/* (27 novembre) le bandeau de la recherche de partie rapide, sur les autres écrans (ecran-rapide.js) */
+.rapide-bandeau { position: sticky; top: 0; z-index: 30; display: block; width: 100%; margin: 0 0 8px; padding: 8px 12px; border: 0; border-radius: 10px;
+  background: var(--me); color: #1a1a1a; font-weight: 700; text-align: center; cursor: pointer; animation: rapide-pulse 1.6s ease-in-out infinite; }
+.rapide-bandeau[hidden] { display: none; }
+.rapide-bandeau small { font-weight: 500; }
+@keyframes rapide-pulse { 50% { filter: brightness(1.12); } }

@@ -1,13 +1,17 @@
 // Partie rapide (menu Jouer › Partie rapide) : un adversaire de mon niveau, en un clic.
-// Tant qu'on attend, on redemande toutes les 2,5 s (c'est aussi le signe de vie : il faut rester sur l'écran).
+// Tant qu'on attend, on redemande toutes les 2,5 s (c'est aussi le signe de vie).
 // Au bout de 30 s sans adversaire, on propose honnêtement un bot, sans arrêter de chercher un humain.
+// (27 novembre, demande du porteur du projet) Pendant la recherche, on peut se promener dans l'appli : un bandeau « 🔎 Recherche…
+// 0:42 » reste visible partout (le toucher ramène ici) et le match se lance dès qu'un adversaire arrive. La recherche s'arrête
+// si on lance un autre match (contre un bot, le match du jour, la carrière…).
 import * as social from "./social-serveur.js";
 import * as serveur from "./duel-serveur.js";
 import { FORMATS_RAPIDES, ATTENTE_AVANT_BOT_S, chrono, texteFile } from "./rapide-logique.js";
 
 const $ = id => document.getElementById(id);
 
-// ctx : { compte, lancerDuel(duel, profilAdversaire), duelEnCours(), jouerBot(format) }
+// ctx : { compte, lancerDuel(duel, profilAdversaire), duelEnCours(), jouerBot(format), surEcran() (l'écran Partie rapide est affiché),
+// allerIci() }
 export function installerRapide(ctx) {
   let uid = null, format = null, minuterie = 0, horloge = 0, debut = 0, enCours = false, file = null;
   const dire = (t, erreur = false) => { $("rapideMsg").textContent = t; $("rapideMsg").classList.toggle("erreur", erreur); };
@@ -35,7 +39,16 @@ export function installerRapide(ctx) {
   }
   renderFile();
 
+  // Le bandeau de la recherche, sur les autres écrans.
+  function bandeau() {
+    const b = $("rapideBandeau"); if (!b) return;
+    b.hidden = !format || ctx.surEcran();
+    if (format) $("rapideBandeauChrono").textContent = chrono((Date.now() - debut) / 1000);
+  }
+  $("rapideBandeau")?.addEventListener("click", () => ctx.allerIci());
+
   function afficher() {
+    bandeau();
     $("rapideChoix").hidden = !!format; $("rapideAttente").hidden = !format;
     if (format) $("rapideFormat").textContent = `${FORMATS_RAPIDES[format].nom} · ${FORMATS_RAPIDES[format].detail}`;
   }
@@ -73,7 +86,7 @@ export function installerRapide(ctx) {
     minuterie = setInterval(chercher, 2500);
     horloge = setInterval(() => {
       const s = (Date.now() - debut) / 1000;
-      $("rapideChrono").textContent = chrono(s);
+      $("rapideChrono").textContent = chrono(s); bandeau();
       if (s >= ATTENTE_AVANT_BOT_S) $("rapideBot").hidden = false;
     }, 250);
   }
@@ -92,8 +105,10 @@ export function installerRapide(ctx) {
   $("rapideBotGo").addEventListener("click", () => { const f = format; arreter({ quitter: true }); ctx.jouerBot(f); });
 
   return {
-    // On quitte l'écran : on arrête de chercher.
-    quitterEcran: () => { if (format) { arreter({ quitter: true }); dire("Recherche arrêtée : il faut rester sur cet écran pendant la recherche."); } },
+    // On change d'écran : la recherche continue, le bandeau la montre (ou la cache, de retour ici).
+    changerEcran: bandeau,
+    // Un autre match commence (bot, match du jour, carrière…) : on arrête de chercher.
+    autreMatch: () => { if (format) { arreter({ quitter: true }); dire("Recherche arrêtée : tu as lancé un autre match."); } },
     // L'adversaire n'est jamais arrivé : la partie a été annulée.
     annulee: () => dire(`Ton adversaire n'est pas arrivé : la partie est annulée, sans effet sur ton niveau. Tu peux relancer une recherche.`, true),
     rafraichir: compter,
