@@ -63,6 +63,10 @@ export const GANTS_PULLS = Object.keys(PULLS);
 // Les gants tout dessinés (Noël : 24 novembre) : le motif de gant choisi ne s'y applique pas (les pois cachaient le tricot du pull,
 // remarque du porteur du projet), et l'éditeur ne le propose pas.
 export const GANTS_DESSINES = new Set(["perenoel", "lutin", "renne", "neige", "pullmoche", ...GANTS_PULLS]);
+// (27 novembre, demande du porteur du projet) Ces gants ont leur poignet à eux (fourrure, écharpe, côtes…), « Assorti au gant » :
+// c'est le choix par défaut. Le joueur peut mettre un autre poignet par-dessus (av.poignetSurGant) ; l'aperçu du choix « Assorti ».
+export const POIGNET_ASSORTI = ["Assorti au gant", "#1E8C3A", "linear-gradient(135deg,#1E8C3A 50%,#D7192E 50%)"];
+export const poignetIntegre = a => GANTS_DESSINES.has(a.gant) && !a.poignetSurGant;
 // Les gants à dossard (le dossard épinglé, les coutures d'or) ; le poignet du gant du FIAC Club.
 const A_DOSSARD = new Set(["dossard", "fiac"]);
 export const POIGNET_FIAC = "#1B2140";
@@ -575,7 +579,8 @@ export function avatarSVG(a) {
     <circle cx="50" cy="50" r="46.5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`}
     ${a.sansMain ? "" : `${centrer ? '<g transform="translate(2 -8)">' : ""}
     ${nue ? "" : brode ? `<rect x="31" y="70" width="38" height="20" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
-    <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : a.gant === "perenoel" ? FOURRURE : a.gant === "lutin" ? LUTIN : a.gant === "renne" ? RENNE : a.gant === "neige" ? NEIGE : a.gant === "pullmoche" ? COTES : PULLS[a.gant] ? cotes(PULLS[a.gant].b, [PULLS[a.gant].z1, PULLS[a.gant].f]) : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
+    <rect x="32" y="71.6" width="36" height="1.6" rx=".8" fill="rgba(255,255,255,.45)"/>` : !poignetIntegre(a) ? `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
+    ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}` : a.gant === "perenoel" ? FOURRURE : a.gant === "lutin" ? LUTIN : a.gant === "renne" ? RENNE : a.gant === "neige" ? NEIGE : a.gant === "pullmoche" ? COTES : PULLS[a.gant] ? cotes(PULLS[a.gant].b, [PULLS[a.gant].z1, PULLS[a.gant].f]) : `<rect x="37" y="72" width="26" height="16" rx="3" fill="${fillPoignet}" stroke="${ink}" stroke-width="1.5"/>
     ${cle === "club" || cle === "an2026" ? "" : `<rect x="37" y="78" width="26" height="3" fill="rgba(255,255,255,.55)"/>`}`}
     ${a.gant === "renne" ? BOIS : ""}${nue ? `<g${a.sansFond ? "" : ` clip-path="url(#${id})"`}>` : ""}${couture ? cousu(dessinerMain(a, fillGant, ink, nue), couture) : dessinerMain(a, fillGant, ink, nue)}${deco}${accessoires(a, nue)}${marquesSVG(a.symbole, a.degats, nue, fillGant, ink)}${nue ? "</g>" : ""}${brode ? broderieSVG(brode, id) : ""}${centrer ? "</g>" : ""}`}
   </svg>`;
