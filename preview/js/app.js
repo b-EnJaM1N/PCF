@@ -2082,8 +2082,9 @@ async function voirCarteDe(uid) {
 // Comparer ma carte (comparer-cartes.js).
 const maCarteCalculee = () => carteDe(P, { niveauOfficiel: monClassement, provisoire: monClassement !== null && provisoire(mesDuelsOfficiels) });
 const comparaison = installerComparaison({
-  maCarte: () => { const c = maCarteCalculee(); return { nom: nomAffiche(P), notes: c.notes, typeNiveau: c.typeNiveau, niveau: c.niveau }; },
-  carteEnLigne: async id => { const x = await carteDeJoueur(id); return typeof x === "string" ? x : { nom: x.ligne.pseudo, notes: x.c.notes, typeNiveau: x.c.typeNiveau, niveau: x.c.niveau }; },
+  maCarte: () => { const c = maCarteCalculee(); return { nom: nomAffiche(P), notes: c.notes, typeNiveau: c.typeNiveau, niveau: c.niveau, av: avatarSVG(avMoi()) }; },
+  carteEnLigne: async id => { const x = await carteDeJoueur(id); return typeof x === "string" ? x : { nom: x.ligne.pseudo, notes: x.c.notes, typeNiveau: x.c.typeNiveau, niveau: x.c.niveau,
+    av: avatarSVG({ ...x.J.av, brode: clePseudo(x.ligne.pseudo, x.ligne.numero) }) }; },
   mesAmis: () => mesAmis(), chercher: t => chercherJoueurs(t), monId: () => compteUI?.session()?.user?.id,
 });
 $("carteComparer").addEventListener("click", () => { if (!compteUI?.session()?.user?.id) { $("carteMsg").textContent = "Connecte-toi pour comparer ta carte."; return; } comparaison.ouvrir(); });
