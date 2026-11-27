@@ -2196,6 +2196,7 @@ function entreeJoueur(el, av, g) {
 }
 function ouvrirFaceAFace() {
   arreterIntroHymne();
+  if (!S.duel) rapideUI?.autreMatch();   // (un match contre un bot : la recherche de partie rapide s'arrête)
   $("startCard").hidden = true; $("tourCard").hidden = true;
   try { ambiance.initialiser(); } catch { /* le match se joue aussi sans son */ } // geste de l'utilisateur : le son peut démarrer
   const pr = presentation(P, OPP, { tour: S.tour !== null && T ? tourDe(T, S.tour).singulier : null, pointsParSet: S.match.format.pointsParSet, setsGagnants: WIN, classementMoi: monClassement, classe: D?.duel?.classe !== false, tournoi: !!D?.duel?.tournoi_id });
@@ -2765,12 +2766,12 @@ let vueCourante = "viewJouer", avantOptions = "viewJouer", parHistorique = false
 function aller(vue) {
   if (!VUES.includes(vue)) return;
   if (vue === "viewOptions" && vueCourante !== "viewOptions") avantOptions = vueCourante;
-  if (vueCourante === "viewRapide" && vue !== "viewRapide") rapideUI?.quitterEcran();   // la recherche demande de rester sur l'écran
   if (vue === "viewRapide") rapideUI?.rafraichir();
   VUES.forEach(v => { $(v).hidden = v !== vue; });
   // (le bouton retour du téléphone : chaque changement d'écran est noté dans l'historique ; voir plus bas)
   if (vue !== vueCourante && !parHistorique) { try { history.pushState({ vue }, "", location.href); } catch { /* sans historique */ } }
   vueCourante = vue;
+  rapideUI?.changerEcran();   // (27 novembre) la recherche de partie rapide continue ailleurs : son bandeau
   const onglet = ONGLET_DE[vue];
   if (onglet || vue === "viewOptions") document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === onglet)));
   $("lenLock").hidden = true;
@@ -3713,6 +3714,8 @@ rapideUI = installerRapide({
   lancerDuel,
   duelEnCours: duelOccupe,
   jouerBot: jouerBotRapide,
+  surEcran: () => vueCourante === "viewRapide",
+  allerIci: () => aller("viewRapide"),
 });
 
 jetonsUI = installerJetons({ compte: compteUI });
