@@ -1284,7 +1284,7 @@ function finir() {
   // et la mémoire des commentateurs (balles de match sauvées comprises).
   if (n) ecrire("mains", noterMain(lire("mains"), OPP.id, { gagne, detail: m.scoresSets.map(([a, b]) => `${a}–${b}`).join(", "), coups: c, debutsSet: m.debutsSet, penalites: m.penalites, balles: S.stats.ballesDeMatchSauvees || 0 }));
   // Le premier gant : offert après le premier match (avant, la main nue).
-  const premierGant = matchsAvant === 0 && P.matchs > 0 && P.av.gant === "nu" && !P.premierGant;
+  const premierGant = matchsAvant === 0 && P.matchs > 0 && (P.av.gant === "nu" || P.av.gant === "debutant") && !P.premierGant;
   if (premierGant) { P.av.gant = "blanc"; P.premierGant = true; }
   // Les trophées de la carrière (montées, coupe, bouclier, Élite) : ils débloquent des objets et des surnoms.
   if (enCarriere) nouveaux.push(...accorderTitres(P, titresCarriere(C)));
@@ -1357,7 +1357,7 @@ function finir() {
   }
   if (enCarriere && S.carriere.coupe) $("news").textContent = `🏆 ${gagne ? texteCoupe(C) : `Éliminé de la Coupe Monique-Latour.`} ${$("news").textContent}`.trim();
   else if (enCarriere && C.phase !== phaseAvant) $("news").textContent = `🏅 ${C.phase === "fin" ? `Fin de saison : ${texteBilan(C)}` : C.phase === "barrage" ? `Direction le barrage contre ${botParId(C.barrage.adv).nom} !` : C.phase === "petite" ? `Direction le match pour la 3e place contre ${botParId(C.petite.adv).nom} !` : phaseAvant === "saison" ? `Saison terminée à la ${C.place}${C.place === 1 ? "re" : "e"} place${C.poules ? " de ta poule" : ""} : ${C.phase === "playoffs" ? "qualifié pour les playoffs !" : C.phase === "maintien7" ? `le match pour le maintien contre ${botParId(C.duel.adv).nom}.` : "place au maintien."}` : ""} ${$("news").textContent}`.trim();
-  if (premierGant) $("news").textContent = `🧤 Ton premier gant t'est offert ! Change sa couleur (ou garde ta main nue) dans Ma fiche › Vestiaire. ${$("news").textContent}`.trim();
+  if (premierGant) $("news").textContent = `🧤 Fini le « A » du débutant : ton premier vrai gant t'est offert ! Change sa couleur (ou passe à la main nue) dans Ma fiche › Vestiaire. ${$("news").textContent}`.trim();
   // Défi avec enjeu (entre amis) : qui s'y colle, en grand.
   $("endEnjeu").hidden = !(S.duel && D?.duel?.enjeu);
   if (S.duel && D?.duel?.enjeu) $("endEnjeu").textContent = annonceEnjeu(D.duel.enjeu, gagne, OPP.nom);
@@ -2678,7 +2678,7 @@ function renderEditeur() {
   $("avApercu").innerHTML = avatarSVG(avMoi());             // l'aperçu reste visible pendant qu'on fait défiler les choix
   const mk = (el, type, table, texte) => {
     // (les objets « bientôt » : seulement sur la version de test, sauf s'il les a déjà)
-    el.innerHTML = Object.keys(table).filter(k => !(type === "gant" && k === "fiac" && !P.tenantFiac && P.av.gant !== "fiac") && !(type === "gant" && ["lutin", "renne", "neige"].includes(k) && P.av.gant !== k)
+    el.innerHTML = Object.keys(table).filter(k => !(type === "gant" && k === "fiac" && !P.tenantFiac && P.av.gant !== "fiac") && !(type === "gant" && ["lutin", "renne", "neige", "debutant"].includes(k) && P.av.gant !== k)
       // (les cadeaux du calendrier de l'Avent : visibles, avec un cadenas, pendant les fêtes ; sinon seulement s'il les a)
       && !(articleDe(type, k)?.avent && !noelActif() && !possede(P, type, k) && P.av[type] !== k)).filter(k => { const b = articleDe(type, k)?.bientot || verrouDe(type, k)?.bientot || (type === "gant" && k === "dossard" ? "dossard" : null); return !b || ouvert(b) || P.av[type] === k; }).map(k => {
       const ferme = estVerrouille(P, type, k), label = texte ? table[k] : table[k][0];
@@ -2688,7 +2688,7 @@ function renderEditeur() {
       const k = b.dataset.k, t = verrouDe(type, k);
       if (estVerrouille(P, type, k)) {
         const x = articleDe(type, k);
-        $("lockNote").innerHTML = gantAttendPremierMatch(P, type, k) ? "🧤 Les gants se débloquent après ton premier match. En attendant : la main nue !"
+        $("lockNote").innerHTML = gantAttendPremierMatch(P, type, k) ? "🧤 Les gants de couleur se débloquent après ton premier match. En attendant : le gant du débutant (ou la main nue) !"
           : reserveAuTenant(P, type, k) && k === "fiac" ? "🏆 Le gant en or du FIAC Club se porte seulement quand tu es tenant du titre du FIAC Club : gagne son prochain tournoi !"
           : reserveAuTenant(P, type, k) ? "🟨 Le Dossard 1 se porte seulement quand tu es tenant du titre d'un de tes cercles : gagne le prochain tournoi de ton cercle, il est à toi jusqu'au tournoi suivant !"
           : x?.avent ? `🎄 « ${esc(x.nom || (type === "gant" ? GANTS[k][0] : k))} » est à gagner dans le calendrier de l'Avent. <button class="linkbtn" data-aller="viewAvent">Voir le calendrier</button>`
