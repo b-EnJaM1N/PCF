@@ -74,7 +74,9 @@ test("le défi du jour ouvre la case du jour", () => {
   const m = match([GAGNE, EGAL, GAGNE, GAGNE]);
   const r = resultatAvent(m, "rocky", { smashsReussis: 0 });
   assert.equal(r.gagne, true); assert.equal(r.setSansEgalite, false);
-  assert.deepEqual(casesGagnees({ jour: 1, cases: {} }, r), [{ num: 1, via: "jour" }], "jour 1 : gagner un match");
+  assert.deepEqual(casesGagnees({ jour: 1, cases: {} }, r), [{ num: 1, via: "jour" }], "jour 1 : jouer un match");
+  assert.deepEqual(casesGagnees({ jour: 1, cases: {} }, resultatAvent(match([PERD, PERD, PERD]), "rocky")), [{ num: 1, via: "jour" }], "jour 1 : même perdu");
+  assert.deepEqual(casesGagnees({ jour: 12, cases: {} }, resultatAvent(match([PERD, PERD, PERD]), "rocky")), [], "jour 12 : gagner un match");
   assert.deepEqual(casesGagnees({ jour: 1, cases: { 1: {} } }, r), [], "déjà ouverte");
   assert.deepEqual(casesGagnees({ jour: 2, cases: {} }, r), [], "jour 2 : réussir un smash");
   assert.deepEqual(casesGagnees({ jour: 2, cases: {} }, { ...r, smashsReussis: 1 }), [{ num: 2, via: "jour" }]);

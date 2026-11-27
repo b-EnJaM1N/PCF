@@ -56,6 +56,7 @@ export function prochainPalier(etat) {
 
 // Les défis du jour. r : le résultat du match qui vient de finir (resultatAvent) ; jour : { matchs } (les matchs joués aujourd'hui).
 export const DEFIS = {
+  un_match: { texte: "Joue un match (gagné ou perdu).", test: () => true },   // (27 novembre, la case 1 : un cadeau sans insister)
   victoire: { texte: "Gagne un match.", test: r => r.gagne },
   bot_noel: { texte: "Gagne un match contre un bot de Noël.", test: r => r.gagne && r.botNoel },
   smash: { texte: "Réussis un smash pendant un match.", test: r => r.smashsReussis >= 1 },
@@ -70,7 +71,7 @@ export const DEFIS = {
   pere_noel: { texte: "Affronte le Père Noël (pas besoin de gagner !).", test: r => r.adv === "perenoel" },
 };
 export const DEFI_DU_JOUR = [null,
-  "victoire", "smash", "bot_noel", "trois_matchs", "battre_neige", "set_net", "match_du_jour", "serie5",
+  "un_match", "smash", "bot_noel", "trois_matchs", "battre_neige", "set_net", "match_du_jour", "serie5",
   "en_ligne", "battre_renne", "smash", "victoire", "bot_noel", "set_net", "trois_matchs", "battre_renne",
   "serie5", "match_du_jour", "battre_lutin", "en_ligne", "bot_noel", "set_net", "battre_lutin", "pere_noel"];
 export const defiDe = num => DEFIS[DEFI_DU_JOUR[num]] || null;
