@@ -104,3 +104,4 @@ jour). Google demande 14 jours de test fermé de plus avant une nouvelle demande
 | 27 nov. | porteur du projet | Les gants de Noël ignoraient le poignet choisi | Tous les poignets se portent par-dessus ; « Assorti au gant » garde l'original |
 | 27 nov. | porteur du projet | L'imprévisibilité de fin de match, souvent proche de 100, n'apprenait rien | Remplacée par la Résistance (égalités plutôt que points perdus) |
 | 27 nov. | porteur du projet | Le calendrier de l'Avent : plus envie d'objets que de jetons, et récompenser l'assiduité | Objets de Noël dans chaque case, cadeaux à 3, 5, 7… jours de suite, case 1 ouverte en jouant un match, petite musique à l'ouverture |
+| 27 nov. | un testeur (appli du Play Store, Android) | Aucune vibration (smash gagnant, sonné, cœur qui bat) | La vibration passe directement par Android au lieu du navigateur intégré ; version Android 1.1.2 |
