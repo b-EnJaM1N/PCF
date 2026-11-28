@@ -82,7 +82,10 @@ export const FICHIERS_STADE = {
   // Quatre chants de supporters envoyés par le porteur du projet le 5 novembre (avec un tambour), « pour animer les matchs ».
   chant6: "stade_chant_06", chant7: "stade_chant_07", chant8: "stade_chant_08", chant9: "stade_chant_09",
   // Deux virages qui se répondent, a cappella (« Hand-Slam ! », « Allez Hand-Slam ! » ; ElevenLabs Music, porteur du projet, 6 novembre).
-  chant10: "stade_chant_10", chant11: "stade_chant_11",   // « Pierre, feuille, ciseaux, hissez haut le drapeau ! » (ElevenLabs Music, porteur du projet, 4 novembre)
+  chant10: "stade_chant_10", chant11: "stade_chant_11",
+  // Trois chants envoyés par le porteur du projet le 28 novembre (enregistrés les 7, 16 et 23 novembre) : en entier pendant les pauses,
+  // en extraits pendant le match, comme les autres.
+  chant12: "stade_chant_12", chant13: "stade_chant_13", chant14: "stade_chant_14",   // « Pierre, feuille, ciseaux, hissez haut le drapeau ! » (ElevenLabs Music, porteur du projet, 4 novembre)
   // Le stade au début du match (ElevenLabs Music, 4 novembre, sans instruments) : un chœur sans paroles, une clameur avec claquements.
   debut1: "stade_debut_01", debut2: "stade_debut_02",
   chantCourt1: "stade_chant_court_01", chantCourt2: "stade_chant_court_02",
@@ -97,12 +100,12 @@ export const FICHIERS_STADE = {
 // Les gros fichiers (chants entiers, hymne, stade du début de match) ne sont pas chargés au démarrage : chacun est téléchargé
 // la première fois qu'on en a besoin, et le suivant de chaque tour est préparé à l'avance (5 novembre : 6,4 Mo au premier match
 // avant, environ 2,5 Mo maintenant, pour les nouveaux joueurs en 4G).
-export const STADE_A_LA_DEMANDE = new Set(["hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "chant10", "chant11", "debut1", "debut2", "entree", "kop", "ola"]);
+export const STADE_A_LA_DEMANDE = new Set(["hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "chant10", "chant11", "chant12", "chant13", "chant14", "debut1", "debut2", "entree", "kop", "ola"]);
 // (6 novembre, demande du porteur du projet : tous les chants à égalité ; « Pour les vainqueurs », chant4, n'a plus une pause sur deux)
-const TOUR_PAUSE = ["chant10", "chant5", "chant6", "chant4", "chant1", "chant11", "chant7", "chant2", "chant8", "chant3", "chant9"];
-const TOUR_EXTRAITS = ["chant10", "chant6", "chant5", "chant11", "chant7", "debut1", "chant8", "chant1", "chant9", "chant4", "debut2", "chant2", "chant3"];
+const TOUR_PAUSE = ["chant10", "chant12", "chant5", "chant6", "chant4", "chant13", "chant1", "chant11", "chant7", "chant14", "chant2", "chant8", "chant3", "chant9"];
+const TOUR_EXTRAITS = ["chant10", "chant12", "chant6", "chant5", "chant11", "chant13", "chant7", "debut1", "chant8", "chant14", "chant1", "chant9", "chant4", "debut2", "chant2", "chant3"];
 const TOUR_DEBUT = ["debut1", "chant10", "debut2", "chant11"];   // (le stade pendant la présentation d'un match ordinaire)
-export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "chant10", "chant11", "debut1", "debut2", "chantCourt1", "chantCourt2", "chantCourt3", "entree", "kop", "clappements", "explosion", "ola"];
+export const STADE_JOUES = ["charge", "ole", "defense", "hymne", "chant1", "chant2", "chant3", "chant4", "chant5", "chant6", "chant7", "chant8", "chant9", "chant10", "chant11", "chant12", "chant13", "chant14", "debut1", "debut2", "chantCourt1", "chantCourt2", "chantCourt3", "entree", "kop", "clappements", "explosion", "ola"];
 
 // Volume du murmure de fond : entre les points, et pendant l'échange (le public baisse la voix, sans se taire tout à fait :
 // les commentaires ne doivent jamais sortir du silence).
@@ -195,7 +198,11 @@ export function egalitesAvantDernier(coups) {
 }
 // Quand Roland, Monique (ou une autre voix) parlent, la salle baisse (le public, les applaudissements, l'écho), comme à la télévision
 // sous la voix des commentateurs ; le coup de raquette, lui, reste au même niveau. Descente rapide, remontée en douceur.
-export const SOUS_LA_VOIX = { niveau: 0.5, descente: 0.08, remontee: 0.45 };
+// (28 novembre, demande du porteur du projet : les chants plus forts quand il n'y a pas de commentaires) Les chants de supporters
+// sont joués 1,4 fois plus fort qu'avant (VOLUME_CHANTS) ; sous la voix, la salle baisse un peu plus (0,36 au lieu de 0,5) : les
+// chants y restent au même niveau qu'avant, et les commentaires aussi clairs.
+export const VOLUME_CHANTS = 1.4;
+export const SOUS_LA_VOIX = { niveau: 0.36, descente: 0.08, remontee: 0.45 };
 // Crête sous laquelle un enregistrement est jugé muet (environ −26 dB).
 export const SEUIL_MUET = 0.05;
 const HAUTEUR = [0.8, 1.4, 1];   // Pierre grave, Ciseaux aigu, Feuille entre les deux
@@ -560,6 +567,7 @@ export class Ambiance {
     return l[i < 0 ? Math.floor(Math.random() * l.length) : (i + 1) % l.length];
   }
   chanter({ vol = 0.55, delai = 0.6, perso = [], alterner = false } = {}) {
+    vol *= VOLUME_CHANTS;
     // (le prochain de la liste ; s'il n'est pas encore téléchargé, on le prépare et on prend le suivant qui est prêt)
     let k = this.persoProchain(perso);
     if (k && !this.persoBuf?.[k]) {
@@ -602,6 +610,7 @@ export class Ambiance {
   }
   // Joue un chant précis dès qu'il est prêt (si encore() le permet toujours) ; renvoie une promesse (true s'il a été joué).
   chanterChoisi(id, { vol = 0.5, delai = 0.5, fondu = 1.5, encore = () => true } = {}) {
+    vol *= VOLUME_CHANTS;
     if (!this.ctx || !id) return Promise.resolve(false);
     return this.preparerChant(id).then(() => {
       const b = this.persoBuf?.[id] || this.buf[id];
@@ -618,6 +627,7 @@ export class Ambiance {
   // après l'autre ; il baisse sous les commentaires et s'éteint quand le jeu commence (comme un chant).
   // (19 novembre : une fois sur deux, la montée du grand stade à l'entrée des joueurs, à la place)
   debutMatch({ vol = 0.4, delai = 0.3 } = {}) {
+    vol *= VOLUME_CHANTS;
     this.entreeTour = !this.entreeTour;
     if (this.entreeTour && this.buf.entree) {
       this.arreterChant();
@@ -644,6 +654,7 @@ export class Ambiance {
   // Ils continuent sous l'échange (comme un vrai public) et baissent sous les commentaires.
   // (19 novembre : une fois sur trois, le kop et ses tambours du grand stade)
   extraitMatch({ vol = 0.38, delai = 0.6, duree = 7 } = {}) {
+    vol *= VOLUME_CHANTS;
     // (le kop n'est téléchargé qu'au premier extrait : pas de poids en plus pour un nouveau joueur qui ne va pas loin)
     const kop = (this.extraitsJoues = (this.extraitsJoues || 0) + 1) % 3 === 0 && (this.buf.kop || void this.preparer("kop"));
     const k = kop ? "kop" : this.suivantDans(TOUR_EXTRAITS, this.extraitSuivant);
